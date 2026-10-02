@@ -46,7 +46,17 @@ def validate(data: dict, blocked_literals: list[str]) -> list[str]:
 
     captions = data.get("captions", [])
     if not captions:
-        errors.append("captions are required")
+        if data.get("renderer") == "manifest_v2":
+            scenes = data.get("scenes", [])
+            if not scenes:
+                errors.append("manifest_v2 episodes require scenes")
+            for i, scene in enumerate(scenes, 1):
+                if not str(scene.get("title", "")).strip():
+                    errors.append(f"scene {i} is missing a title")
+                if not str(scene.get("narration", "")).strip():
+                    errors.append(f"scene {i} is missing narration")
+        else:
+            errors.append("captions are required")
     else:
         previous = -1.0
         for i, c in enumerate(captions, 1):
