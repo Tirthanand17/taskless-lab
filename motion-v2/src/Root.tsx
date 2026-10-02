@@ -44,7 +44,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="DuplicateLatestShort"
         component={DuplicateLatestShort}
-        durationInFrames={1020}
+        durationInFrames={900}
         fps={30}
         width={1080}
         height={1920}
