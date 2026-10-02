@@ -162,6 +162,9 @@ episode={
    {"title":"The fastest way to fix messy CSV files #automation #chatgpt #excel","vidiq_score":90}
  ],
  "description":"A safer AI workflow for CSV cleanup: normalize headers, trim whitespace, standardize known fields, flag duplicates, and produce a validation summary before export. Use non-sensitive data and verify important changes before importing into another system. #automation #excel #csv #chatgpt",
+ "tags":["csv cleanup","data cleaning","excel tips","chatgpt workflow","ai automation","spreadsheet automation"],
+ "language":"en",
+ "short_cover":"assets/pilot_001/scene_01.png",
  "duration_seconds":44.12,
  "scene_durations":[3.8,8.0,8.5,8.0,8.5,7.32],
  "voice":"Liam - Energetic, Social Media Creator",
