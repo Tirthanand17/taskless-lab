@@ -1,0 +1,65 @@
+{
+  "id": "pilot_005",
+  "title": "Power Query Can Keep the WRONG Duplicate 😳 #excel #powerquery #shorts",
+  "description": "Sorting newest-first before Remove Duplicates can still keep an unexpected row in Power Query. Microsoft documents that Table.Distinct does not guarantee which duplicate is preserved because query folding/optimization can change evaluation. This realistic walkthrough shows a deterministic keep-first pattern using Table.Buffer before Table.Distinct. #excel #powerquery #datacleaning",
+  "tags": [
+    "power query remove duplicates",
+    "power query table distinct",
+    "power query latest row",
+    "excel power query",
+    "table buffer",
+    "data cleaning",
+    "remove duplicates keep latest"
+  ],
+  "language": "en",
+  "duration_seconds": 34,
+  "voice": "en-US-AvaNeural",
+  "visual_style": "realistic Power Query screen demo with cursor actions and verification",
+  "privacy": "brand-only; no personal data",
+  "sources": [
+    "https://learn.microsoft.com/en-us/powerquery-m/table-distinct"
+  ],
+  "research_signal": "Microsoft Learn explicitly warns that Table.Distinct does not guarantee which duplicate is preserved and recommends Table.Buffer for predictable duplicate removal.",
+  "captions": [
+    {
+      "start": 0,
+      "end": 3,
+      "text": "Power Query can keep the wrong duplicate."
+    },
+    {
+      "start": 3,
+      "end": 7,
+      "text": "Newest row is sorted to the top."
+    },
+    {
+      "start": 7,
+      "end": 11.2,
+      "text": "Then Remove Duplicates keeps an older row."
+    },
+    {
+      "start": 11.2,
+      "end": 17,
+      "text": "Table.Distinct does not guarantee which duplicate survives."
+    },
+    {
+      "start": 17,
+      "end": 22.5,
+      "text": "Buffer the sorted table before Distinct."
+    },
+    {
+      "start": 22.5,
+      "end": 28.7,
+      "text": "Table.Buffer → then Table.Distinct on Customer ID."
+    },
+    {
+      "start": 28.7,
+      "end": 31.6,
+      "text": "Now verify the latest date remains."
+    },
+    {
+      "start": 31.6,
+      "end": 34,
+      "text": "Sort shows order. Buffer makes it deterministic."
+    }
+  ]
+}
