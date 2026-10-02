@@ -1,0 +1,82 @@
+{
+  "id": "pilot_001",
+  "title": "The wrong way to clean your CSV files #productivity #excel #tips",
+  "title_variants": [
+    {
+      "title": "The wrong way to clean your CSV files #productivity #excel #tips",
+      "vidiq_score": 94
+    },
+    {
+      "title": "Save hours on CSV cleanup #automation #chatgpt #data",
+      "vidiq_score": 92
+    },
+    {
+      "title": "The fastest way to fix messy CSV files #automation #chatgpt #excel",
+      "vidiq_score": 90
+    }
+  ],
+  "description": "A safer AI workflow for CSV cleanup: normalize headers, trim whitespace, standardize known fields, flag duplicates, and produce a validation summary before export. Use non-sensitive data and verify important changes before importing into another system. #automation #excel #csv #chatgpt",
+  "duration_seconds": 44.12,
+  "scene_durations": [
+    3.8,
+    8.0,
+    8.5,
+    8.0,
+    8.5,
+    7.32
+  ],
+  "voice": "Liam - Energetic, Social Media Creator",
+  "captions": [
+    {
+      "start": 0.0,
+      "end": 3.3,
+      "text": "Stop cleaning messy CSV files cell by cell."
+    },
+    {
+      "start": 3.3,
+      "end": 6.1,
+      "text": "Here\u2019s a safer AI workflow."
+    },
+    {
+      "start": 6.1,
+      "end": 12.0,
+      "text": "Upload a non-sensitive CSV and give precise cleanup rules."
+    },
+    {
+      "start": 12.0,
+      "end": 18.1,
+      "text": "Normalize headers, trim spaces, standardize email casing."
+    },
+    {
+      "start": 18.1,
+      "end": 21.8,
+      "text": "Flag duplicates \u2014 don\u2019t delete them yet."
+    },
+    {
+      "start": 21.8,
+      "end": 27.4,
+      "text": "Then ask for a validation summary."
+    },
+    {
+      "start": 27.4,
+      "end": 33.2,
+      "text": "Rows in. Duplicates flagged. Missing values. Columns changed."
+    },
+    {
+      "start": 33.2,
+      "end": 37.1,
+      "text": "Good automation should explain what changed."
+    },
+    {
+      "start": 37.1,
+      "end": 40.8,
+      "text": "Review a few rows, then export."
+    },
+    {
+      "start": 40.8,
+      "end": 44.12,
+      "text": "Faster than manual cleanup \u2014 and easier to repeat."
+    }
+  ],
+  "privacy": "brand-only; no personal data"
+}

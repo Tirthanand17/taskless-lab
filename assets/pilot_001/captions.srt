@@ -1,0 +1,39 @@
+1
+00:00:00,000 --> 00:00:03,300
+Stop cleaning messy CSV files cell by cell.
+
+2
+00:00:03,300 --> 00:00:06,100
+Here’s a safer AI workflow.
+
+3
+00:00:06,100 --> 00:00:12,000
+Upload a non-sensitive CSV and give precise cleanup rules.
+
+4
+00:00:12,000 --> 00:00:18,100
+Normalize headers, trim spaces, standardize email casing.
+
+5
+00:00:18,100 --> 00:00:21,800
+Flag duplicates — don’t delete them yet.
+
+6
+00:00:21,800 --> 00:00:27,400
+Then ask for a validation summary.
+
+7
+00:00:27,400 --> 00:00:33,200
+Rows in. Duplicates flagged. Missing values. Columns changed.
+
+8
+00:00:33,200 --> 00:00:37,100
+Good automation should explain what changed.
+
+9
+00:00:37,100 --> 00:00:40,800
+Review a few rows, then export.
+
+10
+00:00:40,800 --> 00:00:44,120
+Faster than manual cleanup — and easier to repeat.
