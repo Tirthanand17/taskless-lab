@@ -1,5 +1,5 @@
 {
-  "renderer": "manifest_v2",
+  "renderer": "manifest_v2",\n  "render_revision": 1,
   "id": "short_002",
   "format": "short",
   "title": "Why you shouldn't deduplicate Excel by name #excel #data #tutorial",
@@ -38,7 +38,7 @@
       "title": "These rows are not duplicates.",
       "table": {
         "headers": ["Name", "Email"],
-        "rows": [["Alex Lee", "alex.one@example.com"], ["Alex Lee", "alex.two@example.com"]]
+        "rows": [["Alex Lee", "alex.one (email)"], ["Alex Lee", "alex.two (email)"]]
       },
       "body": ["Same name", "Different email", "Different customer ID"],
       "narration": "Look at these two rows. Both customers are named Alex Lee, but they have different email addresses and different customer IDs."
