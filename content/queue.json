@@ -1,0 +1,94 @@
+{
+  "updated": "2026-10-02",
+  "strategy": "AI productivity + Excel/CSV/Power Query + Python automation",
+  "episodes": [
+    {
+      "priority": 1,
+      "id": "pilot_001",
+      "format": "short",
+      "topic": "Safer AI CSV cleanup workflow",
+      "primary_keyword": "csv cleanup",
+      "estimated_monthly_searches": 5024,
+      "competition_score": 8.2,
+      "status": "rendered",
+      "hook": "Stop cleaning messy CSV files cell by cell."
+    },
+    {
+      "priority": 2,
+      "id": "long_001",
+      "format": "long",
+      "topic": "How to automate data cleaning in Excel with Python",
+      "primary_keyword": "how to automate data cleaning in excel with python",
+      "estimated_monthly_searches": 4018,
+      "competition_score": 12.0,
+      "status": "research_ready",
+      "hook": "One folder of messy Excel files, one repeatable cleaning script."
+    },
+    {
+      "priority": 3,
+      "id": "short_002",
+      "format": "short",
+      "topic": "Remove duplicates in Excel safely",
+      "primary_keyword": "remove duplicates in excel",
+      "estimated_monthly_searches": 14050,
+      "competition_score": 34.9,
+      "status": "queued",
+      "hook": "Removing duplicates by name can delete real customers."
+    },
+    {
+      "priority": 4,
+      "id": "short_003",
+      "format": "short",
+      "topic": "Power Query refresh workflow",
+      "primary_keyword": "power query",
+      "estimated_monthly_searches": 123157,
+      "competition_score": 49.2,
+      "status": "queued",
+      "hook": "If this report arrives every week, stop repeating the cleanup."
+    },
+    {
+      "priority": 5,
+      "id": "short_004",
+      "format": "short",
+      "topic": "Excel data cleaning checklist",
+      "primary_keyword": "data cleaning in excel",
+      "estimated_monthly_searches": 26217,
+      "competition_score": 26.8,
+      "status": "queued",
+      "hook": "A clean-looking spreadsheet can still be broken."
+    },
+    {
+      "priority": 6,
+      "id": "long_002",
+      "format": "long",
+      "topic": "Practical AI tools for repetitive office work",
+      "primary_keyword": "ai tools for business",
+      "estimated_monthly_searches": 74718,
+      "competition_score": 31.8,
+      "status": "needs_fresh_tool_research",
+      "hook": "Five workflows where AI actually removes repetitive work."
+    },
+    {
+      "priority": 7,
+      "id": "short_005",
+      "format": "short",
+      "topic": "Protect IDs and leading zeros in Excel",
+      "primary_keyword": "excel tips",
+      "estimated_monthly_searches": 48897,
+      "competition_score": 39.0,
+      "status": "queued",
+      "hook": "Excel can silently change an ID without showing an error."
+    },
+    {
+      "priority": 8,
+      "id": "short_006",
+      "format": "short",
+      "topic": "Batch-process CSV files with Python",
+      "primary_keyword": "python automation",
+      "estimated_monthly_searches": 32835,
+      "competition_score": 43.8,
+      "status": "queued",
+      "hook": "If you open twenty CSVs one by one, this should be a script."
+    }
+  ]
+}
