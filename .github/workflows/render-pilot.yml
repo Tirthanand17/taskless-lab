@@ -1,0 +1,52 @@
+name: Render Pilot 001
+
+on:
+  push:
+    paths:
+      - "scripts/render_pilot_assets.py"
+      - "scripts/render_short.py"
+      - "scripts/generate_srt.py"
+      - "content/episodes/pilot_001.json"
+      - "config/pilot_voice_url.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install pillow
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Generate visual assets and episode manifest
+        run: python scripts/render_pilot_assets.py
+      - name: Download neutral synthetic voice
+        shell: bash
+        run: |
+          test -s config/pilot_voice_url.txt
+          mkdir -p assets/pilot_001
+          curl --fail --location --retry 2 --output assets/pilot_001/voice.mp3 "$(cat config/pilot_voice_url.txt)"
+          test -s assets/pilot_001/voice.mp3
+      - name: Privacy and metadata gate
+        run: python scripts/validate_release.py content/episodes/pilot_001.json
+      - name: Render final short with burned captions
+        run: python scripts/render_short.py --episode content/episodes/pilot_001.json --audio assets/pilot_001/voice.mp3
+      - name: Remove temporary signed voice URL
+        run: rm -f config/pilot_voice_url.txt
+      - name: Commit generated publish-ready assets
+        shell: bash
+        run: |
+          git config user.name "taskless-lab-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/pilot_001 content/episodes/pilot_001.json config/pilot_voice_url.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "Render pilot 001 publish-ready assets"
+          git push
