@@ -1,0 +1,15 @@
+{
+  "channel_name": "TaskLess Lab",
+  "positioning": "AI productivity + Excel + practical automation",
+  "tagline": "Less repetitive work. More useful output.",
+  "language": "en",
+  "content_mix": {
+    "ai_productivity": 0.5,
+    "excel_csv_power_query": 0.3,
+    "python_automation": 0.2
+  },
+  "publishing": {
+    "enabled": false,
+    "reason": "Requires separately authorized YouTube brand channel"
+  }
+}
