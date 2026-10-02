@@ -33,7 +33,7 @@ const capItems=[
   [0,90,'Power Query can keep the wrong duplicate.'],
   [90,210,'Newest row is sorted to the top.'],
   [210,336,'Then Remove Duplicates keeps an older row.'],
-  [336,510,'Table.Distinct does not guarantee which duplicate survives.'],
+  [336,510,'Distinct does not guarantee which duplicate survives.'],
   [510,675,'Buffer the sorted table before Distinct.'],
   [675,861,'Table.Buffer → then Table.Distinct on Customer ID.'],
   [861,948,'Now verify the latest date remains.'],
