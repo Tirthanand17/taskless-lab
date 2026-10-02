@@ -1,0 +1,9 @@
+That spreadsheet looks clean. It isn't.
+
+AI can catch the problems you usually miss: trailing spaces, mixed email casing, unstable headers, and duplicate rows.
+
+But don't let it silently delete anything. Have it flag the problems, then generate a validation summary: rows in, duplicates found, missing values, and columns changed.
+
+Review the flagged rows, then export.
+
+The goal isn't just faster cleanup. It's cleanup you can verify.
