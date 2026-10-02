@@ -1,0 +1,23 @@
+{
+  "experiment_id": "visual_style_v5_proof_first",
+  "episode_id": "pilot_005",
+  "status": "implementation",
+  "hypothesis": "Immediate proof of a wrong duplicate plus animated data-state transitions and side-by-side verification will improve Shorts appeal and completion versus a slower explain-first edit.",
+  "changes_from_v4": [
+    "failure proof in first 1.5 seconds",
+    "runtime reduced to about 30 seconds",
+    "animated row elimination and survivor state",
+    "brief camera push only at failure and verification",
+    "wrong-vs-fixed split verification before memory rule",
+    "no standalone explanation card"
+  ],
+  "measure": [
+    "engaged_views",
+    "stayed_to_watch",
+    "average_view_duration",
+    "average_percentage_viewed",
+    "likes",
+    "subscribers"
+  ],
+  "decision_rule": "Do not overfit from raw starts or tiny samples; review once meaningful traffic and retention data exist."
+}
