@@ -1,0 +1,8 @@
+{
+  "brand_name": "TaskLess Lab",
+  "allow_personal_data": false,
+  "blocked_literals": [],
+  "block_email_addresses": true,
+  "block_phone_numbers": true,
+  "block_secret_patterns": true
+}
