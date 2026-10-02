@@ -4,6 +4,7 @@ import {CsvScannerShort} from './CsvScannerShort';
 import {LeadingZeroShort} from './LeadingZeroShort';
 import {LeadingZerosLong} from './LeadingZerosLong';
 import {DateLocaleShort} from './DateLocaleShort';
+import {DuplicateLatestShort} from './DuplicateLatestShort';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -36,6 +37,14 @@ export const RemotionRoot: React.FC = () => {
         id="DateLocaleShort"
         component={DateLocaleShort}
         durationInFrames={960}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="DuplicateLatestShort"
+        component={DuplicateLatestShort}
+        durationInFrames={1020}
         fps={30}
         width={1080}
         height={1920}
