@@ -16,7 +16,7 @@ These are release-blocking rules.
 
 ## Brand-only public identity
 
-Public assets may use only the neutral brand identity **TaskLess Lab** and generic contact placeholders until a separate brand contact channel is explicitly authorized.
+Public assets may use only the neutral brand identity **FlowMinute Lab** and generic contact placeholders until a separate brand contact channel is explicitly authorized.
 
 ## Automated checks
 
