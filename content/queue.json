@@ -10,8 +10,10 @@
       "primary_keyword": "csv cleanup",
       "estimated_monthly_searches": 5024,
       "competition_score": 8.2,
-      "status": "rendered",
-      "hook": "Stop cleaning messy CSV files cell by cell."
+      "status": "published",
+      "hook": "Stop cleaning messy CSV files cell by cell.",
+      "youtube_video_id": "2Q8T1FUT4D8",
+      "youtube_url": "https://youtube.com/shorts/2Q8T1FUT4D8"
     },
     {
       "priority": 2,
@@ -20,7 +22,7 @@
       "topic": "How to automate data cleaning in Excel with Python",
       "primary_keyword": "how to automate data cleaning in excel with python",
       "estimated_monthly_searches": 4018,
-      "competition_score": 12.0,
+      "competition_score": 12,
       "status": "research_ready",
       "hook": "One folder of messy Excel files, one repeatable cleaning script."
     },
@@ -32,8 +34,12 @@
       "primary_keyword": "remove duplicates in excel",
       "estimated_monthly_searches": 14050,
       "competition_score": 34.9,
-      "status": "queued",
-      "hook": "Removing duplicates by name can delete real customers."
+      "status": "rendered_upload_ready",
+      "hook": "Removing duplicates by name can delete real customers.",
+      "asset": "assets/short_002/short_002_final.mp4",
+      "captions": "assets/short_002/captions.srt",
+      "voice": "en-US-AndrewNeural",
+      "render_duration_seconds": 39.43
     },
     {
       "priority": 4,
@@ -75,7 +81,7 @@
       "topic": "Protect IDs and leading zeros in Excel",
       "primary_keyword": "excel tips",
       "estimated_monthly_searches": 48897,
-      "competition_score": 39.0,
+      "competition_score": 39,
       "status": "queued",
       "hook": "Excel can silently change an ID without showing an error."
     },
