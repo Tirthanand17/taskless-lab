@@ -1,0 +1,80 @@
+{
+  "version": "4.0",
+  "primary_visual_mode": "realistic_software_demo",
+  "composition_mix": {
+    "realistic_ui_target_fraction": [
+      0.65,
+      0.8
+    ],
+    "explanatory_overlay_max_fraction": 0.25,
+    "metaphor_or_3d_target_fraction": [
+      0,
+      0.15
+    ]
+  },
+  "shorts": {
+    "hook_proof_by_seconds": 1,
+    "first_transformation_by_seconds": 2,
+    "preferred_duration_seconds": [
+      24,
+      35
+    ],
+    "meaningful_visual_change_seconds": [
+      2,
+      4
+    ],
+    "caption_max_lines": 1,
+    "caption_safe_area": "lower",
+    "caption_font_px": [
+      34,
+      44
+    ]
+  },
+  "long_form": {
+    "branded_intro_allowed": false,
+    "useful_content_immediate": true,
+    "intro_retention_checkpoint_seconds": 30,
+    "dead_transition_max_seconds": 0.7,
+    "show_verification_each_chapter": true
+  },
+  "visuals": {
+    "cursor_visible_for_actions": true,
+    "selected_cell_state_required": true,
+    "menus_must_match_action": true,
+    "before_after_required": true,
+    "verification_visual_required": true,
+    "random_motion_for_attention": false,
+    "full_video_ai_generated_ui": false
+  },
+  "generative_video": {
+    "allowed": true,
+    "use_for": [
+      "brief metaphor insert",
+      "non-UI B-roll",
+      "conceptual transition"
+    ],
+    "max_typical_insert_seconds": 3,
+    "forbidden_for": [
+      "critical software UI instructions",
+      "exact menu text",
+      "fake proof of result"
+    ]
+  },
+  "analytics": {
+    "avoid_style_overfit_below_views": 100,
+    "shorts_primary": [
+      "engaged_views",
+      "stayed_to_watch",
+      "average_view_duration",
+      "average_percentage_viewed"
+    ],
+    "long_form_primary": [
+      "impressions_ctr",
+      "retention_30s",
+      "average_view_duration",
+      "watch_hours",
+      "retention_dips",
+      "retention_spikes"
+    ]
+  }
+}
