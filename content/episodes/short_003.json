@@ -1,0 +1,69 @@
+{
+  "renderer": "manifest_v2",
+  "render_revision": 1,
+  "id": "short_003",
+  "format": "short",
+  "title": "Save Hours with This Power Query Trick #excel #powerquery #timehack",
+  "title_variants": [
+    {"title": "Save Hours with This Power Query Trick #excel #powerquery #timehack", "vidiq_score": 89},
+    {"title": "Stop Repeating the Same Excel Cleanup #excel #powerquery #productivity", "vidiq_score": null}
+  ],
+  "description": "If the same Excel or CSV report arrives every week, Power Query can record the cleanup steps once and repeat them on the next file with Refresh. This short shows the workflow and the validation step that should come after it. #excel #powerquery #automation #productivity",
+  "tags": ["power query","excel automation","excel tips","data cleaning","refresh excel data","csv automation","spreadsheet productivity"],
+  "language": "en",
+  "category": "Education",
+  "voice": "en-US-AndrewNeural",
+  "voice_rate": "+4%",
+  "privacy": "brand-only; no personal data",
+  "research": {
+    "primary_keyword": "power query",
+    "estimated_monthly_searches": 123157,
+    "competition_score": 49.2,
+    "source_note": "Prior vidIQ research from 2026-10-02 project session"
+  },
+  "scenes": [
+    {
+      "kicker": "HOOK",
+      "title": "Same Excel cleanup every week?",
+      "body": ["Open file", "Delete rows", "Rename columns", "Fix types", "Save again"],
+      "note_label": "STOP",
+      "note": "Repeated clicks are a repeatable process.",
+      "narration": "If the same Excel or CSV report arrives every week, stop treating the cleanup like a brand-new task."
+    },
+    {
+      "kicker": "POWER QUERY",
+      "title": "Record the transformation once.",
+      "body": ["Remove unwanted rows", "Rename columns", "Set data types", "Standardize values"],
+      "narration": "In Power Query, build the transformation once. Remove unwanted rows, rename columns, set data types, and standardize the fields you actually understand."
+    },
+    {
+      "kicker": "NEXT WEEK",
+      "title": "Replace the source. Hit Refresh.",
+      "body": ["Same structure", "New data", "Same transformation sequence"],
+      "note_label": "RESULT",
+      "note": "The steps run again in the same order.",
+      "narration": "When the next file arrives in the same structure, replace the source and refresh. Power Query runs the same steps again in the same order."
+    },
+    {
+      "kicker": "WHY IT HELPS",
+      "title": "Consistency beats repeated clicks.",
+      "table": {
+        "headers": ["Manual", "Power Query"],
+        "rows": [["Repeat steps", "Refresh"], ["Easy to miss", "Same sequence"], ["Hard to audit", "Visible steps"]]
+      },
+      "narration": "The real advantage is consistency. You are less likely to forget a step, and the transformation sequence stays visible."
+    },
+    {
+      "kicker": "VERIFY",
+      "title": "Refresh is not the final step.",
+      "body": ["Compare row counts", "Check blanks", "Review duplicates", "Confirm expected columns"],
+      "narration": "After the refresh, validate the result. Compare row counts, check missing values, and make sure the expected columns are still there."
+    },
+    {
+      "kicker": "RULE",
+      "title": "Recurring + structured = Power Query",
+      "body": ["One-time cleanup → Excel", "Recurring structured cleanup → Power Query", "Complex multi-file logic → Python"],
+      "narration": "A useful rule is simple. One-time cleanup can stay in Excel. Recurring structured cleanup belongs in Power Query. More complex multi-file logic may belong in Python."
+    }
+  ]
+}
