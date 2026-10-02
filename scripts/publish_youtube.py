@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import os
 from pathlib import Path
@@ -22,6 +23,7 @@ def main():
     ap.add_argument("--captions",default="assets/pilot_001/captions.srt")
     ap.add_argument("--thumbnail",default="assets/pilot_001/scene_01.png")
     ap.add_argument("--privacy",choices=["private","unlisted","public"],default="private")
+    ap.add_argument("--receipt",default="state/published/pilot_001.json")
     ap.add_argument("--confirm-publish",action="store_true")
     args=ap.parse_args()
 
@@ -86,6 +88,18 @@ def main():
           media_body=MediaFileUpload(str(caption_path),mimetype="application/octet-stream")
         ).execute()
         print("uploaded English SRT captions")
+
+    receipt_path=root/args.receipt
+    receipt_path.parent.mkdir(parents=True,exist_ok=True)
+    receipt_path.write_text(json.dumps({
+      "episode_id":meta.get("id"),
+      "video_id":video_id,
+      "youtube_url":f"https://www.youtube.com/watch?v={video_id}",
+      "privacy":args.privacy,
+      "published_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+      "title":meta["title"]
+    },indent=2)+"\\n",encoding="utf-8")
+    print(f"wrote receipt {receipt_path}")
 
 if __name__=="__main__":
     main()
