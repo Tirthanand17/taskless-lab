@@ -1,0 +1,53 @@
+{
+  "episode_id": "pilot_004",
+  "status": "rendered_qa_passed",
+  "github_actions": {
+    "run_id": 36995728727,
+    "artifact_id": 11221532040,
+    "artifact_name": "flowminute-motion-v4",
+    "source_commit": "6611133a11eb6b8e840e4b0b41d278e79f289fef"
+  },
+  "media": {
+    "file": "date-locale-v4.mp4",
+    "duration_seconds": 32.021,
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "audio_present": true
+  },
+  "visual_qa": {
+    "sampled_seconds": [
+      1,
+      4,
+      7,
+      10,
+      13,
+      16,
+      19,
+      22,
+      25,
+      28,
+      31
+    ],
+    "realistic_spreadsheet_ui": true,
+    "realistic_power_query_ui": true,
+    "cursor_guided_actions": true,
+    "before_after_visible": true,
+    "verification_visible": true,
+    "giant_center_subtitles": false,
+    "final_caption_duplication": false,
+    "final_memory_rule_clean": true,
+    "random_decorative_motion": false
+  },
+  "style_experiment": "state/experiments/visual_style_v4.json",
+  "publication": {
+    "status": "approved_for_private_youtube_qa",
+    "target_release_order": [
+      "pilot_003",
+      "long_001",
+      "pilot_004"
+    ]
+  },
+  "storage_rule": "GitHub is source of truth. Desktop/youtube con may be used only as an ephemeral upload bridge and must be emptied afterward.",
+  "qa_date": "2026-10-02"
+}
