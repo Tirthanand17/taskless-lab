@@ -5,6 +5,7 @@ on:
     paths:
       - "content/episodes/short_*.json"
       - "scripts/render_manifest_short.py"
+      - "scripts/render_all_manifest_shorts.py"
       - "scripts/validate_release.py"
   workflow_dispatch:
 
@@ -32,19 +33,7 @@ jobs:
             python scripts/validate_release.py "$f"
           done
       - name: Render manifest episodes
-        shell: bash
-        run: |
-          shopt -s nullglob
-          for f in content/episodes/short_*.json; do
-            python - "$f" <<'PY'
-import json, subprocess, sys
-from pathlib import Path
-f=Path(sys.argv[1])
-data=json.loads(f.read_text(encoding="utf-8"))
-if data.get("renderer")=="manifest_v2":
-    subprocess.run(["python","scripts/render_manifest_short.py",str(f)],check=True)
-PY
-          done
+        run: python scripts/render_all_manifest_shorts.py
       - name: Remove render intermediates
         run: find assets -type d -name _render -prune -exec rm -rf {} +
       - name: Commit rendered assets
