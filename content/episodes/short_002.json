@@ -1,5 +1,6 @@
 {
-  "renderer": "manifest_v2",\n  "render_revision": 2,
+  "renderer": "manifest_v2",
+  "render_revision": 2,
   "id": "short_002",
   "format": "short",
   "title": "Why you shouldn't deduplicate Excel by name #excel #data #tutorial",
