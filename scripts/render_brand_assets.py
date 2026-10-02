@@ -39,3 +39,5 @@ d.text((75,75),"FM",anchor="mm",font=F(54,True),fill=CYAN)
 im.save(OUT/"watermark.png")
 
 print("generated FlowMinute Lab profile, banner and watermark")
+
+# workflow-trigger: brand-assets-v1
