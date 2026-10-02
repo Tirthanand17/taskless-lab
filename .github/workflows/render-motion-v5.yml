@@ -1,0 +1,71 @@
+name: Render Motion V5
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "motion-v2/src/DuplicateLatestShort.tsx"
+      - "motion-v2/src/Root.tsx"
+      - "motion-v2/script-v5.txt"
+      - "motion-v2/generate_voice_cli.py"
+      - "motion-v2/generate_sfx.py"
+      - "motion-v2/package.json"
+      - "content/episodes/pilot_005.json"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install JS dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+
+      - name: Generate V5 narration
+        working-directory: motion-v2
+        run: python generate_voice_cli.py --script script-v5.txt --output voice-v5.mp3 --voice en-US-AvaNeural --rate "+2%"
+
+      - name: Generate original UI sound effects
+        working-directory: motion-v2
+        run: python generate_sfx.py
+
+      - name: Validate metadata
+        run: python scripts/validate_release.py content/episodes/pilot_005.json
+
+      - name: Generate captions
+        run: |
+          mkdir -p assets/v5
+          python scripts/generate_srt.py content/episodes/pilot_005.json assets/v5/captions-v5.srt
+
+      - name: Prepare Remotion browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+
+      - name: Render V5 realistic Short
+        working-directory: motion-v2
+        run: npm run render-v5
+
+      - name: Render V5 thumbnail
+        working-directory: motion-v2
+        run: npm run still-v5
+
+      - name: Upload V5 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-motion-v5
+          path: |
+            assets/v5/duplicate-latest-v5.mp4
+            assets/v5/thumbnail-v5.png
+            assets/v5/captions-v5.srt
