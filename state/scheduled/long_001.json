@@ -1,0 +1,76 @@
+{
+  "episode_id": "long_001",
+  "channel": {
+    "name": "FlowMinute Lab",
+    "handle": "@FlowMinuteLab",
+    "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
+  },
+  "video": {
+    "video_id": "QQAABBkmR9g",
+    "youtube_url": "https://youtu.be/QQAABBkmR9g",
+    "title": "Excel Keeps Removing Leading Zeros? Fix CSV Imports Properly",
+    "visibility": "private",
+    "duration_seconds": 216,
+    "source_render": {
+      "github_actions_run_id": 36978630620,
+      "artifact_id": 11214154345,
+      "artifact_name": "flowminute-long-001"
+    },
+    "metadata": {
+      "audience": "not_made_for_kids",
+      "category": "Education",
+      "language": "English",
+      "paid_promotion": false,
+      "ai_disclosure": true,
+      "tags": [
+        "excel leading zeros",
+        "csv import",
+        "power query",
+        "excel tips",
+        "data cleaning",
+        "long numbers excel",
+        "product codes",
+        "data integrity",
+        "format as text",
+        "csv leading zeros"
+      ]
+    },
+    "qa": {
+      "content_quality_gate": "passed",
+      "github_render": "passed",
+      "width": 1920,
+      "height": 1080,
+      "fps": 24,
+      "audio_present": true,
+      "youtube_checks": "complete_no_issues",
+      "hd_processing": "complete",
+      "sampled_visual_seconds": [
+        5,
+        30,
+        60,
+        90,
+        120,
+        150,
+        185,
+        210
+      ],
+      "chapter_transition_checked": true
+    },
+    "thumbnail": {
+      "custom_asset": "thumbnail-long-001.png",
+      "uploaded": false,
+      "blocker": "YouTube requires phone verification; personal phone data was not used.",
+      "fallback": "YouTube auto-generated thumbnail"
+    }
+  },
+  "release": {
+    "method": "exact ChatGPT release task because YouTube schedule time widget would not persist 18:00 and vidIQ update endpoint has zero credits",
+    "release_local": "2026-10-04T18:00:00+05:30",
+    "timezone": "Asia/Calcutta",
+    "current_video_state": "private_until_release"
+  },
+  "privacy": {
+    "personal_data_in_public_assets": false,
+    "personal_phone_used": false
+  }
+}
