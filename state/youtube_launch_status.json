@@ -1,0 +1,35 @@
+{
+  "updated_at": "2026-10-02T09:14:00+05:30",
+  "channel": {
+    "name": "FlowMinute Lab",
+    "handle": "@FlowMinuteLab",
+    "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+    "existing_personal_channel_touched": false
+  },
+  "pilot_001": {
+    "youtube_upload_started": true,
+    "upload_complete": true,
+    "visibility": "private",
+    "title": "The wrong way to clean your CSV files #productivity #excel #tips",
+    "description_set": true,
+    "audience": "not_made_for_kids",
+    "custom_thumbnail": false,
+    "custom_thumbnail_blocker": "YouTube requires phone verification; personal phone data was not used.",
+    "subtitle_file": "assets/pilot_001/captions.srt",
+    "subtitles_loaded": true,
+    "youtube_checks": "complete_no_issues",
+    "final_wizard_state": "video_elements_completed; final advance attempted before desktop bridge disconnected"
+  },
+  "privacy": {
+    "personal_data_used_in_public_assets": false,
+    "personal_phone_used": false,
+    "personal_email_published": false
+  },
+  "next_safe_actions": [
+    "Reconnect Desktop Commander and verify current YouTube upload wizard state",
+    "Complete final Visibility step while keeping video private",
+    "Verify playback, voice, burned captions and SRT track",
+    "Only after QA, change visibility according to launch plan",
+    "Connect FlowMinute Lab to vidIQ/YouTube automation through required OAuth handoff"
+  ]
+}
