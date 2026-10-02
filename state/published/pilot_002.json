@@ -1,0 +1,62 @@
+{
+  "episode_id": "pilot_002",
+  "channel": {
+    "name": "FlowMinute Lab",
+    "handle": "@FlowMinuteLab",
+    "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
+  },
+  "video": {
+    "video_id": "ph0ZO62q67A",
+    "youtube_url": "https://youtube.com/shorts/ph0ZO62q67A",
+    "title": "This CSV Looks Clean. It Isn't. #excel #automation #shorts",
+    "visibility": "public",
+    "duration_seconds": 32,
+    "source_render": {
+      "github_actions_run_id": 36972401373,
+      "artifact_id": 11211259119,
+      "artifact_name": "flowminute-motion-v2"
+    },
+    "subtitles": {
+      "file": "captions-v2.srt",
+      "attached": true
+    },
+    "metadata": {
+      "audience": "not_made_for_kids",
+      "category": "Education",
+      "language": "English",
+      "paid_promotion": false,
+      "ai_disclosure": true,
+      "tags": [
+        "csv cleanup",
+        "data cleaning",
+        "excel tips",
+        "ai automation",
+        "spreadsheet automation",
+        "data validation",
+        "power query",
+        "productivity"
+      ]
+    },
+    "qa": {
+      "playback_tested": true,
+      "timeline_advanced_to_seconds": 7,
+      "audio_enabled": true,
+      "youtube_checks": "complete_no_issues"
+    }
+  },
+  "retired_v1": {
+    "video_id": "2Q8T1FUT4D8",
+    "visibility": "private",
+    "reason": "Superseded by animated V2 because V1 used presentation-style visuals and oversized captions."
+  },
+  "local_storage": {
+    "youtube_con_items_after_cleanup": 0,
+    "desktop_root_project_files_created": false,
+    "note": "PC used only as temporary browser upload bridge; bridge cleaned after upload."
+  },
+  "privacy": {
+    "personal_data_in_public_assets": false,
+    "personal_phone_used": false
+  },
+  "published_on": "2026-10-02"
+}
