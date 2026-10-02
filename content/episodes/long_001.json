@@ -1,0 +1,23 @@
+{
+  "id": "long_001",
+  "title": "Excel Keeps Removing Leading Zeros? Fix CSV Imports Properly",
+  "description": "Excel can remove leading zeros and change long numeric-looking identifiers when CSV data is interpreted as numbers. This tutorial shows a safer workflow using Data → From Text/CSV → Transform Data → set identifier columns to Text → Close & Load. It also covers Automatic Data Conversions in current Microsoft 365 / Excel 2024, why 15+ digit identifiers are risky, and why custom formatting is not the same as preserving the underlying CSV value.\n\nSources: Microsoft Support documentation on leading zeros, large numbers, and data import options.\n\n#excel #csv #powerquery #datacleaning",
+  "format": "long",
+  "target_duration_seconds": 215,
+  "fps": 24,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "voice": "en-US-ChristopherNeural",
+  "category": "Education",
+  "language": "en",
+  "paid_promotion": false,
+  "ai_disclosure": true,
+  "audience": "not_made_for_kids",
+  "sources": [
+    "https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers",
+    "https://support.microsoft.com/en-us/excel/data-import-and-analysis-options-in-excel",
+    "https://support.microsoft.com/en-us/excel/format-numbers-as-text"
+  ]
+}
