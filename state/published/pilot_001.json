@@ -1,0 +1,57 @@
+{
+  "episode_id": "pilot_001",
+  "channel": {
+    "name": "FlowMinute Lab",
+    "handle": "@FlowMinuteLab",
+    "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
+  },
+  "video": {
+    "video_id": "2Q8T1FUT4D8",
+    "youtube_url": "https://youtube.com/shorts/2Q8T1FUT4D8",
+    "title": "The wrong way to clean your CSV files #productivity #excel #tips",
+    "visibility": "public",
+    "duration_seconds": 45,
+    "category": "Education",
+    "video_language": "English",
+    "title_description_language": "English",
+    "audience": "not_made_for_kids",
+    "paid_promotion": false,
+    "ai_disclosure": true,
+    "tags": [
+      "csv cleanup",
+      "data cleaning",
+      "excel tips",
+      "chatgpt workflow",
+      "ai automation",
+      "spreadsheet automation",
+      "power query",
+      "productivity"
+    ],
+    "subtitles": {
+      "language": "English",
+      "source": "assets/pilot_001/captions.srt",
+      "timed_track_loaded": true,
+      "burned_in_captions": true
+    },
+    "youtube_checks": "complete_no_issues",
+    "playback_qa": {
+      "played_in_studio": true,
+      "timeline_advanced_to_seconds": 5,
+      "audio_enabled": true,
+      "hd_processing_complete": true
+    },
+    "thumbnail": {
+      "mode": "youtube_in_video_frame",
+      "custom_thumbnail_uploaded": false,
+      "blocker": "YouTube requires phone verification; personal phone data was not used."
+    }
+  },
+  "privacy": {
+    "public_personal_data_used": false,
+    "personal_email_published": false,
+    "personal_phone_used": false,
+    "existing_personal_channel_modified": false
+  },
+  "launched_on": "2026-10-02",
+  "next_metrics_windows_hours": [24, 72, 168]
+}
