@@ -39,7 +39,7 @@
     {
       "start": 11.2,
       "end": 17,
-      "text": "Table.Distinct does not guarantee which duplicate survives."
+      "text": "Distinct does not guarantee which duplicate survives."
     },
     {
       "start": 17,
