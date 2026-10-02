@@ -1,4 +1,4 @@
-# TaskLess Lab
+# FlowMinute Lab
 
 A faceless, original micro-content brand about practical automation, data cleanup, and workflow efficiency.
 
