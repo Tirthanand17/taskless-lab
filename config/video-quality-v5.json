@@ -1,0 +1,40 @@
+{
+  "version": "5.0",
+  "extends": "config/video-quality-v4.json",
+  "primary_visual_mode": "realistic_software_demo_with_state_animation",
+  "shorts": {
+    "proof_failure_by_seconds": 1.5,
+    "first_real_ui_action_by_seconds": 3,
+    "target_duration_seconds": [28, 31],
+    "meaningful_visual_change_seconds": [1.5, 3],
+    "caption_max_lines": 1,
+    "before_after_split_required": true,
+    "camera_push_max_scale": 1.025
+  },
+  "animation": {
+    "allowed": [
+      "row_state_transition",
+      "cursor_action",
+      "selection_highlight",
+      "before_after_split",
+      "brief_camera_push",
+      "formula_reveal"
+    ],
+    "forbidden": [
+      "random_particle_motion",
+      "fake_software_menu",
+      "decorative_3d_without_explanatory_value",
+      "large_centered_subtitle_cards"
+    ]
+  },
+  "analytics": {
+    "primary": [
+      "engaged_views",
+      "stayed_to_watch",
+      "average_view_duration",
+      "average_percentage_viewed"
+    ],
+    "raw_views_are_primary": false,
+    "retention_comparison": "compare against recent Shorts of similar length after meaningful traffic"
+  }
+}
