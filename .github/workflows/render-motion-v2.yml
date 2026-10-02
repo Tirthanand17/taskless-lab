@@ -1,0 +1,46 @@
+name: Render Motion V2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install JS dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+      - name: Generate narration
+        run: python motion-v2/generate_voice.py
+      - name: Validate metadata
+        run: python scripts/validate_release.py content/episodes/pilot_002.json
+      - name: Generate captions
+        run: |
+          mkdir -p assets/v2
+          python scripts/generate_srt.py content/episodes/pilot_002.json assets/v2/captions-v2.srt
+      - name: Prepare browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+      - name: Render video
+        working-directory: motion-v2
+        run: npm run render
+      - name: Render thumbnail
+        working-directory: motion-v2
+        run: npm run still
+      - name: Upload render artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-motion-v2
+          path: |
+            assets/v2/csv-scanner-v2.mp4
+            assets/v2/thumbnail-v2.png
+            assets/v2/captions-v2.srt
