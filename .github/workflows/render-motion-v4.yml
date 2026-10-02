@@ -1,0 +1,71 @@
+name: Render Motion V4
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "motion-v2/src/DateLocaleShort.tsx"
+      - "motion-v2/src/Root.tsx"
+      - "motion-v2/script-v4.txt"
+      - "motion-v2/generate_voice_cli.py"
+      - "motion-v2/generate_sfx.py"
+      - "motion-v2/package.json"
+      - "content/episodes/pilot_004.json"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install JS dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+
+      - name: Generate V4 narration
+        working-directory: motion-v2
+        run: python generate_voice_cli.py --script script-v4.txt --output voice-v4.mp3 --voice en-US-AvaNeural --rate "+2%"
+
+      - name: Generate original UI sound effects
+        working-directory: motion-v2
+        run: python generate_sfx.py
+
+      - name: Validate metadata
+        run: python scripts/validate_release.py content/episodes/pilot_004.json
+
+      - name: Generate captions
+        run: |
+          mkdir -p assets/v4
+          python scripts/generate_srt.py content/episodes/pilot_004.json assets/v4/captions-v4.srt
+
+      - name: Prepare Remotion browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+
+      - name: Render V4 realistic Short
+        working-directory: motion-v2
+        run: npm run render-v4
+
+      - name: Render V4 thumbnail
+        working-directory: motion-v2
+        run: npm run still-v4
+
+      - name: Upload V4 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-motion-v4
+          path: |
+            assets/v4/date-locale-v4.mp4
+            assets/v4/thumbnail-v4.png
+            assets/v4/captions-v4.srt
