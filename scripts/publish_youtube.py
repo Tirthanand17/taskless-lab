@@ -20,6 +20,7 @@ def main():
     ap.add_argument("--episode",default="content/episodes/pilot_001.json")
     ap.add_argument("--video",default="assets/pilot_001/pilot_001_final.mp4")
     ap.add_argument("--captions",default="assets/pilot_001/captions.srt")
+    ap.add_argument("--thumbnail",default="assets/pilot_001/scene_01.png")
     ap.add_argument("--privacy",choices=["private","unlisted","public"],default="private")
     ap.add_argument("--confirm-publish",action="store_true")
     args=ap.parse_args()
@@ -41,6 +42,8 @@ def main():
       "snippet":{
         "title":meta["title"],
         "description":meta["description"],
+        "tags":meta.get("tags", []),
+        "defaultLanguage":meta.get("language", "en"),
         "categoryId":"27"
       },
       "status":{
@@ -58,6 +61,17 @@ def main():
         _,response=req.next_chunk()
     video_id=response["id"]
     print(f"uploaded video {video_id} as {args.privacy}")
+
+    thumb_path=root/args.thumbnail
+    if thumb_path.exists():
+        try:
+            youtube.thumbnails().set(
+              videoId=video_id,
+              media_body=MediaFileUpload(str(thumb_path),mimetype="image/png")
+            ).execute()
+            print("uploaded vertical cover thumbnail")
+        except Exception as exc:
+            print(f"thumbnail upload skipped/failed: {exc}")
 
     if caption_path.exists():
         cap_body={"snippet":{
