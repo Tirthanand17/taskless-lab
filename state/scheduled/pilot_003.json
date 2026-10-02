@@ -1,0 +1,76 @@
+{
+  "episode_id": "pilot_003",
+  "channel": {
+    "name": "FlowMinute Lab",
+    "handle": "@FlowMinuteLab",
+    "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
+  },
+  "video": {
+    "video_id": "cftojozZPeI",
+    "youtube_url": "https://youtube.com/shorts/cftojozZPeI",
+    "title": "Excel Just Changed Your ID 😬",
+    "visibility": "scheduled",
+    "scheduled_for_local": "2026-10-03T18:00:00+05:30",
+    "duration_seconds": 30,
+    "source_render": {
+      "github_actions_run_id": 36976564063,
+      "artifact_id": 11213871574,
+      "artifact_name": "flowminute-motion-v3"
+    },
+    "subtitles": {
+      "file": "captions-v3.srt",
+      "attached": true,
+      "language": "English"
+    },
+    "metadata": {
+      "audience": "not_made_for_kids",
+      "category": "Education",
+      "paid_promotion": false,
+      "ai_disclosure": true,
+      "tags": [
+        "excel leading zeros",
+        "csv import",
+        "excel tips",
+        "data cleaning",
+        "product codes",
+        "data integrity",
+        "power query",
+        "excel text format"
+      ]
+    },
+    "qa": {
+      "visual_frames_reviewed_seconds": [
+        1,
+        4,
+        7,
+        10,
+        13,
+        16,
+        19,
+        22,
+        25,
+        28
+      ],
+      "playback_tested": true,
+      "youtube_timeline_advanced_to_seconds": 6,
+      "audio_enabled": true,
+      "narration_last_sound_approx_seconds": 27.78,
+      "youtube_checks": "complete_no_issues"
+    }
+  },
+  "research": {
+    "current_reddit_signal": "r/excel leading-zero complaint posted 2026-09-29 with hundreds of upvotes",
+    "microsoft_docs": [
+      "https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers",
+      "https://support.microsoft.com/en-us/excel/data-import-and-analysis-options-in-excel"
+    ]
+  },
+  "local_storage": {
+    "youtube_con_items_after_cleanup": 0,
+    "desktop_project_copy": false
+  },
+  "privacy": {
+    "personal_data_in_public_assets": false,
+    "personal_phone_used": false
+  }
+}
