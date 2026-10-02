@@ -35,7 +35,6 @@ const capItems=[
   [444,624,'Power Query → Change Type → Using Locale.'],
   [624,771,"Choose Date and the source file's locale."],
   [771,864,'Then verify the day and month.'],
-  [864,960,'Format changes appearance. Locale changes interpretation.'],
 ] as const;
 
 const lerp=(f:number,ins:number[],outs:number[])=>interpolate(f,ins,outs,{
@@ -117,7 +116,7 @@ const SpreadsheetUI:React.FC=()=>{
       }}>
         <span style={{fontWeight:800,marginRight:20}}>Spreadsheet</span>
         <span style={{opacity:.9}}>orders_aug.csv</span>
-        <span style={{marginLeft:'auto',opacity:.75}}>FlowMinute Demo</span>
+        <span style={{marginLeft:'auto',opacity:.75}}>Local CSV</span>
       </div>
       <div style={{
         height:55,background:C.ribbon,borderBottom:'1px solid #d5dbe2',
@@ -413,7 +412,7 @@ export const DateLocaleShort:React.FC=()=>{
       color:'#55616e',fontSize:22,fontWeight:800,letterSpacing:1
     }}>
       <span>FLOWMINUTE LAB</span>
-      <span style={{color:C.green}}>REAL SCREEN WORKFLOW / 04</span>
+      <span style={{color:C.green}}>EXCEL / POWER QUERY</span>
     </div>
 
     <SpreadsheetUI/>
