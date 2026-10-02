@@ -2,6 +2,10 @@ name: Render Motion V2
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "motion-v2/**"
+      - "content/episodes/pilot_002.json"
 
 jobs:
   render:
