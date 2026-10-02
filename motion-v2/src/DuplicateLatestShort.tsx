@@ -147,6 +147,59 @@ const ProofRail:React.FC=()=>{
   </div>;
 };
 
+const RowLockOverlay:React.FC=()=>{
+  const f=useCurrentFrame();
+  const p=lerp(f,[465,488,558,582],[0,1,1,0]);
+  const close=lerp(f,[482,525],[0,1]);
+  const badge=lerp(f,[510,532],[0,1]);
+  if(p<=0)return null;
+  return <div style={{
+    position:'absolute',left:42,top:370,width:790,height:332,zIndex:66,
+    opacity:p,pointerEvents:'none',fontFamily:'Segoe UI, Arial'
+  }}>
+    <div style={{
+      position:'absolute',left:0,top:0,bottom:0,width:5,borderRadius:5,
+      background:C.blue,transform:`scaleY(${close})`,transformOrigin:'center'
+    }}/>
+    <div style={{
+      position:'absolute',right:0,top:0,bottom:0,width:5,borderRadius:5,
+      background:C.blue,transform:`scaleY(${close})`,transformOrigin:'center'
+    }}/>
+    <div style={{
+      position:'absolute',left:0,right:0,top:0,height:5,borderRadius:5,
+      background:C.blue,transform:`scaleX(${close})`,transformOrigin:'center'
+    }}/>
+    <div style={{
+      position:'absolute',left:0,right:0,bottom:0,height:5,borderRadius:5,
+      background:C.blue,transform:`scaleX(${close})`,transformOrigin:'center'
+    }}/>
+    <div style={{
+      position:'absolute',left:205,top:-34,width:380,height:68,
+      borderRadius:34,background:'rgba(31,41,52,.96)',color:'#fff',
+      display:'flex',alignItems:'center',justifyContent:'center',gap:12,
+      opacity:badge,transform:`translateY(${(1-badge)*10}px) scale(${.96+.04*badge})`,
+      boxShadow:'0 12px 28px rgba(20,34,48,.24)'
+    }}>
+      <div style={{
+        width:24,height:20,border:'3px solid #8ed0ff',borderRadius:5,
+        position:'relative',boxSizing:'border-box'
+      }}>
+        <div style={{
+          position:'absolute',left:4,top:-16,width:10,height:13,
+          border:'3px solid #8ed0ff',borderBottom:'none',
+          borderRadius:'10px 10px 0 0',boxSizing:'border-box'
+        }}/>
+      </div>
+      <span style={{fontSize:20,fontWeight:900,letterSpacing:1.4}}>BUFFERED · ORDER FIXED</span>
+    </div>
+    <div style={{
+      position:'absolute',left:22,right:22,bottom:18,
+      fontSize:16,fontWeight:800,color:C.blue,textAlign:'center',
+      opacity:badge
+    }}>Explanatory overlay — Power Query does not show this lock.</div>
+  </div>;
+};
+
 const OutcomeSplit:React.FC=()=>{
   const f=useCurrentFrame();
   const p=lerp(f,[785,805,838,850],[0,1,1,0]);
@@ -375,6 +428,7 @@ const PowerQueryWindow:React.FC=()=>{
         </div>
       </div>
     </div>
+    <RowLockOverlay/>
     <Cursor x={cursorX} y={cursorY} click={click} opacity={f<830?1:0}/>
   </div>;
 };
@@ -415,6 +469,7 @@ export const DuplicateLatestShort:React.FC=()=>{
     {[126,205,520,720].map((fr,i)=>
       <Sequence key={i} from={fr}><Audio src={staticFile('ui-click.wav')} volume={0.25}/></Sequence>
     )}
+    <Sequence from={525}><Audio src={staticFile('ui-click.wav')} volume={0.18}/></Sequence>
     <Sequence from={782}><Audio src={staticFile('confirm.wav')} volume={0.30}/></Sequence>
 
     <Caption/>
@@ -432,4 +487,4 @@ export const DuplicateLatestShort:React.FC=()=>{
   </AbsoluteFill>;
 };
 
-// render-trigger: v5-002
+// render-trigger: v5-004-row-lock
