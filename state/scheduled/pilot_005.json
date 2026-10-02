@@ -10,20 +10,17 @@
     "youtube_url": "https://youtube.com/shorts/Mu_3qoiJX4w",
     "title": "Power Query Kept the WRONG Row #excel #powerquery #shorts",
     "visibility": "private",
-    "duration_seconds": 30.016,
+    "duration_seconds": 31,
     "source_render": {
       "github_actions_run_id": 37010425044,
       "artifact_id": 11227685820,
-      "artifact_name": "flowminute-motion-v5",
-      "source_commit": "1a9328142ca3ef676735bb6de8fe07b9f6548f86"
+      "artifact_name": "flowminute-motion-v5"
     },
     "metadata": {
       "audience": "not_made_for_kids",
-      "age_restricted": false,
+      "category": "Education",
       "paid_promotion": false,
       "ai_disclosure": true,
-      "language": "English",
-      "category": "Education",
       "tags": [
         "power query remove duplicates",
         "power query keep latest row",
@@ -35,40 +32,32 @@
         "data cleaning"
       ]
     },
-    "subtitles": {
-      "burned_in": true,
-      "external_track_attached": true,
-      "external_track_status": "English by you",
-      "file": "captions-v5.srt"
-    },
-    "thumbnail": {
-      "file": "thumbnail-v5.png",
-      "upload_attempted": true,
-      "final_video_thumbnail_present": true
-    },
     "qa": {
       "github_render_qa": true,
-      "youtube_checks": "complete_no_issues",
+      "youtube_hd_complete": true,
+      "youtube_checks": "no_issues",
       "private_visibility_verified": true,
-      "exact_studio_url_verified": "https://studio.youtube.com/video/Mu_3qoiJX4w/edit"
+      "permanent_editor_verified": true
     }
   },
   "release_plan": {
     "target_local_time": "2026-10-06T18:00:00+05:30",
     "target_utc": "2026-10-06T12:30:00Z",
-    "order_after": "pilot_004",
+    "status": "private_waiting_release",
     "post_publish_actions": [
-      "publish Private -> Public",
-      "verify public/playable",
-      "record GitHub publication receipt",
-      "collect early analytics without overfitting"
+      "verify public visibility",
+      "verify playable",
+      "record GitHub publication receipt"
     ]
+  },
+  "research_doc": "docs/VIDEO_V5_VISUAL_RESEARCH.md",
+  "privacy": {
+    "personal_data_used": false,
+    "phone_verification_used": false
   },
   "storage": {
     "github_source_of_truth": true,
     "desktop_project_copy": false,
-    "allowed_ephemeral_bridge": "C:\\Users\\Dell\\Desktop\\youtube con",
-    "cleanup_required_after_upload": true
-  },
-  "status": "private_qa_passed_waiting_release"
+    "allowed_ephemeral_bridge": "C:\\Users\\Dell\\Desktop\\youtube con"
+  }
 }
