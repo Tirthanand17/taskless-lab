@@ -1,0 +1,24 @@
+name: Content Quality Gate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run tests
+        run: python -m pytest -q
+      - name: Validate episode manifests
+        shell: bash
+        run: |
+          shopt -s nullglob
+          for f in content/episodes/*.json; do
+            python scripts/validate_release.py "$f"
+          done
