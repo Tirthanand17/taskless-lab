@@ -1,0 +1,56 @@
+{
+  "episode_id": "pilot_005",
+  "status": "rendered_qa_passed",
+  "github_actions": {
+    "run_id": 37010425044,
+    "artifact_id": 11227685820,
+    "artifact_name": "flowminute-motion-v5",
+    "source_commit": "1a9328142ca3ef676735bb6de8fe07b9f6548f86"
+  },
+  "media": {
+    "file": "duplicate-latest-v5.mp4",
+    "duration_seconds": 30.016,
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "audio_present": true
+  },
+  "visual_qa": {
+    "sampled_seconds": [
+      0.6,
+      2,
+      7,
+      11.5,
+      16.2,
+      17.5,
+      19,
+      26.8,
+      29.2
+    ],
+    "proof_failure_immediate": true,
+    "realistic_power_query_ui": true,
+    "cursor_guided_actions": true,
+    "wrong_survivor_visible": true,
+    "row_lock_buffer_overlay_visible": true,
+    "row_lock_explanatory_only": true,
+    "verification_visible": true,
+    "captions_one_line_lower_safe_area": true,
+    "giant_center_subtitles": false,
+    "random_decorative_motion": false,
+    "final_memory_rule_clean": true
+  },
+  "research_doc": "docs/VIDEO_V5_VISUAL_RESEARCH.md",
+  "style_experiment": "state/experiments/visual_style_v5.json",
+  "publication": {
+    "status": "approved_for_private_youtube_qa",
+    "proposed_release_local": "2026-10-06T18:00:00+05:30",
+    "release_order": [
+      "pilot_003",
+      "long_001",
+      "pilot_004",
+      "pilot_005"
+    ]
+  },
+  "storage_rule": "GitHub is source of truth. Desktop/youtube con is only an ephemeral upload bridge and must be emptied after upload.",
+  "qa_date": "2026-10-02"
+}
