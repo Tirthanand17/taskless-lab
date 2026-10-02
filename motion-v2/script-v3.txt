@@ -1,9 +1,9 @@
-Excel can change an ID before you even touch the file.
+Excel can change an ID before you touch the file.
 
-Open a CSV with an ID like zero-zero-one-two-three, and it may become one-two-three. Long identifiers can also lose precision or jump into scientific notation.
+Open a CSV with zero-zero-one-two-three and it may become one-two-three. Long identifiers can lose precision or jump into scientific notation.
 
-If a column is an ID, phone number, postal code, or product code, don't treat it like a number.
+If a column is an ID, phone number, postal code, or product code, treat it as text.
 
-Import the CSV through Data, From Text/CSV, choose Transform Data, set that column to Text, then load.
+Import with Data, From Text/CSV, choose Transform Data, set the column to Text, then load.
 
-Digits don't always mean math. Sometimes they're identity.
+Digits can be identity, not math.
