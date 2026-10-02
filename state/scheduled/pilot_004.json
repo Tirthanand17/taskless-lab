@@ -10,7 +10,7 @@
     "youtube_url": "https://youtube.com/shorts/7hZCljQbaX8",
     "title": "03/08/2026 Can Mean TWO Different Dates #excel #powerquery #shorts",
     "visibility": "private",
-    "duration_seconds": 33,
+    "duration_seconds": 32.021,
     "source_render": {
       "github_actions_run_id": 36995728727,
       "artifact_id": 11221532040,
@@ -30,17 +30,26 @@
       "external_track_attached": false,
       "note": "External SRT picker was unreliable; release is not blocked because clean burned-in captions are present."
     },
-    "style": "realistic spreadsheet + Power Query task demonstration with selective overlays"
+    "style": "realistic spreadsheet + Power Query task demonstration with selective overlays",
+    "draft_finalized": true,
+    "saved_video_details_page_verified": true
   },
   "release_plan": {
     "target_local_time": "2026-10-05T18:00:00+05:30",
     "target_utc": "2026-10-05T12:30:00Z",
     "method": "exact ChatGPT automation publishes Private -> Public and verifies receipt",
-    "reason": "YouTube schedule-time widget was unreliable and vidIQ direct scheduling requires credits."
+    "reason": "YouTube schedule-time widget was unreliable and vidIQ direct scheduling requires credits.",
+    "automation_created": true,
+    "automation_schedule": "2026-10-05T18:00:00+05:30",
+    "post_publish_actions": [
+      "publish Private -> Public",
+      "verify public/playable",
+      "record GitHub publication receipt"
+    ]
   },
   "privacy": {
     "personal_data_used": false,
     "phone_verification_used": false
   },
-  "status": "private_qa_passed_waiting_release"
+  "status": "private_finalized_waiting_exact_release"
 }
