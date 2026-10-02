@@ -1,0 +1,15 @@
+{
+  "name": "flowminute-motion-v2",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "render": "remotion render src/index.ts CsvScannerShort ../assets/v2/csv-scanner-v2.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still": "remotion still src/index.ts CsvScannerShort ../assets/v2/thumbnail-v2.png --frame=18"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "^4.0.0"
+  }
+}
