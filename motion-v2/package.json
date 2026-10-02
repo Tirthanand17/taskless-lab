@@ -6,7 +6,9 @@
     "render": "remotion render src/index.ts CsvScannerShort ../assets/v2/csv-scanner-v2.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
     "still": "remotion still src/index.ts CsvScannerShort ../assets/v2/thumbnail-v2.png --frame=18",
     "render-v3": "remotion render src/index.ts LeadingZeroShort ../assets/v3/leading-zero-v3.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
-    "still-v3": "remotion still src/index.ts LeadingZeroShort ../assets/v3/thumbnail-v3.png --frame=125"
+    "still-v3": "remotion still src/index.ts LeadingZeroShort ../assets/v3/thumbnail-v3.png --frame=125",
+    "render-long-001": "remotion render src/index.ts LeadingZerosLong ../assets/long-001/leading-zeros-long-001.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
+    "still-long-001": "remotion still src/index.ts LeadingZerosLong ../assets/long-001/thumbnail-long-001.png --frame=180"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
