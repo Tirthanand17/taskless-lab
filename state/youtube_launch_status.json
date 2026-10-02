@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02T09:14:00+05:30",
+  "updated_at": "2026-10-02T10:40:00+05:30",
   "channel": {
     "name": "FlowMinute Lab",
     "handle": "@FlowMinuteLab",
@@ -9,7 +9,7 @@
   "pilot_001": {
     "youtube_upload_started": true,
     "upload_complete": true,
-    "visibility": "private",
+    "visibility": "public",
     "title": "The wrong way to clean your CSV files #productivity #excel #tips",
     "description_set": true,
     "audience": "not_made_for_kids",
@@ -18,7 +18,16 @@
     "subtitle_file": "assets/pilot_001/captions.srt",
     "subtitles_loaded": true,
     "youtube_checks": "complete_no_issues",
-    "final_wizard_state": "video_elements_completed; final advance attempted before desktop bridge disconnected"
+    "final_wizard_state": "video_elements_completed; final advance attempted before desktop bridge disconnected",
+    "youtube_video_id": "2Q8T1FUT4D8",
+    "youtube_url": "https://youtube.com/shorts/2Q8T1FUT4D8",
+    "playback_qa": "passed",
+    "tags_set": true,
+    "category": "Education",
+    "video_language": "English",
+    "ai_disclosure": true,
+    "paid_promotion": false,
+    "stale_duplicate_draft_present": true
   },
   "privacy": {
     "personal_data_used_in_public_assets": false,
@@ -26,10 +35,9 @@
     "personal_email_published": false
   },
   "next_safe_actions": [
-    "Reconnect Desktop Commander and verify current YouTube upload wizard state",
-    "Complete final Visibility step while keeping video private",
-    "Verify playback, voice, burned captions and SRT track",
-    "Only after QA, change visibility according to launch plan",
-    "Connect FlowMinute Lab to vidIQ/YouTube automation through required OAuth handoff"
+    "Monitor pilot_001 at 24h/72h/7d and use performance to update hooks and packaging",
+    "Finish Short 002 neural render and hold for next publishing decision",
+    "Remove the stale duplicate draft without touching the public Short",
+    "Connect FlowMinute Lab to YouTube analytics OAuth when fresh authorization can be completed without exposing personal data"
   ]
 }
