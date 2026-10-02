@@ -1,0 +1,64 @@
+name: Render Long 001
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "motion-v2/src/LeadingZerosLong.tsx"
+      - "motion-v2/script-long-001.txt"
+      - "motion-v2/generate_voice_cli.py"
+      - "content/episodes/long_001.json"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install JS dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+
+      - name: Generate long-form narration
+        working-directory: motion-v2
+        run: python generate_voice_cli.py --script script-long-001.txt --output voice-long-001.mp3 --voice en-US-ChristopherNeural --rate "+1%"
+
+      - name: Validate metadata
+        run: python scripts/validate_release.py content/episodes/long_001.json
+
+      - name: Prepare output
+        run: mkdir -p assets/long-001
+
+      - name: Prepare Remotion browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+
+      - name: Render long-form video
+        working-directory: motion-v2
+        run: npm run render-long-001
+
+      - name: Render long-form thumbnail
+        working-directory: motion-v2
+        run: npm run still-long-001
+
+      - name: Copy transcript
+        run: cp motion-v2/script-long-001.txt assets/long-001/transcript-long-001.txt
+
+      - name: Upload long-form artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-long-001
+          path: |
+            assets/long-001/leading-zeros-long-001.mp4
+            assets/long-001/thumbnail-long-001.png
+            assets/long-001/transcript-long-001.txt
