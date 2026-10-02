@@ -1,0 +1,68 @@
+{
+  "id": "pilot_004",
+  "title": "This Excel Date Can Mean TWO Different Days 😬 #excel #csv #powerquery",
+  "description": "03/08/2026 can mean March 8 or 3 August depending on locale. This realistic Excel/Power Query walkthrough shows how to use Change Type > Using Locale and then verify the interpreted day/month. #excel #csv #powerquery #datacleaning",
+  "tags": [
+    "excel date format",
+    "power query locale",
+    "csv date problem",
+    "excel dates",
+    "data cleaning",
+    "power query",
+    "dd mm yyyy",
+    "mm dd yyyy"
+  ],
+  "language": "en",
+  "duration_seconds": 32,
+  "voice": "en-US-AvaNeural",
+  "visual_style": "realistic spreadsheet screen demo with selective overlays",
+  "privacy": "brand-only; no personal data",
+  "sources": [
+    "https://support.microsoft.com/en-US/Excel/set-a-locale-or-region-for-data-power-query",
+    "https://learn.microsoft.com/en-us/power-query/data-types",
+    "https://support.microsoft.com/en-us/excel/add-or-change-data-types-power-query"
+  ],
+  "research_signal": "Recent Excel community discussion continues to highlight mixed date-format cleanup as recurring manual work.",
+  "captions": [
+    {
+      "start": 0,
+      "end": 3.1,
+      "text": "This date can mean two different days."
+    },
+    {
+      "start": 3.1,
+      "end": 7,
+      "text": "03/08/2026 = Mar 8 OR 3 Aug."
+    },
+    {
+      "start": 7,
+      "end": 11.3,
+      "text": "The wrong locale can interpret the CSV incorrectly."
+    },
+    {
+      "start": 11.3,
+      "end": 14.8,
+      "text": "Changing the cell format is not the real fix."
+    },
+    {
+      "start": 14.8,
+      "end": 20.8,
+      "text": "Power Query → Change Type → Using Locale."
+    },
+    {
+      "start": 20.8,
+      "end": 25.7,
+      "text": "Choose Date and the source file's locale."
+    },
+    {
+      "start": 25.7,
+      "end": 28.8,
+      "text": "Then verify the day and month."
+    },
+    {
+      "start": 28.8,
+      "end": 32,
+      "text": "Format changes appearance. Locale changes interpretation."
+    }
+  ]
+}
