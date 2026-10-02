@@ -1,0 +1,66 @@
+name: Render Motion V3
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "motion-v2/src/LeadingZeroShort.tsx"
+      - "motion-v2/src/Root.tsx"
+      - "motion-v2/script-v3.txt"
+      - "motion-v2/generate_voice_cli.py"
+      - "motion-v2/package.json"
+      - "content/episodes/pilot_003.json"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install JS dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+
+      - name: Generate V3 narration
+        working-directory: motion-v2
+        run: python generate_voice_cli.py --script script-v3.txt --output voice-v3.mp3 --voice en-US-AvaNeural --rate "+3%"
+
+      - name: Validate metadata
+        run: python scripts/validate_release.py content/episodes/pilot_003.json
+
+      - name: Generate captions
+        run: |
+          mkdir -p assets/v3
+          python scripts/generate_srt.py content/episodes/pilot_003.json assets/v3/captions-v3.srt
+
+      - name: Prepare Remotion browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+
+      - name: Render V3 video
+        working-directory: motion-v2
+        run: npm run render-v3
+
+      - name: Render V3 thumbnail
+        working-directory: motion-v2
+        run: npm run still-v3
+
+      - name: Upload V3 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-motion-v3
+          path: |
+            assets/v3/leading-zero-v3.mp4
+            assets/v3/thumbnail-v3.png
+            assets/v3/captions-v3.srt
