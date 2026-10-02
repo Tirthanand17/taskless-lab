@@ -1,0 +1,49 @@
+{
+  "episode_id": "pilot_002",
+  "status": "rendered_qa_passed",
+  "github_actions": {
+    "run_id": 36972401373,
+    "artifact_id": 11211259119,
+    "artifact_name": "flowminute-motion-v2",
+    "artifact_size_bytes": 6792691
+  },
+  "video": {
+    "duration_seconds": 31.019,
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "file": "csv-scanner-v2.mp4"
+  },
+  "qa": {
+    "frames_reviewed_seconds": [
+      1,
+      4,
+      7,
+      10,
+      13,
+      16,
+      19,
+      22,
+      25,
+      28,
+      30
+    ],
+    "oversized_center_subtitles": false,
+    "static_slide_deck_style": false,
+    "continuous_2_5d_scene": true,
+    "scanner_animation": true,
+    "animated_problem_labels": true,
+    "duplicate_review_queue": true,
+    "animated_validation_summary": true,
+    "vertical_thumbnail_rendered": true
+  },
+  "pc_storage": {
+    "taskless_lab_clone_removed": true,
+    "flowminute_assets_removed": true,
+    "youtube_con_items_after_cleanup": 0
+  },
+  "publication": {
+    "status": "not_yet_released",
+    "reason": "Browser automation unreliable; waiting for proper channel/API publishing path rather than leaving local files."
+  }
+}
