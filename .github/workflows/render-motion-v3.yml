@@ -5,10 +5,8 @@ on:
   push:
     paths:
       - "motion-v2/src/LeadingZeroShort.tsx"
-      - "motion-v2/src/Root.tsx"
       - "motion-v2/script-v3.txt"
       - "motion-v2/generate_voice_cli.py"
-      - "motion-v2/package.json"
       - "content/episodes/pilot_003.json"
 
 jobs:
