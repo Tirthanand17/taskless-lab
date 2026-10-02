@@ -1,1 +1,1 @@
-2026-10-02 v5-002 pacing-and-caption-fix
+2026-10-02 v5-003 proof-first-state-animation
