@@ -1,0 +1,75 @@
+{
+  "renderer": "manifest_v2",
+  "id": "short_002",
+  "format": "short",
+  "title": "Why you shouldn't deduplicate Excel by name #excel #data #tutorial",
+  "title_variants": [
+    {"title": "Why you shouldn't deduplicate Excel by name #excel #data #tutorial", "vidiq_score": 94},
+    {"title": "Fix your duplicate removal method in Excel #excel #tutorial #data", "vidiq_score": 92},
+    {"title": "Why Excel's remove duplicates button is risky #excel #tips #data", "vidiq_score": 92}
+  ],
+  "description": "Removing duplicates in Excel can delete valid records if you choose the wrong column. This quick example shows why names are not reliable unique keys and why you should review duplicates before deletion. #excel #data #tutorial #productivity",
+  "tags": ["how to remove duplicates in excel","remove duplicates in excel","excel tips","data cleaning","excel tutorial","duplicate rows","spreadsheet cleanup"],
+  "language": "en",
+  "category": "Education",
+  "voice": "en-US-AndrewNeural",
+  "voice_rate": "+4%",
+  "privacy": "brand-only; no personal data",
+  "research": {
+    "primary_keyword": "how to remove duplicates in excel",
+    "estimated_monthly_searches": 21917,
+    "competition_score": 23,
+    "overall_score": 69.6786
+  },
+  "scenes": [
+    {
+      "kicker": "HOOK",
+      "title": "Don't deduplicate Excel by name.",
+      "table": {
+        "headers": ["Name", "Customer ID"],
+        "rows": [["Alex Lee", "C-1042"], ["Alex Lee", "C-2819"]]
+      },
+      "note_label": "RISK",
+      "note": "Same name. Two real customers.",
+      "narration": "Excel's Remove Duplicates button is useful, but the wrong key can delete real records."
+    },
+    {
+      "kicker": "EXAMPLE",
+      "title": "These rows are not duplicates.",
+      "table": {
+        "headers": ["Name", "Email"],
+        "rows": [["Alex Lee", "alex.one@example.com"], ["Alex Lee", "alex.two@example.com"]]
+      },
+      "body": ["Same name", "Different email", "Different customer ID"],
+      "narration": "Look at these two rows. Both customers are named Alex Lee, but they have different email addresses and different customer IDs."
+    },
+    {
+      "kicker": "MISTAKE",
+      "title": "Name is a bad unique key.",
+      "body": ["Selecting only Name can merge real people", "A convenient column is not automatically unique"],
+      "note_label": "DON'T",
+      "note": "Do not delete until the duplicate rule is verified.",
+      "narration": "If you remove duplicates using only the Name column, one real customer can disappear."
+    },
+    {
+      "kicker": "FIX",
+      "title": "Use the field that should be unique.",
+      "body": ["Customer ID", "Order ID", "Another verified business key"],
+      "note_label": "CHECK",
+      "note": "Confirm the key's uniqueness rule before deletion.",
+      "narration": "Instead, decide what should actually be unique. For customer data, that might be a customer ID or another verified key."
+    },
+    {
+      "kicker": "SAFER",
+      "title": "Flag first. Delete second.",
+      "body": ["Create a duplicate flag", "Review affected rows", "Then remove confirmed duplicates"],
+      "narration": "Before deleting anything, flag the duplicates first and review the affected rows."
+    },
+    {
+      "kicker": "RULE",
+      "title": "Trusted key > convenient column",
+      "body": ["Fast cleanup", "Fewer accidental deletions", "Repeatable rule"],
+      "narration": "The rule is simple: deduplicate by a trusted key, not by a convenient-looking column. That keeps cleanup fast without silently throwing away valid data."
+    }
+  ]
+}
