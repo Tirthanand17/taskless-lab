@@ -1,60 +1,46 @@
 {
   "episode_id": "pilot_004",
-  "status": "youtube_private_finalized",
   "channel": {
     "name": "FlowMinute Lab",
+    "handle": "@FlowMinuteLab",
     "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
   },
   "video": {
     "video_id": "7hZCljQbaX8",
-    "url": "https://youtube.com/shorts/7hZCljQbaX8",
+    "youtube_url": "https://youtube.com/shorts/7hZCljQbaX8",
     "title": "03/08/2026 Can Mean TWO Different Dates #excel #powerquery #shorts",
     "visibility": "private",
     "duration_seconds": 33,
-    "youtube_checks": "complete_no_issues",
-    "playback_qa": {
-      "passed": true,
-      "timeline_observed_seconds": 5,
-      "audio_enabled": true
-    }
+    "source_render": {
+      "github_actions_run_id": 36995728727,
+      "artifact_id": 11221532040,
+      "artifact_name": "flowminute-motion-v4"
+    },
+    "qa": {
+      "github_render_qa": true,
+      "youtube_playback_qa": true,
+      "timeline_advanced_to_seconds": 5,
+      "audio_enabled": true,
+      "youtube_hd_complete": true,
+      "youtube_checks": "no_issues"
+    },
+    "captions": {
+      "burned_in": true,
+      "srt_asset": "captions-v4.srt",
+      "external_track_attached": false,
+      "note": "External SRT picker was unreliable; release is not blocked because clean burned-in captions are present."
+    },
+    "style": "realistic spreadsheet + Power Query task demonstration with selective overlays"
   },
-  "source_render": {
-    "github_actions_run_id": 36995728727,
-    "artifact_id": 11221532040,
-    "artifact_name": "flowminute-motion-v4"
-  },
-  "visual_standard": {
-    "version": "4.0",
-    "mode": "realistic software demonstration with selective motion cues",
-    "realistic_spreadsheet_ui": true,
-    "realistic_power_query_ui": true,
-    "cursor_guided_actions": true,
-    "before_after_proof": true,
-    "verification_step": true,
-    "captions": "burned-in one-line lower safe area"
-  },
-  "subtitles": {
-    "timed_srt_asset": "captions-v4.srt",
-    "youtube_external_track_attached": false,
-    "reason": "YouTube native file picker did not open reliably from Studio; burned-in captions remain present and automatic captions can still be generated."
-  },
-  "release": {
+  "release_plan": {
     "target_local_time": "2026-10-05T18:00:00+05:30",
-    "method": "exact-time publication automation from Private to Public"
-  },
-  "storage": {
-    "github_source_of_truth": true,
-    "desktop_root_project_files": false,
-    "local_bridge": "Desktop/youtube con only; clean after upload",
-    "youtube_con_items_after_cleanup": 0
-  },
-  "browser_cleanup": {
-    "unnecessary_youtube_tabs_closed": true,
-    "remaining_youtube_studio_tabs": 0
+    "target_utc": "2026-10-05T12:30:00Z",
+    "method": "exact ChatGPT automation publishes Private -> Public and verifies receipt",
+    "reason": "YouTube schedule-time widget was unreliable and vidIQ direct scheduling requires credits."
   },
   "privacy": {
     "personal_data_used": false,
     "phone_verification_used": false
   },
-  "updated_on": "2026-10-02"
+  "status": "private_qa_passed_waiting_release"
 }
