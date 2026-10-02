@@ -2,7 +2,7 @@
 
 ## Public brand
 
-**TaskLess Lab**
+**FlowMinute Lab**
 
 Tagline: **Less repetitive work. More useful output.**
 
