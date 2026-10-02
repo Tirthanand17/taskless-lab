@@ -19,38 +19,38 @@
   "duration_seconds": 44.12,
   "scene_durations": [
     3.8,
-    8.0,
+    8,
     8.5,
-    8.0,
+    8,
     8.5,
     7.32
   ],
   "voice": "Liam - Energetic, Social Media Creator",
   "captions": [
     {
-      "start": 0.0,
+      "start": 0,
       "end": 3.3,
       "text": "Stop cleaning messy CSV files cell by cell."
     },
     {
       "start": 3.3,
       "end": 6.1,
-      "text": "Here\u2019s a safer AI workflow."
+      "text": "Here’s a safer AI workflow."
     },
     {
       "start": 6.1,
-      "end": 12.0,
+      "end": 12,
       "text": "Upload a non-sensitive CSV and give precise cleanup rules."
     },
     {
-      "start": 12.0,
+      "start": 12,
       "end": 18.1,
       "text": "Normalize headers, trim spaces, standardize email casing."
     },
     {
       "start": 18.1,
       "end": 21.8,
-      "text": "Flag duplicates \u2014 don\u2019t delete them yet."
+      "text": "Flag duplicates — don’t delete them yet."
     },
     {
       "start": 21.8,
@@ -75,8 +75,18 @@
     {
       "start": 40.8,
       "end": 44.12,
-      "text": "Faster than manual cleanup \u2014 and easier to repeat."
+      "text": "Faster than manual cleanup — and easier to repeat."
     }
   ],
-  "privacy": "brand-only; no personal data"
+  "privacy": "brand-only; no personal data",
+  "tags": [
+    "csv cleanup",
+    "data cleaning",
+    "excel tips",
+    "chatgpt workflow",
+    "ai automation",
+    "spreadsheet automation"
+  ],
+  "language": "en",
+  "short_cover": "assets/pilot_001/scene_01.png"
 }
