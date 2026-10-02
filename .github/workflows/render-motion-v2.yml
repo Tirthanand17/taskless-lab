@@ -4,7 +4,9 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "motion-v2/**"
+      - "motion-v2/src/CsvScannerShort.tsx"
+      - "motion-v2/script.txt"
+      - "motion-v2/generate_voice.py"
       - "content/episodes/pilot_002.json"
 
 jobs:
