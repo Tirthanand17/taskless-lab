@@ -1,0 +1,45 @@
+{
+  "episode_id": "pilot_003",
+  "status": "rendered_qa_passed",
+  "github_actions": {
+    "run_id": 36978529436,
+    "artifact_id": 11214366790,
+    "artifact_name": "flowminute-motion-v3",
+    "artifact_size_bytes": 5508830
+  },
+  "media": {
+    "file": "leading-zero-v3.mp4",
+    "duration_seconds": 29.013,
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "audio_present": true
+  },
+  "visual_qa": {
+    "sampled_seconds": [
+      1,
+      4,
+      7,
+      10,
+      13,
+      16,
+      19,
+      22,
+      25,
+      28
+    ],
+    "continuous_motion_story": true,
+    "giant_center_subtitles": false,
+    "subtitle_style": "one-line lower safe area",
+    "leading_zero_transformation_visible": true,
+    "long_identifier_warning_visible": true,
+    "safer_import_pipeline_visible": true,
+    "preserved_id_payoff_visible": true,
+    "final_identity_message_visible": true
+  },
+  "publication": {
+    "status": "approved_for_private_youtube_qa",
+    "custom_thumbnail_requires_personal_verification": false
+  },
+  "storage_rule": "GitHub is source of truth; PC may only use Desktop/youtube con as a temporary upload bridge and must be emptied after upload."
+}
