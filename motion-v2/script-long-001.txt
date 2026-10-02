@@ -1,0 +1,27 @@
+If Excel keeps deleting the first zero from your IDs, product codes, postal codes, or phone-like values, the CSV file may not actually be broken. Excel is often changing how it interprets the data when you open it.
+
+Here is the key idea: an identifier can contain only digits and still not be a number. You add numbers. You average numbers. But you do not add customer IDs. If zero zero one two three identifies one record, then one two three is a different value.
+
+Let’s start with the safest method for CSV files.
+
+Instead of double-clicking the CSV, open Excel first. Go to Data, then From Text or CSV, and choose the file. In the preview, choose Transform Data. That opens Power Query.
+
+Find the column that contains the IDs. Select the column, open Data Type, and choose Text. If Excel asks whether to replace the current type, replace it. Now the values are treated as text, so leading zeros are part of the value instead of disposable number formatting.
+
+Then choose Close and Load. Your worksheet should now contain zero zero one two three exactly as it appeared in the source.
+
+This matters even more with very long identifiers. Excel documents that numeric values longer than fifteen digits can lose precision. So if a sixteen- or twenty-digit code is treated as a number, adding a visual format later may not restore the original digits. If that has already happened, go back to the original source and import it again as text.
+
+There is also a newer setting in current Microsoft 365 and Excel 2024 versions. In Excel options, under Data, look for Automatic Data Conversions. You can disable the option that removes leading zeros and converts numerical text into a number. If you do not see that setting, use the Power Query import method instead.
+
+Now, two common traps.
+
+First, a custom number format like five zeros can make one two three display as zero zero one two three inside a workbook. That can be useful for presentation, but formatting is not the same thing as preserving the underlying text value. If you export to CSV or send the data to another system, verify what was actually written.
+
+Second, the TEXT formula can rebuild a fixed-width code, for example TEXT of A2 with five zeros. That is useful only when you know the required width and the original numeric digits are still intact. It cannot reconstruct digits that were already lost through precision conversion.
+
+Before uploading a CSV back into a database, CRM, payroll system, or website, do one final validation. Open the CSV in a plain text editor and inspect a few IDs directly. Confirm the leading zeros are physically present in the file, not just displayed by Excel.
+
+So the reliable workflow is simple: import instead of blindly opening, define identifier columns as Text, validate the result, then export.
+
+Digits do not automatically mean a value should be numeric. For data cleaning, the correct data type is part of the data.
