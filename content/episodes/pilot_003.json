@@ -1,0 +1,66 @@
+{
+  "id": "pilot_003",
+  "title": "Excel Just Changed Your ID 😬 #excel #csv #datacleaning",
+  "description": "Excel can silently remove leading zeros or reinterpret long numeric-looking identifiers. This animated workflow shows a safer CSV import path: Data → From Text/CSV → Transform Data → set identifier columns to Text → Load. #excel #csv #datacleaning #productivity",
+  "tags": [
+    "excel leading zeros",
+    "csv import",
+    "excel tips",
+    "data cleaning",
+    "product codes",
+    "data integrity",
+    "power query",
+    "excel text format"
+  ],
+  "language": "en",
+  "duration_seconds": 29,
+  "voice": "en-US-AvaNeural",
+  "visual_style": "3D identifier tunnel and protected import pipeline",
+  "privacy": "brand-only; no personal data",
+  "sources": [
+    "https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers",
+    "https://support.microsoft.com/en-us/excel/data-import-and-analysis-options-in-excel"
+  ],
+  "captions": [
+    {
+      "start": 0,
+      "end": 3.2,
+      "text": "Excel can change an ID before you touch the file."
+    },
+    {
+      "start": 3.2,
+      "end": 7.2,
+      "text": "00123 can silently become 123."
+    },
+    {
+      "start": 7.2,
+      "end": 11,
+      "text": "Long identifiers can change too."
+    },
+    {
+      "start": 11,
+      "end": 15.1,
+      "text": "IDs are not numbers just because they use digits."
+    },
+    {
+      "start": 15.1,
+      "end": 19.6,
+      "text": "Import with Data → From Text/CSV."
+    },
+    {
+      "start": 19.6,
+      "end": 23.6,
+      "text": "Transform Data → set the ID column to Text."
+    },
+    {
+      "start": 23.6,
+      "end": 26.5,
+      "text": "Then load with the original values preserved."
+    },
+    {
+      "start": 26.5,
+      "end": 29,
+      "text": "Sometimes digits are identity, not math."
+    }
+  ]
+}
