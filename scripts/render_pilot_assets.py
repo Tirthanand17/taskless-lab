@@ -42,7 +42,7 @@ def base(kicker,title):
 
 def footer(d):
     d.line((60,H-105,W-60,H-105),fill="#29425f",width=3)
-    d.text((60,H-78),"TASKLESS LAB  •  AI + AUTOMATION",font=F(25,True),fill=MUTED)
+    d.text((60,H-78),"FLOWMINUTE LAB  •  AI + AUTOMATION",font=F(25,True),fill=MUTED)
 
 def table(d,x,y,headers,rows,widths):
     h=78; xx=x
@@ -118,14 +118,14 @@ def s6(d,y):
     d.text((540,y+270),"VERIFY THE RESULT.",anchor="mm",font=F(60,True),fill=GREEN)
     d.text((540,y+405),"Good automation explains what changed.",anchor="mm",font=F(32,True),fill=TEXT)
     d.text((540,y+475),"Save this workflow for the next messy CSV.",anchor="mm",font=F(29),fill=MUTED)
-    pill(d,(280,y+555,800,y+625),"TASKLESS LAB","#173b49",CYAN)
+    pill(d,(280,y+555,800,y+625),"FLOWMINUTE LAB","#173b49",CYAN)
 
 for args in [(1,"HOOK","Stop cleaning CSVs cell by cell.",s1),(2,"PROBLEM","A CSV can look fine and still be messy.",s2),(3,"WORKFLOW","Give AI precise cleanup rules.",s3),(4,"VERIFY","Make the cleanup measurable.",s4),(5,"REVIEW","Never trust silent changes.",s5),(6,"PAYOFF","Faster cleanup. Safer output.",s6)]:
     save_scene(*args)
 
 def thumb(path,headline,accent,badge):
     im=Image.new("RGB",(1280,720),BG); d=ImageDraw.Draw(im)
-    pill(d,(60,48,350,108),"TASKLESS LAB",CARD2,CYAN)
+    pill(d,(60,48,350,108),"FLOWMINUTE LAB",CARD2,CYAN)
     y=155
     for ln in wrap(d,headline,F(72,True),700):
         d.text((60,y),ln,font=F(72,True),fill=TEXT); y+=82
