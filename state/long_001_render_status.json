@@ -1,0 +1,60 @@
+{
+  "episode_id": "long_001",
+  "status": "rendered_qa_passed",
+  "github_actions": {
+    "run_id": 36978630620,
+    "artifact_id": 11214154345,
+    "artifact_name": "flowminute-long-001",
+    "artifact_size_bytes": 17817520
+  },
+  "media": {
+    "file": "leading-zeros-long-001.mp4",
+    "duration_seconds": 215.019,
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "audio_present": true,
+    "narration_ends_approx_seconds": 204.96,
+    "end_screen_silence_seconds": 10.06
+  },
+  "visual_qa": {
+    "sampled_seconds": [
+      5,
+      35,
+      65,
+      95,
+      110,
+      120,
+      125,
+      130,
+      145,
+      155,
+      185,
+      208
+    ],
+    "chapters_passed": 7,
+    "brief_transition_near_seconds": 125,
+    "transition_duration_assessment": "about one second; acceptable",
+    "opening_problem_visual": true,
+    "identifier_vs_quantity_visual": true,
+    "safer_csv_import_visual": true,
+    "long_identifier_precision_visual": true,
+    "automatic_data_conversions_visual": true,
+    "common_traps_visual": true,
+    "final_validation_checklist": true
+  },
+  "packaging": {
+    "title": "Excel Keeps Removing Leading Zeros? Fix CSV Imports Properly",
+    "category": "Education",
+    "language": "English",
+    "audience": "not_made_for_kids",
+    "ai_disclosure": true,
+    "custom_thumbnail": "not used; personal verification not authorized",
+    "fallback_thumbnail_strategy": "select strongest in-video frame"
+  },
+  "release_plan": {
+    "private_youtube_qa_first": true,
+    "proposed_schedule_local": "2026-10-04T18:00:00+05:30"
+  },
+  "storage_rule": "GitHub is source of truth; Desktop/youtube con is temporary upload bridge only and must be emptied after use."
+}
