@@ -1,0 +1,13 @@
+Stop. This date can mean two different days.
+
+Zero-three slash zero-eight slash twenty-twenty-six is March eighth in U.S. month-day order, but third August in day-month order.
+
+When a CSV is imported with the wrong locale, the date can be interpreted incorrectly.
+
+Don't fix that by only changing the cell format.
+
+In Power Query, right-click the date column, choose Change Type, then Using Locale. Set the type to Date and choose the locale used by the source file.
+
+Then verify the day and month.
+
+Formatting changes appearance. Locale changes interpretation.
