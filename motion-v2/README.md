@@ -16,3 +16,5 @@ GitHub-only rendering pipeline for FlowMinute Lab.
 ## Local-storage rule
 
 This pipeline must not require a Desktop clone or render folder. GitHub Actions is the renderer and GitHub is the artifact source of truth.
+
+Render generation is performed by the repository workflow; no Desktop working copy is required.
