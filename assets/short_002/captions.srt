@@ -1,0 +1,35 @@
+1
+00:00:00,000 --> 00:00:05,578
+Excel's Remove Duplicates button is useful, but the wrong key can delete real records.
+
+2
+00:00:05,578 --> 00:00:07,306
+Look at these two rows.
+
+3
+00:00:07,306 --> 00:00:12,836
+Both customers are named Alex Lee, but they have different email addresses and different customer IDs.
+
+4
+00:00:12,836 --> 00:00:18,174
+If you remove duplicates using only the Name column, one real customer can disappear.
+
+5
+00:00:18,174 --> 00:00:20,765
+Instead, decide what should actually be unique.
+
+6
+00:00:20,765 --> 00:00:25,576
+For customer data, that might be a customer ID or another verified key.
+
+7
+00:00:25,576 --> 00:00:30,938
+Before deleting anything, flag the duplicates first and review the affected rows.
+
+8
+00:00:30,938 --> 00:00:36,740
+The rule is simple: deduplicate by a trusted key, not by a convenient-looking column.
+
+9
+00:00:36,740 --> 00:00:40,884
+That keeps cleanup fast without silently throwing away valid data.
