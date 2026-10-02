@@ -1,0 +1,51 @@
+1
+00:00:00,000 --> 00:00:06,706
+If the same Excel or CSV report arrives every week, stop treating the cleanup like a brand-new task.
+
+2
+00:00:06,706 --> 00:00:09,924
+In Power Query, build the transformation once.
+
+3
+00:00:09,924 --> 00:00:16,820
+Remove unwanted rows, rename columns, set data types, and standardize the fields you actually understand.
+
+4
+00:00:16,820 --> 00:00:21,516
+When the next file arrives in the same structure, replace the source and refresh.
+
+5
+00:00:21,516 --> 00:00:25,206
+Power Query runs the same steps again in the same order.
+
+6
+00:00:25,206 --> 00:00:27,129
+The real advantage is consistency.
+
+7
+00:00:27,129 --> 00:00:32,512
+You are less likely to forget a step, and the transformation sequence stays visible.
+
+8
+00:00:32,512 --> 00:00:34,833
+After the refresh, validate the result.
+
+9
+00:00:34,833 --> 00:00:40,634
+Compare row counts, check missing values, and make sure the expected columns are still there.
+
+10
+00:00:40,634 --> 00:00:42,653
+A useful rule is simple.
+
+11
+00:00:42,653 --> 00:00:45,075
+One-time cleanup can stay in Excel.
+
+12
+00:00:45,075 --> 00:00:47,902
+Recurring structured cleanup belongs in Power Query.
+
+13
+00:00:47,902 --> 00:00:51,132
+More complex multi-file logic may belong in Python.
