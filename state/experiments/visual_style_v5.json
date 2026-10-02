@@ -9,7 +9,9 @@
     "animated row elimination and survivor state",
     "brief camera push only at failure and verification",
     "wrong-vs-fixed split verification before memory rule",
-    "no standalone explanation card"
+    "no standalone explanation card",
+    "topic-specific Row Lock metaphor makes Table.Buffer visible without faking Power Query UI",
+    "raw public-view starts treated as exposure context after the 2026-08-24 counting change"
   ],
   "measure": [
     "engaged_views",
@@ -19,5 +21,6 @@
     "likes",
     "subscribers"
   ],
-  "decision_rule": "Do not overfit from raw starts or tiny samples; review once meaningful traffic and retention data exist."
+  "decision_rule": "Do not overfit from raw starts or tiny samples; review once meaningful traffic and retention data exist.",
+  "v6_candidate": "Excel X-Ray: reveal CHAR(160) hidden spaces that TRIM cannot remove"
 }
