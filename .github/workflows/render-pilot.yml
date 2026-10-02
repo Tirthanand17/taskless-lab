@@ -44,9 +44,12 @@ jobs:
       - name: Commit generated publish-ready assets
         shell: bash
         run: |
+          rm -rf assets/pilot_001/_render
           git config user.name "taskless-lab-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/pilot_001 content/episodes/pilot_001.json config/pilot_voice_url.txt
           git diff --cached --quiet && exit 0
           git commit -m "Render pilot 001 publish-ready assets"
-          git push
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
