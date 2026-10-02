@@ -1,0 +1,20 @@
+{
+  "episode_id": "long_001",
+  "status": "planned_pending_render_qa",
+  "proposed_schedule_local": "2026-10-04T18:00:00+05:30",
+  "schedule_type": "experiment_until_channel_has_viewer_online_history",
+  "title": "Excel Keeps Removing Leading Zeros? Fix CSV Imports Properly",
+  "role": "search-driven long-form tutorial for qualified watch hours",
+  "prerequisites": [
+    "latest Content Quality Gate is green",
+    "GitHub render succeeds",
+    "audio ends before video",
+    "all seven visual chapters pass frame QA",
+    "YouTube private playback and checks pass"
+  ],
+  "cross_link_after_publication": [
+    "attempt to attach Long 001 as V3 related video if available without personal verification",
+    "otherwise add Long 001 URL to V3 description"
+  ],
+  "personal_data_rule": "Do not use phone verification or any personal data without explicit permission."
+}
