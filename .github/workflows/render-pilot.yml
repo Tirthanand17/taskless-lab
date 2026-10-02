@@ -3,10 +3,6 @@ name: Render Pilot 001
 on:
   push:
     paths:
-      - "scripts/render_pilot_assets.py"
-      - "scripts/render_short.py"
-      - "scripts/generate_srt.py"
-      - "content/episodes/pilot_001.json"
       - "config/pilot_voice_url.txt"
   workflow_dispatch:
 
