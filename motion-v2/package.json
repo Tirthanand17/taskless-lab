@@ -8,7 +8,9 @@
     "render-v3": "remotion render src/index.ts LeadingZeroShort ../assets/v3/leading-zero-v3.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
     "still-v3": "remotion still src/index.ts LeadingZeroShort ../assets/v3/thumbnail-v3.png --frame=125",
     "render-long-001": "remotion render src/index.ts LeadingZerosLong ../assets/long-001/leading-zeros-long-001.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
-    "still-long-001": "remotion still src/index.ts LeadingZerosLong ../assets/long-001/thumbnail-long-001.png --frame=180"
+    "still-long-001": "remotion still src/index.ts LeadingZerosLong ../assets/long-001/thumbnail-long-001.png --frame=180",
+    "render-v4": "remotion render src/index.ts DateLocaleShort ../assets/v4/date-locale-v4.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still-v4": "remotion still src/index.ts DateLocaleShort ../assets/v4/thumbnail-v4.png --frame=112"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
