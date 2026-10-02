@@ -19,5 +19,36 @@
     "https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers",
     "https://support.microsoft.com/en-us/excel/data-import-and-analysis-options-in-excel",
     "https://support.microsoft.com/en-us/excel/format-numbers-as-text"
+  ],
+  "renderer": "manifest_v2",
+  "scenes": [
+    {
+      "title": "The problem",
+      "narration": "Excel can change numeric-looking identifiers when CSV data is opened and interpreted as numbers."
+    },
+    {
+      "title": "Identifier versus quantity",
+      "narration": "An identifier can contain only digits while still requiring text semantics because its digits represent identity, not magnitude."
+    },
+    {
+      "title": "Safer CSV import",
+      "narration": "Open Excel first, use Data then From Text or CSV, choose Transform Data, set identifier columns to Text, then Close and Load."
+    },
+    {
+      "title": "Long identifiers and precision",
+      "narration": "Numeric values longer than fifteen digits can lose precision, so damaged long identifiers should be re-imported from the original source as text."
+    },
+    {
+      "title": "Automatic Data Conversions",
+      "narration": "Current Microsoft 365 and Excel 2024 versions may provide Automatic Data Conversions settings that can disable leading-zero removal."
+    },
+    {
+      "title": "Common traps",
+      "narration": "Custom number formats change display, and TEXT formulas can rebuild known fixed-width codes only when the original digits still exist."
+    },
+    {
+      "title": "Verify before export",
+      "narration": "Inspect the exported CSV in a plain text editor to confirm leading zeros are physically present in the file before uploading it elsewhere."
+    }
   ]
 }
