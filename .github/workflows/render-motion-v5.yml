@@ -4,13 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "motion-v2/src/DuplicateLatestShort.tsx"
-      - "motion-v2/src/Root.tsx"
-      - "motion-v2/script-v5.txt"
-      - "motion-v2/generate_voice_cli.py"
-      - "motion-v2/generate_sfx.py"
-      - "motion-v2/package.json"
-      - "content/episodes/pilot_005.json"
+      - "state/render-triggers/v5.txt"
 
 jobs:
   render:
