@@ -1,0 +1,45 @@
+{
+  "experiment_id": "visual_style_v4_realistic_ui",
+  "episode_id": "pilot_004",
+  "hypothesis": "A realistic software-demonstration visual style with selective signaling will improve viewer choice-to-watch and completion behavior versus the earlier abstract motion-graphics style.",
+  "variants": {
+    "baseline": {
+      "episodes": [
+        "pilot_002",
+        "pilot_003"
+      ],
+      "style": "abstract/2.5D motion graphics"
+    },
+    "treatment": {
+      "episodes": [
+        "pilot_004"
+      ],
+      "style": "realistic spreadsheet and Power Query screen demonstration"
+    }
+  },
+  "minimum_evidence": {
+    "engaged_views_per_episode": 100,
+    "note": "Do not declare a visual-style winner below this sample. V2 currently has only 21 total views and no retention report yet."
+  },
+  "primary_metrics": [
+    "stayed_to_watch",
+    "average_view_duration",
+    "average_percentage_viewed",
+    "engaged_views"
+  ],
+  "secondary_metrics": [
+    "likes_per_engaged_view",
+    "comments_per_engaged_view",
+    "subscribers_from_video",
+    "replays_if_available"
+  ],
+  "qualitative_checks": [
+    "first meaningful proof shown in first second",
+    "main teaching visual never obscured by captions",
+    "cursor actions correspond to narration",
+    "every overlay has an instructional purpose",
+    "verification step is visible"
+  ],
+  "decision_rule": "After the minimum sample is reached, prefer the style that improves stayed-to-watch and average percentage viewed without reducing clarity or violating authenticity/monetization standards.",
+  "created_on": "2026-10-02"
+}
