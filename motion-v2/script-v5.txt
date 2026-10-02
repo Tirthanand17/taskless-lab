@@ -1,0 +1,15 @@
+This Power Query step can keep the wrong row.
+
+Here, customer C-one-zero-four has three updates. We sort Updated At newest first, so October first is on top.
+
+Then we remove duplicates by Customer ID.
+
+But Microsoft says Table.Distinct does not guarantee which duplicate will be preserved, because Power Query can optimize or fold the query.
+
+If you need predictable keep-first behavior, buffer the sorted table before removing duplicates.
+
+Add Table.Buffer around the Sorted Rows step, then apply Table.Distinct on Customer ID.
+
+Now verify the October first row is still there.
+
+Sorting shows an order. Buffering makes that order real before Distinct.
