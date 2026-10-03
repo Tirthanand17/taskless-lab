@@ -1,0 +1,11 @@
+These two IDs look identical, but XLOOKUP says not found.
+
+Excel is seeing one extra character. Length exposes it: seven here, eight here. Check the last character with UNICODE. It is one-sixty, a non-breaking space.
+
+TRIM alone does not remove it.
+
+Replace Unicode one-sixty with a normal space, then trim the result.
+
+Run XLOOKUP again. Match found.
+
+If identical text will not match, check length, then inspect the hidden Unicode.
