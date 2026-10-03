@@ -1,13 +1,14 @@
 {
   "episode_id": "pilot_006",
-  "status": "rendered_technical_pass_visual_qa_pending",
+  "status": "rendered_qa_passed_ready_for_private_upload",
   "render": {
     "workflow": "Render Motion V6",
-    "run_id": 37135097364,
-    "artifact_id": 11278186675,
+    "run_id": 37136760718,
+    "artifact_id": 11278449718,
     "artifact_name": "flowminute-motion-v6",
-    "artifact_sha256": "0a63aba4b70d647a099ea46e96d274615966328111985c72fe252c34eaf5e760",
-    "file": "hidden-space-xray-v6.mp4"
+    "artifact_sha256": "d6e851a936ede74784c73149e0deb8e3cecc46fa968fbd5fb5dda2854b4d50ba",
+    "file": "hidden-space-xray-v6.mp4",
+    "head_sha": "eec70b0ead126e7ce8458a4e632ce0ef5604f26c"
   },
   "technical_qa": {
     "width": 1080,
@@ -18,10 +19,30 @@
     "workflow_result": "success"
   },
   "visual_qa": {
-    "status": "pending",
-    "reason": "Desktop bridge timed out while loading extracted QA frames; do not upload until key-frame visual review passes."
+    "status": "passed",
+    "workflow_run_id": 37136856260,
+    "job_id": 111243033355,
+    "contact_sheet": "state/qa/v6-contact.jpg",
+    "contact_sheet_sha": "247b7aeee9fcb49927bf85e7d5891019791befbb",
+    "checks": [
+      "proof-first #N/A is visible immediately",
+      "realistic Excel worksheet remains the dominant teaching surface",
+      "x-ray aligns to the first AB-2048 source ID cell",
+      "NBSP U+00A0 / 160 explanatory callout is readable",
+      "LEN and UNICODE diagnosis is readable",
+      "TRIM-alone failure is visible",
+      "SUBSTITUTE plus TRIM fix is visible",
+      "XLOOKUP success verification is visible",
+      "final memory rule is clean and readable",
+      "captions remain one line below the worksheet"
+    ]
   },
-  "release_target": "2026-10-07T18:00:00+05:30",
+  "release": {
+    "target": "2026-10-07T18:00:00+05:30",
+    "automation_created": true,
+    "youtube_upload_status": "pending_private_upload",
+    "publish_gate": "Require this QA pass and a matching private YouTube video before release."
+  },
   "research_doc": "docs/VIDEO_V6_VISUAL_RESEARCH.md",
   "privacy": "brand-only; no personal data"
 }
