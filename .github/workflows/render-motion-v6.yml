@@ -1,0 +1,65 @@
+name: Render Motion V6
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/v6.txt"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install JS dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+
+      - name: Generate V6 narration
+        working-directory: motion-v2
+        run: python generate_voice_cli.py --script script-v6.txt --output voice-v6.mp3 --voice en-US-AvaNeural --rate "+2%"
+
+      - name: Generate original UI sound effects
+        working-directory: motion-v2
+        run: python generate_sfx.py
+
+      - name: Validate metadata
+        run: python scripts/validate_release.py content/episodes/pilot_006.json
+
+      - name: Generate captions
+        run: |
+          mkdir -p assets/v6
+          python scripts/generate_srt.py content/episodes/pilot_006.json assets/v6/captions-v6.srt
+
+      - name: Prepare Remotion browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+
+      - name: Render V6 realistic Short
+        working-directory: motion-v2
+        run: npm run render-v6
+
+      - name: Render V6 thumbnail
+        working-directory: motion-v2
+        run: npm run still-v6
+
+      - name: Upload V6 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-motion-v6
+          path: |
+            assets/v6/hidden-space-xray-v6.mp4
+            assets/v6/thumbnail-v6.png
+            assets/v6/captions-v6.srt
