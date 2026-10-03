@@ -5,6 +5,7 @@ import {LeadingZeroShort} from './LeadingZeroShort';
 import {LeadingZerosLong} from './LeadingZerosLong';
 import {DateLocaleShort} from './DateLocaleShort';
 import {DuplicateLatestShort} from './DuplicateLatestShort';
+import {HiddenSpaceXrayShort} from './HiddenSpaceXrayShort';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -33,7 +34,7 @@ export const RemotionRoot: React.FC = () => {
         width={1920}
         height={1080}
       />
-          <Composition
+      <Composition
         id="DateLocaleShort"
         component={DateLocaleShort}
         durationInFrames={960}
@@ -44,6 +45,14 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="DuplicateLatestShort"
         component={DuplicateLatestShort}
+        durationInFrames={900}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="HiddenSpaceXrayShort"
+        component={HiddenSpaceXrayShort}
         durationInFrames={900}
         fps={30}
         width={1080}
