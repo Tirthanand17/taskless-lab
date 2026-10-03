@@ -1,0 +1,27 @@
+{
+  "episode_id": "pilot_006",
+  "status": "rendered_technical_pass_visual_qa_pending",
+  "render": {
+    "workflow": "Render Motion V6",
+    "run_id": 37135097364,
+    "artifact_id": 11278186675,
+    "artifact_name": "flowminute-motion-v6",
+    "artifact_sha256": "0a63aba4b70d647a099ea46e96d274615966328111985c72fe252c34eaf5e760",
+    "file": "hidden-space-xray-v6.mp4"
+  },
+  "technical_qa": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "frames": 900,
+    "duration_seconds": 30.0,
+    "workflow_result": "success"
+  },
+  "visual_qa": {
+    "status": "pending",
+    "reason": "Desktop bridge timed out while loading extracted QA frames; do not upload until key-frame visual review passes."
+  },
+  "release_target": "2026-10-07T18:00:00+05:30",
+  "research_doc": "docs/VIDEO_V6_VISUAL_RESEARCH.md",
+  "privacy": "brand-only; no personal data"
+}
