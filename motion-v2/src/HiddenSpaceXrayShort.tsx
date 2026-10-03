@@ -115,7 +115,7 @@ const XRayOverlay:React.FC=()=>{
   const scan=tween(f,[92,150],[0,1]);
   const reveal=tween(f,[118,145],[0,1]);
   return <div style={{
-    position:'absolute',left:160,top:392,width:260,height:74,zIndex:70,
+    position:'absolute',left:0,top:298,width:260,height:68,zIndex:70,
     opacity,fontFamily:'Segoe UI, Arial',pointerEvents:'none'
   }}>
     <div style={{
@@ -128,7 +128,7 @@ const XRayOverlay:React.FC=()=>{
       background:'#6de3ff',boxShadow:'0 0 18px rgba(109,227,255,.9)'
     }}/>
     <div style={{
-      position:'absolute',left:178,top:-74,width:360,padding:'12px 14px',
+      position:'absolute',left:208,top:-80,width:360,padding:'12px 14px',
       borderRadius:12,background:'rgba(28,47,60,.97)',color:'#fff',
       opacity:reveal,transform:`translateY(${(1-reveal)*8}px)`,
       boxShadow:'0 14px 34px rgba(15,35,50,.25)'
