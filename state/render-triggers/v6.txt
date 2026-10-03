@@ -1,1 +1,1 @@
-2026-10-03 v6-001 hidden-space-xray
+2026-10-03 v6-002 xray-align-hidden-id
