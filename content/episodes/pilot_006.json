@@ -1,0 +1,37 @@
+{
+  "id": "pilot_006",
+  "title": "These IDs Look Identical. XLOOKUP Says NO MATCH #excel #xlookup #shorts",
+  "description": "Two Excel IDs can look identical and still fail XLOOKUP because imported text may contain an invisible non-breaking space. Microsoft documents that TRIM does not remove character 160 by itself. Diagnose the mismatch with LEN and UNICODE, replace UNICHAR(160), trim the result, and verify the lookup again. #excel #xlookup #datacleaning #shorts",
+  "tags": [
+    "xlookup no match",
+    "excel hidden spaces",
+    "excel char 160",
+    "non breaking space excel",
+    "excel trim not working",
+    "xlookup na error",
+    "excel data cleaning",
+    "unicode excel"
+  ],
+  "language": "en",
+  "duration_seconds": 30,
+  "voice": "en-US-AvaNeural",
+  "visual_style": "proof-first realistic Excel demo with a brief explanatory hidden-character x-ray sweep",
+  "privacy": "brand-only; no personal data",
+  "sources": [
+    "https://support.microsoft.com/en-us/excel/functions/trim-function",
+    "https://support.microsoft.com/en-us/excel/functions/unicode-function",
+    "https://support.microsoft.com/en-us/excel/functions/substitute-function",
+    "https://support.microsoft.com/en-us/excel/functions/unichar-function",
+    "https://support.microsoft.com/en-us/excel/functions/xlookup-function"
+  ],
+  "research_signal": "Microsoft documents that TRIM does not remove non-breaking space 160 by itself; hidden or unexpected characters can prevent exact lookup matches.",
+  "captions": [
+    {"start": 0, "end": 2.5, "text": "Same-looking IDs. XLOOKUP says #N/A."},
+    {"start": 2.5, "end": 6, "text": "One invisible character is different."},
+    {"start": 6, "end": 10, "text": "LEN: 7 vs 8. Last Unicode = 160."},
+    {"start": 10, "end": 14, "text": "TRIM alone cannot remove NBSP 160."},
+    {"start": 14, "end": 22, "text": "Replace character 160, then TRIM."},
+    {"start": 22, "end": 27, "text": "Run XLOOKUP again: match found."},
+    {"start": 27, "end": 30, "text": "Looks equal? Check LEN, then Unicode."}
+  ]
+}
