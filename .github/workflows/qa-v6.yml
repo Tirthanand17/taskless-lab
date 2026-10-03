@@ -1,0 +1,95 @@
+name: QA V6 Contact Sheet
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/v6-qa.txt"
+
+permissions:
+  contents: write
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          cd motion-v2
+          npm install --no-audit --no-fund
+          cd ..
+          python -m pip install edge-tts pillow
+
+      - name: Generate runtime assets
+        working-directory: motion-v2
+        run: |
+          python generate_voice_cli.py --script script-v6.txt --output voice-v6.mp3 --voice en-US-AvaNeural --rate "+2%"
+          python generate_sfx.py
+          npx remotion browser ensure
+
+      - name: Render representative frames
+        working-directory: motion-v2
+        run: |
+          mkdir -p ../tmp/v6qa
+          npx remotion still src/index.ts HiddenSpaceXrayShort ../tmp/v6qa/f024.png --frame=24
+          npx remotion still src/index.ts HiddenSpaceXrayShort ../tmp/v6qa/f114.png --frame=114
+          npx remotion still src/index.ts HiddenSpaceXrayShort ../tmp/v6qa/f225.png --frame=225
+          npx remotion still src/index.ts HiddenSpaceXrayShort ../tmp/v6qa/f360.png --frame=360
+          npx remotion still src/index.ts HiddenSpaceXrayShort ../tmp/v6qa/f540.png --frame=540
+          npx remotion still src/index.ts HiddenSpaceXrayShort ../tmp/v6qa/f720.png --frame=720
+          npx remotion still src/index.ts HiddenSpaceXrayShort ../tmp/v6qa/f855.png --frame=855
+
+      - name: Build contact sheet
+        run: |
+          mkdir -p state/qa
+          python - <<'PY'
+          from PIL import Image, ImageDraw
+          from pathlib import Path
+          items=[
+            ("0.8s","tmp/v6qa/f024.png"),
+            ("3.8s","tmp/v6qa/f114.png"),
+            ("7.5s","tmp/v6qa/f225.png"),
+            ("12.0s","tmp/v6qa/f360.png"),
+            ("18.0s","tmp/v6qa/f540.png"),
+            ("24.0s","tmp/v6qa/f720.png"),
+            ("28.5s","tmp/v6qa/f855.png"),
+          ]
+          cards=[]
+          for label,path in items:
+              im=Image.open(path).convert("RGB")
+              im.thumbnail((270,480))
+              card=Image.new("RGB",(270,520),"white")
+              x=(270-im.width)//2
+              card.paste(im,(x,40))
+              d=ImageDraw.Draw(card)
+              d.rectangle((0,0,270,40),fill="black")
+              d.text((10,12),label,fill="white")
+              cards.append(card)
+          while len(cards)<8:
+              cards.append(Image.new("RGB",(270,520),(240,240,240)))
+          sheet=Image.new("RGB",(1080,1040),"white")
+          for i,card in enumerate(cards):
+              sheet.paste(card,((i%4)*270,(i//4)*520))
+          sheet.save("state/qa/v6-contact.jpg",quality=86,optimize=True)
+          PY
+
+      - name: Commit QA contact sheet
+        run: |
+          git config user.name "flowminute-lab-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state/qa/v6-contact.jpg
+          git diff --cached --quiet && exit 0
+          git commit -m "qa: add V6 visual contact sheet"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
