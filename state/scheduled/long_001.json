@@ -9,7 +9,7 @@
     "video_id": "QQAABBkmR9g",
     "youtube_url": "https://youtu.be/QQAABBkmR9g",
     "title": "Excel Keeps Removing Leading Zeros? Fix CSV Imports Properly",
-    "visibility": "private",
+    "visibility": "public",
     "duration_seconds": 216,
     "source_render": {
       "github_actions_run_id": 36978630620,
@@ -54,7 +54,13 @@
         185,
         210
       ],
-      "chapter_transition_checked": true
+      "chapter_transition_checked": true,
+      "youtube_public_verification": {
+        "studio_visibility": "public",
+        "all_changes_saved": true,
+        "unauthenticated_oembed_status": 200,
+        "verified_title": "Excel Keeps Removing Leading Zeros? Fix CSV Imports Properly"
+      }
     },
     "thumbnail": {
       "custom_asset": "thumbnail-long-001.png",
@@ -64,10 +70,13 @@
     }
   },
   "release": {
-    "method": "exact ChatGPT release task because YouTube schedule time widget would not persist 18:00 and vidIQ update endpoint has zero credits",
+    "method": "manual recovery via authorized YouTube Studio after the exact 18:00 ChatGPT release task ran but the video remained private",
     "release_local": "2026-10-04T18:00:00+05:30",
     "timezone": "Asia/Calcutta",
-    "current_video_state": "private_until_release"
+    "current_video_state": "public_verified",
+    "recovery_local": "2026-10-04T18:32:00+05:30",
+    "automation_run_observed_local": "2026-10-04T18:01:32+05:30",
+    "automation_result": "publish_not_applied; recovered manually"
   },
   "privacy": {
     "personal_data_in_public_assets": false,
