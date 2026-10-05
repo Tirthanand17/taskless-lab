@@ -1,0 +1,35 @@
+{
+  "episode_id": "long_002",
+  "status": "planned_for_build",
+  "cadence_slot": "daily_video",
+  "target_local": "2026-10-06T16:00:00+05:30",
+  "priority": "high",
+  "concept": "Three Invisible Excel Problems That Break XLOOKUP & Power Query",
+  "quality_gate": {
+    "proof_first": true,
+    "realistic_ui_dominant": true,
+    "purposeful_animation": true,
+    "narration_clarity": "step-by-step",
+    "before_after_verification": true,
+    "no_template_slideshow": true,
+    "final_visual_qa_required": true,
+    "youtube_checks_required": true
+  },
+  "build_notes": {
+    "reuse_existing_research": [
+      "pilot_004 locale/date lesson",
+      "pilot_005 Table.Distinct/Table.Buffer lesson",
+      "pilot_006 NBSP X-ray lesson"
+    ],
+    "create_new_long_form_story": true,
+    "do_not_stitch_shorts_together": true,
+    "add_context_and_diagnostics": true,
+    "thumbnail_candidate_frame": true
+  },
+  "privacy": {
+    "personal_data": false,
+    "personal_drive_files": false,
+    "phone_verification": false
+  },
+  "source_of_truth": "GitHub"
+}
