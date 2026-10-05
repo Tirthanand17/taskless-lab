@@ -41,14 +41,15 @@
     }
   },
   "release_plan": {
-    "target_local_time": "2026-10-06T18:00:00+05:30",
-    "target_utc": "2026-10-06T12:30:00Z",
-    "status": "private_waiting_release",
+    "target_local_time": "2026-10-06T11:00:00+05:30",
+    "target_utc": "2026-10-06T05:30:00Z",
+    "status": "private_waiting_morning_short_release",
     "post_publish_actions": [
       "verify public visibility",
       "verify playable",
       "record GitHub publication receipt"
-    ]
+    ],
+    "cadence_slot": "morning_short"
   },
   "research_doc": "docs/VIDEO_V5_VISUAL_RESEARCH.md",
   "privacy": {
