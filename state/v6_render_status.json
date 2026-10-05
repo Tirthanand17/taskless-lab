@@ -15,7 +15,7 @@
     "height": 1920,
     "fps": 30,
     "frames": 900,
-    "duration_seconds": 30.0,
+    "duration_seconds": 30,
     "workflow_result": "success"
   },
   "visual_qa": {
@@ -38,10 +38,11 @@
     ]
   },
   "release": {
-    "target": "2026-10-07T18:00:00+05:30",
+    "target": "2026-10-06T20:30:00+05:30",
     "automation_created": true,
     "youtube_upload_status": "pending_private_upload",
-    "publish_gate": "Require this QA pass and a matching private YouTube video before release."
+    "publish_gate": "Require QA pass and a matching private YouTube upload before the 20:30 evening slot.",
+    "cadence_slot": "evening_short"
   },
   "research_doc": "docs/VIDEO_V6_VISUAL_RESEARCH.md",
   "privacy": "brand-only; no personal data"
