@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "channel": {
+    "name": "FlowMinute Lab",
+    "handle": "@FlowMinuteLab",
+    "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
+  },
+  "timezone": "Asia/Calcutta",
+  "cadence": {
+    "minimum_per_day": {
+      "shorts": 2,
+      "long_form": 1
+    },
+    "slots": [
+      {
+        "type": "short",
+        "label": "morning_short",
+        "publish_local": "11:00"
+      },
+      {
+        "type": "long_form",
+        "label": "daily_video",
+        "publish_local": "16:00"
+      },
+      {
+        "type": "short",
+        "label": "evening_short",
+        "publish_local": "20:30"
+      }
+    ],
+    "rationale": "Space formats across the day; refine with YouTube Audience analytics and retention rather than chasing a fixed magic time."
+  },
+  "content_buffer": {
+    "target_next_day_ready": {
+      "shorts": 2,
+      "long_form": 1
+    },
+    "source_of_truth": "GitHub",
+    "duplicate_guard": true
+  },
+  "quality": {
+    "shorts": {
+      "hook_seconds": "1-2",
+      "target_structure": [
+        "problem",
+        "proof",
+        "why",
+        "fix",
+        "verify",
+        "memory_rule"
+      ],
+      "realistic_software_ui": true,
+      "visible_cursor_when_relevant": true,
+      "concise_lower_captions": true,
+      "purposeful_motion_only": true,
+      "conceptual_overlay_max_seconds": 3,
+      "banned": [
+        "slideshow/template feel",
+        "fake software UI",
+        "giant centered subtitles",
+        "decorative filler animation"
+      ]
+    },
+    "long_form": {
+      "hook_seconds": "5-10",
+      "realistic_demonstration": true,
+      "narration": "clear, concise, step-by-step",
+      "before_after_proof": true,
+      "verification_step": true,
+      "purposeful_zooms_and_motion": true,
+      "banned": [
+        "slideshow-only delivery",
+        "repetitive template scenes",
+        "fake software UI",
+        "oversized captions",
+        "filler motion"
+      ]
+    }
+  },
+  "analytics_feedback": {
+    "prioritize": [
+      "audience retention",
+      "average percentage viewed for Shorts",
+      "average view duration for long-form",
+      "engaged views",
+      "returning viewers",
+      "topic/packaging performance"
+    ],
+    "adapt_schedule_from": "YouTube Analytics > Audience > When your viewers are on YouTube",
+    "review_frequency": "daily"
+  },
+  "safety": {
+    "personal_data": false,
+    "personal_drive_files": false,
+    "phone_verification": false,
+    "personal_phone_number": false
+  }
+}
