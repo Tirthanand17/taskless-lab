@@ -1,0 +1,76 @@
+{
+  "id": "long_002",
+  "title": "3 Invisible Excel Problems That Break XLOOKUP & Power Query",
+  "description": "Your Excel data can look perfectly clean and still fail. This tutorial demonstrates three invisible problems that cause real lookup and Power Query errors: nonbreaking spaces that TRIM alone does not remove, ambiguous date parsing caused by locale/culture, and Remove Duplicates preserving an unexpected row after sorting. You’ll see each failure happen in a realistic worksheet or Power Query editor, diagnose the cause, apply the fix, and verify the result.\n\n#excel #powerquery #xlookup #datacleaning #automation",
+  "format": "long",
+  "target_duration_seconds": 360,
+  "fps": 24,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "voice": "en-US-ChristopherNeural",
+  "category": "Education",
+  "language": "en",
+  "audience": "not_made_for_kids",
+  "paid_promotion": false,
+  "ai_disclosure": true,
+  "sources": [
+    "https://support.microsoft.com/en-us/excel/functions/trim-function",
+    "https://learn.microsoft.com/en-us/powerquery-m/how-culture-affects-text-formatting",
+    "https://learn.microsoft.com/en-us/powerquery-m/datetime-fromtext",
+    "https://learn.microsoft.com/en-us/powerquery-m/table-distinct"
+  ],
+  "visual_strategy": {
+    "realistic_ui_share": "70-85%",
+    "animation_share": "15-30%",
+    "rules": [
+      "real Excel/Power Query UI remains dominant",
+      "purposeful animation only when explaining invisible state",
+      "proof-first cold open",
+      "visible cursor and click targets when teaching steps",
+      "small lower captions; no giant centered subtitle wall",
+      "before/after verification for every fix",
+      "include one thumbnail-candidate frame inside the video because custom thumbnail may be unavailable"
+    ],
+    "signature_moments": [
+      "x-ray sweep reveals U+00A0 hidden space",
+      "calendar morph shows one date string becoming two different dates under different cultures",
+      "row-lock buffer animation explains why duplicate preservation becomes predictable"
+    ]
+  },
+  "scenes": [
+    {
+      "title": "Cold open — looks clean, still broken",
+      "narration": "Three datasets look normal. One lookup fails, one date changes meaning, and one duplicate cleanup keeps the wrong record. The problem is not what you can see."
+    },
+    {
+      "title": "Bug 1 — hidden nonbreaking space",
+      "narration": "TRIM removes normal ASCII spaces, but Microsoft documents that it does not remove the nonbreaking space character with decimal value 160. Diagnose it with length and character-code checks, then replace CHAR(160) before trimming."
+    },
+    {
+      "title": "Fix 1 — clean and verify XLOOKUP",
+      "narration": "Use a replacement-plus-TRIM cleanup, rerun the lookup, and compare the cleaned identifier against the original so the fix is proven rather than assumed."
+    },
+    {
+      "title": "Bug 2 — dates depend on locale",
+      "narration": "Power Query culture controls how text dates are interpreted. The same slash-formatted text can produce different meanings under different regional settings."
+    },
+    {
+      "title": "Fix 2 — parse with an explicit culture or format",
+      "narration": "Set the intended regional culture or use an explicit parsing format, then verify the converted date against a known source value."
+    },
+    {
+      "title": "Bug 3 — Remove Duplicates keeps an unexpected row",
+      "narration": "Microsoft documents that Table.Distinct does not guarantee which duplicate will be preserved because query folding and optimization can change evaluation."
+    },
+    {
+      "title": "Fix 3 — buffer the sorted table before distinct",
+      "narration": "Sort by the business rule, buffer the table, then remove duplicates. Verify the survivor is the intended latest record."
+    },
+    {
+      "title": "Final checklist",
+      "narration": "When Excel data looks correct but behaves wrong, test invisible characters, culture, and evaluation order before blaming the formula."
+    }
+  ]
+}
