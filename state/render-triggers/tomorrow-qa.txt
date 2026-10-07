@@ -1,1 +1,1 @@
-final2 2026-10-07 qa tighter-mobile-layout
+freeze 2026-10-07 qa proof-first-safezone
