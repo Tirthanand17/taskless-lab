@@ -14,7 +14,9 @@
     "render-v5": "remotion render src/index.ts DuplicateLatestShort ../assets/v5/duplicate-latest-v5.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
     "still-v5": "remotion still src/index.ts DuplicateLatestShort ../assets/v5/thumbnail-v5.png --frame=250",
     "render-v6": "remotion render src/index.ts HiddenSpaceXrayShort ../assets/v6/hidden-space-xray-v6.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
-    "still-v6": "remotion still src/index.ts HiddenSpaceXrayShort ../assets/v6/thumbnail-v6.png --frame=125"
+    "still-v6": "remotion still src/index.ts HiddenSpaceXrayShort ../assets/v6/thumbnail-v6.png --frame=125",
+    "render-long-002": "remotion render src/index.ts InvisibleExcelLong ../assets/long-002/invisible-excel-long-002.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
+    "still-long-002": "remotion still src/index.ts InvisibleExcelLong ../assets/long-002/thumbnail-long-002.png --frame=180"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
