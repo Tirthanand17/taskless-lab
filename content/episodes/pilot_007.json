@@ -1,0 +1,28 @@
+{
+  "id": "pilot_007",
+  "title": "Excel Just Broke a 40-Year Rule #excel #shorts",
+  "description": "Excel Beta can now hold real lists and arrays inside a single cell instead of only one value or comma-separated text. This Short shows the core idea, why filtering/calculation changes, and why the feature is still preview-only. #excel #exceltips #microsoft365 #shorts",
+  "tags": [
+    "excel new feature",
+    "excel multiple values one cell",
+    "excel lists",
+    "excel arrays in cells",
+    "excel beta",
+    "excel tips",
+    "microsoft 365 excel",
+    "excel 2026"
+  ],
+  "language": "en",
+  "duration_seconds": 35,
+  "voice": "en-US-AvaNeural",
+  "visual_style": "premium realistic Excel Beta demo with 1-2 brief photorealistic cinematic workplace inserts; clean grid alignment; no fake UI",
+  "privacy": "brand-only; no personal data",
+  "sources": [
+    "https://techcommunity.microsoft.com/blog/microsoft365insiderblog/put-multiple-values-in-one-cell-with-lists-and-arrays-in-excel/4559395"
+  ],
+  "research_signal": "Fresh September 2026 preview with unusually strong early Microsoft/community attention and same-day coverage by major Excel creators.",
+  "hook": "Excel just broke one of its oldest rules.",
+  "CTA": "Full walkthrough on FlowMinute Lab.",
+  "source_script": "motion-v2/script-v7.txt",
+  "production_brief": "docs/VIDEO_2026-10-08_RESEARCH_AND_VISUAL_BRIEF.md"
+}
