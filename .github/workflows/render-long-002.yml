@@ -1,0 +1,66 @@
+name: Render Long 002
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "motion-v2/src/InvisibleExcelLong.tsx"
+      - "motion-v2/src/Root.tsx"
+      - "motion-v2/package.json"
+      - "motion-v2/script-long-002.txt"
+      - "motion-v2/generate_voice_cli.py"
+      - "content/episodes/long_002.json"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install JS dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+
+      - name: Generate long-form narration
+        working-directory: motion-v2
+        run: python generate_voice_cli.py --script script-long-002.txt --output voice-long-002.mp3 --voice en-US-ChristopherNeural --rate "+1%"
+
+      - name: Validate metadata
+        run: python scripts/validate_release.py content/episodes/long_002.json
+
+      - name: Prepare output
+        run: mkdir -p assets/long-002
+
+      - name: Prepare Remotion browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+
+      - name: Render long-form video
+        working-directory: motion-v2
+        run: npm run render-long-002
+
+      - name: Render long-form thumbnail
+        working-directory: motion-v2
+        run: npm run still-long-002
+
+      - name: Copy transcript
+        run: cp motion-v2/script-long-002.txt assets/long-002/transcript-long-002.txt
+
+      - name: Upload long-form artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-long-002
+          path: |
+            assets/long-002/invisible-excel-long-002.mp4
+            assets/long-002/thumbnail-long-002.png
+            assets/long-002/transcript-long-002.txt
