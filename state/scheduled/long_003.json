@@ -1,0 +1,14 @@
+{
+  "id": "long_003",
+  "status": "scheduled_verified",
+  "video_id": "BUhZhESshZ0",
+  "youtube_url": "https://youtu.be/BUhZhESshZ0",
+  "scheduled_release_local": "2026-10-08T16:00:00+05:30",
+  "studio_confirmation": "Video scheduled",
+  "youtube_checks": "complete_no_issues",
+  "render_run_id": 37643252548,
+  "artifact_id": 11493126896,
+  "artifact_name": "flowminute-long-003",
+  "visual_qa": "passed",
+  "no_duplicate_upload": true
+}
