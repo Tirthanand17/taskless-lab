@@ -1,0 +1,107 @@
+name: QA Tomorrow Pack
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/tomorrow-qa.txt"
+
+permissions:
+  contents: write
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          cd motion-v2
+          npm install --no-audit --no-fund
+          cd ..
+          python -m pip install edge-tts pillow
+
+      - name: Generate narration assets
+        working-directory: motion-v2
+        run: |
+          python generate_voice_cli.py --script script-v7.txt --output voice-v7.mp3 --voice en-US-AvaNeural --rate "+2%"
+          python generate_voice_cli.py --script script-v8.txt --output voice-v8.mp3 --voice en-US-AvaNeural --rate "+2%"
+          python generate_voice_cli.py --script script-long-003.txt --output voice-long-003.mp3 --voice en-US-ChristopherNeural --rate "+1%"
+          npx remotion browser ensure
+
+      - name: Render representative frames
+        working-directory: motion-v2
+        run: |
+          mkdir -p ../tmp/v7 ../tmp/v8 ../tmp/long003
+
+          npx remotion still src/index.ts MultiValueRuleShort ../tmp/v7/f030.png --frame=30
+          npx remotion still src/index.ts MultiValueRuleShort ../tmp/v7/f150.png --frame=150
+          npx remotion still src/index.ts MultiValueRuleShort ../tmp/v7/f360.png --frame=360
+          npx remotion still src/index.ts MultiValueRuleShort ../tmp/v7/f650.png --frame=650
+          npx remotion still src/index.ts MultiValueRuleShort ../tmp/v7/f940.png --frame=940
+
+          npx remotion still src/index.ts MultiValueWarningShort ../tmp/v8/f040.png --frame=40
+          npx remotion still src/index.ts MultiValueWarningShort ../tmp/v8/f180.png --frame=180
+          npx remotion still src/index.ts MultiValueWarningShort ../tmp/v8/f360.png --frame=360
+          npx remotion still src/index.ts MultiValueWarningShort ../tmp/v8/f650.png --frame=650
+          npx remotion still src/index.ts MultiValueWarningShort ../tmp/v8/f980.png --frame=980
+
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f120.png --frame=120
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f650.png --frame=650
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f1700.png --frame=1700
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f2800.png --frame=2800
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f3900.png --frame=3900
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f5000.png --frame=5000
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f6100.png --frame=6100
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f7000.png --frame=7000
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f7900.png --frame=7900
+          npx remotion still src/index.ts MultiValueCellsLong ../tmp/long003/f8500.png --frame=8500
+
+      - name: Build contact sheets
+        run: |
+          mkdir -p state/qa
+          python - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+
+          def make(glob,out,cols,thumb):
+              paths=sorted(Path('.').glob(glob))
+              cards=[]
+              for p in paths:
+                  im=Image.open(p).convert('RGB')
+                  im.thumbnail(thumb)
+                  card=Image.new('RGB',(thumb[0],thumb[1]+34),'white')
+                  card.paste(im,((thumb[0]-im.width)//2,34))
+                  d=ImageDraw.Draw(card)
+                  d.rectangle((0,0,thumb[0],34),fill='black')
+                  d.text((9,10),p.stem,fill='white')
+                  cards.append(card)
+              rows=(len(cards)+cols-1)//cols
+              sheet=Image.new('RGB',(cols*thumb[0],rows*(thumb[1]+34)),(238,240,242))
+              for i,c in enumerate(cards):
+                  sheet.paste(c,((i%cols)*thumb[0],(i//cols)*(thumb[1]+34)))
+              sheet.save(out,quality=88,optimize=True)
+
+          make('tmp/v7/*.png','state/qa/v7-contact.jpg',5,(216,384))
+          make('tmp/v8/*.png','state/qa/v8-contact.jpg',5,(216,384))
+          make('tmp/long003/*.png','state/qa/long003-contact.jpg',5,(320,180))
+          PY
+
+      - name: Commit contact sheets
+        run: |
+          git config user.name "flowminute-lab-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state/qa/v7-contact.jpg state/qa/v8-contact.jpg state/qa/long003-contact.jpg
+          git diff --cached --quiet && exit 0
+          git commit -m "qa: add tomorrow pack visual contact sheets"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
