@@ -1,0 +1,61 @@
+name: Render Long 003
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/long-003.txt"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+
+      - name: Generate narration
+        working-directory: motion-v2
+        run: python generate_voice_cli.py --script script-long-003.txt --output voice-long-003.mp3 --voice en-US-ChristopherNeural --rate "+1%"
+
+      - name: Validate release metadata
+        run: python scripts/validate_release.py content/episodes/long_003.json
+
+      - name: Prepare output
+        run: mkdir -p assets/long-003
+
+      - name: Prepare Remotion browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+
+      - name: Render long-form video
+        working-directory: motion-v2
+        run: npm run render-long-003
+
+      - name: Render thumbnail
+        working-directory: motion-v2
+        run: npm run still-long-003
+
+      - name: Copy transcript
+        run: cp motion-v2/script-long-003.txt assets/long-003/transcript-long-003.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-long-003
+          path: |
+            assets/long-003/multi-value-cells-long-003.mp4
+            assets/long-003/thumbnail-long-003.png
+            assets/long-003/transcript-long-003.txt
