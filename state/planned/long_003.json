@@ -1,7 +1,7 @@
 {
   "id": "long_003",
   "type": "long",
-  "status": "rendered_qa_passed_ready_for_upload",
+  "status": "rendered_visual_qa_passed_waiting_for_youtube_upload",
   "target_release_local": "2026-10-08T16:00:00+05:30",
   "title": "Excel Changed After 40 Years: Multiple Values in One Cell (What Works & What Breaks)",
   "episode": "content/episodes/long_003.json",
@@ -17,5 +17,10 @@
     "youtube_checks_clean",
     "scheduled_in_studio"
   ],
-  "notes": "Final refined title/UI spacing visually reviewed and accepted."
+  "notes": "Final refined title/UI spacing visually reviewed and accepted.",
+  "artifact_id": 11493126896,
+  "qa_run_id": 37644842269,
+  "qa_artifact_id": 11494356467,
+  "visual_qa": "passed",
+  "frozen": true
 }
