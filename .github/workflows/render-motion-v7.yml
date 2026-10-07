@@ -1,0 +1,60 @@
+name: Render Motion V7
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/v7.txt"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+
+      - name: Generate narration
+        working-directory: motion-v2
+        run: python generate_voice_cli.py --script script-v7.txt --output voice-v7.mp3 --voice en-US-AvaNeural --rate "+2%"
+
+      - name: Validate release metadata
+        run: python scripts/validate_release.py content/episodes/pilot_007.json
+
+      - name: Generate captions
+        run: |
+          mkdir -p assets/v7
+          python scripts/generate_srt.py content/episodes/pilot_007.json assets/v7/captions-v7.srt
+
+      - name: Prepare Remotion browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+
+      - name: Render V7
+        working-directory: motion-v2
+        run: npm run render-v7
+
+      - name: Render thumbnail
+        working-directory: motion-v2
+        run: npm run still-v7
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-motion-v7
+          path: |
+            assets/v7/multi-value-rule-v7.mp4
+            assets/v7/thumbnail-v7.png
+            assets/v7/captions-v7.srt
