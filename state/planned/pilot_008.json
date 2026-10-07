@@ -1,14 +1,14 @@
 {
   "id": "pilot_008",
   "type": "short",
-  "status": "rendered_visual_qa_passed_waiting_for_youtube_upload",
+  "status": "scheduled_verified",
   "target_release_local": "2026-10-08T20:30:00+05:30",
   "title": "Don't Use Excel's New Multi-Value Cells Yet #excel #shorts",
   "episode": "content/episodes/pilot_008.json",
   "render_workflow": "Render Motion V8",
   "expected_artifact": "flowminute-motion-v8",
   "video_file": "multi-value-warning-v8.mp4",
-  "youtube_video_id": null,
+  "youtube_video_id": "yIBf6j1IKxQ",
   "privacy_target": "scheduled",
   "quality_gate": [
     "final_render_success",
@@ -23,5 +23,21 @@
   "qa_run_id": 37644842269,
   "qa_artifact_id": 11494356467,
   "visual_qa": "passed",
-  "frozen": true
+  "frozen": true,
+  "youtube_url": "https://youtube.com/shorts/yIBf6j1IKxQ",
+  "studio_schedule": {
+    "date_local": "2026-10-08",
+    "timezone": "GMT+05:30",
+    "exact": true,
+    "confirmed_by_studio_success_dialog": true
+  },
+  "render": {
+    "workflow_run_id": 37644835831,
+    "artifact_id": 11494585950,
+    "artifact_name": "flowminute-motion-v8",
+    "video_file": "multi-value-warning-v8.mp4",
+    "status": "success"
+  },
+  "youtube_checks": "complete_no_issues",
+  "no_duplicate_upload": true
 }
