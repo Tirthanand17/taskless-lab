@@ -1,0 +1,55 @@
+{
+  "episode_id": "long_002",
+  "video_id": "or29E_yiHNA",
+  "youtube_url": "https://www.youtube.com/watch?v=or29E_yiHNA",
+  "title": "3 Invisible Excel Problems That Break XLOOKUP & Power Query",
+  "visibility": "public",
+  "published_date_local": "2026-10-07",
+  "channel": {
+    "name": "FlowMinute Lab",
+    "handle": "@FlowMinuteLab",
+    "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
+  },
+  "source_render": {
+    "workflow": "Render Long 002",
+    "run_id": 37631795801,
+    "artifact_id": 11487046778,
+    "artifact_name": "flowminute-long-002",
+    "video_file": "invisible-excel-long-002.mp4"
+  },
+  "qa": {
+    "render_workflow": "success",
+    "duration_seconds": 240,
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "audio_present": true,
+    "sampled_visual_seconds": [
+      5,
+      30,
+      60,
+      90,
+      120,
+      150,
+      180,
+      210,
+      235
+    ],
+    "sampled_visual_qa": "passed",
+    "youtube_checks": "complete_no_issues",
+    "public_oembed_http_status": 200,
+    "public_title_verified": true,
+    "studio_visibility": "public",
+    "metadata_saved": true
+  },
+  "metadata": {
+    "audience": "not_made_for_kids",
+    "category": "Education",
+    "language": "en"
+  },
+  "privacy": {
+    "personal_data_used": false,
+    "personal_phone_used": false,
+    "personal_drive_files_used": false
+  }
+}
