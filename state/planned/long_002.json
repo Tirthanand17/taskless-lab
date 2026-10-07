@@ -1,6 +1,6 @@
 {
   "episode_id": "long_002",
-  "status": "planned_for_build",
+  "status": "public_verified",
   "cadence_slot": "daily_video",
   "target_local": "2026-10-06T16:00:00+05:30",
   "priority": "high",
@@ -31,5 +31,20 @@
     "personal_drive_files": false,
     "phone_verification": false
   },
-  "source_of_truth": "GitHub"
+  "source_of_truth": "GitHub",
+  "completed_local": "2026-10-07",
+  "video_id": "or29E_yiHNA",
+  "youtube_url": "https://www.youtube.com/watch?v=or29E_yiHNA",
+  "render": {
+    "workflow_run_id": 37631795801,
+    "artifact_id": 11487046778,
+    "artifact_name": "flowminute-long-002",
+    "status": "success"
+  },
+  "final_qa": {
+    "technical": "passed",
+    "visual": "passed",
+    "youtube_checks": "no_issues",
+    "public_verification": "oembed_200"
+  }
 }
