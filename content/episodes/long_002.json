@@ -3,7 +3,7 @@
   "title": "3 Invisible Excel Problems That Break XLOOKUP & Power Query",
   "description": "Your Excel data can look perfectly clean and still fail. This tutorial demonstrates three invisible problems that cause real lookup and Power Query errors: nonbreaking spaces that TRIM alone does not remove, ambiguous date parsing caused by locale/culture, and Remove Duplicates preserving an unexpected row after sorting. You’ll see each failure happen in a realistic worksheet or Power Query editor, diagnose the cause, apply the fix, and verify the result.\n\n#excel #powerquery #xlookup #datacleaning #automation",
   "format": "long",
-  "target_duration_seconds": 360,
+  "target_duration_seconds": 240,
   "fps": 24,
   "resolution": [
     1920,
@@ -72,5 +72,6 @@
       "title": "Final checklist",
       "narration": "When Excel data looks correct but behaves wrong, test invisible characters, culture, and evaluation order before blaming the formula."
     }
-  ]
+  ],
+  "renderer": "manifest_v2"
 }
