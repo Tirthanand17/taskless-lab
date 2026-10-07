@@ -1,7 +1,7 @@
 {
   "id": "pilot_007",
   "type": "short",
-  "status": "final_render_running",
+  "status": "rendered_visual_qa_passed_waiting_for_youtube_upload",
   "target_release_local": "2026-10-08T11:00:00+05:30",
   "title": "Excel Just Broke a 40-Year Rule #excel #shorts",
   "episode": "content/episodes/pilot_007.json",
@@ -16,5 +16,12 @@
     "youtube_checks_clean",
     "scheduled_in_studio"
   ],
-  "notes": "Use frozen proof-first/safe-zone layout. Do not substitute older Short."
+  "notes": "Use frozen proof-first/safe-zone layout. Do not substitute older Short.",
+  "render_run_id": 37644828536,
+  "artifact_id": 11493029300,
+  "artifact": "flowminute-motion-v7",
+  "qa_run_id": 37644842269,
+  "qa_artifact_id": 11494356467,
+  "visual_qa": "passed",
+  "frozen": true
 }
