@@ -1,1 +1,1 @@
-final 2026-10-07 v7 refined-layout
+final2 2026-10-07 v7 tighter-mobile-proof
