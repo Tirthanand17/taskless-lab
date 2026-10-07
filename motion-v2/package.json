@@ -16,7 +16,13 @@
     "render-v6": "remotion render src/index.ts HiddenSpaceXrayShort ../assets/v6/hidden-space-xray-v6.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
     "still-v6": "remotion still src/index.ts HiddenSpaceXrayShort ../assets/v6/thumbnail-v6.png --frame=125",
     "render-long-002": "remotion render src/index.ts InvisibleExcelLong ../assets/long-002/invisible-excel-long-002.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
-    "still-long-002": "remotion still src/index.ts InvisibleExcelLong ../assets/long-002/thumbnail-long-002.png --frame=180"
+    "still-long-002": "remotion still src/index.ts InvisibleExcelLong ../assets/long-002/thumbnail-long-002.png --frame=180",
+    "render-v7": "remotion render src/index.ts MultiValueRuleShort ../assets/v7/multi-value-rule-v7.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still-v7": "remotion still src/index.ts MultiValueRuleShort ../assets/v7/thumbnail-v7.png --frame=70",
+    "render-v8": "remotion render src/index.ts MultiValueWarningShort ../assets/v8/multi-value-warning-v8.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still-v8": "remotion still src/index.ts MultiValueWarningShort ../assets/v8/thumbnail-v8.png --frame=420",
+    "render-long-003": "remotion render src/index.ts MultiValueCellsLong ../assets/long-003/multi-value-cells-long-003.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
+    "still-long-003": "remotion still src/index.ts MultiValueCellsLong ../assets/long-003/thumbnail-long-003.png --frame=820"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
