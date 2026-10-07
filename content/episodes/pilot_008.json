@@ -24,5 +24,32 @@
   "hook": "Excel's new multi-value cells look amazing. But I would not use them in an important workbook yet.",
   "CTA": "The full breakdown is on FlowMinute Lab.",
   "source_script": "motion-v2/script-v8.txt",
-  "production_brief": "docs/VIDEO_2026-10-08_RESEARCH_AND_VISUAL_BRIEF.md"
+  "production_brief": "docs/VIDEO_2026-10-08_RESEARCH_AND_VISUAL_BRIEF.md",
+  "captions": [
+    {
+      "start": 0,
+      "end": 4,
+      "text": "Excel's new multi-value cells look amazing."
+    },
+    {
+      "start": 4,
+      "end": 9,
+      "text": "But I would not use them in an important workbook yet."
+    },
+    {
+      "start": 9,
+      "end": 20,
+      "text": "Microsoft says this is still Beta — and PivotTables, charts, Power Query, and data validation still have limits."
+    },
+    {
+      "start": 20,
+      "end": 30,
+      "text": "If your workflow depends on those tools, test first and wait before production use."
+    },
+    {
+      "start": 30,
+      "end": 38,
+      "text": "Promising? Yes. Production-ready for every workflow? Not yet."
+    }
+  ]
 }
