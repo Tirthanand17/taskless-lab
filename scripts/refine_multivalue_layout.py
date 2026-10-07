@@ -6,7 +6,7 @@ c=p.read_text(encoding="utf-8")
 repls=[
 (
 "const left=vertical?35:120, top=vertical?138:105, width=vertical?1010:1680, height=vertical?1280:850;",
-"const left=vertical?35:120, top=vertical?150:300, width=vertical?1010:1680, height=vertical?1135:690;"
+"const left=vertical?35:120, top=vertical?310:300, width=vertical?1010:1680, height=vertical?750:690;"
 ),
 (
 "position:'absolute',left:110,right:110,top:160,zIndex:70,fontFamily:'Segoe UI,Arial'",
@@ -36,7 +36,7 @@ repls=[
     </ExcelShell>
     <Cursor x={curX} y={curY} click={click}/>
     <div style={{
-      position:'absolute',left:78,right:78,top:1320,height:155,zIndex:75,
+      position:'absolute',left:78,right:78,top:1100,height:165,zIndex:75,
       borderRadius:15,background:'rgba(255,255,255,.96)',border:'1px solid #c8d2da',
       boxShadow:'0 16px 42px rgba(22,38,52,.14)',padding:'16px 19px',boxSizing:'border-box',
       fontFamily:'Segoe UI,Arial'
