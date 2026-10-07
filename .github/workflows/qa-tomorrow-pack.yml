@@ -99,6 +99,15 @@ jobs:
           make('tmp/long003/*.png','state/qa/long003-contact.jpg',5,(320,180))
           PY
 
+      - name: Upload QA contact sheets
+        uses: actions/upload-artifact@v4
+        with:
+          name: tomorrow-pack-refined-qa
+          path: |
+            state/qa/v7-contact.jpg
+            state/qa/v8-contact.jpg
+            state/qa/long003-contact.jpg
+
       - name: Commit contact sheets
         run: |
           git config user.name "flowminute-lab-bot"
