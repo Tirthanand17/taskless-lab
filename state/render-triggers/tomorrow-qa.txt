@@ -1,0 +1,1 @@
+trigger 2026-10-07 qa-tomorrow-pack premium-v8
