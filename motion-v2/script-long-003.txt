@@ -1,5 +1,3 @@
-# long_003 narration — Excel Changed After 40 Years
-
 For most of Excel's history, one cell meant one value.
 
 A name. A number. A date. One thing.
