@@ -1,0 +1,22 @@
+{
+  "episode_id": "pilot_006",
+  "video_id": "Og38FfmXoDo",
+  "youtube_url": "https://youtube.com/shorts/Og38FfmXoDo",
+  "privacy": "public",
+  "title": "These IDs Look Identical. XLOOKUP Says NO MATCH #excel #xlookup #shorts",
+  "source_render": {
+    "run_id": 37136760718,
+    "artifact_id": 11278449718,
+    "artifact_name": "flowminute-motion-v6"
+  },
+  "verification": {
+    "oembed_http_status": 200,
+    "author_name": "FlowMinute Lab",
+    "checks": "no_issues",
+    "audience": "not_made_for_kids"
+  },
+  "privacy_rules": {
+    "personal_data_used": false,
+    "phone_verification_used": false
+  }
+}
