@@ -1,0 +1,15 @@
+Excel just broke one of its oldest rules.
+
+For decades, one cell basically meant one value.
+
+In Excel Beta, a single cell can now hold a real list — like three project owners — not just comma-separated text.
+
+Excel can treat those items separately, filter them, and even spill the values back out for calculations.
+
+Microsoft is also adding functions like HAS and FLATTEN for this new array-in-cell model.
+
+It is still a preview, so don't rebuild your production workbook yet.
+
+But this changes what an Excel cell can be.
+
+Full walkthrough on FlowMinute Lab.
