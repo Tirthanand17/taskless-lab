@@ -1,14 +1,14 @@
 {
   "id": "pilot_007",
   "type": "short",
-  "status": "rendered_visual_qa_passed_waiting_for_youtube_upload",
+  "status": "scheduled_verified",
   "target_release_local": "2026-10-08T11:00:00+05:30",
   "title": "Excel Just Broke a 40-Year Rule #excel #shorts",
   "episode": "content/episodes/pilot_007.json",
   "render_workflow": "Render Motion V7",
   "expected_artifact": "flowminute-motion-v7",
   "video_file": "multi-value-rule-v7.mp4",
-  "youtube_video_id": null,
+  "youtube_video_id": "rgMxXJTaXBk",
   "privacy_target": "scheduled",
   "quality_gate": [
     "final_render_success",
@@ -23,5 +23,21 @@
   "qa_run_id": 37644842269,
   "qa_artifact_id": 11494356467,
   "visual_qa": "passed",
-  "frozen": true
+  "frozen": true,
+  "youtube_url": "https://youtube.com/shorts/rgMxXJTaXBk",
+  "studio_schedule": {
+    "date_local": "2026-10-08",
+    "timezone": "GMT+05:30",
+    "exact": true,
+    "confirmed_by_studio_success_dialog": true
+  },
+  "render": {
+    "workflow_run_id": 37644828536,
+    "artifact_id": 11493029300,
+    "artifact_name": "flowminute-motion-v7",
+    "video_file": "multi-value-rule-v7.mp4",
+    "status": "success"
+  },
+  "youtube_checks": "complete_no_issues",
+  "no_duplicate_upload": true
 }
