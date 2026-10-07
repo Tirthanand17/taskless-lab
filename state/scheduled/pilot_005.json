@@ -9,7 +9,7 @@
     "video_id": "Mu_3qoiJX4w",
     "youtube_url": "https://youtube.com/shorts/Mu_3qoiJX4w",
     "title": "Power Query Kept the WRONG Row #excel #powerquery #shorts",
-    "visibility": "private",
+    "visibility": "public",
     "duration_seconds": 31,
     "source_render": {
       "github_actions_run_id": 37010425044,
@@ -37,19 +37,25 @@
       "youtube_hd_complete": true,
       "youtube_checks": "no_issues",
       "private_visibility_verified": true,
-      "permanent_editor_verified": true
+      "permanent_editor_verified": true,
+      "public_verification": {
+        "studio_visibility": "public",
+        "all_changes_saved": true,
+        "unauthenticated_oembed_status": 200
+      }
     }
   },
   "release_plan": {
     "target_local_time": "2026-10-06T11:00:00+05:30",
     "target_utc": "2026-10-06T05:30:00Z",
-    "status": "private_waiting_morning_short_release",
+    "status": "public_verified",
     "post_publish_actions": [
       "verify public visibility",
       "verify playable",
       "record GitHub publication receipt"
     ],
-    "cadence_slot": "morning_short"
+    "cadence_slot": "morning_short",
+    "published_local": "2026-10-07T18:34:00+05:30"
   },
   "research_doc": "docs/VIDEO_V5_VISUAL_RESEARCH.md",
   "privacy": {
@@ -60,5 +66,6 @@
     "github_source_of_truth": true,
     "desktop_project_copy": false,
     "allowed_ephemeral_bridge": "C:\\Users\\Dell\\Desktop\\youtube con"
-  }
+  },
+  "status": "public_verified"
 }
