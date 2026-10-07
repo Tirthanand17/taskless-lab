@@ -7,6 +7,7 @@ import {DateLocaleShort} from './DateLocaleShort';
 import {DuplicateLatestShort} from './DuplicateLatestShort';
 import {HiddenSpaceXrayShort} from './HiddenSpaceXrayShort';
 import {InvisibleExcelLong} from './InvisibleExcelLong';
+import {MultiValueRuleShort, MultiValueWarningShort, MultiValueCellsLong} from './MultiValueCells';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -58,6 +59,30 @@ export const RemotionRoot: React.FC = () => {
         fps={24}
         width={1920}
         height={1080}
+      />
+      <Composition
+        id="MultiValueRuleShort"
+        component={MultiValueRuleShort}
+        durationInFrames={1050}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="MultiValueCellsLong"
+        component={MultiValueCellsLong}
+        durationInFrames={8640}
+        fps={24}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="MultiValueWarningShort"
+        component={MultiValueWarningShort}
+        durationInFrames={1140}
+        fps={30}
+        width={1080}
+        height={1920}
       />
       <Composition
         id="HiddenSpaceXrayShort"
