@@ -1,0 +1,20 @@
+{
+  "id": "pilot_007",
+  "type": "short",
+  "status": "final_render_running",
+  "target_release_local": "2026-10-08T11:00:00+05:30",
+  "title": "Excel Just Broke a 40-Year Rule #excel #shorts",
+  "episode": "content/episodes/pilot_007.json",
+  "render_workflow": "Render Motion V7",
+  "expected_artifact": "flowminute-motion-v7",
+  "video_file": "multi-value-rule-v7.mp4",
+  "youtube_video_id": null,
+  "privacy_target": "scheduled",
+  "quality_gate": [
+    "final_render_success",
+    "visual_qa_pass",
+    "youtube_checks_clean",
+    "scheduled_in_studio"
+  ],
+  "notes": "Use frozen proof-first/safe-zone layout. Do not substitute older Short."
+}
