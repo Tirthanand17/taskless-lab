@@ -1,0 +1,14 @@
+{
+  "id": "pilot_007",
+  "status": "scheduled_verified",
+  "video_id": "rgMxXJTaXBk",
+  "youtube_url": "https://youtube.com/shorts/rgMxXJTaXBk",
+  "scheduled_release_local": "2026-10-08T11:00:00+05:30",
+  "studio_confirmation": "Video scheduled",
+  "youtube_checks": "complete_no_issues",
+  "render_run_id": 37644828536,
+  "artifact_id": 11493029300,
+  "artifact_name": "flowminute-motion-v7",
+  "visual_qa": "passed",
+  "no_duplicate_upload": true
+}
