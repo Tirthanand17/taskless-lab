@@ -1,0 +1,20 @@
+{
+  "id": "pilot_008",
+  "type": "short",
+  "status": "final_render_running",
+  "target_release_local": "2026-10-08T20:30:00+05:30",
+  "title": "Don't Use Excel's New Multi-Value Cells Yet #excel #shorts",
+  "episode": "content/episodes/pilot_008.json",
+  "render_workflow": "Render Motion V8",
+  "expected_artifact": "flowminute-motion-v8",
+  "video_file": "multi-value-warning-v8.mp4",
+  "youtube_video_id": null,
+  "privacy_target": "scheduled",
+  "quality_gate": [
+    "final_render_success",
+    "visual_qa_pass",
+    "youtube_checks_clean",
+    "scheduled_in_studio"
+  ],
+  "notes": "Use frozen limitation/safe-zone layout. Do not substitute older Short."
+}
