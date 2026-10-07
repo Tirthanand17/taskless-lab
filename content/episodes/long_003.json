@@ -3,7 +3,7 @@
   "title": "Excel Changed After 40 Years: Multiple Values in One Cell (What Works & What Breaks)",
   "description": "Excel is testing one of its biggest structural changes in decades: lists, arrays in cells, and nested arrays. This video shows how the new feature works with realistic project, measurement, and tagging examples; explains FLATTEN, HAS, HASANY, and HASALL; and covers the Beta limitations that matter before you use it in a real workbook.\n\n#excel #microsoft365 #exceltips #dataanalysis #automation",
   "format": "long",
-  "target_duration_seconds": 420,
+  "target_duration_seconds": 360,
   "fps": 24,
   "resolution": [
     1920,
@@ -50,5 +50,44 @@
       "every example ends with visible verification",
       "first 5 seconds show one cell containing several structured values"
     ]
-  }
+  },
+  "renderer": "manifest_v2",
+  "scenes": [
+    {
+      "title": "Cold open — Excel changes a 40-year rule",
+      "narration": "One cell used to mean one value. Excel Beta is testing native lists and arrays inside a single cell."
+    },
+    {
+      "title": "Old pain — comma-separated owners",
+      "narration": "Show why a comma-separated owner list looks organized but behaves like one text string."
+    },
+    {
+      "title": "Lists — structured values inside a cell",
+      "narration": "Create a list in the Beta experience and show individual values remaining structured."
+    },
+    {
+      "title": "Filter and spill",
+      "narration": "Filter by one list item, then reference the list cell and spill its values back into the grid."
+    },
+    {
+      "title": "Arrays in cells",
+      "narration": "Keep a variable-length set of measurements inside one cell and calculate over the array."
+    },
+    {
+      "title": "HAS, HASANY, HASALL, FLATTEN",
+      "narration": "Demonstrate the new functions with real project/tag examples."
+    },
+    {
+      "title": "Real workflow — support labels",
+      "narration": "Use ticket labels to show when structured multi-value cells can simplify a record."
+    },
+    {
+      "title": "Beta limitations",
+      "narration": "Explain current limits involving PivotTables, charts, Power Query, data validation, Find and Replace, and compatibility."
+    },
+    {
+      "title": "Verdict",
+      "narration": "Recommend learning and testing now while avoiding important production workbooks until the feature is generally available."
+    }
+  ]
 }
