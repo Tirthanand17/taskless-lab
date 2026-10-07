@@ -1,0 +1,54 @@
+{
+  "id": "long_003",
+  "title": "Excel Changed After 40 Years: Multiple Values in One Cell (What Works & What Breaks)",
+  "description": "Excel is testing one of its biggest structural changes in decades: lists, arrays in cells, and nested arrays. This video shows how the new feature works with realistic project, measurement, and tagging examples; explains FLATTEN, HAS, HASANY, and HASALL; and covers the Beta limitations that matter before you use it in a real workbook.\n\n#excel #microsoft365 #exceltips #dataanalysis #automation",
+  "format": "long",
+  "target_duration_seconds": 420,
+  "fps": 24,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "voice": "en-US-ChristopherNeural",
+  "category": "Education",
+  "language": "en",
+  "audience": "not_made_for_kids",
+  "paid_promotion": false,
+  "ai_disclosure": true,
+  "tags": [
+    "excel new feature",
+    "excel multiple values in one cell",
+    "excel lists",
+    "arrays in cells",
+    "excel nested arrays",
+    "FLATTEN excel",
+    "HAS excel",
+    "excel beta 2026",
+    "microsoft 365 excel"
+  ],
+  "sources": [
+    "https://techcommunity.microsoft.com/blog/microsoft365insiderblog/put-multiple-values-in-one-cell-with-lists-and-arrays-in-excel/4559395",
+    "https://www.reddit.com/r/excel/comments/1wp6bed/put_multiple_values_in_one_cell_with_lists_and/"
+  ],
+  "source_script": "motion-v2/script-long-003.txt",
+  "production_brief": "docs/VIDEO_2026-10-08_RESEARCH_AND_VISUAL_BRIEF.md",
+  "thumbnail": {
+    "text": "ONE CELL. MANY VALUES.",
+    "badge": "NEW EXCEL",
+    "concept": "left old single-value cell; right one cell with three compact list chips; clean arrow/break; no face"
+  },
+  "visual_strategy": {
+    "realistic_ui_share": "70-80%",
+    "cinematic_broll_share": "10-15%",
+    "explanatory_motion_share": "10-15%",
+    "rules": [
+      "real Excel UI is the primary teaching surface",
+      "Gemini/AI video may be used only for contextual photorealistic B-roll, never fake Excel UI",
+      "12-column alignment grid and 7% safe margins",
+      "one focal point per shot",
+      "no slideshow cards or full-screen paragraph subtitles",
+      "every example ends with visible verification",
+      "first 5 seconds show one cell containing several structured values"
+    ]
+  }
+}
