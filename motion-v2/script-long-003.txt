@@ -1,0 +1,132 @@
+# long_003 narration — Excel Changed After 40 Years
+
+For most of Excel's history, one cell meant one value.
+
+A name. A number. A date. One thing.
+
+But Microsoft has started testing a change that breaks that rule.
+
+A single Excel cell can now contain a real list of values — not just text separated by commas — and Excel can filter, calculate, spill, and test those values as actual data.
+
+That sounds small. It is not.
+
+Let me show you what changes, where this is genuinely useful, what still breaks, and whether you should use it in real workbooks yet.
+
+Start with a project tracker.
+
+Imagine one task has three owners: Carlos, Henrietta, and Jacob.
+
+Today, most people put all three names into one cell as text. It looks fine, but Excel mostly sees one long string.
+
+Filtering for Henrietta becomes awkward. Formulas need text parsing. Data cleanup gets messy.
+
+In the new Beta experience, that cell can hold a real list.
+
+You can insert a list, type the owners, and Excel treats the items separately even though they live in one cell.
+
+Now the important part: filtering can work on the individual items instead of only the combined text.
+
+That is the first practical win.
+
+The second one is calculations.
+
+Suppose this row represents a five-kilometer run and you want to keep all five split times with the run instead of spreading them across five extra columns.
+
+With arrays in cells, those split times can live inside one cell as an actual array.
+
+Reference that cell and Excel can spill the values back into the grid.
+
+And because the values remain data, you can calculate over them.
+
+Count the splits. Sum them. Average them. Find the fastest value.
+
+The grid stays compact, but the values are not flattened into one text blob.
+
+This is where the feature starts feeling less like a formatting trick and more like a change to Excel's data model.
+
+Microsoft is also adding functions designed for this world.
+
+FLATTEN can simplify nested arrays.
+
+HAS checks whether an array contains a value.
+
+HASANY checks whether it contains any value from a set.
+
+HASALL checks whether it contains every requested value.
+
+For example, imagine an inventory table where one product has the tags fragile, export, and priority inside one cell.
+
+Instead of splitting that text manually, HAS can test whether priority exists as an actual item.
+
+Now let’s make this more realistic.
+
+Say you manage customer support tickets.
+
+Each ticket can have several labels: billing, login, urgent.
+
+In the old design, you either create many helper columns or pack the labels into text.
+
+With a list cell, the ticket stays one row, the labels stay structured, and filters can target individual items.
+
+That can be cleaner for trackers, survey responses, category tags, owners, locations, or variable-length measurements.
+
+But this is where the hype needs a warning label.
+
+This feature is still a preview.
+
+Microsoft says the behavior may change, and they specifically recommend not using it in important workbooks until it is generally available.
+
+There are also real limitations right now.
+
+PivotTables do not read array values as source data.
+
+Charts do not expand an array into chart points.
+
+Data validation cannot use a list or array as dropdown items.
+
+Power Query does not currently load or emit array-valued columns.
+
+Find and Replace cannot replace items inside these lists or arrays.
+
+And some nested-array calculations require Compatibility Version 3, which can change the result of some existing formulas.
+
+So should you use this?
+
+For experiments, learning, and disposable Beta workbooks: yes. This is worth understanding now.
+
+For a production workbook that feeds Power Query, PivotTables, charts, automations, or other people’s stable workflows: I would wait.
+
+The real opportunity is not to replace normal tables with tiny databases hidden inside cells.
+
+The opportunity is to use structured multi-value cells only where the values naturally belong to one record and where they simplify the workbook instead of hiding complexity.
+
+That distinction matters.
+
+A project with three owners? Good candidate.
+
+A survey response with several selected time slots? Good candidate.
+
+A full transaction table stuffed into one cell? Probably not.
+
+The feature is exciting because Excel is giving each cell more expressive power.
+
+But more power means more ways to build something clever that nobody else can maintain.
+
+So my rule is simple.
+
+Use lists and arrays in cells when they make the data model clearer.
+
+Do not use them just because they are new.
+
+And before using them in important work, check the current limitations and compatibility behavior.
+
+Excel has spent decades teaching us that one cell equals one value.
+
+That rule is changing.
+
+The interesting question now is not whether one cell can hold many values.
+
+It is when it actually should.
+
+If you want practical Excel, Power Query, and automation workflows explained with real examples instead of feature hype, subscribe to FlowMinute Lab.
+
