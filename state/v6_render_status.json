@@ -1,6 +1,6 @@
 {
   "episode_id": "pilot_006",
-  "status": "rendered_qa_passed_ready_for_private_upload",
+  "status": "public_verified",
   "render": {
     "workflow": "Render Motion V6",
     "run_id": 37136760718,
@@ -40,9 +40,18 @@
   "release": {
     "target": "2026-10-06T20:30:00+05:30",
     "automation_created": true,
-    "youtube_upload_status": "pending_private_upload",
+    "youtube_upload_status": "public_verified",
     "publish_gate": "Require QA pass and a matching private YouTube upload before the 20:30 evening slot.",
-    "cadence_slot": "evening_short"
+    "cadence_slot": "evening_short",
+    "video_id": "Og38FfmXoDo",
+    "youtube_url": "https://youtube.com/shorts/Og38FfmXoDo",
+    "title": "These IDs Look Identical. XLOOKUP Says NO MATCH #excel #xlookup #shorts",
+    "public_verification": {
+      "oembed_http_status": 200,
+      "author": "FlowMinute Lab",
+      "studio_checks": "no_issues",
+      "audience": "not_made_for_kids"
+    }
   },
   "research_doc": "docs/VIDEO_V6_VISUAL_RESEARCH.md",
   "privacy": "brand-only; no personal data"
