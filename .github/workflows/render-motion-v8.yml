@@ -1,0 +1,60 @@
+name: Render Motion V8
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/v8.txt"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        working-directory: motion-v2
+        run: npm install --no-audit --no-fund
+
+      - name: Install voice dependency
+        run: python -m pip install edge-tts
+
+      - name: Generate narration
+        working-directory: motion-v2
+        run: python generate_voice_cli.py --script script-v8.txt --output voice-v8.mp3 --voice en-US-AvaNeural --rate "+2%"
+
+      - name: Validate release metadata
+        run: python scripts/validate_release.py content/episodes/pilot_008.json
+
+      - name: Generate captions
+        run: |
+          mkdir -p assets/v8
+          python scripts/generate_srt.py content/episodes/pilot_008.json assets/v8/captions-v8.srt
+
+      - name: Prepare Remotion browser
+        working-directory: motion-v2
+        run: npx remotion browser ensure
+
+      - name: Render V8
+        working-directory: motion-v2
+        run: npm run render-v8
+
+      - name: Render thumbnail
+        working-directory: motion-v2
+        run: npm run still-v8
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-motion-v8
+          path: |
+            assets/v8/multi-value-warning-v8.mp4
+            assets/v8/thumbnail-v8.png
+            assets/v8/captions-v8.srt
