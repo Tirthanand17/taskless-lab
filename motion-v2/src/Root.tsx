@@ -6,6 +6,7 @@ import {LeadingZerosLong} from './LeadingZerosLong';
 import {DateLocaleShort} from './DateLocaleShort';
 import {DuplicateLatestShort} from './DuplicateLatestShort';
 import {HiddenSpaceXrayShort} from './HiddenSpaceXrayShort';
+import {InvisibleExcelLong} from './InvisibleExcelLong';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -49,6 +50,14 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
+      />
+      <Composition
+        id="InvisibleExcelLong"
+        component={InvisibleExcelLong}
+        durationInFrames={5760}
+        fps={24}
+        width={1920}
+        height={1080}
       />
       <Composition
         id="HiddenSpaceXrayShort"
