@@ -1,0 +1,28 @@
+{
+  "id": "pilot_008",
+  "title": "Don't Use Excel's New Multi-Value Cells Yet #excel #shorts",
+  "description": "Excel's new lists and arrays in cells are exciting, but Microsoft's current Beta documentation lists important limitations: Power Query does not load or emit array-valued columns, PivotTables do not read them as source data, charts do not expand them into data points, and data validation cannot use them as dropdown items. #excel #exceltips #microsoft365 #shorts",
+  "tags": [
+    "excel beta limitations",
+    "excel arrays in cells",
+    "excel multiple values one cell",
+    "power query excel",
+    "pivot table excel",
+    "excel charts",
+    "excel new feature",
+    "excel 2026"
+  ],
+  "language": "en",
+  "duration_seconds": 38,
+  "voice": "en-US-AvaNeural",
+  "visual_style": "premium warning-style realistic Excel demo with brief cinematic analyst desk B-roll; precise callouts; no fake UI",
+  "privacy": "brand-only; no personal data",
+  "sources": [
+    "https://techcommunity.microsoft.com/blog/microsoft365insiderblog/put-multiple-values-in-one-cell-with-lists-and-arrays-in-excel/4559395"
+  ],
+  "research_signal": "Contrarian follow-up to a fresh feature: excitement plus concrete Beta limitations creates strong curiosity and trust.",
+  "hook": "Excel's new multi-value cells look amazing. But I would not use them in an important workbook yet.",
+  "CTA": "The full breakdown is on FlowMinute Lab.",
+  "source_script": "motion-v2/script-v8.txt",
+  "production_brief": "docs/VIDEO_2026-10-08_RESEARCH_AND_VISUAL_BRIEF.md"
+}
