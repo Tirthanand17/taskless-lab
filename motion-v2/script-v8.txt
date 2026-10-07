@@ -1,0 +1,11 @@
+Excel's new multi-value cells look amazing.
+
+But I would not use them in an important workbook yet.
+
+Microsoft says this is still a Beta preview — and right now PivotTables do not read array values as source data, charts do not expand them into data points, and Power Query does not load or emit array-valued columns.
+
+So yes: one cell can now hold real lists and arrays.
+
+But if your workflow depends on Power Query, PivotTables, charts, or stable compatibility, test first and wait before production use.
+
+The full breakdown is on FlowMinute Lab.
