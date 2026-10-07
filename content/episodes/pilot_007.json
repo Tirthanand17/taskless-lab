@@ -24,5 +24,37 @@
   "hook": "Excel just broke one of its oldest rules.",
   "CTA": "Full walkthrough on FlowMinute Lab.",
   "source_script": "motion-v2/script-v7.txt",
-  "production_brief": "docs/VIDEO_2026-10-08_RESEARCH_AND_VISUAL_BRIEF.md"
+  "production_brief": "docs/VIDEO_2026-10-08_RESEARCH_AND_VISUAL_BRIEF.md",
+  "captions": [
+    {
+      "start": 0,
+      "end": 3.2,
+      "text": "Excel just broke one of its oldest rules."
+    },
+    {
+      "start": 3.2,
+      "end": 8.2,
+      "text": "For decades, one cell basically meant one value."
+    },
+    {
+      "start": 8.2,
+      "end": 15,
+      "text": "In Excel Beta, one cell can now hold a real list — like three project owners."
+    },
+    {
+      "start": 15,
+      "end": 22,
+      "text": "Excel can treat those items separately, filter them, and spill the values back out."
+    },
+    {
+      "start": 22,
+      "end": 28.3,
+      "text": "Microsoft is also adding functions like HAS and FLATTEN for this model."
+    },
+    {
+      "start": 28.3,
+      "end": 35,
+      "text": "It is still a preview — but this changes what an Excel cell can be."
+    }
+  ]
 }
