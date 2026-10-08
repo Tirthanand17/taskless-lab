@@ -1,6 +1,6 @@
 {
   "id": "pilot_008",
-  "status": "scheduled_verified",
+  "status": "published_verified",
   "video_id": "yIBf6j1IKxQ",
   "youtube_url": "https://youtube.com/shorts/yIBf6j1IKxQ",
   "scheduled_release_local": "2026-10-08T20:30:00+05:30",
@@ -10,5 +10,16 @@
   "artifact_id": 11494585950,
   "artifact_name": "flowminute-motion-v8",
   "visual_qa": "passed",
-  "no_duplicate_upload": true
+  "no_duplicate_upload": true,
+  "visibility": "public",
+  "public_verified_at_local": "2026-10-08T20:34:33+05:30",
+  "public_verification": {
+    "http_status": 200,
+    "player_status": "OK",
+    "is_private": false,
+    "is_unlisted": false,
+    "streaming_formats_available": 26,
+    "verified_video_id": "yIBf6j1IKxQ",
+    "method": "Unauthenticated YouTube player page"
+  }
 }
