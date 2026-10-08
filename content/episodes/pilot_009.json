@@ -1,0 +1,49 @@
+{
+  "id": "pilot_009",
+  "title": "This Excel Formula Missed $3,600 (Spot the Error) #shorts",
+  "description": "An invoice total looks correct—but the formula misses the last record. This fictional Excel example shows how to trace SUM ranges, spot omitted rows, and verify totals before trusting a formula suggestion. #excel #formulas #exceltips #shorts",
+  "duration_seconds": 36,
+  "source_script": "motion-v2/script-v9.txt",
+  "voice": "en-US-AvaNeural",
+  "captions": [
+    {
+      "start": 0,
+      "end": 4.3,
+      "text": "A perfect-looking formula can still be wrong."
+    },
+    {
+      "start": 4.3,
+      "end": 10,
+      "text": "Five invoices. One missing row."
+    },
+    {
+      "start": 10,
+      "end": 17.7,
+      "text": "It sums four invoices, not five."
+    },
+    {
+      "start": 17.7,
+      "end": 26.5,
+      "text": "Check the entire range. Then verify the total."
+    },
+    {
+      "start": 26.5,
+      "end": 36,
+      "text": "The formula is valid. The answer was wrong."
+    }
+  ],
+  "tags": [
+    "excel formula error",
+    "sum missing rows",
+    "excel tips",
+    "formula auditing",
+    "Excel Copilot"
+  ],
+  "sources": [
+    "https://support.microsoft.com/en-us/excel/copilot/copilot-formula-suggestions-turn-on-off",
+    "https://support.microsoft.com/en-us/excel/copilot/frequently-asked-questions-about-copilot-in-excel",
+    "https://support.google.com/youtube/answer/12340300"
+  ],
+  "category": "Education",
+  "visual_note": "Illustrative worksheet reconstruction, precise numeric audit, no claim that Copilot produced the wrong suggestion."
+}
