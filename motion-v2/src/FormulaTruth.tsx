@@ -26,29 +26,29 @@ const GridTable:React.FC<{kind:'sum'|'names'|'margin';compact?:boolean;correct?:
    </div>
    <div style={{height:compact?49:52,display:'flex',alignItems:'center',background:'#f8fafb',borderBottom:'1px solid #dce3e8',gap:10,padding:'0 13px'}}>
      <span style={{color:'#607789',fontStyle:'italic',fontSize:18,fontWeight:600}}>fx</span>
-     <div style={{flex:1,background:'#fff',border:'1px solid #bcc9d3',borderRadius:5,padding:'7px 12px',fontFamily:'Consolas,monospace',fontSize:compact?16:18,whiteSpace:'nowrap',overflow:'hidden'}}>
+     <div style={{flex:1,background:'#fff',border:'1px solid #bcc9d3',borderRadius:5,padding:'7px 12px',fontFamily:'Consolas,monospace',fontSize:compact?25:18,whiteSpace:'nowrap',overflow:'hidden'}}>
        {kind==='sum'?(correct?'=SUM(C2:C6)':'=SUM(C2:C5)'):kind==='names'?'=TEXTBEFORE(A2," ")':correct?'=(C2-B2)/C2':'=(C2-B2)/B2'}
      </div>
    </div>
    <div style={{padding:compact?'13px 19px':'20px 30px'}}>
-     <div style={{display:'grid',gridTemplateColumns:kind==='names'?'1.4fr 1fr 1fr':'1.4fr 1fr 1fr',height:compact?52:56,background:'#e4f2e9',border:'1px solid #c9ddd0'}}>
-       {heads.map(h=><div key={h} style={{borderRight:'1px solid #c9ddd0',display:'flex',alignItems:'center',paddingLeft:14,fontWeight:800,fontSize:compact?18:20,color:'#1b4030'}}>{h}</div>)}
+     <div style={{display:'grid',gridTemplateColumns:kind==='names'?'1.4fr 1fr 1fr':'1.4fr 1fr 1fr',height:compact?58:56,background:'#e4f2e9',border:'1px solid #c9ddd0'}}>
+       {heads.map(h=><div key={h} style={{borderRight:'1px solid #c9ddd0',display:'flex',alignItems:'center',paddingLeft:14,fontWeight:800,fontSize:compact?26:20,color:'#1b4030'}}>{h}</div>)}
      </div>
-     {rows.map((row,i)=><div key={i} style={{display:'grid',gridTemplateColumns:'1.4fr 1fr 1fr',height:compact?64:65,background:i%2?'#f8fbfc':'#fff',borderBottom:'1px solid #dce4e8',borderLeft:'1px solid #dce4e8'}}>
+     {rows.map((row,i)=><div key={i} style={{display:'grid',gridTemplateColumns:'1.4fr 1fr 1fr',height:compact?78:65,background:i%2?'#f8fbfc':'#fff',borderBottom:'1px solid #dce4e8',borderLeft:'1px solid #dce4e8'}}>
        {row.map((cell,j)=>{
          const highlight=kind==='sum'&&j===2&&((i===4&&isWrong)||(correct&&i===4));
          const badName=kind==='names'&&i===2&&j===1&&isWrong;
-         return <div key={j} style={{borderRight:'1px solid #dce4e8',display:'flex',alignItems:'center',paddingLeft:14,fontWeight:highlight||badName?900:560,fontSize:compact?19:21,background:(highlight||badName)?(isWrong?'#ffe6e8':'#e7f7e9'):undefined,color:(highlight||badName)?(isWrong?P.red:P.teal):P.ink,position:'relative'}}>
+         return <div key={j} style={{borderRight:'1px solid #dce4e8',display:'flex',alignItems:'center',paddingLeft:14,fontWeight:highlight||badName?900:560,fontSize:compact?29:21,background:(highlight||badName)?(isWrong?'#ffe6e8':'#e7f7e9'):undefined,color:(highlight||badName)?(isWrong?P.red:P.teal):P.ink,position:'relative'}}>
            {cell}
            {highlight&&<span style={{position:'absolute',right:6,top:6,fontSize:11,fontWeight:800,color:P.red}}>ROW {i+2}</span>}
          </div>
        })}
      </div>)}
      <div style={{marginTop:16,display:'flex',alignItems:'center',justifyContent:'space-between',borderRadius:10,padding:compact?'14px 16px':'14px 20px',background:correct?P.mint:P.rose,border:correct?'1px solid #95cfa9':'1px solid #e2b0b5'}}>
-       <span style={{fontWeight:850,fontSize:compact?18:20,color:correct?P.teal:P.red}}>
+       <span style={{fontWeight:850,fontSize:compact?25:20,color:correct?P.teal:P.red}}>
          {kind==='sum'?(correct?'ALL 5 ROWS':'ONLY 4 OF 5 ROWS'):kind==='names'?(correct?'EXCEPTION VERIFIED':'THE THIRD NAME BREAKS THE RULE'):(correct?'MARGIN, NOT MARKUP':'WRONG BUSINESS METRIC')}
        </span>
-       <span style={{fontSize:compact?30:34,fontWeight:950,letterSpacing:-1.1,color:correct?P.teal:P.red}}>
+       <span style={{fontSize:compact?39:34,fontWeight:950,letterSpacing:-1.1,color:correct?P.teal:P.red}}>
          {kind==='sum'?(correct?'$22,500':'$18,900'):kind==='names'?(correct?'Maya':'Dr'):(correct?'33.3%':'50%')}
        </span>
      </div>
@@ -86,8 +86,8 @@ const ShotShort:React.FC<{variant:'range'|'name'}>=({variant})=>{
   <Panel style={{position:'absolute',top:410,left:51,width:978,height:790}}>
     <GridTable kind={isRange?'sum':'names'} compact correct={fix}/>
   </Panel>
-  <Panel style={{position:'absolute',top:1230,left:78,right:78,padding:'19px 22px',minHeight:170}}>
-    {isRange?<><Eyebrow red>MISSING INPUT</Eyebrow><div style={{fontSize:35,fontWeight:940,color:P.ink,margin:'8px 0 6px'}}>INV-405: $3,600</div><div style={{fontSize:21,color:P.muted}}>Follow the highlighted range: C2:C5 → C2:C6.</div></>:<><Eyebrow red>ONE EXCEPTION CHANGES THE RULE</Eyebrow><div style={{fontSize:34,fontWeight:940,color:P.ink,margin:'8px 0 6px'}}>“Dr Maya Chen” → {fix?'Maya':'Dr'}</div><div style={{fontSize:21,color:P.muted}}>Illustrative formula — inspect every edge case.</div></>}
+  <Panel style={{position:'absolute',top:1230,left:78,right:78,padding:'19px 22px',minHeight:170,fontFamily:L}}>
+    {isRange?<><Eyebrow red>MISSING INPUT</Eyebrow><div style={{fontSize:35,fontWeight:940,color:P.ink,margin:'8px 0 6px'}}>INV-405: $3,600</div><div style={{fontSize:27,color:P.muted}}>Follow the highlighted range: C2:C5 → C2:C6.</div></>:<><Eyebrow red>ONE EXCEPTION CHANGES THE RULE</Eyebrow><div style={{fontSize:34,fontWeight:940,color:P.ink,margin:'8px 0 6px'}}>“Dr Maya Chen” → {fix?'Maya':'Dr'}</div><div style={{fontSize:21,color:P.muted}}>Illustrative formula — inspect every edge case.</div></>}
   </Panel>
   {cap&&<Lower vertical text={cap[2]}/>}
   <div style={{position:'absolute',bottom:80,left:82,right:82,height:5,borderRadius:5,background:'#d2dce3'}}><div style={{height:5,width:(f/(isRange?1079:1019)*100)+'%',background:P.teal,borderRadius:5}}/></div>
@@ -140,12 +140,12 @@ const LongVideo:React.FC=()=>{
 };
 const Thumb:React.FC=()=> <AbsoluteFill style={{background:'radial-gradient(circle at 54% 12%,#22495a,#0a1622 76%)',fontFamily:L}}>
  <div style={{position:'absolute',left:85,top:62,color:'#8bd2b2',letterSpacing:2,fontSize:22,fontWeight:900}}>FLOWMINUTE LAB  •  EXCEL AI</div>
- <div style={{position:'absolute',left:87,top:160,fontSize:93,fontWeight:950,lineHeight:.99,color:'#fff',maxWidth:1310}}>AI GAVE THE<br/>WRONG TOTAL.</div>
+ <div style={{position:'absolute',left:87,top:160,fontSize:93,fontWeight:950,lineHeight:.99,color:'#fff',maxWidth:1310}}>ONE ROW.<br/>$3,600 MISSING.</div>
  <div style={{position:'absolute',left:85,top:475,right:87,display:'grid',gridTemplateColumns:'1fr 1fr',gap:24}}>
   <div style={{background:'#54242c',border:'4px solid #fd7482',borderRadius:23,padding:30,boxShadow:'0 25px 70px #0007'}}><div style={{fontSize:27,fontWeight:900,color:'#ffb3b8'}}>FORMULA SAID</div><div style={{fontSize:92,fontWeight:950,color:'#fff'}}>$18,900</div></div>
   <div style={{background:'#184936',border:'4px solid #50d98e',borderRadius:23,padding:30,boxShadow:'0 25px 70px #0007'}}><div style={{fontSize:27,fontWeight:900,color:'#b6f9ce'}}>ACTUAL TOTAL</div><div style={{fontSize:92,fontWeight:950,color:'#fff'}}>$22,500</div></div>
  </div>
- <div style={{position:'absolute',left:96,bottom:105,fontSize:52,color:'#fff',fontWeight:850}}>3 checks before you trust a formula</div>
+ <div style={{position:'absolute',left:96,bottom:105,fontSize:52,color:'#fff',fontWeight:850}}>3 checks before you trust Excel AI</div>
  <div style={{position:'absolute',right:105,top:94,width:260,height:260,borderRadius:130,background:'#f4bd4b',display:'flex',alignItems:'center',justifyContent:'center',fontSize:145,fontWeight:950,color:'#362414',transform:'rotate(14deg)',boxShadow:'0 20px 60px #0009'}}>!</div>
 </AbsoluteFill>;
 export const FormulaRangeShort:React.FC=()=> <ShotShort variant="range"/>;
