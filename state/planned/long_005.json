@@ -3,8 +3,8 @@
   "type": "long",
   "target_release_local": "2026-10-10T16:00:00+05:30",
   "video_file": "refresh-truth-long-005.mp4",
-  "status": "render_refined_in_progress",
-  "youtube_video_id": null,
+  "status": "scheduled_verified",
+  "youtube_video_id": "xmi1oAoxAZA",
   "render_run_id": 37803233221,
   "episode": "content/episodes/long_005.json",
   "expected_artifact": "flowminute-refresh-pack",
@@ -20,5 +20,10 @@
   "no_duplicate_upload": true,
   "backup_render_run_id": 37801662489,
   "expected_artifact_id": null,
-  "last_quality_issue": "Fixed mobile proof density and refresh result visibility; awaiting new QA"
+  "last_quality_issue": "Fixed mobile proof density and refresh result visibility; awaiting new QA",
+  "youtube_url": "https://youtu.be/xmi1oAoxAZA",
+  "studio_confirmation": "Video scheduled",
+  "youtube_checks": "complete_no_issues",
+  "artifact_id": 11561699845,
+  "visual_qa": "passed"
 }
