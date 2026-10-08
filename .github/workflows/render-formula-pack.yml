@@ -23,7 +23,7 @@ jobs:
           cd motion-v2
           npm install --no-audit --no-fund
           cd ..
-          python -m pip install edge-tts pillow
+          python -m pip install edge-tts pillow mutagen
       - name: Validate episodes
         run: |
           python scripts/validate_release.py content/episodes/pilot_009.json
@@ -39,15 +39,14 @@ jobs:
       - name: Media timing gate
         run: |
           python - <<'PY'
-          import json,subprocess
+          from mutagen.mp3 import MP3
           media=[
             ("v9","motion-v2/public/voice-v9.mp3",36),
             ("v10","motion-v2/public/voice-v10.mp3",34),
             ("long004","motion-v2/public/voice-long-004.mp3",240),
           ]
           for name,p,limit in media:
-            r=subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","json",p],text=True)
-            seconds=float(json.loads(r)["format"]["duration"])
+            seconds=float(MP3(p).info.length)
             print(name,"narration_seconds",round(seconds,2),"video_seconds",limit)
             if seconds>limit-0.2:
               raise SystemExit(f"narration longer than video: {name} ({seconds:.2f}s)")
