@@ -1,0 +1,57 @@
+{
+  "checked_at_local": "2026-10-08T21:51:35+05:30",
+  "scope": "2026-10-10 FlowMinute Lab native YouTube schedules",
+  "source_of_truth": "GitHub state/planned and state/scheduled; Studio historical confirmations only",
+  "studio_authenticated_recheck": "blocked_no_authorized_browser_control",
+  "vidiq_authenticated_check": "blocked_insufficient_credits_no_charge",
+  "release_state_policy": "scheduled_verified means historical scheduling confirmation, not public_verified",
+  "episodes": [
+    {
+      "id": "pilot_011",
+      "video_id": "qkc0Tf_51nU",
+      "target_release_local": "2026-10-10T11:00:00+05:30",
+      "planned_receipt": "state/planned/pilot_011.json",
+      "scheduled_receipt": "state/scheduled/pilot_011.json",
+      "github_crosscheck": "id_time_status_match",
+      "github_recorded_status": "scheduled_verified",
+      "studio_confirmation_recorded": "Video scheduled",
+      "checks_recorded": "complete_no_issues",
+      "visual_qa_recorded": "passed",
+      "current_studio_state": "not_independently_reverified",
+      "public_playability": "not_due"
+    },
+    {
+      "id": "long_005",
+      "video_id": "xmi1oAoxAZA",
+      "target_release_local": "2026-10-10T16:00:00+05:30",
+      "planned_receipt": "state/planned/long_005.json",
+      "scheduled_receipt": "state/scheduled/long_005.json",
+      "github_crosscheck": "id_time_status_match",
+      "github_recorded_status": "scheduled_verified",
+      "studio_confirmation_recorded": "Video scheduled",
+      "checks_recorded": "complete_no_issues",
+      "visual_qa_recorded": "passed",
+      "current_studio_state": "not_independently_reverified",
+      "public_playability": "not_due"
+    },
+    {
+      "id": "pilot_012",
+      "video_id": "MZmZ8wGGpqc",
+      "target_release_local": "2026-10-10T20:30:00+05:30",
+      "planned_receipt": "state/planned/pilot_012.json",
+      "scheduled_receipt": "state/scheduled/pilot_012.json",
+      "github_crosscheck": "id_time_status_match",
+      "github_recorded_status": "scheduled_verified",
+      "studio_confirmation_recorded": "Video scheduled",
+      "checks_recorded": "complete_no_issues",
+      "visual_qa_recorded": "passed",
+      "current_studio_state": "not_independently_reverified",
+      "public_playability": "not_due"
+    }
+  ],
+  "authorized_bridge": "C:\\Users\\Dell\\Desktop\\youtube con",
+  "authorized_bridge_contents": "empty_on_list_directory",
+  "oct11_buffer": "not_found_in_state/planned_or_content/episodes_as_of_check; no new QA-passed 2 Shorts + 1 long confirmed",
+  "actions": "No uploads, rerenders, schedule edits, public promotions, or paid actions. Existing planned/scheduled receipts left unchanged because already internally consistent and fresh Studio evidence unavailable.",
+  "next_action": "Retry authorized Studio recheck; protect exact IDs, verify public playability after due times and propagation grace, then update planned/scheduled receipts; build distinct Oct 11 QA-passed buffer."
+}
