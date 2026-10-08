@@ -1,0 +1,65 @@
+{
+  "release_day_local": "2026-10-10",
+  "timezone": "Asia/Kolkata",
+  "state": "research_only_not_rendered_or_qa_passed",
+  "created_from_research_local": "2026-10-08T20:54:32+05:30",
+  "release_targets_local": [
+    "11:00",
+    "16:00",
+    "20:30"
+  ],
+  "source_urls": [
+    "https://support.microsoft.com/en-us/excel/functions/regexextract-function",
+    "https://support.microsoft.com/en-us/excel/functions/regextest-function",
+    "https://support.microsoft.com/en-us/excel/functions/regexreplace-function"
+  ],
+  "candidates": [
+    {
+      "id": "pilot_011",
+      "format": "short",
+      "target_time_local": "11:00",
+      "working_title": "Excel Can Pull an Order ID From a Messy Note",
+      "example_input": "Paid ORD-4821 | expedited",
+      "formula": "=IFERROR(REGEXEXTRACT(A2,\"ORD-[0-9]{4}\"),\"REVIEW\")",
+      "expected_output": "ORD-4821",
+      "edge_case": "No ID returns REVIEW",
+      "state": "research_only",
+      "youtube_video_id": null
+    },
+    {
+      "id": "long_005",
+      "format": "long",
+      "target_time_local": "16:00",
+      "working_title": "Excel REGEX: Three Cleanup Tasks and Four Failure Cases",
+      "chapters": [
+        "Extract synthetic order IDs",
+        "Validate synthetic SKUs with anchors",
+        "Replace non-sensitive formatting tokens",
+        "Failures: missing match, unexpected format, text-versus-number, unavailable Excel version"
+      ],
+      "state": "research_only",
+      "youtube_video_id": null
+    },
+    {
+      "id": "pilot_012",
+      "format": "short",
+      "target_time_local": "20:30",
+      "working_title": "Your Excel SKU Looks Valid — But It Isn't",
+      "example_input": [
+        "SKU-0421",
+        "SKU-0421-extra"
+      ],
+      "formula": "=REGEXTEST(A2,\"^SKU-[0-9]{4}$\")",
+      "expected_output": [
+        "TRUE",
+        "FALSE"
+      ],
+      "state": "research_only",
+      "youtube_video_id": null
+    }
+  ],
+  "creative_gate": "Original synthetic worksheets, realistic Excel UI dominant, clear before/after proof, restrained cinematic context, no slideshow/template look, visual and technical QA required before upload.",
+  "publication_gate": "Never treat research, planned, rendered, QA-passed, private, scheduled, and public as interchangeable. Do not upload or schedule until new exact assets pass QA.",
+  "performance_lessons": "Channel retention and CTR not accessible in this run; avoid claiming performance-validated choices.",
+  "production_blocker": "No dedicated Oct 10 renderer or completed QA assets identified."
+}
