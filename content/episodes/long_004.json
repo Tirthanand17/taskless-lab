@@ -2,7 +2,7 @@
   "id": "long_004",
   "title": "Excel AI Formula Suggestions: 3 Checks Before You Trust Them",
   "format": "long",
-  "target_duration_seconds": 240,
+  "target_duration_seconds": 266,
   "description": "Excel Copilot can help complete formulas and infer reusable formulas from examples. But even a valid formula can include the wrong range, use the wrong definition, or fail on unusual data. We work through three clearly labeled illustrative examples: a missing $3,600 invoice, profit margin versus markup, and a name extraction edge case. Includes where to change formula-suggestion settings in Excel. Always verify AI-assisted calculations. #excel #copilot #excel365 #formulas #automation",
   "source_script": "motion-v2/script-long-004.txt",
   "voice": "en-US-ChristopherNeural",
