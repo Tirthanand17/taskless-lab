@@ -3,7 +3,7 @@
   "title": "Why Excel Power Query Won't Auto-Refresh (3 Fixes That Work)",
   "description": "Your Power Automate flow says SUCCESS, but the Excel Power Query report is still stale? This guide explains why Office Scripts triggered by Power Automate cloud flows cannot refresh most non-Power BI sources, then compares Excel Desktop refresh-on-open, supported Power BI/dataflow scheduled refresh, and upstream data ingestion. Includes a Power Query From Folder walkthrough and 3 verification checks. Sales amounts are fictional illustrative examples. #Excel #PowerQuery #PowerAutomate #Automation",
   "format": "long",
-  "target_duration_seconds": 380,
+  "target_duration_seconds": 394,
   "source_script": "motion-v2/script-long-005.txt",
   "voice": "en-US-ChristopherNeural",
   "renderer": "manifest_v2",
