@@ -1,0 +1,21 @@
+{
+  "id": "long_005",
+  "type": "long",
+  "target_release_local": "2026-10-10T16:00:00+05:30",
+  "video_file": "refresh-truth-long-005.mp4",
+  "status": "render_queued",
+  "youtube_video_id": null,
+  "render_run_id": null,
+  "episode": "content/episodes/long_005.json",
+  "expected_artifact": "flowminute-refresh-pack",
+  "quality_gate": [
+    "voice_length_check",
+    "render_success",
+    "visual_qa",
+    "thumbnail_review",
+    "upload_private",
+    "checks_clean",
+    "studio_schedule_verified"
+  ],
+  "no_duplicate_upload": true
+}
