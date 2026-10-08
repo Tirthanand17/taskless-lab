@@ -54,7 +54,7 @@ const Folder:React.FC=()=>{const f=useCurrentFrame(),fresh=f>580;const seq:[numb
  <Pad style={{position:'absolute',left:55,right:55,top:906,height:550}}><FolderTable fresh={fresh} vertical/></Pad>
  {current&&<Caption vertical text={current[2]}/>}<Progress f={f} max={1140} vertical/><Audio src={staticFile('voice-v12.mp3')}/></AbsoluteFill>;};
 const Step:React.FC<{n:string;title:string;desc:string}>=({n,title,desc})=><Pad style={{height:220,padding:30,boxSizing:'border-box'}}><div style={{fontSize:21,color:c.green,fontWeight:950}}>{n}</div><div style={{fontSize:31,color:c.ink,fontWeight:950,marginTop:11}}>{title}</div><div style={{fontSize:23,color:c.muted,lineHeight:1.24,marginTop:12}}>{desc}</div></Pad>;
-const Long:React.FC=()=>{const f=useCurrentFrame(),s=f/24;const stage=s<22?'hook':s<72?'stale':s<125?'why':s<182?'desktop':s<239?'cloud':s<285?'ingest':s<330?'folder':s<356?'verify':'outro';
+const Long:React.FC=()=>{const f=useCurrentFrame(),s=f/24;const stage=s<22?'hook':s<72?'stale':s<125?'why':s<182?'desktop':s<239?'cloud':s<285?'ingest':s<330?'folder':s<376?'verify':'outro';
  const info:{[key:string]:[string,string,string]}={
  hook:['ONE GREEN CHECK. OLD DATA.','The cloud flow finished. The workbook did not refresh.','Fictional sample workbook · supported Microsoft behavior'],
  stale:['THE PROOF','The source changed. The Excel dashboard did not.','Compare sixteen source orders against twelve old report rows'],
