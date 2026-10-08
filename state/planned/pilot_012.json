@@ -3,9 +3,9 @@
   "type": "short",
   "target_release_local": "2026-10-10T20:30:00+05:30",
   "video_file": "folder-short-v12.mp4",
-  "status": "render_queued",
+  "status": "render_refined_in_progress",
   "youtube_video_id": null,
-  "render_run_id": null,
+  "render_run_id": 37803233221,
   "episode": "content/episodes/pilot_012.json",
   "expected_artifact": "flowminute-refresh-pack",
   "quality_gate": [
@@ -17,5 +17,8 @@
     "checks_clean",
     "studio_schedule_verified"
   ],
-  "no_duplicate_upload": true
+  "no_duplicate_upload": true,
+  "backup_render_run_id": 37801662489,
+  "expected_artifact_id": null,
+  "last_quality_issue": "Fixed mobile proof density and refresh result visibility; awaiting new QA"
 }
