@@ -1,18 +1,26 @@
 {
   "id": "long_004",
   "type": "long",
-  "status": "render_queued",
+  "status": "scheduled_verified",
   "title": "Excel AI Formula Suggestions: 3 Checks Before You Trust Them",
   "target_release_local": "2026-10-09T16:00:00+05:30",
   "episode": "content/episodes/long_004.json",
   "expected_artifact": "flowminute-formula-pack",
   "video_file": "formula-audit-long-004.mp4",
-  "youtube_video_id": null,
+  "youtube_video_id": "ZXta-rTOc2o",
   "quality_gate": [
     "render_success",
     "narration_timing",
     "visual_qa",
     "youtube_checks",
     "studio_schedule_confirmed"
-  ]
+  ],
+  "youtube_url": "https://youtu.be/ZXta-rTOc2o",
+  "youtube_checks": "complete_no_issues",
+  "studio_confirmation": "Video scheduled",
+  "custom_thumbnail": "uploaded_in_studio",
+  "render_run_id": 37794690021,
+  "artifact_id": 11558835052,
+  "visual_qa": "passed",
+  "no_duplicate_upload": true
 }
