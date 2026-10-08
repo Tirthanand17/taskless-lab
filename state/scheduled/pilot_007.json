@@ -12,15 +12,32 @@
   "visual_qa": "passed",
   "no_duplicate_upload": true,
   "latest_public_check": {
-    "checked_at_utc": "2026-10-08T11:05:01.277Z",
+    "checked_at_utc": "2026-10-08T11:50:10.990Z",
     "oembed_http_status": 200,
     "oembed_title": "Excel Just Broke a 40-Year Rule #excel #shorts",
     "oembed_author": "FlowMinute Lab",
-    "youtubei_player_status": "UNPLAYABLE",
-    "youtubei_reason": "Video unavailable",
-    "result": "public_playability_not_confirmed",
-    "requires": "authorized_YouTube_Studio_check_of_exact_existing_video_id",
+    "youtube_watch_result": "blocked_by_google_automated_traffic_captcha",
+    "playback_status": "not_independently_confirmed",
+    "prior_player_result": "UNPLAYABLE / Video unavailable at 2026-10-08T11:05:01.277Z",
+    "result": "overdue_public_playability_unverified",
+    "recovery_blocker": "Authenticated YouTube Studio browser control unavailable; vidIQ video-state read has insufficient credits; public watch check blocked by CAPTCHA",
+    "requires": "Check exact existing rgMxXJTaXBk in authorized Studio, restore public visibility/playability if needed, verify public playback, then update published receipt",
     "do_not_reupload": true,
     "do_not_mark_public_verified": true
-  }
+  },
+  "public_check_history": [
+    {
+      "checked_at_utc": "2026-10-08T11:05:01.277Z",
+      "oembed_http_status": 200,
+      "oembed_title": "Excel Just Broke a 40-Year Rule #excel #shorts",
+      "oembed_author": "FlowMinute Lab",
+      "youtubei_player_status": "UNPLAYABLE",
+      "youtubei_reason": "Video unavailable",
+      "result": "public_playability_not_confirmed",
+      "requires": "authorized_YouTube_Studio_check_of_exact_existing_video_id",
+      "do_not_reupload": true,
+      "do_not_mark_public_verified": true
+    }
+  ],
+  "recovery_status": "overdue_public_playability_unverified"
 }
