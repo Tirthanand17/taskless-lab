@@ -1,0 +1,48 @@
+{
+  "id": "pilot_010",
+  "title": "Excel AI Learned the WRONG Name Rule #excel #shorts",
+  "description": "Formula by Example can suggest a formula from a few sample outputs. But examples can hide edge cases. This illustrative name-parsing exercise explains why 'Dr Maya Chen' breaks a naive first-word rule. #excel #copilot #formulas #shorts",
+  "duration_seconds": 34,
+  "source_script": "motion-v2/script-v10.txt",
+  "voice": "en-US-AvaNeural",
+  "captions": [
+    {
+      "start": 0,
+      "end": 4.5,
+      "text": "Excel can learn a formula from examples."
+    },
+    {
+      "start": 4.5,
+      "end": 11,
+      "text": "Ava and Leo work perfectly."
+    },
+    {
+      "start": 11,
+      "end": 20.5,
+      "text": "Now meet Doctor Maya Chen."
+    },
+    {
+      "start": 20.5,
+      "end": 28,
+      "text": "The shortcut returns Doctor, not Maya."
+    },
+    {
+      "start": 28,
+      "end": 34,
+      "text": "Test exceptions before filling the column."
+    }
+  ],
+  "tags": [
+    "formula by example",
+    "Copilot excel",
+    "extract first name excel",
+    "Excel textbefore"
+  ],
+  "sources": [
+    "https://support.microsoft.com/en-us/excel/copilot/copilot-formula-suggestions-turn-on-off",
+    "https://support.microsoft.com/en-us/excel/copilot/frequently-asked-questions-about-copilot-in-excel",
+    "https://support.google.com/youtube/answer/12340300"
+  ],
+  "category": "Education",
+  "visual_note": "Illustrative formula demonstration, not a captured live Copilot suggestion."
+}
