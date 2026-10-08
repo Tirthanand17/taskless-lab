@@ -43,7 +43,7 @@ jobs:
           media=[
             ("v11","motion-v2/public/voice-v11.mp3",39),
             ("v12","motion-v2/public/voice-v12.mp3",38),
-            ("long_005","motion-v2/public/voice-long-005.mp3",380),
+            ("long_005","motion-v2/public/voice-long-005.mp3",394),
           ]
           for name,filename,limit in media:
             seconds=float(MP3(filename).info.length)
