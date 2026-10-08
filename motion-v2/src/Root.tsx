@@ -9,6 +9,7 @@ import {HiddenSpaceXrayShort} from './HiddenSpaceXrayShort';
 import {InvisibleExcelLong} from './InvisibleExcelLong';
 import {MultiValueRuleShort, MultiValueWarningShort, MultiValueCellsLong} from './MultiValueCells';
 import {FormulaRangeShort, FormulaExampleShort, FormulaAuditLong, FormulaAuditThumbnail} from './FormulaTruth';
+import {StaleFlowShort, FromFolderShort, RefreshTruthLong, RefreshTruthThumbnail} from './RefreshTruth';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -89,6 +90,10 @@ export const RemotionRoot: React.FC = () => {
       <Composition id="FormulaExampleShort" component={FormulaExampleShort} durationInFrames={1020} fps={30} width={1080} height={1920} />
       <Composition id="FormulaAuditLong" component={FormulaAuditLong} durationInFrames={6384} fps={24} width={1920} height={1080} />
       <Composition id="FormulaAuditThumbnail" component={FormulaAuditThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
+      <Composition id="StaleFlowShort" component={StaleFlowShort} durationInFrames={1170} fps={30} width={1080} height={1920} />
+      <Composition id="FromFolderShort" component={FromFolderShort} durationInFrames={1140} fps={30} width={1080} height={1920} />
+      <Composition id="RefreshTruthLong" component={RefreshTruthLong} durationInFrames={9120} fps={24} width={1920} height={1080} />
+      <Composition id="RefreshTruthThumbnail" component={RefreshTruthThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
       <Composition
         id="HiddenSpaceXrayShort"
         component={HiddenSpaceXrayShort}
