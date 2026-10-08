@@ -1,7 +1,7 @@
 {
   "id": "long_003",
   "type": "long",
-  "status": "scheduled_verified",
+  "status": "public_verified",
   "target_release_local": "2026-10-08T16:00:00+05:30",
   "title": "Excel Changed After 40 Years: Multiple Values in One Cell (What Works & What Breaks)",
   "episode": "content/episodes/long_003.json",
@@ -10,7 +10,7 @@
   "artifact": "flowminute-long-003",
   "video_file": "multi-value-cells-long-003.mp4",
   "youtube_video_id": "BUhZhESshZ0",
-  "privacy_target": "scheduled",
+  "privacy_target": "public",
   "quality_gate": [
     "render_success",
     "visual_qa_pass",
@@ -38,5 +38,11 @@
     "status": "success"
   },
   "youtube_checks": "complete_no_issues",
-  "no_duplicate_upload": true
+  "no_duplicate_upload": true,
+  "public_receipt": "state/published/long_003.json",
+  "public_verification": {
+    "player_status": "OK",
+    "oembed_http_status": 200,
+    "verified_date_local": "2026-10-08"
+  }
 }
