@@ -22,7 +22,13 @@
     "render-v8": "remotion render src/index.ts MultiValueWarningShort ../assets/v8/multi-value-warning-v8.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
     "still-v8": "remotion still src/index.ts MultiValueWarningShort ../assets/v8/thumbnail-v8.png --frame=420",
     "render-long-003": "remotion render src/index.ts MultiValueCellsLong ../assets/long-003/multi-value-cells-long-003.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
-    "still-long-003": "remotion still src/index.ts MultiValueCellsLong ../assets/long-003/thumbnail-long-003.png --frame=820"
+    "still-long-003": "remotion still src/index.ts MultiValueCellsLong ../assets/long-003/thumbnail-long-003.png --frame=820",
+    "render-v9": "remotion render src/index.ts FormulaRangeShort ../assets/v9/formula-range-v9.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still-v9": "remotion still src/index.ts FormulaRangeShort ../assets/v9/thumbnail-v9.png --frame=60",
+    "render-v10": "remotion render src/index.ts FormulaExampleShort ../assets/v10/formula-example-v10.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still-v10": "remotion still src/index.ts FormulaExampleShort ../assets/v10/thumbnail-v10.png --frame=420",
+    "render-long-004": "remotion render src/index.ts FormulaAuditLong ../assets/long-004/formula-audit-long-004.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
+    "still-long-004": "remotion still src/index.ts FormulaAuditThumbnail ../assets/long-004/thumbnail-long-004.png --frame=0"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
