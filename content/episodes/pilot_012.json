@@ -1,0 +1,43 @@
+{
+  "id": "pilot_012",
+  "title": "Stop Copy-Pasting CSV Files. Use Power Query From Folder #shorts",
+  "description": "Combine matching CSV files with Excel Power Query From Folder. Import through Data > Get Data > From File > From Folder, inspect the sample, then refresh when new matching files arrive. Adding a file does not schedule a closed Excel workbook to refresh by itself. #excel #powerquery #csv #automation #shorts",
+  "duration_seconds": 38,
+  "source_script": "motion-v2/script-v12.txt",
+  "voice": "en-US-AvaNeural",
+  "category": "Education",
+  "captions": [
+    {
+      "start": 0,
+      "end": 5.2,
+      "text": "Still copying CSV files one by one?"
+    },
+    {
+      "start": 5.2,
+      "end": 12.7,
+      "text": "Data → Get Data → From File → From Folder."
+    },
+    {
+      "start": 12.7,
+      "end": 20,
+      "text": "Combine matching files into one table."
+    },
+    {
+      "start": 20,
+      "end": 29.2,
+      "text": "Add a matching file, then run Refresh."
+    },
+    {
+      "start": 29.2,
+      "end": 38,
+      "text": "No more repeated copying. Refresh still has to run."
+    }
+  ],
+  "sources": [
+    "https://learn.microsoft.com/en-us/office/dev/scripts/testing/power-automate-troubleshooting",
+    "https://support.microsoft.com/en-us/excel/refresh-an-external-data-connection-in-excel",
+    "https://support.microsoft.com/en-us/excel/import-data-from-a-folder-with-multiple-files-power-query",
+    "https://learn.microsoft.com/en-us/power-bi/transform-model/dataflows/dataflows-configure-consume"
+  ],
+  "visual_note": "Illustrative Excel UI; real documented menu steps, no claim of automatically scheduled refresh."
+}
