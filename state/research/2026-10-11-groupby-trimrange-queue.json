@@ -1,7 +1,7 @@
 {
   "date": "2026-10-11",
   "created_at_local": "2026-10-08T21:51:35+05:30",
-  "state": "research_candidates_only",
+  "state": "research_checked_scripts_drafted_not_rendered",
   "not_rendered": true,
   "not_qa_passed": true,
   "not_uploaded": true,
@@ -52,9 +52,11 @@
       "qa_requirements": "Excel UI proof with edge blanks, formula exactness, 9:16 legibility and clean alignment."
     }
   ],
-  "next_steps": "Check no overlap with published episode claims; produce distinct scripts, render, inspect frame-by-frame, perform technical/visual QA and mark QA passed only with evidence; never substitute these for existing Oct 10 scheduled videos.",
+  "next_steps": "Record/validate genuine Excel demonstrations; render three distinct original assets; perform technical, visual, narration and fact QA; mark QA-passed only after evidence. Do not upload duplicates or alter Oct 10 schedules.",
   "quality_bar": "Realistic Excel UI dominant, brief cinematic context, strong first-five-second hook, before/after proof, purposeful animation, no slideshow/template look.",
   "analytics_caveat": "Channel-specific retention/performance analytics unavailable; concepts are documentation-led, not validated as high-performing.",
   "paid_actions": false,
-  "personal_data": false
+  "personal_data": false,
+  "script_draft_path": "state/production/2026-10-11-preproduction.json",
+  "last_updated_local": "2026-10-08T23:39:00+05:30"
 }
