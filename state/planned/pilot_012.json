@@ -1,0 +1,21 @@
+{
+  "id": "pilot_012",
+  "type": "short",
+  "target_release_local": "2026-10-10T20:30:00+05:30",
+  "video_file": "folder-short-v12.mp4",
+  "status": "render_queued",
+  "youtube_video_id": null,
+  "render_run_id": null,
+  "episode": "content/episodes/pilot_012.json",
+  "expected_artifact": "flowminute-refresh-pack",
+  "quality_gate": [
+    "voice_length_check",
+    "render_success",
+    "visual_qa",
+    "thumbnail_review",
+    "upload_private",
+    "checks_clean",
+    "studio_schedule_verified"
+  ],
+  "no_duplicate_upload": true
+}
