@@ -1,0 +1,110 @@
+name: Render Formula Audit Pack
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/formula-pack.txt"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          cd motion-v2
+          npm install --no-audit --no-fund
+          cd ..
+          python -m pip install edge-tts pillow
+      - name: Validate episodes
+        run: |
+          python scripts/validate_release.py content/episodes/pilot_009.json
+          python scripts/validate_release.py content/episodes/pilot_010.json
+          python scripts/validate_release.py content/episodes/long_004.json
+      - name: Generate narration
+        working-directory: motion-v2
+        run: |
+          python generate_voice_cli.py --script script-v9.txt --output voice-v9.mp3 --voice en-US-AvaNeural --rate "+3%"
+          python generate_voice_cli.py --script script-v10.txt --output voice-v10.mp3 --voice en-US-AvaNeural --rate "+3%"
+          python generate_voice_cli.py --script script-long-004.txt --output voice-long-004.mp3 --voice en-US-ChristopherNeural --rate "+3%"
+          npx remotion browser ensure
+      - name: Media timing gate
+        run: |
+          python - <<'PY'
+          import json,subprocess
+          media=[
+            ("v9","motion-v2/public/voice-v9.mp3",36),
+            ("v10","motion-v2/public/voice-v10.mp3",34),
+            ("long004","motion-v2/public/voice-long-004.mp3",240),
+          ]
+          for name,p,limit in media:
+            r=subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","json",p],text=True)
+            seconds=float(json.loads(r)["format"]["duration"])
+            print(name,"narration_seconds",round(seconds,2),"video_seconds",limit)
+            if seconds>limit-0.2:
+              raise SystemExit(f"narration longer than video: {name} ({seconds:.2f}s)")
+          PY
+      - name: Build output directories
+        run: mkdir -p assets/v9 assets/v10 assets/long-004 assets/qa-formula
+      - name: Render Short 9
+        working-directory: motion-v2
+        run: npm run render-v9
+      - name: Render Short 10
+        working-directory: motion-v2
+        run: npm run render-v10
+      - name: Render Long 4
+        working-directory: motion-v2
+        run: npm run render-long-004
+      - name: Render thumbnails
+        working-directory: motion-v2
+        run: |
+          npm run still-v9
+          npm run still-v10
+          npm run still-long-004
+      - name: Generate captions
+        run: |
+          python scripts/generate_srt.py content/episodes/pilot_009.json assets/v9/captions-v9.srt
+          python scripts/generate_srt.py content/episodes/pilot_010.json assets/v10/captions-v10.srt
+          cp motion-v2/script-long-004.txt assets/long-004/transcript-long-004.txt
+      - name: Visual QA contact sheets
+        working-directory: motion-v2
+        run: |
+          for frame in 15 110 390 650 940; do npx remotion still src/index.ts FormulaRangeShort ../assets/qa-formula/v9-${frame}.png --frame=$frame; done
+          for frame in 15 135 390 670 930; do npx remotion still src/index.ts FormulaExampleShort ../assets/qa-formula/v10-${frame}.png --frame=$frame; done
+          for frame in 75 570 1450 2500 3490 4580 5280 5650; do npx remotion still src/index.ts FormulaAuditLong ../assets/qa-formula/long-${frame}.png --frame=$frame; done
+      - name: Build contact sheets
+        run: |
+          python - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          root=Path("assets/qa-formula")
+          for pref,columns,thumb in [("v9",5,(216,384)),("v10",5,(216,384)),("long",4,(320,180))]:
+            paths=sorted(root.glob(pref+"-*.png"))
+            height=thumb[1]+26
+            sheet=Image.new("RGB",(columns*thumb[0],((len(paths)+columns-1)//columns)*height),"#e8edf2")
+            for i,p in enumerate(paths):
+              im=Image.open(p).convert("RGB")
+              im.thumbnail(thumb)
+              card=Image.new("RGB",(thumb[0],height),"white")
+              card.paste(im,((thumb[0]-im.width)//2,26))
+              ImageDraw.Draw(card).text((8,7),p.stem,fill="black")
+              sheet.paste(card,((i%columns)*thumb[0],(i//columns)*height))
+            sheet.save(root/(pref+"-contact.jpg"),quality=88)
+          PY
+      - name: Upload production artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-formula-pack
+          path: |
+            assets/v9/*
+            assets/v10/*
+            assets/long-004/*
+            assets/qa-formula/*-contact.jpg
