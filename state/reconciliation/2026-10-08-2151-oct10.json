@@ -53,5 +53,18 @@
   "authorized_bridge_contents": "empty_on_list_directory",
   "oct11_buffer": "not_found_in_state/planned_or_content/episodes_as_of_check; no new QA-passed 2 Shorts + 1 long confirmed",
   "actions": "No uploads, rerenders, schedule edits, public promotions, or paid actions. Existing planned/scheduled receipts left unchanged because already internally consistent and fresh Studio evidence unavailable.",
-  "next_action": "Retry authorized Studio recheck; protect exact IDs, verify public playability after due times and propagation grace, then update planned/scheduled receipts; build distinct Oct 11 QA-passed buffer."
+  "next_action": "Retry authorized Studio recheck; protect exact IDs, verify public playability after due times and propagation grace, then update planned/scheduled receipts; build distinct Oct 11 QA-passed buffer.",
+  "latest_recheck": {
+    "checked_at_local": "2026-10-08T23:09:53+05:30",
+    "github_crosscheck": "all_six_planned_and_scheduled_receipts_match_exact_video_ids_release_times_and_scheduled_verified_state",
+    "episode_metadata": "all_three_episode_manifest_files_exist_and_are_consistent_with_release_ids; actual_Studio_metadata_unverified",
+    "youtube_studio_current_state": "not_independently_verified",
+    "authorized_school_desktop_commander": "offline_last_seen_34_minutes_before_check",
+    "authorized_primary_desktop_commander": "offline_last_seen_39_hours_before_check",
+    "vidiq_authenticated_user_videos": "insufficient_credits_no_charge",
+    "release_publication": "not_due_2026_10_10",
+    "oct11_buffer": "three_research_candidates_only_no_render_or_QA_passed_assets_in_content_episodes_or_state_planned",
+    "temp_bridge": "not_accessible_to_recheck_or_clean_because_authorized_PC_offline; previously_recorded_empty",
+    "actions": "No duplicate upload, no rerender, no schedule change, no status promotion, no paid action. Retain scheduled_verified as historical Studio confirmation pending live recheck."
+  }
 }
