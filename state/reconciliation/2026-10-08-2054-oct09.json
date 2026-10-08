@@ -1,0 +1,42 @@
+{
+  "checked_at_local": "2026-10-08T20:54:32+05:30",
+  "release_day_local": "2026-10-09",
+  "source": "GitHub planned/scheduled receipts read via authorized GitHub connector",
+  "live_studio_recheck": "not_available",
+  "live_studio_blocker": "Desktop Commander has terminal/filesystem access but no authenticated Studio browser control; vidIQ private-video read unavailable due to insufficient credits",
+  "items": [
+    {
+      "id": "pilot_009",
+      "youtube_video_id": "90y7fJt_OdM",
+      "target_release_local": "2026-10-09T11:00:00+05:30",
+      "github_planned_state": "scheduled_verified",
+      "github_scheduled_state": "scheduled_verified",
+      "historical_checks": "copyright_processing_longer_than_expected",
+      "final_copyright_check": "not_verified",
+      "current_restrictions": "unknown",
+      "current_studio_schedule": "not_reverified"
+    },
+    {
+      "id": "long_004",
+      "youtube_video_id": "ZXta-rTOc2o",
+      "target_release_local": "2026-10-09T16:00:00+05:30",
+      "github_planned_state": "scheduled_verified",
+      "github_scheduled_state": "scheduled_verified",
+      "historical_checks": "complete_no_issues",
+      "historical_thumbnail": "uploaded_in_studio",
+      "current_studio_schedule": "not_reverified"
+    },
+    {
+      "id": "pilot_010",
+      "youtube_video_id": "Or66zPX0kaQ",
+      "target_release_local": "2026-10-09T20:30:00+05:30",
+      "github_planned_state": "scheduled_verified",
+      "github_scheduled_state": "scheduled_verified",
+      "historical_checks": "complete_no_issues",
+      "current_studio_schedule": "not_reverified"
+    }
+  ],
+  "changes_made": "No YouTube uploads, reschedules, or publication state promotions.",
+  "receipt_sync": "Attempted existing pilot_009 planned and scheduled file updates; GitHub connector safety checks blocked both. This separate audit receipt preserves the unresolved status.",
+  "next_action": "Before each due slot, recheck the same existing ID in authenticated Studio. After slot plus propagation grace, verify public playability and reconcile receipts; recover only the existing upload if safe."
+}
