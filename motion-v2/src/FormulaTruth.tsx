@@ -96,7 +96,8 @@ const ShotShort:React.FC<{variant:'range'|'name'}>=({variant})=>{
 };
 const LongVideo:React.FC=()=>{
  const f=useCurrentFrame();
- const section=f<250?'hook':f<1260?'range':f<2080?'correct':f<3070?'meaning':f<4290?'name':f<5070?'feature':f<5550?'settings':'outro';
+ const t=f*5760/6384;
+ const section=t<250?'hook':t<1260?'range':t<2080?'correct':t<3070?'meaning':t<4290?'name':t<5070?'feature':t<5550?'settings':'outro';
  const sections:any={hook:['THE $3,600 PROBLEM','This total looks right. It is not.'],range:['CHECK #1 · RANGE','The last invoice was invisible to the formula.'],correct:['FIX AND VERIFY','Count the records. Then confirm the total.'],meaning:['CHECK #2 · MEANING','Profit margin is not the same as markup.'],name:['CHECK #3 · EDGE CASES','Two good examples may hide a bad rule.'],feature:['HOW EXCEL COPILOT HELPS','Formula completion + Formula by Example.'],settings:['TAKE CONTROL','Two Copilot suggestion settings.'],outro:['THE THREE-CHECK RULE','Range. Meaning. Edge cases.']};
  const [b,h]=sections[section],correct=section==='correct'||section==='outro';
  return <AbsoluteFill style={{background:'linear-gradient(145deg,#eff3f6,#e9f0f4)',overflow:'hidden'}}>
@@ -119,7 +120,7 @@ const LongVideo:React.FC=()=>{
    <div style={{position:'absolute',left:1190,right:110,top:350}}><Panel style={{padding:28}}><Eyebrow red>MARKUP ON COST</Eyebrow><div style={{fontSize:75,color:P.red,fontWeight:950}}>50%</div><div style={{fontSize:27,marginBottom:23}}>Profit ÷ Cost</div><Eyebrow>MARGIN ON PRICE</Eyebrow><div style={{fontSize:75,color:P.teal,fontWeight:950}}>33.3%</div><div style={{fontSize:27}}>Profit ÷ Selling price</div></Panel></div>
   </>}
   {section==='name'&&<>
-   <Panel style={{position:'absolute',left:105,top:332,width:1110,height:680}}><GridTable kind="names" correct={f>3740}/></Panel>
+   <Panel style={{position:'absolute',left:105,top:332,width:1110,height:680}}><GridTable kind="names" correct={t>3740}/></Panel>
    <div style={{position:'absolute',left:1250,right:110,top:350}}><Panel style={{padding:26}}><Eyebrow red>EDGE CASE</Eyebrow><div style={{fontSize:40,fontWeight:950,marginTop:15}}>“Dr Maya Chen”</div><div style={{fontSize:25,lineHeight:1.3,color:P.muted,marginTop:19}}>TEXTBEFORE returns <b>Dr</b>. The desired first name is <b>Maya</b>.</div><div style={{marginTop:25,fontSize:19,color:P.red,fontWeight:900}}>ILLUSTRATIVE RULE — NOT A LIVE COPILOT TEST</div></Panel></div>
   </>}
   {section==='feature'&&<div style={{position:'absolute',left:160,right:160,top:335,display:'grid',gridTemplateColumns:'1fr 1fr',gap:30}}>
@@ -133,7 +134,7 @@ const LongVideo:React.FC=()=>{
   {section==='outro'&&<div style={{position:'absolute',top:330,left:130,right:130,display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:26}}>
    {[['01','RANGE','All rows included?'],['02','MEANING','The right business metric?'],['03','EDGE CASES','Messy data tested?']].map(([i,a,b])=><Panel key={a} style={{padding:35,height:400}}><div style={{fontSize:25,color:P.teal,fontWeight:900}}>{i}</div><div style={{fontSize:46,fontWeight:950,color:P.ink,marginTop:25}}>{a}</div><div style={{fontSize:27,color:P.muted,marginTop:24,lineHeight:1.2}}>{b}</div></Panel>)}
   </div>}
-  <div style={{position:'absolute',bottom:23,left:100,right:100,height:5,borderRadius:4,background:'#d9e2e7'}}><div style={{width:(f/5759*100)+'%',height:5,background:P.teal,borderRadius:4}}/></div>
+  <div style={{position:'absolute',bottom:23,left:100,right:100,height:5,borderRadius:4,background:'#d9e2e7'}}><div style={{width:(f/6383*100)+'%',height:5,background:P.teal,borderRadius:4}}/></div>
   <Audio src={staticFile('voice-long-004.mp3')}/>
  </AbsoluteFill>;
 };
