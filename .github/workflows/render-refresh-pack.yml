@@ -1,0 +1,109 @@
+name: Render Power Query Refresh Pack
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/refresh-pack.txt"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install rendering and QA dependencies
+        run: |
+          cd motion-v2
+          npm install --no-audit --no-fund
+          cd ..
+          python -m pip install edge-tts pillow mutagen
+      - name: Validate all content
+        run: |
+          python scripts/validate_release.py content/episodes/pilot_011.json
+          python scripts/validate_release.py content/episodes/pilot_012.json
+          python scripts/validate_release.py content/episodes/long_005.json
+      - name: Generate speech
+        working-directory: motion-v2
+        run: |
+          python generate_voice_cli.py --script script-v11.txt --output voice-v11.mp3 --voice en-US-AvaNeural --rate "+4%"
+          python generate_voice_cli.py --script script-v12.txt --output voice-v12.mp3 --voice en-US-AvaNeural --rate "+4%"
+          python generate_voice_cli.py --script script-long-005.txt --output voice-long-005.mp3 --voice en-US-ChristopherNeural --rate "+3%"
+          npx remotion browser ensure
+      - name: Narration duration gate
+        run: |
+          python - <<'PY'
+          from mutagen.mp3 import MP3
+          media=[
+            ("v11","motion-v2/public/voice-v11.mp3",39),
+            ("v12","motion-v2/public/voice-v12.mp3",38),
+            ("long_005","motion-v2/public/voice-long-005.mp3",380),
+          ]
+          for name,filename,limit in media:
+            seconds=float(MP3(filename).info.length)
+            print(name,"narration_seconds",round(seconds,2),"video_seconds",limit)
+            if seconds>limit-0.2:
+              raise SystemExit("VOICE_OVERRUN: "+name+" "+str(round(seconds,2)))
+          PY
+      - name: Create release folders
+        run: mkdir -p assets/v11 assets/v12 assets/long-005 assets/qa-refresh
+      - name: Render opening Short
+        working-directory: motion-v2
+        run: npm run render-v11
+      - name: Render evening Short
+        working-directory: motion-v2
+        run: npm run render-v12
+      - name: Render long-form
+        working-directory: motion-v2
+        run: npm run render-long-005
+      - name: Render thumbnails
+        working-directory: motion-v2
+        run: |
+          npm run still-v11
+          npm run still-v12
+          npm run still-long-005
+      - name: Prepare captions and transcript
+        run: |
+          python scripts/generate_srt.py content/episodes/pilot_011.json assets/v11/captions-v11.srt
+          python scripts/generate_srt.py content/episodes/pilot_012.json assets/v12/captions-v12.srt
+          cp motion-v2/script-long-005.txt assets/long-005/transcript-long-005.txt
+      - name: Render QA representative frames
+        working-directory: motion-v2
+        run: |
+          for f in 30 220 500 720 1000; do npx remotion still src/index.ts StaleFlowShort ../assets/qa-refresh/v11-${f}.png --frame=$f; done
+          for f in 30 220 500 720 980; do npx remotion still src/index.ts FromFolderShort ../assets/qa-refresh/v12-${f}.png --frame=$f; done
+          for f in 85 850 2400 3480 4650 5720 6870 8120 8930; do npx remotion still src/index.ts RefreshTruthLong ../assets/qa-refresh/long-${f}.png --frame=$f; done
+      - name: Build visual QA sheets
+        run: |
+          python - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          root=Path("assets/qa-refresh")
+          for pref,columns,thumb in [("v11",5,(216,384)),("v12",5,(216,384)),("long",3,(384,216))]:
+            paths=sorted(root.glob(pref+"-*.png"))
+            height=thumb[1]+27
+            sheet=Image.new("RGB",(columns*thumb[0],((len(paths)+columns-1)//columns)*height),"#e8edf2")
+            for i,p in enumerate(paths):
+              im=Image.open(p).convert("RGB")
+              im.thumbnail(thumb)
+              card=Image.new("RGB",(thumb[0],height),"white")
+              card.paste(im,((thumb[0]-im.width)//2,27))
+              ImageDraw.Draw(card).text((8,7),p.stem,fill="black")
+              sheet.paste(card,((i%columns)*thumb[0],(i//columns)*height))
+            sheet.save(root/(pref+"-contact.jpg"),quality=88)
+          PY
+      - name: Upload finished production pack
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-refresh-pack
+          path: |
+            assets/v11/*
+            assets/v12/*
+            assets/long-005/*
+            assets/qa-refresh/*-contact.jpg
