@@ -1,6 +1,6 @@
 {
   "id": "long_003",
-  "status": "scheduled_verified",
+  "status": "public_verified",
   "video_id": "BUhZhESshZ0",
   "youtube_url": "https://youtu.be/BUhZhESshZ0",
   "scheduled_release_local": "2026-10-08T16:00:00+05:30",
@@ -10,5 +10,19 @@
   "artifact_id": 11493126896,
   "artifact_name": "flowminute-long-003",
   "visual_qa": "passed",
-  "no_duplicate_upload": true
+  "no_duplicate_upload": true,
+  "public_verification": {
+    "checked_at_utc": "2026-10-08T11:04:12.971Z",
+    "verification_methods": [
+      "unauthenticated_youtube_oembed_http_200",
+      "unauthenticated_youtubei_player_status_OK"
+    ],
+    "youtube_video_id": "BUhZhESshZ0",
+    "channel": "FlowMinute Lab",
+    "observed_title": "Excel Changed After 40 Years: Multiple Values in One Cell (What Works & What Breaks)",
+    "oembed_http_status": 200,
+    "player_status": "OK",
+    "verification_date_local": "2026-10-08",
+    "no_duplicate_upload": true
+  }
 }
