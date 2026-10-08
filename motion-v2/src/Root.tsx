@@ -87,7 +87,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition id="FormulaRangeShort" component={FormulaRangeShort} durationInFrames={1080} fps={30} width={1080} height={1920} />
       <Composition id="FormulaExampleShort" component={FormulaExampleShort} durationInFrames={1020} fps={30} width={1080} height={1920} />
-      <Composition id="FormulaAuditLong" component={FormulaAuditLong} durationInFrames={5760} fps={24} width={1920} height={1080} />
+      <Composition id="FormulaAuditLong" component={FormulaAuditLong} durationInFrames={6384} fps={24} width={1920} height={1080} />
       <Composition id="FormulaAuditThumbnail" component={FormulaAuditThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
       <Composition
         id="HiddenSpaceXrayShort"
