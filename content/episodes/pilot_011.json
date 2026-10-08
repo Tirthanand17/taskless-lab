@@ -1,0 +1,43 @@
+{
+  "id": "pilot_011",
+  "title": "Power Automate Says SUCCESS. Your Excel Data Is Still OLD! #shorts",
+  "description": "A green Power Automate cloud flow does NOT always mean an Excel Power Query connection refreshed. Microsoft's Office Scripts documentation describes a case where the refresh method can succeed without updating a non-Power BI source. An illustrative sales report shows why you must verify the source and output. #excel #powerautomate #powerquery #shorts",
+  "duration_seconds": 39,
+  "source_script": "motion-v2/script-v11.txt",
+  "voice": "en-US-AvaNeural",
+  "category": "Education",
+  "captions": [
+    {
+      "start": 0,
+      "end": 5,
+      "text": "The flow says success. But the dashboard is old."
+    },
+    {
+      "start": 5,
+      "end": 12,
+      "text": "A cloud Office Script can finish without refreshing the CSV."
+    },
+    {
+      "start": 12,
+      "end": 21.7,
+      "text": "The source has sixteen orders. Excel still has twelve."
+    },
+    {
+      "start": 21.7,
+      "end": 30,
+      "text": "Microsoft documents why this happens."
+    },
+    {
+      "start": 30,
+      "end": 39,
+      "text": "Verify the rows and totals, not the green badge."
+    }
+  ],
+  "sources": [
+    "https://learn.microsoft.com/en-us/office/dev/scripts/testing/power-automate-troubleshooting",
+    "https://support.microsoft.com/en-us/excel/refresh-an-external-data-connection-in-excel",
+    "https://support.microsoft.com/en-us/excel/import-data-from-a-folder-with-multiple-files-power-query",
+    "https://learn.microsoft.com/en-us/power-bi/transform-model/dataflows/dataflows-configure-consume"
+  ],
+  "visual_note": "Illustrative reconstructed UI and invented sales numbers; no claim this was recorded from a live Microsoft account."
+}
