@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-11",
+  "created_at_local": "2026-10-08T21:51:35+05:30",
+  "state": "research_candidates_only",
+  "not_rendered": true,
+  "not_qa_passed": true,
+  "not_uploaded": true,
+  "not_scheduled": true,
+  "source_research": [
+    {
+      "topic": "GROUPBY",
+      "url": "https://support.microsoft.com/en-us/excel/functions/groupby-function",
+      "finding": "One-axis formula grouping and aggregation; documentation lists Excel for Microsoft 365."
+    },
+    {
+      "topic": "TRIMRANGE",
+      "url": "https://support.microsoft.com/en-au/excel/functions/trimrange-function",
+      "finding": "Removes empty outer rows/columns, not interior blanks; Excel for Microsoft 365."
+    },
+    {
+      "topic": "PIVOTBY",
+      "url": "https://support.microsoft.com/en-us/excel/functions/pivotby-function",
+      "finding": "Two-axis formula aggregation, not the same feature as PivotTable."
+    }
+  ],
+  "candidates": [
+    {
+      "id": "pilot_013",
+      "type": "short",
+      "working_title": "Excel Can Summarize Sales With ONE Formula",
+      "focus": "GROUPBY",
+      "proof": "Before: 30 transaction rows; after: grouped revenue by category, verified totals.",
+      "hook": "Stop manually rebuilding this summary.",
+      "qa_requirements": "Exact Excel UI, live formula input, visible numeric reconciliation, mobile-safe text."
+    },
+    {
+      "id": "long_006",
+      "type": "long",
+      "working_title": "Excel GROUPBY vs PIVOTBY vs PivotTable: Which One Actually Saves Time?",
+      "focus": "Group aggregation methods comparison",
+      "proof": "Same source table; test one-axis totals, two-axis totals, refresh/compatibility behavior and error cases; explicitly distinguish PivotTable.",
+      "hook": "Three summaries. One source. Different tradeoffs.",
+      "qa_requirements": "Genuine Excel UI dominant, transparent benchmark/test steps, compatibility caveats, no fake spreadsheet outputs."
+    },
+    {
+      "id": "pilot_014",
+      "type": "short",
+      "working_title": "Why Excel Still Thinks Your Data Has 10,000 Rows",
+      "focus": "TRIMRANGE",
+      "proof": "Before: outer blank rows inflate a range; after: TRIMRANGE excludes outer blanks, with interior blank caveat.",
+      "hook": "Your formula keeps grabbing empty rows.",
+      "qa_requirements": "Excel UI proof with edge blanks, formula exactness, 9:16 legibility and clean alignment."
+    }
+  ],
+  "next_steps": "Check no overlap with published episode claims; produce distinct scripts, render, inspect frame-by-frame, perform technical/visual QA and mark QA passed only with evidence; never substitute these for existing Oct 10 scheduled videos.",
+  "quality_bar": "Realistic Excel UI dominant, brief cinematic context, strong first-five-second hook, before/after proof, purposeful animation, no slideshow/template look.",
+  "analytics_caveat": "Channel-specific retention/performance analytics unavailable; concepts are documentation-led, not validated as high-performing.",
+  "paid_actions": false,
+  "personal_data": false
+}
