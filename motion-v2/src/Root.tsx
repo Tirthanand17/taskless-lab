@@ -92,7 +92,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition id="FormulaAuditThumbnail" component={FormulaAuditThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
       <Composition id="StaleFlowShort" component={StaleFlowShort} durationInFrames={1170} fps={30} width={1080} height={1920} />
       <Composition id="FromFolderShort" component={FromFolderShort} durationInFrames={1140} fps={30} width={1080} height={1920} />
-      <Composition id="RefreshTruthLong" component={RefreshTruthLong} durationInFrames={9120} fps={24} width={1920} height={1080} />
+      <Composition id="RefreshTruthLong" component={RefreshTruthLong} durationInFrames={9456} fps={24} width={1920} height={1080} />
       <Composition id="RefreshTruthThumbnail" component={RefreshTruthThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
       <Composition
         id="HiddenSpaceXrayShort"
