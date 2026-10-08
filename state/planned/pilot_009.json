@@ -1,18 +1,25 @@
 {
   "id": "pilot_009",
   "type": "short",
-  "status": "render_queued",
+  "status": "scheduled_verified",
   "title": "This Excel Formula Missed $3,600 (Spot the Error) #shorts",
   "target_release_local": "2026-10-09T11:00:00+05:30",
   "episode": "content/episodes/pilot_009.json",
   "expected_artifact": "flowminute-formula-pack",
   "video_file": "formula-range-v9.mp4",
-  "youtube_video_id": null,
+  "youtube_video_id": "90y7fJt_OdM",
   "quality_gate": [
     "render_success",
     "narration_timing",
     "visual_qa",
     "youtube_checks",
     "studio_schedule_confirmed"
-  ]
+  ],
+  "youtube_url": "https://youtube.com/shorts/90y7fJt_OdM",
+  "youtube_checks": "copyright_processing_longer_than_expected_at_schedule_time",
+  "studio_confirmation": "Video scheduled",
+  "render_run_id": 37794690021,
+  "artifact_id": 11558835052,
+  "visual_qa": "passed",
+  "no_duplicate_upload": true
 }
