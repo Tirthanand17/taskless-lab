@@ -1,0 +1,275 @@
+{
+  "date": "2026-10-11",
+  "prepared_at_local": "2026-10-08T23:39:00+05:30",
+  "channel": "FlowMinute Lab",
+  "overall_state": "scripted_not_rendered",
+  "release_upload_authorization": false,
+  "video_count": 3,
+  "source_research": [
+    {
+      "title": "Microsoft GROUPBY function",
+      "url": "https://support.microsoft.com/en-us/excel/functions/groupby-function",
+      "claim": "GROUPBY groups and aggregates along one axis; supported in Excel for Microsoft 365."
+    },
+    {
+      "title": "Microsoft PIVOTBY function",
+      "url": "https://support.microsoft.com/en-us/excel/functions/pivotby-function",
+      "claim": "PIVOTBY groups across two axes; it is not the same feature as PivotTable."
+    },
+    {
+      "title": "Microsoft TRIMRANGE function",
+      "url": "https://support.microsoft.com/en-au/excel/functions/trimrange-function",
+      "claim": "TRIMRANGE removes blank outer rows and columns, not internal blank rows."
+    }
+  ],
+  "demonstration_data": {
+    "type": "synthetic_non_personal",
+    "columns": [
+      "Product",
+      "Quarter",
+      "Revenue"
+    ],
+    "rows": [
+      [
+        "A",
+        "Q1",
+        120
+      ],
+      [
+        "B",
+        "Q1",
+        200
+      ],
+      [
+        "A",
+        "Q1",
+        80
+      ],
+      [
+        "C",
+        "Q1",
+        50
+      ],
+      [
+        "B",
+        "Q2",
+        40
+      ],
+      [
+        "A",
+        "Q2",
+        100
+      ],
+      [
+        "C",
+        "Q2",
+        70
+      ],
+      [
+        "B",
+        "Q2",
+        60
+      ]
+    ],
+    "expected_groupby": {
+      "A": 300,
+      "B": 300,
+      "C": 120
+    },
+    "expected_pivotby": {
+      "A": {
+        "Q1": 200,
+        "Q2": 100
+      },
+      "B": {
+        "Q1": 200,
+        "Q2": 100
+      },
+      "C": {
+        "Q1": 50,
+        "Q2": 70
+      }
+    },
+    "expected_quarter_totals": {
+      "Q1": 450,
+      "Q2": 270
+    },
+    "expected_grand_total": 720,
+    "validation": "arithmetically checked; must reproduce in genuine Excel before QA pass"
+  },
+  "episodes": [
+    {
+      "id": "pilot_013",
+      "format": "short",
+      "working_title": "One Excel Formula Turns 8 Sales Rows Into 3 Totals",
+      "target_seconds": 40,
+      "production_state": "script_draft",
+      "narration": [
+        {
+          "start": 0,
+          "end": 5,
+          "text": "Eight sales rows. Three products. One formula. Watch the totals appear."
+        },
+        {
+          "start": 5,
+          "end": 13,
+          "text": "The source table has product names in column A and revenue in column C."
+        },
+        {
+          "start": 13,
+          "end": 24,
+          "text": "In Microsoft 365 Excel, enter GROUPBY with the products, revenue, and SUM."
+        },
+        {
+          "start": 24,
+          "end": 33,
+          "text": "A totals three hundred, B three hundred, C one hundred twenty. That's seven hundred twenty."
+        },
+        {
+          "start": 33,
+          "end": 40,
+          "text": "Reconcile the result to the source sum before you trust it."
+        }
+      ],
+      "formula": "=GROUPBY(A2:A9,C2:C9,SUM,0,0)",
+      "proof": "Show actual Excel formula and 3 result rows; separately show =SUM(C2:C9) equals 720.",
+      "visual_plan": "9:16 real Excel screen recording or transparently labeled accurate UI reconstruction; macro crop formula bar and totals; no slide deck",
+      "caveat": "Availability depends on Microsoft 365 Excel; no claim tested in Excel until capture verified",
+      "qa": [
+        "Actual formula behavior in supported Excel",
+        "Result 300/300/120",
+        "Source SUM 720",
+        "Readable on mobile",
+        "Clean audio captions and no false UI"
+      ]
+    },
+    {
+      "id": "long_006",
+      "format": "long",
+      "working_title": "Excel GROUPBY vs PIVOTBY vs PivotTable: Same Data, Different Jobs",
+      "target_seconds": 300,
+      "production_state": "script_draft",
+      "hook": "Three ways to summarize the same sales. One works on one axis, another on two, and a third uses an interactive PivotTable.",
+      "chapters": [
+        {
+          "time": "00:00-00:25",
+          "title": "The challenge",
+          "narration": "Eight fictional sales rows totaling seven hundred twenty. We need totals by product and by quarter. Can one method handle both cleanly?",
+          "shot": "Live dataset in Excel with sum proof; clearly marked synthetic."
+        },
+        {
+          "time": "00:25-01:15",
+          "title": "GROUPBY",
+          "narration": "GROUPBY is a one-axis formula summary. Enter the product field, revenue values and SUM; check three product totals. The one-axis layout is the key limitation.",
+          "shot": "Show =GROUPBY(A2:A9,C2:C9,SUM,0,0) and reconcile 300,300,120."
+        },
+        {
+          "time": "01:15-02:10",
+          "title": "PIVOTBY",
+          "narration": "PIVOTBY adds a column grouping dimension. Use product and quarter as axes, with revenue as values. The quarter totals should be four hundred fifty and two hundred seventy.",
+          "shot": "Show =PIVOTBY(A2:A9,B2:B9,C2:C9,SUM); verify A 200/100, B 200/100, C 50/70 and grand total 720."
+        },
+        {
+          "time": "02:10-03:20",
+          "title": "PivotTable",
+          "narration": "A PivotTable is an interactive feature, not the PIVOTBY formula. Add Product to Rows, Quarter to Columns, Revenue to Values; compare totals and discuss refresh behavior.",
+          "shot": "Record actual Insert > PivotTable UI, inspect SUM not COUNT, demonstrate refresh of a changed source row without implying automatic refresh."
+        },
+        {
+          "time": "03:20-04:15",
+          "title": "What breaks",
+          "narration": "Older Excel versions may not have these newer functions. A changed source range or wrong value aggregation can produce misleading totals. Check your version, range and grand total.",
+          "shot": "Show genuine compatibility check and one controlled error or range extension; never fabricate Excel outputs."
+        },
+        {
+          "time": "04:15-05:00",
+          "title": "Decision",
+          "narration": "Use GROUPBY for a quick one-axis formula, PIVOTBY for two-axis formulas, and PivotTable for interactive analysis. The best tool is the one whose output you can verify.",
+          "shot": "Comparison grounded in the live demo, with concise end card."
+        }
+      ],
+      "thumbnail": {
+        "text": "GROUPBY vs PIVOTBY",
+        "visual": "Split Excel formula summaries with contrasting 1-axis and 2-axis results; no invented endorsement",
+        "status": "concept_only"
+      },
+      "qa": [
+        "Test formulas in supported Excel",
+        "Actual PivotTable recorded or clearly marked reconstructed",
+        "Check all row/column totals 720",
+        "No unsupported performance benchmark",
+        "Visual hierarchy and pacing",
+        "Custom thumbnail inspected"
+      ],
+      "caveat": "No measured speed comparison; compatibility to be checked in target Excel version."
+    },
+    {
+      "id": "pilot_014",
+      "format": "short",
+      "working_title": "TRIMRANGE Removes the Blank Edges—Not the Blank Middle",
+      "target_seconds": 38,
+      "production_state": "script_draft",
+      "narration": [
+        {
+          "start": 0,
+          "end": 6,
+          "text": "Your Excel range includes blank rows. But watch which blanks this formula actually removes."
+        },
+        {
+          "start": 6,
+          "end": 15,
+          "text": "This example has data from B3 through D7, surrounded by empty rows and columns."
+        },
+        {
+          "start": 15,
+          "end": 25,
+          "text": "TRIMRANGE on A1 to E12 cuts off the empty outer edges."
+        },
+        {
+          "start": 25,
+          "end": 33,
+          "text": "The blank row inside the data stays. It is not a delete-empty-rows command."
+        },
+        {
+          "start": 33,
+          "end": 38,
+          "text": "Trim the edges, then verify the resulting range."
+        }
+      ],
+      "formula": "=TRIMRANGE(A1:E12)",
+      "proof": "Synthetic A1:E12 with nonempty B3:D4 and B6:D7, empty B5:D5; expected trimmed range is B3:D7 with interior blank row retained.",
+      "visual_plan": "9:16 accurate Excel demonstration; colored boundary overlay before/after; no false claim that workbook file size or UsedRange is repaired",
+      "caveat": "Microsoft 365 availability; TRIMRANGE trims edges of the referenced range, not interior blanks or physical worksheet rows.",
+      "qa": [
+        "Actual Excel function verified",
+        "Interior blank row retained",
+        "Correct output dimensions 5x3",
+        "No false UsedRange/performance claim",
+        "Mobile legibility and audio sync"
+      ]
+    }
+  ],
+  "stage_truth": {
+    "research": "source_checked",
+    "scripts": "drafted",
+    "render": "not_started",
+    "visual_qa": "not_passed",
+    "upload": "not_started",
+    "studio_schedule": "not_started",
+    "public": "not_verified"
+  },
+  "next_actions": [
+    "Record or faithfully reconstruct source demonstrations and disclose synthetic data",
+    "Render each distinct episode in intended aspect ratio and duration",
+    "Run technical and premium visual QA with frame/contact sheet review",
+    "Only then update QA receipts; do not upload or schedule automatically"
+  ],
+  "safety": {
+    "no_duplicate_upload": true,
+    "no_personal_data": true,
+    "no_personal_drive": true,
+    "no_phone_verification": true,
+    "no_paid_actions": true,
+    "temporary_pc_bridge": "not_used"
+  }
+}
