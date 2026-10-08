@@ -1,0 +1,76 @@
+{
+  "id": "long_005",
+  "title": "Why Excel Power Query Won't Auto-Refresh (3 Fixes That Work)",
+  "description": "Your Power Automate flow says SUCCESS, but the Excel Power Query report is still stale? This guide explains why Office Scripts triggered by Power Automate cloud flows cannot refresh most non-Power BI sources, then compares Excel Desktop refresh-on-open, supported Power BI/dataflow scheduled refresh, and upstream data ingestion. Includes a Power Query From Folder walkthrough and 3 verification checks. Sales amounts are fictional illustrative examples. #Excel #PowerQuery #PowerAutomate #Automation",
+  "format": "long",
+  "target_duration_seconds": 380,
+  "source_script": "motion-v2/script-long-005.txt",
+  "voice": "en-US-ChristopherNeural",
+  "renderer": "manifest_v2",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 24,
+  "category": "Education",
+  "audience": "not_made_for_kids",
+  "ai_disclosure": true,
+  "paid_promotion": false,
+  "scenes": [
+    {
+      "title": "Hook",
+      "narration": "A green Power Automate flow can leave a stale Excel report."
+    },
+    {
+      "title": "Stale workbook proof",
+      "narration": "Sixteen new source rows but twelve old rows in report."
+    },
+    {
+      "title": "Technical limitation",
+      "narration": "Microsoft's documentation says most refresh calls do not work inside cloud-run Office Scripts."
+    },
+    {
+      "title": "Refresh on open",
+      "narration": "Use Excel Desktop connection properties when a person opens the workbook."
+    },
+    {
+      "title": "Cloud solution",
+      "narration": "Use a data platform with supported scheduled refresh and correct access."
+    },
+    {
+      "title": "Direct ingestion",
+      "narration": "Move source records through supported connectors rather than triggering unsupported refresh."
+    },
+    {
+      "title": "Power Query From Folder",
+      "narration": "Combine matching CSV files and refresh the query when needed."
+    },
+    {
+      "title": "Three verification checks",
+      "narration": "Verify source, actual refresh execution and output row counts."
+    },
+    {
+      "title": "Conclusion",
+      "narration": "Choose appropriate engine and independently confirm data freshness."
+    }
+  ],
+  "thumbnail": {
+    "text": "SUCCESS. DATA STILL OLD.",
+    "visual": "Green Power Automate SUCCESS versus red Excel STALE",
+    "verified": true
+  },
+  "tags": [
+    "Power Query auto refresh",
+    "Power Automate refresh Power Query",
+    "Office Scripts refreshAllDataConnections",
+    "Power Query From Folder",
+    "Excel refresh on open"
+  ],
+  "sources": [
+    "https://learn.microsoft.com/en-us/office/dev/scripts/testing/power-automate-troubleshooting",
+    "https://support.microsoft.com/en-us/excel/refresh-an-external-data-connection-in-excel",
+    "https://support.microsoft.com/en-us/excel/import-data-from-a-folder-with-multiple-files-power-query",
+    "https://learn.microsoft.com/en-us/power-bi/transform-model/dataflows/dataflows-configure-consume"
+  ],
+  "visual_note": "Illustrative UI reconstruction with cited Microsoft behaviors; no live account capture."
+}
