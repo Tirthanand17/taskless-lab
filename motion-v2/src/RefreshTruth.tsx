@@ -77,7 +77,7 @@ const Long:React.FC=()=>{const f=useCurrentFrame(),s=f/24;const stage=s<22?'hook
  </div>}
  {stage==='folder'&&<div style={{position:'absolute',top:307,left:105,right:105,display:'grid',gridTemplateColumns:'1fr 1.35fr',gap:23}}><Pad style={{height:573}}><Source fresh={s>309}/></Pad><Pad style={{height:573}}><FolderTable fresh={s>309}/></Pad></div>}
  {stage==='outro'&&<div style={{position:'absolute',top:345,left:120,right:120,fontFamily:ff,textAlign:'center'}}><div style={{fontSize:76,lineHeight:1.04,fontWeight:950,color:c.green}}>Flow status ≠ data freshness.</div><div style={{fontSize:33,marginTop:35,color:c.muted}}>Build for supported refresh. Verify the records.</div></div>}
- <Progress f={f} max={9120}/><Audio src={staticFile('voice-long-005.mp3')}/></AbsoluteFill>;
+ <Progress f={f} max={9456}/><Audio src={staticFile('voice-long-005.mp3')}/></AbsoluteFill>;
 };
 const Thumb:React.FC=()=> <AbsoluteFill style={{fontFamily:ff,background:'radial-gradient(circle at 76% 18%,#1f5361,#071927 72%)'}}>
  <div style={{position:'absolute',top:64,left:95,fontSize:23,fontWeight:900,color:'#9df4c5',letterSpacing:2}}>FLOWMINUTE LAB · POWER QUERY</div>
