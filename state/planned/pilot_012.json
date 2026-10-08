@@ -3,8 +3,8 @@
   "type": "short",
   "target_release_local": "2026-10-10T20:30:00+05:30",
   "video_file": "folder-short-v12.mp4",
-  "status": "render_refined_in_progress",
-  "youtube_video_id": null,
+  "status": "scheduled_verified",
+  "youtube_video_id": "MZmZ8wGGpqc",
   "render_run_id": 37803233221,
   "episode": "content/episodes/pilot_012.json",
   "expected_artifact": "flowminute-refresh-pack",
@@ -20,5 +20,10 @@
   "no_duplicate_upload": true,
   "backup_render_run_id": 37801662489,
   "expected_artifact_id": null,
-  "last_quality_issue": "Fixed mobile proof density and refresh result visibility; awaiting new QA"
+  "last_quality_issue": "Fixed mobile proof density and refresh result visibility; awaiting new QA",
+  "youtube_url": "https://youtube.com/shorts/MZmZ8wGGpqc",
+  "studio_confirmation": "Video scheduled",
+  "youtube_checks": "complete_no_issues",
+  "artifact_id": 11561699845,
+  "visual_qa": "passed"
 }
