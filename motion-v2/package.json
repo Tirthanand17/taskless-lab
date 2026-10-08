@@ -28,7 +28,13 @@
     "render-v10": "remotion render src/index.ts FormulaExampleShort ../assets/v10/formula-example-v10.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
     "still-v10": "remotion still src/index.ts FormulaExampleShort ../assets/v10/thumbnail-v10.png --frame=420",
     "render-long-004": "remotion render src/index.ts FormulaAuditLong ../assets/long-004/formula-audit-long-004.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
-    "still-long-004": "remotion still src/index.ts FormulaAuditThumbnail ../assets/long-004/thumbnail-long-004.png --frame=0"
+    "still-long-004": "remotion still src/index.ts FormulaAuditThumbnail ../assets/long-004/thumbnail-long-004.png --frame=0",
+    "render-v11": "remotion render src/index.ts StaleFlowShort ../assets/v11/stale-flow-v11.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still-v11": "remotion still src/index.ts StaleFlowShort ../assets/v11/thumb-v11.png --frame=120",
+    "render-v12": "remotion render src/index.ts FromFolderShort ../assets/v12/folder-short-v12.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still-v12": "remotion still src/index.ts FromFolderShort ../assets/v12/thumb-v12.png --frame=220",
+    "render-long-005": "remotion render src/index.ts RefreshTruthLong ../assets/long-005/refresh-truth-long-005.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
+    "still-long-005": "remotion still src/index.ts RefreshTruthThumbnail ../assets/long-005/thumb-long-005.png --frame=0"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
