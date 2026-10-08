@@ -8,6 +8,7 @@ import {DuplicateLatestShort} from './DuplicateLatestShort';
 import {HiddenSpaceXrayShort} from './HiddenSpaceXrayShort';
 import {InvisibleExcelLong} from './InvisibleExcelLong';
 import {MultiValueRuleShort, MultiValueWarningShort, MultiValueCellsLong} from './MultiValueCells';
+import {FormulaRangeShort, FormulaExampleShort, FormulaAuditLong, FormulaAuditThumbnail} from './FormulaTruth';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -84,6 +85,10 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
       />
+      <Composition id="FormulaRangeShort" component={FormulaRangeShort} durationInFrames={1080} fps={30} width={1080} height={1920} />
+      <Composition id="FormulaExampleShort" component={FormulaExampleShort} durationInFrames={1020} fps={30} width={1080} height={1920} />
+      <Composition id="FormulaAuditLong" component={FormulaAuditLong} durationInFrames={5760} fps={24} width={1920} height={1080} />
+      <Composition id="FormulaAuditThumbnail" component={FormulaAuditThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
       <Composition
         id="HiddenSpaceXrayShort"
         component={HiddenSpaceXrayShort}
