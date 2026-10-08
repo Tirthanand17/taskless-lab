@@ -1,0 +1,36 @@
+{
+  "episode_id": "pilot_007",
+  "status": "public_verified",
+  "video_id": "rgMxXJTaXBk",
+  "youtube_url": "https://www.youtube.com/shorts/rgMxXJTaXBk",
+  "scheduled_release_local": "2026-10-08T11:00:00+05:30",
+  "source_render": {
+    "run_id": 37644828536,
+    "artifact_id": 11493029300,
+    "artifact_name": "flowminute-motion-v7",
+    "video_file": "multi-value-rule-v7.mp4"
+  },
+  "quality": {
+    "visual_qa": "passed",
+    "qa_run_id": 37644842269,
+    "qa_artifact_id": 11494356467,
+    "youtube_checks": "complete_no_issues"
+  },
+  "public_verification": {
+    "checked_at_utc": "2026-10-08T14:40:45.860Z",
+    "video_id": "rgMxXJTaXBk",
+    "channel": "FlowMinute Lab",
+    "title": "Excel Just Broke a 40-Year Rule #excel #shorts",
+    "oembed_http_status": 200,
+    "player_status": "OK",
+    "stream_formats_available": 32,
+    "method": "unauthenticated_youtube_oembed_and_youtubei_ANDROID_player",
+    "note": "Earlier WEB client returned UNPLAYABLE/reload for both this video and the known-public long_003; Android client confirmed playability for both."
+  },
+  "privacy_rules": {
+    "personal_data_used": false,
+    "personal_drive_used": false,
+    "phone_verification_used": false
+  },
+  "no_duplicate_upload": true
+}
