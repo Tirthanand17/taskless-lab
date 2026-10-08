@@ -1,0 +1,18 @@
+{
+  "id": "pilot_010",
+  "type": "short",
+  "status": "render_queued",
+  "title": "Excel AI Learned the WRONG Name Rule #excel #shorts",
+  "target_release_local": "2026-10-09T20:30:00+05:30",
+  "episode": "content/episodes/pilot_010.json",
+  "expected_artifact": "flowminute-formula-pack",
+  "video_file": "formula-example-v10.mp4",
+  "youtube_video_id": null,
+  "quality_gate": [
+    "render_success",
+    "narration_timing",
+    "visual_qa",
+    "youtube_checks",
+    "studio_schedule_confirmed"
+  ]
+}
