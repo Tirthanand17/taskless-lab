@@ -32,19 +32,21 @@ const Report:React.FC<{fresh?:boolean;vertical?:boolean}>=({fresh=false,vertical
  <div style={{fontSize:vertical?19:20,color:c.muted,marginTop:23}}>Last order ID</div><div style={{fontFamily:'Consolas, monospace',fontSize:vertical?31:35,color:c.ink,fontWeight:850,marginTop:3}}>{fresh?'ORD-016':'ORD-012'}</div>
  <div style={{marginTop:24}}><Status ok={fresh} text={fresh?'Verified fresh':'STALE DATA'}/></div>
  </div></div>;
-const FolderTable:React.FC<{fresh?:boolean;vertical?:boolean}>=({fresh=false,vertical=false})=><div style={{height:'100%',background:'#fff',fontFamily:ff}}>
- <div style={{height:54,background:'#e5f0e9',padding:'0 20px',display:'flex',alignItems:'center',fontWeight:850,fontSize:vertical?20:22,color:c.green}}>Power Query · Combine Files</div>
+const FolderTable:React.FC<{fresh?:boolean;vertical?:boolean}>=({fresh=false,vertical=false})=><div style={{height:'100%',background:'#fff',fontFamily:ff,position:'relative'}}>
+ <div style={{height:54,background:'#e5f0e9',padding:'0 20px',display:'flex',alignItems:'center',justifyContent:'space-between',fontWeight:850,fontSize:vertical?20:22,color:c.green}}><span>Power Query · Combine Files</span><span style={{fontSize:vertical?22:24}}>{fresh?'16 ROWS ✓':'12 ROWS'}</span></div>
  <div style={{height:47,display:'flex',alignItems:'center',gap:21,padding:'0 18px',borderBottom:'1px solid #d9e5eb',fontSize:vertical?16:19,color:c.ink}}>Home <span style={{color:c.muted}}>Transform</span> <span style={{color:c.muted}}>Add Column</span></div>
  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',background:'#e5f1e9',height:53,alignItems:'center',fontSize:vertical?19:21,fontWeight:900,color:'#274337'}}>{['OrderID','Region','Amount'].map(t=><span key={t} style={{paddingLeft:13}}>{t}</span>)}</div>
  {['North','South','West',...(fresh?['East']:[])].flatMap(reg=>[1,2,3,4].map(n=>reg)).map((reg,i)=><div key={i} style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',height:vertical?38:39,borderBottom:'1px solid #e1e8ed',alignItems:'center',fontSize:vertical?16:19,color:c.ink,background:i%2?'#f9fbfc':'#fff'}}><span style={{paddingLeft:12}}>{'ORD-'+String(i+1).padStart(3,'0')}</span><span style={{paddingLeft:12}}>{reg}</span><span style={{paddingLeft:12}}>{i<4?'$1,500':'$1,550'}</span></div>)}
+ <div style={{position:'absolute',bottom:0,left:0,right:0,padding:'11px 17px',background:fresh?'#d9f4e4':'#eef3f7',color:fresh?c.green:c.muted,fontSize:vertical?24:25,fontWeight:950,borderTop:'1px solid #bdd7c9'}}>{fresh?'✓ EAST.CSV ADDED · 16 ROWS':'BEFORE REFRESH · 12 ROWS'}</div>
  </div>;
 const Caption:React.FC<{text:string;vertical?:boolean}>=({text,vertical=false})=><div style={{position:'absolute',top:vertical?1510:929,left:vertical?65:250,right:vertical?65:250,zIndex:100,display:'flex',justifyContent:'center'}}><span style={{padding:vertical?'13px 17px':'11px 18px',background:'rgba(12,29,43,.94)',color:'#fff',fontSize:vertical?35:28,fontFamily:ff,fontWeight:730,lineHeight:1.15,textAlign:'center',borderRadius:11}}>{text}</span></div>;
 const Progress:React.FC<{f:number;max:number;vertical?:boolean}>=({f,max,vertical=false})=><div style={{position:'absolute',bottom:vertical?75:22,left:vertical?70:90,right:vertical?70:90,height:5,borderRadius:4,background:'#d1dce3'}}><div style={{width:(f/max*100)+'%',height:5,background:c.green,borderRadius:4}}/></div>;
 const Stale:React.FC=()=>{const f=useCurrentFrame();const seq:[number,number,string][]=[[0,150,'The flow says success. But the dashboard is old.'],[150,360,'A cloud Office Script can finish without refreshing this CSV.'],[360,650,'The source has sixteen orders. Excel still has twelve.'],[650,895,'Microsoft documents why this happens.'],[895,1170,'Verify row count and source data, not just the green badge.']];
  const current=seq.find(([a,b])=>f>=a&&f<b);
  return <AbsoluteFill style={{background:'linear-gradient(140deg,#eff4f7,#e7eff4)',overflow:'hidden'}}><Top vertical title="SUCCESS… BUT STALE." subtitle="The green check did not update the report."/>
- <Pad style={{position:'absolute',left:55,right:55,top:365,height:500}}><Flow vertical/></Pad>
- <Pad style={{position:'absolute',left:55,right:55,top:905,height:545}}><Report vertical/></Pad>
+ <Pad style={{position:'absolute',left:55,right:55,top:325,height:398}}><Flow vertical/></Pad>
+ <Pad style={{position:'absolute',left:55,right:55,top:749,height:390}}><Source vertical fresh/></Pad>
+ <Pad style={{position:'absolute',left:55,right:55,top:1165,height:330}}><Report vertical/></Pad>
  {current&&<Caption vertical text={current[2]}/>}<Progress f={f} max={1170} vertical/><Audio src={staticFile('voice-v11.mp3')}/></AbsoluteFill>;};
 const Folder:React.FC=()=>{const f=useCurrentFrame(),fresh=f>580;const seq:[number,number,string][]=[[0,155,'Still copying CSV files one by one?'],[155,380,'Data → Get Data → From File → From Folder.'],[380,600,'Combine matching files into one table.'],[600,875,'Add a matching file, then run Refresh.'],[875,1140,'You can stop copying and pasting. Refresh still must run.']];
  const current=seq.find(([a,b])=>f>=a&&f<b);
@@ -53,7 +55,7 @@ const Folder:React.FC=()=>{const f=useCurrentFrame(),fresh=f>580;const seq:[numb
  <div style={{position:'absolute',left:488,top:834,color:c.green,fontSize:52,fontWeight:900}}>↓</div>
  <Pad style={{position:'absolute',left:55,right:55,top:906,height:550}}><FolderTable fresh={fresh} vertical/></Pad>
  {current&&<Caption vertical text={current[2]}/>}<Progress f={f} max={1140} vertical/><Audio src={staticFile('voice-v12.mp3')}/></AbsoluteFill>;};
-const Step:React.FC<{n:string;title:string;desc:string}>=({n,title,desc})=><Pad style={{height:220,padding:30,boxSizing:'border-box'}}><div style={{fontSize:21,color:c.green,fontWeight:950}}>{n}</div><div style={{fontSize:31,color:c.ink,fontWeight:950,marginTop:11}}>{title}</div><div style={{fontSize:23,color:c.muted,lineHeight:1.24,marginTop:12}}>{desc}</div></Pad>;
+const Step:React.FC<{n:string;title:string;desc:string}>=({n,title,desc})=><Pad style={{height:325,padding:32,boxSizing:'border-box'}}><div style={{fontSize:21,color:c.green,fontWeight:950}}>{n}</div><div style={{fontSize:31,color:c.ink,fontWeight:950,marginTop:11}}>{title}</div><div style={{fontSize:23,color:c.muted,lineHeight:1.24,marginTop:12}}>{desc}</div></Pad>;
 const Long:React.FC=()=>{const f=useCurrentFrame(),s=f/24;const stage=s<22?'hook':s<72?'stale':s<125?'why':s<182?'desktop':s<239?'cloud':s<285?'ingest':s<330?'folder':s<376?'verify':'outro';
  const info:{[key:string]:[string,string,string]}={
  hook:['ONE GREEN CHECK. OLD DATA.','The cloud flow finished. The workbook did not refresh.','Fictional sample workbook · supported Microsoft behavior'],
@@ -77,6 +79,7 @@ const Long:React.FC=()=>{const f=useCurrentFrame(),s=f/24;const stage=s<22?'hook
  </div>}
  {stage==='folder'&&<div style={{position:'absolute',top:307,left:105,right:105,display:'grid',gridTemplateColumns:'1fr 1.35fr',gap:23}}><Pad style={{height:573}}><Source fresh={s>309}/></Pad><Pad style={{height:573}}><FolderTable fresh={s>309}/></Pad></div>}
  {stage==='outro'&&<div style={{position:'absolute',top:345,left:120,right:120,fontFamily:ff,textAlign:'center'}}><div style={{fontSize:76,lineHeight:1.04,fontWeight:950,color:c.green}}>Flow status ≠ data freshness.</div><div style={{fontSize:33,marginTop:35,color:c.muted}}>Build for supported refresh. Verify the records.</div></div>}
+ <div style={{position:'absolute',bottom:55,left:135,right:135,height:58,background:'#e7f0f5',border:'1px solid #cbdce5',borderRadius:11,display:'flex',justifyContent:'space-around',alignItems:'center',fontFamily:ff,fontSize:21,color:c.muted,fontWeight:800}}><span>1. SOURCE</span><span style={{color:c.green}}>→</span><span>2. REFRESH</span><span style={{color:c.green}}>→</span><span>3. VERIFIED OUTPUT</span></div>
  <Progress f={f} max={9456}/><Audio src={staticFile('voice-long-005.mp3')}/></AbsoluteFill>;
 };
 const Thumb:React.FC=()=> <AbsoluteFill style={{fontFamily:ff,background:'radial-gradient(circle at 76% 18%,#1f5361,#071927 72%)'}}>
