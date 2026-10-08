@@ -10,5 +10,6 @@
   "render_run_id": 37803233221,
   "artifact_id": 11561699845,
   "visual_qa": "passed",
-  "no_duplicate_upload": true
+  "no_duplicate_upload": true,
+  "custom_thumbnail": "uploaded_confirmed_in_studio"
 }
