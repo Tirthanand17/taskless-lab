@@ -1,0 +1,14 @@
+{
+  "id": "pilot_014",
+  "date_local": "2026-10-11",
+  "scheduled_local": "2026-10-11T20:30:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "youtube_video_id": "1wsFnWed6bY",
+  "url": "https://youtube.com/shorts/1wsFnWed6bY",
+  "title_in_studio": "Never Let an AI Agent Do THIS Automatically #shorts",
+  "status": "scheduled",
+  "source": "YouTube Studio 'Video scheduled' dialog confirmed Oct 11 2026 at 20:30",
+  "checks": "YouTube Studio: Checks complete. No issues found.",
+  "asset_version": "oct11-v2",
+  "notes": "Do not reupload; caption SRT may be processed in follow-up but not verified imported yet."
+}
