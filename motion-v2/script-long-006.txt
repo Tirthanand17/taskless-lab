@@ -1,0 +1,17 @@
+A new kind of AI coworker was announced this week. Imagine opening your laptop to find that an assistant has already gathered the project updates, checked the spreadsheet, and drafted the email you were about to write. Then a warning appears: approve before sending. That final step may be more important than the AI itself.
+
+On October eighth, Google announced its new Gemini agent for work. The headline is not simply a smarter chatbot. Google describes a single work agent that can plan tasks, connect to workplace systems, create content, write code, and use context across apps such as Gmail, Drive, Docs, Sheets, Chat, and Calendar. It also described coworker agents with dedicated identities and defined roles. This is an enterprise announcement: availability, integrations, and permissions depend on the organization. What you're about to see is our own illustrative workflow, not a live product demonstration.
+
+Let's follow one fictional small business on a busy Monday. A team has customer emails, order rows, and a deadline. Normally, a person switches through multiple tabs to piece everything together. Our first example is an inbox assistant. A new message says an order might be delayed. The agent retrieves the relevant order record and drafts a reply. Notice the important distinction: reading and drafting are not the same as sending. We keep the send action behind a human review step.
+
+Our second example is a sales reporting task. Three orders appear across a spreadsheet and a message thread. The agent could propose a cleaned table, flag a mismatch, and prepare a summary for a manager. But there is a trap. A polished chart can still contain bad data. So the workflow checks source IDs, totals, and the rows it actually used. In our fictional example the draft summary says twelve orders, but the verified source has thirteen. The correct outcome is a flagged discrepancy, not a confident-looking report.
+
+Third, imagine a content manager preparing a weekly update. The agent can outline a document, gather approved notes, and prepare a slide draft. It should not invent customer quotes or quietly publish unfinished information. The useful output is a review-ready draft with clear sources and next actions. That's real time saved: less tab switching, more time deciding.
+
+Google says its new agent includes governance, identity, permissions, and model selection controls. But those safeguards still require careful configuration. Different accounts will not necessarily get the same capabilities. And a model being able to plan an action does not prove every integration can execute it.
+
+Here is a practical rule you can apply today to any AI automation, even without this new Google agent. Split actions into three zones. Green: read permitted documents and summarize them. Yellow: draft emails or suggest spreadsheet edits, but keep review enabled. Red: sending messages, changing financial records, sharing data externally, or paying invoices. These should require explicit authorization and a reliable audit trail.
+
+So, did Google launch an AI employee? No: it announced a more capable work agent, not a substitute for judgment or accountability. The exciting part is connecting useful tools around an outcome. The hard part is deciding what not to automate.
+
+Your turn: would you trust an AI agent to draft an important customer email, or would you also let it hit Send? Tell me which task belongs in your green, yellow, or red zone. For practical AI workflows with a real example, follow FlowMinute Lab.
