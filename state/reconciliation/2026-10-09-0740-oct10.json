@@ -1,0 +1,47 @@
+{
+  "checked_at_local": "2026-10-09T07:40:10+05:30",
+  "channel": "FlowMinute Lab",
+  "release_date": "2026-10-10",
+  "source": "Tirthanand17/taskless-lab",
+  "result": "github_six_receipts_consistent_live_studio_unverified",
+  "videos": [
+    {
+      "id": "pilot_011",
+      "video_id": "qkc0Tf_51nU",
+      "scheduled_at_local": "2026-10-10T11:00:00+05:30",
+      "state": "scheduled_verified",
+      "github_crosscheck": "match",
+      "studio_live_check": "unverified"
+    },
+    {
+      "id": "long_005",
+      "video_id": "xmi1oAoxAZA",
+      "scheduled_at_local": "2026-10-10T16:00:00+05:30",
+      "state": "scheduled_verified",
+      "github_crosscheck": "match",
+      "studio_live_check": "unverified",
+      "custom_thumbnail": "historically_confirmed"
+    },
+    {
+      "id": "pilot_012",
+      "video_id": "MZmZ8wGGpqc",
+      "scheduled_at_local": "2026-10-10T20:30:00+05:30",
+      "state": "scheduled_verified",
+      "github_crosscheck": "match",
+      "studio_live_check": "unverified"
+    }
+  ],
+  "github_episode_metadata": "all_three_episode_manifests_read",
+  "studio_access": "authorized_PC_online; browser_debugging_unavailable",
+  "public_playability": "not_due",
+  "next_day_queue": {
+    "pilot_013": "script_draft",
+    "long_006": "script_draft",
+    "pilot_014": "script_draft",
+    "render": "not_verified",
+    "visual_qa": "not_passed"
+  },
+  "temporary_bridge": "authorized_bridge_empty",
+  "action": "read_only_no_video_changes",
+  "next": "Recheck Studio scheduling before release; verify public playback after due time; preserve existing uploads; advance distinct Oct 11 assets through genuine render and QA."
+}
