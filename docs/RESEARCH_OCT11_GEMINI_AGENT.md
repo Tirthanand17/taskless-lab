@@ -49,3 +49,11 @@ Other commentary expresses skepticism about announced features that are only in 
 - Long Title B: "Google's AI Coworker Has Its Own Inbox — But Can You Trust It?"
 - Thumbnail focus: 2–4 words "AI COWORKER?" plus a large review approval control.
 - Do not change thumbnail/title immediately without meaningful CTR and retention evidence. Compare each format against its own previous uploads.
+
+## Photo assets and licensing
+Support footage is still photography presented with gentle Ken Burns-style motion, not purported live AI-product footage. All stills are royalty-free under the [Unsplash License](https://unsplash.com/license); no people in these photographs are represented as actual Google staff, users, or Gemini agent operators.
+- office-cinematic.jpg — Vitaly Gariev: https://unsplash.com/photos/people-working-late-in-a-modern-office-at-night-v6JKMaqAwZE
+- office-collaboration.jpg — Vitaly Gariev: https://unsplash.com/photos/two-colleagues-working-late-in-a-dimly-lit-office-S-YM-CY8X8A
+- office-desks.jpg — Bluestonex: https://unsplash.com/photos/two-men-working-on-laptops-in-a-modern-office-4uIRzJYYaOE
+
+Second-pass QA fixes: reduce blank UI panel height, add read/check/approve mobile storyboard row, introduce cinematic licensed visual backgrounds and subtle floating camera movement, show evidence and hide nonessential controls that previously clipped in long-form.
