@@ -1,2 +1,2 @@
-Trigger production render for the verified October 11 Gemini agent scripts, compositions, and QA checks.
-Date: 2026-10-09.
+Render revision 2: licensed cinematic photographs, unclipped long cards, full mobile screen visual evidence.
+2026-10-09
