@@ -1,21 +1,26 @@
 {
   "release_day_local": "2026-10-11",
   "timezone": "Asia/Kolkata",
-  "state": "research_script_ready_pending_render_QA_upload",
+  "state": "rendered_QA_reviewed_uploaded_scheduled",
   "items": [
     {
       "id": "pilot_013",
-      "target": "2026-10-11T11:00:00+05:30"
+      "target": "2026-10-11T11:00:00+05:30",
+      "youtube_video_id": "AnkLQI5no4Q"
     },
     {
       "id": "long_006",
-      "target": "2026-10-11T16:00:00+05:30"
+      "target": "2026-10-11T16:00:00+05:30",
+      "youtube_video_id": "TcO82x9wg0w"
     },
     {
       "id": "pilot_014",
-      "target": "2026-10-11T20:30:00+05:30"
+      "target": "2026-10-11T20:30:00+05:30",
+      "youtube_video_id": "1wsFnWed6bY"
     }
   ],
+  "evidence": "docs/OCT11_RELEASE_CONFIRMATION.md",
+  "live_studio_recheck": "pending",
   "claim_boundary": "illustrative reconstructions; no confirmed customer access",
   "no_duplicate_upload": true
 }
