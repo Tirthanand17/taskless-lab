@@ -34,7 +34,13 @@
     "render-v12": "remotion render src/index.ts FromFolderShort ../assets/v12/folder-short-v12.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
     "still-v12": "remotion still src/index.ts FromFolderShort ../assets/v12/thumb-v12.png --frame=220",
     "render-long-005": "remotion render src/index.ts RefreshTruthLong ../assets/long-005/refresh-truth-long-005.mp4 --codec=h264 --crf=19 --pixel-format=yuv420p",
-    "still-long-005": "remotion still src/index.ts RefreshTruthThumbnail ../assets/long-005/thumb-long-005.png --frame=0"
+    "still-long-005": "remotion still src/index.ts RefreshTruthThumbnail ../assets/long-005/thumb-long-005.png --frame=0",
+    "render-v13": "remotion render src/index.ts GeminiInboxShort ../assets/v13/gemini-inbox-v13.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
+    "render-v14": "remotion render src/index.ts AgentPermissionShort ../assets/v14/agent-approval-v14.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
+    "render-long-006": "remotion render src/index.ts GeminiAgentLong ../assets/long-006/gemini-agent-long-006.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still-v13": "remotion still src/index.ts GeminiInboxShort ../assets/v13/thumbnail-v13.png --frame=70",
+    "still-v14": "remotion still src/index.ts AgentPermissionShort ../assets/v14/thumbnail-v14.png --frame=90",
+    "still-long-006": "remotion still src/index.ts GeminiAgentThumbnail ../assets/long-006/thumbnail-long-006.png --frame=0"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
