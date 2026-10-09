@@ -27,6 +27,20 @@
   "artifact_id": 11561699845,
   "visual_qa": "passed",
   "latest_pre_release_reconciliation": {
+    "checked_at_utc": "2026-10-09T08:53:38.120Z",
+    "github_exact_video_id_match": true,
+    "github_exact_schedule_match": true,
+    "episode_manifest_metadata_read": true,
+    "studio_live_schedule_and_metadata": "not_independently_verified",
+    "studio_access_blocker": "authenticated_browser_debugging_not_available_on_authorized_PC",
+    "desktop_commander": "Nirala_online_no_CDP_listener_on_9222_9223_9333",
+    "studio_confirmation_basis": "historical_Video_scheduled_receipt",
+    "youtube_checks_basis": "historical_complete_no_issues",
+    "public_playability": "not_due",
+    "no_duplicate_upload": true,
+    "next_action": "reverify_exact_ID_in_Studio_before_slot; after_due_plus_grace_check_public_playability; only_recover_same_ID_if_safe"
+  },
+  "previous_pre_release_reconciliation": {
     "checked_at_local": "2026-10-09T09:43:37+05:30",
     "github_id_and_time_match": true,
     "github_episode_metadata_checked": true,
