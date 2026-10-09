@@ -25,5 +25,14 @@
   "studio_confirmation": "Video scheduled",
   "youtube_checks": "complete_no_issues",
   "artifact_id": 11561699845,
-  "visual_qa": "passed"
+  "visual_qa": "passed",
+  "latest_pre_release_reconciliation": {
+    "checked_at_local": "2026-10-09T09:43:37+05:30",
+    "github_id_and_time_match": true,
+    "github_episode_metadata_checked": true,
+    "studio_live_verification": "blocked_browser_debugging_unavailable",
+    "studio_confirmation_basis": "historical_receipt_only",
+    "public_playability": "not_due",
+    "next_action": "reverify_native_Studio_before_release; check public player after due plus propagation; do not reupload"
+  }
 }
