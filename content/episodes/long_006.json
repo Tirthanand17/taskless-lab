@@ -1,0 +1,59 @@
+{
+  "id": "long_006",
+  "title": "Google's NEW Gemini AI Agent Explained — 3 Workflows & the Catch",
+  "description": "Google's October 8, 2026 Gemini agent announcement shows where workplace AI is heading. In this video we explain dedicated AI coworkers and three clearly labeled illustrative workflows: email triage, spreadsheet verification, and report drafting. We also show the real catch: permissions, enterprise access, human approvals, and auditability.\n\nGoogle's official announcement: https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026\n\n00:00 What changed\n00:23 Announcement explained\n00:49 Customer email example\n01:23 Spreadsheet example\n02:03 Report example\n02:39 Rollout and controls\n03:08 3 permission zones\n\n#Gemini #AIAgents #Automation #Productivity",
+  "duration_seconds": 249,
+  "source_script": "motion-v2/script-long-006.txt",
+  "voice": "en-US-ChristopherNeural",
+  "category": "Science & Technology",
+  "captions": [
+    {
+      "start": 0,
+      "end": 23,
+      "text": "An AI coworker that prepares real work — then asks to send?"
+    },
+    {
+      "start": 23,
+      "end": 49,
+      "text": "What Google actually announced on October 8."
+    },
+    {
+      "start": 49,
+      "end": 83,
+      "text": "Demo workflow 1: check the order, draft a reply, approve the send."
+    },
+    {
+      "start": 83,
+      "end": 123,
+      "text": "Demo workflow 2: spot the 12 versus 13 order mismatch."
+    },
+    {
+      "start": 123,
+      "end": 159,
+      "text": "Demo workflow 3: turn approved notes into a review-ready report."
+    },
+    {
+      "start": 159,
+      "end": 188,
+      "text": "What permissions and rollout actually mean."
+    },
+    {
+      "start": 188,
+      "end": 224,
+      "text": "Green: read. Yellow: draft. Red: seek explicit approval."
+    },
+    {
+      "start": 224,
+      "end": 249,
+      "text": "AI at work should expand ability, not remove accountability."
+    }
+  ],
+  "sources": [
+    "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+    "https://www.theverge.com/tech/1007904/google-gemini-ai-agent-enterprise",
+    "https://support.google.com/youtube/answer/12942217",
+    "https://support.google.com/youtube/answer/9314415"
+  ],
+  "visual_note": "ILLUSTRATIVE RECONSTRUCTION; not product recording; enterprise access and permissions vary.",
+  "type": "long"
+}
