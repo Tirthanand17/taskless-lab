@@ -20,5 +20,11 @@
     "studio_confirmation_basis": "historical_receipt_only",
     "public_playability": "not_due",
     "next_action": "reverify_native_Studio_before_release; check public player after due plus propagation; do not reupload"
+  },
+  "recheck_2026_10_09": {
+    "repo_id_and_slot": "matched",
+    "studio": "live_access_unavailable",
+    "public": "not_due",
+    "checked_at_utc": "2026-10-09T08:53:59.386Z"
   }
 }
