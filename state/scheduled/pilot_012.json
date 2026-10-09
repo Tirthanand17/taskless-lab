@@ -9,5 +9,15 @@
   "render_run_id": 37803233221,
   "artifact_id": 11561699845,
   "visual_qa": "passed",
-  "no_duplicate_upload": true
+  "no_duplicate_upload": true,
+  "latest_pre_release_reconciliation": {
+    "checked_at_local": "2026-10-09T11:15:47+05:30",
+    "github_id_and_time_match": true,
+    "github_episode_metadata_checked": true,
+    "studio_live_verification": "blocked_no_authenticated_browser_access",
+    "studio_confirmation_basis": "historical_receipt_only",
+    "desktop_commander": "Nirala_online_CDP_9222_9223_9333_unavailable",
+    "public_playability": "not_due",
+    "next_action": "reverify_native_Studio_before_release; check public player after due plus propagation; recover exact existing ID only if safe; never reupload"
+  }
 }
