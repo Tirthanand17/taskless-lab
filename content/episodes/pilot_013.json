@@ -1,0 +1,44 @@
+{
+  "id": "pilot_013",
+  "title": "Google's AI Coworker Can Have Its Own Inbox? #shorts",
+  "description": "Google unveiled the new Gemini universal agent for work on October 8, 2026, including dedicated coworker identities. This illustrative example shows why human approval matters. Enterprise rollout and permissions vary. Source: Google Cloud Gemini at Work 2026. #Gemini #AIagents #automation #shorts",
+  "duration_seconds": 42,
+  "source_script": "motion-v2/script-v13.txt",
+  "voice": "en-US-AvaNeural",
+  "category": "Science & Technology",
+  "captions": [
+    {
+      "start": 0,
+      "end": 6,
+      "text": "Google's new AI coworker can have its own identity."
+    },
+    {
+      "start": 6,
+      "end": 15,
+      "text": "A dedicated role, not just a chatbot reply."
+    },
+    {
+      "start": 15,
+      "end": 25,
+      "text": "Example: read, draft, and request approval."
+    },
+    {
+      "start": 25,
+      "end": 35,
+      "text": "Enterprise access and permissions vary."
+    },
+    {
+      "start": 35,
+      "end": 42,
+      "text": "Would you give it an inbox?"
+    }
+  ],
+  "sources": [
+    "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+    "https://www.theverge.com/tech/1007904/google-gemini-ai-agent-enterprise",
+    "https://support.google.com/youtube/answer/12942217",
+    "https://support.google.com/youtube/answer/9314415"
+  ],
+  "visual_note": "ILLUSTRATIVE RECONSTRUCTION; not product recording; enterprise access and permissions vary.",
+  "type": "short"
+}
