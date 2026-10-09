@@ -19,5 +19,20 @@
     "desktop_commander": "Nirala_online_CDP_9222_9223_9333_unavailable",
     "public_playability": "not_due",
     "next_action": "reverify_native_Studio_before_release; check public player after due plus propagation; recover exact existing ID only if safe; never reupload"
+  },
+  "pre_release_recheck_2026_10_09_1907_ist": {
+    "checked_at_local": "2026-10-09T19:07:39+05:30",
+    "github_video_id_match": true,
+    "github_schedule_match": true,
+    "expected_episode_manifest": "content/episodes/pilot_012.json",
+    "expected_title": "Stop Copy-Pasting CSV Files. Use Power Query From Folder #shorts",
+    "current_studio_metadata": "not_independently_verified",
+    "current_studio_schedule": "not_independently_verified",
+    "studio_access_blocker": "authorized_PC_online_but_no_CDP_listener_on_9222_9223_9333",
+    "historical_studio_confirmation": "Video scheduled",
+    "historical_youtube_checks": "complete_no_issues",
+    "public_playability": "not_due",
+    "no_duplicate_upload": true,
+    "next_action": "preserve_existing_video_ID; recheck_authenticated_Studio_when_available; after_due_plus_grace_verify_public_playability"
   }
 }
