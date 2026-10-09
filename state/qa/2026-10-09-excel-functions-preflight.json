@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-09T11:15:47+05:30",
+  "test": "synthetic_unsaved_workbook",
+  "excel_version": "16.0",
+  "sum_result": 720,
+  "groupby": "#NAME?",
+  "pivotby": "#NAME?",
+  "trimrange": "#NAME?",
+  "qa_passed": false,
+  "reason": "installed Excel did not recognize the new functions",
+  "saved_files": 0
+}
