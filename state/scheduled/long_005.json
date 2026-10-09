@@ -26,5 +26,20 @@
     "studio": "live_access_unavailable",
     "public": "not_due",
     "checked_at_utc": "2026-10-09T08:53:59.386Z"
+  },
+  "pre_release_recheck_2026_10_09_1551_ist": {
+    "checked_at_local": "2026-10-09T15:51:27+05:30",
+    "github_video_id_match": true,
+    "github_schedule_match": true,
+    "expected_title_from_episode_manifest": "Why Excel Power Query Won't Auto-Refresh (3 Fixes That Work)",
+    "studio_current_metadata": "not_verified_authenticated_access_unavailable",
+    "studio_current_schedule": "not_verified_authenticated_access_unavailable",
+    "studio_historical_confirmation": "Video scheduled",
+    "youtube_historical_checks": "complete_no_issues",
+    "desktop_commander": "Nirala_online_no_CDP_listener_9222_9223_9333",
+    "vidiq": "insufficient_credits_no_charge_next_refresh_2026_11_02",
+    "public_playability": "not_due",
+    "status_basis": "historical_scheduled_verified_receipt_not_live_studio",
+    "no_duplicate_upload": true
   }
 }
