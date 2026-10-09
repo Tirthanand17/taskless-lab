@@ -1,0 +1,98 @@
+name: Render October 11 Gemini agent pack
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/oct11.txt"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install production tools
+        run: |
+          npm --prefix motion-v2 install --no-audit --no-fund
+          python -m pip install edge-tts mutagen pillow
+      - name: Validate release privacy, titles, captions, and duration
+        run: |
+          python scripts/validate_release.py content/episodes/pilot_013.json
+          python scripts/validate_release.py content/episodes/pilot_014.json
+          python scripts/validate_release.py content/episodes/long_006.json
+      - name: Synthesize narration
+        working-directory: motion-v2
+        run: |
+          python generate_voice_cli.py --script script-v13.txt --output voice-v13.mp3 --voice en-US-AvaNeural --rate "+4%"
+          python generate_voice_cli.py --script script-v14.txt --output voice-v14.mp3 --voice en-US-AvaNeural --rate "+4%"
+          python generate_voice_cli.py --script script-long-006.txt --output voice-long-006.mp3 --voice en-US-ChristopherNeural --rate "+4%"
+          npx remotion browser ensure
+      - name: Gate speech length and verify composition build
+        run: |
+          python - <<'PY'
+          from mutagen.mp3 import MP3
+          targets=[('v13',42),('v14',41),('long-006',249)]
+          for name,video_length in targets:
+              path=f'motion-v2/public/voice-{name}.mp3'
+              length=float(MP3(path).info.length)
+              print(f'{name}: speech={length:.1f}s, video={video_length:.1f}s')
+              assert video_length*.69 < length < video_length-.25, f'voice timing needs revision: {name}'
+          PY
+          cd motion-v2
+          npx remotion compositions src/index.ts
+      - name: Create asset folders
+        run: mkdir -p assets/v13 assets/v14 assets/long-006 assets/qa-oct11
+      - name: Render 1080x1920 Shorts and 1920x1080 long-form
+        working-directory: motion-v2
+        run: |
+          npm run render-v13
+          npm run render-v14
+          npm run render-long-006
+          npm run still-v13
+          npm run still-v14
+          npm run still-long-006
+      - name: Build subtitle packages
+        run: |
+          python scripts/generate_srt.py content/episodes/pilot_013.json assets/v13/captions-v13.srt
+          python scripts/generate_srt.py content/episodes/pilot_014.json assets/v14/captions-v14.srt
+          python scripts/generate_srt.py content/episodes/long_006.json assets/long-006/captions-long-006.srt
+      - name: Render editorial QC frames
+        working-directory: motion-v2
+        run: |
+          for f in 20 180 530 790 1110; do npx remotion still src/index.ts GeminiInboxShort ../assets/qa-oct11/short13-${f}.png --frame=$f; done
+          for f in 20 260 550 910 1090; do npx remotion still src/index.ts AgentPermissionShort ../assets/qa-oct11/short14-${f}.png --frame=$f; done
+          for f in 20 640 1510 2500 3390 4200 5020 5530; do npx remotion still src/index.ts GeminiAgentLong ../assets/qa-oct11/long-${f}.png --frame=$f; done
+      - name: Create human-reviewable contact sheets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+          root=Path('assets/qa-oct11')
+          for pref,cols,size in [('short13',5,(216,384)),('short14',5,(216,384)),('long',4,(384,216))]:
+              arr=sorted(root.glob(pref+'-*.png'))
+              w,h=size
+              sheet=Image.new('RGB',(cols*w,((len(arr)+cols-1)//cols)*(h+30)),'#e8edf4')
+              for i,p in enumerate(arr):
+                  im=Image.open(p).convert('RGB')
+                  im.thumbnail((w,h))
+                  x=i%cols*w;y=i//cols*(h+30)
+                  sheet.paste(im,(x+(w-im.width)//2,y+30))
+                  ImageDraw.Draw(sheet).text((x+8,y+8),p.stem,fill='#101c2b')
+              sheet.save(root/(pref+'-contact.jpg'),quality=91)
+          PY
+      - name: Upload 3 videos, thumbnails, captions, and QA sheets
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-oct11-gemini-agent-pack
+          retention-days: 7
+          path: |
+            assets/v13/*
+            assets/v14/*
+            assets/long-006/*
+            assets/qa-oct11/*-contact.jpg
