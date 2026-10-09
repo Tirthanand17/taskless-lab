@@ -38,5 +38,11 @@
     "youtube_checks_basis": "historical_complete_no_issues",
     "public_playability": "not_due",
     "action": "preserve_exact_existing_upload; never_duplicate; verify_live_Studio_when_accessible; verify_public_after_due_plus_grace"
+  },
+  "recheck_2026_10_09": {
+    "repo_id_and_slot": "matched",
+    "studio": "live_access_unavailable",
+    "public": "not_due",
+    "checked_at_utc": "2026-10-09T08:53:56.864Z"
   }
 }
