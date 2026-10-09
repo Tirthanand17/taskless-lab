@@ -6,6 +6,16 @@ A faceless, original micro-content brand about practical automation, data cleanu
 
 Publish useful, original short-form videos that solve one repetitive-work problem at a time without relying on a personal identity, recycled clips, or mass-produced filler.
 
+## Adopted growth and editorial standard (v2 — October 9, 2026)
+
+**[Read the audited production standard](docs/FLOWMINUTE_GROWTH_PRODUCTION_STANDARD_V2.md).** This is the source of truth for future releases.
+
+- Publish **informative + genuinely interesting** original tech stories, with practical proof, readable visuals, appropriate cinematic footage, and diagrams when helpful.
+- When asked for a day's production package: research same-day/previous-day AI, ML, Excel, automation, agents, and software trends before choosing topics.
+- Daily **target**: two distinct Shorts + one long video; extra trend coverage only when verified and valuable. Never lower quality or invent tests to hit a quota.
+- Follow the documented research, story, visual QA, truthful synthetic-media labeling, verified YouTube scheduling, and 24-hour/48-hour/7-day analytics review process.
+- The standard is **not** an automatic scheduled publishing task.
+
 ## Content model
 
 - 30-60 second original Shorts/Reels/TikToks
