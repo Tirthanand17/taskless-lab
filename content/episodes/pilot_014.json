@@ -1,0 +1,39 @@
+{
+  "id": "pilot_014",
+  "title": "Never Let an AI Agent Do THIS Automatically #shorts",
+  "description": "An AI agent can draft, check, and propose — but high-impact actions need human approval. A fictional invoice example explains why wrong actions propagate across connected apps. Google's new Gemini work agent was announced Oct 8. #AIagents #Gemini #automation #shorts",
+  "duration_seconds": 41,
+  "source_script": "motion-v2/script-v14.txt",
+  "voice": "en-US-AvaNeural",
+  "category": "Science & Technology",
+  "captions": [
+    {
+      "start": 0,
+      "end": 7,
+      "text": "A wrong AI answer is bad. A wrong action is worse."
+    },
+    {
+      "start": 7,
+      "end": 17,
+      "text": "One invoice mistake can spread across apps."
+    },
+    {
+      "start": 17,
+      "end": 30,
+      "text": "Read → propose → verify → get approval."
+    },
+    {
+      "start": 30,
+      "end": 41,
+      "text": "Which action would you never auto-approve?"
+    }
+  ],
+  "sources": [
+    "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+    "https://www.theverge.com/tech/1007904/google-gemini-ai-agent-enterprise",
+    "https://support.google.com/youtube/answer/12942217",
+    "https://support.google.com/youtube/answer/9314415"
+  ],
+  "visual_note": "ILLUSTRATIVE RECONSTRUCTION; not product recording; enterprise access and permissions vary.",
+  "type": "short"
+}
