@@ -1,0 +1,43 @@
+{
+  "checked_at_local": "2026-10-10T21:23:19+05:30",
+  "timezone": "Asia/Kolkata",
+  "method": "unauthenticated YouTube oEmbed via authorized Nirala computer",
+  "releases": [
+    {
+      "id": "pilot_011",
+      "youtube_id": "qkc0Tf_51nU",
+      "scheduled_local": "11:00",
+      "public_oembed": "available",
+      "title": "Power Automate Says SUCCESS. Your Excel Data Is Still OLD! #shorts",
+      "github_planned": "scheduled_verified (stale)",
+      "github_scheduled": "public_verified"
+    },
+    {
+      "id": "long_005",
+      "youtube_id": "xmi1oAoxAZA",
+      "scheduled_local": "16:00",
+      "public_oembed": "available",
+      "title": "Why Excel Power Query Won't Auto-Refresh (3 Fixes That Work)",
+      "github_planned": "public_verified",
+      "github_scheduled": "public_verified"
+    },
+    {
+      "id": "pilot_012",
+      "youtube_id": "MZmZ8wGGpqc",
+      "scheduled_local": "20:30",
+      "public_oembed": "available",
+      "title": "Stop Copy-Pasting CSV Files. Use Power Query From Folder #shorts",
+      "github_planned": "scheduled_verified (stale)",
+      "github_scheduled": "public_verified"
+    }
+  ],
+  "author": "FlowMinute Lab",
+  "verification_limitations": "Public oEmbed only in this recheck; prior GitHub receipt records anonymous player OK. Live authenticated Studio unavailable; media-byte playback not performed.",
+  "next_day_buffer": "state/planned/oct-11-pack.json",
+  "next_day_count": {
+    "shorts": 2,
+    "long": 1
+  },
+  "no_duplicate_upload": true,
+  "github_planned_repair": "Attempted; connector safety checks blocked updates to pilot_011 and pilot_012."
+}
