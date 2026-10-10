@@ -13,6 +13,8 @@ import {StaleFlowShort, FromFolderShort, RefreshTruthLong, RefreshTruthThumbnail
 
 import {GeminiInboxShort, AgentPermissionShort, GeminiAgentLong, GeminiAgentThumbnail} from './GeminiCoworker';
 
+import {IntelligentUILong, IntelligentUIShort, OnlyOfficeShort, IntelligentUIThumbnail} from './IntelligentUI';
+
 export const RemotionRoot: React.FC = () => {
   return (
     <>
@@ -96,6 +98,10 @@ export const RemotionRoot: React.FC = () => {
       <Composition id="FromFolderShort" component={FromFolderShort} durationInFrames={1140} fps={30} width={1080} height={1920} />
       <Composition id="RefreshTruthLong" component={RefreshTruthLong} durationInFrames={9456} fps={24} width={1920} height={1080} />
       <Composition id="RefreshTruthThumbnail" component={RefreshTruthThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
+      <Composition id="IntelligentUIShort" component={IntelligentUIShort} durationInFrames={1110} fps={30} width={1080} height={1920} />
+      <Composition id="OnlyOfficeShort" component={OnlyOfficeShort} durationInFrames={1200} fps={30} width={1080} height={1920} />
+      <Composition id="IntelligentUILong" component={IntelligentUILong} durationInFrames={5328} fps={24} width={1920} height={1080} />
+      <Composition id="IntelligentUIThumbnail" component={IntelligentUIThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
       <Composition id="GeminiInboxShort" component={GeminiInboxShort} durationInFrames={1260} fps={30} width={1080} height={1920} />
       <Composition id="AgentPermissionShort" component={AgentPermissionShort} durationInFrames={1230} fps={30} width={1080} height={1920} />
       <Composition id="GeminiAgentLong" component={GeminiAgentLong} durationInFrames={5976} fps={24} width={1920} height={1080} />
