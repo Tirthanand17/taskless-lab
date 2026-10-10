@@ -1,0 +1,58 @@
+{
+  "checked_at_local": "2026-10-10T19:09:31+05:30",
+  "timezone": "Asia/Kolkata",
+  "github_repo": "Tirthanand17/taskless-lab",
+  "release_day": "2026-10-10",
+  "release_checks": [
+    {
+      "id": "pilot_011",
+      "youtube_id": "qkc0Tf_51nU",
+      "release_local": "11:00",
+      "github_planned_status": "scheduled_verified (stale)",
+      "github_scheduled_status": "public_verified",
+      "fresh_oembed": "public; correct title and channel",
+      "prior_public_player": "OK, 26 streaming formats"
+    },
+    {
+      "id": "long_005",
+      "youtube_id": "xmi1oAoxAZA",
+      "release_local": "16:00",
+      "github_planned_status": "public_verified",
+      "github_scheduled_status": "public_verified",
+      "fresh_oembed": "public; correct title and channel",
+      "prior_public_player": "OK, 7 streaming formats"
+    },
+    {
+      "id": "pilot_012",
+      "youtube_id": "MZmZ8wGGpqc",
+      "release_local": "20:30",
+      "github_planned_status": "scheduled_verified",
+      "github_scheduled_status": "scheduled_verified",
+      "fresh_oembed": "HTTP 403 pre-release",
+      "fresh_anonymous_player": "LOGIN_REQUIRED pre-release; no publication failure established"
+    }
+  ],
+  "authenticated_studio_live_verification": "unavailable: no authorized browser CDP listener on 9222, 9223, 9333",
+  "next_day_buffer": {
+    "date": "2026-10-11",
+    "shorts": [
+      "pilot_013",
+      "pilot_014"
+    ],
+    "long": [
+      "long_006"
+    ],
+    "historical_qa": "passed",
+    "historical_studio_scheduling": "confirmed",
+    "live_recheck": "pending"
+  },
+  "github_write_blocker": "update_file attempts blocked by connector safety checks; no false status updates",
+  "next_actions": [
+    "At or after 20:45 IST check existing pilot_012 public player and update planned/scheduled records only with evidence",
+    "Repair stale state/planned/pilot_011.json status when GitHub writes permit",
+    "Do not duplicate or reschedule"
+  ],
+  "no_duplicate_upload": true,
+  "no_paid_actions": true,
+  "no_personal_data_or_drive": true
+}
