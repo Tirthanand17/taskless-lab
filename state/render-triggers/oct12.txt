@@ -1,1 +1,1 @@
-Trigger October 12 2026 full-quality render for GPT-6 Intelligent UI and ONLYOFFICE 10.0 package.
+October 12 release v2: fixed misleading bill amount/count frame, mobile diagrams now fill their panels, tightened widescreen layouts. Visual QA is mandatory before YouTube upload.
