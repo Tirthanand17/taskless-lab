@@ -85,6 +85,9 @@ def validate_manifest(path: Path, *, now: dt.datetime | None = None) -> dict[str
     expected_channel = doc.get("expected_channel_id")
     require(isinstance(expected_channel, str) and CHANNEL_ID.fullmatch(expected_channel) is not None,
             "expected_channel_id must be a real-looking UC... channel ID")
+    receipt = Path(__file__).resolve().parents[1] / "state" / "scheduled" / (episode_id + ".json")
+    require(not receipt.exists(),
+            f"Episode already scheduled in the channel release receipts: {receipt}. Do NOT duplicate-upload.")
     require(doc.get("qa_approved") is True, "qa_approved must be explicitly true")
     require(doc.get("made_for_kids") is False or doc.get("made_for_kids") is True,
             "made_for_kids must be explicitly true/false, not omitted")
