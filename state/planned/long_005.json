@@ -3,7 +3,7 @@
   "type": "long",
   "target_release_local": "2026-10-10T16:00:00+05:30",
   "video_file": "refresh-truth-long-005.mp4",
-  "status": "scheduled_verified",
+  "status": "public_verified",
   "youtube_video_id": "xmi1oAoxAZA",
   "render_run_id": 37803233221,
   "episode": "content/episodes/long_005.json",
@@ -57,6 +57,23 @@
     "public_watch_attempt": "YouTube page fetch disabled; search did not establish playback",
     "publication_failure_confirmed": false,
     "next_action": "Before 16:00 IST confirm existing ID, exact title, description, and schedule in Studio if accessible; after 16:15 check public player.",
+    "no_duplicate_upload": true
+  },
+  "public_verification_2026_10_10": {
+    "verification_method": "Unauthenticated YouTube watch page via authorized Nirala PC; ytInitialPlayerResponse and public oEmbed",
+    "verification_date_local": "2026-10-10",
+    "video_id": "xmi1oAoxAZA",
+    "public_oembed_http_status": 200,
+    "public_oembed_title": "Why Excel Power Query Won't Auto-Refresh (3 Fixes That Work)",
+    "public_oembed_author": "FlowMinute Lab",
+    "watch_http_status": 200,
+    "anonymous_player_status": "OK",
+    "streaming_formats_available": 7,
+    "public_player_publish_date": "2026-10-10T03:30:19-07:00",
+    "manifest_title_exact_match": true,
+    "media_bytes_playback_test": "not_performed",
+    "authenticated_studio_live_verification": "unavailable_browser_debug_ports_closed",
+    "publication_failure_confirmed": false,
     "no_duplicate_upload": true
   }
 }
