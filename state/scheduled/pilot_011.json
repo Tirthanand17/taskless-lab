@@ -1,6 +1,6 @@
 {
   "id": "pilot_011",
-  "status": "scheduled_verified",
+  "status": "public_verified",
   "video_id": "qkc0Tf_51nU",
   "youtube_url": "https://youtube.com/shorts/qkc0Tf_51nU",
   "scheduled_release_local": "2026-10-10T11:00:00+05:30",
@@ -33,5 +33,20 @@
     "desktop_commander": "Nirala_online_CDP_9222_9223_9333_unavailable",
     "public_playability": "not_due",
     "next_action": "reverify_native_Studio_before_release; check public player after due plus propagation; recover exact existing ID only if safe; never reupload"
+  },
+  "public_verification_2026_10_10": {
+    "checked_at_local": "2026-10-10T15:53:04+05:30",
+    "youtube_video_id": "qkc0Tf_51nU",
+    "verification_method": "unauthenticated YouTube watch page via authorized Nirala PC; parsed ytInitialPlayerResponse plus public oEmbed",
+    "public_oembed_http_status": 200,
+    "public_oembed_title": "Power Automate Says SUCCESS. Your Excel Data Is Still OLD! #shorts",
+    "public_oembed_author": "FlowMinute Lab",
+    "anonymous_player_status": "OK",
+    "playable_in_embed": true,
+    "adaptive_stream_formats": 26,
+    "media_bytes_playback_test": "not_performed",
+    "studio_live_check": "unavailable_no_browser_debugging_port",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true
   }
 }
