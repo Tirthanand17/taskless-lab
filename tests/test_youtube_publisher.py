@@ -119,6 +119,31 @@ class TestPublisher(unittest.TestCase):
         (self.base / "subs.srt").write_text("1\n00:00:00,000 --> 00:00:01,000\nhello\n")
         self.doc["caption_path"] = "subs.srt"; self.save()
         with self.assertRaisesRegex(yp.PublisherError, "reviewed"): self.plan()
+    def test_existing_youtube_studio_receipt_blocks_duplicate(self):
+        # The repo already has a confirmed receipt for pilot_015; never reupload it.
+        self.doc["episode_id"] = "pilot_015"
+        (self.base/"episode.json").write_text(json.dumps({
+            "id":"pilot_015","title":"Safe AI walkthrough",
+            "description":"A test","type":"short"
+        }))
+        self.save()
+        with self.assertRaisesRegex(yp.PublisherError, "already scheduled"):
+            self.plan()
+
+    def test_thumbnail_hash_and_caption_review_gates(self):
+        (self.base/"thumb.png").write_bytes(b"image")
+        self.doc["thumbnail_path"]="thumb.png"
+        self.doc["thumbnail_sha256"]="0"*64
+        self.save()
+        with self.assertRaisesRegex(yp.PublisherError, "Thumbnail differs"):
+            self.plan()
+        self.doc["thumbnail_sha256"] = hashlib.sha256(b"image").hexdigest()
+        self.save()
+        self.assertEqual(self.plan()["thumbnail_path"], self.base/"thumb.png")
+
+    def test_assets_requires_explicit_confirmation(self):
+        self.assertEqual(yp.cli(["assets", str(self.manifest), "--token-file", "missing"]), 2)
+
     def test_duplicate_upload_blocked(self):
         self.reserve()
         l = yp.get_ledger(self.ledger_path())
