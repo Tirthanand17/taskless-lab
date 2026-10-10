@@ -114,11 +114,15 @@ def validate_manifest(path: Path, *, now: dt.datetime | None = None) -> dict[str
     if doc.get("thumbnail_path"):
         image = resolve_existing(str(base / doc["thumbnail_path"]), suffixes=(".jpg", ".jpeg", ".png"))
         require(image.stat().st_size <= 2 * 1024 * 1024, "Thumbnail must not exceed 2 MiB")
+        require(doc.get("thumbnail_sha256") == file_sha256(image),
+                "Thumbnail differs from QA-approved thumbnail_sha256")
     caption = None
     if doc.get("caption_path"):
         require(doc.get("captions_reviewed") is True,
                 "Caption upload blocked until reviewed against exact narration")
         caption = resolve_existing(str(base / doc["caption_path"]), suffixes=(".srt",))
+        require(doc.get("caption_sha256") == file_sha256(caption),
+                "Caption file differs from approved caption_sha256")
     return {
         "episode_id": episode_id, "expected_channel_id": expected_channel,
         "publish_at": as_rfc3339(schedule), "video_path": video, "video_sha256": computed_hash,
@@ -363,6 +367,64 @@ def schedule_private(api, plan: dict[str, Any], ledger_path: Path) -> None:
     print(f"Schedule VERIFIED: {video_id} on {as_rfc3339(actual)} (UTC)")
 
 
+
+
+def decorate_assets(api, plan: dict[str, Any], ledger_path: Path) -> None:
+    """Explicit second stage for approved thumbnails and accurate, human-reviewed SRTs.
+
+    Upload only for this publisher's ledger-owned videos. If an API call is
+    ambiguous, leave its reservation unresolved; never retry automatically.
+    """
+    from googleapiclient.http import MediaFileUpload
+    for kind, media_path in (("thumbnail", plan["thumbnail_path"]), ("caption", plan["caption_path"])):
+        if not media_path:
+            continue
+        with exclusive_ledger(ledger_path):
+            ledger = get_ledger(ledger_path)
+            record = require_matching_record(ledger, plan)
+            require(record["state"] in ("uploaded_private", "scheduled_verified"),
+                    f"Unexpected episode state: {record['state']}")
+            video_id = record["video_id"]
+            require(bool(VIDEO_ID.fullmatch(video_id or "")), "Missing upload receipt")
+            asset_states = record.setdefault("assets", {})
+            require(kind not in asset_states,
+                    f"{kind} was attempted before ({asset_states[kind]}). Reconcile manually; no blind retry.")
+            remote = video_info(api, video_id)
+            require(remote.get("snippet", {}).get("channelId") == plan["expected_channel_id"],
+                    "Video channel changed")
+            require(remote.get("snippet", {}).get("title") == plan["title"],
+                    "Video title changed")
+            require(remote.get("status", {}).get("privacyStatus") == "private",
+                    "Video is not private; no automatic asset modification")
+            asset_states[kind] = "unresolved"
+            write_json_secure(ledger_path, ledger)
+        try:
+            if kind == "thumbnail":
+                mime = "image/png" if media_path.suffix.lower() == ".png" else "image/jpeg"
+                request = api.thumbnails().set(
+                    videoId=video_id, media_body=MediaFileUpload(str(media_path), mimetype=mime))
+            else:
+                request = api.captions().insert(
+                    part="snippet",
+                    body={"snippet": {
+                        "videoId": video_id, "language": "en", "name": "English — reviewed",
+                        "isDraft": False,
+                    }},
+                    media_body=MediaFileUpload(str(media_path), mimetype="application/octet-stream"))
+            response = request.execute()
+            require(isinstance(response, dict), f"{kind} API did not return confirmation")
+        except Exception as exc:
+            raise PublisherError(
+                f"{kind} operation uncertain. Review it in Studio before retry: {exc}") from exc
+        with exclusive_ledger(ledger_path):
+            ledger = get_ledger(ledger_path)
+            record = require_matching_record(ledger, plan)
+            require(record["assets"].get(kind) == "unresolved", "Unexpected asset state")
+            record["assets"][kind] = "confirmed"
+            write_json_secure(ledger_path, ledger)
+        print(f"{kind} upload confirmed by API for {video_id}")
+
+
 def verify_existing(api, video_id: str, expected_channel_id: str) -> None:
     guard_channel(api, expected_channel_id)
     video = video_info(api, video_id)
@@ -397,6 +459,11 @@ def cli(argv: list[str] | None = None) -> int:
     sch.add_argument("--token-file", type=Path, required=True)
     sch.add_argument("--ledger", type=Path, default=DEFAULT_LEDGER)
     sch.add_argument("--confirm-schedule", action="store_true")
+    dec = sub.add_parser("assets", help="Upload QA-approved thumbnail/reviewed captions for ledger-owned video")
+    dec.add_argument("manifest", type=Path)
+    dec.add_argument("--token-file", type=Path, required=True)
+    dec.add_argument("--ledger", type=Path, default=DEFAULT_LEDGER)
+    dec.add_argument("--confirm-assets", action="store_true")
     chk = sub.add_parser("verify", help="Read remote metadata with no writes")
     chk.add_argument("--token-file", type=Path, required=True)
     chk.add_argument("--expected-channel-id", required=True)
@@ -413,16 +480,21 @@ def cli(argv: list[str] | None = None) -> int:
         elif args.cmd == "verify":
             verify_existing(youtube_client(args.token_file, writable=False),
                             args.video_id, args.expected_channel_id)
-        elif args.cmd in ("upload", "schedule"):
-            confirmation = args.confirm_private_upload if args.cmd == "upload" else args.confirm_schedule
-            require(confirmation, "Write blocked: explicit --confirm-private-upload or --confirm-schedule required")
+        elif args.cmd in ("upload", "schedule", "assets"):
+            confirmation = (args.confirm_private_upload if args.cmd == "upload"
+                            else args.confirm_schedule if args.cmd == "schedule"
+                            else args.confirm_assets)
+            require(confirmation, "Write blocked: explicit --confirm-private-upload, --confirm-schedule or --confirm-assets required")
             plan = validate_manifest(args.manifest)
             api = youtube_client(args.token_file, writable=True)
             guard_channel(api, plan["expected_channel_id"])
             if args.cmd == "upload":
                 upload_private(api, plan, args.ledger)
             else:
-                schedule_private(api, plan, args.ledger)
+                if args.cmd == "schedule":
+                    schedule_private(api, plan, args.ledger)
+                else:
+                    decorate_assets(api, plan, args.ledger)
     except PublisherError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
