@@ -41,5 +41,19 @@
     "public_playability": "not_due",
     "status_basis": "historical_scheduled_verified_receipt_not_live_studio",
     "no_duplicate_upload": true
+  },
+  "latest_release_watch_2026_10_10": {
+    "as_of_local": "2026-10-10T14:35:26+05:30",
+    "github_exact_video_id_and_schedule": "matched",
+    "expected_title_from_episode_manifest": "Why Excel Power Query Won't Auto-Refresh (3 Fixes That Work)",
+    "authenticated_studio_current_metadata_and_schedule": "unverified_authorized_PC_offline",
+    "historical_studio_receipt": "Video scheduled",
+    "historical_youtube_checks": "complete_no_issues",
+    "phase": "pre_release",
+    "public_playability": "not_due",
+    "public_watch_attempt": "YouTube page fetch disabled; search did not establish playback",
+    "publication_failure_confirmed": false,
+    "next_action": "Before 16:00 IST confirm existing ID, exact title, description, and schedule in Studio if accessible; after 16:15 check public player.",
+    "no_duplicate_upload": true
   }
 }
