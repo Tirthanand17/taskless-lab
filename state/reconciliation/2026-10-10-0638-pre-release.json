@@ -1,0 +1,38 @@
+{
+  "checked_at_local": "2026-10-10T06:38:31+05:30",
+  "timezone": "Asia/Kolkata",
+  "oct10": [
+    {
+      "episode": "pilot_011",
+      "youtube_id": "qkc0Tf_51nU",
+      "scheduled_local": "11:00",
+      "status": "scheduled_historical_receipt"
+    },
+    {
+      "episode": "long_005",
+      "youtube_id": "xmi1oAoxAZA",
+      "scheduled_local": "16:00",
+      "status": "scheduled_historical_receipt"
+    },
+    {
+      "episode": "pilot_012",
+      "youtube_id": "MZmZ8wGGpqc",
+      "scheduled_local": "20:30",
+      "status": "scheduled_historical_receipt"
+    }
+  ],
+  "github_planned_scheduled_pairs_match": true,
+  "episode_manifests_read": true,
+  "live_studio_verification": "unavailable_authorized_PC_offline",
+  "public_playback": "not_due",
+  "oct11_buffer": {
+    "shorts": [
+      "pilot_013",
+      "pilot_014"
+    ],
+    "long": "long_006",
+    "historical_qa_and_schedule": "documented",
+    "planned_pack_status": "corrected"
+  },
+  "no_duplicate_upload": true
+}
