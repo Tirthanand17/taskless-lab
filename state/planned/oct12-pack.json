@@ -1,0 +1,42 @@
+{
+  "date_local": "2026-10-12",
+  "timezone": "Asia/Kolkata",
+  "status": "rendering_qa_pending_upload",
+  "render_run_id": 38062482492,
+  "editorial_brief": "docs/OCT12_EDITORIAL_RESEARCH.md",
+  "production_standard": "docs/FLOWMINUTE_GROWTH_PRODUCTION_STANDARD_V2.md",
+  "entries": [
+    {
+      "id": "pilot_015",
+      "type": "short",
+      "planned_time": "2026-10-12T11:00:00+05:30",
+      "title": "ChatGPT Can Build a Bill Splitter INSIDE Your Chat?!",
+      "source": "content/episodes/pilot_015.json",
+      "render_id": "IntelligentUIShort",
+      "youtube_id": null,
+      "status": "rendering"
+    },
+    {
+      "id": "long_007",
+      "type": "long",
+      "planned_time": "2026-10-12T16:00:00+05:30",
+      "title": "ChatGPT Can Build Interactive Tools Now: 3 Useful GPT-6 Examples",
+      "source": "content/episodes/long_007.json",
+      "render_id": "IntelligentUILong",
+      "youtube_id": null,
+      "status": "rendering"
+    },
+    {
+      "id": "pilot_016",
+      "type": "short",
+      "planned_time": "2026-10-12T20:30:00+05:30",
+      "title": "AI Inside Your Spreadsheet? ONLYOFFICE 10.0 Just Launched!",
+      "source": "content/episodes/pilot_016.json",
+      "render_id": "OnlyOfficeShort",
+      "youtube_id": null,
+      "status": "rendering"
+    }
+  ],
+  "publication_gate": "Never claim scheduled until YouTube Studio explicitly confirms date and time and logs the video ID",
+  "notes": "October 11 package already scheduled; not duplicated. Next full package October 12."
+}
