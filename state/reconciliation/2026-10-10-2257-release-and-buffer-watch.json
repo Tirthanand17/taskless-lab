@@ -1,0 +1,80 @@
+{
+  "checked_at_local": "2026-10-10T22:57:26+05:30",
+  "timezone": "Asia/Kolkata",
+  "release_day_local": "2026-10-10",
+  "verification_basis": "GitHub state reread at this check; prior authenticated-PC anonymous YouTube player and oEmbed evidence; fresh YouTube page fetch unavailable",
+  "releases": [
+    {
+      "id": "pilot_011",
+      "youtube_video_id": "qkc0Tf_51nU",
+      "scheduled_local": "2026-10-10T11:00:00+05:30",
+      "public_status": "public_verified_prior_evidence",
+      "planned_status": "scheduled_verified_stale",
+      "scheduled_status": "public_verified",
+      "evidence": "state/scheduled/pilot_011.json"
+    },
+    {
+      "id": "long_005",
+      "youtube_video_id": "xmi1oAoxAZA",
+      "scheduled_local": "2026-10-10T16:00:00+05:30",
+      "public_status": "public_verified_prior_evidence",
+      "planned_status": "public_verified",
+      "scheduled_status": "public_verified",
+      "evidence": "state/planned/long_005.json and state/scheduled/long_005.json"
+    },
+    {
+      "id": "pilot_012",
+      "youtube_video_id": "MZmZ8wGGpqc",
+      "scheduled_local": "2026-10-10T20:30:00+05:30",
+      "public_status": "public_verified_prior_evidence",
+      "planned_status": "scheduled_verified_stale",
+      "scheduled_status": "public_verified",
+      "evidence": "state/scheduled/pilot_012.json"
+    }
+  ],
+  "current_live_verification": {
+    "youtube_direct_fetch": "disabled",
+    "authenticated_studio": "not_available",
+    "authorized_pc_school": "offline_last_seen_about_42_minutes_prior",
+    "authorized_pc_primary": "offline",
+    "vidiq": "4_credits_remaining_below_5_credit_read_cost",
+    "media_bytes_playback": "not_tested"
+  },
+  "github_repair": {
+    "attempted": [
+      "state/planned/pilot_011.json",
+      "state/planned/pilot_012.json"
+    ],
+    "result": "both_write_attempts_blocked_by_connector_safety_checks",
+    "changed": false
+  },
+  "next_day_buffer": {
+    "date_local": "2026-10-11",
+    "source": "state/planned/oct-11-pack.json",
+    "status": "historical_render_QA_upload_schedule_evidence; live Studio unverified",
+    "releases": [
+      {
+        "id": "pilot_013",
+        "youtube_video_id": "AnkLQI5no4Q",
+        "scheduled_local": "11:00",
+        "format": "short"
+      },
+      {
+        "id": "long_006",
+        "youtube_video_id": "TcO82x9wg0w",
+        "scheduled_local": "16:00",
+        "format": "long"
+      },
+      {
+        "id": "pilot_014",
+        "youtube_video_id": "1wsFnWed6bY",
+        "scheduled_local": "20:30",
+        "format": "short"
+      }
+    ]
+  },
+  "no_duplicate_upload": true,
+  "uploads_or_schedule_modifications_this_check": 0,
+  "temporary_pc_bridge_created": false,
+  "older_pc_bridge_cleanup": "not_verified_pc_offline"
+}
