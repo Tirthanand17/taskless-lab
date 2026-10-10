@@ -1,0 +1,61 @@
+{
+  "id": "long_007",
+  "title": "ChatGPT Can Build Interactive Tools Now: 3 Useful GPT-6 Examples",
+  "description": "ChatGPT's GPT-6 Intelligent UI, announced October 7, 2026, turns some questions into interactive charts, controls, calculators and visual explanations. We explain the real value with three clearly labeled illustrative examples: a group-bill splitter, probability learning, and a workflow comparison. Learn the difference between visual answers and real app deployment, and which plans support the feature.\n\nEvery interface in this video is an ORIGINAL ILLUSTRATIVE RECONSTRUCTION, not an actual live ChatGPT recording or a claim that we performed a product benchmark.\n\nOfficial sources:\nhttps://openai.com/index/gpt-6-for-everyone/\nhttps://help.openai.com/en/articles/20001598-intelligent-ui-in-chatgpt\n\n00:00 What if AI built a tool?\n00:20 Text vs interactive answers\n00:46 Bill splitter example\n01:17 Probability visualization\n01:51 Workflow options\n02:26 How it works for users\n02:52 Limitations and access\n03:18 Three prompts to try\n\n#ChatGPT #GPT6 #AI #Automation #Productivity",
+  "duration_seconds": 222,
+  "source_script": "motion-v2/script-long-007.txt",
+  "voice": "en-US-ChristopherNeural",
+  "category": "Science & Technology",
+  "type": "long",
+  "captions": [
+    {
+      "start": 0,
+      "end": 20,
+      "text": "What if AI could build a useful interactive tool inside your conversation?"
+    },
+    {
+      "start": 20,
+      "end": 46,
+      "text": "A visual answer lets you explore options without endless follow-up paragraphs."
+    },
+    {
+      "start": 46,
+      "end": 77,
+      "text": "Illustrative bill-splitter: 2400 rupees divided among four, then six people."
+    },
+    {
+      "start": 77,
+      "end": 111,
+      "text": "An interactive probability diagram can update when you change assumptions."
+    },
+    {
+      "start": 111,
+      "end": 146,
+      "text": "Compare three ways to complete a recurring spreadsheet workflow."
+    },
+    {
+      "start": 146,
+      "end": 172,
+      "text": "Ask, adjust, and check: the interface fits the task when useful."
+    },
+    {
+      "start": 172,
+      "end": 198,
+      "text": "Plan and client support vary; not all chat tools become deployed apps."
+    },
+    {
+      "start": 198,
+      "end": 222,
+      "text": "Try the prompts and verify every calculation. What would you build?"
+    }
+  ],
+  "sources": [
+    "https://openai.com/index/gpt-6-for-everyone/",
+    "https://help.openai.com/en/articles/20001598-intelligent-ui-in-chatgpt"
+  ],
+  "visual_note": "Original animated product-concept UI; not recorded live; only licensed background photography; no product capabilities beyond official OpenAI documentation.",
+  "thumbnail": {
+    "text": "CHATGPT BUILDS A TOOL?",
+    "visual": "Big white question beside an illustrative interactive bill split calculator on dark blue, FM branding"
+  }
+}
