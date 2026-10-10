@@ -1,0 +1,83 @@
+{
+  "checked_at_local": "2026-10-10T14:35:26+05:30",
+  "timezone": "Asia/Kolkata",
+  "source_of_truth": "GitHub repository with historical Studio receipts; current authenticated Studio inaccessible",
+  "releases": [
+    {
+      "episode": "pilot_011",
+      "video_id": "qkc0Tf_51nU",
+      "scheduled_local": "2026-10-10T11:00:00+05:30",
+      "status": "scheduled_verified_historical",
+      "public_playability": "not_independently_verified",
+      "publication_failure_confirmed": false
+    },
+    {
+      "episode": "long_005",
+      "video_id": "xmi1oAoxAZA",
+      "scheduled_local": "2026-10-10T16:00:00+05:30",
+      "status": "scheduled_verified_historical",
+      "public_playability": "not_due"
+    },
+    {
+      "episode": "pilot_012",
+      "video_id": "MZmZ8wGGpqc",
+      "scheduled_local": "2026-10-10T20:30:00+05:30",
+      "status": "scheduled_verified_historical",
+      "public_playability": "not_due"
+    }
+  ],
+  "live_verification": {
+    "github_ids_and_schedules": "all_three_match_planned_and_scheduled",
+    "episode_manifests": "read",
+    "studio": "blocked_authorized_Nirala_offline_both_links",
+    "public_youtube": "page_fetch_disabled_search_no_playback_evidence",
+    "bridge_cleanup": "not_verified_PC_offline"
+  },
+  "github_updates": {
+    "updated": [
+      "state/planned/pilot_011.json",
+      "state/planned/long_005.json",
+      "state/scheduled/long_005.json",
+      "state/scheduled/pilot_012.json"
+    ],
+    "blocked": [
+      "state/scheduled/pilot_011.json",
+      "state/planned/pilot_012.json"
+    ],
+    "reason": "connector_safety_checks"
+  },
+  "next_day_buffer": {
+    "date": "2026-10-11",
+    "historical_qa": "documented",
+    "studio_receipts": "documented",
+    "live_studio_recheck": "pending",
+    "episodes": [
+      {
+        "id": "pilot_013",
+        "video_id": "AnkLQI5no4Q",
+        "scheduled_local": "2026-10-11T11:00:00+05:30"
+      },
+      {
+        "id": "long_006",
+        "video_id": "TcO82x9wg0w",
+        "scheduled_local": "2026-10-11T16:00:00+05:30"
+      },
+      {
+        "id": "pilot_014",
+        "video_id": "1wsFnWed6bY",
+        "scheduled_local": "2026-10-11T20:30:00+05:30"
+      }
+    ]
+  },
+  "safety": {
+    "duplicate_uploads": 0,
+    "metadata_or_schedule_changes": 0,
+    "paid_actions": 0,
+    "personal_data_access": false,
+    "phone_verification": false
+  },
+  "next_checks_local": [
+    "2026-10-10T16:15:00+05:30",
+    "2026-10-10T20:45:00+05:30"
+  ]
+}
