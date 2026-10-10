@@ -16,6 +16,11 @@ Publish useful, original short-form videos that solve one repetitive-work proble
 - Follow the documented research, story, visual QA, truthful synthetic-media labeling, verified YouTube scheduling, and 24-hour/48-hour/7-day analytics review process.
 - The standard is **not** an automatic scheduled publishing task.
 
+
+## YouTube API Publisher (safe pilot)
+
+The official YouTube Data API automation is being implemented behind an explicit approval gate. Start with [the secure OAuth and publisher setup guide](docs/YOUTUBE_API_PUBLISHER_SETUP.md) and the read-only `prepare` / `doctor` commands. No existing Studio-scheduled videos are re-uploaded; real API uploading is disabled until channel-owner OAuth authorization and a harmless private test.
+
 ## Content model
 
 - 30-60 second original Shorts/Reels/TikToks
