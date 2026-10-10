@@ -1,0 +1,85 @@
+{
+  "checked_at_local": "2026-10-10T20:45:29+05:30",
+  "timezone": "Asia/Kolkata",
+  "release_day_local": "2026-10-10",
+  "verification_scope": "GitHub records plus unauthenticated YouTube oEmbed/player via authorized Nirala PC; authenticated Studio unavailable",
+  "releases": [
+    {
+      "id": "pilot_011",
+      "youtube_id": "qkc0Tf_51nU",
+      "release_local": "2026-10-10T11:00:00+05:30",
+      "public_player": "OK",
+      "public_oembed_http": 200,
+      "streaming_formats": 26,
+      "evidence": "Earlier Oct 10 check preserved in state/scheduled/pilot_011.json",
+      "planned_status": "scheduled_verified (stale)",
+      "scheduled_status": "public_verified"
+    },
+    {
+      "id": "long_005",
+      "youtube_id": "xmi1oAoxAZA",
+      "release_local": "2026-10-10T16:00:00+05:30",
+      "public_player": "OK",
+      "public_oembed_http": 200,
+      "streaming_formats": 7,
+      "evidence": "Earlier Oct 10 check preserved in state/planned/long_005.json and state/scheduled/long_005.json",
+      "planned_status": "public_verified",
+      "scheduled_status": "public_verified"
+    },
+    {
+      "id": "pilot_012",
+      "youtube_id": "MZmZ8wGGpqc",
+      "release_local": "2026-10-10T20:30:00+05:30",
+      "public_player": "OK at 20:45:29 IST",
+      "public_oembed_http": 200,
+      "streaming_formats": 26,
+      "public_title": "Stop Copy-Pasting CSV Files. Use Power Query From Folder #shorts",
+      "manifest_title_exact_match": true,
+      "public_publish_date": "2026-10-10T08:00:01-07:00",
+      "description_note": "Public description differs from episode manifest wording; content consistent with topic; no publication blocker",
+      "planned_status": "scheduled_verified (stale; update blocked)",
+      "scheduled_status": "public_verified",
+      "scheduled_update_commit": "00fa384781aebc0de44d5c09e6b71b342b0a9ebf"
+    }
+  ],
+  "public_verification_summary": "3 of 3 public player OK; not a full media-bytes playback test",
+  "authenticated_studio_live_metadata_and_schedule": "not_verified: browser debugging ports 9222/9223/9333 closed on authorized Nirala",
+  "next_day_buffer": {
+    "date_local": "2026-10-11",
+    "source": "state/planned/oct-11-pack.json",
+    "historical_qa": "rendered_QA_reviewed_uploaded_scheduled",
+    "live_studio_recheck": "pending",
+    "items": [
+      {
+        "id": "pilot_013",
+        "kind": "short",
+        "youtube_id": "AnkLQI5no4Q",
+        "scheduled_local": "11:00"
+      },
+      {
+        "id": "long_006",
+        "kind": "long",
+        "youtube_id": "TcO82x9wg0w",
+        "scheduled_local": "16:00"
+      },
+      {
+        "id": "pilot_014",
+        "kind": "short",
+        "youtube_id": "1wsFnWed6bY",
+        "scheduled_local": "20:30"
+      }
+    ]
+  },
+  "github_remaining_inconsistencies": [
+    "state/planned/pilot_011.json remains scheduled_verified although public player verified",
+    "state/planned/pilot_012.json remains scheduled_verified although public player verified"
+  ],
+  "github_write_blocker": "Attempts to update these two planned files were blocked by connector safety checks; do not claim they were updated",
+  "no_duplicate_upload": true,
+  "no_schedule_changes": true,
+  "no_paid_actions": true,
+  "no_personal_data_or_drive": true,
+  "no_pc_bridge_created": true,
+  "pc_bridge_cleanup": "No new bridge created; older bridge cleanup not independently verified",
+  "next_action": "Retry safe reconciliation of two planned records when GitHub writes allow; live Studio verification only through authorized access; protect existing IDs and Oct 11 buffer."
+}
