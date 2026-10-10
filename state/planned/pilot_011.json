@@ -50,19 +50,11 @@
     "next_action": "reverify_native_Studio_before_release; check public player after due plus propagation; do not reupload"
   },
   "latest_release_watch_2026_10_10": {
-    "as_of_local": "2026-10-10T12:47:42+05:30",
-    "video_id": "qkc0Tf_51nU",
-    "scheduled_local": "2026-10-10T11:00:00+05:30",
-    "github_pair_id_and_time": "matched",
-    "manifest_expected_title": "Power Automate Says SUCCESS. Your Excel Data Is Still OLD! #shorts",
-    "studio_live_id_metadata_schedule": "not_independently_verified",
-    "studio_confirmation_basis": "historical_Video_scheduled_receipt",
-    "youtube_checks_basis": "historical_complete_no_issues",
-    "publication_due": true,
-    "public_playback": "unverified_after_15min_grace",
-    "verification_blocker": "authorized_PC_offline_and_public_watch_page_unavailable_from_checker",
+    "as_of_local": "2026-10-10T13:51:12+05:30",
+    "github_pair_id_time": "matched",
+    "public_playback": "not_independently_verified",
+    "reason": "public_YouTube_watch_unavailable_and_authorized_Studio_PC_offline",
     "publication_failure_confirmed": false,
-    "action": "retry_public_playback_and_authenticated_Studio_for_existing_ID_only",
     "no_duplicate_upload": true
   }
 }
