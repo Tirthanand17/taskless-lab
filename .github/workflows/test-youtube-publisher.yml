@@ -1,0 +1,24 @@
+name: YouTube Publisher Offline Safety Tests
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publisher-safety:
+    name: Publisher safety - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile publisher
+        run: python -m py_compile scripts/youtube_publisher.py
+      - name: Offline tests - no tokens and no YouTube writes
+        run: python -m unittest discover -s tests -p "test_youtube_publisher.py" -v
