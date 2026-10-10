@@ -34,5 +34,13 @@
     "public_playability": "not_due",
     "no_duplicate_upload": true,
     "next_action": "preserve_existing_video_ID; recheck_authenticated_Studio_when_available; after_due_plus_grace_verify_public_playability"
+  },
+  "release_watch_oct10_1435": {
+    "checked_at_local": "2026-10-10T14:35:26+05:30",
+    "github_video_id_and_time_match": true,
+    "studio_live": "unavailable_authorized_PC_offline",
+    "public_playability": "not_due",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true
   }
 }
