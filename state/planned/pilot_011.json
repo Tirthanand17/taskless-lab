@@ -50,11 +50,17 @@
     "next_action": "reverify_native_Studio_before_release; check public player after due plus propagation; do not reupload"
   },
   "latest_release_watch_2026_10_10": {
-    "as_of_local": "2026-10-10T13:51:12+05:30",
-    "github_pair_id_time": "matched",
-    "public_playback": "not_independently_verified",
-    "reason": "public_YouTube_watch_unavailable_and_authorized_Studio_PC_offline",
+    "as_of_local": "2026-10-10T14:35:26+05:30",
+    "github_exact_video_id_and_schedule": "matched",
+    "expected_title_from_episode_manifest": "Power Automate Says SUCCESS. Your Excel Data Is Still OLD! #shorts",
+    "authenticated_studio_current_metadata_and_schedule": "unverified_authorized_PC_offline",
+    "historical_studio_receipt": "Video scheduled",
+    "historical_youtube_checks": "complete_no_issues",
+    "phase": "past_due_public_verification_pending",
+    "public_playability": "not_independently_verified",
+    "public_watch_attempt": "YouTube page fetch disabled; search did not establish playback",
     "publication_failure_confirmed": false,
+    "next_action": "Retry public player for existing ID; confirm in authenticated Studio if possible; do not claim publication failure from fetch failure.",
     "no_duplicate_upload": true
   }
 }
