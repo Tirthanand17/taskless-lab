@@ -1,0 +1,37 @@
+{
+  "id": "pilot_015",
+  "title": "ChatGPT Can Build a Bill Splitter INSIDE Your Chat?! #shorts",
+  "description": "GPT-6 Intelligent UI, announced by OpenAI October 7, 2026, can create interactive answers including calculators and forms. Our bill-splitter animation is a CLEARLY LABELED reconstruction, not an actual ChatGPT screen capture. Feature rollout and client availability vary. What would you build inside a chat?\n\nOfficial source: https://openai.com/index/gpt-6-for-everyone/\n#ChatGPT #GPT6 #AI #shorts",
+  "duration_seconds": 37,
+  "source_script": "motion-v2/script-v15.txt",
+  "voice": "en-US-AvaNeural",
+  "category": "Science & Technology",
+  "type": "short",
+  "captions": [
+    {
+      "start": 0,
+      "end": 6,
+      "text": "Imagine ChatGPT building a useful tool instead of just paragraphs."
+    },
+    {
+      "start": 6,
+      "end": 18,
+      "text": "Bill: 2,400 rupees split among four people means 600 each."
+    },
+    {
+      "start": 18,
+      "end": 27,
+      "text": "Six people means 400 each. Adjust and check."
+    },
+    {
+      "start": 27,
+      "end": 37,
+      "text": "GPT-6 Intelligent UI is rolling out. Would you try it?"
+    }
+  ],
+  "sources": [
+    "https://openai.com/index/gpt-6-for-everyone/",
+    "https://help.openai.com/en/articles/20001598-intelligent-ui-in-chatgpt"
+  ],
+  "visual_note": "Clearly labeled fictional interface reconstruction; no claim of testing ChatGPT; rights-cleared gradient vector graphics."
+}
