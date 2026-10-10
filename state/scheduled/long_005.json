@@ -1,6 +1,6 @@
 {
   "id": "long_005",
-  "status": "scheduled_verified",
+  "status": "public_verified",
   "video_id": "xmi1oAoxAZA",
   "youtube_url": "https://youtu.be/xmi1oAoxAZA",
   "scheduled_release_local": "2026-10-10T16:00:00+05:30",
@@ -55,5 +55,25 @@
     "publication_failure_confirmed": false,
     "next_action": "Before 16:00 IST confirm existing ID, exact title, description, and schedule in Studio if accessible; after 16:15 check public player.",
     "no_duplicate_upload": true
+  },
+  "release_reconciliation_2026_10_10_evening": {
+    "checked_at_utc": "2026-10-10T12:42:38.454Z",
+    "checked_at_local": "2026-10-10T18:12:38+05:30",
+    "github_exact_video_id_match": true,
+    "github_exact_schedule_match": true,
+    "expected_title_from_episode_manifest": "Why Excel Power Query Won't Auto-Refresh (3 Fixes That Work)",
+    "studio_historical_confirmation": "Video scheduled",
+    "youtube_checks_historical": "complete_no_issues",
+    "authenticated_studio_live_metadata_and_schedule": "not_verified_no_browser_debugging_access",
+    "no_duplicate_upload": true,
+    "public_oembed_http_status": 200,
+    "public_oembed_author": "FlowMinute Lab",
+    "public_title_exact_manifest_match": true,
+    "public_watch_http_status": 200,
+    "anonymous_player_status": "OK",
+    "streaming_formats_available": 7,
+    "public_playability": "player_OK_formats_available",
+    "media_bytes_playback_test": "not_performed",
+    "publication_failure_confirmed": false
   }
 }
