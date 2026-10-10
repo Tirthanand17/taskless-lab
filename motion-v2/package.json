@@ -40,7 +40,13 @@
     "render-long-006": "remotion render src/index.ts GeminiAgentLong ../assets/long-006/gemini-agent-long-006.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
     "still-v13": "remotion still src/index.ts GeminiInboxShort ../assets/v13/thumbnail-v13.png --frame=70",
     "still-v14": "remotion still src/index.ts AgentPermissionShort ../assets/v14/thumbnail-v14.png --frame=90",
-    "still-long-006": "remotion still src/index.ts GeminiAgentThumbnail ../assets/long-006/thumbnail-long-006.png --frame=0"
+    "still-long-006": "remotion still src/index.ts GeminiAgentThumbnail ../assets/long-006/thumbnail-long-006.png --frame=0",
+    "render-v15": "remotion render src/index.ts IntelligentUIShort ../assets/v15/interactive-bill-short.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
+    "render-v16": "remotion render src/index.ts OnlyOfficeShort ../assets/v16/onlyoffice-ai-short.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p",
+    "render-long-007": "remotion render src/index.ts IntelligentUILong ../assets/long-007/intelligent-ui-long.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "still-v15": "remotion still src/index.ts IntelligentUIShort ../assets/v15/thumb-v15.png --frame=65",
+    "still-v16": "remotion still src/index.ts OnlyOfficeShort ../assets/v16/thumb-v16.png --frame=90",
+    "still-long-007": "remotion still src/index.ts IntelligentUIThumbnail ../assets/long-007/thumbnail-long-007.png --frame=0"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",
