@@ -1,6 +1,6 @@
 {
   "id": "pilot_012",
-  "status": "scheduled_verified",
+  "status": "public_verified",
   "video_id": "MZmZ8wGGpqc",
   "youtube_url": "https://youtube.com/shorts/MZmZ8wGGpqc",
   "scheduled_release_local": "2026-10-10T20:30:00+05:30",
@@ -40,6 +40,23 @@
     "github_video_id_and_time_match": true,
     "studio_live": "unavailable_authorized_PC_offline",
     "public_playability": "not_due",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true
+  },
+  "public_verification_2026_10_10": {
+    "checked_at_local": "2026-10-10T20:44:16+05:30",
+    "video_id": "MZmZ8wGGpqc",
+    "verification_method": "unauthenticated YouTube oEmbed and ytInitialPlayerResponse via authorized Nirala computer",
+    "oembed_http_status": 200,
+    "public_oembed_author": "FlowMinute Lab",
+    "public_title": "Stop Copy-Pasting CSV Files. Use Power Query From Folder #shorts",
+    "manifest_title_exact_match": true,
+    "anonymous_player_status": "OK",
+    "playable_in_embed": true,
+    "adaptive_stream_formats": 26,
+    "public_player_publish_date": "2026-10-10T08:00:01-07:00",
+    "media_bytes_playback_test": "not_performed",
+    "authenticated_studio_live_verification": "not_verified",
     "publication_failure_confirmed": false,
     "no_duplicate_upload": true
   }
