@@ -1,0 +1,97 @@
+name: Render October 12 Intelligent UI and ONLYOFFICE pack
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "state/render-triggers/oct12.txt"
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          npm --prefix motion-v2 install --no-audit --no-fund
+          python -m pip install edge-tts mutagen pillow
+      - name: Validate planned source-grounded episodes
+        run: |
+          python scripts/validate_release.py content/episodes/pilot_015.json
+          python scripts/validate_release.py content/episodes/pilot_016.json
+          python scripts/validate_release.py content/episodes/long_007.json
+      - name: Narrate all three scripts
+        working-directory: motion-v2
+        run: |
+          python generate_voice_cli.py --script script-v15.txt --output voice-v15.mp3 --voice en-US-AvaNeural --rate "+4%"
+          python generate_voice_cli.py --script script-v16.txt --output voice-v16.mp3 --voice en-US-AvaNeural --rate "+4%"
+          python generate_voice_cli.py --script script-long-007.txt --output voice-long-007.mp3 --voice en-US-ChristopherNeural --rate "+4%"
+          npx remotion browser ensure
+      - name: Validate narration and compositions
+        run: |
+          python - <<'PY'
+          from mutagen.mp3 import MP3
+          for n,target in [('v15',37),('v16',40),('long-007',222)]:
+              seconds=float(MP3(f'motion-v2/public/voice-{n}.mp3').info.length)
+              print(f'{n}: narration={seconds:.2f}s video={target}s')
+              assert target*.70 < seconds <= target+.5, f'Audio timing issue for {n}: {seconds} seconds'
+          PY
+          cd motion-v2
+          npx remotion compositions src/index.ts
+      - name: Prepare deliverable directories
+        run: mkdir -p assets/v15 assets/v16 assets/long-007 assets/qa-oct12
+      - name: Render Shorts and long video at native HD
+        working-directory: motion-v2
+        run: |
+          npm run render-v15
+          npm run render-v16
+          npm run render-long-007
+          npm run still-v15
+          npm run still-v16
+          npm run still-long-007
+      - name: Generate subtitles
+        run: |
+          python scripts/generate_srt.py content/episodes/pilot_015.json assets/v15/captions-v15.srt
+          python scripts/generate_srt.py content/episodes/pilot_016.json assets/v16/captions-v16.srt
+          python scripts/generate_srt.py content/episodes/long_007.json assets/long-007/captions-long-007.srt
+      - name: Generate visual review frames
+        working-directory: motion-v2
+        run: |
+          for frame in 20 200 570 870; do npx remotion still src/index.ts IntelligentUIShort ../assets/qa-oct12/short15-${frame}.png --frame=$frame; done
+          for frame in 20 300 725 990; do npx remotion still src/index.ts OnlyOfficeShort ../assets/qa-oct12/short16-${frame}.png --frame=$frame; done
+          for frame in 20 600 1450 2250 3100 3800 4550 5090; do npx remotion still src/index.ts IntelligentUILong ../assets/qa-oct12/long-${frame}.png --frame=$frame; done
+      - name: Produce QA contact sheets
+        run: |
+          python - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          root=Path('assets/qa-oct12')
+          for key,cols,sz in [('short15',4,(216,384)),('short16',4,(216,384)),('long',4,(384,216))]:
+              frames=sorted(root.glob(key+'-*.png'))
+              w,h=sz
+              sheet=Image.new('RGB',(cols*w,((len(frames)+cols-1)//cols)*(h+30)),'#e9f3f7')
+              draw=ImageDraw.Draw(sheet)
+              for i,path in enumerate(frames):
+                  im=Image.open(path).convert('RGB')
+                  im.thumbnail(sz)
+                  x=(i%cols)*w
+                  y=(i//cols)*(h+30)
+                  sheet.paste(im,(x,y+30))
+                  draw.text((x+5,y+5),path.stem,fill='#18314a')
+              sheet.save(root/(key+'-contact.jpg'),quality=90)
+          PY
+      - name: Upload reviewable October 12 files
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-oct12-production-pack
+          retention-days: 7
+          path: |
+            assets/v15/*
+            assets/v16/*
+            assets/long-007/*
+            assets/qa-oct12/*-contact.jpg
