@@ -1,0 +1,36 @@
+{
+  "id": "pilot_016",
+  "title": "AI Inside Your Spreadsheet? ONLYOFFICE 10.0 Just Launched! #shorts",
+  "description": "ONLYOFFICE 10.0 was announced on October 10, 2026. Context-aware AI tools appear inside office editors including spreadsheets. This is a visual concept reconstruction, NOT a recording of ONLYOFFICE in use or a hands-on review. Confirm which edition, AI setup, and privacy terms apply before enabling AI for sensitive documents.\n\nOfficial announcement: https://community.onlyoffice.com/t/meet-onlyoffice-docs-10-0-ai-tools-and-modular-apps-50-new-features-1-000-bug-fixes-35-fixed-vulnerabilities-and-more/20986\n#ONLYOFFICE #Spreadsheet #AI #Automation #shorts",
+  "duration_seconds": 40,
+  "source_script": "motion-v2/script-v16.txt",
+  "voice": "en-US-AvaNeural",
+  "category": "Science & Technology",
+  "type": "short",
+  "captions": [
+    {
+      "start": 0,
+      "end": 8,
+      "text": "ONLYOFFICE launched version ten with AI tools in the editors."
+    },
+    {
+      "start": 8,
+      "end": 21,
+      "text": "Imagine working with data in a spreadsheet without changing apps."
+    },
+    {
+      "start": 21,
+      "end": 31,
+      "text": "AI suggestions must still be reviewed and verified."
+    },
+    {
+      "start": 31,
+      "end": 40,
+      "text": "Check edition and privacy before trying. Would you use it?"
+    }
+  ],
+  "sources": [
+    "https://community.onlyoffice.com/t/meet-onlyoffice-docs-10-0-ai-tools-and-modular-apps-50-new-features-1-000-bug-fixes-35-fixed-vulnerabilities-and-more/20986"
+  ],
+  "visual_note": "Illustrative reconstruction only, not actual ONLYOFFICE interface/recording; no untested workflow claimed."
+}
