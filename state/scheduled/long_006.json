@@ -6,7 +6,7 @@
   "youtube_video_id": "TcO82x9wg0w",
   "url": "https://youtu.be/TcO82x9wg0w",
   "title_in_studio": "Google's NEW Gemini AI Agent Explained: 3 Workflows & the Catch",
-  "status": "scheduled",
+  "status": "public_verified",
   "source": "YouTube Studio confirmation dialog 2026-10-09",
   "asset_version": "oct11-v2",
   "custom_thumbnail": true,
@@ -18,6 +18,22 @@
     "studio_title": "Google's NEW Gemini AI Agent Explained: 3 Workflows & the Catch",
     "live_studio": "unavailable_authorized_PC_offline",
     "public_playability": "not_due",
+    "no_duplicate_upload": true
+  },
+  "public_verification_2026_10_11_1840_ist": {
+    "checked_at_local": "2026-10-11T18:40:00+05:30",
+    "youtube_video_id": "TcO82x9wg0w",
+    "method": "unauthenticated YouTube oEmbed and watch-page ytInitialPlayerResponse via authorized Nirala PC",
+    "public_oembed_http_status": 200,
+    "public_oembed_author": "FlowMinute Lab",
+    "public_oembed_title": "Google's NEW Gemini AI Agent Explained: 3 Workflows & the Catch",
+    "anonymous_watch_http_status": 200,
+    "anonymous_player_status": "OK",
+    "streaming_data_present": true,
+    "media_bytes_playback_test": "not_performed",
+    "live_authenticated_studio": "unverified_no_browser_debugging_port_9222",
+    "studio_schedule_basis": "historical_2026_10_09_Video_scheduled_receipt",
+    "publication_failure_confirmed": false,
     "no_duplicate_upload": true
   }
 }
