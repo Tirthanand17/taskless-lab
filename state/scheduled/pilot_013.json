@@ -10,5 +10,6 @@
   "source": "YouTube Studio confirmation dialog 2026-10-09",
   "checks": "No issues found",
   "asset_version": "oct11-v2",
-  "notes": "Verified Studio publication receipt; metadata wording may be polished later, do not reupload."
+  "notes": "Verified Studio publication receipt; metadata wording may be polished later, do not reupload.",
+  "public_check_2026_10_11": "Due; public playability unverified because public player and live Studio unavailable. No publication failure confirmed. Preserve existing ID; never reupload."
 }
