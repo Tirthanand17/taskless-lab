@@ -1,0 +1,56 @@
+{
+  "date_local": "2026-10-11",
+  "timezone": "Asia/Kolkata",
+  "status": "scheduled_historical_studio_receipts_not_live_reverified",
+  "source_of_truth": "state/scheduled/*.json",
+  "studio_confirmation_basis": "2026-10-09 YouTube Studio Video scheduled receipts; checks complete no issues",
+  "last_repository_reconciliation_local": "2026-10-11T06:12:19+05:30",
+  "live_studio_recheck": "blocked_authorized_Nirala_offline",
+  "no_duplicate_upload": true,
+  "entries": [
+    {
+      "id": "pilot_013",
+      "type": "short",
+      "youtube_id": "AnkLQI5no4Q",
+      "planned_time": "2026-10-11T11:00:00+05:30",
+      "status": "scheduled",
+      "asset_version": "oct11-v2",
+      "studio_title": "Googles NEW AI Coworker Has Its Own Inbox",
+      "manifest_title": "Google's AI Coworker Can Have Its Own Inbox? #shorts",
+      "title_exact_match": false,
+      "receipt": "state/scheduled/pilot_013.json"
+    },
+    {
+      "id": "long_006",
+      "type": "long",
+      "youtube_id": "TcO82x9wg0w",
+      "planned_time": "2026-10-11T16:00:00+05:30",
+      "status": "scheduled",
+      "asset_version": "oct11-v2",
+      "studio_title": "Google's NEW Gemini AI Agent Explained: 3 Workflows & the Catch",
+      "manifest_title": "Google's NEW Gemini AI Agent Explained — 3 Workflows & the Catch",
+      "title_exact_match": false,
+      "receipt": "state/scheduled/long_006.json"
+    },
+    {
+      "id": "pilot_014",
+      "type": "short",
+      "youtube_id": "1wsFnWed6bY",
+      "planned_time": "2026-10-11T20:30:00+05:30",
+      "status": "scheduled",
+      "asset_version": "oct11-v2",
+      "studio_title": "Never Let an AI Agent Do THIS Automatically #shorts",
+      "manifest_title": "Never Let an AI Agent Do THIS Automatically #shorts",
+      "title_exact_match": true,
+      "receipt": "state/scheduled/pilot_014.json"
+    }
+  ],
+  "production_qa": "docs/OCT11_RELEASE_CONFIRMATION.md",
+  "public_playability": "not_due_at_reconciliation",
+  "pending": [
+    "recheck exact ID, schedule and metadata in authenticated Studio when available",
+    "after due plus 15 minutes verify anonymous public player for each existing ID",
+    "update planned and scheduled state only from verified evidence",
+    "no duplicate uploads; no payment, verification or personal data access"
+  ]
+}
