@@ -187,6 +187,9 @@ def create_upload_reservation(ledger: dict[str, Any], plan: dict[str, Any]) -> N
     episode_id = plan["episode_id"]
     require(episode_id not in ledger["episodes"],
             f"{episode_id} already has a reservation or receipt. Do not duplicate-upload; reconcile manually.")
+    for other_id, existing in ledger["episodes"].items():
+        require(existing.get("video_sha256") != plan["video_sha256"],
+                f"Video content already attempted under {other_id}. Do not upload duplicate media.")
     ledger["episodes"][episode_id] = {
         "state": "uploading_unresolved", "video_id": None, "channel_id": plan["expected_channel_id"],
         "video_sha256": plan["video_sha256"], "publish_at": plan["publish_at"],
@@ -198,6 +201,7 @@ def require_matching_record(ledger: dict[str, Any], plan: dict[str, Any]) -> dic
     record = ledger["episodes"].get(plan["episode_id"])
     require(isinstance(record, dict), "No ledger record. First upload privately or reconcile externally.")
     require(record.get("video_sha256") == plan["video_sha256"], "Media checksum changed")
+    require(record.get("title") == plan["title"], "Episode title changed after the upload reservation")
     require(record.get("channel_id") == plan["expected_channel_id"], "Wrong channel")
     require(record.get("publish_at") == plan["publish_at"], "Schedule changed: manual review required")
     return record
