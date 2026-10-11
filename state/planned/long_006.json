@@ -1,0 +1,11 @@
+{
+  "id": "long_006",
+  "type": "long",
+  "status": "scheduled",
+  "youtube_video_id": "TcO82x9wg0w",
+  "target_release_local": "2026-10-11T16:00:00+05:30",
+  "source": "state/scheduled/long_006.json",
+  "studio_confirmation": "Video scheduled (historical receipt)",
+  "public_playability": "not_due",
+  "no_duplicate_upload": true
+}
