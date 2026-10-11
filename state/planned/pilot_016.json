@@ -1,0 +1,11 @@
+{
+  "id": "pilot_016",
+  "type": "short",
+  "status": "scheduled",
+  "youtube_video_id": "XEV1fz-75-M",
+  "target_release_local": "2026-10-12T20:30:00+05:30",
+  "source": "state/scheduled/pilot_016.json",
+  "studio_confirmation": "historical_video_scheduled",
+  "public_playability": "not_due",
+  "no_duplicate_upload": true
+}
