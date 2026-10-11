@@ -123,6 +123,62 @@ class TestPublisher(unittest.TestCase):
     def test_strict_sha256(self):
         (self.base / "video.mp4").write_bytes(b"changed after approval")
         with self.assertRaisesRegex(yp.PublisherError, "SHA-256"): self.plan()
+    def test_srt_accepts_sequential_timed_cues(self):
+        p = self.base / "captions.srt"
+        p.write_text("1\n00:00:00,000 --> 00:00:01,000\nFirst caption\n\n"
+                     "2\n00:00:01,200 --> 00:00:02,300\nSecond caption\n",
+                     encoding="utf-8")
+        self.assertEqual(yp.validate_srt_file(p), 2)
+        self.doc["caption_path"] = "captions.srt"
+        self.doc["captions_reviewed"] = True
+        self.doc["caption_sha256"] = hashlib.sha256(p.read_bytes()).hexdigest()
+        self.save()
+        self.assertEqual(self.plan()["caption_path"], p)
+
+    def test_srt_rejects_overlaps(self):
+        p = self.base / "bad.srt"
+        p.write_text("1\n00:00:00,000 --> 00:00:03,000\nOne\n\n"
+                     "2\n00:00:02,000 --> 00:00:04,000\nTwo\n")
+        with self.assertRaisesRegex(yp.PublisherError, "overlap"):
+            yp.validate_srt_file(p)
+
+    def test_srt_rejects_bad_timestamp_format(self):
+        p = self.base / "bad.srt"
+        p.write_text("1\n00:00:00.000 --> 00:00:01.000\nWrong separator\n")
+        with self.assertRaisesRegex(yp.PublisherError, "HH:MM:SS"):
+            yp.validate_srt_file(p)
+
+    def test_utf8_description_byte_limit(self):
+        ep = self.base / "episode.json"
+        meta=json.loads(ep.read_text())
+        meta["description"] = "é"*3000
+        ep.write_text(json.dumps(meta),encoding="utf-8")
+        with self.assertRaisesRegex(yp.PublisherError, "byte limit"):
+            self.plan()
+
+    def test_metadata_angle_brackets_blocked(self):
+        ep=self.base/"episode.json"
+        meta=json.loads(ep.read_text())
+        meta["title"]="A <B> headline"
+        ep.write_text(json.dumps(meta),encoding="utf-8")
+        with self.assertRaisesRegex(yp.PublisherError, "angle brackets"):
+            self.plan()
+
+    def test_offline_oauth_health_never_prints_secrets(self):
+        t=self.base/"publish_token.json"
+        t.write_text(json.dumps({
+            "scopes":[yp.WRITE_SCOPE],
+            "refresh_token":"SECRET_REFRESH_DO_NOT_PRINT",
+            "token":"SECRET_ACCESS_DO_NOT_PRINT",
+            "expiry":"2026-10-11T16:01:00Z"
+        }))
+        report=yp.credential_health(t,expected_scope=yp.WRITE_SCOPE)
+        self.assertTrue(report["publish_scope"])
+        self.assertTrue(report["refresh_token_present"])
+        self.assertFalse(report["refresh_token_expiry_known"])
+        self.assertNotIn("SECRET",json.dumps(report))
+        self.assertEqual(yp.cli(["auth-health","--token-file",str(t),"--mode","publish"]),0)
+
     def test_no_auto_subtitle_until_reviewed(self):
         (self.base / "subs.srt").write_text("1\n00:00:00,000 --> 00:00:01,000\nhello\n")
         self.doc["caption_path"] = "subs.srt"; self.save()
