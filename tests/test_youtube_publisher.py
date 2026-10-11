@@ -25,14 +25,16 @@ class Call:
 
 
 class FakeAPI:
-    def __init__(self, *, wrong_title=False, wrong_channel=False, existing_publish=None, privacy="private"):
+    def __init__(self, *, wrong_title=False, wrong_channel=False, existing_publish=None, privacy="private", processing="succeeded"):
         self.calls = []
         self.video = {
             "id": VID, "snippet": {
                 "title": "Safe AI walkthrough",
                 "channelId": CHANNEL if not wrong_channel else "UC" + "b" * 22
             },
+            "processingDetails": {"processingStatus": processing},
             "status": {
+                "uploadStatus": "processed" if processing=="succeeded" else "uploaded",
                 "privacyStatus": privacy, "selfDeclaredMadeForKids": False,
                 "license": "youtube", "publicStatsViewable": False,
                 "containsSyntheticMedia": True,
@@ -168,6 +170,18 @@ class TestPublisher(unittest.TestCase):
         self.assertTrue(x["containsSyntheticMedia"])
         self.assertIs(x["selfDeclaredMadeForKids"], False)
         self.assertEqual(x["privacyStatus"], "private")
+    def test_schedule_processing_gate_blocks_incomplete(self):
+        self.reserve()
+        api = FakeAPI(processing="processing")
+        with self.assertRaisesRegex(yp.PublisherError, "processing"):
+            yp.schedule_private(api, self.plan(), self.ledger_path())
+        self.assertNotIn("update", [x[0] for x in api.calls])
+        self.assertEqual(yp.get_ledger(self.ledger_path())["episodes"]["pilot_123"]["state"], "uploaded_private")
+
+    def test_schedule_freshness_revalidated_at_execution(self):
+        with self.assertRaisesRegex(yp.PublisherError, "at least 30"):
+            yp.ensure_future_schedule((dt.datetime.now(yp.UTC) + dt.timedelta(minutes=2)).isoformat())
+
     def test_schedule_success_with_confirmed_readback(self):
         self.reserve()
         api = FakeAPI()
