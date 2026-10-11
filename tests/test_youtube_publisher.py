@@ -157,6 +157,21 @@ class TestPublisher(unittest.TestCase):
         l = yp.get_ledger(self.ledger_path())
         with self.assertRaisesRegex(yp.PublisherError, "duplicate-upload"):
             yp.create_upload_reservation(l, self.plan())
+    def test_duplicate_sha_across_different_episode_ids_is_blocked(self):
+        self.reserve()
+        ledger = yp.get_ledger(self.ledger_path())
+        plan = dict(self.plan())
+        plan["episode_id"] = "pilot_other"
+        with self.assertRaisesRegex(yp.PublisherError, "duplicate media"):
+            yp.create_upload_reservation(ledger, plan)
+
+    def test_uploaded_title_is_immutable(self):
+        self.reserve()
+        plan = dict(self.plan())
+        plan["title"] = "Different title after approval"
+        with self.assertRaisesRegex(yp.PublisherError, "title changed"):
+            yp.require_matching_record(yp.get_ledger(self.ledger_path()), plan)
+
     def test_stale_lock_blocks(self):
         lock = self.ledger_path().with_suffix(".json.lock")
         lock.write_text("old pid\n")
