@@ -21,6 +21,8 @@ Publish useful, original short-form videos that solve one repetitive-work proble
 
 The official YouTube Data API automation is being implemented behind an explicit approval gate. Start with [the secure OAuth and publisher setup guide](docs/YOUTUBE_API_PUBLISHER_SETUP.md) and the read-only `prepare` / `doctor` commands. No existing Studio-scheduled videos are re-uploaded; real API uploading is disabled until channel-owner OAuth authorization and a harmless private test.
 
+**Read-only daily scheduling check (Windows):** `& '.\\scripts\\flowminute_daily_preflight.ps1' -Date '2026-10-12'` after local OAuth is configured. This audits the expected YouTube channel and all local receipts for the given day, with no uploads or scheduling. See [Phase 3 readiness and OAuth limitations](docs/YOUTUBE_API_PHASE3_READINESS_20261011.md). **39 Windows offline tests passed**; live thumbnail/caption/scheduling tests remain incomplete, so unattended publishing is not enabled.
+
 ## Content model
 
 - 30-60 second original Shorts/Reels/TikToks
