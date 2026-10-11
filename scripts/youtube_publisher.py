@@ -451,6 +451,41 @@ def decorate_assets(api, plan: dict[str, Any], ledger_path: Path) -> None:
         print(f"{kind} upload confirmed by API for {video_id}")
 
 
+def inspect_release(api, plan: dict[str, Any], ledger_path: Path) -> dict[str, Any]:
+    """Read-only comparison of local receipt against official remote video state."""
+    guard_channel(api, plan["expected_channel_id"])
+    ledger = get_ledger(ledger_path)
+    record = require_matching_record(ledger, plan)
+    vid = record.get("video_id")
+    require(isinstance(vid, str) and VIDEO_ID.fullmatch(vid) is not None,
+            "No verified video ID in ledger; manual reconciliation required")
+    remote = video_info(api, vid)
+    require(remote.get("snippet", {}).get("channelId") == plan["expected_channel_id"],
+            "Remote video ownership differs from the manifest")
+    require(remote.get("snippet", {}).get("title") == plan["title"],
+            "Remote video title differs from QA-approved metadata")
+    remote_privacy = remote.get("status", {}).get("privacyStatus")
+    remote_schedule = remote.get("status", {}).get("publishAt")
+    if record["state"] in ("uploaded_private", "uploading_unresolved"):
+        require(remote_privacy == "private" and not remote_schedule,
+                "A supposedly private unscheduled release is scheduled or not private")
+    if record["state"] == "scheduled_verified":
+        require(remote_privacy == "private", "Scheduled video is no longer private")
+        require(remote_schedule and abs((parse_utc(remote_schedule) -
+                                         parse_utc(record["publish_at"])).total_seconds()) <= 1,
+                "Scheduled time does not match the approved release")
+    return {
+        "episode_id": plan["episode_id"], "video_id": vid,
+        "ledger_state": record["state"], "remote_privacy": remote_privacy,
+        "remote_publish_at": remote_schedule,
+        "remote_upload_status": remote.get("status", {}).get("uploadStatus"),
+        "remote_processing": remote.get("processingDetails", {}).get("processingStatus"),
+        "recorded_assets": record.get("assets", {}),
+        "safe_for_publication": record["state"] == "scheduled_verified" and
+            remote_privacy == "private" and remote_schedule is not None,
+    }
+
+
 def verify_existing(api, video_id: str, expected_channel_id: str) -> None:
     guard_channel(api, expected_channel_id)
     video = video_info(api, video_id)
@@ -490,6 +525,10 @@ def cli(argv: list[str] | None = None) -> int:
     dec.add_argument("--token-file", type=Path, required=True)
     dec.add_argument("--ledger", type=Path, default=DEFAULT_LEDGER)
     dec.add_argument("--confirm-assets", action="store_true")
+    ins = sub.add_parser("inspect", help="Read-only crosscheck of local ledger and remote YouTube video")
+    ins.add_argument("manifest", type=Path)
+    ins.add_argument("--token-file", type=Path, required=True)
+    ins.add_argument("--ledger", type=Path, default=DEFAULT_LEDGER)
     chk = sub.add_parser("verify", help="Read remote metadata with no writes")
     chk.add_argument("--token-file", type=Path, required=True)
     chk.add_argument("--expected-channel-id", required=True)
@@ -503,6 +542,10 @@ def cli(argv: list[str] | None = None) -> int:
             print("SAFE DRY RUN: no API call; no upload; no schedule.")
         elif args.cmd == "doctor":
             guard_channel(youtube_client(args.token_file, writable=False), args.expected_channel_id)
+        elif args.cmd == "inspect":
+            plan = validate_manifest(args.manifest)
+            api = youtube_client(args.token_file, writable=False)
+            print(json.dumps(inspect_release(api, plan, args.ledger), indent=2))
         elif args.cmd == "verify":
             verify_existing(youtube_client(args.token_file, writable=False),
                             args.video_id, args.expected_channel_id)
