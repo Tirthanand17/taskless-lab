@@ -1,0 +1,23 @@
+{
+  "id": "pilot_013",
+  "type": "short",
+  "target_release_local": "2026-10-11T11:00:00+05:30",
+  "status": "scheduled",
+  "youtube_video_id": "AnkLQI5no4Q",
+  "youtube_url": "https://youtube.com/shorts/AnkLQI5no4Q",
+  "episode": "content/episodes/pilot_013.json",
+  "asset_version": "oct11-v2",
+  "studio_title_from_historical_receipt": "Googles NEW AI Coworker Has Its Own Inbox",
+  "episode_manifest_title": "Google's AI Coworker Can Have Its Own Inbox? #shorts",
+  "title_exact_match_between_receipt_and_manifest": false,
+  "studio_confirmation": "Video scheduled",
+  "studio_confirmation_source": "2026-10-09 historical YouTube Studio receipt",
+  "youtube_checks": "No issues found",
+  "visual_qa": "passed_documented",
+  "production_qa_source": "docs/OCT11_RELEASE_CONFIRMATION.md",
+  "live_authenticated_studio_check": "blocked_authorized_Nirala_offline",
+  "public_playability": "past_due_unverified_public_player_unavailable",
+  "public_verification_method_attempt": "2026-10-11 public YouTube watch and oEmbed retrieval unavailable; cannot infer failure",
+  "no_duplicate_upload": true,
+  "existing_video_only": true
+}
