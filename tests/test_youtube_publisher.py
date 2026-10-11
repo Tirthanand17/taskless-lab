@@ -203,6 +203,21 @@ class TestPublisher(unittest.TestCase):
         with self.assertRaisesRegex(yp.PublisherError,"already has a schedule"):
             yp.schedule_private(api,self.plan(),self.ledger_path())
         self.assertNotIn("update", [x[0] for x in api.calls])
+    def test_inspect_release_private_safe_without_writes(self):
+        self.reserve()
+        api = FakeAPI()
+        info = yp.inspect_release(api, self.plan(), self.ledger_path())
+        self.assertEqual(info["video_id"], VID)
+        self.assertEqual(info["remote_privacy"], "private")
+        self.assertFalse(info["safe_for_publication"])
+        self.assertNotIn("update", [name for name, _ in api.calls])
+
+    def test_inspect_release_detects_remote_mismatch(self):
+        self.reserve()
+        api = FakeAPI(existing_publish="2030-01-01T00:00:00Z")
+        with self.assertRaisesRegex(yp.PublisherError, "scheduled or not private"):
+            yp.inspect_release(api, self.plan(), self.ledger_path())
+
     def test_private_api_pilot_can_never_schedule(self):
         self.doc["episode_id"] = "api_private_test_001"
         (self.base / "episode.json").write_text(json.dumps({
