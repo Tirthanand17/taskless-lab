@@ -6,7 +6,7 @@
   "youtube_video_id": "AnkLQI5no4Q",
   "url": "https://youtube.com/shorts/AnkLQI5no4Q",
   "title_in_studio": "Googles NEW AI Coworker Has Its Own Inbox",
-  "status": "scheduled",
+  "status": "public_verified",
   "source": "YouTube Studio confirmation dialog 2026-10-09",
   "checks": "No issues found",
   "asset_version": "oct11-v2",
@@ -23,5 +23,21 @@
     "preserve_existing_upload": true,
     "no_duplicate_upload": true,
     "next_action": "recheck anonymous player and existing video in authenticated Studio when available; update public_verified only on actual evidence"
+  },
+  "public_verification_2026_10_11_1840_ist": {
+    "checked_at_local": "2026-10-11T18:40:00+05:30",
+    "youtube_video_id": "AnkLQI5no4Q",
+    "method": "unauthenticated YouTube oEmbed and watch-page ytInitialPlayerResponse via authorized Nirala PC",
+    "public_oembed_http_status": 200,
+    "public_oembed_author": "FlowMinute Lab",
+    "public_oembed_title": "Googles NEW AI Coworker Has Its Own Inbox",
+    "anonymous_watch_http_status": 200,
+    "anonymous_player_status": "OK",
+    "streaming_data_present": true,
+    "media_bytes_playback_test": "not_performed",
+    "live_authenticated_studio": "unverified_no_browser_debugging_port_9222",
+    "studio_schedule_basis": "historical_2026_10_09_Video_scheduled_receipt",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true
   }
 }
