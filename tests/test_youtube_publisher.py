@@ -183,6 +183,18 @@ class TestPublisher(unittest.TestCase):
         with self.assertRaisesRegex(yp.PublisherError,"already has a schedule"):
             yp.schedule_private(api,self.plan(),self.ledger_path())
         self.assertNotIn("update", [x[0] for x in api.calls])
+    def test_private_api_pilot_can_never_schedule(self):
+        self.doc["episode_id"] = "api_private_test_001"
+        (self.base / "episode.json").write_text(json.dumps({
+            "id": "api_private_test_001", "title": "Safe AI walkthrough",
+            "description": "Private testing only", "type": "long"}), encoding="utf-8")
+        self.save()
+        api = FakeAPI()
+        with self.assertRaisesRegex(yp.PublisherError, "cannot be scheduled"):
+            yp.schedule_private(api, self.plan(), self.ledger_path())
+        self.assertFalse(any(action=="update" for action,_ in api.calls))
+        self.assertFalse(self.ledger_path().exists())
+
     def test_unresolved_state_prevents_retry(self):
         self.reserve(); api=FakeAPI(privacy="public")
         with self.assertRaisesRegex(yp.PublisherError,"not private"):
