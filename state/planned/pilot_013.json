@@ -16,8 +16,9 @@
   "visual_qa": "passed_documented",
   "production_qa_source": "docs/OCT11_RELEASE_CONFIRMATION.md",
   "live_authenticated_studio_check": "blocked_authorized_Nirala_offline",
-  "public_playability": "past_due_unverified_public_player_unavailable",
+  "public_playability": "unverified_due_to_access_blocker_not_confirmed_failure",
   "public_verification_method_attempt": "2026-10-11 public YouTube watch and oEmbed retrieval unavailable; cannot infer failure",
   "no_duplicate_upload": true,
-  "existing_video_only": true
+  "existing_video_only": true,
+  "latest_public_check_local": "2026-10-11T12:47:53+05:30"
 }
