@@ -1,4 +1,4 @@
-# FlowMinute YouTube API — private upload pilot prepared
+# FlowMinute YouTube API — private upload pilot verified
 
 Date: 2026-10-11 (Asia/Kolkata).
 
@@ -38,26 +38,23 @@ No scheduling, public release, metadata mutation of existing productions, duplic
 7. All **23 Windows regression tests passed**. A new hard-coded guard in the publisher refuses to schedule any episode prefixed `api_private_test_`, even if it has been privately uploaded.
 8. Temporary OAuth setup screenshots were removed from the repository worktree before committing anything. Secret/token files remain in the private user folder.
 
-## Pending user-controlled authorization
+## OAuth authorization status
 
-Google's `youtube.force-ssl` write scope has **not been authorized**; its use is broader than read-only and permits managing channel video resources. Do not use the read-only credential for writes, reuse or share tokens, or upload with browser-session hacks.
+The owner has completed Google's channel management OAuth consent flow, and the local publisher token was validated with the official API. The private test upload passed. This pilot does not automatically authorize future public content publication; scheduled production should remain gated by full QA and explicit acceptance.
 
-To begin the consent flow manually, in PowerShell on the authorized Windows computer from the worktree:
+## Completed acceptance checks
 
-```powershell
-& 'C:\Users\Dell\Desktop\flowminute-publisher-worktree\.venv\Scripts\python.exe' 'C:\Users\Dell\Desktop\flowminute-publisher-worktree\scripts\youtube_publisher.py' authorize --client-secret "$HOME\.flowminute-private\client_secret.json" --token-file "$HOME\.flowminute-private\youtube_publish_token.json" --mode publish
-```
+- Publishing OAuth authorization: succeeded, correct channel.
+- One resumable private API test upload: succeeded; processed and independently verified.
+- No `publishAt`, no public release, no changes to the existing scheduled videos.
+- Home-relative ledger bug fixed and real receipt migrated securely.
+- 24/24 Windows offline safety tests passed.
 
-Review Google's warning and requested channel management permissions in the browser, choose **FlowMinute Lab** Brand Account, and approve only if you agree. Treat the new OAuth token as secret. The Google app is still in Testing mode; test-user refresh tokens may expire and need reauthorization.
+## Next engineering gates
 
-After consent, run channel `doctor` with the publishing token and the expected UC ID. Only then is a **private-only** test upload possible, requiring a separate `--confirm-private-upload` flag. Do not schedule this test clip under any circumstances. The uploader refuses this test prefix.
+- Controlled scheduling test on a new, properly QA-approved non-test episode, **not** on the private pilot slate or existing October 12 videos.
+- Upload of an approved thumbnail and true verbatim caption track.
+- Secure unattended credentials and monitoring; confirm OAuth refresh policy in Google Cloud Testing mode.
+- Human review before enabling any recurring automatic production uploads.
 
-## Next acceptance criteria
-
-- OAuth write scope explicitly granted by the channel owner in Google's own consent UI.
-- Doctor confirms exact expected channel.
-- A single resumable private test upload succeeds, YouTube returns its video ID, `videos.list` confirms `privacyStatus=private`, correct owner/channel/title and video processing.
-- No publication date is assigned to the test, and existing production schedule remains unchanged.
-- Any interrupted upload is reconciled manually before retrying: local ledger will block blind duplicate requests.
-
-Historical status before approval: authorization pending. Current status: **OWNER OAUTH GRANTED; ONE PRIVATE-ONLY API TEST UPLOAD VERIFIED; AUTOMATIC PUBLISHING STILL DISABLED**.
+Current status: **PRIVATE UPLOAD PASSED; AUTOMATIC DAILY PUBLISHING NOT ENABLED**.
