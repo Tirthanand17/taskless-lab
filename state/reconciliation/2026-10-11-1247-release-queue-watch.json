@@ -1,0 +1,74 @@
+{
+  "checked_at_local": "2026-10-11T12:47:53+05:30",
+  "timezone": "Asia/Kolkata",
+  "october_10": {
+    "status": "historical_public_verified",
+    "live_studio_recheck": "unavailable",
+    "records": "planned_and_scheduled_6_of_6_public_verified",
+    "releases": [
+      [
+        "pilot_011",
+        "qkc0Tf_51nU",
+        "11:00"
+      ],
+      [
+        "long_005",
+        "xmi1oAoxAZA",
+        "16:00"
+      ],
+      [
+        "pilot_012",
+        "MZmZ8wGGpqc",
+        "20:30"
+      ]
+    ]
+  },
+  "october_11": {
+    "pilot_013": {
+      "id": "AnkLQI5no4Q",
+      "slot": "11:00",
+      "public_status": "verification_blocked_not_confirmed_failure",
+      "planned_and_scheduled_records_updated": true
+    },
+    "long_006": {
+      "id": "TcO82x9wg0w",
+      "slot": "16:00",
+      "status": "historically_scheduled_not_due"
+    },
+    "pilot_014": {
+      "id": "1wsFnWed6bY",
+      "slot": "20:30",
+      "status": "historically_scheduled_not_due"
+    }
+  },
+  "october_12": {
+    "status": "historically_scheduled_QA_documented",
+    "individual_planned_records_created": true,
+    "releases": [
+      [
+        "pilot_015",
+        "oN2PgprMbSE",
+        "11:00"
+      ],
+      [
+        "long_007",
+        "jbfNmbl3owA",
+        "16:00"
+      ],
+      [
+        "pilot_016",
+        "XEV1fz-75-M",
+        "20:30"
+      ]
+    ],
+    "full_watch_through": "unverified",
+    "subtitle_import": "unverified"
+  },
+  "limitations": [
+    "no_eligible_remote_desktop_connection_for_live_studio",
+    "public_youtube_player_web_retrieval_disabled",
+    "vidiq_video_listing_insufficient_credits_no_charge"
+  ],
+  "policy": "never_reupload_existing_video; no_paid_actions_or_phone_verification",
+  "bridge": "not_created_in_this_run; older_bridge_cleanup_unverified"
+}
