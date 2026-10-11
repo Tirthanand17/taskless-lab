@@ -11,5 +11,17 @@
   "checks": "No issues found",
   "asset_version": "oct11-v2",
   "notes": "Verified Studio publication receipt; metadata wording may be polished later, do not reupload.",
-  "public_check_2026_10_11": "Due; public playability unverified because public player and live Studio unavailable. No publication failure confirmed. Preserve existing ID; never reupload."
+  "public_check_2026_10_11": "Due; public playability unverified because public player and live Studio unavailable. No publication failure confirmed. Preserve existing ID; never reupload.",
+  "public_verification_watch_2026_10_11_1247_ist": {
+    "checked_at_local": "2026-10-11T12:47:53+05:30",
+    "existing_youtube_video_id": "AnkLQI5no4Q",
+    "due_plus_propagation": "elapsed",
+    "status": "verification_blocked_not_publication_failure",
+    "live_authenticated_studio": "unavailable_authorized_desktop_connection_not_eligible",
+    "anonymous_public_player": "unavailable_web_fetch_disabled_and_local_network_unavailable",
+    "vidiq_authenticated_listing": "unavailable_insufficient_credits_no_credits_charged",
+    "preserve_existing_upload": true,
+    "no_duplicate_upload": true,
+    "next_action": "recheck anonymous player and existing video in authenticated Studio when available; update public_verified only on actual evidence"
+  }
 }
