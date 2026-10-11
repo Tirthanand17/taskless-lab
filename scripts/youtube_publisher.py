@@ -263,10 +263,27 @@ def guard_channel(api, expected: str) -> None:
 
 def video_info(api, video_id: str) -> dict[str, Any]:
     require(bool(VIDEO_ID.fullmatch(video_id)), "Invalid YouTube video ID")
-    r = api.videos().list(part="status,snippet", id=video_id).execute()
+    r = api.videos().list(part="status,snippet,processingDetails", id=video_id).execute()
     items = r.get("items", [])
     require(len(items) == 1, f"Video not found/accessible: {video_id}")
     return items[0]
+
+
+def check_processing_succeeded(video: dict[str, Any]) -> None:
+    """Require actual successful processing before an automatic schedule."""
+    status = video.get("status", {})
+    processing = video.get("processingDetails", {})
+    require(status.get("uploadStatus") == "processed",
+            "Video upload has not finished processing; leave private")
+    require(processing.get("processingStatus") == "succeeded",
+            "Video processing has not succeeded; leave private")
+
+
+def ensure_future_schedule(publish_at: str, now: dt.datetime | None = None) -> None:
+    target = parse_utc(publish_at)
+    current = (now or dt.datetime.now(UTC)).astimezone(UTC)
+    require(target > current + dt.timedelta(minutes=30),
+            "Schedule must remain at least 30 minutes in the future")
 
 
 def verify_private(video: dict[str, Any], expected_title: str) -> None:
@@ -338,6 +355,7 @@ def schedule_private(api, plan: dict[str, Any], ledger_path: Path) -> None:
     # A private connectivity test must NEVER turn into scheduled public content.
     require(not plan["episode_id"].startswith("api_private_test_"),
             "Private API pilot videos cannot be scheduled or published by this tool")
+    ensure_future_schedule(plan["publish_at"])
     with exclusive_ledger(ledger_path):
         ledger = get_ledger(ledger_path)
         record = require_matching_record(ledger, plan)
@@ -348,11 +366,13 @@ def schedule_private(api, plan: dict[str, Any], ledger_path: Path) -> None:
                 "No valid video ID")
         remote = video_info(api, video_id)
         verify_private(remote, plan["title"])
+        check_processing_succeeded(remote)
         require(remote.get("snippet", {}).get("channelId") == plan["expected_channel_id"],
                 "Remote video belongs to a different channel")
         record["state"] = "scheduling_unresolved"
         write_json_secure(ledger_path, ledger)
     try:
+        ensure_future_schedule(plan["publish_at"])
         new_status = preserved_status(remote.get("status", {}), plan["publish_at"])
         api.videos().update(part="status", body={"id": video_id, "status": new_status}).execute()
         checked = video_info(api, video_id)
