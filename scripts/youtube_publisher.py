@@ -76,6 +76,35 @@ def read_json(path: Path) -> dict[str, Any]:
     return data
 
 
+def validate_srt_file(path: Path) -> int:
+    """Validate timed, nonoverlapping SRT cues; this does not replace an audio review."""
+    import re
+    content = path.read_text(encoding="utf-8-sig").strip()
+    require(bool(content), "Caption SRT cannot be empty")
+    cues = re.split(r"\n\s*\n", content.replace("\r\n", "\n"))
+    timestamp = re.compile(r"^(\d\d):(\d\d):(\d\d),(\d{3})$")
+    previous_end = 0
+
+    def milliseconds(value: str) -> int:
+        match = timestamp.fullmatch(value)
+        require(match is not None, "SRT requires HH:MM:SS,mmm time codes")
+        h, m, sec, ms = map(int, match.groups())
+        require(m < 60 and sec < 60, "Invalid SRT minutes or seconds")
+        return ((h * 60 + m) * 60 + sec) * 1000 + ms
+
+    for index, block in enumerate(cues, start=1):
+        lines = block.split("\n")
+        require(len(lines) >= 3, "SRT cue requires index, timeline and subtitle text")
+        require(lines[0].strip() == str(index), "SRT cue numbering must start at one and be sequential")
+        times = lines[1].strip().split(" --> ")
+        require(len(times) == 2, "Invalid SRT cue timestamp separator")
+        start, end = milliseconds(times[0]), milliseconds(times[1])
+        require(start >= previous_end and end > start, "SRT cues overlap or have invalid durations")
+        require(any(t.strip() for t in lines[2:]), "SRT cue cannot have empty text")
+        previous_end = end
+    return len(cues)
+
+
 def validate_manifest(path: Path, *, now: dt.datetime | None = None) -> dict[str, Any]:
     doc = read_json(path)
     base = path.parent
@@ -104,7 +133,10 @@ def validate_manifest(path: Path, *, now: dt.datetime | None = None) -> dict[str
     require(metadata.get("id") == episode_id, "Episode metadata ID differs from release manifest")
     title, desc = metadata.get("title"), metadata.get("description")
     require(isinstance(title, str) and 1 <= len(title) <= 100, "Video title must be 1-100 characters")
-    require(isinstance(desc, str) and len(desc) <= 5000, "Description exceeds 5,000 characters")
+    require(isinstance(desc, str) and len(desc.encode("utf-8")) <= 5000,
+            "Description exceeds YouTube's 5,000-byte limit")
+    require("<" not in title and ">" not in title and "<" not in desc and ">" not in desc,
+            "Video title and description cannot contain angle brackets")
     require(metadata.get("type") in ("short", "long"), "Episode type must be short or long")
     video = resolve_existing(str(base / str(doc.get("video_path", ""))), suffixes=(".mp4",))
     require(video.stat().st_size > 0, "Empty video")
@@ -126,6 +158,7 @@ def validate_manifest(path: Path, *, now: dt.datetime | None = None) -> dict[str
         caption = resolve_existing(str(base / doc["caption_path"]), suffixes=(".srt",))
         require(doc.get("caption_sha256") == file_sha256(caption),
                 "Caption file differs from approved caption_sha256")
+        validate_srt_file(caption)
     return {
         "episode_id": episode_id, "expected_channel_id": expected_channel,
         "publish_at": as_rfc3339(schedule), "video_path": video, "video_sha256": computed_hash,
@@ -223,6 +256,34 @@ def credentials(token_file: Path, *, required_scope: str):
         creds.refresh(Request())
         write_json_secure(token_file, json.loads(creds.to_json()))
     return creds
+
+
+def credential_health(token_file: Path, *, expected_scope: str) -> dict[str, Any]:
+    """Inspect local OAuth metadata without printing or refreshing secret tokens."""
+    data = read_json(resolve_existing(str(token_file)))
+    scopes = set(data.get("scopes", []))
+    require(expected_scope in scopes or (expected_scope == READ_SCOPE and WRITE_SCOPE in scopes),
+            "OAuth token lacks required scope")
+    expiry = data.get("expiry")
+    exp = None
+    if expiry:
+        try:
+            exp = parse_utc(expiry)
+        except (ValueError, TypeError) as exc:
+            raise PublisherError("Invalid local OAuth access-token expiry") from exc
+    now = dt.datetime.now(UTC)
+    return {
+        "token_file_present": True,
+        "read_scope": READ_SCOPE in scopes or WRITE_SCOPE in scopes,
+        "publish_scope": WRITE_SCOPE in scopes,
+        "refresh_token_present": bool(data.get("refresh_token")),
+        "access_token_expired": (now >= exp) if exp is not None else None,
+        "access_token_expiry_utc": as_rfc3339(exp) if exp is not None else None,
+        "refresh_token_expiry_known": False,
+        "note": "Access-token expiry does not establish refresh-token lifetime. Testing-mode "
+                "OAuth can expire after approximately seven days; run a safe doctor check "
+                "before each publishing session and stop on failure.",
+    }
 
 
 def youtube_client(token_file: Path, *, writable: bool):
@@ -511,6 +572,9 @@ def cli(argv: list[str] | None = None) -> int:
     auth.add_argument("--client-secret", type=Path, required=True)
     auth.add_argument("--token-file", type=Path, required=True)
     auth.add_argument("--mode", choices=["read", "publish"], default="read")
+    health = sub.add_parser("auth-health", help="Offline local OAuth metadata check (no secrets or network)")
+    health.add_argument("--token-file", type=Path, required=True)
+    health.add_argument("--mode", choices=["read", "publish"], default="publish")
     doctor = sub.add_parser("doctor", help="Read-only confirmation of OAuth channel")
     doctor.add_argument("--token-file", type=Path, required=True)
     doctor.add_argument("--expected-channel-id", required=True)
@@ -544,6 +608,9 @@ def cli(argv: list[str] | None = None) -> int:
         elif args.cmd == "prepare":
             print(json.dumps(printable_plan(validate_manifest(args.manifest)), indent=2))
             print("SAFE DRY RUN: no API call; no upload; no schedule.")
+        elif args.cmd == "auth-health":
+            required = READ_SCOPE if args.mode == "read" else WRITE_SCOPE
+            print(json.dumps(credential_health(args.token_file, expected_scope=required), indent=2))
         elif args.cmd == "doctor":
             guard_channel(youtube_client(args.token_file, writable=False), args.expected_channel_id)
         elif args.cmd == "inspect":
