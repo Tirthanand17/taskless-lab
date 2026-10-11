@@ -1,11 +1,18 @@
 {
   "id": "pilot_014",
   "type": "short",
-  "status": "scheduled",
+  "status": "public_verified",
   "youtube_video_id": "1wsFnWed6bY",
   "target_release_local": "2026-10-11T20:30:00+05:30",
   "source": "state/scheduled/pilot_014.json",
   "studio_confirmation": "Video scheduled (historical receipt)",
   "public_playability": "not_due",
-  "no_duplicate_upload": true
+  "no_duplicate_upload": true,
+  "public_check": {
+    "at": "2026-10-11T20:31:13+05:30",
+    "id": "1wsFnWed6bY",
+    "oembed": 200,
+    "player": "OK",
+    "stream": true
+  }
 }
