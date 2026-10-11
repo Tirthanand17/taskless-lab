@@ -88,6 +88,50 @@ class TestPublisher(unittest.TestCase):
             yp.create_upload_reservation(ledger, self.plan())
             ledger["episodes"]["pilot_123"].update({"state": "uploaded_private", "video_id": VID})
             yp.write_json_secure(self.ledger_path(), ledger)
+    def queue_fixture(self, *, privacy="private", schedule_delta=0, title="Safe AI walkthrough"):
+        date = (dt.datetime.now(yp.UTC) + dt.timedelta(days=3)).isoformat()
+        expected = yp.as_rfc3339(yp.parse_utc(date))
+        vid=VID
+        receipts=self.base/"receipts"
+        receipts.mkdir(exist_ok=True)
+        (receipts/"pilot_123.json").write_text(json.dumps({
+            "id":"pilot_123", "date_local":"2030-10-12",
+            "youtube_video_id":vid, "title_in_studio":"Safe AI walkthrough",
+            "scheduled_local":date
+        }))
+        class QueueAPI:
+            def channels(self): return self
+            def videos(self): return self
+            def list(self, **kwargs):
+                if kwargs.get("mine"): return Call({"items":[{"id":CHANNEL}]})
+                return Call({"items":[{
+                    "id":vid, "snippet":{"channelId":CHANNEL,"title":title},
+                    "status":{
+                        "uploadStatus":"processed","privacyStatus":privacy,
+                        "publishAt":yp.as_rfc3339(yp.parse_utc(date) +
+                                  dt.timedelta(minutes=schedule_delta))
+                    }
+                }]})
+        return QueueAPI(), receipts
+
+    def test_read_only_queue_reports_correct_schedule(self):
+        api, folder = self.queue_fixture()
+        report = yp.verify_receipt_queue(api, folder, CHANNEL)
+        self.assertEqual(report["checked"], 1)
+        self.assertEqual(report["passed"], 1)
+        self.assertEqual(report["items"][0]["status"], "scheduled_verified")
+
+    def test_read_only_queue_detects_wrong_time(self):
+        api, folder = self.queue_fixture(schedule_delta=60)
+        report = yp.verify_receipt_queue(api, folder, CHANNEL)
+        self.assertEqual(report["needs_attention"],1)
+        self.assertEqual(report["items"][0]["status"], "schedule_mismatch")
+
+    def test_read_only_queue_detects_early_public(self):
+        api, folder = self.queue_fixture(privacy="public")
+        report = yp.verify_receipt_queue(api, folder, CHANNEL)
+        self.assertEqual(report["needs_attention"],1)
+
     def test_default_ledger_is_home_anchored(self):
         # Desktop Commander executes commands from its own node_modules directory.
         self.assertTrue(yp.DEFAULT_LEDGER.is_absolute())
