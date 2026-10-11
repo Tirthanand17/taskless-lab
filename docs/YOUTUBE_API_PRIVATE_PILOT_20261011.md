@@ -2,6 +2,31 @@
 
 Date: 2026-10-11 (Asia/Kolkata).
 
+## October 11 — private API test PASSED
+
+The channel owner completed Google OAuth authorization for `youtube.force-ssl` in Google's consent screen. The publisher's `doctor` read-back verified the authorized account belongs to **FlowMinute Lab**, channel `UCCcL9Q_jqVq6LJmnYUSAFZA`.
+
+A single explicitly approved API upload of the eight-second original test slate returned video ID **`1s-qSriHWGg`**. Official `videos.list(part=status,snippet,processingDetails)` independently confirmed:
+
+- Video: https://youtu.be/1s-qSriHWGg (private; not a publicly accessible link)
+- Correct FlowMinute Lab channel, expected test title.
+- `privacyStatus=private`, `publishAt=null`.
+- `uploadStatus=processed`, `processingStatus=succeeded`.
+- Three existing October 12 videos were checked again and their planned `publishAt` values were unchanged.
+
+**Bug caught in pilot:** the original default ledger was relative to the command's working directory, which is Desktop Commander's own installation tree when invoked remotely. The publisher's default was fixed to `Path.home() / ".flowminute-private" / "youtube-ledger.json"`. The genuine upload receipt was migrated to that private user folder after matching SHA-256 checksums, and the stale copy was removed. The receipt remains `uploaded_private` with the real video ID. The production safety tests now pass **24/24**, including a new home-anchored ledger test.
+
+No scheduling, public release, metadata mutation of existing productions, duplicate upload, or deletion was performed.
+
+### Remaining release gates
+
+1. Keep this test slate private; `api_private_test_*` episodes have a hard-coded scheduling prohibition.
+2. Google OAuth app is currently in Testing mode; refresh token lifetime may be limited. Do not declare unattended automation production-ready yet.
+3. Before any new production episode's API upload, ensure full visual/audio QA, a reviewed final SHA-256, correct metadata and channel, and a precise future scheduling plan. Run a separate controlled end-to-end test with a new non-test episode rather than altering an already scheduled video.
+4. A secure unattended credential-storage and scheduled publishing pipeline have **not** been activated; the owner should approve these only after controls and monitoring are reviewed.
+
+---
+
 ## Current milestone
 
 1. Read-only Google OAuth and the channel ID `UCCcL9Q_jqVq6LJmnYUSAFZA` were independently verified.
@@ -35,4 +60,4 @@ After consent, run channel `doctor` with the publishing token and the expected U
 - No publication date is assigned to the test, and existing production schedule remains unchanged.
 - Any interrupted upload is reconciled manually before retrying: local ledger will block blind duplicate requests.
 
-Status: **READY FOR OWNER PUBLISHING AUTHORIZATION, NO LIVE API UPLOAD PERFORMED**.
+Historical status before approval: authorization pending. Current status: **OWNER OAUTH GRANTED; ONE PRIVATE-ONLY API TEST UPLOAD VERIFIED; AUTOMATIC PUBLISHING STILL DISABLED**.
