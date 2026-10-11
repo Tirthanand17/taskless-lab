@@ -1,0 +1,18 @@
+{
+  "id": "long_007",
+  "type": "long",
+  "youtube_video_id": "jbfNmbl3owA",
+  "target_release_local": "2026-10-12T16:00:00+05:30",
+  "title": "ChatGPT Can Build Interactive Tools Now: 3 Useful GPT-6 Examples",
+  "asset_version": "oct12-v2",
+  "status": "scheduled",
+  "timezone": "Asia/Kolkata",
+  "episode": "content/episodes/long_007.json",
+  "source": "state/scheduled/long_007.json",
+  "studio_confirmation": "Video scheduled (historical October 10 receipt)",
+  "youtube_checks": "Checks complete. No issues found (historical)",
+  "production_qa": "documented in docs/OCT12_RELEASE_CONFIRMATION.md; complete watch-through not verified",
+  "public_playability": "not_due",
+  "no_duplicate_upload": true,
+  "existing_video_only": true
+}
