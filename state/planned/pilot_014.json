@@ -1,0 +1,11 @@
+{
+  "id": "pilot_014",
+  "type": "short",
+  "status": "scheduled",
+  "youtube_video_id": "1wsFnWed6bY",
+  "target_release_local": "2026-10-11T20:30:00+05:30",
+  "source": "state/scheduled/pilot_014.json",
+  "studio_confirmation": "Video scheduled (historical receipt)",
+  "public_playability": "not_due",
+  "no_duplicate_upload": true
+}
