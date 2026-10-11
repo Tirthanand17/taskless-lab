@@ -6,7 +6,7 @@
   "youtube_video_id": "1wsFnWed6bY",
   "url": "https://youtube.com/shorts/1wsFnWed6bY",
   "title_in_studio": "Never Let an AI Agent Do THIS Automatically #shorts",
-  "status": "scheduled",
+  "status": "public_verified",
   "source": "YouTube Studio 'Video scheduled' dialog confirmed Oct 11 2026 at 20:30",
   "checks": "YouTube Studio: Checks complete. No issues found.",
   "asset_version": "oct11-v2",
@@ -28,5 +28,20 @@
     "publication_failure_confirmed": false,
     "no_duplicate_upload": true,
     "next_action": "Recheck exact existing ID and metadata in authenticated Studio when available; after release plus 15 minutes verify anonymous public player; never reupload."
+  },
+  "public_playability": "anonymous_player_OK_stream_present_at_2026_10_11_20_31_13_IST",
+  "public_verification_2026_10_11_2300_ist": {
+    "checked_at_local": "2026-10-11T20:31:13+05:30",
+    "video_id": "1wsFnWed6bY",
+    "source": "state/planned/pilot_014.json public_check (existing recorded evidence)",
+    "public_oembed_http_status": 200,
+    "anonymous_player_status": "OK",
+    "streaming_data_present": true,
+    "verification_basis": "historical_public_player_evidence_at_20_31_13_not_fresh_23_00_recheck",
+    "fresh_after_15_minute_propagation_recheck": "unavailable_public_YouTube_fetch_disabled_and_authorized_Nirala_offline",
+    "authenticated_studio_live_check": "unavailable_authorized_Nirala_offline",
+    "media_bytes_playback_test": "not_performed",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true
   }
 }
