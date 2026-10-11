@@ -551,6 +551,69 @@ def inspect_release(api, plan: dict[str, Any], ledger_path: Path) -> dict[str, A
     }
 
 
+def verify_receipt_queue(api, receipts_dir: Path, expected_channel: str,
+                         *, date: str | None = None,
+                         now: dt.datetime | None = None) -> dict[str, Any]:
+    """Read-only reconciliation of Studio-scheduled receipts and current YouTube state."""
+    guard_channel(api, expected_channel)
+    require(receipts_dir.is_dir(), f"Receipt directory not found: {receipts_dir}")
+    current = (now or dt.datetime.now(UTC)).astimezone(UTC)
+    receipts = []
+    for path in sorted(receipts_dir.glob("*.json")):
+        doc = read_json(path)
+        if date and doc.get("date_local") != date:
+            continue
+        vid = doc.get("youtube_video_id")
+        if not isinstance(vid, str) or VIDEO_ID.fullmatch(vid) is None:
+            continue
+        receipts.append((doc, as_rfc3339(parse_utc(doc.get("scheduled_local")))))
+    require(bool(receipts), "No matching scheduled video receipts found")
+    require(len({doc["youtube_video_id"] for doc, _ in receipts}) == len(receipts),
+            "Duplicate YouTube video ID across scheduled receipts")
+
+    # Google's videos.list allows up to 50 IDs per call.
+    results = {}
+    for i in range(0, len(receipts), 50):
+        chunk = receipts[i:i+50]
+        ids = ",".join(doc["youtube_video_id"] for doc, _ in chunk)
+        response = api.videos().list(part="status,snippet,processingDetails", id=ids,
+                                     maxResults=50).execute()
+        for item in response.get("items", []):
+            results[item["id"]] = item
+    verified = []
+    for doc, scheduled in receipts:
+        vid = doc["youtube_video_id"]
+        item = results.get(vid)
+        result = {"episode_id": doc.get("id"), "video_id": vid,
+                  "planned_utc": scheduled, "status": "unknown"}
+        if not item:
+            result.update(status="missing", reason="Video not returned by YouTube")
+        elif item.get("snippet", {}).get("channelId") != expected_channel:
+            result.update(status="channel_mismatch", reason="Wrong owner")
+        elif item.get("snippet", {}).get("title") != doc.get("title_in_studio"):
+            result.update(status="title_mismatch", reason="YouTube title differs from receipt")
+        elif item.get("status", {}).get("uploadStatus") != "processed":
+            result.update(status="not_processed", reason="Video not fully processed")
+        else:
+            remote = item.get("status", {})
+            when = parse_utc(scheduled)
+            publish_at = remote.get("publishAt")
+            privacy = remote.get("privacyStatus")
+            if current < when:
+                confirmed = (privacy == "private" and publish_at and
+                             abs((parse_utc(publish_at) - when).total_seconds()) <= 1)
+                result["status"] = "scheduled_verified" if confirmed else "schedule_mismatch"
+            else:
+                result["status"] = "published_verified" if privacy == "public" else "overdue_unpublished"
+            result["remote_privacy"] = privacy
+            result["remote_publish_at"] = publish_at
+        verified.append(result)
+    bad = [item for item in verified if item["status"] not in
+           ("scheduled_verified", "published_verified")]
+    return {"checked": len(verified), "passed": len(verified)-len(bad),
+            "needs_attention": len(bad), "items": verified}
+
+
 def verify_existing(api, video_id: str, expected_channel_id: str) -> None:
     guard_channel(api, expected_channel_id)
     video = video_info(api, video_id)
@@ -597,6 +660,11 @@ def cli(argv: list[str] | None = None) -> int:
     ins.add_argument("manifest", type=Path)
     ins.add_argument("--token-file", type=Path, required=True)
     ins.add_argument("--ledger", type=Path, default=DEFAULT_LEDGER)
+    queue = sub.add_parser("verify-queue", help="Read-only audit of scheduled Studio receipts")
+    queue.add_argument("--receipts-dir", type=Path, default=Path(__file__).resolve().parents[1] / "state" / "scheduled")
+    queue.add_argument("--date", help="Filter scheduled local YYYY-MM-DD")
+    queue.add_argument("--token-file", type=Path, required=True)
+    queue.add_argument("--expected-channel-id", required=True)
     chk = sub.add_parser("verify", help="Read remote metadata with no writes")
     chk.add_argument("--token-file", type=Path, required=True)
     chk.add_argument("--expected-channel-id", required=True)
@@ -617,6 +685,13 @@ def cli(argv: list[str] | None = None) -> int:
             plan = validate_manifest(args.manifest)
             api = youtube_client(args.token_file, writable=False)
             print(json.dumps(inspect_release(api, plan, args.ledger), indent=2))
+        elif args.cmd == "verify-queue":
+            report = verify_receipt_queue(youtube_client(args.token_file, writable=False),
+                                          args.receipts_dir, args.expected_channel_id,
+                                          date=args.date)
+            print(json.dumps(report, indent=2))
+            require(report["needs_attention"] == 0,
+                    f"{report['needs_attention']} scheduled video(s) need review")
         elif args.cmd == "verify":
             verify_existing(youtube_client(args.token_file, writable=False),
                             args.video_id, args.expected_channel_id)
