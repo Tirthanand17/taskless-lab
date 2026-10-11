@@ -10,5 +10,23 @@
   "source": "YouTube Studio 'Video scheduled' dialog confirmed Oct 11 2026 at 20:30",
   "checks": "YouTube Studio: Checks complete. No issues found.",
   "asset_version": "oct11-v2",
-  "notes": "Do not reupload; caption SRT may be processed in follow-up but not verified imported yet."
+  "notes": "Do not reupload; caption SRT may be processed in follow-up but not verified imported yet.",
+  "pre_release_reconciliation_2026_10_11_1511_ist": {
+    "checked_at_local": "2026-10-11T15:11:42+05:30",
+    "source": "GitHub existing planned/scheduled records; episode manifest; historical YouTube Studio scheduling receipt",
+    "existing_video_id": "1wsFnWed6bY",
+    "expected_release_local": "2026-10-11T20:30:00+05:30",
+    "github_video_id_and_schedule_match": true,
+    "expected_manifest_title": "Never Let an AI Agent Do THIS Automatically #shorts",
+    "historical_studio_title": "Never Let an AI Agent Do THIS Automatically #shorts",
+    "historical_title_exact_match": true,
+    "description_live_match": "unverified_no_authenticated_studio_access",
+    "live_studio_metadata_and_schedule": "unverified_authorized_Nirala_offline",
+    "public_playability": "not_due",
+    "historical_studio_confirmation": "Video scheduled",
+    "historical_checks": "No issues found",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true,
+    "next_action": "Recheck exact existing ID and metadata in authenticated Studio when available; after release plus 15 minutes verify anonymous public player; never reupload."
+  }
 }
