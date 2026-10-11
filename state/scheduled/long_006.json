@@ -10,5 +10,14 @@
   "source": "YouTube Studio confirmation dialog 2026-10-09",
   "asset_version": "oct11-v2",
   "custom_thumbnail": true,
-  "notes": "Scheduled after upload complete; Studio displayed 'Checks complete. No issues found.' by schedule, confirmed appointment. Do not duplicate upload."
+  "notes": "Scheduled after upload complete; Studio displayed 'Checks complete. No issues found.' by schedule, confirmed appointment. Do not duplicate upload.",
+  "pre_release_check_2026_10_11_1522": {
+    "github_id_and_time_match": true,
+    "manifest_title_exact_match": false,
+    "manifest_title": "Google's NEW Gemini AI Agent Explained — 3 Workflows & the Catch",
+    "studio_title": "Google's NEW Gemini AI Agent Explained: 3 Workflows & the Catch",
+    "live_studio": "unavailable_authorized_PC_offline",
+    "public_playability": "not_due",
+    "no_duplicate_upload": true
+  }
 }
