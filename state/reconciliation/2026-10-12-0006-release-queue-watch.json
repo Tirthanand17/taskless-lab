@@ -1,0 +1,86 @@
+{
+  "checked_at_local": "2026-10-12T00:06:54+05:30",
+  "timezone": "Asia/Kolkata",
+  "evidence_sources": [
+    "fresh GitHub state/planned and state/scheduled reads",
+    "historical YouTube Studio scheduling receipts in GitHub",
+    "Desktop Commander device availability"
+  ],
+  "october_10": {
+    "status": "protected",
+    "records_public_verified": 6,
+    "total_records": 6,
+    "video_ids": {
+      "pilot_011": "qkc0Tf_51nU",
+      "long_005": "xmi1oAoxAZA",
+      "pilot_012": "MZmZ8wGGpqc"
+    },
+    "verification_basis": "previously recorded public-player evidence; no fresh playback"
+  },
+  "october_11": {
+    "pilot_013": "both records public_verified",
+    "long_006": "both records public_verified",
+    "pilot_014": {
+      "youtube_video_id": "1wsFnWed6bY",
+      "planned_status": "public_verified",
+      "scheduled_status": "public_verified",
+      "planned_public_playability": "not_due (stale/inconsistent)",
+      "historical_public_check": "2026-10-11T20:31:13+05:30: HTTP 200, anonymous player OK, streaming data present",
+      "fresh_post_propagation_recheck": "blocked; public YouTube fetch disabled",
+      "planned_record_fix": "attempted but connector safety checks blocked; no mutation",
+      "media_bytes_playback": "not tested"
+    }
+  },
+  "october_12": {
+    "status": "historically scheduled; live Studio unverified",
+    "existing_uploads": [
+      {
+        "id": "pilot_015",
+        "youtube_video_id": "oN2PgprMbSE",
+        "scheduled_local": "2026-10-12T11:00:00+05:30"
+      },
+      {
+        "id": "long_007",
+        "youtube_video_id": "jbfNmbl3owA",
+        "scheduled_local": "2026-10-12T16:00:00+05:30"
+      },
+      {
+        "id": "pilot_016",
+        "youtube_video_id": "XEV1fz-75-M",
+        "scheduled_local": "2026-10-12T20:30:00+05:30"
+      }
+    ],
+    "qa": "documented production checks; complete watch-through and subtitle import not verified"
+  },
+  "october_13": {
+    "status": "next-day buffer not established in GitHub",
+    "checked_missing_records": [
+      "state/planned/pilot_017.json",
+      "state/scheduled/pilot_017.json",
+      "state/planned/long_008.json",
+      "state/scheduled/long_008.json",
+      "state/planned/pilot_018.json",
+      "state/scheduled/pilot_018.json"
+    ],
+    "caveat": "No proof of absence of Studio uploads; do not invent or duplicate."
+  },
+  "access": {
+    "primary_nirala": "offline",
+    "school_nirala": "offline",
+    "authenticated_studio": "unavailable",
+    "fresh_public_youtube": "fetch disabled"
+  },
+  "safety": {
+    "duplicate_uploads": 0,
+    "paid_actions": 0,
+    "phone_verification": false,
+    "schedule_changes": 0,
+    "temporary_pc_bridge_created": false,
+    "older_bridge_cleanup": "not verifiable while authorized PC offline"
+  },
+  "next_actions": [
+    "Restore authenticated Studio access and verify Oct 12 exact existing IDs, titles, descriptions, privacy and schedules before publication.",
+    "Correct pilot_014 planned public_playability when authorized GitHub write succeeds.",
+    "Establish Oct 13 next-day buffer only from two distinct QA-passed Shorts and one QA-passed long-form; do not fabricate records or upload duplicates."
+  ]
+}
