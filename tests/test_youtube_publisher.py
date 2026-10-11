@@ -86,6 +86,12 @@ class TestPublisher(unittest.TestCase):
             yp.create_upload_reservation(ledger, self.plan())
             ledger["episodes"]["pilot_123"].update({"state": "uploaded_private", "video_id": VID})
             yp.write_json_secure(self.ledger_path(), ledger)
+    def test_default_ledger_is_home_anchored(self):
+        # Desktop Commander executes commands from its own node_modules directory.
+        self.assertTrue(yp.DEFAULT_LEDGER.is_absolute())
+        self.assertEqual(yp.DEFAULT_LEDGER,
+                         Path.home() / ".flowminute-private" / "youtube-ledger.json")
+
     def test_happy_plan(self):
         plan = self.plan()
         self.assertEqual(plan["episode_id"], "pilot_123")
