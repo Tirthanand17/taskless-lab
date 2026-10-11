@@ -1,0 +1,18 @@
+# FlowMinute local-only publishing credentials and immutable receipts
+.flowminute-private/
+**/client_secret*.json
+**/credentials*.json
+**/youtube_token*.json
+**/oauth_token*.json
+**/token.json
+*.lock
+
+# Python/tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example

@@ -1,0 +1,15 @@
+{
+  "_purpose": "TEMPLATE ONLY: replace episode ID, video path, approval SHA256, publish time, and UC channel ID. This file must fail validation unchanged; DO NOT point it at already scheduled episodes.",
+  "episode_id": "NEW_EPISODE_NOT_YET_RELEASED",
+  "expected_channel_id": "UC_REPLACE_WITH_YOUR_OWN_CHANNEL_ID",
+  "episode_path": "../content/episodes/REPLACE.json",
+  "video_path": "../assets/REPLACE/video.mp4",
+  "video_sha256": "REPLACE_WITH_QA_APPROVED_SHA256",
+  "thumbnail_path": "../assets/REPLACE/thumbnail.png",
+  "publish_at": "2030-10-12T11:00:00+05:30",
+  "made_for_kids": false,
+  "synthetic_media": false,
+  "qa_approved": false,
+  "captions_reviewed": false,
+  "category_id": "28"
+}
