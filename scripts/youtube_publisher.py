@@ -335,6 +335,9 @@ def upload_private(api, plan: dict[str, Any], ledger_path: Path) -> None:
 
 
 def schedule_private(api, plan: dict[str, Any], ledger_path: Path) -> None:
+    # A private connectivity test must NEVER turn into scheduled public content.
+    require(not plan["episode_id"].startswith("api_private_test_"),
+            "Private API pilot videos cannot be scheduled or published by this tool")
     with exclusive_ledger(ledger_path):
         ledger = get_ledger(ledger_path)
         record = require_matching_record(ledger, plan)
