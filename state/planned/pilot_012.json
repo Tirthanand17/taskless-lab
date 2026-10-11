@@ -56,5 +56,14 @@
     "authenticated_studio_live_verification": "not_verified",
     "publication_failure_confirmed": false,
     "no_duplicate_upload": true
+  },
+  "public_recheck_2026_10_11": {
+    "checked_at_local": "2026-10-11T20:30:27+05:30",
+    "video_id": "MZmZ8wGGpqc",
+    "oembed_http_status": 200,
+    "author": "FlowMinute Lab",
+    "anonymous_player_status": "OK",
+    "streaming_data_present": true,
+    "no_duplicate_upload": true
   }
 }
