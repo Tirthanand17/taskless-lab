@@ -1,0 +1,18 @@
+# FlowMinute source control hygiene
+# Runtime dependencies and transient outputs
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.tmp
+*.log
+
+# Protected OAuth and local environment material
+.flowminute-private/
+client_secret.json
+youtube_publish_token.json
+youtube_readonly_token.json
+youtube-ledger.json
+.env
+.env.*

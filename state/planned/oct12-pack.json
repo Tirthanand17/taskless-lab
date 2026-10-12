@@ -1,7 +1,7 @@
 {
   "date_local": "2026-10-12",
   "timezone": "Asia/Kolkata",
-  "status": "scheduled_verified_in_youtube_studio",
+  "status": "all_public_verified",
   "render_run_id": 38062482492,
   "editorial_brief": "docs/OCT12_EDITORIAL_RESEARCH.md",
   "production_standard": "docs/FLOWMINUTE_GROWTH_PRODUCTION_STANDARD_V2.md",
@@ -14,7 +14,7 @@
       "source": "content/episodes/pilot_015.json",
       "render_id": "IntelligentUIShort",
       "youtube_id": "oN2PgprMbSE",
-      "status": "scheduled",
+      "status": "public_verified",
       "url": "https://youtube.com/shorts/oN2PgprMbSE",
       "asset_version": "oct12-v2",
       "receipt": "state/scheduled/pilot_015.json"
@@ -27,7 +27,7 @@
       "source": "content/episodes/long_007.json",
       "render_id": "IntelligentUILong",
       "youtube_id": "jbfNmbl3owA",
-      "status": "scheduled",
+      "status": "public_verified",
       "url": "https://youtu.be/jbfNmbl3owA",
       "asset_version": "oct12-v2",
       "receipt": "state/scheduled/long_007.json"
@@ -40,7 +40,7 @@
       "source": "content/episodes/pilot_016.json",
       "render_id": "OnlyOfficeShort",
       "youtube_id": "XEV1fz-75-M",
-      "status": "scheduled",
+      "status": "public_verified",
       "url": "https://youtube.com/shorts/XEV1fz-75-M",
       "asset_version": "oct12-v1",
       "receipt": "state/scheduled/pilot_016.json"
@@ -48,5 +48,6 @@
   ],
   "publication_gate": "Never claim scheduled until YouTube Studio explicitly confirms date and time and logs the video ID",
   "notes": "All three Oct 12 videos explicitly confirmed in YouTube Studio with publication date and times 11:00, 16:00, 20:30. YouTube checks no issues found. Custom long thumbnail uploaded. SRT generated but subtitle import not verified; don't claim imported.",
-  "final_render_run_id": 38063349135
+  "final_render_run_id": 38063349135,
+  "public_verified_at_local": "2026-10-12T20:43:05+05:30"
 }

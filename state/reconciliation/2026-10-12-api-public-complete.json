@@ -1,0 +1,30 @@
+{
+  "checked_at_local": "2026-10-12T20:43:05+05:30",
+  "source": "authenticated read-only YouTube Data API",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "videos": [
+    {
+      "episode": "pilot_015",
+      "youtube_video_id": "oN2PgprMbSE",
+      "title": "ChatGPT Can Build a Bill Splitter INSIDE Your Chat?! #shorts",
+      "privacy": "public",
+      "upload_status": "processed"
+    },
+    {
+      "episode": "long_007",
+      "youtube_video_id": "jbfNmbl3owA",
+      "title": "ChatGPT Can Build Interactive Tools Now: 3 Useful GPT-6 Examples",
+      "privacy": "public",
+      "upload_status": "processed"
+    },
+    {
+      "episode": "pilot_016",
+      "youtube_video_id": "XEV1fz-75-M",
+      "title": "AI Inside Your Spreadsheet? ONLYOFFICE 10.0 Just Launched! #shorts",
+      "privacy": "public",
+      "upload_status": "processed"
+    }
+  ],
+  "no_duplicate_upload": true,
+  "full_video_playback_tested": false
+}

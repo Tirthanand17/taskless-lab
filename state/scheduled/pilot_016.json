@@ -6,7 +6,7 @@
   "youtube_video_id": "XEV1fz-75-M",
   "url": "https://youtube.com/shorts/XEV1fz-75-M",
   "title_in_studio": "AI Inside Your Spreadsheet? ONLYOFFICE 10.0 Just Launched! #shorts",
-  "status": "scheduled",
+  "status": "public_verified",
   "source": "YouTube Studio 'Video scheduled' confirmation October 10, 2026",
   "checks": "Checks complete. No issues found",
   "asset_version": "oct12-v1",
@@ -28,5 +28,18 @@
     "next_action": "Before due, confirm exact existing ID, metadata and schedule in authenticated Studio if available; after due plus 15 minutes verify public player and reconcile both records; never reupload.",
     "github_only_recheck_at_local": "2026-10-12T09:53:41+05:30",
     "github_source_record": "state/planned/pilot_016.json"
-  }
+  },
+  "public_verified_at_local": "2026-10-12T20:43:05+05:30",
+  "no_duplicate_upload": true,
+  "authenticated_api_release_verification_2026_10_12": {
+    "checked_at_local": "2026-10-12T20:43:05+05:30",
+    "existing_youtube_id": "XEV1fz-75-M",
+    "authenticated_youtube_api_privacy": "public",
+    "authenticated_youtube_api_upload_status": "processed",
+    "expected_channel_id_matches": true,
+    "source": "YouTube Data API read-only videos.list(status,snippet) on authorized Nirala device",
+    "full_video_playback_tested": false,
+    "duplicate_upload": false
+  },
+  "public_playability": "api_public_processed_player_not_independently_checked"
 }
