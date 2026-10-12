@@ -1,0 +1,15 @@
+{
+  "id": "pilot_018",
+  "type": "short",
+  "target_release_local": "2026-10-13T20:30:00+05:30",
+  "status": "scheduled_verified",
+  "youtube_video_id": "-8B1X1n5XIU",
+  "episode": "content/episodes/pilot_018.json",
+  "title": "Codex Predicts Your NEXT Prompt? The Important Catch! #shorts",
+  "studio_confirmation": "historical_authenticated_YouTube_Data_API",
+  "schedule_verification_source": "state/reconciliation/2026-10-13-schedule-api-verification.json",
+  "schedule_verified_at_local": "2026-10-12T22:14:52+05:30",
+  "public_playability": "not_due",
+  "qa_complete": "not_independently_verified",
+  "no_duplicate_upload": true
+}
