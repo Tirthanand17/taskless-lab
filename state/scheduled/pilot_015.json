@@ -26,5 +26,8 @@
     "publication_failure_confirmed": false,
     "no_duplicate_upload": true,
     "next_action": "Before due, confirm exact existing ID, metadata and schedule in authenticated Studio if available; after due plus 15 minutes verify public player and reconcile both records; never reupload."
-  }
+  },
+  "public_playability": "pending_post_release_grace",
+  "last_release_watch_local": "2026-10-12T11:05:02+05:30",
+  "public_verification_note": "Publication time elapsed. Allow 15 minutes propagation, then check the existing video ID. Live Studio and public-player checks unavailable at this time. No publication failure confirmed."
 }
