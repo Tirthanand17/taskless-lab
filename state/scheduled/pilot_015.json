@@ -27,7 +27,22 @@
     "no_duplicate_upload": true,
     "next_action": "Before due, confirm exact existing ID, metadata and schedule in authenticated Studio if available; after due plus 15 minutes verify public player and reconcile both records; never reupload."
   },
-  "public_playability": "pending_post_release_grace",
-  "last_release_watch_local": "2026-10-12T11:05:02+05:30",
-  "public_verification_note": "Publication time elapsed. Allow 15 minutes propagation, then check the existing video ID. Live Studio and public-player checks unavailable at this time. No publication failure confirmed."
+  "public_playability": "verification_blocked_access_unavailable",
+  "last_release_watch_local": "2026-10-12T13:57:27+05:30",
+  "public_verification_note": "As of 2026-10-12 13:57 IST, due time + 15-minute propagation elapsed. Public player cannot be checked: direct YouTube watch/oEmbed requests return DisabledError; authorized Nirala Studio devices offline. This is an access/verification blocker, NOT evidence of publication failure. Existing video ID oN2PgprMbSE only; never reupload.",
+  "release_watch_2026_10_12_1357": {
+    "checked_at_local": "2026-10-12T13:57:27+05:30",
+    "video_id": "oN2PgprMbSE",
+    "scheduled_local": "2026-10-12T11:00:00+05:30",
+    "publication_due_plus_15min_elapsed": true,
+    "historical_studio_confirmation": "Video scheduled",
+    "historical_youtube_checks": "Checks complete. No issues found",
+    "live_studio_check": "blocked_authorized_Nirala_offline_both_links",
+    "anonymous_watch_check": "blocked_DisabledError",
+    "anonymous_oembed_check": "blocked_DisabledError",
+    "search_engine_lookup": "no_results_not_evidence_of_failure",
+    "publication_failure_confirmed": false,
+    "public_verified": false,
+    "next_action": "Recheck public player for this exact ID once access returns; only set public_verified with affirmative player OK and streaming evidence. Recover existing ID only if safe. Never reupload."
+  }
 }
