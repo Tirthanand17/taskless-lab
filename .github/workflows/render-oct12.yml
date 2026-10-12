@@ -28,9 +28,9 @@ jobs:
       - name: Narrate all three scripts
         working-directory: motion-v2
         run: |
-          python generate_voice_cli.py --script script-v15.txt --output voice-v15.mp3 --voice en-US-AvaNeural --rate "+4%"
-          python generate_voice_cli.py --script script-v16.txt --output voice-v16.mp3 --voice en-US-AvaNeural --rate "+4%"
-          python generate_voice_cli.py --script script-long-007.txt --output voice-long-007.mp3 --voice en-US-ChristopherNeural --rate "+4%"
+          python generate_voice_cli.py --script script-v15.txt --output voice-v15.mp3 --voice en-US-AvaNeural --rate "+4%" --style legacy
+          python generate_voice_cli.py --script script-v16.txt --output voice-v16.mp3 --voice en-US-AvaNeural --rate "+4%" --style legacy
+          python generate_voice_cli.py --script script-long-007.txt --output voice-long-007.mp3 --voice en-US-ChristopherNeural --rate "+4%" --style legacy
           npx remotion browser ensure
       - name: Validate narration and compositions
         run: |
