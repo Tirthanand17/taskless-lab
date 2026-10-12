@@ -6,7 +6,7 @@
   "target_release_local": "2026-10-12T11:00:00+05:30",
   "source": "state/scheduled/pilot_015.json",
   "studio_confirmation": "historical_video_scheduled",
-  "public_playability": "awaiting_post_release_verification_after_grace",
+  "public_playability": "verification_blocked_access_unavailable",
   "no_duplicate_upload": true,
   "release_watch_2026_10_12_1105": {
     "checked_at_local": "2026-10-12T11:05:02+05:30",
@@ -22,5 +22,21 @@
     "publication_failure_confirmed": false,
     "no_duplicate_upload": true,
     "next_action": "After 11:15 IST verify anonymous public player for existing ID; if successful mark both planned/scheduled public_verified with evidence; otherwise record verification blocker without claiming publication failure. Never reupload."
+  },
+  "release_watch_2026_10_12_1210": {
+    "checked_at_local": "2026-10-12T12:10:36+05:30",
+    "existing_video_id": "oN2PgprMbSE",
+    "scheduled_release_local": "2026-10-12T11:00:00+05:30",
+    "publication_due_plus_15min_elapsed": true,
+    "github_video_id_and_slot_match": true,
+    "historical_studio_confirmation": "Video scheduled",
+    "historical_youtube_checks": "Checks complete. No issues found",
+    "live_authenticated_studio": "blocked_both_authorized_Nirala_connections_offline",
+    "anonymous_public_player": "not_verified_youtube_watch_and_oembed_fetch_disabled",
+    "search_engine_video_lookup": "no_results_not_evidence_of_failure",
+    "publication_failure_confirmed": false,
+    "status_interpretation": "verification_blocked_not_publication_failure",
+    "next_action": "Recheck anonymous public player on existing ID oN2PgprMbSE when access returns; if player OK and streaming formats available, mark both records public_verified with timestamp and evidence. Never duplicate upload.",
+    "no_duplicate_upload": true
   }
 }
