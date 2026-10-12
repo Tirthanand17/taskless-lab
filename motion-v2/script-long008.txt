@@ -1,0 +1,49 @@
+Picture this. You ask an AI coding assistant to clean up a messy project folder.
+
+Easy task, right?
+
+But here's the question nobody wants to discover too late. What else could that assistant reach while it's working?
+
+Maybe there's a private tax document beside your project. Maybe an API key is stored somewhere else on the machine. Or maybe the assistant can make a network request you never intended.
+
+This isn't a story about an actual breach. It's a thought experiment. And it explains why AI agent permissions matter just as much as the AI model itself.
+
+On October seventh, GitHub announced that local sandboxing for Copilot is generally available in Copilot CLI, the Copilot app, and supported Visual Studio Code agent sessions.
+
+Now, don't confuse a sandbox with a smarter model. The model still decides what to attempt. A sandbox defines what commands and tools are allowed to do on your computer.
+
+Here's an illustrative example.
+
+We have a folder called Project Files. Inside are three invoice spreadsheets. That's where we want the assistant to work.
+
+Next to it is a folder called Private Records.
+
+Without boundaries, a tool with broad machine permissions could potentially reach places that weren't part of the original task.
+
+With a properly configured sandbox, the tool can be restricted to the project folder. It can also have limits on network access, credentials, and other system capabilities.
+
+Think of it as giving someone a workshop key, not the keys to the entire building.
+
+But there's an important catch.
+
+A sandbox is only as useful as the rules you configure and enforce. You still need to understand which tools are covered, what folders they can change, and whether they can use your internet connection or credentials.
+
+GitHub says its local sandboxing uses Microsoft eXecution Container to apply policies through native operating-system controls. It is intended to work across Windows, macOS, and Linux.
+
+That doesn't mean every AI app automatically has the same protection.
+
+So before you let an agent work on an important project, ask three questions.
+
+First: which files can this agent actually read or edit?
+
+Second: can its tools reach the network or use stored credentials?
+
+Third: is there a review point before irreversible changes?
+
+In our example, the safe outcome isn't an agent that magically never makes mistakes. It's an agent whose tools have fewer opportunities to make a damaging one.
+
+That's the idea worth remembering.
+
+A capable AI agent helps get work done. Carefully designed permission boundaries decide what it is allowed to touch.
+
+Would you let an AI agent reorganize your computer today, or would you want to see the permission rules first?

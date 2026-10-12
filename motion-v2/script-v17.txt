@@ -1,0 +1,11 @@
+Got a voice note you don't want to replay three times?
+
+ChatGPT now supports audio uploads on paid plans. You can attach a supported audio file, like an M P three, and ask for a transcript, decisions, and a to-do list.
+
+But there's a catch. AI transcription can get names, numbers, and speakers wrong.
+
+Try this prompt: transcribe the note, extract actions, and clearly mark anything uncertain.
+
+Then check important details against the original audio.
+
+Useful? Absolutely. Proofread it before you trust it.

@@ -1,0 +1,11 @@
+What if your coding assistant suggested the next prompt before you typed it?
+
+Codex has a new composer-predictions beta. After it answers, it may suggest your next instruction.
+
+Press Tab to accept the suggestion into the editor. It does not send the message.
+
+Here's the catch: it's limited to eligible ChatGPT Pro users, in the Codex desktop app, with supported models.
+
+And a suggestion can still miss what you meant.
+
+Read it. Edit it. Then decide whether to send.
