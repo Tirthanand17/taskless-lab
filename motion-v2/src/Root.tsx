@@ -14,11 +14,16 @@ import {StaleFlowShort, FromFolderShort, RefreshTruthLong, RefreshTruthThumbnail
 import {GeminiInboxShort, AgentPermissionShort, GeminiAgentLong, GeminiAgentThumbnail} from './GeminiCoworker';
 
 import {IntelligentUILong, IntelligentUIShort, OnlyOfficeShort, IntelligentUIThumbnail} from './IntelligentUI';
+import {Oct13AudioShort, Oct13CodexShort, Oct13SandboxLong, Oct13SandboxThumbnail} from './October13';
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      <Composition
+            <Composition id="Oct13AudioShort" component={Oct13AudioShort} durationInFrames={1110} fps={30} width={1080} height={1920} />
+      <Composition id="Oct13CodexShort" component={Oct13CodexShort} durationInFrames={945} fps={30} width={1080} height={1920} />
+      <Composition id="Oct13SandboxLong" component={Oct13SandboxLong} durationInFrames={4080} fps={24} width={1920} height={1080} />
+      <Composition id="Oct13SandboxThumbnail" component={Oct13SandboxThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
+<Composition
         id="CsvScannerShort"
         component={CsvScannerShort}
         durationInFrames={930}

@@ -1,0 +1,11 @@
+{
+  "id": "pilot_018",
+  "title": "Codex Predicts Your NEXT Prompt? The Important Catch! #shorts",
+  "description": "Codex Composer predictions entered beta on October 9, 2026. In eligible Codex desktop sessions it can suggest a next instruction; pressing Tab accepts the suggestion into the composer but DOES NOT send it. This is a beta for eligible adult personal ChatGPT Pro users in supported regions with compatible models and local/SSH threads. It is NOT available in regular ChatGPT chat.\n\nVisuals are ORIGINAL ILLUSTRATIVE RECONSTRUCTIONS, NOT screenshots or a live Codex test.\n\nOfficial notes: https://openai.com/products/release-notes/\nOfficial help: https://help.openai.com/en/articles/20001601-composer-predictions-in-codex\n\n#Codex #OpenAI #AItools #Coding #shorts",
+  "type": "short",
+  "duration_seconds": 31.5,
+  "source_script": "motion-v2/script-v18.txt",
+  "voice": "en-US-AvaNeural natural-style synthetic",
+  "visual_note": "Illustrative composer workflow, no live product test",
+  "made_for_kids": false
+}

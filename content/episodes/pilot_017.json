@@ -1,0 +1,11 @@
+{
+  "id": "pilot_017",
+  "title": "ChatGPT Can Transcribe Voice Notes — But Check This First! #shorts",
+  "description": "ChatGPT added audio-file uploads on October 6, 2026, for supported paid subscriptions. You can ask for a transcript, summary, and action items, but transcription may make mistakes—especially with names, numbers and speakers. The visuals here are original illustrative reconstructions, NOT footage from a live ChatGPT session. Always verify important details against the original recording.\n\nOfficial announcement: https://help.openai.com/en/articles/6825453-chatgpt-release-notes\nAudio-upload guide: https://help.openai.com/en/articles/8555545-uploading-files-and-audio-to-chatgpt\n\n#ChatGPT #VoiceNotes #AI #Productivity #shorts",
+  "type": "short",
+  "duration_seconds": 37,
+  "source_script": "motion-v2/script-v17.txt",
+  "voice": "en-US-AvaNeural natural-style synthetic",
+  "visual_note": "Illustrative generated UI, no live feature demo claimed",
+  "made_for_kids": false
+}
