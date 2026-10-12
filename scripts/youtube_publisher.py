@@ -24,7 +24,7 @@ WRITE_SCOPE = "https://www.googleapis.com/auth/youtube.force-ssl"
 VIDEO_ID = re.compile(r"^[A-Za-z0-9_-]{11}$")
 CHANNEL_ID = re.compile(r"^UC[A-Za-z0-9_-]{22}$")
 SAFE_EPISODE = re.compile(r"^[a-z][a-z0-9_-]{2,79}$")
-DEFAULT_LEDGER = Path.home() / ".flowminute-private" / "youtube-ledger.json"
+DEFAULT_LEDGER = Path(__file__).resolve().parents[2] / ".flowminute-private" / "youtube-ledger.json"
 
 
 class PublisherError(Exception):
