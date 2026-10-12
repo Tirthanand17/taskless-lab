@@ -14,5 +14,21 @@
   "production_qa": "documented in docs/OCT12_RELEASE_CONFIRMATION.md; complete watch-through not verified",
   "public_playability": "not_due",
   "no_duplicate_upload": true,
-  "existing_video_only": true
+  "existing_video_only": true,
+  "pre_release_reconciliation_2026_10_12_morning": {
+    "checked_date_local": "2026-10-12",
+    "checked_at_approx_local": "07:09 IST",
+    "existing_video_id": "jbfNmbl3owA",
+    "expected_release_local": "2026-10-12T16:00:00+05:30",
+    "episode_manifest_title": "ChatGPT Can Build Interactive Tools Now: 3 Useful GPT-6 Examples",
+    "github_id_and_schedule_match": true,
+    "github_scheduled_title_exact_manifest_match": true,
+    "live_authenticated_studio_metadata_description_and_schedule": "not_verified_authorized_Nirala_offline",
+    "studio_scheduling_basis": "historical_2026_10_10_Video_scheduled_receipt",
+    "youtube_checks_basis": "historical_checks_complete_no_issues",
+    "public_playability": "not_due",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true,
+    "next_action": "Before due, confirm exact existing ID, metadata and schedule in authenticated Studio if available; after due plus 15 minutes verify public player and reconcile both records; never reupload."
+  }
 }
