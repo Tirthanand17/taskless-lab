@@ -136,7 +136,7 @@ class TestPublisher(unittest.TestCase):
         # Desktop Commander executes commands from its own node_modules directory.
         self.assertTrue(yp.DEFAULT_LEDGER.is_absolute())
         self.assertEqual(yp.DEFAULT_LEDGER,
-                         Path.home() / ".flowminute-private" / "youtube-ledger.json")
+                         Path(yp.__file__).resolve().parents[2] / ".flowminute-private" / "youtube-ledger.json")
 
     def test_happy_plan(self):
         plan = self.plan()
