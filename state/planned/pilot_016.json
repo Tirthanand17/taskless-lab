@@ -1,12 +1,12 @@
 {
   "id": "pilot_016",
   "type": "short",
-  "status": "scheduled",
+  "status": "public_verified",
   "youtube_video_id": "XEV1fz-75-M",
   "target_release_local": "2026-10-12T20:30:00+05:30",
   "source": "state/scheduled/pilot_016.json",
   "studio_confirmation": "historical_video_scheduled",
-  "public_playability": "not_due",
+  "public_playability": "public_verified",
   "no_duplicate_upload": true,
   "pre_release_reconciliation_2026_10_12_morning": {
     "checked_date_local": "2026-10-12",
@@ -23,5 +23,21 @@
     "publication_failure_confirmed": false,
     "no_duplicate_upload": true,
     "next_action": "Before due, confirm exact existing ID, metadata and schedule in authenticated Studio if available; after due plus 15 minutes verify public player and reconcile both records; never reupload."
+  },
+  "public_verified_at_local": "2026-10-12T20:37:03+05:30",
+  "release_watch_2026_10_12_2037": {
+    "checked_at_local": "2026-10-12T20:37:03+05:30",
+    "video_id": "XEV1fz-75-M",
+    "scheduled_release_local": "2026-10-12T20:30:00+05:30",
+    "anonymous_watch_http_status": 200,
+    "anonymous_watch_player_status": "OK",
+    "anonymous_watch_streaming_data_present": true,
+    "public_oembed_http_status": 200,
+    "public_oembed_title": "AI Inside Your Spreadsheet? ONLYOFFICE 10.0 Just Launched! #shorts",
+    "public_oembed_author": "FlowMinute Lab",
+    "verification_source": "anonymous YouTube watch page and oEmbed on authorized Nirala device; no signed-in cookies",
+    "complete_video_watchthrough_not_tested": true,
+    "authenticated_studio_recheck": "not_performed",
+    "no_duplicate_upload": true
   }
 }
