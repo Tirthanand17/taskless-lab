@@ -13,5 +13,11 @@
     "episode_id":  "long_008",
     "remote_upload_status":  "uploaded",
     "remote_processing":  "processing",
-    "resolution":  "Exact title and channel match found in authenticated YouTube uploads list; keep video ID, do not reupload or assert schedule until processing succeeds and ledger is safely reconciled"
+    "resolution":  "Exact title and channel match found in authenticated YouTube uploads list; keep video ID, do not reupload or assert schedule until processing succeeds and ledger is safely reconciled",
+    "remote_file_size_bytes":  16826930,
+    "local_file_size_bytes":  16826930,
+    "exact_file_size_match":  true,
+    "last_processing_check_local":  "2026-10-12T22:24:08+05:30",
+    "last_processing_check_result":  "processing; P0D duration not yet verified; no publishAt",
+    "monitoring_watch_active":  true
 }
