@@ -14,10 +14,10 @@ Current project directories:
 - `youtube con\flowminute-natural-voice-worktree\` — narration development worktree.
 - `youtube con\FlowMinuteOct11Pack\` — existing production deliverable pack.
 - `youtube con\oct11-v2\`, `oct12-production\`, `oct12-v2-final\` — original export and QA directories.
-- `youtube con\FlowMinute_Natural_Voice_Preview.mp3` — the final narration sample.
+- `youtube con\FlowMinute_Natural_Voice_Preview.mp3` — the narration preview (listening review required before publication).
 - `youtube con\FlowMinute_Natural_Voice_Preview_QA.json` — the corresponding QA receipt.
 
-**Security exception (important):** OAuth client secrets, local YouTube refresh tokens and the private upload ledger remain in the already restricted folder `C:\Users\Dell\.flowminute-private\`. The existing `youtube con` directory grants an additional Windows group Read & Execute permissions; credentials must NOT be moved there unless an owner-controlled, protected subdirectory has been created and its effective ACLs are audited. Never commit OAuth credentials to GitHub or put them in public artifacts.
+**Private credentials (secured, 2026-10-12):** OAuth client secrets, local refresh tokens and the private upload ledger were moved into `C:\Users\Dell\Desktop\youtube con\.flowminute-private\`, **outside all Git worktrees**. After relocation, Windows ACL inspection confirmed inheritance disabled on the private folder; only `NIRALA\Dell`, `NT AUTHORITY\SYSTEM` and `BUILTIN\Administrators` have Full Control. The publishing-token file inherits only those three permissions. The parent `youtube con` folder separately grants `NIRALA\CodexSandboxUsers` Read & Execute, so never copy private files into its unprotected directories. Never commit tokens or credentials to GitHub or public artifacts.
 
 Git worktrees were relocated using `git worktree move`, with `git worktree repair` after the main repository relocation. Do not move them using Explorer without checking Git's worktree links.
 
