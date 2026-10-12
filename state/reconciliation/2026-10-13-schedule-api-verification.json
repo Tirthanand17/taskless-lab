@@ -1,0 +1,25 @@
+{
+  "at_local": "2026-10-12T22:14:52+05:30",
+  "date_local": "2026-10-13",
+  "expected": 3,
+  "verified": 2,
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "items": [
+    {
+      "id": "pilot_017",
+      "video_id": "mxB4fNx0Ua4",
+      "status": "scheduled_verified",
+      "scheduled_local": "2026-10-13T11:00:00+05:30",
+      "url": "https://youtube.com/shorts/mxB4fNx0Ua4"
+    },
+    {
+      "id": "pilot_018",
+      "video_id": "-8B1X1n5XIU",
+      "status": "scheduled_verified",
+      "scheduled_local": "2026-10-13T20:30:00+05:30",
+      "url": "https://youtube.com/shorts/-8B1X1n5XIU"
+    }
+  ],
+  "verification": "authenticated_readonly_api",
+  "no_duplicate_upload": true
+}

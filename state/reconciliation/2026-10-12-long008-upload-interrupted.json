@@ -1,0 +1,17 @@
+{
+    "existing_youtube_video_id":  "-_6iX5o3EfY",
+    "planned_time_ist":  "16:00",
+    "error":  "SSLEOFError at 49.9 percent resumable upload progress",
+    "local_upload_ledger_state":  "uploading_unresolved",
+    "scheduled":  false,
+    "expected_channel_id":  "UCCcL9Q_jqVq6LJmnYUSAFZA",
+    "expected_date_local":  "2026-10-13",
+    "duplicate_upload_performed":  false,
+    "remote_privacy":  "private",
+    "remote_duration":  "P0D",
+    "checked_at_local":  "2026-10-12T22:16:56.5111490+05:30",
+    "episode_id":  "long_008",
+    "remote_upload_status":  "uploaded",
+    "remote_processing":  "processing",
+    "resolution":  "Exact title and channel match found in authenticated YouTube uploads list; keep video ID, do not reupload or assert schedule until processing succeeds and ledger is safely reconciled"
+}

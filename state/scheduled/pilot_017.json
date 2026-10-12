@@ -1,0 +1,19 @@
+{
+  "id": "pilot_017",
+  "date_local": "2026-10-13",
+  "scheduled_local": "2026-10-13T11:00:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "youtube_video_id": "mxB4fNx0Ua4",
+  "url": "https://youtube.com/shorts/mxB4fNx0Ua4",
+  "title_in_studio": "ChatGPT Can Transcribe Voice Notes — But Check This First! #shorts",
+  "status": "scheduled_verified",
+  "verified_at_local": "2026-10-12T22:14:52+05:30",
+  "verified_source": "Read-only authenticated YouTube Data API videos.list + private uploader ledger",
+  "remote_privacy": "private",
+  "remote_publish_at_utc": "2026-10-13T05:30:00Z",
+  "remote_upload_status": "processed",
+  "thumbnail_status": "not_uploaded",
+  "captions_status": "not_uploaded_draft_caption_timing_unreviewed",
+  "owner_approval": "explicit owner approved for Oct 13 scheduling in ChatGPT on 2026-10-12",
+  "no_duplicate_upload": true
+}

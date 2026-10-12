@@ -1,7 +1,7 @@
 {
     "date_local":  "2026-10-13",
     "timezone":  "Asia/Kolkata",
-    "status":  "all_mp4_rendered_not_qa_approved_not_scheduled",
+    "status":  "partially_scheduled_2_of_3",
     "editorial_brief":  "docs/OCT13_EDITORIAL_RESEARCH.md",
     "production_standard":  "docs/FLOWMINUTE_GROWTH_PRODUCTION_STANDARD_V2.md",
     "narration_standard":  "docs/NATURAL_NARRATION_STANDARD.md",
@@ -15,7 +15,10 @@
                         "topic":  "ChatGPT audio uploads and transcript error checks",
                         "script":  "motion-v2/script-v17.txt",
                         "audio_preview":  "oct13-production/audio/pilot_017_natural.mp3",
-                        "status":  "rendered_full_decode_passed_listening_and_final_QA_pending"
+                        "status":  "scheduled_verified",
+                        "youtube_id":  "mxB4fNx0Ua4",
+                        "url":  "https://youtube.com/shorts/mxB4fNx0Ua4",
+                        "scheduled_time":  "2026-10-13T11:00:00+05:30"
                     },
                     {
                         "id":  "long_008",
@@ -24,7 +27,11 @@
                         "topic":  "Local AI coding agent sandbox boundaries",
                         "script":  "motion-v2/script-long008.txt",
                         "audio_preview":  "oct13-production/audio/long_008_natural.mp3",
-                        "status":  "rendered_full_decode_passed_listening_and_final_QA_pending"
+                        "status":  "private_upload_unresolved_processing_not_scheduled",
+                        "youtube_id":  "-_6iX5o3EfY",
+                        "remote_processing":  "processing",
+                        "remote_upload_status":  "uploaded",
+                        "remote_privacy":  "private"
                     },
                     {
                         "id":  "pilot_018",
@@ -33,7 +40,10 @@
                         "topic":  "Codex composer predictions beta and limits",
                         "script":  "motion-v2/script-v18.txt",
                         "audio_preview":  "oct13-production/audio/pilot_018_natural.mp3",
-                        "status":  "rendered_full_decode_passed_listening_and_final_QA_pending"
+                        "status":  "scheduled_verified",
+                        "youtube_id":  "-8B1X1n5XIU",
+                        "url":  "https://youtube.com/shorts/-8B1X1n5XIU",
+                        "scheduled_time":  "2026-10-13T20:30:00+05:30"
                     }
                 ],
     "publishing_gate":  "No video may be uploaded or scheduled before full narration listening approval, original visuals and video QA, accurate subtitles, Studio schedule review, and recorded receipts.",
@@ -42,5 +52,7 @@
                           ],
     "scheduled_in_youtube":  false,
     "voice_material":  "Synthetic Edge TTS with segmented natural-style delivery. No assertion of human recording.",
-    "notes":  "These are candidate slots, not actual YouTube schedules. Avoid duplicate uploads."
+    "notes":  "These are candidate slots, not actual YouTube schedules. Avoid duplicate uploads.",
+    "last_schedule_verification":  "2026-10-12T22:14:52+05:30",
+    "verified_scheduled_count":  2
 }
