@@ -6,7 +6,7 @@
   "target_release_local": "2026-10-11T20:30:00+05:30",
   "source": "state/scheduled/pilot_014.json",
   "studio_confirmation": "Video scheduled (historical receipt)",
-  "public_playability": "not_due",
+  "public_playability": "anonymous_player_OK_stream_present_at_2026_10_11_20_31_13_IST",
   "no_duplicate_upload": true,
   "public_check": {
     "at": "2026-10-11T20:31:13+05:30",
@@ -14,5 +14,6 @@
     "oembed": 200,
     "player": "OK",
     "stream": true
-  }
+  },
+  "public_verification_note": "Existing recorded public-player evidence, not a fresh after-propagation playback test; media-byte playback and authenticated Studio recheck unavailable."
 }
