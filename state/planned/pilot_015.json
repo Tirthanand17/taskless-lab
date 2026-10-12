@@ -1,12 +1,12 @@
 {
   "id": "pilot_015",
   "type": "short",
-  "status": "scheduled",
+  "status": "public_verified",
   "youtube_video_id": "oN2PgprMbSE",
   "target_release_local": "2026-10-12T11:00:00+05:30",
   "source": "state/scheduled/pilot_015.json",
   "studio_confirmation": "historical_video_scheduled",
-  "public_playability": "verification_blocked_access_unavailable",
+  "public_playability": "public_verified",
   "no_duplicate_upload": true,
   "release_watch_2026_10_12_1105": {
     "checked_at_local": "2026-10-12T11:05:02+05:30",
@@ -38,5 +38,15 @@
     "status_interpretation": "verification_blocked_not_publication_failure",
     "next_action": "Recheck anonymous public player on existing ID oN2PgprMbSE when access returns; if player OK and streaming formats available, mark both records public_verified with timestamp and evidence. Never duplicate upload.",
     "no_duplicate_upload": true
+  },
+  "public_verified_at_local": "2026-10-12T16:13:00+05:30",
+  "public_verification_evidence_2026_10_12_1613": {
+    "existing_youtube_id": "oN2PgprMbSE",
+    "anonymous_player_status": "OK",
+    "streaming_data_present": true,
+    "public_oembed_http_status": 200,
+    "verification_source": "anonymous YouTube watch and oEmbed via authorized Nirala PC",
+    "authenticated_studio_recheck": false,
+    "duplicate_upload": false
   }
 }
