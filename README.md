@@ -2,7 +2,7 @@
 
 A faceless, original micro-content brand about practical automation, data cleanup, and workflow efficiency.
 
-## Mission
+**Local Windows workspace:** Keep all non-secret video assets, render outputs, QA media and Git worktrees inside the existing `C:\\Users\\Dell\\Desktop\\youtube con\\` folder. OAuth tokens and private upload receipts stay in the original restricted user-private folder. See [Local Workspace Policy](docs/LOCAL_WORKSPACE_POLICY.md).\n\n## Mission
 
 Publish useful, original short-form videos that solve one repetitive-work problem at a time without relying on a personal identity, recycled clips, or mass-produced filler.
 
