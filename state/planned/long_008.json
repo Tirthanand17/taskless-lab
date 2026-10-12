@@ -1,0 +1,19 @@
+{
+  "id": "long_008",
+  "type": "long",
+  "target_release_local": "2026-10-13T16:00:00+05:30",
+  "status": "private_processing_not_scheduled",
+  "youtube_video_id": "-_6iX5o3EfY",
+  "episode": "content/episodes/long_008.json",
+  "title": "AI Coding Agents Can Access Files — What Actually Stops Them?",
+  "processing_verification_source": "state/reconciliation/2026-10-12-long008-upload-interrupted.json",
+  "processing_checked_at_local": "2026-10-12T22:24:08+05:30",
+  "remote_privacy": "private",
+  "remote_upload_status": "uploaded",
+  "remote_processing": "processing",
+  "schedule_verified": false,
+  "public_playability": "not_due",
+  "qa_complete": "not_independently_verified",
+  "no_duplicate_upload": true,
+  "next_action": "Recheck processing and existing ID through authenticated YouTube API or Studio when available; do not create new upload or assert scheduled until verified."
+}
