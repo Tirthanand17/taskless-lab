@@ -20,7 +20,7 @@ Updated 2026-10-11 (Asia/Kolkata). Branch: `feature/youtube-api-publisher-v1`. T
 PowerShell, from the local feature worktree or using the absolute path:
 
 ```powershell
-& 'C:\Users\Dell\Desktop\flowminute-publisher-worktree\scripts\flowminute_daily_preflight.ps1' -Date '2026-10-12'
+& 'C:\Users\Dell\Desktop\youtube con\flowminute-publisher-worktree\scripts\flowminute_daily_preflight.ps1' -Date '2026-10-12'
 ```
 
 This reports `PASS: no scheduled queue discrepancies detected` on a matching future schedule, or stops with an error on mismatch. To verify another day's receipts, use `-Date 'YYYY-MM-DD'` after their Studio/API upload receipts have been saved locally in `state/scheduled/`.
