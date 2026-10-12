@@ -79,6 +79,12 @@ Use visual forms as appropriate, not all in every video:
 
 **Claims and synthetic media:** Never imply a staged mockup is a real product interface, a proposed workflow actually ran, a person endorsed the content, or a benchmark was conducted if it wasn't. Mark reenactments/concept demos clearly. Follow YouTube's altered/synthetic-content disclosure rules for realistic content when applicable. Use properly licensed original imagery, video, music, and narration. Cite or link factual claims and record feature access and rollout limitations.
 
+## Narration addendum — mandatory October 12, 2026 onward
+
+The new [Natural Narration Standard](NATURAL_NARRATION_STANDARD.md) is adopted for **all future Shorts and long-form videos**. Write for spoken language, employ credible examples, and use a conversational voice with restrained pauses and natural pacing. The existing edge-tts one-shot (+4% rate) is retained only as legacy for historic reproductions. Natural voice may still be AI-generated and must never be misrepresented as a human recording.
+
+**Publication must be blocked without a recorded full listening review** of intonation, pronunciation, sound mixing, timing, authenticity and speech-to-caption alignment. Do not infer naturalness from a synthesis success log or audio length alone. A human-recorded narrator with appropriate consent or a rights-cleared expressive TTS option may be selected if the baseline cannot meet quality needs.
+
 ## Hard gates before publishing
 A video may only be **READY_FOR_UPLOAD** after all applicable tests pass:
 

@@ -16,6 +16,10 @@ Publish useful, original short-form videos that solve one repetitive-work proble
 - Follow the documented research, story, visual QA, truthful synthetic-media labeling, verified YouTube scheduling, and 24-hour/48-hour/7-day analytics review process.
 - The standard is **not** an automatic scheduled publishing task.
 
+## Natural, human-style voiceovers (new standard — October 12, 2026)
+
+**Every NEW Short and long video must use conversational, natural-paced, well-reviewed narration**, not a fixed-speed robotic reading. Scripts should sound spoken, with authentic pauses, clear pronunciation, controlled emphasis and compelling storytelling. Synthetic audio must never be mislabeled as a human recording. The new narrator defaults to natural mode, and older releases explicitly use legacy mode. No upload may be approved without a complete listening review. See [Natural Narration Standard](docs/NATURAL_NARRATION_STANDARD.md).
+
 ## Content model
 
 - 30-60 second original Shorts/Reels/TikToks
