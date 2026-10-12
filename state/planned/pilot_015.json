@@ -6,6 +6,21 @@
   "target_release_local": "2026-10-12T11:00:00+05:30",
   "source": "state/scheduled/pilot_015.json",
   "studio_confirmation": "historical_video_scheduled",
-  "public_playability": "not_due",
-  "no_duplicate_upload": true
+  "public_playability": "awaiting_post_release_verification_after_grace",
+  "no_duplicate_upload": true,
+  "release_watch_2026_10_12_1105": {
+    "checked_at_local": "2026-10-12T11:05:02+05:30",
+    "existing_video_id": "oN2PgprMbSE",
+    "github_exact_id_match": true,
+    "github_scheduled_time": "2026-10-12T11:00:00+05:30",
+    "github_title_matches_episode_manifest": true,
+    "scheduled_time_elapsed": true,
+    "propagation_grace_until_local": "2026-10-12T11:15:00+05:30",
+    "public_playability": "not_yet_verified_within_grace_window",
+    "live_authenticated_youtube_studio": "unavailable_authorized_Nirala_offline",
+    "public_player_retrieval": "blocked_youtube_web_fetch_disabled",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true,
+    "next_action": "After 11:15 IST verify anonymous public player for existing ID; if successful mark both planned/scheduled public_verified with evidence; otherwise record verification blocker without claiming publication failure. Never reupload."
+  }
 }
