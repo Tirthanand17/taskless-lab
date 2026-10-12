@@ -18,7 +18,7 @@ $ErrorActionPreference = 'Stop'
 $project = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $python = Join-Path $project '.venv\Scripts\python.exe'
 $publisher = Join-Path $project 'scripts\youtube_publisher.py'
-$token = Join-Path $HOME '.flowminute-private\youtube_readonly_token.json'
+$token = Join-Path (Split-Path $project -Parent) '.flowminute-private\youtube_readonly_token.json'
 if (!(Test-Path $python)) {throw "Local Python env missing: $python"}
 if (!(Test-Path $token)) {throw "Read-only OAuth token missing. Complete OAuth setup first."}
 Write-Output "FlowMinute Daily Preflight for $Date (READ ONLY)"
