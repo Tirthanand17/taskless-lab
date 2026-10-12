@@ -1,7 +1,7 @@
 {
     "date_local":  "2026-10-13",
     "timezone":  "Asia/Kolkata",
-    "status":  "preproduction_qa_pending",
+    "status":  "all_mp4_rendered_not_qa_approved_not_scheduled",
     "editorial_brief":  "docs/OCT13_EDITORIAL_RESEARCH.md",
     "production_standard":  "docs/FLOWMINUTE_GROWTH_PRODUCTION_STANDARD_V2.md",
     "narration_standard":  "docs/NATURAL_NARRATION_STANDARD.md",
@@ -15,7 +15,7 @@
                         "topic":  "ChatGPT audio uploads and transcript error checks",
                         "script":  "motion-v2/script-v17.txt",
                         "audio_preview":  "oct13-production/audio/pilot_017_natural.mp3",
-                        "status":  "voice_preview_generated_approval_pending"
+                        "status":  "rendered_full_decode_passed_listening_and_final_QA_pending"
                     },
                     {
                         "id":  "long_008",
@@ -24,7 +24,7 @@
                         "topic":  "Local AI coding agent sandbox boundaries",
                         "script":  "motion-v2/script-long008.txt",
                         "audio_preview":  "oct13-production/audio/long_008_natural.mp3",
-                        "status":  "voice_preview_generated_approval_pending"
+                        "status":  "rendered_full_decode_passed_listening_and_final_QA_pending"
                     },
                     {
                         "id":  "pilot_018",
@@ -33,7 +33,7 @@
                         "topic":  "Codex composer predictions beta and limits",
                         "script":  "motion-v2/script-v18.txt",
                         "audio_preview":  "oct13-production/audio/pilot_018_natural.mp3",
-                        "status":  "voice_preview_generated_approval_pending"
+                        "status":  "rendered_full_decode_passed_listening_and_final_QA_pending"
                     }
                 ],
     "publishing_gate":  "No video may be uploaded or scheduled before full narration listening approval, original visuals and video QA, accurate subtitles, Studio schedule review, and recorded receipts.",
