@@ -60,6 +60,11 @@ def plan_segments(text: str, preset: str) -> list[dict]:
             pending = sentence
         else:
             pending = candidate
+        # A question is a natural thought boundary even when it is short.
+        # This keeps a believable beat before the explanation or reveal.
+        if sentence.rstrip().endswith("?"):
+            chunks.append(pending)
+            pending = ""
     if pending:
         chunks.append(pending)
     if len(chunks) > 180:
