@@ -6,7 +6,7 @@
   "youtube_video_id": "jbfNmbl3owA",
   "url": "https://youtu.be/jbfNmbl3owA",
   "title_in_studio": "ChatGPT Can Build Interactive Tools Now: 3 Useful GPT-6 Examples",
-  "status": "scheduled",
+  "status": "public_verified",
   "source": "YouTube Studio 'Video scheduled' confirmation 2026-10-10",
   "checks": "Checks complete. No issues found",
   "asset_version": "oct12-v2",
@@ -27,5 +27,23 @@
     "publication_failure_confirmed": false,
     "no_duplicate_upload": true,
     "next_action": "Before due, confirm exact existing ID, metadata and schedule in authenticated Studio if available; after due plus 15 minutes verify public player and reconcile both records; never reupload."
+  },
+  "public_playability": "public_verified",
+  "public_verified_at_local": "2026-10-12T16:13:00+05:30",
+  "release_watch_2026_10_12_1613": {
+    "checked_at_local": "2026-10-12T16:13:00+05:30",
+    "video_id": "jbfNmbl3owA",
+    "expected_release_local": "2026-10-12T16:00:00+05:30",
+    "source": "anonymous YouTube watch-page response and public oEmbed via authorized Nirala computer (School Desktop Commander); no signed-in cookies used",
+    "public_oembed_http_status": 200,
+    "public_oembed_title": "ChatGPT Can Build Interactive Tools Now: 3 Useful GPT-6 Examples",
+    "anonymous_watch_player_status": "OK",
+    "anonymous_watch_streaming_data_present": true,
+    "public_player_verified": true,
+    "full_media_bytes_playback_not_tested": true,
+    "authenticated_studio_recheck": "not_performed",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true,
+    "notes": "Confirmed public player response and streamingData for the existing upload after its release time. Prior access-blocked status superseded; historical evidence retained."
   }
 }
