@@ -219,7 +219,11 @@ def main(argv: list[str] | None = None) -> int:
                     "the script or increase video duration; do NOT speed to an unnatural rate")
             output.parent.mkdir(parents=True, exist_ok=True)
             temp_mp3 = Path(directory) / "finished.mp3"
-            run_ffmpeg(ffmpeg, ["-i", str(wav), "-c:a", "libmp3lame", "-b:a", "192k",
+            # Spoken-word loudness target. Limit peaks without aggressive compression
+            # that would remove subtle delivery dynamics.
+            run_ffmpeg(ffmpeg, ["-i", str(wav),
+                               "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
+                               "-c:a", "libmp3lame", "-b:a", "192k",
                                "-ar", "48000", str(temp_mp3)])
             os.replace(temp_mp3, output)
     report = report_for(args.script, output, args.preset, voice, segments,
