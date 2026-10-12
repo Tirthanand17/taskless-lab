@@ -6,7 +6,7 @@
   "youtube_video_id": "oN2PgprMbSE",
   "url": "https://youtube.com/shorts/oN2PgprMbSE",
   "title_in_studio": "ChatGPT Can Build a Bill Splitter INSIDE Your Chat?! #shorts",
-  "status": "scheduled",
+  "status": "public_verified",
   "source": "YouTube Studio 'Video scheduled' confirmation 2026-10-10",
   "checks": "Checks complete. No issues found",
   "asset_version": "oct12-v2",
@@ -27,7 +27,7 @@
     "no_duplicate_upload": true,
     "next_action": "Before due, confirm exact existing ID, metadata and schedule in authenticated Studio if available; after due plus 15 minutes verify public player and reconcile both records; never reupload."
   },
-  "public_playability": "verification_blocked_access_unavailable",
+  "public_playability": "public_verified",
   "last_release_watch_local": "2026-10-12T13:57:27+05:30",
   "public_verification_note": "As of 2026-10-12 13:57 IST, due time + 15-minute propagation elapsed. Public player cannot be checked: direct YouTube watch/oEmbed requests return DisabledError; authorized Nirala Studio devices offline. This is an access/verification blocker, NOT evidence of publication failure. Existing video ID oN2PgprMbSE only; never reupload.",
   "release_watch_2026_10_12_1357": {
@@ -44,5 +44,22 @@
     "publication_failure_confirmed": false,
     "public_verified": false,
     "next_action": "Recheck public player for this exact ID once access returns; only set public_verified with affirmative player OK and streaming evidence. Recover existing ID only if safe. Never reupload."
+  },
+  "public_verified_at_local": "2026-10-12T16:13:00+05:30",
+  "release_watch_2026_10_12_1613": {
+    "checked_at_local": "2026-10-12T16:13:00+05:30",
+    "video_id": "oN2PgprMbSE",
+    "expected_release_local": "2026-10-12T11:00:00+05:30",
+    "source": "anonymous YouTube watch-page response and public oEmbed via authorized Nirala computer (School Desktop Commander); no signed-in cookies used",
+    "public_oembed_http_status": 200,
+    "public_oembed_title": "ChatGPT Can Build a Bill Splitter INSIDE Your Chat?! #shorts",
+    "anonymous_watch_player_status": "OK",
+    "anonymous_watch_streaming_data_present": true,
+    "public_player_verified": true,
+    "full_media_bytes_playback_not_tested": true,
+    "authenticated_studio_recheck": "not_performed",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true,
+    "notes": "Confirmed public player response and streamingData for the existing upload after its release time. Prior access-blocked status superseded; historical evidence retained."
   }
 }
