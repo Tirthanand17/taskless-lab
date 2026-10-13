@@ -1,0 +1,73 @@
+{
+  "checked_at_local": "2026-10-13T19:40:58+05:30",
+  "timezone": "Asia/Kolkata",
+  "source_priority": "GitHub primary; authenticated YouTube API evidence recorded in repository; live Studio inaccessible",
+  "oct10": {
+    "status": "protected",
+    "evidence": "state/scheduled/{pilot_011,long_005,pilot_012}.json",
+    "ids": {
+      "pilot_011": "qkc0Tf_51nU",
+      "long_005": "xmi1oAoxAZA",
+      "pilot_012": "MZmZ8wGGpqc"
+    },
+    "anonymous_player_historical": "OK"
+  },
+  "oct13": {
+    "authenticated_api_source": "state/reconciliation/2026-10-13-live-status.json",
+    "authenticated_api_checked_at": "2026-10-13T17:01:34+05:30",
+    "public_api_verified_player_unchecked": {
+      "pilot_017": "mxB4fNx0Ua4",
+      "long_008": "NCLp6YibFMs"
+    },
+    "scheduled_verified_not_yet_due": {
+      "pilot_018": "-8B1X1n5XIU"
+    },
+    "player_blocker": "YouTube watch fetch disabled; authorized Nirala PC offline",
+    "publication_failure_confirmed": false
+  },
+  "oct14": {
+    "native_schedule_evidence": "state/scheduled/",
+    "scheduled_ids": {
+      "pilot_019": "t_3HHNBT0SA",
+      "long_009": "bbNdqkHpphU",
+      "pilot_020": "Zb81y4Sugds"
+    },
+    "planned_records_inconsistent": "Still show null video ID and QA pending; update attempts blocked by connector safety checks",
+    "qa": "Full narration, video and captions QA not independently verified; do not mark QA passed"
+  },
+  "oct15": {
+    "scheduled_ids": {
+      "pilot_021": "NC3rnHlHHmc",
+      "long_010": "S_ap4UFoOAg",
+      "pilot_022": "6wYSp3xoQak"
+    },
+    "qa": "not independently verified"
+  },
+  "changes_this_check": {
+    "updated": [
+      "state/planned/long_008.json"
+    ],
+    "commit": "9b495cc00f99326a4831d60981b75569a21c0529",
+    "blocked": [
+      "state/planned/pilot_017.json",
+      "state/scheduled/pilot_017.json",
+      "state/scheduled/long_008.json",
+      "state/planned/pilot_019.json",
+      "state/planned/long_009.json",
+      "state/planned/pilot_020.json"
+    ]
+  },
+  "restrictions": {
+    "never_duplicate": true,
+    "no_paid_actions": true,
+    "no_phone_verification": true,
+    "no_personal_drive": true,
+    "do_not_publish_unapproved": true
+  },
+  "next_actions": [
+    "After 20:45 IST check public player for pilot_018",
+    "Recheck public player for pilot_017 and long_008; update both records only on successful evidence",
+    "Reconcile Oct14 planned records to existing IDs without any new uploads",
+    "Complete independent QA on Oct14 and Oct15"
+  ]
+}
