@@ -1,0 +1,14 @@
+{
+  "checked_at_local": "2026-10-13T09:41:18+05:30",
+  "oct10_status": "all_six_records_public_verified_from_historical_playback_evidence",
+  "oct13_schedule_source": "state/reconciliation/2026-10-13-schedule-api-verification.json",
+  "oct13_scheduled_ids": [
+    "mxB4fNx0Ua4",
+    "NCLp6YibFMs",
+    "-8B1X1n5XIU"
+  ],
+  "oct13_aggregate_discrepancy": "oct13-pack youtube_video_ids empty despite verified three schedules",
+  "oct14_buffer": "manifest_exists_but_QA_pending",
+  "authenticated_studio_current": "unavailable_authorized_PC_offline",
+  "duplicate_uploads_performed": 0
+}
