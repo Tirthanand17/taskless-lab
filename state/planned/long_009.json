@@ -1,0 +1,21 @@
+{
+  "date_local": "2026-10-14",
+  "timezone": "Asia/Kolkata",
+  "production_manifest": "state/planned/oct14-pack.json",
+  "project_root": "C:\\Users\\Dell\\Desktop\\youtube con",
+  "qa_complete": false,
+  "approved": false,
+  "youtube_video_id": null,
+  "studio_schedule_verified": false,
+  "no_duplicate_upload": true,
+  "publishing_gate": "No upload or scheduling until narration, full video, subtitles, metadata, rights/disclosures, and final technical QA pass; inspect Studio for existing ID first.",
+  "id": "long_009",
+  "type": "long",
+  "target_release_local": "2026-10-14T16:00:00+05:30",
+  "topic": "Google Chrome auto browse in India: real-world illustrative shopping and safety",
+  "script": "motion-v2/script-long009.txt",
+  "audio_preview": "oct14-production/audio/long_009_natural.mp3",
+  "video_file": "oct14-production/long_009.mp4",
+  "thumbnail": "oct14-production/long_009_thumbnail.jpg",
+  "status": "rendering_qa_pending"
+}
