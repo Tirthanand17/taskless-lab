@@ -1,0 +1,20 @@
+{
+  "date_local": "2026-10-14",
+  "timezone": "Asia/Kolkata",
+  "production_manifest": "state/planned/oct14-pack.json",
+  "project_root": "C:\\Users\\Dell\\Desktop\\youtube con",
+  "qa_complete": false,
+  "approved": false,
+  "youtube_video_id": null,
+  "studio_schedule_verified": false,
+  "no_duplicate_upload": true,
+  "publishing_gate": "No upload or scheduling until narration, full video, subtitles, metadata, rights/disclosures, and final technical QA pass; inspect Studio for existing ID first.",
+  "id": "pilot_020",
+  "type": "short",
+  "target_release_local": "2026-10-14T20:30:00+05:30",
+  "topic": "AI browser task plan safety: sites, data and approvals",
+  "script": "motion-v2/script-v20.txt",
+  "audio_preview": "oct14-production/audio/pilot_020_natural.mp3",
+  "video_file": "oct14-production/pilot_020.mp4",
+  "status": "qa_pending"
+}
