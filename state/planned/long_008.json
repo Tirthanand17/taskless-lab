@@ -2,7 +2,7 @@
   "id": "long_008",
   "type": "long",
   "target_release_local": "2026-10-13T16:00:00+05:30",
-  "status": "scheduled_verified",
+  "status": "public_api_verified_player_unchecked",
   "youtube_video_id": "NCLp6YibFMs",
   "episode": "content/episodes/long_008.json",
   "title": "AI Coding Agents Can Access Files — What Actually Stops Them?",
@@ -23,5 +23,15 @@
   "remote_publish_at_utc": "2026-10-13T10:30:00Z",
   "stalled_original_video_id": "-_6iX5o3EfY",
   "stalled_original_status": "private_unscheduled_do_not_publish",
-  "no_further_uploads": true
+  "no_further_uploads": true,
+  "remote_public_verification_2026_10_13": {
+    "checked_at_local": "2026-10-13T17:01:34+05:30",
+    "source": "state/reconciliation/2026-10-13-live-status.json",
+    "youtube_video_id": "NCLp6YibFMs",
+    "remote_privacy": "public",
+    "authenticated_api_status": "public_verified",
+    "anonymous_player_playability": "not_independently_verified",
+    "publication_failure_confirmed": false,
+    "no_duplicate_upload": true
+  }
 }
