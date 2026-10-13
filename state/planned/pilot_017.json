@@ -13,16 +13,16 @@
   "qa_complete": "not_independently_verified",
   "no_duplicate_upload": true,
   "public_verification_watch_2026_10_13": {
-    "checked_at_local": "2026-10-13T13:01:05+05:30",
+    "checked_at_local": "2026-10-13T13:53:18+05:30",
     "existing_video_id": "mxB4fNx0Ua4",
     "scheduled_local": "2026-10-13T11:00:00+05:30",
-    "github_id_and_schedule": "matched",
+    "github_id_and_schedule": "matched_with_scheduled_record",
     "historical_authenticated_schedule": "verified",
     "current_public_playability": "not_independently_verified",
-    "public_check_attempt": "YouTube watch and oEmbed fetch disabled; search yielded no reliable result",
-    "authenticated_studio_check": "unavailable_authorized_remote_device_link_not_eligible",
-    "vidiq_check": "insufficient_credits_no_charge",
+    "public_check_attempt": "YouTube watch and oEmbed fetch disabled; no reliable search match",
+    "authenticated_studio_check": "unavailable_authorized_Nirala_PC_offline",
     "publication_failure_confirmed": false,
-    "action": "Preserve existing ID. Recheck anonymous player after propagation or authenticated Studio; only set public_verified with successful player evidence; never upload duplicate."
+    "scheduled_record_reconciled_commit": "741b1c9c916a9f5be43a9002c59e9a4bdc73dd8",
+    "action": "Preserve existing ID. Recheck anonymous player or authenticated Studio. Only set public_verified with successful player evidence. Never upload duplicate."
   }
 }
