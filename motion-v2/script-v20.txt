@@ -1,0 +1,4 @@
+Imagine asking AI to order your groceries. Would you press Start Task without checking the plan?
+Google's Gemini in Chrome auto browse can work across websites, but the plan matters. It might need to share your details with those sites to do the job.
+Before starting, check three things: the websites it chose, what personal information it needs, and which actions still need your approval.
+This is an example, not a live order. Would you let AI fill a form, or place an order? Comment FORM or ORDER. Watch the full explanation on FlowMinute Lab.

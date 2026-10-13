@@ -1,3 +1,4 @@
+import {ChromeIndiaShort, BrowserSafetyShort, ChromeAutoBrowseLong, ChromeBrowseThumbnail} from './October14';
 import React from 'react';
 import {Composition} from 'remotion';
 import {CsvScannerShort} from './CsvScannerShort';
@@ -19,7 +20,11 @@ import {Oct13AudioShort, Oct13CodexShort, Oct13SandboxLong, Oct13SandboxThumbnai
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-            <Composition id="Oct13AudioShort" component={Oct13AudioShort} durationInFrames={1110} fps={30} width={1080} height={1920} />
+            <Composition id="ChromeIndiaShort" component={ChromeIndiaShort} durationInFrames={1260} fps={30} width={1080} height={1920} />
+      <Composition id="BrowserSafetyShort" component={BrowserSafetyShort} durationInFrames={1110} fps={30} width={1080} height={1920} />
+      <Composition id="ChromeAutoBrowseLong" component={ChromeAutoBrowseLong} durationInFrames={5064} fps={24} width={1920} height={1080} />
+      <Composition id="ChromeBrowseThumbnail" component={ChromeBrowseThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
+      <Composition id="Oct13AudioShort" component={Oct13AudioShort} durationInFrames={1110} fps={30} width={1080} height={1920} />
       <Composition id="Oct13CodexShort" component={Oct13CodexShort} durationInFrames={945} fps={30} width={1080} height={1920} />
       <Composition id="Oct13SandboxLong" component={Oct13SandboxLong} durationInFrames={4080} fps={24} width={1920} height={1080} />
       <Composition id="Oct13SandboxThumbnail" component={Oct13SandboxThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />

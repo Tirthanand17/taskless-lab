@@ -1,0 +1,5 @@
+Gemini is now inside Chrome on Android in India. But is it really free? Here's the difference.
+You can use Gemini in Chrome to summarize a long web page, or ask questions about what you're reading, subject to rollout and device requirements.
+But asking Chrome to actually complete a multi-step web task? That's auto browse, and Google says it requires an AI Pro or Ultra subscription.
+It can help with things like online forms and shopping, but it may ask you to confirm sensitive steps.
+Which one would you use: page summaries, or auto browse? Comment one or two. The full breakdown is on FlowMinute Lab.
