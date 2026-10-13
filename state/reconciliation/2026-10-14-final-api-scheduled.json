@@ -1,0 +1,32 @@
+{
+  "checked_at_local": "2026-10-13T17:28:15+05:30",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "expected": 3,
+  "verified": 3,
+  "source": "Authenticated read-only YouTube Data API",
+  "video_ids": [
+    "t_3HHNBT0SA",
+    "bbNdqkHpphU",
+    "Zb81y4Sugds"
+  ],
+  "items": [
+    {
+      "id": "pilot_019",
+      "video_id": "t_3HHNBT0SA",
+      "scheduled_local": "2026-10-14T11:00:00+05:30",
+      "thumbnail_status": "not_uploaded"
+    },
+    {
+      "id": "long_009",
+      "video_id": "bbNdqkHpphU",
+      "scheduled_local": "2026-10-14T16:00:00+05:30",
+      "thumbnail_status": "confirmed"
+    },
+    {
+      "id": "pilot_020",
+      "video_id": "Zb81y4Sugds",
+      "scheduled_local": "2026-10-14T20:30:00+05:30",
+      "thumbnail_status": "not_uploaded"
+    }
+  ]
+}

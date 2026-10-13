@@ -1,0 +1,22 @@
+{
+  "id": "pilot_020",
+  "date_local": "2026-10-14",
+  "scheduled_local": "2026-10-14T20:30:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "youtube_video_id": "Zb81y4Sugds",
+  "url": "https://youtube.com/shorts/Zb81y4Sugds",
+  "title_in_studio": "AI Ordering Your Groceries? Check THIS Before You Click #shorts",
+  "status": "scheduled_verified",
+  "remote_privacy": "private",
+  "remote_upload_status": "processed",
+  "remote_processing": "succeeded",
+  "remote_publish_at_utc": "2026-10-14T15:00:00Z",
+  "verified_at_local": "2026-10-13T17:28:15+05:30",
+  "verified_source": "Authenticated read-only YouTube Data API videos.list",
+  "video_sha256": "e751c6d17761d3f7e9e4cc9e301dbdacf4978aa6fd2ddde837f7bb597bb6e70b",
+  "thumbnail_status": "not_uploaded",
+  "captions_status": "not_uploaded; draft captions are unreviewed",
+  "owner_approval": "Explicit user approval in chat October 13, 2026",
+  "human_narration_listening_review": "Not independently performed or asserted",
+  "no_duplicate_upload": true
+}

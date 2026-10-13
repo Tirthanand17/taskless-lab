@@ -1,0 +1,22 @@
+{
+  "id": "pilot_019",
+  "date_local": "2026-10-14",
+  "scheduled_local": "2026-10-14T11:00:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "youtube_video_id": "t_3HHNBT0SA",
+  "url": "https://youtube.com/shorts/t_3HHNBT0SA",
+  "title_in_studio": "Gemini in Chrome Is FREE in India? Here's the Paid Catch #shorts",
+  "status": "scheduled_verified",
+  "remote_privacy": "private",
+  "remote_upload_status": "processed",
+  "remote_processing": "succeeded",
+  "remote_publish_at_utc": "2026-10-14T05:30:00Z",
+  "verified_at_local": "2026-10-13T17:28:15+05:30",
+  "verified_source": "Authenticated read-only YouTube Data API videos.list",
+  "video_sha256": "b70637a54c000e1bb8692d439402a94be5e5b08d28aa697950eb37f1eb4dc2b5",
+  "thumbnail_status": "not_uploaded",
+  "captions_status": "not_uploaded; draft captions are unreviewed",
+  "owner_approval": "Explicit user approval in chat October 13, 2026",
+  "human_narration_listening_review": "Not independently performed or asserted",
+  "no_duplicate_upload": true
+}

@@ -1,0 +1,36 @@
+{
+  "checked_at_ist": "2026-10-13T17:27:17+05:30",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "source": "YouTube Data API read-only",
+  "number_verified": 3,
+  "expected": 3,
+  "items": [
+    {
+      "id": "pilot_019",
+      "video_id": "t_3HHNBT0SA",
+      "title": "Gemini in Chrome Is FREE in India? Here's the Paid Catch #shorts",
+      "remote_status": "scheduled_verified",
+      "remote_publish_at_utc": "2026-10-14T05:30:00Z",
+      "scheduled_ist": "2026-10-14T11:00:00+05:30",
+      "url": "https://youtube.com/shorts/t_3HHNBT0SA"
+    },
+    {
+      "id": "long_009",
+      "video_id": "bbNdqkHpphU",
+      "title": "Chrome AI Can Shop For You in India? Free vs Paid Gemini Auto Browse",
+      "remote_status": "scheduled_verified",
+      "remote_publish_at_utc": "2026-10-14T10:30:00Z",
+      "scheduled_ist": "2026-10-14T16:00:00+05:30",
+      "url": "https://youtu.be/bbNdqkHpphU"
+    },
+    {
+      "id": "pilot_020",
+      "video_id": "Zb81y4Sugds",
+      "title": "AI Ordering Your Groceries? Check THIS Before You Click #shorts",
+      "remote_status": "scheduled_verified",
+      "remote_publish_at_utc": "2026-10-14T15:00:00Z",
+      "scheduled_ist": "2026-10-14T20:30:00+05:30",
+      "url": "https://youtube.com/shorts/Zb81y4Sugds"
+    }
+  ]
+}

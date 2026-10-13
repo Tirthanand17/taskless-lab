@@ -1,0 +1,22 @@
+{
+  "id": "long_009",
+  "date_local": "2026-10-14",
+  "scheduled_local": "2026-10-14T16:00:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "youtube_video_id": "bbNdqkHpphU",
+  "url": "https://youtu.be/bbNdqkHpphU",
+  "title_in_studio": "Chrome AI Can Shop For You in India? Free vs Paid Gemini Auto Browse",
+  "status": "scheduled_verified",
+  "remote_privacy": "private",
+  "remote_upload_status": "processed",
+  "remote_processing": "succeeded",
+  "remote_publish_at_utc": "2026-10-14T10:30:00Z",
+  "verified_at_local": "2026-10-13T17:28:15+05:30",
+  "verified_source": "Authenticated read-only YouTube Data API videos.list",
+  "video_sha256": "c5a15f3862bab81961d6b9ce7ceb12970eb3ea492ee179b4a0640f88a39c9587",
+  "thumbnail_status": "confirmed",
+  "captions_status": "not_uploaded; draft captions are unreviewed",
+  "owner_approval": "Explicit user approval in chat October 13, 2026",
+  "human_narration_listening_review": "Not independently performed or asserted",
+  "no_duplicate_upload": true
+}

@@ -1,7 +1,7 @@
 {
   "date_local": "2026-10-14",
   "timezone": "Asia/Kolkata",
-  "status": "technical_qa_passed_approval_pending",
+  "status": "all_scheduled_verified",
   "editorial_brief": "docs/OCT14_EDITORIAL_AND_GROWTH_AUDIT.md",
   "community_plan": "docs/OCT14_COMMUNITY_PLAYBOOK.md",
   "project_root": "C:\\Users\\Dell\\Desktop\\youtube con",
@@ -15,11 +15,16 @@
       "script": "motion-v2/script-v19.txt",
       "audio_preview": "oct14-production/audio/pilot_019_natural.mp3",
       "video": "oct14-production/pilot_019.mp4",
-      "status": "technical_qa_passed_full_human_review_pending",
-      "approved": false,
+      "status": "scheduled_verified",
+      "approved": true,
       "video_sha256": "b70637a54c000e1bb8692d439402a94be5e5b08d28aa697950eb37f1eb4dc2b5",
       "video_bytes": 5739293,
-      "video_duration_seconds": 42.0
+      "video_duration_seconds": 42.0,
+      "owner_approval": "Explicit approval to publish in conversation on October 13",
+      "youtube_id": "t_3HHNBT0SA",
+      "url": "https://youtube.com/shorts/t_3HHNBT0SA",
+      "scheduled_time": "2026-10-14T11:00:00+05:30",
+      "thumbnail_status": "not_uploaded"
     },
     {
       "id": "long_009",
@@ -30,11 +35,16 @@
       "audio_preview": "oct14-production/audio/long_009_natural.mp3",
       "video": "oct14-production/long_009.mp4",
       "thumbnail": "oct14-production/long_009_thumbnail.jpg",
-      "status": "technical_qa_passed_full_human_review_pending",
-      "approved": false,
+      "status": "scheduled_verified",
+      "approved": true,
       "video_sha256": "c5a15f3862bab81961d6b9ce7ceb12970eb3ea492ee179b4a0640f88a39c9587",
       "video_bytes": 19769694,
-      "video_duration_seconds": 211.0
+      "video_duration_seconds": 211.0,
+      "owner_approval": "Explicit approval to publish in conversation on October 13",
+      "youtube_id": "bbNdqkHpphU",
+      "url": "https://youtu.be/bbNdqkHpphU",
+      "scheduled_time": "2026-10-14T16:00:00+05:30",
+      "thumbnail_status": "confirmed"
     },
     {
       "id": "pilot_020",
@@ -44,21 +54,33 @@
       "script": "motion-v2/script-v20.txt",
       "audio_preview": "oct14-production/audio/pilot_020_natural.mp3",
       "video": "oct14-production/pilot_020.mp4",
-      "status": "technical_qa_passed_full_human_review_pending",
-      "approved": false,
+      "status": "scheduled_verified",
+      "approved": true,
       "video_sha256": "e751c6d17761d3f7e9e4cc9e301dbdacf4978aa6fd2ddde837f7bb597bb6e70b",
       "video_bytes": 5436683,
-      "video_duration_seconds": 37.0
+      "video_duration_seconds": 37.0,
+      "owner_approval": "Explicit approval to publish in conversation on October 13",
+      "youtube_id": "Zb81y4Sugds",
+      "url": "https://youtube.com/shorts/Zb81y4Sugds",
+      "scheduled_time": "2026-10-14T20:30:00+05:30",
+      "thumbnail_status": "not_uploaded"
     }
   ],
   "publishing_gate": "No upload/schedule before reviewed audio and full video, technical QA, correct rights/disclosures, approved private manifest, YouTube confirmed receipt.",
-  "scheduled_in_youtube": false,
+  "scheduled_in_youtube": true,
   "voice_material": "Natural-style synthesized narration; full human listening review is pending.",
-  "notes": "Scheduled candidate slots only; no uploads for Oct 14 were attempted.",
+  "notes": "API-confirmed future releases; YouTube will make public automatically. No duplicate uploads.",
   "technical_qa_report": "oct14-production/oct14_technical_qa.json",
-  "editorial_approval": "PENDING",
-  "full_narration_listening_review": "PENDING",
-  "captions_human_review": "PENDING",
-  "youtube_upload_status": "NOT_UPLOADED",
-  "updated_at_ist": "2026-10-13T17:06:45.014119+05:30"
+  "editorial_approval": "Owner approved publication, full human listening/watching not independently observed",
+  "full_narration_listening_review": "Not independently performed",
+  "captions_human_review": "Not completed; draft captions not uploaded",
+  "youtube_upload_status": "THREE_PRIVATE_UPLOADS_SCHEDULED",
+  "updated_at_ist": "2026-10-13T17:06:45.014119+05:30",
+  "verified_scheduled_count": 3,
+  "youtube_video_ids": [
+    "t_3HHNBT0SA",
+    "bbNdqkHpphU",
+    "Zb81y4Sugds"
+  ],
+  "last_schedule_verification": "2026-10-13T17:28:15+05:30"
 }
