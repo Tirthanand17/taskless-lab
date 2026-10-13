@@ -1,0 +1,19 @@
+{
+  "id": "pilot_022",
+  "type": "short",
+  "date_local": "2026-10-15",
+  "target_release_local": "2026-10-15T20:30:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "status": "scheduled_verified",
+  "youtube_video_id": "6wYSp3xoQak",
+  "title": "Meta Wonder vs Wonder Full: Who Can Actually Use Them? #shorts",
+  "scheduled_record": "state/scheduled/pilot_022.json",
+  "manifest": "state/planned/oct15-pack.json",
+  "studio_schedule_verified_basis": "historical_authenticated_api_receipt",
+  "remote_upload_status": "processed",
+  "owner_approval_recorded": true,
+  "qa_complete": false,
+  "independent_human_listening": "not_witnessed",
+  "captions_review": "not_completed",
+  "no_duplicate_upload": true
+}
