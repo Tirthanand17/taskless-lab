@@ -1,0 +1,49 @@
+{
+  "date_local": "2026-10-14",
+  "timezone": "Asia/Kolkata",
+  "status": "production_rendering_final_qa_pending",
+  "editorial_brief": "docs/OCT14_EDITORIAL_AND_GROWTH_AUDIT.md",
+  "community_plan": "docs/OCT14_COMMUNITY_PLAYBOOK.md",
+  "project_root": "C:\\Users\\Dell\\Desktop\\youtube con",
+  "source_checked_at_local": "2026-10-13",
+  "entries": [
+    {
+      "id": "pilot_019",
+      "type": "short",
+      "slot_candidate_local": "2026-10-14T11:00:00+05:30",
+      "topic": "Gemini in Chrome Android India: free vs paid",
+      "script": "motion-v2/script-v19.txt",
+      "audio_preview": "oct14-production/audio/pilot_019_natural.mp3",
+      "video": "oct14-production/pilot_019.mp4",
+      "status": "qa_pending",
+      "approved": false
+    },
+    {
+      "id": "long_009",
+      "type": "long",
+      "slot_candidate_local": "2026-10-14T16:00:00+05:30",
+      "topic": "Google Chrome auto browse in India: real-world illustrative shopping and safety",
+      "script": "motion-v2/script-long009.txt",
+      "audio_preview": "oct14-production/audio/long_009_natural.mp3",
+      "video": "oct14-production/long_009.mp4",
+      "thumbnail": "oct14-production/long_009_thumbnail.jpg",
+      "status": "rendering",
+      "approved": false
+    },
+    {
+      "id": "pilot_020",
+      "type": "short",
+      "slot_candidate_local": "2026-10-14T20:30:00+05:30",
+      "topic": "AI browser task plan safety: sites, data and approvals",
+      "script": "motion-v2/script-v20.txt",
+      "audio_preview": "oct14-production/audio/pilot_020_natural.mp3",
+      "video": "oct14-production/pilot_020.mp4",
+      "status": "qa_pending",
+      "approved": false
+    }
+  ],
+  "publishing_gate": "No upload/schedule before reviewed audio and full video, technical QA, correct rights/disclosures, approved private manifest, YouTube confirmed receipt.",
+  "scheduled_in_youtube": false,
+  "voice_material": "Natural-style synthesized narration; full human listening review is pending.",
+  "notes": "Scheduled candidate slots only; no uploads for Oct 14 were attempted."
+}
