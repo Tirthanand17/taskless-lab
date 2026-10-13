@@ -1,0 +1,14 @@
+{
+  "checked_at_local": "2026-10-13T13:01:05+05:30",
+  "release": "pilot_017",
+  "video_id": "mxB4fNx0Ua4",
+  "scheduled_local": "2026-10-13T11:00:00+05:30",
+  "github_status": "scheduled_verified",
+  "public_player": "unverified_access_blocked",
+  "studio": "unavailable",
+  "reason": "YouTube watch and oEmbed unavailable; remote desktop device link unavailable; vidIQ insufficient credits",
+  "publication_failure_confirmed": false,
+  "planned_record_updated": true,
+  "scheduled_record_update": "blocked_by_connector_safety_checks",
+  "no_duplicate_upload": true
+}
