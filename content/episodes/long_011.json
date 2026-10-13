@@ -1,0 +1,9 @@
+{
+  "id": "long_011",
+  "type": "long",
+  "title": "Claude in Google Docs, Sheets & Slides: 3 Useful Tricks + Paid Catch",
+  "description": "Claude can now work inside Google Docs, Google Sheets and Google Slides through an official Anthropic Workspace add-on. This practical explainer shows three FICTIONAL examples: a Sheets VLOOKUP returning #N/A, a long Docs proposal that needs cleaning up, and a crowded Slides presentation. Also: who gets beta access, how to install it and which approvals matter.\n\nThis video uses illustrative visual mockups and is not a live test of Anthropic's add-on. Anthropic says the feature is beta on Claude Pro, Max, Team and Enterprise plans; an approved Google Marketplace installation is also necessary. The add-on works with the file you have open rather than automatically accessing your entire Drive. Changes are recorded in version history. Chart images in Slides are not dynamically linked to Sheets. Double-check any AI formula or document change.\n\nOfficial Anthropic guide: https://support.claude.com/en/articles/16951679-use-claude-in-google-docs-sheets-and-slides\nAnnouncement: https://claude.com/resources/articles/claude-now-works-in-google-docs-sheets-and-slides\nOfficial Marketplace listing: https://workspace.google.com/marketplace/app/claude/12459801340\n\nOriginal animations, illustrative browser/file UI, licensed existing Pexels photo frames: https://www.pexels.com/video/close-up-on-man-hands-using-phone-10374885/ .\n\nWhich helps you more: SHEETS or DOCS? Let us know. Subscribe to FlowMinute Lab for practical tech explainers.\n\n#Claude #GoogleWorkspace #GoogleSheets #Productivity #AItools",
+  "source_script": "motion-v2/script-long011.txt",
+  "made_for_kids": false,
+  "synthetic_media": false
+}

@@ -1,3 +1,4 @@
+import {ClaudeSheetsShort, ClaudeAccessShort, ClaudeWorkspaceLong, ClaudeWorkspaceThumbnail} from './October16';
 import {MuseMemoryShort, MuseAccessShort, MuseWonderLong, MuseWonderThumbnail} from './October15';
 import {ChromeIndiaShort, BrowserSafetyShort, ChromeAutoBrowseLong, ChromeBrowseThumbnail} from './October14';
 import React from 'react';
@@ -21,6 +22,10 @@ import {Oct13AudioShort, Oct13CodexShort, Oct13SandboxLong, Oct13SandboxThumbnai
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition id="ClaudeSheetsShort" component={ClaudeSheetsShort} durationInFrames={1350} fps={30} width={1080} height={1920} />
+      <Composition id="ClaudeAccessShort" component={ClaudeAccessShort} durationInFrames={1350} fps={30} width={1080} height={1920} />
+      <Composition id="ClaudeWorkspaceLong" component={ClaudeWorkspaceLong} durationInFrames={5280} fps={24} width={1920} height={1080} />
+      <Composition id="ClaudeWorkspaceThumbnail" component={ClaudeWorkspaceThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
             <Composition id="MuseMemoryShort" component={MuseMemoryShort} durationInFrames={1260} fps={30} width={1080} height={1920} />
       <Composition id="MuseAccessShort" component={MuseAccessShort} durationInFrames={1260} fps={30} width={1080} height={1920} />
       <Composition id="MuseWonderLong" component={MuseWonderLong} durationInFrames={5520} fps={24} width={1920} height={1080} />

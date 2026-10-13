@@ -1,0 +1,29 @@
+{
+  "date_local": "2026-10-16",
+  "timezone": "Asia/Kolkata",
+  "status": "scripts_and_motion_source_prepared_remote_renderer_unavailable",
+  "scheduled_in_youtube": false,
+  "channel": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "content_sources": [
+    "https://support.claude.com/en/articles/16951679-use-claude-in-google-docs-sheets-and-slides",
+    "https://claude.com/resources/articles/claude-now-works-in-google-docs-sheets-and-slides"
+  ],
+  "episodes": [
+    {
+      "id": "pilot_023",
+      "time_local": "2026-10-16T11:00:00+05:30",
+      "status": "script_ready_video_not_rendered"
+    },
+    {
+      "id": "long_011",
+      "time_local": "2026-10-16T16:00:00+05:30",
+      "status": "script_ready_video_not_rendered"
+    },
+    {
+      "id": "pilot_024",
+      "time_local": "2026-10-16T20:30:00+05:30",
+      "status": "script_ready_video_not_rendered"
+    }
+  ],
+  "gate": "Needs actual synthetic voice, full MP4 render, QA, manifest with hashes, private upload, thumbnail, processing success, schedule and independent verification. Remote Desktop Commander device unreachable at last check. No October 16 uploads attempted."
+}
