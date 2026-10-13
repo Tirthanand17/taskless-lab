@@ -15,5 +15,17 @@
   "thumbnail_status": "not_uploaded",
   "captions_status": "not_uploaded_draft_caption_timing_unreviewed",
   "owner_approval": "explicit owner approved for Oct 13 scheduling in ChatGPT on 2026-10-12",
-  "no_duplicate_upload": true
+  "no_duplicate_upload": true,
+  "public_verification_watch_2026_10_13": {
+    "checked_at_local": "2026-10-13T13:53:18+05:30",
+    "existing_video_id": "mxB4fNx0Ua4",
+    "scheduled_local": "2026-10-13T11:00:00+05:30",
+    "github_id_and_schedule": "matched_with_planned_record",
+    "historical_authenticated_schedule": "verified",
+    "public_playability": "not_independently_verified",
+    "anonymous_youtube_attempt": "watch_and_oembed_fetch_disabled; search_no_reliable_match",
+    "authenticated_studio": "unavailable_authorized_Nirala_PC_offline",
+    "publication_failure_confirmed": false,
+    "required_action": "Preserve existing ID, retry anonymous player or authenticated Studio; only set public_verified with successful player evidence; never reupload."
+  }
 }
