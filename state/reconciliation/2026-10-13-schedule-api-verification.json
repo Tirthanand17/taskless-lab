@@ -1,25 +1,29 @@
 {
-  "at_local": "2026-10-12T22:14:52+05:30",
+  "at_local": "2026-10-13T07:39:15+05:30",
   "date_local": "2026-10-13",
   "expected": 3,
-  "verified": 2,
+  "verified": 3,
   "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
   "items": [
     {
       "id": "pilot_017",
       "video_id": "mxB4fNx0Ua4",
       "status": "scheduled_verified",
-      "scheduled_local": "2026-10-13T11:00:00+05:30",
-      "url": "https://youtube.com/shorts/mxB4fNx0Ua4"
+      "scheduled_local": "2026-10-13T11:00:00+05:30"
+    },
+    {
+      "id": "long_008",
+      "video_id": "NCLp6YibFMs",
+      "status": "scheduled_verified",
+      "scheduled_local": "2026-10-13T16:00:00+05:30"
     },
     {
       "id": "pilot_018",
       "video_id": "-8B1X1n5XIU",
       "status": "scheduled_verified",
-      "scheduled_local": "2026-10-13T20:30:00+05:30",
-      "url": "https://youtube.com/shorts/-8B1X1n5XIU"
+      "scheduled_local": "2026-10-13T20:30:00+05:30"
     }
   ],
-  "verification": "authenticated_readonly_api",
-  "no_duplicate_upload": true
+  "verification": "authenticated read-only videos.list",
+  "no_duplicate_publication": true
 }

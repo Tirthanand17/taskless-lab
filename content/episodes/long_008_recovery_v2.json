@@ -1,0 +1,13 @@
+{
+  "id": "long_008_recovery_v2",
+  "title": "AI Coding Agents Can Access Files — What Actually Stops Them?",
+  "description": "What stops an AI coding agent from touching the wrong folder? On October 7, 2026, GitHub announced local sandboxing for GitHub Copilot. This video explains the difference between model decisions and tool permissions, with a hypothetical invoice-folder example, then walks through filesystem, network and credential boundaries.\n\nAll folder screens and diagrams are ORIGINAL ILLUSTRATIVE RECONSTRUCTIONS, NOT a live GitHub Copilot product demonstration or a real security test. Sandboxes require correctly configured policies, and risks are not eliminated. Always review permissions before granting access to private material.\n\nPrimary official source: https://github.blog/changelog/2026-10-07-local-sandboxing-for-github-copilot-now-generally-available/\n\nTell us: What task would you trust an AI agent with?\n\n#AIAgents #GitHubCopilot #CyberSecurity #AI #Automation",
+  "type": "long",
+  "duration_seconds": 170,
+  "source_script": "motion-v2/script-long008.txt",
+  "voice": "en-US-AndrewNeural natural-style synthetic",
+  "visual_note": "Original animated diagrams with illustrative folder UI. Cinematic background stock asset from existing project.",
+  "made_for_kids": false,
+  "source_episode": "long_008",
+  "recovery_reason": "Clean H.264/yuv420p Rec.709 export; original private upload stuck processing"
+}
