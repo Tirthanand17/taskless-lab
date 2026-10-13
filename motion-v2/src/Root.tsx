@@ -1,3 +1,4 @@
+import {MuseMemoryShort, MuseAccessShort, MuseWonderLong, MuseWonderThumbnail} from './October15';
 import {ChromeIndiaShort, BrowserSafetyShort, ChromeAutoBrowseLong, ChromeBrowseThumbnail} from './October14';
 import React from 'react';
 import {Composition} from 'remotion';
@@ -20,7 +21,11 @@ import {Oct13AudioShort, Oct13CodexShort, Oct13SandboxLong, Oct13SandboxThumbnai
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-            <Composition id="ChromeIndiaShort" component={ChromeIndiaShort} durationInFrames={1260} fps={30} width={1080} height={1920} />
+            <Composition id="MuseMemoryShort" component={MuseMemoryShort} durationInFrames={1260} fps={30} width={1080} height={1920} />
+      <Composition id="MuseAccessShort" component={MuseAccessShort} durationInFrames={1260} fps={30} width={1080} height={1920} />
+      <Composition id="MuseWonderLong" component={MuseWonderLong} durationInFrames={5520} fps={24} width={1920} height={1080} />
+      <Composition id="MuseWonderThumbnail" component={MuseWonderThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
+      <Composition id="ChromeIndiaShort" component={ChromeIndiaShort} durationInFrames={1260} fps={30} width={1080} height={1920} />
       <Composition id="BrowserSafetyShort" component={BrowserSafetyShort} durationInFrames={1110} fps={30} width={1080} height={1920} />
       <Composition id="ChromeAutoBrowseLong" component={ChromeAutoBrowseLong} durationInFrames={5064} fps={24} width={1920} height={1080} />
       <Composition id="ChromeBrowseThumbnail" component={ChromeBrowseThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />

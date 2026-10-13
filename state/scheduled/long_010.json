@@ -1,0 +1,19 @@
+{
+  "id": "long_010",
+  "date_local": "2026-10-15",
+  "timezone": "Asia/Kolkata",
+  "scheduled_local": "2026-10-15T16:00:00+05:30",
+  "youtube_video_id": "S_ap4UFoOAg",
+  "title_in_studio": "Meta AI Can Remember You? Muse Wonder Explained (Who Gets Access)",
+  "url": "https://youtu.be/S_ap4UFoOAg",
+  "status": "scheduled_verified",
+  "remote_privacy": "private",
+  "remote_upload_status": "processed",
+  "remote_publish_at_utc": "2026-10-15T10:30:00Z",
+  "verified_at_ist": "2026-10-13T18:12:22+05:30",
+  "thumbnail_status": "confirmed",
+  "caption_status": "not_uploaded_draft_only",
+  "owner_approval": "Explicit publication request October 13, 2026",
+  "full_human_listening": "not independently observed",
+  "no_duplicate_upload": true
+}
