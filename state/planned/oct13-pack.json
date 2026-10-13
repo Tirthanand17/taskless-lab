@@ -1,7 +1,7 @@
 {
   "date_local": "2026-10-13",
   "timezone": "Asia/Kolkata",
-  "status": "all_scheduled_verified",
+  "status": "partially_public_with_remaining_scheduled",
   "editorial_brief": "docs/OCT13_EDITORIAL_RESEARCH.md",
   "production_standard": "docs/FLOWMINUTE_GROWTH_PRODUCTION_STANDARD_V2.md",
   "narration_standard": "docs/NATURAL_NARRATION_STANDARD.md",
@@ -15,10 +15,12 @@
       "topic": "ChatGPT audio uploads and transcript error checks",
       "script": "motion-v2/script-v17.txt",
       "audio_preview": "oct13-production/audio/pilot_017_natural.mp3",
-      "status": "scheduled_verified",
+      "status": "public_verified",
       "youtube_id": "mxB4fNx0Ua4",
-      "url": "https://youtube.com/shorts/mxB4fNx0Ua4",
-      "scheduled_time": "2026-10-13T11:00:00+05:30"
+      "url": "https://youtu.be/mxB4fNx0Ua4",
+      "scheduled_time": "2026-10-13T11:00:00+05:30",
+      "remote_privacy": "public",
+      "remote_upload_status": "processed"
     },
     {
       "id": "long_008",
@@ -27,11 +29,11 @@
       "topic": "Local AI coding agent sandbox boundaries",
       "script": "motion-v2/script-long008.txt",
       "audio_preview": "oct13-production/audio/long_008_natural.mp3",
-      "status": "scheduled_verified",
+      "status": "public_verified",
       "youtube_id": "NCLp6YibFMs",
       "remote_processing": "succeeded",
       "remote_upload_status": "processed",
-      "remote_privacy": "private",
+      "remote_privacy": "public",
       "url": "https://youtu.be/NCLp6YibFMs",
       "scheduled_time": "2026-10-13T16:00:00+05:30",
       "recovery_manifest_id": "long_008_recovery_v2",
@@ -46,8 +48,10 @@
       "audio_preview": "oct13-production/audio/pilot_018_natural.mp3",
       "status": "scheduled_verified",
       "youtube_id": "-8B1X1n5XIU",
-      "url": "https://youtube.com/shorts/-8B1X1n5XIU",
-      "scheduled_time": "2026-10-13T20:30:00+05:30"
+      "url": "https://youtu.be/-8B1X1n5XIU",
+      "scheduled_time": "2026-10-13T20:30:00+05:30",
+      "remote_privacy": "private",
+      "remote_upload_status": "processed"
     }
   ],
   "publishing_gate": "No video may be uploaded or scheduled before full narration listening approval, original visuals and video QA, accurate subtitles, Studio schedule review, and recorded receipts.",
@@ -61,5 +65,8 @@
   "notes": "All three slots were scheduled and verified by authenticated read-only YouTube Data API at 2026-10-13 07:39:15 IST. Public playability must be checked after each due time plus propagation; full editorial QA remains unverified. Never upload duplicates. Superseded long_008 original -_6iX5o3EfY remains private and unscheduled.",
   "last_schedule_verification": "2026-10-13T07:39:15+05:30",
   "verified_scheduled_count": 3,
-  "last_reconciliation_note": "2026-10-13 around 12:00 IST: repository records reread; live Studio and public playback not verified because authorized Nirala PC offline and direct YouTube web fetch disabled. Retain scheduled_verified until independent playback check."
+  "last_reconciliation_note": "2026-10-13 around 12:00 IST: repository records reread; live Studio and public playback not verified because authorized Nirala PC offline and direct YouTube web fetch disabled. Retain scheduled_verified until independent playback check.",
+  "last_publication_verification": "2026-10-13T17:01:34+05:30",
+  "verified_public_count": 2,
+  "last_publication_verification_source": "authenticated YouTube Data API at 2026-10-13T17:01:34+05:30"
 }

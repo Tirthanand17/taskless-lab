@@ -1,0 +1,40 @@
+{
+  "checked_at_ist": "2026-10-13T17:01:34+05:30",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "source": "authenticated read-only YouTube Data API videos.list",
+  "items": [
+    {
+      "id": "pilot_017",
+      "youtube_video_id": "mxB4fNx0Ua4",
+      "title": "ChatGPT Can Transcribe Voice Notes — But Check This First! #shorts",
+      "status": "public_verified",
+      "remote_privacy": "public",
+      "remote_publish_at": null,
+      "planned_local": "2026-10-13T11:00:00+05:30",
+      "checked_at_ist": "2026-10-13T17:01:34+05:30",
+      "url": "https://youtu.be/mxB4fNx0Ua4"
+    },
+    {
+      "id": "long_008",
+      "youtube_video_id": "NCLp6YibFMs",
+      "title": "AI Coding Agents Can Access Files — What Actually Stops Them?",
+      "status": "public_verified",
+      "remote_privacy": "public",
+      "remote_publish_at": null,
+      "planned_local": "2026-10-13T16:00:00+05:30",
+      "checked_at_ist": "2026-10-13T17:01:34+05:30",
+      "url": "https://youtu.be/NCLp6YibFMs"
+    },
+    {
+      "id": "pilot_018",
+      "youtube_video_id": "-8B1X1n5XIU",
+      "title": "Codex Predicts Your NEXT Prompt? The Important Catch! #shorts",
+      "status": "scheduled_verified",
+      "remote_privacy": "private",
+      "remote_publish_at": "2026-10-13T15:00:00Z",
+      "planned_local": "2026-10-13T20:30:00+05:30",
+      "checked_at_ist": "2026-10-13T17:01:34+05:30",
+      "url": "https://youtu.be/-8B1X1n5XIU"
+    }
+  ]
+}
