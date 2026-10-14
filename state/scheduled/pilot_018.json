@@ -15,5 +15,23 @@
   "thumbnail_status": "not_uploaded",
   "captions_status": "not_uploaded_draft_caption_timing_unreviewed",
   "owner_approval": "explicit owner approved for Oct 13 scheduling in ChatGPT on 2026-10-12",
-  "no_duplicate_upload": true
+  "no_duplicate_upload": true,
+  "release_guard_2026_10_14": {
+    "checked_at_local": "2026-10-14T20:47:46+05:30",
+    "result": "public_playability_unverified",
+    "evidence": "GitHub pre-release authenticated YouTube Data API receipt only; no fresh post-release YouTube player or Studio verification",
+    "attempted_checks": [
+      "YouTube Shorts public web fetch: cache miss",
+      "YouTube oEmbed public web fetch: cache miss",
+      "Authorized Nirala desktop: offline",
+      "vidIQ available balance: 2 credits, below 5-credit metadata lookup"
+    ],
+    "exact_existing_id_preserved": true,
+    "no_duplicate_upload": true,
+    "publication_failure_confirmed": false,
+    "recovery_attempted": false,
+    "next_action": "Recheck exact existing YouTube ID using authenticated Studio or anonymous player after connection returns; if private, recover same video ID only.",
+    "video_id": "-8B1X1n5XIU",
+    "scheduled_local": "2026-10-13T20:30:00+05:30"
+  }
 }
