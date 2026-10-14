@@ -71,8 +71,19 @@ def ensure_audio():
         qa=OUT/"audio"/(ep+"_natural_qa.json")
         if not (dest.exists() and qa.exists() and dest.stat().st_size>10000):
             report("VOICE_START",episode=ep)
-            run([PY,VOICE,"--script",MOTION/script,"--output",dest,"--report",qa,
-                 "--preset",preset,"--max-duration",maxsecs],timeout=1100)
+            offline=OUT/".tts-venv"/"Scripts"/"python.exe"
+            model=OUT/"models"/"kokoro-v1.0.int8.onnx"
+            voices=OUT/"models"/"voices-v1.0.bin"
+            if offline.is_file() and model.is_file() and voices.is_file():
+                voice_name="am_michael" if ep.startswith("long_") else "af_heart"
+                run([offline,REPO/"scripts"/"offline_kokoro_narration.py",
+                     "--script",MOTION/script,"--output",dest,"--report",qa,
+                     "--model",model,"--voices",voices,"--voice",voice_name,
+                     "--speed","1.08" if ep.startswith("long_") else "1.10",
+                     "--max-duration",maxsecs],timeout=4400)
+            else:
+                run([PY,VOICE,"--script",MOTION/script,"--output",dest,"--report",qa,
+                     "--preset",preset,"--max-duration",maxsecs],timeout=1100)
         q=read(qa)
         sec=float(q["audio_duration_seconds"])
         if sec<10 or sec>maxsecs:raise RuntimeError(f"Voice duration invalid for {ep}: {sec}")
