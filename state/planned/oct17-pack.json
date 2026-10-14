@@ -1,0 +1,31 @@
+{
+  "date_local": "2026-10-17",
+  "timezone": "Asia/Kolkata",
+  "channel": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "status": "production_running_pending_youtube_confirmation",
+  "scheduled_in_youtube": false,
+  "research": "docs/OCT17_GEMINI_ARGON_EDITORIAL_AUDIT.md",
+  "production_root": "C:\\Users\\Dell\\Desktop\\youtube con\\oct17-production",
+  "topic": "Gemini 4 Argon launch with a fictional refund dashboard validation lesson",
+  "verifiable_original_example": "120+95+110=325; 325-25=300; treating refund as plus 25 wrongly gives 350",
+  "pipeline_guard": "No duplicate upload or blind schedule retry; channel auth, processed status, SHA and remote publishAt required",
+  "episodes": [
+    {
+      "id": "pilot_025",
+      "clock_local": "2026-10-17T11:00:00+05:30",
+      "status": "narration_generated_not_uploaded"
+    },
+    {
+      "id": "long_012",
+      "clock_local": "2026-10-17T16:00:00+05:30",
+      "status": "narration_in_progress_not_uploaded"
+    },
+    {
+      "id": "pilot_026",
+      "clock_local": "2026-10-17T20:30:00+05:30",
+      "status": "narration_in_progress_not_uploaded"
+    }
+  ],
+  "human_full_audio_review": "not observed",
+  "notes": "All product performance claims sourced from Google; data/UI illustrative, not a live test."
+}

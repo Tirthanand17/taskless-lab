@@ -1,0 +1,9 @@
+{
+  "id": "pilot_025",
+  "type": "short",
+  "title": "This AI Dashboard Looks Right… But the Math Is WRONG! #shorts",
+  "description": "One tiny refund can make an AI-generated sales dashboard misleading. Our fictional example has sales of ₹120, ₹95 and ₹110 plus a ₹25 refund. Gross sales are ₹325 and correct net sales are ₹300; adding the refund as positive shows the wrong ₹350. We calculate this ourselves — it is NOT footage of a real Gemini 4 Argon run. Google's new Gemini 4 Argon is designed for complex reasoning and coding, but it can still be important to verify the output.\n\nWould you BUILD a dashboard with AI or CHECK every number? Tell us why. Watch the long explanation on FlowMinute Lab.\n\nOfficial Google announcement: https://blog.google/intl/en-in/products/introducing-gemini-4-argon/\nDeveloper capability guide: https://ai.google.dev/gemini-api/docs/latest-model\nOriginal illustrative animations. Background images derived from licensed Pexels footage previously used in FlowMinute Lab production; not Google demo footage.\n#Gemini4 #DataAnalysis #Excel #AIDashboard #shorts",
+  "source_script": "motion-v2/script-v25.txt",
+  "made_for_kids": false,
+  "synthetic_media": false
+}

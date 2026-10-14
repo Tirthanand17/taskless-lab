@@ -1,0 +1,17 @@
+This sales dashboard looks ready to send to your boss. But look closer. It says three hundred and fifty rupees in sales. That number is wrong. A refund has been counted as money earned. Now imagine asking an AI to build this entire report, from messy data to charts. How would you know the result is safe to use?
+
+Google introduced Gemini four Argon on October thirteenth. Google describes it as its flagship reasoning model for complex coding, analysis, and multi-step work. Let's make those claims useful with a simple shop example. This is our own illustrated workflow, not a real-time test of the new model.
+
+Step one: understand the data. The imaginary shop sells three items for one hundred and twenty, ninety five, and one hundred and ten rupees. It also refunds twenty five rupees. If the refund is stored as a positive number and everything is summed, the dashboard shows three hundred and fifty. But revenue after refunds should be three hundred. The first job is not to make a beautiful chart. It's to identify what each column means.
+
+Step two: give the AI a better instruction. Instead of saying, make me a dashboard, try this: Inspect the columns. State any assumptions. Treat refunds as deductions. Calculate net sales independently. Then create a chart and list three ways the result could be wrong. The prompt forces the process to explain its work instead of rushing to a polished answer.
+
+Step three: verify the result. Add the sales yourself. One twenty plus ninety five plus one ten equals three twenty five. Subtract the twenty five refund and you get three hundred. If the chart says three fifty, reject it. In our animation the incorrect bar shrinks to the correct net total. These are calculations we can independently verify. We are not showing footage of Gemini Argon running a real dashboard build.
+
+So why is this model interesting? Google says Argon can reason through more complicated coding and research tasks, and its developer model has a unified context window of roughly one million tokens. That's a technical capacity claim, not a promise that every large document will be understood perfectly. More context doesn't eliminate mistakes or bad input data.
+
+There is also an important access catch. In the Gemini app, Google AI Pro and Ultra subscribers can use Argon as the rollout reaches their account. But if you're a developer calling the Gemini API, Argon is paid and there is no free API tier. Google's introductory API rates are two dollars per million input tokens and ten dollars per million output tokens, including thinking, through November thirtieth, twenty twenty six. Rates are higher afterward.
+
+Here is the takeaway. New AI models may be better at handling complicated instructions, but your biggest improvement often comes from a stronger prompt and a simple verification step. Use AI to do the heavy lifting. Make it show the math before you trust the dashboard.
+
+Would you use a reasoning model to build your next spreadsheet dashboard, or would you rather check every formula yourself? Comment BUILD or CHECK. If this kind of practical AI explanation helps, subscribe to FlowMinute Lab.
