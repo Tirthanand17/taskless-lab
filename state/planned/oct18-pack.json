@@ -1,34 +1,62 @@
 {
   "date_local": "2026-10-18",
   "timezone": "Asia/Kolkata",
-  "channel": "UCCcL9Q_jqVq6LJmnYUSAFZA",
-  "status": "production_running_pending_youtube_confirmation",
-  "scheduled_in_youtube": false,
-  "topic": "OpenAI dots always-on AI personal agents with scope, permissions and plan eligibility",
-  "sources": [
-    "https://openai.com/index/introducing-dots/",
-    "https://help.openai.com/en/articles/20001530-getting-started-with-your-dot",
-    "https://help.openai.com/en/articles/20001529-dots-privacy-security-and-safety-faqs"
-  ],
+  "status": "all_scheduled_verified",
+  "scheduled_in_youtube": true,
+  "verified": 3,
   "videos": [
     {
       "id": "pilot_027",
-      "slot": "2026-10-18T11:00:00+05:30",
-      "voice": "af_bella",
-      "status": "voice_generation"
+      "date_local": "2026-10-18",
+      "scheduled_local": "2026-10-18T11:00:00+05:30",
+      "timezone": "Asia/Kolkata",
+      "youtube_video_id": "HvNCsRnso1g",
+      "title_in_studio": "AI Works While You Sleep? OpenAI Dots Has a Catch #shorts",
+      "url": "https://youtube.com/shorts/HvNCsRnso1g",
+      "status": "scheduled_verified",
+      "remote_privacy": "private",
+      "remote_upload_status": "processed",
+      "remote_publish_at_utc": "2026-10-18T05:30:00Z",
+      "thumbnail_status": "not_uploaded",
+      "owner_publication_instruction": "Explicit Oct18 publication request in conversation",
+      "human_listening_review": "not independently performed",
+      "verified_at_ist": "2026-10-15T20:04:10+05:30"
     },
     {
       "id": "long_013",
-      "slot": "2026-10-18T16:00:00+05:30",
-      "voice": "af_heart",
-      "status": "voice_pending"
+      "date_local": "2026-10-18",
+      "scheduled_local": "2026-10-18T16:00:00+05:30",
+      "timezone": "Asia/Kolkata",
+      "youtube_video_id": "5rJYVl3pmik",
+      "title_in_studio": "AI Works While You Sleep? OpenAI Dots Explained (The Real Catch)",
+      "url": "https://youtu.be/5rJYVl3pmik",
+      "status": "scheduled_verified",
+      "remote_privacy": "private",
+      "remote_upload_status": "processed",
+      "remote_publish_at_utc": "2026-10-18T10:30:00Z",
+      "thumbnail_status": "confirmed",
+      "owner_publication_instruction": "Explicit Oct18 publication request in conversation",
+      "human_listening_review": "not independently performed",
+      "verified_at_ist": "2026-10-15T20:04:11+05:30"
     },
     {
       "id": "pilot_028",
-      "slot": "2026-10-18T20:30:00+05:30",
-      "voice": "am_michael",
-      "status": "voice_pending"
+      "date_local": "2026-10-18",
+      "scheduled_local": "2026-10-18T20:30:00+05:30",
+      "timezone": "Asia/Kolkata",
+      "youtube_video_id": "Y9Ki6_FWMgU",
+      "title_in_studio": "Why ChatGPT Plus Doesn't Get OpenAI Dots Yet #shorts",
+      "url": "https://youtube.com/shorts/Y9Ki6_FWMgU",
+      "status": "scheduled_verified",
+      "remote_privacy": "private",
+      "remote_upload_status": "processed",
+      "remote_publish_at_utc": "2026-10-18T15:00:00Z",
+      "thumbnail_status": "not_uploaded",
+      "owner_publication_instruction": "Explicit Oct18 publication request in conversation",
+      "human_listening_review": "not independently performed",
+      "verified_at_ist": "2026-10-15T20:04:11+05:30"
     }
   ],
-  "test_policy": "Full video decode, sample frames, checked facts, distinct Short voices, no unreviewed SRT, accurate titles and scheduled YouTube receipts before completion."
+  "no_duplicate_upload": true,
+  "human_full_review": "not independently witnessed"
 }
