@@ -1,31 +1,59 @@
 {
   "date_local": "2026-10-17",
   "timezone": "Asia/Kolkata",
-  "channel": "UCCcL9Q_jqVq6LJmnYUSAFZA",
-  "status": "production_running_pending_youtube_confirmation",
-  "scheduled_in_youtube": false,
-  "research": "docs/OCT17_GEMINI_ARGON_EDITORIAL_AUDIT.md",
-  "production_root": "C:\\Users\\Dell\\Desktop\\youtube con\\oct17-production",
-  "topic": "Gemini 4 Argon launch with a fictional refund dashboard validation lesson",
-  "verifiable_original_example": "120+95+110=325; 325-25=300; treating refund as plus 25 wrongly gives 350",
-  "pipeline_guard": "No duplicate upload or blind schedule retry; channel auth, processed status, SHA and remote publishAt required",
-  "episodes": [
+  "status": "all_scheduled_verified",
+  "scheduled_in_youtube": true,
+  "verified": 3,
+  "videos": [
     {
       "id": "pilot_025",
-      "clock_local": "2026-10-17T11:00:00+05:30",
-      "status": "narration_generated_not_uploaded"
+      "date_local": "2026-10-17",
+      "scheduled_local": "2026-10-17T11:00:00+05:30",
+      "timezone": "Asia/Kolkata",
+      "youtube_video_id": "FlAqze8TuOA",
+      "url": "https://youtube.com/shorts/FlAqze8TuOA",
+      "status": "scheduled_verified",
+      "remote_privacy": "private",
+      "remote_upload_status": "processed",
+      "remote_publish_at_utc": "2026-10-17T05:30:00Z",
+      "thumbnail_status": "not_uploaded",
+      "owner_publication_instruction": "Explicit Oct17 publication request in conversation",
+      "human_listening_review": "not independently performed",
+      "verified_at_ist": "2026-10-15T12:54:45+05:30"
     },
     {
       "id": "long_012",
-      "clock_local": "2026-10-17T16:00:00+05:30",
-      "status": "narration_in_progress_not_uploaded"
+      "date_local": "2026-10-17",
+      "scheduled_local": "2026-10-17T16:00:00+05:30",
+      "timezone": "Asia/Kolkata",
+      "youtube_video_id": "imL4mL8AgbI",
+      "url": "https://youtu.be/imL4mL8AgbI",
+      "status": "scheduled_verified",
+      "remote_privacy": "private",
+      "remote_upload_status": "processed",
+      "remote_publish_at_utc": "2026-10-17T10:30:00Z",
+      "thumbnail_status": "confirmed",
+      "owner_publication_instruction": "Explicit Oct17 publication request in conversation",
+      "human_listening_review": "not independently performed",
+      "verified_at_ist": "2026-10-15T12:54:46+05:30"
     },
     {
       "id": "pilot_026",
-      "clock_local": "2026-10-17T20:30:00+05:30",
-      "status": "narration_in_progress_not_uploaded"
+      "date_local": "2026-10-17",
+      "scheduled_local": "2026-10-17T20:30:00+05:30",
+      "timezone": "Asia/Kolkata",
+      "youtube_video_id": "BOV1tUd6p_c",
+      "url": "https://youtube.com/shorts/BOV1tUd6p_c",
+      "status": "scheduled_verified",
+      "remote_privacy": "private",
+      "remote_upload_status": "processed",
+      "remote_publish_at_utc": "2026-10-17T15:00:00Z",
+      "thumbnail_status": "not_uploaded",
+      "owner_publication_instruction": "Explicit Oct17 publication request in conversation",
+      "human_listening_review": "not independently performed",
+      "verified_at_ist": "2026-10-15T12:54:46+05:30"
     }
   ],
-  "human_full_audio_review": "not observed",
-  "notes": "All product performance claims sourced from Google; data/UI illustrative, not a live test."
+  "no_duplicate_upload": true,
+  "human_full_review": "not independently witnessed"
 }

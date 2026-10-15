@@ -1,0 +1,16 @@
+{
+  "id": "long_012",
+  "date_local": "2026-10-17",
+  "scheduled_local": "2026-10-17T16:00:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "youtube_video_id": "imL4mL8AgbI",
+  "url": "https://youtu.be/imL4mL8AgbI",
+  "status": "scheduled_verified",
+  "remote_privacy": "private",
+  "remote_upload_status": "processed",
+  "remote_publish_at_utc": "2026-10-17T10:30:00Z",
+  "thumbnail_status": "confirmed",
+  "owner_publication_instruction": "Explicit Oct17 publication request in conversation",
+  "human_listening_review": "not independently performed",
+  "verified_at_ist": "2026-10-15T12:54:46+05:30"
+}
