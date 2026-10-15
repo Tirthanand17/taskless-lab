@@ -19,7 +19,8 @@
       "thumbnail_status": "not_uploaded",
       "owner_publication_instruction": "Explicit Oct17 publication request in conversation",
       "human_listening_review": "not independently performed",
-      "verified_at_ist": "2026-10-15T12:54:45+05:30"
+      "verified_at_ist": "2026-10-15T12:54:45+05:30",
+      "title_in_studio": "This AI Dashboard Looks Right… But the Math Is WRONG! #shorts"
     },
     {
       "id": "long_012",
@@ -35,7 +36,8 @@
       "thumbnail_status": "confirmed",
       "owner_publication_instruction": "Explicit Oct17 publication request in conversation",
       "human_listening_review": "not independently performed",
-      "verified_at_ist": "2026-10-15T12:54:46+05:30"
+      "verified_at_ist": "2026-10-15T12:54:46+05:30",
+      "title_in_studio": "Gemini 4 Argon: Can AI Build a Dashboard? The ₹50 Mistake"
     },
     {
       "id": "pilot_026",
@@ -51,7 +53,8 @@
       "thumbnail_status": "not_uploaded",
       "owner_publication_instruction": "Explicit Oct17 publication request in conversation",
       "human_listening_review": "not independently performed",
-      "verified_at_ist": "2026-10-15T12:54:46+05:30"
+      "verified_at_ist": "2026-10-15T12:54:46+05:30",
+      "title_in_studio": "Gemini 4 Argon Is FREE? Google’s Paid API Catch #shorts"
     }
   ],
   "no_duplicate_upload": true,

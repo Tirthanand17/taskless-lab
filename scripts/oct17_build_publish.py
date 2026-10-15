@@ -256,7 +256,7 @@ def confirm():
         pub.require(v["status"].get("publishAt") and pub.parse_utc(v["status"]["publishAt"])==pub.parse_utc(clock),"Wrong YouTube time")
         vid=rec["video_id"]
         receipt={"id":ep,"date_local":"2026-10-17","scheduled_local":clock,"timezone":"Asia/Kolkata",
-          "youtube_video_id":vid,"url":f"https://youtube.com/shorts/{vid}" if ep.startswith("pilot") else f"https://youtu.be/{vid}",
+          "youtube_video_id":vid,"title_in_studio":plan["title"],"url":f"https://youtube.com/shorts/{vid}" if ep.startswith("pilot") else f"https://youtu.be/{vid}",
           "status":"scheduled_verified","remote_privacy":"private","remote_upload_status":"processed",
           "remote_publish_at_utc":pub.as_rfc3339(pub.parse_utc(clock)),
           "thumbnail_status":rec.get("assets",{}).get("thumbnail","not_uploaded"),
