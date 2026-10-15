@@ -1,3 +1,4 @@
+import {DotsWorkShort,DotsAccessShort,DotsNightLong,DotsNightThumbnail} from './October18';
 import {ArgonDataShort,ArgonPricingShort,ArgonDashboardLong,ArgonDashboardThumbnail} from './October17';
 import {ClaudeSheetsShort, ClaudeAccessShort, ClaudeWorkspaceLong, ClaudeWorkspaceThumbnail} from './October16';
 import {MuseMemoryShort, MuseAccessShort, MuseWonderLong, MuseWonderThumbnail} from './October15';
@@ -23,7 +24,11 @@ import {Oct13AudioShort, Oct13CodexShort, Oct13SandboxLong, Oct13SandboxThumbnai
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-            <Composition id="ArgonDataShort" component={ArgonDataShort} durationInFrames={1125} fps={30} width={1080} height={1920} />
+                  <Composition id="DotsWorkShort" component={DotsWorkShort} durationInFrames={1710} fps={30} width={1080} height={1920} />
+      <Composition id="DotsAccessShort" component={DotsAccessShort} durationInFrames={1710} fps={30} width={1080} height={1920} />
+      <Composition id="DotsNightLong" component={DotsNightLong} durationInFrames={8424} fps={24} width={1920} height={1080} />
+      <Composition id="DotsNightThumbnail" component={DotsNightThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
+<Composition id="ArgonDataShort" component={ArgonDataShort} durationInFrames={1125} fps={30} width={1080} height={1920} />
       <Composition id="ArgonPricingShort" component={ArgonPricingShort} durationInFrames={1292} fps={30} width={1080} height={1920} />
       <Composition id="ArgonDashboardLong" component={ArgonDashboardLong} durationInFrames={5259} fps={24} width={1920} height={1080} />
       <Composition id="ArgonDashboardThumbnail" component={ArgonDashboardThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />

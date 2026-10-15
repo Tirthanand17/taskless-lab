@@ -1,0 +1,34 @@
+{
+  "date_local": "2026-10-18",
+  "timezone": "Asia/Kolkata",
+  "channel": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "status": "production_running_pending_youtube_confirmation",
+  "scheduled_in_youtube": false,
+  "topic": "OpenAI dots always-on AI personal agents with scope, permissions and plan eligibility",
+  "sources": [
+    "https://openai.com/index/introducing-dots/",
+    "https://help.openai.com/en/articles/20001530-getting-started-with-your-dot",
+    "https://help.openai.com/en/articles/20001529-dots-privacy-security-and-safety-faqs"
+  ],
+  "videos": [
+    {
+      "id": "pilot_027",
+      "slot": "2026-10-18T11:00:00+05:30",
+      "voice": "af_bella",
+      "status": "voice_generation"
+    },
+    {
+      "id": "long_013",
+      "slot": "2026-10-18T16:00:00+05:30",
+      "voice": "af_heart",
+      "status": "voice_pending"
+    },
+    {
+      "id": "pilot_028",
+      "slot": "2026-10-18T20:30:00+05:30",
+      "voice": "am_michael",
+      "status": "voice_pending"
+    }
+  ],
+  "test_policy": "Full video decode, sample frames, checked facts, distinct Short voices, no unreviewed SRT, accurate titles and scheduled YouTube receipts before completion."
+}

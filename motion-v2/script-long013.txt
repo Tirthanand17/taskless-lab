@@ -1,0 +1,19 @@
+It's eleven at night. You still haven't finished tomorrow's project research. You've got seven articles open, a spreadsheet you haven't checked, and an empty slide deck. Now imagine waking up to a neat research summary, three things to double-check, and a draft presentation. That's the promise behind a new kind of AI assistant. But could you actually trust it while you're sleeping?
+
+OpenAI introduced dots in late September, twenty twenty six. They're described as always-on personal agents that can remember useful context, use a cloud computer, and work across connected apps. The idea sounds exciting. Let's test the idea with a fictional example and, importantly, separate what OpenAI says it can do from what you still have to control. We haven't connected a real dot in this video.
+
+Our first scene: an unfinished university-style project. You give the assistant a precise task. Research three credible sources about renewable energy, prepare a one-page summary, and list what remains uncertain. Don't email anyone, don't edit my original files, and don't make purchases. By morning, the ideal result isn't a flashy promise that everything is done. It's a useful draft, clickable sources, and questions you can verify.
+
+Notice what makes that prompt better? A clear outcome, a narrow scope, trusted sources, and boundaries. Without those, a long-running agent might collect irrelevant information or make changes you didn't intend. Always-on doesn't mean always correct.
+
+Now the second scene. Suppose you want an agent to update a spreadsheet or prepare slides from those notes. A dot can use its own computer and supported connected apps when authorized. But simply connecting an app doesn't automatically authorize every action. It can only access what you've allowed, and some sensitive tasks still require approval. OpenAI's help documentation also explains that certain actions, such as changing a password, require you to take over.
+
+Let's check a practical safety setup. First, grant only the connection the task needs. Second, tell it to draft rather than send or delete. Third, require evidence and a review before anything reaches another person. Think of an agent like an enthusiastic assistant: useful, fast, and still worth supervising.
+
+Here's the catch that headlines sometimes skip. Dots are rolling out gradually, and they're not part of every ChatGPT plan. OpenAI says eligible Pro and Business Premium users can access dots. Enterprise, including education and healthcare workspaces, has a beta that administrators must enable. OpenAI doesn't list standard Plus as part of this rollout. Availability also depends on region and account.
+
+And there's one other thing. A dot with a cloud computer isn't the same as your ordinary ChatGPT reminder. A reminder delivers a message at a set time. An agent can take multiple steps, use tools it has permission to access, and work toward a result. Both can be valuable; not every task needs a full autonomous agent.
+
+So would I give an AI agent my entire digital life on day one? No. I'd begin with a low-risk, read-only research task, verify the sources, and slowly expand permissions only if the results were reliable. That's how you get the benefits of automation without pretending the risks don't exist.
+
+If you could delegate just one job tonight, what would it be: RESEARCH, EMAIL, or SLIDES? Tell us in the comments. And subscribe to FlowMinute Lab for practical AI workflows, with the important catches explained.
