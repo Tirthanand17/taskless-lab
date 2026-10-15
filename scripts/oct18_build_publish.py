@@ -71,9 +71,9 @@ def ensure_audio():
         qa=OUT/"audio"/(ep+"_natural_qa.json")
         if not (dest.exists() and qa.exists() and dest.stat().st_size>10000):
             report("VOICE_START",episode=ep)
-            offline=OUT/".tts-venv"/"Scripts"/"python.exe"
-            model=OUT/"models"/"kokoro-v1.0.int8.onnx"
-            voices=OUT/"models"/"voices-v1.0.bin"
+            offline=WS/"oct16-production"/".tts-venv"/"Scripts"/"python.exe"
+            model=WS/"oct16-production"/"models"/"kokoro-v1.0.int8.onnx"
+            voices=WS/"oct16-production"/"models"/"voices-v1.0.bin"
             if offline.is_file() and model.is_file() and voices.is_file():
                 voice_name={"pilot_027":"af_bella","pilot_028":"am_michael","long_013":"af_heart"}[ep]
                 run([offline,REPO/"scripts"/"offline_kokoro_narration.py",
