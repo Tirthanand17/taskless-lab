@@ -1,3 +1,4 @@
+import {IndiaHackathonShort, IndiaCybercrimeShort, IndiaHackathonLong, IndiaHackathonThumbnail} from './October19';
 import {DotsWorkShort,DotsAccessShort,DotsNightLong,DotsNightThumbnail} from './October18';
 import {ArgonDataShort,ArgonPricingShort,ArgonDashboardLong,ArgonDashboardThumbnail} from './October17';
 import {ClaudeSheetsShort, ClaudeAccessShort, ClaudeWorkspaceLong, ClaudeWorkspaceThumbnail} from './October16';
@@ -24,7 +25,11 @@ import {Oct13AudioShort, Oct13CodexShort, Oct13SandboxLong, Oct13SandboxThumbnai
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-                  <Composition id="DotsWorkShort" component={DotsWorkShort} durationInFrames={1065} fps={30} width={1080} height={1920} />
+                        <Composition id="IndiaHackathonShort" component={IndiaHackathonShort} durationInFrames={1650} fps={30} width={1080} height={1920} />
+      <Composition id="IndiaCybercrimeShort" component={IndiaCybercrimeShort} durationInFrames={1650} fps={30} width={1080} height={1920} />
+      <Composition id="IndiaHackathonLong" component={IndiaHackathonLong} durationInFrames={9000} fps={24} width={1920} height={1080} />
+      <Composition id="IndiaHackathonThumbnail" component={IndiaHackathonThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />
+<Composition id="DotsWorkShort" component={DotsWorkShort} durationInFrames={1065} fps={30} width={1080} height={1920} />
       <Composition id="DotsAccessShort" component={DotsAccessShort} durationInFrames={1257} fps={30} width={1080} height={1920} />
       <Composition id="DotsNightLong" component={DotsNightLong} durationInFrames={5299} fps={24} width={1920} height={1080} />
       <Composition id="DotsNightThumbnail" component={DotsNightThumbnail} durationInFrames={1} fps={24} width={1920} height={1080} />

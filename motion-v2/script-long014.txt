@@ -1,0 +1,19 @@
+Imagine this. You've just lost money to an online scam, and you're staring at screenshots, chat messages, and a confusing form. Or you urgently need to find a blood bank. Or you're trying to understand a visa application. The problem isn't that you need a smarter chatbot. You need the next step to be clear.
+
+That's why a recent India-focused hackathon caught my attention. Build What Moves India, presented by Varun Mayya in partnership with OpenAI, invited people to rethink difficult public-service websites and digital journeys. Around thirteen thousand people registered, according to the organizer's account. Two hundred and fifty builds were shortlisted, and ten teams made the finale. Important: that registration number does NOT mean thirteen thousand completed working apps.
+
+Here are three of the ideas reported from the event, and what they teach us. These animations are our own illustrations, not recordings of the actual products.
+
+First: RaktKhoj. Picture someone searching in a hurry for a blood bank or a potential blood donor. Instead of opening five unrelated websites, the proposed experience tries to guide a person through one clear flow. Identify the need. Find relevant options. Then reach out through an appropriate channel. It's an example of designing around the person, not around the complexity of the system. But it's a prototype, not a verified emergency response service. Real availability and donor compatibility must be independently confirmed with qualified professionals.
+
+Second: Samarthan. A person experiencing a cyber scam might have a pile of evidence, but no organized explanation. A prototype explored using AI to help structure messages, screenshots, and details into a report draft. The surprising part is that writing the complaint isn't the same as filing it. An AI draft can contain mistakes. You must verify dates, amounts, names, and facts. And for actual cybercrime reporting in India, use the official government portal: cybercrime dot gov dot in. For immediate financial-fraud reporting, the national helpline is nineteen thirty. Never type your OTP or banking password into an unofficial assistant.
+
+Third: Atithi. Imagine a confusing e-visa form that rejects your photo and doesn't explain why. The idea here is a simpler journey that helps users understand document and image requirements. But it isn't an official visa service, and eligibility and document rules must still be checked on the official government website.
+
+Now here's the lesson that applies whether you know coding or not. The competition's own builder brief asked participants to solve one clear citizen problem, make the full journey work, and use Codex meaningfully in the build. When real back-end access was unsafe or unavailable, it instructed builders to use mock data. And the competition explicitly said there was no promise of government adoption.
+
+So how might you learn from this without building a fake portal? Start with a small irritation you actually understand. Maybe a hard-to-read application form. Sketch three screens: start, provide details, confirm. Use sample data only. Ask an AI coding tool to build the prototype and explain its assumptions. Test it with someone unfamiliar with the workflow. Then check accessibility, privacy, accuracy, and what happens when something fails. That's real product thinking. AI can speed up the first draft, but it doesn't remove the hard work of verification.
+
+One more important detail. Build What Moves India was an independent initiative in partnership with OpenAI, not an official government hackathon. The prototypes should not be confused with government-approved services.
+
+My question is simple. If you could redesign just one frustrating digital service in India, what would you choose: BLOOD BANKS, CYBERCRIME REPORTING, or VISA FORMS? Comment your pick and one thing you'd fix. If you enjoy practical AI stories beyond hype, subscribe to FlowMinute Lab.

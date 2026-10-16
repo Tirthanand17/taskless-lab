@@ -1,0 +1,35 @@
+{
+  "date_local": "2026-10-19",
+  "timezone": "Asia/Kolkata",
+  "channel": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "status": "production_prepared_youtube_unconfirmed",
+  "scheduled_in_youtube": false,
+  "topic": "Three OpenAI-partnered Build What Moves India hackathon finalist prototypes, with practical limitations and official cybercrime reporting",
+  "sources": [
+    "https://buildwhatmovesindia.com/brief",
+    "https://buildwhatmovesindia.com/faq",
+    "https://www.financialexpress.com/life/technology-openai-goes-beyond-code-4361627/",
+    "https://www.cybercrime.gov.in/"
+  ],
+  "items": [
+    {
+      "id": "pilot_029",
+      "at": "2026-10-19T11:00:00+05:30",
+      "voice": "af_nicole",
+      "status": "script_ready"
+    },
+    {
+      "id": "long_014",
+      "at": "2026-10-19T16:00:00+05:30",
+      "voice": "af_heart",
+      "status": "script_ready"
+    },
+    {
+      "id": "pilot_030",
+      "at": "2026-10-19T20:30:00+05:30",
+      "voice": "am_adam",
+      "status": "script_ready"
+    }
+  ],
+  "qa_policy": "Distinct synthetic voices, conceptual visuals, independently checked sources, full technical decode and contact sheets before private upload and schedule."
+}
