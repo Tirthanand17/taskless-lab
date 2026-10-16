@@ -12,6 +12,8 @@ This repo is PUBLIC and must NOT store YouTube OAuth refresh tokens, personal ac
 - `test_core.py`, `test_cloud_foundation.py`: security/quality unit tests.
 - `.github/workflows/flowminute-cloud-scout.yml`: daily 18:45 IST topic source scout after merge to default branch, runs on FREE standard public GitHub runner, no stored artifacts, no tokens and no publish permissions. Source leads are visible in Actions logs only.
 - `.github/workflows/flowminute-cloud-render-smoke.yml`: cloud-only rendering probe using a **previously published** Short and existing audio: 60 frames, 1080×1920, H264+AAC, FFmpeg full decode, thumbnail. Outputs deleted at job end. This does not benchmark full daily videos.
+- `.github/workflows/flowminute-full-pack-benchmark.yml`: no-secret, no-publish complete **2 Shorts + 1 long** cloud render benchmark on standard free public Ubuntu runner. Triggered by the workflow's source commit on October 16; validate actual run result before calling it a PASS. QA checks full decode and sizes; it deletes outputs, does not store video artifacts or upload anything. [First full benchmark run](https://github.com/Tirthanand17/taskless-lab/actions/runs/38866227531).
+- The scheduled public scout now writes a **GitHub Actions run summary** for leads; this is NOT a verified editorial plan and does not contact YouTube accounts.
 
 ## Hard stop before production
 Private control repo/isolated secrets and verified YouTube OAuth, durable media storage, legitimate source-backed research, 3-video full-duration hosted production benchmark, per-frame/caption/audio/rights QA, authenticated scheduling and Analytics adapter are all **missing**. Never call a draft "published."
