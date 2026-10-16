@@ -19,7 +19,8 @@
 - `autopilot/growth.py`: age-matched Shorts/long cohort insights and minimum samples, prevents interpreting raw views as retention.
 - `autopilot/cloud_guard.py`: refuses local Windows paths, laptop usage, missing cloud services, unapproved budgets and missing private OAuth storage.
 - `autopilot/test_cloud_foundation.py`: unit tests for feed parsing, novelty, sufficient engagement samples, budget and laptop restrictions.
-- `.github/workflows/flowminute-cloud-scout.yml`: scheduled daily 13:15 UTC / 18:45 IST unprivileged research job and PR tests. It has `contents: read`, does not access OAuth, does not render, and does not publish. GitHub scheduled workflows only operate from the default branch **after merging**; the schedule may start later than the exact trigger.
+- `.github/workflows/flowminute-cloud-render-smoke.yml`: proven hosted-runner 2-second Short and thumbnail output; H.264/AAC decoding and 1080×1920 validated. Media discarded and NEVER uploaded.
+- `.github/workflows/flowminute-cloud-scout.yml`: scheduled daily 13:15 UTC / 18:45 IST unprivileged research job and PR tests. It has `contents: read`, stores **no artifacts**, and emits only unverified topic leads into public Actions logs. It does not access OAuth, render, or publish. GitHub scheduled workflows only operate from the default branch **after merging**; the schedule may start later than the exact trigger.
 
 ## Fully autonomous target architecture (not yet running)
 
