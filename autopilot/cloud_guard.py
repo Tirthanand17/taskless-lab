@@ -37,7 +37,7 @@ def preflight(env: Mapping[str,str], workdir: str) -> Preflight:
         missing += ("PRIVATE_WORKER_MUST_EQUAL_1",)
     if env.get("FLOWMINUTE_MEDIA_QA") != "1":
         missing += ("MEDIA_QA_MUST_EQUAL_1",)
-    if env.get("FLOWMINUTE_ALLOW_LAPTOP") not in ("", "0"):
+    if env.get("FLOWMINUTE_ALLOW_LAPTOP", "0") not in ("", "0"):
         missing += ("LAPTOP_USE_NOT_AUTHORIZED",)
     normalized=workdir.replace("\\","/").lower()
     if not workdir.startswith("/") or re.search(r"(^|/)(users|desktop|onedrive)(/|$)",normalized):
