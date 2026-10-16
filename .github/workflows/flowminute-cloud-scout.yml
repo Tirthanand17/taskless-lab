@@ -42,3 +42,33 @@ jobs:
           print("FEED_ERRORS",json.dumps(data["errors"]))
           print("NO_PUBLICATION_OR_MEDIA_GENERATION_AUTHORIZED")
           PY
+
+      - name: Write research leads to the GitHub run summary (no secrets, no publication)
+        if: github.event_name != 'pull_request'
+        run: |
+          python - <<'PY'
+          import html, json, os
+          from pathlib import Path
+          report=json.loads(Path("out/scout-report.json").read_text(encoding="utf-8"))
+          lines=["## FlowMinute Lab — public research leads",
+                 "",
+                 "**Unverified leads only; do not auto-publish factual video claims.**",
+                 "",
+                 "Generated: "+html.escape(str(report.get("generated_at_utc","unknown"))),
+                 "",
+                 "| Publisher | Potential topic |",
+                 "|---|---|"]
+          for item in report.get("leads",[])[:15]:
+              publisher=html.escape(str(item.get("publisher",""))[:70])
+              title=html.escape(str(item.get("title",""))[:170]).replace("|","&#124;")
+              url=str(item.get("url",""))
+              if not url.startswith(("https://","http://")):
+                  url=""
+              # Avoid markdown links built from arbitrary feed data.
+              lines.append("| "+publisher+" | "+title+" |")
+              if url: lines.append("  - Source URL: "+html.escape(url[:350]))
+          lines += ["","Feeds with leads: "+str(report.get("independent_feeds_with_leads",0)),
+                    "","No media rendered; no account connected; no video uploaded."]
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as out:
+              out.write("\n".join(lines)+"\n")
+          PY
