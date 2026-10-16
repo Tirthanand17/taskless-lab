@@ -52,7 +52,15 @@ def validate(data: dict, blocked_literals: list[str], *, editorial_only: bool = 
         # A script/description is research-stage metadata, not a verified media release.
         # Do not let this path substitute for the strict release-ready gate.
         draft_script = data.get("source_script")
-        if not isinstance(draft_script, str) or not draft_script.strip():
+        if data.get("renderer") == "manifest_v2":
+            scenes = data.get("scenes", [])
+            if not isinstance(scenes, list) or not scenes:
+                errors.append("manifest_v2 editorial draft requires scenes")
+            else:
+                for index, scene in enumerate(scenes, 1):
+                    if not isinstance(scene, dict) or not str(scene.get("title", "")).strip() or not str(scene.get("narration", "")).strip():
+                        errors.append(f"scene {index} needs a title and narration")
+        elif not isinstance(draft_script, str) or not draft_script.strip():
             errors.append("editorial draft requires source_script")
         elif (draft_script.startswith("/") or ".." in draft_script.replace("\\\\", "/").split("/")
               or draft_script.startswith("~") or ":" in draft_script):
