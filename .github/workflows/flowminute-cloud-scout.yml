@@ -1,0 +1,44 @@
+name: FlowMinute Cloud Scout (public, no secrets)
+on:
+  schedule:
+    # 18:45 India time, 13:15 UTC. Research only; not rendering or publishing.
+    - cron: "15 13 * * *"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "autopilot/**"
+      - ".github/workflows/flowminute-cloud-scout.yml"
+permissions:
+  contents: read
+concurrency:
+  group: flowminute-public-scout
+  cancel-in-progress: false
+jobs:
+  research_scout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Unit tests and security boundaries
+        run: python -m unittest discover -s autopilot -p 'test_*.py' -v
+      - name: Gather public unverified research leads
+        if: github.event_name != 'pull_request'
+        run: python -m autopilot.scout --output out/scout-report.json
+      - name: Print public topic leads without billable artifacts
+        if: github.event_name != 'pull_request'
+        run: |
+          python - <<'PY'
+          import json
+          data=json.load(open("out/scout-report.json",encoding="utf-8"))
+          print("PUBLIC_RESEARCH_LEADS_ONLY",data["generated_at_utc"])
+          print("FEEDS_WITH_LEADS",data["independent_feeds_with_leads"])
+          for lead in data["leads"][:15]:
+              print(lead["publisher"], "|", lead["title"][:170], "|", lead["url"][:240])
+          print("FEED_ERRORS",json.dumps(data["errors"]))
+          print("NO_PUBLICATION_OR_MEDIA_GENERATION_AUTHORIZED")
+          PY

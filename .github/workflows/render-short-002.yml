@@ -6,7 +6,6 @@ on:
       - "content/episodes/short_*.json"
       - "scripts/render_manifest_short.py"
       - "scripts/render_all_manifest_shorts.py"
-      - "scripts/validate_release.py"
   workflow_dispatch:
 
 permissions:

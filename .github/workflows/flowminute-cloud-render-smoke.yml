@@ -1,0 +1,60 @@
+name: FlowMinute Cloud Render Smoke (no secrets)
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "autopilot/**"
+      - "motion-v2/src/**"
+      - ".github/workflows/flowminute-cloud-render-smoke.yml"
+permissions:
+  contents: read
+concurrency:
+  group: flowminute-smoke-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  short_render_and_quality_probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      CI: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install free open-source media dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          cd motion-v2
+          npm install --no-audit --no-fund
+      - name: Cloud Remotion screenshot smoke (original template)
+        working-directory: motion-v2
+        run: |
+          mkdir -p /tmp/flowminute-cloud-preview
+          npx remotion still src/index.ts DotsNightThumbnail /tmp/flowminute-cloud-preview/thumbnail.png --frame=0 --log=error
+          test -s /tmp/flowminute-cloud-preview/thumbnail.png
+          file /tmp/flowminute-cloud-preview/thumbnail.png
+      - name: Cloud render 2 seconds of a previously published Short
+        working-directory: motion-v2
+        run: |
+          npx remotion render src/index.ts DotsWorkShort /tmp/flowminute-cloud-preview/short-smoke.mp4 \
+            --frames=0-59 --concurrency=1 --codec=h264 --crf=28 --pixel-format=yuv420p --log=error
+          test -s /tmp/flowminute-cloud-preview/short-smoke.mp4
+      - name: Verify decoded audio, dimensions and duration
+        run: |
+          set -euo pipefail
+          f=/tmp/flowminute-cloud-preview/short-smoke.mp4
+          ffmpeg -hide_banner -loglevel error -xerror -i "$f" -f null -
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$f")" = "1080"
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$f")" = "1920"
+          test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$f")" = "aac"
+          sha256sum "$f"
+          echo "CLOUD_1080x1920_SHORT_SMOKE_QA_PASSED"
+      - name: Discard video output; never store public/unreviewed drafts
+        if: always()
+        run: rm -rf /tmp/flowminute-cloud-preview
