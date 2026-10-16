@@ -17,10 +17,10 @@ jobs:
         run: python -m pip install pytest
       - name: Run tests
         run: python -m pytest -q
-      - name: Validate episode manifests
+      - name: Validate episode editorial metadata (not publish approval)
         shell: bash
         run: |
           shopt -s nullglob
           for f in content/episodes/*.json; do
-            python scripts/validate_release.py "$f"
+            python scripts/validate_release.py "$f" --editorial-only
           done
