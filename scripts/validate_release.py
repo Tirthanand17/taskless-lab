@@ -48,6 +48,10 @@ def validate(data: dict, blocked_literals: list[str], *, editorial_only: bool = 
     if len(description) > 5000:
         errors.append("YouTube description exceeds 5000 characters")
 
+    if editorial_only and data.get("captions"):
+        # Earlier episodes already include caption timing data: keep the strict gate.
+        return validate(data, blocked_literals, editorial_only=False)
+
     if editorial_only:
         # A script/description is research-stage metadata, not a verified media release.
         # Do not let this path substitute for the strict release-ready gate.
