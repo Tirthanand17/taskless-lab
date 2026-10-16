@@ -8,7 +8,7 @@ const cap=(n:number)=>Math.max(0,Math.min(1,n));
 const TXT:React.FC<{children:React.ReactNode;n?:number;ink?:string;style?:React.CSSProperties}>=({children,n=46,ink=C.white,style})=><div style={{fontFamily:FONT,fontSize:n,fontWeight:880,lineHeight:1.12,letterSpacing:-.5,color:ink,...style}}>{children}</div>;
 const TAG:React.FC<{children:React.ReactNode;ink?:string;n?:number}>=({children,ink=C.teal,n=20})=><div style={{fontFamily:FONT,fontSize:n,fontWeight:900,letterSpacing:1.3,color:ink}}>{children}</div>;
 const PANEL:React.FC<{children:React.ReactNode;style?:React.CSSProperties}>=({children,style})=><div style={{boxSizing:'border-box',borderRadius:22,border:'2px solid #537F92',boxShadow:'0 18px 65px #0008',background:'linear-gradient(150deg,#1C4A61F7,#0B263DF8)',padding:30,...style}}>{children}</div>;
-const BG:React.FC<{f:number}>=({f})=><AbsoluteFill style={{background:C.night}}><Img src={staticFile('office-desks.jpg')} style={{width:'100%',height:'100%',objectFit:'cover',opacity:.19,filter:'blur(4px) saturate(.65)',transform:'scale('+(1.04+f/23000)+')'}}/><div style={{position:'absolute',inset:0,background:'linear-gradient(130deg,#041523EB,#071D33DD),radial-gradient(circle at 75% 20%,#17506AB0,transparent 63%)'}}/><div style={{position:'absolute',inset:0,opacity:.065,background:'repeating-linear-gradient(0deg,transparent,transparent 80px,#7BE6DB 81px)'}}/></AbsoluteFill>;
+const BG:React.FC<{f:number;kind?:string}>=({f,kind})=><AbsoluteFill style={{background:C.night}}><Img src={staticFile(kind==='scam'||kind==='truth'?'oct15-phone-still.jpg':kind==='blood'||kind==='visa'?'office-collaboration.jpg':'office-cinematic.jpg')} style={{width:'100%',height:'100%',objectFit:'cover',opacity:.31,filter:'blur(4px) saturate(.65)',transform:'scale('+(1.04+f/23000)+')'}}/><div style={{position:'absolute',inset:0,background:'linear-gradient(130deg,#041523EB,#071D33DD),radial-gradient(circle at 75% 20%,#17506AB0,transparent 63%)'}}/><div style={{position:'absolute',inset:0,opacity:.065,background:'repeating-linear-gradient(0deg,transparent,transparent 80px,#7BE6DB 81px)'}}/></AbsoluteFill>;
 const Logo=()=> <TAG>FM / FLOWMINUTE LAB</TAG>;
 const Subline:React.FC<{children:React.ReactNode}>=({children})=><TXT n={22} ink={C.muted} style={{marginTop:13}}>{children}</TXT>;
 type PanelMode='funnel'|'blood'|'scam'|'visa'|'rules'|'steps'|'truth'|'vote1'|'vote2'|'vote3';
@@ -49,7 +49,7 @@ const bBeats:Beat[]=[
 ];
 const Short:React.FC<{kind:'a'|'b'}>=({kind})=>{
  const f=useCurrentFrame(),{durationInFrames:frames}=useVideoConfig(),t=f/frames,bs=kind==='a'?aBeats:bBeats,b=bs.find(x=>t>=x.a&&t<x.b)||bs[bs.length-1],alpha=cap((f-b.a*frames)/12);
- return <AbsoluteFill><BG f={f}/>
+ return <AbsoluteFill><BG f={f} kind={b.mode}/>
  <div style={{position:'absolute',left:62,top:76}}><Logo/></div>
  <div style={{position:'absolute',left:62,right:62,top:212,opacity:alpha,transform:'translateY('+((1-alpha)*30)+'px)'}}>
  <TAG ink={C.gold} n={28}>{b.tag}</TAG><TXT n={77} style={{marginTop:21}}>{b.head}</TXT><TXT n={34} ink={C.muted} style={{marginTop:18}}>{b.sub}</TXT></div>
@@ -72,7 +72,7 @@ const lBeats:Beat[]=[
 ];
 export const IndiaHackathonLong:React.FC=()=>{
  const f=useCurrentFrame(),{durationInFrames:frames}=useVideoConfig(),t=f/frames,b=lBeats.find(x=>t>=x.a&&t<x.b)||lBeats[lBeats.length-1],alpha=cap((f-frames*b.a)/12);
- return <AbsoluteFill><BG f={f}/><div style={{position:'absolute',top:56,left:86,right:86,display:'flex',justifyContent:'space-between'}}><Logo/><TAG ink={C.gold}>3 INDIA AI PROTOTYPES · NOT OFFICIAL SERVICES</TAG></div>
+ return <AbsoluteFill><BG f={f} kind={b.mode}/><div style={{position:'absolute',top:56,left:86,right:86,display:'flex',justifyContent:'space-between'}}><Logo/><TAG ink={C.gold}>3 INDIA AI PROTOTYPES · NOT OFFICIAL SERVICES</TAG></div>
  <div style={{position:'absolute',top:211,left:94,width:782,opacity:alpha,transform:'translateY('+((1-alpha)*22)+'px)'}}><TAG ink={C.gold} n={24}>{b.tag}</TAG><TXT n={70} style={{marginTop:28}}>{b.head}</TXT><TXT n={35} ink={C.muted} style={{marginTop:38}}>{b.sub}</TXT><PANEL style={{marginTop:68,padding:22,borderLeft:'7px solid '+C.teal}}><TXT n={26} ink={C.teal}>Original illustrated example · Validate real services.</TXT></PANEL></div>
  <div style={{position:'absolute',top:169,left:934,right:86,height:740,opacity:alpha}}><Cases type={b.mode} f={f}/></div>
  <div style={{position:'absolute',bottom:58,left:88,right:88,display:'flex',justifyContent:'space-between'}}><TAG ink={C.muted} n={17}>NOT ACTUAL PRODUCT FOOTAGE OR GOVERNMENT UI</TAG><TAG n={18}>SOURCE: BUILDER BRIEF + REPORTED FINALISTS</TAG></div>
