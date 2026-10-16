@@ -29,8 +29,8 @@ def validate(data: dict, blocked_literals: list[str], *, editorial_only: bool = 
         errors.append("release contains an email address")
     # URLs and YYYY-MM-DD dates are not personal phone numbers.
     # Keep the full original text for email and secret detection.
-    scan = re.sub(r"https?://[^\\s]+", " ", text)
-    scan = re.sub(r"\\b(?:19|20)\\d{2}[-/]\\d{1,2}[-/]\\d{1,2}\\b", " ", scan)
+    scan = re.sub(r"https?://[^\s]+", " ", text)
+    scan = re.sub(r"\b(?:19|20)\d{2}[-/]\d{1,2}[-/]\d{1,2}\b", " ", scan)
     if PHONE.search(scan):
         errors.append("release contains a phone-like number")
     if SECRET.search(text):
