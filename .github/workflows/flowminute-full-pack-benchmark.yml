@@ -1,0 +1,90 @@
+name: FlowMinute Full Daily Pack Cloud Benchmark (no secrets)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/flowminute-full-pack-benchmark.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-full-pack-benchmark
+  cancel-in-progress: false
+
+jobs:
+  cloud_three_video_benchmark:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      CI: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+    steps:
+      - name: Check out only public, non-secret source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install public/open-source render dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          cd motion-v2
+          npm install --no-audit --no-fund
+          npx remotion browser ensure
+
+      - name: Render complete benchmark pack (2 Shorts plus 1 long)
+        shell: bash
+        working-directory: motion-v2
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-benchmark
+          npx remotion render src/index.ts DotsWorkShort /tmp/flowminute-benchmark/short-a.mp4 \
+            --frames=0-1064 --concurrency=1 --codec=h264 --crf=29 --pixel-format=yuv420p --log=error
+          npx remotion render src/index.ts DotsAccessShort /tmp/flowminute-benchmark/short-b.mp4 \
+            --frames=0-1256 --concurrency=1 --codec=h264 --crf=29 --pixel-format=yuv420p --log=error
+          npx remotion render src/index.ts DotsNightLong /tmp/flowminute-benchmark/long.mp4 \
+            --frames=0-5298 --concurrency=1 --codec=h264 --crf=29 --pixel-format=yuv420p --log=error
+          npx remotion still src/index.ts DotsNightThumbnail /tmp/flowminute-benchmark/long-thumbnail.png --frame=0 --log=error
+
+      - name: Independently decode and validate three videos
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, subprocess, hashlib
+          base=pathlib.Path("/tmp/flowminute-benchmark")
+          expected={"short-a.mp4":(1080,1920,33,38),"short-b.mp4":(1080,1920,40,44),"long.mp4":(1920,1080,215,225)}
+          def run(*cmd): return subprocess.check_output(cmd,text=True)
+          results=[]
+          for name,(w,h,dmin,dmax) in expected.items():
+              f=base/name
+              assert f.is_file() and f.stat().st_size>100_000,name
+              probe=json.loads(run("ffprobe","-v","error","-show_streams","-show_format","-of","json",str(f)))
+              video=next((s for s in probe["streams"] if s["codec_type"]=="video"),None)
+              audio=next((s for s in probe["streams"] if s["codec_type"]=="audio"),None)
+              assert video and video["width"]==w and video["height"]==h and video["codec_name"]=="h264",name
+              assert audio and audio["codec_name"]=="aac",name
+              dur=float(probe["format"]["duration"])
+              assert dmin<=dur<=dmax,(name,dur)
+              subprocess.check_call(["ffmpeg","-hide_banner","-loglevel","error","-xerror","-i",str(f),"-f","null","-"])
+              results.append({"media":name,"duration":round(dur,2),"bytes":f.stat().st_size,
+                              "sha256":hashlib.sha256(f.read_bytes()).hexdigest()})
+          assert (base/"long-thumbnail.png").stat().st_size>10_000
+          print("CLOUD_FULL_DAILY_PACK_QA_PASSED")
+          print(json.dumps(results,indent=2))
+          print("NO_UPLOAD; NO_TOKENS; NO_PAID_SERVICE; NO_LAPTOP; NO_STORED_MEDIA")
+          PY
+
+      - name: Remove rendered media (including on failure)
+        if: always()
+        shell: bash
+        run: rm -rf /tmp/flowminute-benchmark
