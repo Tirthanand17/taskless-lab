@@ -1,17 +1,27 @@
-# FlowMinute Autopilot — gated v1 prototype
+# FlowMinute Cloud Autopilot — ₹0 foundation
 
-This **is not a deployed or continuously running agent yet**. It is an isolated, standard-library **control-plane foundation** for the already working Remotion/FFmpeg/YouTube systems.
+**Cloud research and hosted render smoke: tested. Autonomous production and YouTube publishing: NOT DEPLOYED.**
 
-Implemented here:
-- Explicit 11:00, 16:00 and 20:30 IST release slot conversion and no scheduling in the past.
-- Editorial candidate novelty/benefit/source checks.
-- Media quality gates covering hash, format, caption verification, rights, source facts, audio and thumbnail.
-- Approved provider routing with budget limits, 403 disable, 429 cooling-off and no provider/account limit evasion.
-- Durable SQLite reservations with UNIQUE media/time constraints and irreversible fail-closed YouTube transitions, so uncertain uploads are never silently repeated.
+This repo is PUBLIC and must NOT store YouTube OAuth refresh tokens, personal account data, private drafts or privileged self-hosted runners.
 
-Not implemented yet: live research connectors, actual quality scoring/forced word-alignment, YouTube adapter, Releases/object storage, cloud runtime, end-to-end unattended production, analytics optimizer, dashboards or alert delivery. **Do not connect a secret-bearing runner to this public repository.**
+## Working cloud foundation
+- `core.py`: exact IST release windows, fail-closed source and media gates, SQLite idempotency and approved-provider budget limits.
+- `scout.py`: scheduled GitHub-hosted RSS/Atom **unverified topic leads** (not independent fact confirmation or AI-generated scripts).
+- `growth.py`: statistically gated, format-separated, age-matched audience-analysis logic (requires real Analytics measurements, not connected to a cloud account yet).
+- `cloud_guard.py`: laptop use OFF by default, private cloud worker and approved zero-budget preflight.
+- `test_core.py`, `test_cloud_foundation.py`: security/quality unit tests.
+- `.github/workflows/flowminute-cloud-scout.yml`: daily 18:45 IST topic source scout after merge to default branch, runs on FREE standard public GitHub runner, no stored artifacts, no tokens and no publish permissions. Source leads are visible in Actions logs only.
+- `.github/workflows/flowminute-cloud-render-smoke.yml`: cloud-only rendering probe using a **previously published** Short and existing audio: 60 frames, 1080×1920, H264+AAC, FFmpeg full decode, thumbnail. Outputs deleted at job end. This does not benchmark full daily videos.
 
-Run:
-    python -m unittest discover -s autopilot -p 'test_*.py' -v
+## Hard stop before production
+Private control repo/isolated secrets and verified YouTube OAuth, durable media storage, legitimate source-backed research, 3-video full-duration hosted production benchmark, per-frame/caption/audio/rights QA, authenticated scheduling and Analytics adapter are all **missing**. Never call a draft "published."
 
-Follow docs/FLOWMINUTE_AUTOPILOT_ARCHITECTURE.md for deployment plan and security safeguards. Existing October 16 scheduled/active jobs are untouched.
+We are limited to **₹0** monthly. No Render cron or paid service may be created, no paid API use, no Google OAuth connection without explicit owner approval. Existing Nirala/Windows jobs are outside authorization. Cloud-only `/app/work` path is enforced for the future publisher.
+
+Run tests:
+```bash
+python -m unittest discover -s autopilot -p 'test_*.py' -v
+python -m pytest -q
+```
+
+See [migration and optional owner-run Windows-job disable guide](../docs/FLOWMINUTE_CLOUD_AUTOPILOT_MIGRATION_V2.md).
