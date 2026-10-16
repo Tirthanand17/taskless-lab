@@ -29,11 +29,16 @@ jobs:
       - name: Gather public unverified research leads
         if: github.event_name != 'pull_request'
         run: python -m autopilot.scout --output out/scout-report.json
-      - name: Store public research leads (no secrets)
+      - name: Print public topic leads without billable artifacts
         if: github.event_name != 'pull_request'
-        uses: actions/upload-artifact@v4
-        with:
-          name: flowminute-public-scout
-          path: out/scout-report.json
-          retention-days: 5
-          if-no-files-found: error
+        run: |
+          python - <<'PY'
+          import json
+          data=json.load(open("out/scout-report.json",encoding="utf-8"))
+          print("PUBLIC_RESEARCH_LEADS_ONLY",data["generated_at_utc"])
+          print("FEEDS_WITH_LEADS",data["independent_feeds_with_leads"])
+          for lead in data["leads"][:15]:
+              print(lead["publisher"], "|", lead["title"][:170], "|", lead["url"][:240])
+          print("FEED_ERRORS",json.dumps(data["errors"]))
+          print("NO_PUBLICATION_OR_MEDIA_GENERATION_AUTHORIZED")
+          PY
