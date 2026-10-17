@@ -83,11 +83,15 @@ class AuthoredContentTests(unittest.TestCase):
         self.assertIn("58 fictional example units",raw)
 
     def test_no_unqualified_marketing_or_account_action_promises(self):
-        raw,_,_,_=sections()
-        lower=raw.casefold()
-        for forbidden in ("guaranteed viral","we booked your ticket",
-                          "we purchased for you","100% free for everyone"):
-            self.assertNotIn(forbidden,lower)
+        # Test actual voiced copy rather than safety notes describing what
+        # must NOT be claimed. The latter legitimately mention forbidden ideas.
+        _,s1,s2,lg=sections()
+        spoken=" ".join(row[4] for part in (s1,s2,lg)
+                        for row in TIME.findall(part)).casefold()
+        for forbidden in ("guaranteed viral","guaranteed earnings",
+                          "we booked your ticket","we purchased for you",
+                          "100% free for everyone"):
+            self.assertNotIn(forbidden,spoken)
 
 
 if __name__=="__main__":
