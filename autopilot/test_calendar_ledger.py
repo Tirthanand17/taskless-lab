@@ -100,6 +100,11 @@ class TestLedgerBridge(unittest.TestCase):
     with self.assertRaises(GateError):self.commit()
     self.assertEqual(len(self.rows()),1)
     self.assertEqual(self.rows()[0][0],'legacy')
+ def test_legacy_cannot_overwrite_existing_adaptive_slot(self):
+    self.commit()
+    with self.assertRaises(GateError):
+       self.ledger.reserve('new_legacy','short_am',DAY.isoformat(),'c'*64,now=NOW)
+    self.assertEqual(len(self.rows()),3)
  def test_conflict_second_insert_rolls_back_first(self):
     slots=self.calendar.plan(DAY)
     self.ledger.reserve_prepared_batch([('reserved','long',slots[1].planned_utc,'b'*64)],now=NOW)
