@@ -21,7 +21,7 @@ def plan_data():
                "Show the locally created CSV file and parsed Python columns",
                ("c_csv_reader",),"Parse the example",12,assets=("asset_screen_capture_01",))))
     voice=VoiceDirection(
-        EP,digest(language_review),digest(hi),"hi","energetic","narrator_b",
+        EP,digest(language_review),digest(hi),"hi","energetic","narrator_hi_b",
         "Use measured pauses and a natural Hindi explanation, not rushed sales language",
         "owned_recording","a"*64)
     narration=NarrationAssetRecord(
