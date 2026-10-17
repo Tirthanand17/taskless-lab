@@ -21,7 +21,7 @@ def prepared(calendar,day=DAY):
     for i,slot in enumerate(calendar.plan(day)):
         sha=format(i+1,'064x')
         topic=Topic(
-          f'Use {WORDS[i]} {WORDS[i+4]} techniques in practical workflows',
+          f'Use {WORDS[i]} {WORDS[i+9]} techniques in practical workflows',
           f'The viewer learns to complete an original guided step by step lesson number {i} with useful results',
           f'Build an original working dummy dataset and compare accurate outputs for lesson {i}',
           SRC,.95)
