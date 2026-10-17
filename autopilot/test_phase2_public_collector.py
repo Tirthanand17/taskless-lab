@@ -7,7 +7,7 @@ from autopilot.test_phase2_pipeline import fixtures, NOW
 from autopilot.test_phase2_source_evidence import OFFICIAL_QUOTE, INDEPENDENT_QUOTE
 from autopilot.phase2_public_collector import (
     CaptureDenied, PublicResponse, collect_csv_research_sources,
-    public_capture_summary, AGENT, _ALLOWED,
+    public_capture_summary, AGENT, _ALLOWED, _retrieve_public_https,
 )
 from autopilot.phase2_source_evidence import ClaimExcerpt, verify_source_text_evidence
 
@@ -192,6 +192,47 @@ class AllowedPublicCaptureTests(unittest.TestCase):
         with self.assertRaises(Exception):
             self.collect(research=replace(self.research,sources=old_sources))
         self.assertEqual(self.calls,[])
+
+    def test_fixture_origin_is_never_labeled_actual_provider_capture(self):
+        captures=self.collect()
+        self.assertTrue(all(c.collector_label=="offline_fixture_collector" for c in captures))
+        report=public_capture_summary(captures)
+        self.assertTrue(report["simulation_present"])
+        self.assertFalse(report["real_source_provenance_verified"])
+        self.assertEqual(report["status"],"SOURCE_CAPTURES_UNTRUSTED_UNTIL_INDEPENDENT_PROVENANCE_REVIEW")
+
+    def test_low_level_transport_does_not_allow_arbitrary_https_urls(self):
+        for url in (
+            "https://evil.example/private",
+            "https://docs.python.org/3/library/not-csv.html",
+            "http://docs.python.org/3/library/csv.html",
+            "https://realpython.com/login/",
+            "https://realpython.com/robots.txt?query=anything",
+        ):
+            with self.subTest(url=url),self.assertRaises(CaptureDenied):
+                _retrieve_public_https(url,max_bytes=1024)
+
+    def test_robots_without_user_agent_rules_is_not_auto_allowed(self):
+        transport,calls=fake_transport(robots="# no permissions specified\n")
+        with self.assertRaises(CaptureDenied):
+            self.collect(transport=transport)
+        self.assertEqual(len(calls),1)
+
+    def test_robots_crawl_delay_requires_explicit_rate_scheduler(self):
+        transport,calls=fake_transport(
+            robots="User-agent: *\nAllow: /\nCrawl-delay: 10\n"
+        )
+        with self.assertRaises(CaptureDenied):
+            self.collect(transport=transport)
+        self.assertEqual(len(calls),1)
+
+    def test_robots_request_rate_requires_explicit_rate_scheduler(self):
+        transport,calls=fake_transport(
+            robots="User-agent: *\nAllow: /\nRequest-rate: 1/10\n"
+        )
+        with self.assertRaises(CaptureDenied):
+            self.collect(transport=transport)
+        self.assertEqual(len(calls),1)
 
     def test_public_report_rejects_fake_incomplete_captures(self):
         with self.assertRaises(CaptureDenied):
