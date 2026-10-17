@@ -18,7 +18,7 @@ from typing import Sequence
 from urllib.parse import urlsplit
 
 from .agent_org import WorkflowError
-from .phase2_pipeline import ResearchPackage, _https_source, _stamp
+from .phase2_pipeline import ResearchPackage, _https_source, _stamp, digest
 
 MAX_SNAPSHOT_BYTES = 131_072
 MAX_TOTAL_BYTES = 500_000
@@ -70,9 +70,29 @@ def _origin(url: str) -> tuple[str, str, int]:
     return (parsed.scheme.lower(), host, parsed.port or 443)
 
 
+MULTI_PART_PUBLIC_SUFFIXES = frozenset({
+    "co.uk", "org.uk", "ac.uk", "com.au", "net.au", "co.in", "com.br",
+    "co.jp", "co.nz", "com.sg", "com.hk"
+})
+
+
+def _registered_domain_heuristic(host: str) -> str:
+    """Conservative offline estimate: never claim independent real ownership."""
+    pieces = host.lower().strip(".").split(".")
+    if len(pieces) < 2:
+        return host
+    take = 3 if len(pieces) >= 3 and ".".join(pieces[-2:]) in MULTI_PART_PUBLIC_SUFFIXES else 2
+    return ".".join(pieces[-take:])
+
+
 def _related_hosts(a: str, b: str) -> bool:
-    """Conservative suffix heuristic; NOT a full public-suffix registrable-domain check."""
-    return a == b or a.endswith("." + b) or b.endswith("." + a)
+    """Same eTLD+1 heuristic or nested host: require different research origins.
+
+    Not a full public-suffix / corporate-ownership directory. Two different
+    domains may still be subsidiaries, syndicated articles, or the same writer.
+    """
+    return (a == b or a.endswith("." + b) or b.endswith("." + a)
+            or _registered_domain_heuristic(a) == _registered_domain_heuristic(b))
 
 
 @dataclass(frozen=True)
@@ -198,7 +218,7 @@ def verify_source_text_evidence(
     return {
         "status": "EXCERPTS_MATCHED_IN_CALLER_SUPPLIED_TEXT_NOT_FACT_CHECKED",
         "episode_id": research.episode_id,
-        "research_sha256": sha256(repr(research).encode("utf-8")).hexdigest(),
+        "research_sha256": digest(research),
         "source_hashes": dict(sorted((sid, item["hash"]) for sid, item in matched.items())),
         "claim_ids_with_two_types_of_quotes": sorted(per_claim),
         "quoted_pairs": len(all_pairs),
