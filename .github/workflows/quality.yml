@@ -15,6 +15,14 @@ jobs:
           python-version: "3.12"
       - name: Install test dependency
         run: python -m pip install pytest
+      - name: Install FFmpeg for actual media inspection tests
+        run: |
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
+          ffmpeg -version | head -n 1
+          ffprobe -version | head -n 1
       - name: Run tests
         run: python -m pytest -q
       - name: Validate episode editorial metadata (not publish approval)
