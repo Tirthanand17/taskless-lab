@@ -34,6 +34,11 @@ _ALLOWED = {
     "src_python_docs": "https://docs.python.org/3/library/csv.html",
     "src_independent_csv": "https://realpython.com/python-csv/",
 }
+_ALLOWED_ROBOTS = frozenset(
+    "https://" + urlsplit(url).hostname + "/robots.txt"
+    for url in _ALLOWED.values()
+)
+_ALLOWED_ENDPOINTS = frozenset(_ALLOWED.values()) | _ALLOWED_ROBOTS
 
 
 class CaptureDenied(WorkflowError):
@@ -60,8 +65,8 @@ def _retrieve_public_https(url: str, *, max_bytes: int) -> PublicResponse:
     May only be used for URLs already checked against the exact allowlist,
     including the corresponding /robots.txt file. No retry or auth fallback.
     """
-    if not isinstance(url, str) or not url.startswith("https://"):
-        raise CaptureDenied("HTTPS only")
+    if not isinstance(url, str) or url not in _ALLOWED_ENDPOINTS:
+        raise CaptureDenied("Exact allowlisted public HTTPS endpoint required")
     opener = build_opener(
         ProxyHandler({}), HTTPSHandler(context=ssl.create_default_context()),
         _NoRedirect(),
@@ -163,8 +168,15 @@ def collect_csv_research_sources(
         rule = robotparser.RobotFileParser()
         rule.set_url(robots_url)
         rule.parse(robots_text.splitlines())
+        if not any(line.strip().lower().startswith("user-agent:")
+                   for line in robots_text.splitlines()):
+            raise CaptureDenied("Robots rules missing; not permission to crawl")
         if not rule.can_fetch(AGENT, url):
             raise CaptureDenied("Robots policy does not permit public collection")
+        # This one-shot collector has no durable cross-run throttling or clock
+        # enforcement; do not silently ignore published pacing directives.
+        if rule.crawl_delay(AGENT) is not None or rule.request_rate(AGENT) is not None:
+            raise CaptureDenied("Robots crawl pacing requires an approved rate scheduler")
         page = transport(url, max_bytes=PAGE_MAX_BYTES)
         content_type, body = _validate_response(
             page, exact_url=url,
@@ -183,7 +195,8 @@ def collect_csv_research_sources(
             observed_at_utc=stamp, claimed_http_status=200,
             claimed_content_type=content_type, text_utf8=body,
             content_sha256=sha256(body.encode("utf-8")).hexdigest(),
-            collector_label="public_https_collector",
+            collector_label=("public_https_collector" if allow_live_network
+                             else "offline_fixture_collector"),
         ))
     return tuple(captures)
 
@@ -193,9 +206,12 @@ def public_capture_summary(captures: tuple[SourceCapture, ...]) -> dict:
     if not isinstance(captures, tuple) or len(captures) != 2:
         raise CaptureDenied("Two captured sources required")
     return {
-        "status": "CAPTURED_PUBLIC_HTTPS_ONLY_CLAIMS_UNVERIFIED",
+        "status": "SOURCE_CAPTURES_UNTRUSTED_UNTIL_INDEPENDENT_PROVENANCE_REVIEW",
         "source_hashes": {s.source_id: s.content_sha256 for s in captures},
         "source_count": len(captures),
+        "simulation_present": any(s.collector_label == "offline_fixture_collector"
+                                  for s in captures),
+        "real_source_provenance_verified": False,
         "fact_verification_completed": False,
         "public_source_licensing_verified": False,
         "claim_quotation_review_completed": False,
