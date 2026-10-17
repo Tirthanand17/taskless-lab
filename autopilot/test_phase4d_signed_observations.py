@@ -113,6 +113,18 @@ class Phase4DTests(unittest.TestCase):
         with self.assertRaises(ObservationBlocked):
             self.verify(trust=trust)
 
+    def test_two_collector_identities_cannot_share_one_signing_key(self):
+        first_key=self.keys["collector_d1"]
+        second_claim=self.records[1].claim
+        second_signed=SignedObservation(second_claim,base64.b64encode(
+            first_key.sign(_canonical(second_claim))).decode())
+        same_key=self.registry["collector_d1"].public_key_b64
+        trust=dict(self.registry)
+        trust["collector_youtube"]=replace(
+            trust["collector_youtube"],public_key_b64=same_key)
+        with self.assertRaises(ObservationBlocked):
+            self.verify(receipts=[self.records[0],second_signed],trust=trust)
+
     def test_role_mismatch_denied(self):
         trust=dict(self.registry)
         trust["collector_d1"]=replace(trust["collector_d1"],allowed_kind="youtube_history")
