@@ -205,6 +205,31 @@ def public_capture_summary(captures: tuple[SourceCapture, ...]) -> dict:
     """Safe text-free diagnostics; not independent source verification."""
     if not isinstance(captures, tuple) or len(captures) != 2:
         raise CaptureDenied("Two captured sources required")
+    source_ids = []
+    for item in captures:
+        if (not isinstance(item, SourceCapture)
+                or not isinstance(item.source_id, str)
+                or item.source_id not in _ALLOWED
+                or item.requested_url != _ALLOWED[item.source_id]
+                or item.final_url != item.requested_url
+                or type(item.claimed_http_status) is not int
+                or item.claimed_http_status != 200
+                or item.claimed_content_type not in ("text/plain", "text/html")
+                or item.collector_label not in ("offline_fixture_collector",
+                                                "public_https_collector")
+                or not isinstance(item.text_utf8, str)
+                or not isinstance(item.content_sha256, str)):
+            raise CaptureDenied("Malformed or out-of-scope capture summary input")
+        try:
+            serialized = item.text_utf8.encode("utf-8")
+        except UnicodeError as exc:
+            raise CaptureDenied("Invalid capture text") from exc
+        if (not 1 <= len(serialized) <= PAGE_MAX_BYTES
+                or sha256(serialized).hexdigest() != item.content_sha256):
+            raise CaptureDenied("Capture summary checksum invalid or oversized")
+        source_ids.append(item.source_id)
+    if set(source_ids) != set(_ALLOWED):
+        raise CaptureDenied("Expected exactly one record per allowed source")
     return {
         "status": "SOURCE_CAPTURES_UNTRUSTED_UNTIL_INDEPENDENT_PROVENANCE_REVIEW",
         "source_hashes": {s.source_id: s.content_sha256 for s in captures},
