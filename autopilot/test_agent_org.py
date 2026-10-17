@@ -31,7 +31,7 @@ class AgentOrgTests(unittest.TestCase):
         self.assertEqual(registry(),ROLES)
         self.assertNotIn("upload_video",{r.capability for r in ROLES.values()})
     def test_dag_and_master_visibility(self):
-        self.assertEqual(len(self.w.order),17)
+        self.assertEqual(len(self.w.order),18)
         self.assertEqual(self.w.ready(),("oct17_ep01:research",))
         self.assertFalse(self.w.summary()["publishing_enabled"])
         self.assertFalse(self.w.summary()["cloud_deployed"])
@@ -61,6 +61,13 @@ class AgentOrgTests(unittest.TestCase):
             self.w.claim(tid,actor=owner)
             self.w.complete(receipt(self.w,tid),actor=owner)
         self.assertEqual(set(self.w.ready()),{"oct17_ep01:script","oct17_ep01:hooks"})
+    def test_voice_plan_requires_separate_language_review(self):
+        review = self.w.contracts["oct17_ep01:language_review"]
+        voice = self.w.contracts["oct17_ep01:voice_plan"]
+        self.assertEqual(set(review.requires),
+                         {"oct17_ep01:english", "oct17_ep01:hindi"})
+        self.assertEqual(voice.requires,("oct17_ep01:language_review",))
+        self.assertEqual(review.owner,"language.language_reviewer")
     def test_complete_staging_graph_but_no_upload(self):
         n=0
         while self.w.ready():
@@ -69,9 +76,9 @@ class AgentOrgTests(unittest.TestCase):
                 self.w.claim(tid,actor=owner)
                 self.w.complete(receipt(self.w,tid),actor=owner)
                 n+=1
-        self.assertEqual(n,17)
-        self.assertEqual(len(self.w.events),34)
-        self.assertEqual(self.w.summary()["states"]["complete"],17)
+        self.assertEqual(n,18)
+        self.assertEqual(len(self.w.events),36)
+        self.assertEqual(self.w.summary()["states"]["complete"],18)
         self.assertFalse(hasattr(self.w,"upload"))
         self.assertFalse(hasattr(self.w,"schedule"))
     def test_cannot_forge_external_review_or_output_type(self):
