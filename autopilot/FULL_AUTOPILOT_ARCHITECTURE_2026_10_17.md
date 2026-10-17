@@ -100,3 +100,11 @@ New `narration_inspection.py` runs actual FFprobe and FFmpeg full-decode on audi
 **Verified software CI:** [202 tests + 6 subtests pass](https://github.com/Tirthanand17/taskless-lab/actions/runs/39037503878).
 See [Phase 3 media production and strict remaining gates](PHASE3_MEDIA_PRODUCTION_2026_10_17.md).
 
+
+## Phase 3B actual-media and declared-rights evidence checkpoint — 17 October 2026
+
+[Implementation and limitations](PHASE3B_MEDIA_RIGHTS_REVIEW_2026_10_17.md): `media_rights_review.py` rechecks the reviewed script/language contract, storyboard, narration, subtitle and render recipe hashes before inspecting actual media with FFprobe/FFmpeg. It compares the actual WAV hash to the declared audio asset, checks H.264/AAC MP4 codecs, and verifies that all used assets have local hashed rights-document evidence and an explicit claimed commercial-use permission.
+
+**This is a stop-before-independent-review gate, not an AI copyright lawyer, voice naturalness inspector, final video approval or cloud rendering service.** Tests use three-second synthetic media and sample—not genuine—license documents. [GitHub CI run #39038547204: 221 tests + 6 subtests PASS](https://github.com/Tirthanand17/taskless-lab/actions/runs/39038547204).
+
+**Next:** get real, separately reviewed voice/scene/caption evidence and confirm a compliant, sustainable ₹0 media compute/storage plan; then design a single trusted cloud ledger and prove authorization durability. No YouTube release flags have been enabled.
