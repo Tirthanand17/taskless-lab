@@ -73,7 +73,7 @@ Draft states: blocked → ready → running → staging complete; bounded failur
 | 1 | Engineering | Bounded hierarchical agent organization, typed handoffs, dependency DAG, checkpoint | 17-stage mock episode, 9 queued/3 active, no permissions | **Implemented and GitHub CI tested** |
 | 2 | Research + Creative + Language + QA | Typed source-backed research-to-bilingual-script staging adapters | Software CI, review hashes and non-publishing handoffs | **Staging integrated; real reviewer authentication and fact verification pending** |
 | 3 | Production + QA | Storyboard/voice/narration/subtitle/render typed handoffs + FFprobe audio inspections | Full licensed, naturally reviewed Short and long MP4 with independent QA | **Staging code and synthetic technical tests implemented; real production and rights clearance pending** |
-| 4 | Publishing + Security | Single durable state/lease migration; secure authenticated commands | Recovery/duplicate/replay tests and remote channel readback | Not deployed |
+| 4 | Publishing + Security | Single durable state/lease migration; secure authenticated commands | Recovery/duplicate/replay tests and remote channel readback | **Next: architecture and compatibility tests; not deployed** |
 | 5 | Publishing + Owner | Durable OAuth and a separate approved private upload pilot | One private video ID + correct processing and schedule readback | Blocked |
 | 6 | Growth + Learning | Authorized official Analytics and comparable experiments | Source-backed scorecards, rollback tested | Offline calculation only |
 | 7 | Master + QA | Full no-laptop 3/day and 6+3-day simulation, outage and free-resource tests | Verified month capacity, receipts, operating controls | Unverified |
@@ -108,3 +108,11 @@ See [Phase 3 media production and strict remaining gates](PHASE3_MEDIA_PRODUCTIO
 **This is a stop-before-independent-review gate, not an AI copyright lawyer, voice naturalness inspector, final video approval or cloud rendering service.** Tests use three-second synthetic media and sample—not genuine—license documents. [GitHub CI run #39038547204: 221 tests + 6 subtests PASS](https://github.com/Tirthanand17/taskless-lab/actions/runs/39038547204).
 
 **Next:** get real, separately reviewed voice/scene/caption evidence and confirm a compliant, sustainable ₹0 media compute/storage plan; then design a single trusted cloud ledger and prove authorization durability. No YouTube release flags have been enabled.
+
+## Phase 3C signed reviewer checkpoint — 17 October 2026
+
+[Review gate report](PHASE3C_SIGNED_REVIEW_2026_10_17.md) and `autopilot/signed_review_gate.py` add a separate Ed25519 signed four-dimension evidence gate (visual, audio/language, factual, rights). Signatures pin the inspected media, rights packet, reviewer identity, evidence hashes and expiry. Changed evidence, repeated reviewers, unsigned role substitutions and creator/publisher self-review all block the staging check. These records use **independently provisioned trusted public keys**, not keys accepted from an untrusted review request.
+
+**Actual production deployment is NOT established**: no verified reviewer enrollment, protected private signing keys, human listen/view workflow, independently licensed materials, video producer or live publisher is connected. A complete bundle returns `SIGNED_RECORDS_PRESENT_AWAITING_EXTERNAL_APPROVAL`, never YouTube publication permission.
+
+[GitHub full software CI](https://github.com/Tirthanand17/taskless-lab/actions/runs/39039521037): **241 tests and six subtests passed**, including 20 reviewer-integrity scenarios. Next engineering work is the **single durable cloud release-state design and integration**, retaining current D1 and the private ledger rather than creating competing production record systems.
