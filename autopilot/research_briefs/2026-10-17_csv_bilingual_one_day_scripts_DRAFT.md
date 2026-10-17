@@ -4,6 +4,8 @@
 
 Channel direction: everyday automation and data literacy, privacy-aware, two distinct Short narrators, Hindi and English accessibility, premium navy/cyan/teal 3D motion. Every computer UI is an explicitly labeled concept demonstration unless separately filmed and independently verified.
 
+**Required on-screen labels:** `FICTIONAL SAMPLE DATA` whenever the example dataset appears, and `ILLUSTRATIVE SIMULATION — NOT LIVE SOFTWARE` for any imagined application or interface. Narration still requires an independent language and audio check.
+
 ## SHORT 1 — Hindi/Hinglish (42 seconds)
 
 Title option: `CSV ko Python se 42 seconds mein samjho | Easy Data Automation`
