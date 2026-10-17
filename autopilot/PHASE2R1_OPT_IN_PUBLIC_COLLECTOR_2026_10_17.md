@@ -38,3 +38,18 @@ New regression file: `autopilot/test_phase2_public_collector.py` with **20** ful
 5. Require independent claim/source review before fact-review attestation, script preparation, Hindi/English QA and rendering. Videos must not be automatically scheduled or published.
 
 **Project boundaries:** ₹0 recurring budget; no private GitHub Actions jobs without quota proof; no new external service connection, payment or OAuth scopes; no Nirala/laptop; no Cloudflare D1 migration, YouTube uploads/schedules, media render or publishing. PR remains draft. Existing 21 outstanding production acceptance subphases remain unchanged until real source collection and QA are demonstrated.
+
+
+## Phase 2R1 operator preview and explicit owner gate — continuation
+
+Implementation addition: autopilot/phase2_public_capture_preflight.py and autopilot/test_phase2_public_capture_preflight.py.
+
+- Default invocation: python -m autopilot.phase2_public_capture_preflight
+- Preview does **not open the network**, even when suspicious environment variables contain approval-like strings. It prints only allowed source IDs, limits and fact/publishing false.
+- A future live invocation requires, simultaneously, an exact confirmation phrase, exact owner-approval environment marker, GITHUB_ACTIONS=true, GITHUB_EVENT_NAME=workflow_dispatch, RUNNER_OS=Linux, and the reviewed Phase 2 research branch name. Any missing condition fails closed **before** the transport is called. These string checks are not actual signed owner authentication or GitHub required-reviewer settings; they must not replace explicit permission and independent review.
+- The normal pull_request CI Cloud Scout task now tests all these policy gates and runs only --mode preview. Its scheduled run likewise does not turn on the live collector. No live input or HTTP fetch has been triggered.
+- No new live-fetch workflow or cross-repo OAuth connection has been deployed. Creating a manual GitHub Actions workflow in a nondefault branch alone would not make it generally dispatchable; activation requires separate review and approval.
+- A real live attempt, if later authorized, must run once with exactly the two restricted public article URLs and their robots.txt files; no retries. The result contains hashes/IDs and explicit negative factual/rights/publishing authorization; neither raw article text nor quoted webpage text is written to CI logs.
+- Source copyright/public-use terms, robots constraints, article byte sizes and semantic claim verification remain independent blocking gates. Do not increase network quotas or paid services automatically.
+
+**STOP:** The completion of this CLI and its tests does NOT complete 2R1. No real public-source runner result, source-side server receipts, live fact review, voice/video or YouTube release is established. Keep the prior 21 production subphase count unchanged.
