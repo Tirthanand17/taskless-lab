@@ -1,6 +1,6 @@
 # FlowMinute Cloud Autopilot — ₹0 foundation
 
-> **Adaptive growth workstream (17 October 2026):** [Implementation and tested limits](THREE_WORKSTREAM_IMPLEMENTATION_2026_10_17.md). New `calendar.py` and `preview_calendar.py` support 90 draft monthly release slots and exact temporary/weekend overrides; `editorial_gate.py` and `launch_gate.py` enforce pre-render evidence, rights and launch fact-check gates. **40 new offline tests passed.** This is planning/review code only, not deployed to YouTube or Cloudflare; uploads and scheduling remain disabled. Existing legacy fixed-slot release ledger is preserved pending integration. No laptop was used.
+> **Adaptive growth workstream (17 October 2026):** [Implementation and tested limits](THREE_WORKSTREAM_IMPLEMENTATION_2026_10_17.md). New `calendar.py` and `preview_calendar.py` support 90 draft monthly release slots and exact temporary/weekend overrides; `editorial_gate.py` and `launch_gate.py` enforce pre-render evidence, rights and launch fact-check gates. **78 local isolated tests passed**, including synthetic FFmpeg file inspection and atomic ledger bridge checks. This is planning/review code only, not deployed to YouTube or Cloudflare; uploads and scheduling remain disabled. Existing legacy fixed-slot reservations are preserved; adaptive local SQLite reservations now have a tested bridge, but the private production/cloud ledger is not connected. No laptop was used.
 
 **Cloud research and hosted render smoke: tested. Autonomous production and YouTube publishing: NOT DEPLOYED.**
 
