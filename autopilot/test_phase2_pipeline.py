@@ -6,7 +6,7 @@ import unittest
 from autopilot.agent_org import State, WorkflowError
 from autopilot.phase2_pipeline import (
     CitationRecord, SupportedClaim, ResearchPackage, FactReview,
-    CreativeScript, HookVariants, LocalizedDraft, Phase2Coordinator, digest
+    CreativeScript, HookVariants, LocalizedDraft, LanguageReview, Phase2Coordinator, digest
 )
 
 NOW = datetime(2026, 10, 17, 12, tzinfo=timezone.utc)
@@ -65,17 +65,20 @@ def fixtures():
         "CSV और Python के शब्दों के उच्चारण की जाँच आगे अलग से ज़रूरी है।",
         "language.hindi_editor"
     )
-    return research, review, script, hooks, english, hindi
+    language_review = LanguageReview(EP, digest(english), digest(hindi),
+                                     'language.language_reviewer', 'ATTESTED_FOR_DRAFT',
+                                     'Mock independent language-review attestation for tests only')
+    return research, review, script, hooks, english, hindi, language_review
 
 
 def submit_all(c):
     objects = fixtures()
     for stage, obj, actor in zip(
-        ("research", "fact_review", "script", "hooks", "english", "hindi"),
+        ("research", "fact_review", "script", "hooks", "english", "hindi", "language_review"),
         objects,
         ("research.launch_researcher", "quality.fact_reviewer",
          "creative.shorts_writer", "creative.hook_writer",
-         "language.english_editor", "language.hindi_editor")
+         "language.english_editor", "language.hindi_editor", "language.language_reviewer")
     ):
         c.submit(stage, obj, actor=actor)
 
@@ -83,18 +86,19 @@ def submit_all(c):
 class Phase2Tests(unittest.TestCase):
     def setUp(self):
         self.c = Phase2Coordinator(EP, kind="short", language="hi", now=NOW)
-        self.research, self.review, self.script, self.hooks, self.english, self.hindi = fixtures()
+        self.research, self.review, self.script, self.hooks, self.english, self.hindi, self.language_review = fixtures()
 
     def test_full_research_to_bilingual_handoff(self):
         submit_all(self.c)
         result = self.c.progress()
-        self.assertEqual(len(result["completed_stages"]), 6)
+        self.assertEqual(len(result["completed_stages"]), 7)
         self.assertIn(EP + ":storyboard", result["next_tasks"])
         self.assertIn(EP + ":voice_plan", result["next_tasks"])
         self.assertFalse(result["publishing_authorized"])
         self.assertFalse(result["language_independently_reviewed"])
+        self.assertTrue(result["language_review_recorded_for_staging"])
         self.assertFalse(result["research_factually_verified_by_external_system"])
-        for stage in ("research", "fact_review", "script", "hooks", "english", "hindi"):
+        for stage in ("research", "fact_review", "script", "hooks", "english", "hindi", "language_review"):
             self.assertEqual(self.c.workflow.runs[EP + ":" + stage].status, State.COMPLETE)
             self.assertEqual(self.c.workflow.runs[EP + ":" + stage].artifact.review_state,
                              "UNVERIFIED_STAGING_ARTIFACT")
@@ -234,6 +238,50 @@ class Phase2Tests(unittest.TestCase):
         with self.assertRaises(WorkflowError):
             self.c.submit("hindi",replace(self.hindi,script_digest="f"*64),
                           actor="language.hindi_editor")
+
+    def test_voice_plan_stays_blocked_until_language_review_recorded(self):
+        for stage,obj,actor in (
+            ("research",self.research,"research.launch_researcher"),
+            ("fact_review",self.review,"quality.fact_reviewer"),
+            ("script",self.script,"creative.shorts_writer"),
+            ("english",self.english,"language.english_editor"),
+            ("hindi",self.hindi,"language.hindi_editor")):
+            self.c.submit(stage,obj,actor=actor)
+        self.assertNotIn(EP+":voice_plan",self.c.workflow.ready())
+        self.c.submit("language_review",self.language_review,actor="language.language_reviewer")
+        self.assertIn(EP+":voice_plan",self.c.workflow.ready())
+        self.assertFalse(self.c.progress()["language_independently_reviewed"])
+
+    def test_language_review_wrong_role_rejected(self):
+        self.c.submit("research",self.research,actor="research.launch_researcher")
+        self.c.submit("fact_review",self.review,actor="quality.fact_reviewer")
+        self.c.submit("script",self.script,actor="creative.shorts_writer")
+        self.c.submit("english",self.english,actor="language.english_editor")
+        self.c.submit("hindi",self.hindi,actor="language.hindi_editor")
+        bad=replace(self.language_review,reviewer_role="language.english_editor")
+        with self.assertRaises(WorkflowError):
+            self.c.submit("language_review",bad,actor="language.language_reviewer")
+
+    def test_review_rejects_changed_hindi_draft_digest(self):
+        self.c.submit("research",self.research,actor="research.launch_researcher")
+        self.c.submit("fact_review",self.review,actor="quality.fact_reviewer")
+        self.c.submit("script",self.script,actor="creative.shorts_writer")
+        self.c.submit("english",self.english,actor="language.english_editor")
+        changed=replace(self.hindi,narrated_text=self.hindi.narrated_text+" और एक पंक्ति भी जोड़ते हैं।")
+        self.c.submit("hindi",changed,actor="language.hindi_editor")
+        with self.assertRaises(WorkflowError):
+            self.c.submit("language_review",self.language_review,actor="language.language_reviewer")
+
+    def test_language_review_rejects_explicit_failure(self):
+        self.c.submit("research",self.research,actor="research.launch_researcher")
+        self.c.submit("fact_review",self.review,actor="quality.fact_reviewer")
+        self.c.submit("script",self.script,actor="creative.shorts_writer")
+        self.c.submit("english",self.english,actor="language.english_editor")
+        self.c.submit("hindi",self.hindi,actor="language.hindi_editor")
+        rejected=replace(self.language_review,verdict="REJECT")
+        with self.assertRaises(WorkflowError):
+            self.c.submit("language_review",rejected,actor="language.language_reviewer")
+        self.assertEqual(self.c.workflow.runs[EP+":voice_plan"].status,State.BLOCKED)
 
     def test_duplicate_stage_submission_rejected(self):
         self.c.submit("research",self.research,actor="research.launch_researcher")
