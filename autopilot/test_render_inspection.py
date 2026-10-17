@@ -11,6 +11,7 @@ class RenderMediaTests(unittest.TestCase):
     cls.good=root/'colored_with_audio.mp4'
     cls.mute=root/'no_audio.mp4'
     cls.black=root/'black_with_audio.mp4'
+    cls.wrong_codec=root/'mpeg4_in_mp4.mp4'
     def make(path,color,audio):
        cmd=['ffmpeg','-hide_banner','-loglevel','error','-y','-f','lavfi',
             '-i',f'color=c={color}:size=320x480:rate=25:d=2']
@@ -23,6 +24,13 @@ class RenderMediaTests(unittest.TestCase):
        p=subprocess.run(cmd,capture_output=True,text=True,timeout=30)
        if p.returncode:raise RuntimeError(p.stderr)
     make(cls.good,'blue',True);make(cls.mute,'blue',False);make(cls.black,'black',True)
+    wrong=subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y',
+                          '-f','lavfi','-i','color=c=blue:size=320x480:rate=25:d=2',
+                          '-f','lavfi','-i','sine=frequency=440:duration=2',
+                          '-c:v','mpeg4','-q:v','12','-c:a','aac','-t','2',
+                          str(cls.wrong_codec)],
+                         capture_output=True,text=True,timeout=30)
+    if wrong.returncode:raise RuntimeError(wrong.stderr)
  @classmethod
  def tearDownClass(cls):cls.tmp.cleanup()
  def call(self,path,**kwargs):
@@ -35,6 +43,13 @@ class RenderMediaTests(unittest.TestCase):
     self.assertEqual((out.width,out.height,out.fps),(320,480,25.0))
     self.assertEqual(len(out.video_sha256),64)
     self.assertFalse(out.publishing_cleared)
+ def test_actual_output_codecs_verified(self):
+    out=self.call(self.good)
+    self.assertEqual((out.video_codec,out.audio_codec),('h264','aac'))
+ def test_incompatible_mpeg4_video_in_mp4_blocks(self):
+    out=self.call(self.wrong_codec)
+    self.assertEqual(out.status,'BLOCKED_TECHNICAL_QA')
+    self.assertIn('OUTPUT_CODEC_NOT_H264_AAC',out.issues)
  def test_missing_audio_blocks(self):
     out=self.call(self.mute)
     self.assertIn('VIDEO_AUDIO_STREAM_COUNT_INVALID',out.issues)
