@@ -114,6 +114,11 @@ class TestLedgerBridge(unittest.TestCase):
     s=snapshot(occupied_utc=(self.calendar.plan(DAY)[1].planned_utc,))
     with self.assertRaises(Exception):self.commit(snapshot=s)
     self.assertEqual(self.rows(),[])
+ def test_z_suffix_from_actual_youtube_schedule_blocks(self):
+    target=self.calendar.plan(DAY)[0].planned_utc.replace('+00:00','Z')
+    with self.assertRaises(Exception):
+       self.commit(snapshot=snapshot(occupied_utc=(target,)))
+    self.assertEqual(self.rows(),[])
  def test_paused_day_never_reserves(self):
     cal=PublishingCalendar()
     cal.apply('Pause all videos tomorrow',today=NOW.date())
