@@ -289,6 +289,8 @@ class Phase2Coordinator:
         if self.now.tzinfo is None:
             raise WorkflowError("Explicit clock must be timezone aware")
         self.episode_id = episode_id
+        self.kind = kind
+        self.language = language
         self.artifacts: dict[str, object] = {}
 
     def submit(self, stage: str, artifact: object, *, actor: str) -> str:
