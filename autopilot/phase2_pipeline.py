@@ -245,17 +245,38 @@ class LocalizedDraft:
         _required(self.terminology_notes, 10)
 
 
+
+@dataclass(frozen=True)
+class LanguageReview:
+    episode_id: str
+    english_digest: str
+    hindi_digest: str
+    reviewer_role: str
+    verdict: str
+    review_notes: str
+
+    def validate(self, english: LocalizedDraft, hindi: LocalizedDraft) -> None:
+        if self.english_digest != digest(english) or self.hindi_digest != digest(hindi):
+            raise WorkflowError("Language review does not match both current drafts")
+        if self.reviewer_role != "language.language_reviewer":
+            raise WorkflowError("Only the designated independent language reviewer may attest")
+        if self.verdict != "ATTESTED_FOR_DRAFT":
+            raise WorkflowError("Language review rejected or incomplete")
+        _required(self.review_notes, 30)
+
+
 STAGES: dict[str, type] = {
     "research": ResearchPackage,
     "fact_review": FactReview,
     "script": CreativeScript,
     "hooks": HookVariants,
     "english": LocalizedDraft,
-    "hindi": LocalizedDraft
+    "hindi": LocalizedDraft,
+    "language_review": LanguageReview
 }
 
 class Phase2Coordinator:
-    """Accepts submitted artifacts and marks only six DRAFT DAG steps complete.
+    """Accepts submitted artifacts and marks only seven DRAFT DAG steps complete.
 
     There is deliberately no local LLM generation, truth-validation oracle,
     video rendering, cloud publication, or language QA auto-approval.
@@ -294,6 +315,11 @@ class Phase2Coordinator:
         elif stage == "hooks":
             artifact.validate(review)
             source_refs = ("sha256:" + digest(review),)
+        elif stage == "language_review":
+            english = self.artifacts.get("english")
+            hindi = self.artifacts.get("hindi")
+            artifact.validate(english, hindi)
+            source_refs = ("sha256:" + digest(english), "sha256:" + digest(hindi))
         else:
             artifact.validate(script, stage=stage)
             source_refs = ("sha256:" + digest(script),)
@@ -314,6 +340,7 @@ class Phase2Coordinator:
                                       if x in self.artifacts),
             "next_tasks": tuple(self.workflow.ready()),
             "research_factually_verified_by_external_system": False,
+            "language_review_recorded_for_staging": "language_review" in self.artifacts,
             "language_independently_reviewed": False,
             "publishing_authorized": False,
             "publishing_enabled": False,
