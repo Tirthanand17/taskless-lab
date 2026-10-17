@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Sequence
 
 from .agent_org import WorkflowError
-from .phase2_pipeline import digest
+from .phase2_pipeline import digest, CreativeScript, HookVariants, LanguageReview, LocalizedDraft
 from .phase3_production import (
     Storyboard, VoiceDirection, NarrationAssetRecord, SubtitleTimeline, RenderRecipe
 )
@@ -105,6 +105,8 @@ def _license_evidence_check(record: RightsDeclaration, now: datetime) -> tuple[b
 
 def inspect_release_materials(
     *, video_path: str | Path, narration_path: str | Path,
+    script: CreativeScript, hooks: HookVariants, language_review: LanguageReview,
+    localized: LocalizedDraft, expected_kind: str, expected_language: str,
     storyboard: Storyboard, voice: VoiceDirection,
     narration: NarrationAssetRecord, subtitles: SubtitleTimeline,
     recipe: RenderRecipe, rights: Sequence[RightsDeclaration],
@@ -134,6 +136,18 @@ def inspect_release_materials(
             raise WorkflowError("Narration no longer matches voice plan")
         if subtitles.narration_digest!=digest(narration) or subtitles.language!=voice.language:
             raise WorkflowError("Subtitles do not match narration/language")
+        if expected_kind not in ("short","long") or expected_language not in ("en","hi"):
+            raise WorkflowError("Unapproved episode kind or language")
+        if (storyboard.kind!=expected_kind or storyboard.language!=expected_language
+                or voice.language!=expected_language or recipe.selected_language!=expected_language):
+            raise WorkflowError("Mismatched episode kind or language")
+        if (script.episode_id!=recipe.episode_id or hooks.episode_id!=recipe.episode_id
+                or language_review.episode_id!=recipe.episode_id or localized.episode_id!=recipe.episode_id):
+            raise WorkflowError("Mismatched Phase2 episode")
+        storyboard.validate(script,hooks,kind=expected_kind,language=expected_language)
+        voice.validate(language_review,localized)
+        narration.validate(voice,storyboard)
+        subtitles.validate(narration,localized)
         recipe.validate(storyboard,narration,subtitles)
     except (WorkflowError,ValueError,TypeError,AttributeError):
         problems.append("STALE_OR_INVALID_PRODUCTION_PLAN")
