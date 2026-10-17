@@ -194,6 +194,12 @@ class ReleaseLedger:
                 if tuple(old) != (kind,target,sha,channel):
                     raise GateError("Episode already reserved for different content")
                 return False
+            # Adaptive kind='short' and legacy short_am/short_pm can share
+            # the same timestamp; the old UNIQUE(kind,planned_utc) index
+            # is insufficient on its own to prevent a duplicate release.
+            if con.execute("SELECT 1 FROM releases WHERE planned_utc=? LIMIT 1",
+                           (target,)).fetchone():
+                raise GateError("Existing release occupies proposed time")
             try:
                 con.execute("INSERT INTO releases (episode,kind,planned_utc,sha,channel,stage) VALUES (?,?,?,?,?,?)",
                             (episode,kind,target,sha,channel,Stage.PLANNED.value))
