@@ -71,7 +71,7 @@ Draft states: blocked → ready → running → staging complete; bounded failur
 |---|---|---|---|---|
 | 0 | Master | Inventory three briefs, new agent brief, two repos and quotas | No duplicate releases; risk register | Audited |
 | 1 | Engineering | Bounded hierarchical agent organization, typed handoffs, dependency DAG, checkpoint | 17-stage mock episode, 9 queued/3 active, no permissions | **Implemented and GitHub CI tested** |
-| 2 | Research + Creative + Language + QA | Typed real source-checked research-to-bilingual-script adapters | Full independently reviewed educational package | Not yet integrated |
+| 2 | Research + Creative + Language + QA | Typed source-backed research-to-bilingual-script staging adapters | Software CI, review hashes and non-publishing handoffs | **Staging integrated; real reviewer authentication and fact verification pending** |
 | 3 | Production + QA | Licensed voice, real demos, 3D/Remotion/FFmpeg and subtitle/visual checks | Short + representative long MP4 with independent QA | Partially built |
 | 4 | Publishing + Security | Single durable state/lease migration; secure authenticated commands | Recovery/duplicate/replay tests and remote channel readback | Not deployed |
 | 5 | Publishing + Owner | Durable OAuth and a separate approved private upload pilot | One private video ID + correct processing and schedule readback | Blocked |
@@ -79,11 +79,11 @@ Draft states: blocked → ready → running → staging complete; bounded failur
 | 7 | Master + QA | Full no-laptop 3/day and 6+3-day simulation, outage and free-resource tests | Verified month capacity, receipts, operating controls | Unverified |
 
 Current exact staging implementation:
-- autopilot/agent_org.py: eight department managers, 48 limited specialists, one Master orchestrator, 17-stage bounded per-episode DAG, up to nine episodes queued/three active, schema-checked evidence handoffs, deny-list of privileged actions, two retries, quarantine, local *test-only* SQLite checkpoints.
+- autopilot/agent_org.py: eight department managers, 48 limited specialists, one Master orchestrator, 18-stage bounded per-episode DAG (including independent bilingual review), up to nine episodes queued/three active, schema-checked evidence handoffs, deny-list of privileged actions, two retries, quarantine, local *test-only* SQLite checkpoints.
 - autopilot/agent_org_demo.py: sample 1-, 3- or 9-video queue display. No models run, no videos made/uploaded/scheduled.
 - autopilot/test_agent_org.py and flowminute-agent-foundation-ci.yml: safe software CI; source tests and preview.
 - Existing calendar, source/creative quality, release ledger, FFmpeg and analytics modules are reused, not replaced.
 
-**Next**: implement Phase 2 typed research → independent fact review → creative scripts → Hindi/English packages using the existing scout and editorial safeguards. Then inspect production ledger migration requirements. No new provider registration, laptop access, real video publishing or billing changes are authorized by this plan.
+**Phase 2 staging is now implemented and CI-tested:** source-backed ResearchPackage → separate FactReview → original CreativeScript and hook alternatives → English and Hindi drafts → independent LanguageReview, all bound by SHA-256 references and task-role permissions. The new 18-stage graph stops voice planning until the language review is recorded. See [Phase 2 validation and limitations](PHASE2_RESEARCH_LOCALIZATION_2026_10_17.md). **Not deployed as a cloud worker, not connected to an LLM or external fact checker, and no real localization/narration is generated.** Next: implement typed production storyboard/narration/subtitle plans and test actual representative media and rights, then plan a single verified durable production store. No new provider registration, laptop access, real video publishing or billing changes are authorized by this plan.
 
 **Reporting vocabulary:** proposed / implemented / offline-tested / cloud-deployed / live-verified / blocked. Never infer live channel success from a mock result.
