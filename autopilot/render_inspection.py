@@ -23,6 +23,8 @@ class MediaEvidence:
     has_audio: bool
     issues: tuple[str,...]
     publishing_cleared: bool = False
+    video_codec: str | None = None
+    audio_codec: str | None = None
 
 def _run(args: list[str], timeout_seconds: int) -> subprocess.CompletedProcess[str]:
     return subprocess.run(args,capture_output=True,text=True,timeout=timeout_seconds,check=False)
@@ -50,7 +52,7 @@ def inspect_media(path: str | Path, *, expected_width: int, expected_height: int
         return _invalid('MEDIA_SIZE_OUT_OF_BOUNDS')
     try:
         probe=_run(['ffprobe','-v','error','-show_entries',
-                    'stream=index,codec_type,codec_name,width,height,r_frame_rate:format=duration',
+                    'stream=index,codec_type,codec_name,width,height,r_frame_rate:format=duration,format_name',
                     '-of','json',str(file)],timeout_seconds)
         if probe.returncode != 0:
             return _invalid('FFPROBE_FAILED')
@@ -68,8 +70,12 @@ def inspect_media(path: str | Path, *, expected_width: int, expected_height: int
         if not math.isfinite(duration) or not min_duration_s<=duration<=max_duration_s:
             issues.append('DURATION_INCORRECT')
         if not math.isfinite(fps) or not 20<=fps<=60:issues.append('FRAME_RATE_OUT_OF_BOUNDS')
-        if not video.get('codec_name') or not audio[0].get('codec_name'):
-            issues.append('CODEC_NOT_CONFIRMED')
+        video_codec=video.get('codec_name')
+        audio_codec=audio[0].get('codec_name')
+        if video_codec!='h264' or audio_codec!='aac':
+            issues.append('OUTPUT_CODEC_NOT_H264_AAC')
+        if 'mp4' not in parsed.get('format',{}).get('format_name','').split(','):
+            issues.append('OUTPUT_CONTAINER_NOT_MP4')
         decode=_run(['ffmpeg','-hide_banner','-nostdin','-i',str(file),
                      '-vf','blackdetect=d=0.5:pix_th=0.09',
                      '-af','silencedetect=noise=-45dB:d=0.7',
@@ -82,7 +88,7 @@ def inspect_media(path: str | Path, *, expected_width: int, expected_height: int
             for chunk in iter(lambda:stream.read(1024*1024),b''):h.update(chunk)
         return MediaEvidence('PASS_TECHNICAL_ONLY' if not issues else 'BLOCKED_TECHNICAL_QA',
                              h.hexdigest(),width,height,duration,round(fps,3),True,
-                             tuple(sorted(set(issues))))
+                             tuple(sorted(set(issues))),False,video_codec,audio_codec)
     except (OSError,subprocess.TimeoutExpired,json.JSONDecodeError,
             ValueError,KeyError,ZeroDivisionError,TypeError):
         return _invalid('MEDIA_INSPECTION_UNAVAILABLE')
