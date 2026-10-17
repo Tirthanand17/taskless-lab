@@ -172,11 +172,17 @@ class Phase2R3TextTests(unittest.TestCase):
             self.validate(self.changed(2,beats=beats))
 
     def test_unnatural_speech_rate_denied(self):
-        old=self.entries[1][0]
-        beats=tuple(replace(b,start_ms=i*6250,end_ms=(i+1)*6250)
-                    for i,b in enumerate(old.beats))
+        plan,research,review,script,localized=self.entries[1]
+        # Keep Short duration within its allowed range, but double narration
+        # to force an actual speaking rate beyond the 235 WPM ceiling.
+        beats=tuple(replace(b,start_ms=i*6250,end_ms=(i+1)*6250,
+                            spoken_text=b.spoken_text+" "+b.spoken_text,
+                            subtitle_text=b.subtitle_text+" "+b.subtitle_text)
+                    for i,b in enumerate(plan.beats))
+        localized=replace(localized,narrated_text=" ".join(b.spoken_text for b in beats))
+        plan=replace(plan,beats=beats,localized_sha256=digest(localized))
         with self.assertRaises(WorkflowError):
-            self.validate(self.changed(1,beats=beats))
+            self.validate([self.entries[0],(plan,research,review,script,localized),self.entries[2]])
 
     def test_fewer_than_four_short_segments_denied(self):
         old=self.entries[0][0]
