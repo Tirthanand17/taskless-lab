@@ -349,7 +349,7 @@ def episode_workflow(episode_id:str,*,kind:str,language:str)->Workflow:
       ("voice_plan","language.voice_director",("language_review",),"language.voice_plan"),
       ("narration","production.audio_specialist",("voice_plan",),"production.audio_plan"),
       ("subtitle_plan","language.subtitle_specialist",("narration","english","hindi"),"language.subtitle_plan"),
-      ("render_plan","production.renderer",("storyboard","narration"),"production.render_plan"),
+      ("render_plan","production.renderer",("storyboard","narration","subtitle_plan"),"production.render_plan"),
       ("media_review","quality.media_inspector",("render_plan",),"qa.media_attestation"),
       ("rights_review","quality.copyright_inspector",("render_plan",),"qa.rights_attestation"),
       ("release_review","quality.release_auditor",("media_review","rights_review","subtitle_plan","fact_review"),"qa.release_attestation"),
