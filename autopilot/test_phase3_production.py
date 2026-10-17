@@ -147,6 +147,7 @@ class Phase3Tests(unittest.TestCase):
             self.p.submit("narration",self.audio,actor="production.audio_specialist")
 
     def test_bad_audio_hash_and_duration_rejected(self):
+        self.p.submit("storyboard",self.board,actor="production.storyboard_designer")
         self.p.submit("voice_plan",self.voice,actor="language.voice_director")
         for candidate in (replace(self.audio,audio_sha256="x"*64),
                           replace(self.audio,duration_ms=25000)):
