@@ -234,6 +234,21 @@ class AllowedPublicCaptureTests(unittest.TestCase):
             self.collect(transport=transport)
         self.assertEqual(len(calls),1)
 
+    def test_summary_detects_changed_text_without_hash_replacement(self):
+        records=self.collect()
+        altered=replace(records[0],text_utf8=records[0].text_utf8+" changed")
+        with self.assertRaises(CaptureDenied):
+            public_capture_summary((altered,records[1]))
+
+    def test_summary_cannot_mix_source_ids_or_urls(self):
+        records=self.collect()
+        altered=replace(records[0],source_id=records[1].source_id)
+        with self.assertRaises(CaptureDenied):
+            public_capture_summary((altered,records[1]))
+        bad_url=replace(records[0],final_url="https://example.com/fake")
+        with self.assertRaises(CaptureDenied):
+            public_capture_summary((bad_url,records[1]))
+
     def test_public_report_rejects_fake_incomplete_captures(self):
         with self.assertRaises(CaptureDenied):
             public_capture_summary(tuple())
