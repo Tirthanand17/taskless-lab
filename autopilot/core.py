@@ -108,7 +108,7 @@ class MediaQA:
     thumbnail_verified: bool
 
     def validate(self, kind: str):
-        if kind not in SLOTS: raise GateError("Unknown format")
+        if kind not in (*SLOTS, "short"): raise GateError("Unknown format")
         if len(self.sha256)!=64 or any(c not in "0123456789abcdef" for c in self.sha256):
             raise GateError("Missing media SHA256")
         if (self.width,self.height) != ((1920,1080) if kind=="long" else (1080,1920)):
@@ -200,6 +200,73 @@ class ReleaseLedger:
             except sqlite3.IntegrityError as exc:
                 raise GateError("Duplicate media or conflicting time slot") from exc
             return True
+
+    def reserve_prepared_batch(self, entries: list[tuple[str,str,str,str]], *,
+                               channel: str = CHANNEL_ID,
+                               now: datetime | None = None) -> dict[str,bool]:
+        """Atomically reserve QA-cleared adaptive calendar entries.
+
+        Entry: (episode, 'short'|'long', exact UTC ISO time, media SHA256).
+        This is a LOCAL ledger operation, not an API upload or scheduling call.
+        Every row either commits or the whole batch rolls back, including when
+        it conflicts with an existing legacy short_am/short_pm reservation.
+        """
+        if channel != CHANNEL_ID:
+            raise GateError("Unexpected YouTube channel")
+        if not 1 <= len(entries) <= 18:
+            raise GateError("One to eighteen prepared media records required")
+        seen_episodes, seen_hashes, seen_times = set(), set(), set()
+        cleaned = []
+        for episode, kind, utc, sha in entries:
+            if not isinstance(episode, str) or not episode or not episode.replace("_","").isalnum():
+                raise GateError("Invalid episode id")
+            if kind not in ("short","long"):
+                raise GateError("Unsupported adaptive format")
+            if not isinstance(sha,str) or len(sha)!=64 or any(x not in "0123456789abcdef" for x in sha):
+                raise GateError("Media SHA256 required")
+            if not isinstance(utc,str):
+                raise GateError("Exact timezone-aware UTC required")
+            try:
+                instant=datetime.fromisoformat(utc)
+            except ValueError as exc:
+                raise GateError("Invalid UTC timestamp") from exc
+            if instant.tzinfo is None or instant.utcoffset()!=timedelta(0):
+                raise GateError("UTC timezone required")
+            canonical=instant.astimezone(timezone.utc).isoformat()
+            if utc != canonical:
+                raise GateError("Use canonical UTC timestamp")
+            require_future(canonical,now=now)
+            if episode in seen_episodes or sha in seen_hashes or canonical in seen_times:
+                raise GateError("Duplicate episode, media hash or UTC slot in batch")
+            seen_episodes.add(episode)
+            seen_hashes.add(sha)
+            seen_times.add(canonical)
+            cleaned.append((episode,kind,canonical,sha))
+        result={}
+        with self._db() as con:
+            con.execute("BEGIN IMMEDIATE")
+            for episode, kind, utc, sha in cleaned:
+                old=con.execute(
+                    "SELECT kind,planned_utc,sha,channel FROM releases WHERE episode=?",
+                    (episode,)).fetchone()
+                if old:
+                    if tuple(old) != (kind,utc,sha,channel):
+                        raise GateError("Episode reserved for different content")
+                    result[episode]=False
+                    continue
+                # The legacy UNIQUE(kind,planned_utc) index cannot catch a
+                # short_am reservation colliding with new kind='short'.
+                if con.execute("SELECT 1 FROM releases WHERE planned_utc=? LIMIT 1",
+                               (utc,)).fetchone():
+                    raise GateError("Existing video occupies proposed publishing time")
+                try:
+                    con.execute(
+                        "INSERT INTO releases (episode,kind,planned_utc,sha,channel,stage) VALUES (?,?,?,?,?,?)",
+                        (episode,kind,utc,sha,channel,Stage.PLANNED.value))
+                except sqlite3.IntegrityError as exc:
+                    raise GateError("Duplicate media or conflicting release") from exc
+                result[episode]=True
+        return result
 
     def get(self, episode: str) -> dict:
         with self._db() as con:
