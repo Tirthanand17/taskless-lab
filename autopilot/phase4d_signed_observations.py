@@ -137,6 +137,7 @@ def verify_readonly_observation_bundle(
         raise ObservationBlocked("Exactly two expected signed metadata observations required")
     seen_kind: set[str] = set()
     seen_collectors: set[str] = set()
+    seen_public_keys: set[bytes] = set()
     valid_hashes: list[tuple[str, str]] = []
     for item in receipts:
         if not isinstance(item, SignedObservation) or not isinstance(item.claim, ObservationClaim):
@@ -166,6 +167,10 @@ def verify_readonly_observation_bundle(
                 or trust.key_id != claim.key_id or trust.allowed_kind != claim.kind):
             raise ObservationBlocked("Collector not enrolled for this observation kind")
         public_key = _key(trust)
+        public_key_material = base64.b64decode(trust.public_key_b64, validate=True)
+        if public_key_material in seen_public_keys:
+            raise ObservationBlocked("Both provider collectors must use independent signing keys")
+        seen_public_keys.add(public_key_material)
         try:
             if not isinstance(item.signature_b64, str):
                 raise ObservationBlocked("Receipt signature required")
