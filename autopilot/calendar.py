@@ -88,8 +88,9 @@ class PublishingCalendar:
             day = today+timedelta(days=1)
             new = Override(day,day,DayRule(0,0))
         elif clean == 'make only ai tutorials this weekend':
-            saturday = today+timedelta(days=(5-today.weekday())%7)
-            new = Override(saturday,saturday+timedelta(days=1),DayRule(category='AI tutorials'),kind='category')
+            saturday = today if today.weekday() == 6 else today+timedelta(days=(5-today.weekday())%7)
+            sunday = saturday if today.weekday() == 6 else saturday+timedelta(days=1)
+            new = Override(saturday,sunday,DayRule(category='AI tutorials'),kind='category')
         else:
             n = r'(\d{1,2}|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)'
             suffix = rf'{n} shorts? and {n} long videos?'
@@ -123,6 +124,19 @@ class PublishingCalendar:
         """
         if not isinstance(day,date) or isinstance(day,datetime):
             raise CalendarError('Date required')
+        # Authoritative YouTube publishAt values often end in 'Z', whereas
+        # our draft slots use '+00:00'. Compare instants, not raw strings.
+        normalized_reserved = set()
+        for value in reserved_utc:
+            if not isinstance(value,str):
+                raise CalendarError('Reserved release time must be a UTC timestamp')
+            try:
+                t = datetime.fromisoformat(value.replace('Z','+00:00'))
+            except ValueError as exc:
+                raise CalendarError('Malformed reserved release timestamp') from exc
+            if t.tzinfo is None or t.utcoffset() != timedelta(0):
+                raise CalendarError('Reserved release timestamp must be UTC')
+            normalized_reserved.add(t.astimezone(timezone.utc).isoformat())
         rule = self.effective(day)
         anchors: list[tuple[int,str,int]] = []
         if rule.shorts:
@@ -143,7 +157,7 @@ class PublishingCalendar:
         output=[]
         for minute,kind,ordinal in sorted(anchors):
             time=datetime(day.year,day.month,day.day,minute//60,minute%60,tzinfo=IST).astimezone(timezone.utc).isoformat()
-            if time in reserved_utc:
+            if time in normalized_reserved:
                 raise CalendarError('Existing release already occupies proposed UTC slot')
             output.append(Slot(day.isoformat(),kind,ordinal,time,
                                ('energetic' if ordinal%2 else 'explanatory') if kind=='short' else 'explanatory',rule.category))
