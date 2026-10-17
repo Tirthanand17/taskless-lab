@@ -55,6 +55,16 @@ class TestAdaptiveCalendar(unittest.TestCase):
         slots=c.plan(TODAY)
         self.assertEqual(len(slots),18)
         self.assertEqual(len({s.planned_utc for s in slots}),18)
+    def test_youtube_z_suffix_collision_detected(self):
+        c=PublishingCalendar()
+        target=c.plan(TODAY)[0].planned_utc.replace('+00:00','Z')
+        with self.assertRaises(CalendarError):c.plan(TODAY,reserved_utc=(target,))
+    def test_sunday_this_weekend_means_today(self):
+        sunday=date(2026,10,18)
+        c=PublishingCalendar()
+        c.apply('Make only AI tutorials this weekend.',today=sunday)
+        self.assertEqual({x.category for x in c.plan(sunday)}, {'AI tutorials'})
+        self.assertEqual({x.category for x in c.plan(sunday+timedelta(days=6))}, {None})
     def test_no_publishing_flags_in_preview(self):
         c=PublishingCalendar();self.assertFalse(hasattr(c,'publish'))
         self.assertTrue(all(s.status=='DRAFT_ONLY_NO_PUBLISH_PERMISSION' for s in c.plan(TODAY)))
