@@ -1,0 +1,43 @@
+name: FlowMinute Agent Architecture Unit Tests (no secrets)
+on:
+  push:
+    paths:
+      - "autopilot/agent_org.py"
+      - "autopilot/agent_org_demo.py"
+      - "autopilot/test_agent_org.py"
+      - ".github/workflows/flowminute-agent-foundation-ci.yml"
+  pull_request:
+    paths:
+      - "autopilot/agent_org.py"
+      - "autopilot/agent_org_demo.py"
+      - "autopilot/test_agent_org.py"
+      - ".github/workflows/flowminute-agent-foundation-ci.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: flowminute-agent-ci
+  cancel-in-progress: true
+jobs:
+  deterministic_agent_tests:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    env:
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile and execute no-network orchestration unit tests
+        run: |
+          python -m py_compile autopilot/agent_org.py autopilot/agent_org_demo.py autopilot/test_agent_org.py
+          python -m unittest autopilot.test_agent_org -v
+      - name: Demonstrate nine-video staging queue without uploads
+        run: |
+          python -m autopilot.agent_org_demo --count 9
