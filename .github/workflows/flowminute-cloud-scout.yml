@@ -25,7 +25,9 @@ jobs:
         with:
           python-version: "3.11"
       - name: Unit tests and security boundaries
-        run: python -m unittest autopilot.test_cloud_foundation autopilot.test_core autopilot.test_phase2_source_evidence -v
+        run: python -m unittest autopilot.test_cloud_foundation autopilot.test_core autopilot.test_phase2_source_evidence autopilot.test_phase2_public_collector autopilot.test_phase2_public_capture_preflight -v
+      - name: Verify public capture preview (strictly no network)
+        run: python -m autopilot.phase2_public_capture_preflight --mode preview
       - name: Gather public unverified research leads
         if: github.event_name != 'pull_request'
         run: python -m autopilot.scout --output out/scout-report.json
