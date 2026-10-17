@@ -140,7 +140,10 @@ def collect_csv_research_sources(
     if allow_live_network is True and _test_transport is not None:
         raise CaptureDenied("Test transport cannot impersonate real network")
     now_utc = now.astimezone(timezone.utc)
-    research.validate(now=now_utc)
+    try:
+        research.validate(now=now_utc)
+    except WorkflowError as exc:
+        raise CaptureDenied("Invalid or incomplete typed public research package") from exc
     sources = {s.source_id: s for s in research.sources}
     if set(sources) != set(_ALLOWED):
         raise CaptureDenied("Only a two-site allowlisted CSV research example is enabled")
