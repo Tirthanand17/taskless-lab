@@ -185,6 +185,31 @@ class SubtitleTimeline:
         if self.cues[0].start_ms>1500 or narration.duration_ms-previous>1500:
             raise WorkflowError("Subtitle leading/trailing gaps need review")
 
+def subtitle_timeline_to_srt(timeline: SubtitleTimeline) -> str:
+    """Render draft subtitle cues as standards-compatible SRT *text*.
+
+    This does not perform speech recognition, actual transcript alignment,
+    native Hindi language QA, or save a file in a production filesystem.
+    """
+    if not isinstance(timeline,SubtitleTimeline) or not 2<=len(timeline.cues)<=160:
+        raise WorkflowError("Validated subtitle timeline required")
+    lines=[]
+    previous=0
+    def stamp(t:int)->str:
+        h,t=divmod(t,3_600_000)
+        m,t=divmod(t,60_000)
+        s,ms=divmod(t,1000)
+        return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
+    for i,cue in enumerate(timeline.cues,1):
+        cue.validate()
+        if cue.start_ms<previous or cue.end_ms>3_600_000:
+            raise WorkflowError("Overlapping or oversized subtitle time")
+        if "<" in cue.text or ">" in cue.text:
+            raise WorkflowError("Inline SRT styling markup is not approved")
+        lines.extend((str(i),f"{stamp(cue.start_ms)} --> {stamp(cue.end_ms)}",cue.text,""))
+        previous=cue.end_ms
+    return "\n".join(lines)
+
 @dataclass(frozen=True)
 class RenderRecipe:
     episode_id: str
