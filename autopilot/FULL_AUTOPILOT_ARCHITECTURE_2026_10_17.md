@@ -72,7 +72,7 @@ Draft states: blocked → ready → running → staging complete; bounded failur
 | 0 | Master | Inventory three briefs, new agent brief, two repos and quotas | No duplicate releases; risk register | Audited |
 | 1 | Engineering | Bounded hierarchical agent organization, typed handoffs, dependency DAG, checkpoint | 17-stage mock episode, 9 queued/3 active, no permissions | **Implemented and GitHub CI tested** |
 | 2 | Research + Creative + Language + QA | Typed source-backed research-to-bilingual-script staging adapters | Software CI, review hashes and non-publishing handoffs | **Staging integrated; real reviewer authentication and fact verification pending** |
-| 3 | Production + QA | Licensed voice, real demos, 3D/Remotion/FFmpeg and subtitle/visual checks | Short + representative long MP4 with independent QA | Partially built |
+| 3 | Production + QA | Storyboard/voice/narration/subtitle/render typed handoffs + FFprobe audio inspections | Full licensed, naturally reviewed Short and long MP4 with independent QA | **Staging code and synthetic technical tests implemented; real production and rights clearance pending** |
 | 4 | Publishing + Security | Single durable state/lease migration; secure authenticated commands | Recovery/duplicate/replay tests and remote channel readback | Not deployed |
 | 5 | Publishing + Owner | Durable OAuth and a separate approved private upload pilot | One private video ID + correct processing and schedule readback | Blocked |
 | 6 | Growth + Learning | Authorized official Analytics and comparable experiments | Source-backed scorecards, rollback tested | Offline calculation only |
@@ -87,3 +87,16 @@ Current exact staging implementation:
 **Phase 2 staging is now implemented and CI-tested:** source-backed ResearchPackage → separate FactReview → original CreativeScript and hook alternatives → English and Hindi drafts → independent LanguageReview, all bound by SHA-256 references and task-role permissions. The new 18-stage graph stops voice planning until the language review is recorded. See [Phase 2 validation and limitations](PHASE2_RESEARCH_LOCALIZATION_2026_10_17.md). **Not deployed as a cloud worker, not connected to an LLM or external fact checker, and no real localization/narration is generated.** Next: implement typed production storyboard/narration/subtitle plans and test actual representative media and rights, then plan a single verified durable production store. No new provider registration, laptop access, real video publishing or billing changes are authorized by this plan.
 
 **Reporting vocabulary:** proposed / implemented / offline-tested / cloud-deployed / live-verified / blocked. Never infer live channel success from a mock result.
+
+
+## Phase 3 staging checkpoint — 17 October 2026
+
+Five additional typed steps now follow Phase 2's independently reviewed Hindi/English drafts:
+`Storyboard`, `VoiceDirection`, `NarrationAssetRecord`, `SubtitleTimeline`, `RenderRecipe`.
+Render planning now waits for storyboard **and** narration **and** subtitle plan. Visuals include safe overlays, contiguous scenes and labeled simulations; narrator profiles reference the exact reviewed language drafts; captions have bounded, nonoverlapping SRT timings. Existing `motion-v2/` and `render_inspection.py` are reused.
+
+New `narration_inspection.py` runs actual FFprobe and FFmpeg full-decode on audio with SHA-256, sample rate, duration and silence checks; synthetic tone and silence fixtures test the tool, **not** human-sounding speech. Provider commercial rights, pronunciation, source fidelity, transcript alignment, actual rendered MP4, private storage and upload publishing remain unverified. No Cloudflare deployment, Nirala use, credentials or billable render APIs involved.
+
+**Verified software CI:** [202 tests + 6 subtests pass](https://github.com/Tirthanand17/taskless-lab/actions/runs/39037503878).
+See [Phase 3 media production and strict remaining gates](PHASE3_MEDIA_PRODUCTION_2026_10_17.md).
+
