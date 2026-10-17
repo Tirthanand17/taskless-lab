@@ -4,16 +4,18 @@
 
 ## Verified public references for editorial research
 
-1. **First party:** Google, “Gemini 4 Argon: Built to solve your hardest problems,” published **13 October 2026**, https://blog.google/intl/en-in/products/introducing-gemini-4-argon/
-2. **Independent reporting:** Reuters, “Google launches flagship AI model Gemini 4 Argon for developers, businesses,” published **13 October 2026**, https://www.reuters.com/business/google-launches-flagship-ai-model-gemini-4-argon-developers-businesses-2026-10-13/
-3. **First-party app release update:** Google Gemini release notes, 2026-10-13, https://gemini.google/release-notes/
+1. **Initial first-party announcement (September 30):** Google, “Gemini 4 Argon: our next era of frontier intelligence,” https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/ — this was a limited, early-access announcement, not general developer or consumer availability.
+2. **Initial independent reporting (September 30):** Reuters, “Google announces Gemini 4 flagship AI model after months of delays,” https://www.reuters.com/legal/litigation/google-announces-gemini-4-flagship-ai-model-after-months-delays-2026-09-30/.
+3. **Expanded public-access first-party announcement (October 13):** Google, “Gemini 4 Argon is now available for everyone,” https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/ — follow the article's detailed subscriber and paid-API access conditions, not the broad headline.
+4. **Developer availability (October 13):** Google, “Gemini 4 Argon is now available for developers,” https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-4-argon/ — developer use starts from a paid Gemini API tier.
+5. **Independent expanded-access reporting (October 13):** Reuters, “Google launches flagship AI model Gemini 4 Argon for developers, businesses,” https://www.reuters.com/business/google-launches-flagship-ai-model-gemini-4-argon-developers-businesses-2026-10-13/.
 
 These are web-researched references, **not** signed downloaded page snapshots by an owner-approved source collector or a human editorial attestation. The feature branch's new offline `phase2_source_evidence` verifier has NOT been given authentic page snapshots from these URLs and must not be reported as independently passed for these claims.
 
 ## Low-risk candidate facts to independently recheck before video publishing
 
-- Google announced Gemini 4 Argon on **October 13, 2026**. Google describes it as a frontier model intended for multi-step complex work. Reuters also reported the launch on October 13.
-- Google says Argon is available to developers and enterprises via its API/AI Studio paths, and through Google AI Pro/Ultra-related subscriber experiences. Access depends on plan, region, product and rollout. **Do not portray this paid product as free for everybody.**
+- **Date correction (editorial blocker found October 17):** Google **first announced** Gemini 4 Argon on **September 30, 2026**, with initial access limited to selected cybersecurity defenders. Google then announced broader developer/enterprise and paid subscriber availability on **October 13, 2026**. Do **not** script October 13 as the first-ever announcement.
+- Google's October 13 release says developers can use a **paid Gemini API tier**. The consumer Gemini app/AI Mode availability was described for **Google AI Pro and Ultra subscribers**, and Google Antigravity for **AI Ultra subscribers**. Some selective free research-scientist access has eligibility conditions, not a universal free plan. Recheck region, pricing and availability on the actual publication date. **Do not portray the launch as free for everybody.**
 - Coding, research, science and complex documents are example categories highlighted by Google. These are a **vendor's stated use cases**, not independently tested quality guarantees.
 - Google's claimed benchmark superiority should be labeled a **company claim** until methods and neutral benchmark versions are reviewed. Do not promise that Argon beats every other model in all tasks.
 
@@ -21,13 +23,13 @@ These are web-researched references, **not** signed downloaded page snapshots by
 
 ### Short A — Hindi/Hinglish discovery (35–55 seconds)
 - Working hook: “Google ka naya Gemini 4 Argon — ek minute mein samjho kis kaam ka hai.”
-- Outline: model announcement → real use cases (code, reports, planning) → one clearly labeled *illustrative* 3D task flow → audience question “Aap kaunsa task try karna chahoge?”
+- Outline: September 30 early announcement vs October 13 broader release → claimed use cases (code, reports, planning) → one clearly labeled *illustrative* 3D task flow → audience question “Aap kaunsa task try karna chahoge?”
 - Distinct narrator profile **A** (warm, natural spoken Hindi/Hinglish). Do not imply a human voice was recorded.
 - Visual intent: 3D paper/report-to-checklist transformation with “CONCEPT DEMO — NOT LIVE SCREEN RECORDING”.
 
 ### Short B — English consumer reality check (30–45 seconds)
 - Working hook: “Is Google’s new Gemini model actually free to use?”
-- Outline: announcement → access depends on plans/API/product → check official availability in your region → no guarantee of zero-cost usage.
+- Outline: October 13 paid/subscriber access expansion (not first announcement) → availability depends on paid plan/API and product → check official availability in your region → no guarantee of zero-cost usage.
 - Distinct narrator profile **B** (different cadence and voice from Short A).
 - Must revalidate product availability and any prices on release day; no unsourced currency claims.
 
