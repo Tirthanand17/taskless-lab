@@ -151,6 +151,26 @@ class Phase2EvidenceTests(unittest.TestCase):
         with self.assertRaises(EvidenceBlocked):
             self.verify(research=new_research,caps=[self.captures[0],new_capture])
 
+    def test_sibling_hosts_under_one_registrable_domain_are_not_independent(self):
+        official,independent=self.research.sources
+        official2=replace(official,url="https://docs.example.org/reference")
+        independent2=replace(independent,url="https://blog.example.org/guide")
+        research=replace(self.research,sources=(official2,independent2))
+        caps=[capture(official2,body=OFFICIAL_QUOTE),
+              capture(independent2,body=INDEPENDENT_QUOTE)]
+        with self.assertRaises(EvidenceBlocked):
+            self.verify(research=research,caps=caps)
+
+    def test_same_owner_co_uk_suffix_heuristic_rejected(self):
+        official,independent=self.research.sources
+        official2=replace(official,url="https://docs.example.co.uk/reference")
+        independent2=replace(independent,url="https://blog.example.co.uk/guide")
+        research=replace(self.research,sources=(official2,independent2))
+        caps=[capture(official2,body=OFFICIAL_QUOTE),
+              capture(independent2,body=INDEPENDENT_QUOTE)]
+        with self.assertRaises(EvidenceBlocked):
+            self.verify(research=research,caps=caps)
+
     def test_oversized_source_capture_denied(self):
         huge="X"*131073
         big=capture(self.research.sources[0],body=huge)
