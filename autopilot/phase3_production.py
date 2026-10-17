@@ -243,7 +243,7 @@ class Phase3Coordinator:
         hooks=self.base.artifacts.get("hooks")
         language_review=self.base.artifacts.get("language_review")
         if stage=="storyboard":
-            artifact.validate(script,hooks,kind=self.base.workflow.contracts[f"{self.base.episode_id.lower()}:script"].owner.split(".")[1].replace("shorts_writer","short").replace("longform_writer","long"),language=self.base.workflow.contracts[f"{self.base.episode_id.lower()}:script"].episode_id and self.base.workflow.contracts[f"{self.base.episode_id.lower()}:script"].objective.split(" for ")[1].split(" ")[1])
+            artifact.validate(script,hooks,kind=self.base.kind,language=self.base.language)
             refs=(digest(script),digest(hooks))
         elif stage=="voice_plan":
             localized=self.base.artifacts.get("english" if artifact.language=="en" else "hindi")
