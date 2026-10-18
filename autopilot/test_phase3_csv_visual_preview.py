@@ -7,7 +7,7 @@ import unittest
 
 from autopilot.phase3_csv_visual_preview import (
     english_script_rows, visual_frame, render_visual_preview,
-    _estimated_caption_at, _english_srt_timing,
+    _estimated_caption_at, _english_srt_timing, _illustrative_csv_data,
 )
 
 
@@ -36,6 +36,48 @@ class ProceduralCsvVideoTests(unittest.TestCase):
         a=visual_frame(1,width=360)
         b=visual_frame(1.8,width=360)
         self.assertNotEqual(a.tobytes(),b.tobytes())
+
+    def test_displayed_dataset_matches_real_executed_example(self):
+        from autopilot.examples.flowminute_csv_demo import (
+            COLUMNS, ROWS, demonstrate_csv_total,
+        )
+        bound = _illustrative_csv_data()
+        calc = demonstrate_csv_total()
+        self.assertEqual(COLUMNS,("product","units","price"))
+        self.assertEqual(
+            tuple((r["product"],r["units"],r["price"]) for r in ROWS),
+            tuple(row[:3] for row in bound),
+        )
+        self.assertEqual(tuple(row[3] for row in bound),(20,30,8))
+        self.assertEqual(sum(row[3] for row in bound),calc["total"])
+        self.assertEqual(calc["total"],58)
+        self.assertFalse(calc["purchased_anything"])
+        self.assertFalse(calc["publishing_authorized"])
+
+    def test_four_separate_source_relevant_visual_scenes(self):
+        from autopilot.phase3_csv_visual_preview import SCENES
+        self.assertEqual([(a,b) for a,b,*_ in SCENES],
+                         [(0,10),(10,20),(20,30),(30,42)])
+        self.assertIn("UNITS",SCENES[0][3])
+        self.assertIn("PRICE",SCENES[1][3])
+        self.assertIn("DICTREADER",SCENES[2][2])
+        self.assertIn("TOTAL",SCENES[3][2])
+        samples=[visual_frame(moment,width=360).tobytes()
+                 for moment in (5,15,25,35)]
+        self.assertEqual(len(set(samples)),4)
+
+    def test_english_visual_data_tamper_fails_closed(self):
+        from unittest.mock import patch
+        from autopilot.phase3_csv_visual_preview import _illustrative_csv_data
+        with patch("autopilot.phase3_csv_visual_preview.demonstrate_csv_total",
+                   return_value={"dataset_is_fictional":True,
+                                 "purchased_anything":False,
+                                 "youtube_uploaded":False,
+                                 "publishing_authorized":False,
+                                 "total":59,
+                                 "rows":[{"product":"Pen","line_total":20}]}):
+            with self.assertRaises(ValueError):
+                _illustrative_csv_data()
 
     def test_frame_repeatability_for_exact_time(self):
         self.assertEqual(visual_frame(1,width=360).tobytes(),

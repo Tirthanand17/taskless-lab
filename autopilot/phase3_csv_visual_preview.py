@@ -20,15 +20,50 @@ from functools import lru_cache
 
 from PIL import Image, ImageDraw, ImageFont
 from .phase3_voice_subtitle_handoff import build_subtitles_from_authored_csv
+from .examples.flowminute_csv_demo import (
+    COLUMNS as DEMO_COLUMNS, ROWS as DEMO_ROWS, demonstrate_csv_total,
+)
 
 SCRIPT = (Path(__file__).parent / "research_briefs" /
           "2026-10-17_csv_bilingual_one_day_scripts_DRAFT.md")
 SCENES = (
-    (0, 10, "CSV: FROM ROWS TO MEANING", "THREE COLUMNS"),
-    (10, 20, "FICTIONAL SAMPLE DATA", "PEN  |  NOTEBOOK  |  ERASER"),
+    (0, 10, "CSV: FROM ROWS TO MEANING", "PRODUCT  |  UNITS  |  PRICE"),
+    (10, 20, "FICTIONAL SAMPLE DATA", "THREE PRODUCTS, EXAMPLE PRICES"),
     (20, 30, "PYTHON DICTREADER", "READ COLUMNS BY NAME"),
     (30, 42, "EXAMPLE TOTAL", "20 + 30 + 8"),
 )
+
+
+def _illustrative_csv_data() -> tuple[tuple[str, str, str, int], ...]:
+    """Return verified example products and their real executable row totals.
+
+    Never read personal data; fail closed if the displayed example could
+    misrepresent the original spoken fictitious 58-unit lesson.
+    """
+    computed = demonstrate_csv_total()
+    if (tuple(DEMO_COLUMNS) != ("product", "units", "price")
+            or computed.get("dataset_is_fictional") is not True
+            or computed.get("purchased_anything") is not False
+            or computed.get("youtube_uploaded") is not False
+            or computed.get("publishing_authorized") is not False
+            or computed.get("total") != 58
+            or len(DEMO_ROWS) != 3
+            or len(computed["rows"]) != len(DEMO_ROWS)):
+        raise ValueError("English visual example no longer matches fictional CSV lesson")
+    result = []
+    for row, assessed in zip(DEMO_ROWS, computed["rows"]):
+        if (set(row) != set(DEMO_COLUMNS)
+                or assessed["product"] != row["product"]
+                or row["product"] not in ("Pen", "Notebook", "Eraser")
+                or assessed["line_total"] != int(row["units"]) * int(row["price"])):
+            raise ValueError("English CSV graphic products or totals are inconsistent")
+        result.append((
+            row["product"], row["units"], row["price"], assessed["line_total"]
+        ))
+    if tuple(x[3] for x in result) != (20, 30, 8):
+        raise ValueError("English Short must match original arithmetic demonstration")
+    return tuple(result)
+
 FONTS = (
     "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
     "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf",
@@ -116,6 +151,7 @@ def visual_frame(time_s: float, *, width: int,
     text = english_script_rows() if spoken is None else spoken
     if len(text) != 4 or any(not isinstance(item, str) for item in text):
         raise ValueError("Four authored English captions required")
+    items = _illustrative_csv_data()
     height = width * 16 // 9
     factor = width / 540
     s = lambda n: round(n * factor)
@@ -159,45 +195,70 @@ def visual_frame(time_s: float, *, width: int,
     draw.text(xy((87, top+107)), detail, font=_font(s(16), bold=True),
               fill=(88, 236, 227))
 
-    if scene_idx in (0, 1):
-        values = (("PRODUCT", "Pen", "20"),
-                  ("UNITS", "Notebook", "30"),
-                  ("PRICE", "Eraser", "8"))
-        for i, (name, word, total) in enumerate(values):
-            y = top+155+i*78
-            draw.rounded_rectangle(xy((79, y, 458, y+66)), radius=s(13),
-                                   fill=(17, 90, 119, 205),
-                                   outline=(54, 201, 222, 162))
-            left = word if scene_idx == 1 else name
-            right = total if scene_idx == 1 else ("Pen", "2", "10")[i]
-            draw.text(xy((96, y+18)), left, font=_font(s(17), bold=True),
-                      fill=(225, 246, 251))
-            draw.text(xy((394, y+17)), right, font=_font(s(19), bold=True),
-                      fill=(249, 226, 152))
-        draw.text(xy((91, top+399)), "FICTIONAL SAMPLE DATA",
-                  font=_font(s(15), bold=True), fill=(90, 236, 217))
+    if scene_idx == 0:
+        # An actual table with three named headers, not three unrelated
+        # cards that confuse columns with product/amount rows.
+        headers = tuple(DEMO_COLUMNS)
+        positions = (93, 238, 378)
+        for i,heading in enumerate(headers):
+            draw.text(xy((positions[i], top+159)), heading.upper(),
+                      font=_font(s(15), bold=True), fill=(114,243,225))
+        for row_index,(product,units,price,_total) in enumerate(items):
+            y=top+204+row_index*58
+            draw.rounded_rectangle(xy((71,y,467,y+47)),radius=s(11),
+                                   fill=(18,88,120,215),
+                                   outline=(55,183,207,168))
+            for pos,word in zip(positions,(product,units,price)):
+                draw.text(xy((pos,y+13)),word,
+                          font=_font(s(17),bold=True),fill=(236,250,253))
+        draw.text(xy((89,top+403)),"FICTIONAL CSV TABLE",
+                  font=_font(s(14),bold=True),fill=(90,236,217))
+    elif scene_idx == 1:
+        # The narrated 3 fictional items now clearly show units, example
+        # price and total without confusing a unit with a product label.
+        for row_index,(product,units,price,total) in enumerate(items):
+            y=top+157+row_index*78
+            draw.rounded_rectangle(xy((73,y,468,y+65)),radius=s(13),
+                                   fill=(16,90,119,214),
+                                   outline=(54,201,222,162))
+            draw.text(xy((91,y+12)),product,
+                      font=_font(s(18),bold=True),fill=(236,250,252))
+            draw.text(xy((91,y+38)),f"{units} x {price} = {total}",
+                      font=_font(s(17)),fill=(245,220,160))
+        draw.text(xy((90,top+405)),"FICTIONAL UNITS  /  NO PURCHASE",
+                  font=_font(s(13),bold=True),fill=(90,236,217))
     elif scene_idx == 2:
-        code = ("import csv", "csv.DictReader(rows)", "row['product'] -> Pen",
-                "row['units']   -> 2")
+        # A four-line illustration of the *real in-memory demo pattern*:
+        # read the text from a written buffer before building DictReader.
+        code = (
+            "csv_text = output.getvalue()",
+            "source = StringIO(csv_text)",
+            "reader = csv.DictReader(source)",
+            "row['product']  ->  'Pen'",
+        )
         for i, line in enumerate(code):
-            draw.text(xy((72, top+158+i*56)), line, font=_font(s(17)),
-                      fill=(87, 239, 222) if i == 0 else (238, 247, 248))
-        draw.text(xy((87, top+399)), "ILLUSTRATIVE SIMULATION",
-                  font=_font(s(15), bold=True), fill=(249, 198, 118))
+            draw.text(xy((61, top+159+i*52)),line,
+                      font=_font(s(16)),
+                      fill=(87,239,222) if i==2 else (238,247,248))
+        draw.text(xy((86, top+401)),"ILLUSTRATIVE / NOT EXECUTED UI",
+                  font=_font(s(13),bold=True),fill=(249,198,118))
     else:
-        draw.text(xy((105, top+165)), "20 + 30 + 8",
-                  font=_font(s(29), bold=True), fill=(244, 252, 254))
-        center = (s(269), s(top+305))
-        radius = s(76+4*math.sin(time_s*2))
-        draw.ellipse((center[0]-radius, center[1]-radius,
-                      center[0]+radius, center[1]+radius),
-                     fill=(8, 146, 174, 194), outline=(110, 246, 217, 230),
-                     width=max(1, s(4)))
-        number = "58"
-        ft = _font(s(66), bold=True)
-        draw.text((center[0]-draw.textlength(number,font=ft)/2,center[1]-s(51)),
-                  number,font=ft,fill=(251,244,210))
-        draw.text(xy((88, top+408)), "EXAMPLE UNITS — NO PURCHASE",
+        totals=tuple(row[3] for row in items)
+        total=sum(totals)
+        formula=" + ".join(str(n) for n in totals)
+        draw.text(xy((105,top+165)),formula,
+                  font=_font(s(29),bold=True),fill=(244,252,254))
+        center=(s(269),s(top+305))
+        radius=s(76+4*math.sin(time_s*2))
+        draw.ellipse((center[0]-radius,center[1]-radius,
+                      center[0]+radius,center[1]+radius),
+                     fill=(8,146,174,194),outline=(110,246,217,230),
+                     width=max(1,s(4)))
+        number=str(total)
+        ft=_font(s(66),bold=True)
+        draw.text((center[0]-draw.textlength(number,font=ft)/2,
+                   center[1]-s(51)),number,font=ft,fill=(251,244,210))
+        draw.text(xy((88,top+408)),"EXAMPLE UNITS — NO PURCHASE",
                   font=_font(s(14)),fill=(148,239,236))
 
     # One original visual caption sample. Not actual speech synchronization.
