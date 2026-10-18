@@ -22,6 +22,12 @@ concurrency:
   cancel-in-progress: true
 jobs:
   short_render_and_quality_probe:
+    # Pull requests evaluate path filters over their whole cumulative diff.
+    # Draft PR #5 already includes media changes, so every agent commit
+    # otherwise retriggers the lengthy media job. Unit/media codec tests
+    # still run in Content Quality Gate; real full smoke is for manual
+    # dispatch or a PR explicitly marked ready for review.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false
     runs-on: ubuntu-24.04
     timeout-minutes: 18
     env:
