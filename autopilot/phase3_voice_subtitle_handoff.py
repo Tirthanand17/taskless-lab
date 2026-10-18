@@ -7,8 +7,10 @@ a waveform cannot prove identity, licensing, language or natural human speech.
 """
 from __future__ import annotations
 
+from array import array
 from dataclasses import dataclass
 from hashlib import sha256
+import sys
 from pathlib import Path
 import math
 import re
@@ -197,22 +199,27 @@ def inspect_external_voice_wav(
                     or not 0.25<=samples/rate<=600
                     or abs(samples/rate-expected_seconds)>1.5):
                 raise WorkflowError("Voice waveform properties or duration inconsistent")
-            import audioop
             checked=0
             peak=0
-            rms_sum=0.0
-            # Loop bounded by file size, no buffering huge recordings in memory.
+            energy_sum=0
+            pcm_count=0
+            # WAV PCM samples are little-endian. Loop in bounded chunks and
+            # avoid deprecated audioop (removed from Python 3.13+).
             while True:
                 chunk=reader.readframes(4096)
                 if not chunk:
                     break
                 checked+=len(chunk)
-                peak=max(peak,audioop.max(chunk,2))
-                rms=audioop.rms(chunk,2)/32768
-                rms_sum+=rms*rms*(len(chunk)//(2*channels))
-            if checked==0 or peak==0:
-                raise WorkflowError("Silent WAV is not a narrator")
-            root_mean=math.sqrt(rms_sum/samples)
+                ints=array("h")
+                ints.frombytes(chunk)
+                if sys.byteorder != "little":
+                    ints.byteswap()
+                pcm_count+=len(ints)
+                peak=max(peak,max(abs(value) for value in ints))
+                energy_sum+=sum(value*value for value in ints)
+            if checked==0 or peak==0 or pcm_count!=samples*channels:
+                raise WorkflowError("Silent or incomplete WAV cannot be a narrator")
+            root_mean=math.sqrt(energy_sum/pcm_count)/32768
             if not 0.004 <= root_mean <= 0.9:
                 raise WorkflowError("Voice input energy outside expected level")
     except (wave.Error,EOFError,OSError) as exc:
