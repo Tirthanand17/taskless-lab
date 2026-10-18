@@ -23,17 +23,36 @@ from PIL import Image, ImageDraw, ImageFont, features
 from .agent_org import WorkflowError
 from .phase2r3_authored_pack_audit import _sections, _seconds, SOURCE, TIME
 from .phase3_voice_subtitle_handoff import build_subtitles_from_authored_csv
+from .examples.flowminute_csv_demo import (
+    COLUMNS as DEMO_HEADERS, ROWS as DEMO_ROWS, demonstrate_csv_total,
+)
 
 PROFILES = {
     "csv_tutorial_short_hi": ("short", 42, 4),
     "csv_tutorial_long_hi": ("long", 432, 24),
 }
-COLUMNS = (
-    ("product", "units", "price"),
-    ("Pen", "2", "10"),
-    ("Notebook", "1", "30"),
-    ("Eraser", "4", "2"),
-)
+# Rendered example data is *derived* from the actual runnable, network-free
+# CSV teaching demonstration, not separately edited fictional visual values.
+# Refuse to display inaccurate results even if a future draft changes the demo.
+_DEMO_PROOF = demonstrate_csv_total()
+if (tuple(DEMO_HEADERS) != ("product", "units", "price")
+        or tuple(row["product"] for row in DEMO_ROWS)
+        != ("Pen", "Notebook", "Eraser")
+        or _DEMO_PROOF.get("total") != 58
+        or _DEMO_PROOF.get("dataset_is_fictional") is not True
+        or _DEMO_PROOF.get("purchased_anything") is not False
+        or _DEMO_PROOF.get("youtube_uploaded") is not False
+        or _DEMO_PROOF.get("publishing_authorized") is not False):
+    raise WorkflowError("Executable fictional CSV lesson and graphics disagree")
+COLUMNS = (tuple(DEMO_HEADERS), *(
+    tuple(row[key] for key in DEMO_HEADERS) for row in DEMO_ROWS
+))
+_SAMPLE_LINE_TOTALS = tuple(row["line_total"] for row in _DEMO_PROOF["rows"])
+if (_SAMPLE_LINE_TOTALS != (20, 30, 8)
+        or any(type(value) is not int for value in _SAMPLE_LINE_TOTALS)):
+    raise WorkflowError("Fictional source row math has drifted from video")
+_SAMPLE_TOTAL = sum(_SAMPLE_LINE_TOTALS)
+
 
 # Each LONG video scene maps to its *actual authored* lesson concept. The old
 # renderer simply looped 4 generic scenes six times (position % 4), so
@@ -41,7 +60,8 @@ COLUMNS = (
 # could be paired with an unrelated 58-total graphic.
 #
 # Art modes: 0 CSV rows, 1 row math, 2 illustrative code,
-#            3 fictional total, 4 privacy, 5 workflow/recap.
+#            3 fictional total, 4 privacy, 5 workflow/recap,
+#            6 final three-pillar educational recap.
 # Titles are short enough for the existing Hindi/Latin font-safe header.
 LONG_SCENE_STORYBOARD = (
     (0, "CSV से शुरुआत"),
@@ -67,32 +87,53 @@ LONG_SCENE_STORYBOARD = (
     (5, "आगे ऑटोमेशन"),
     (2, "कोड का अभ्यास"),
     (5, "अगले सवाल"),
-    (3, "तीन ज़रूरी बातें"),
+    (6, "तीन ज़रूरी बातें"),
 )
 LONG_CODE_SNIPPETS = {
     5: ("import csv", "# Python standard library",
-        "# No external AI service", "# Educational example"),
-    6: ("import io", "csv_text = 'product,units,price'",
-        "stream = io.StringIO(csv_text)", "# In-memory illustration"),
-    7: ("fields = ['product','units','price']",
-        "writer = csv.DictWriter(stream,", "    fieldnames=fields)",
-        "writer.writeheader()"),
-    8: ("reader = csv.DictReader(stream)",
-        "for row in reader:", "    print(row['product'])", "# Named columns"),
-    9: ("units = int(row['units'])", "price = int(row['price'])",
-        "line_total = units * price", "# Fictional numbers"),
-    16: ('product = "Pen, blue"', "# Quotes protect the comma",
-         "csv.writer(stream).writerow([product])", "# Illustrative only"),
-    17: ('with open("demo.csv", newline="") as f:',
-         "    reader = csv.DictReader(f)", "# Documented newline rule",
-         "# No actual file is opened here"),
-    21: ("total = 20 + 30 + 8", "print(total)  # 58",
-         "# Original fictional CSV example", "# Try only safe sample data"),
+        "# No external AI service", "# Fictional teaching sample"),
+    6: ("from io import StringIO", 'out = StringIO(newline="")',
+        "# No external files opened", "# Local in-memory illustration"),
+    7: ("w = csv.DictWriter(out, fieldnames=COLUMNS)",
+        "w.writeheader()", "w.writerows(ROWS)",
+        "# Use the three fictional records"),
+    8: ("csv_text = out.getvalue()",
+        "source = StringIO(csv_text)", "reader = csv.DictReader(source)",
+        "# DictReader uses column names"),
+    9: ('units = int(row["units"])',
+        'price = int(row["price"])', "total += units * price",
+        "# Sample units are integers"),
+    16: ('name = "Pen, blue"', "# The comma is inside quotes",
+         "csv.writer(out).writerow([name])", "# CSV escapes the field"),
+    17: ('out = StringIO(newline="")',
+         "# newline='' applies to CSV file IO too",
+         "# Our demo only uses memory", "# No actual file is opened"),
+    21: ("result = demonstrate_csv_total()",
+         'print(result["total"])  # 58',
+         "# Reproducible fictional example", "# No account or purchase"),
 }
 LONG_ROW_CALLOUTS = {
-    11: "2 x 10 = 20  |  FICTIONAL",
-    12: "20 + 30 = 50  |  FICTIONAL",
-    13: "50 + 8 = 58  |  FICTIONAL",
+    11: f"{DEMO_ROWS[0]['units']} x {DEMO_ROWS[0]['price']}"
+        f" = {_SAMPLE_LINE_TOTALS[0]}  |  FICTIONAL",
+    12: f"{_SAMPLE_LINE_TOTALS[0]} + {_SAMPLE_LINE_TOTALS[1]}"
+        f" = {sum(_SAMPLE_LINE_TOTALS[:2])}  |  FICTIONAL",
+    13: f"{sum(_SAMPLE_LINE_TOTALS[:2])} + {_SAMPLE_LINE_TOTALS[2]}"
+        f" = {_SAMPLE_TOTAL}  |  FICTIONAL",
+}
+
+LONG_WORKFLOW_STEPS = {
+    10: ("RAW", "CHECK", "CLEAN", "USE"),
+    15: ("CSV TEXT", "PARSE", "CAST", "VERIFY"),
+    19: ("CREATE", "READ", "CHECK", "TOTAL"),
+    20: ("FORMAT", "RIGHTS", "VALIDATE", "SCALE"),
+    22: ("CSV", "DictReader", "QUESTION", "NEXT"),
+}
+LONG_WORKFLOW_FOOTERS = {
+    10: "CHECK MISSING / INVALID EXAMPLE ROWS",
+    15: "CSV TEXT  →  int()  →  CHECK",
+    19: "CREATE  →  READ  →  VALIDATE  →  TOTAL",
+    20: "FUTURE CONCEPT  /  NOT REAL DATA",
+    22: "COMMENT: CSV, DictReader OR int()?",
 }
 
 FONT_CANDIDATES = (
@@ -148,10 +189,13 @@ def _authored_profile(episode_id: str):
         raise WorkflowError("Original authored voice scene timing altered")
     if kind=="long" and (
         len(LONG_SCENE_STORYBOARD)!=len(beats)
-        or any(mode not in range(6) or not title or len(title)>38
+        or any(mode not in range(7) or not title or len(title)>38
                for mode,title in LONG_SCENE_STORYBOARD)
         or set(LONG_CODE_SNIPPETS)!={i for i,(mode,_) in
                                     enumerate(LONG_SCENE_STORYBOARD) if mode==2}
+        or set(LONG_WORKFLOW_STEPS)!={i for i,(mode,_) in
+                                    enumerate(LONG_SCENE_STORYBOARD) if mode==5}
+        or set(LONG_WORKFLOW_FOOTERS)!=set(LONG_WORKFLOW_STEPS)
     ):
         raise WorkflowError("Full long-form storyboard requires one semantic scene per beat")
     script_srt=build_subtitles_from_authored_csv()[episode_id]["srt"]
@@ -285,7 +329,10 @@ def render_hindi_frame(
     elif mode==1:
         # Real explanatory contrast: fictional row contributions, not
         # the previous static table or a fabricated live app screenshot.
-        contributions=(("Pen",20),("Notebook",30),("Eraser",8))
+        contributions=tuple(
+            (row["product"], value)
+            for row,value in zip(DEMO_ROWS,_SAMPLE_LINE_TOTALS)
+        )
         label_font=_font(r(15 if kind=="short" else 21))
         bar_left=left+(133 if kind=="short" else 225)
         bar_right=right-38
@@ -347,9 +394,8 @@ def render_hindi_frame(
                font=font,fill=(170,238,221))
     elif mode==5:
         # Four-step educational diagram, not a fabricated live app UI.
-        labels=("CSV","READ","VALIDATE","CHECK")
-        if kind=="long" and position==22:
-            labels=("CSV","DictReader","QUESTION","NEXT")
+        labels=(LONG_WORKFLOW_STEPS[position] if kind=="long"
+                else ("CSV","READ","VALIDATE","CHECK"))
         line_y=top+143+bob if kind=="short" else top+127+bob
         pad=(right-left-62)/4
         for i,step in enumerate(labels):
@@ -364,10 +410,30 @@ def render_hindi_frame(
             if i<3:
                 d.line((x(xx+pad-7),x(line_y+27),x(xx+pad+5),x(line_y+27)),
                        fill=(120,225,223,240),width=r(2))
-        caption="SOURCE  →  COLS  →  VALIDATE  →  EXAMPLE"
+        caption=(LONG_WORKFLOW_FOOTERS[position] if kind=="long"
+                 else "SOURCE  →  COLS  →  VALIDATE  →  EXAMPLE")
         d.text((x(left+28),x(bottom-50+bob)),caption,
                font=_font(r(15 if kind=="short" else 18)),
                fill=(167,240,215))
+    elif mode==6:
+        # Unlike the calculation-result scene, the final 18-second narration
+        # summarizes *three actions*. Show those three distinct outcomes.
+        pillars=(("SOURCE","CLEAN"),("FIELDS","NAMED"),
+                 ("TOTAL",f"CHECK {_SAMPLE_TOTAL}"))
+        available=(right-left-50)/3
+        for col,(heading,result) in enumerate(pillars):
+            xx=left+23+available*col
+            yy=top+95+bob
+            d.rounded_rectangle((x(xx),x(yy),x(xx+available-13),x(yy+99)),
+                                radius=r(13),fill=(22,107,126,235),
+                                outline=(102,229,219,207),width=r(2))
+            textfont=_font(r(16 if kind=="long" else 14))
+            d.text((x(xx+17),x(yy+16)),heading,font=textfont,
+                   fill=(137,252,224))
+            d.text((x(xx+17),x(yy+53)),result,font=textfont,
+                   fill=(251,247,221))
+        d.text((x(left+23),x(bottom-28+bob)),"FICTIONAL CSV LESSON / RECAP",
+               font=_font(r(15)),fill=(159,239,215))
     else:
         center=(x(canvas_w/2),x(top+246+bob if kind=="short" else top+147+bob))
         rad=r(82 if kind=="short" else 96)
@@ -375,8 +441,11 @@ def render_hindi_frame(
                   fill=(9,145,169,192),outline=(96,245,211,235),width=r(4))
         ff=_font(r(68 if kind=="short" else 90))
         w=d.textlength("58",font=ff)
-        d.text((center[0]-w/2,center[1]-r(48)), "58",font=ff,fill=(253,246,201))
-        d.text((x(left+55),x(bottom-51+bob)),"20 + 30 + 8 = 58 EXAMPLE UNITS",
+        d.text((center[0]-w/2,center[1]-r(48)), str(_SAMPLE_TOTAL),font=ff,
+               fill=(253,246,201))
+        d.text((x(left+55),x(bottom-51+bob)),
+               f"{_SAMPLE_LINE_TOTALS[0]} + {_SAMPLE_LINE_TOTALS[1]}"
+               f" + {_SAMPLE_LINE_TOTALS[2]} = {_SAMPLE_TOTAL} EXAMPLE UNITS",
                font=_font(r(16)),fill=(142,231,223))
 
     caption_box=(735,899) if kind=="short" else (449,505)

@@ -72,14 +72,14 @@ class HindiRealVisualTests(unittest.TestCase):
         self.assertEqual(len(LONG_SCENE_STORYBOARD),24)
         self.assertEqual(len({label for _,label in LONG_SCENE_STORYBOARD}),24)
         self.assertEqual(set(mode for mode,_ in LONG_SCENE_STORYBOARD),
-                         {0,1,2,3,4,5})
+                         {0,1,2,3,4,5,6})
         # No generic position%4 cycling: actual narrative flow is
         # intro -> privacy -> CSV concepts -> writer/reader -> math ->
         # CSV edge cases -> privacy -> recap.
         for index,mode in {
             0:0,1:4,2:0,5:2,6:2,7:2,8:2,9:2,10:5,
             11:1,12:1,13:1,14:3,16:2,17:2,18:4,19:5,
-            20:5,21:2,22:5,23:3,
+            20:5,21:2,22:5,23:6,
         }.items():
             with self.subTest(scene=index):
                 self.assertEqual(LONG_SCENE_STORYBOARD[index][0],mode)
@@ -114,10 +114,67 @@ class HindiRealVisualTests(unittest.TestCase):
                     code_font.getbbox(line)[3] for line in lines)
                 self.assertLess(last_line_bottom,footer_top-5)
 
+    def test_all_long_workflows_show_lesson_specific_checks(self):
+        from autopilot.phase3_hindi_visual_preview import (
+            LONG_WORKFLOW_STEPS, LONG_WORKFLOW_FOOTERS,
+            LONG_SCENE_STORYBOARD,
+        )
+        self.assertEqual(set(LONG_WORKFLOW_STEPS),{10,15,19,20,22})
+        self.assertEqual(set(LONG_WORKFLOW_FOOTERS),set(LONG_WORKFLOW_STEPS))
+        for index,labels in LONG_WORKFLOW_STEPS.items():
+            with self.subTest(index=index):
+                self.assertEqual(LONG_SCENE_STORYBOARD[index][0],5)
+                self.assertEqual(len(labels),4)
+                self.assertTrue(all(len(x)<=12 for x in labels))
+        self.assertIn("INVALID",LONG_WORKFLOW_FOOTERS[10])
+        self.assertIn("int()",LONG_WORKFLOW_FOOTERS[15])
+        self.assertIn("RIGHTS",LONG_WORKFLOW_STEPS[20])
+        self.assertIn("QUESTION",LONG_WORKFLOW_STEPS[22])
+
+    def test_visual_totals_are_derived_from_executed_csv_lesson(self):
+        from autopilot.examples.flowminute_csv_demo import (
+            COLUMNS as DEMO_HEADERS, ROWS as DEMO_ROWS, demonstrate_csv_total,
+        )
+        from autopilot.phase3_hindi_visual_preview import (
+            COLUMNS, LONG_ROW_CALLOUTS, _SAMPLE_LINE_TOTALS, _SAMPLE_TOTAL,
+        )
+        proof=demonstrate_csv_total()
+        self.assertEqual(tuple(DEMO_HEADERS),COLUMNS[0])
+        self.assertEqual(tuple(tuple(row[k] for k in DEMO_HEADERS)
+                               for row in DEMO_ROWS),COLUMNS[1:])
+        self.assertEqual(tuple(line["line_total"] for line in proof["rows"]),
+                         _SAMPLE_LINE_TOTALS)
+        self.assertEqual(proof["total"],_SAMPLE_TOTAL)
+        self.assertEqual(_SAMPLE_LINE_TOTALS,(20,30,8))
+        self.assertIn("20",LONG_ROW_CALLOUTS[11])
+        self.assertIn("50",LONG_ROW_CALLOUTS[12])
+        self.assertIn("58",LONG_ROW_CALLOUTS[13])
+        self.assertFalse(proof["publishing_authorized"])
+
+    def test_code_overlays_are_consistent_with_real_in_memory_demo(self):
+        from autopilot.phase3_hindi_visual_preview import LONG_CODE_SNIPPETS
+        combined="\\n".join(" ".join(x) for x in LONG_CODE_SNIPPETS.values())
+        self.assertIn("w.writerows(ROWS)",combined)
+        self.assertIn("w.writeheader()",combined)
+        self.assertIn("DictReader(source)",combined)
+        self.assertIn("StringIO(newline=",combined)
+        self.assertIn('int(row["units"])',combined)
+        self.assertIn("58",combined)
+        self.assertNotIn('open("demo.csv"',combined)
+        self.assertNotIn("writer = csv.DictWriter(stream,",combined)
+
+    def test_final_long_recap_uses_three_stages_not_only_a_number(self):
+        from autopilot.phase3_hindi_visual_preview import LONG_SCENE_STORYBOARD
+        self.assertEqual(LONG_SCENE_STORYBOARD[23][0],6)
+        ending=render_hindi_frame("csv_tutorial_long_hi",423,width=640)
+        result=render_hindi_frame("csv_tutorial_long_hi",261,width=640)
+        self.assertNotEqual(ending.tobytes(),result.tobytes())
+        self.assertFalse(ending.getbbox() is None)
+
     def test_privacy_math_and_workflow_long_frames_render_distinctly(self):
         # The same long video now has multiple source-specific visual modes
         # whose actual pixels render; no external graphic/voice is fetched.
-        slots=[1,5,11,14,19,22]
+        slots=[1,5,11,14,19,22,23]
         images=[render_hindi_frame("csv_tutorial_long_hi",
                     i*18+9,width=640) for i in slots]
         self.assertTrue(all(img.size==(640,360) for img in images))
