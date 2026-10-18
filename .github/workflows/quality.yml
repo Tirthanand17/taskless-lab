@@ -23,6 +23,13 @@ jobs:
           fi
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
+      - name: Install Devanagari shaping fonts when absent
+        run: |
+          if [ ! -f /usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq fonts-noto-core
+          fi
+          test -f /usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf
       - name: Run tests
         run: python -m pytest -q
       - name: Validate episode editorial metadata (not publish approval)
