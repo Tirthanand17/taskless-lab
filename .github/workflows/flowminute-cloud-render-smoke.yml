@@ -30,6 +30,8 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
+          sudo apt-get install -y -qq fonts-noto-core
+          test -f /usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf
           python -m pip install 'pillow>=11,<13'
           cd motion-v2
           npm install --no-audit --no-fund
@@ -66,6 +68,22 @@ jobs:
           test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 /tmp/flowminute-cloud-preview/csv-visual-only.mp4)" = "360"
           test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of csv=p=0 /tmp/flowminute-cloud-preview/csv-visual-only.mp4 | wc -l)" = "0"
           echo "ORIGINAL_CSV_VISUAL_MP4_DECODED__NOT_READY_TO_PUBLISH"
+      - name: Render actual Hindi Short and 16x9 long visual-only QA
+        run: |
+          set -euo pipefail
+          python -m autopilot.phase3_hindi_visual_preview \
+            --episode csv_tutorial_short_hi \
+            --output /tmp/flowminute-cloud-preview/csv-hindi-short-visual.mp4 \
+            --duration 0.5 --fps 8 --width 360
+          python -m autopilot.phase3_hindi_visual_preview \
+            --episode csv_tutorial_long_hi \
+            --output /tmp/flowminute-cloud-preview/csv-hindi-long-visual.mp4 \
+            --duration 0.5 --fps 8 --width 640
+          for f in /tmp/flowminute-cloud-preview/csv-hindi-{short,long}-visual.mp4; do
+            ffmpeg -nostdin -v error -xerror -i "$f" -f null -
+            test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of csv=p=0 "$f" | wc -l)" = "0"
+          done
+          echo "HINDI_GLYPHS_PORTRAIT_LANDSCAPE_VIDEO_ONLY_PREVIEWS_PASS"
       - name: Discard video output; never store public/unreviewed drafts
         if: always()
         run: rm -rf /tmp/flowminute-cloud-preview
