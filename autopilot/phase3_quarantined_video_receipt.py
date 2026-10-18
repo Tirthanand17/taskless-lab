@@ -21,6 +21,7 @@ from .phase3_visual_signal_audit import (
     EPISODES, MAX_MEDIA_BYTES, inspect_authored_visual_signal,
 )
 from .phase3_voice_subtitle_handoff import build_subtitles_from_authored_csv
+from .phase2r3_audience_language_lanes import prepare_audience_language_lanes
 
 VERSION="flowminute-quarantine-video-receipt-v1"
 MAX_SCRIPT_BYTES=50_000
@@ -71,6 +72,26 @@ def _canonical_bytes(obj:dict)->bytes:
                       separators=(",",":"),allow_nan=False).encode("utf-8")
 
 
+def _language_plan_digest(episode_id:str)->tuple[str,str,str]:
+    """The intended original voice/caption/metadata lane, never real targeting."""
+    lanes=prepare_audience_language_lanes()["episodes"]
+    one=next((x for x in lanes if x["episode_id"]==episode_id),None)
+    if one is None or one["ready_for_upload"] or one["actual_audio_language_verified"]:
+        raise WorkflowError("Missing or falsely approved audience-language lane")
+    # Bind metadata proposal and intended voice plan to exact original script.
+    fields={
+        k:one[k] for k in (
+            "episode_id","original_spoken_language",
+            "intended_viewer_language","title","description",
+            "subtitle_language","thumbnail_language","narrator_plan_id",
+            "related_long_episode_id","script_section_sha256",
+            "script_spoken_text_sha256","draft_srt_sha256",
+        )
+    }
+    return (sha256(_canonical_bytes(fields)).hexdigest(),
+            one["original_spoken_language"],one["narrator_plan_id"])
+
+
 def create_quarantined_video_receipt(*, episode_id:str,mp4:Path)->dict:
     """Bind actual silent media and actual video pixel QA to draft script.
 
@@ -90,6 +111,7 @@ def create_quarantined_video_receipt(*, episode_id:str,mp4:Path)->dict:
     if signal["publishing_authorized"]:
         raise WorkflowError("Media sampling must never authorize publishing")
     script_section_sha,script_document_sha=_bound_script(episode_id)
+    language_hash,original_language,narrator_plan=_language_plan_digest(episode_id)
     duration,width,height,fps,frames=EPISODES[episode_id]
     pixel=signal["visual_signal"]
     record={
@@ -101,6 +123,11 @@ def create_quarantined_video_receipt(*, episode_id:str,mp4:Path)->dict:
         "authored_script_section_sha256":script_section_sha,
         "authored_script_document_sha256":script_document_sha,
         "estimated_srt_sha256":_current_srt_digest(episode_id),
+        "audience_language_lane_sha256":language_hash,
+        "original_language_intended":original_language,
+        "audience_language_intended":original_language,
+        "narrator_plan_id":narrator_plan,
+        "audience_language_recommendation_guaranteed":False,
         "estimated_subtitles_are_speech_aligned":False,
         "video_width":width,"video_height":height,
         "video_duration_seconds":duration,
@@ -146,6 +173,8 @@ def verify_quarantined_receipt(*,receipt:dict,episode_id:str,mp4:Path)->dict:
     needed={
         "format_version","status","episode_id","video_sha256",
         "video_size_bytes","authored_script_section_sha256",
+        "audience_language_lane_sha256","original_language_intended",
+        "audience_language_intended","narrator_plan_id",
         "authored_script_document_sha256","estimated_srt_sha256",
         "receipt_integrity_sha256","publishing_authorized",
     }
@@ -162,6 +191,7 @@ def verify_quarantined_receipt(*,receipt:dict,episode_id:str,mp4:Path)->dict:
     if not isinstance(digest,str) or len(digest)!=64 or sha256(_canonical_bytes(bare)).hexdigest()!=digest:
         raise WorkflowError("Local receipt field integrity mismatch")
     for flag in (
+        "audience_language_recommendation_guaranteed",
         "estimated_subtitles_are_speech_aligned",
         "media_has_narration","narrator_identity_authenticated",
         "two_distinct_short_voices_authenticated",
@@ -181,6 +211,12 @@ def verify_quarantined_receipt(*,receipt:dict,episode_id:str,mp4:Path)->dict:
         raise WorkflowError("Media bytes changed after visual inspection")
     if receipt["video_size_bytes"]!=Path(mp4).stat().st_size:
         raise WorkflowError("Media size changed after inspection")
+    lanesha,language,narrator=_language_plan_digest(episode_id)
+    if (receipt["audience_language_lane_sha256"]!=lanesha
+            or receipt["original_language_intended"]!=language
+            or receipt["audience_language_intended"]!=language
+            or receipt["narrator_plan_id"]!=narrator):
+        raise WorkflowError("Video receipt mismatches intended spoken/metadata language")
     script,document=_bound_script(episode_id)
     if (receipt["authored_script_section_sha256"]!=script
             or receipt["authored_script_document_sha256"]!=document
