@@ -97,7 +97,7 @@ class HindiRealVisualTests(unittest.TestCase):
     def test_bounds_fail_closed(self):
         with self.assertRaises(WorkflowError):
             render_hindi_frame("not_a_video",1,width=360)
-        for width in (0,600,1080):
+        for width in (0,600,1000):
             with self.subTest(width=width),self.assertRaises(WorkflowError):
                 render_hindi_frame("csv_tutorial_short_hi",1,width=width)
         with self.assertRaises(WorkflowError):
