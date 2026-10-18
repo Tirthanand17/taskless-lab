@@ -92,6 +92,28 @@ class HindiRealVisualTests(unittest.TestCase):
         self.assertIn("50",LONG_ROW_CALLOUTS[12])
         self.assertIn("58",LONG_ROW_CALLOUTS[13])
 
+    def test_landscape_code_overlay_stays_inside_card_and_above_footer(self):
+        from PIL import Image, ImageDraw
+        from autopilot.phase3_hindi_visual_preview import (
+            LONG_CODE_SNIPPETS,
+        )
+        from autopilot.phase3_hindi_visual_preview import _font as font
+        draw=ImageDraw.Draw(Image.new("RGB",(960,540)))
+        code_font=font(22)
+        left,right=44,960-44
+        code_left=left+43
+        code_right=right-20
+        footer_top=(425-184)-26
+        for index,lines in LONG_CODE_SNIPPETS.items():
+            with self.subTest(scene=index):
+                self.assertEqual(len(lines),4)
+                for line in lines:
+                    self.assertLess(draw.textlength(line,font=code_font),
+                                    code_right-code_left)
+                last_line_bottom=63+3*36+max(
+                    code_font.getbbox(line)[3] for line in lines)
+                self.assertLess(last_line_bottom,footer_top-5)
+
     def test_privacy_math_and_workflow_long_frames_render_distinctly(self):
         # The same long video now has multiple source-specific visual modes
         # whose actual pixels render; no external graphic/voice is fetched.

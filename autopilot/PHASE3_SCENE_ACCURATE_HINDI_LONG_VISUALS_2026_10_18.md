@@ -20,3 +20,8 @@ The previously implemented 432-second / 24-scene Hindi long tutorial reused just
 All diagrams are custom motion graphics drawn with existing Pillow/System Noto Devanagari fonts/FFmpeg, not photorealistic assets. Their layout semantics are improved, but **independent human visual/art direction**, actual native-language voiced timing, real professional 3D/VFX, genuine licensed narration, publication and analytics remain unverified.
 
 Existing caption rendering, full-HD smoke, original voice/source script, SHA-bound media receipt checks, no-audio/no-publish controls, sample data and consistent branding stay in place. Regression tests prove 24 unique textual scene topics and actual code/maths/privacy/process frame drawing. Synthetic cloud smoke renders remain ephemeral and should be checked separately on exact commit. No real media stored, no external graphics/models/download, no user's PC/Nirala, new service or paid charges. Both PRs remain DRAFT/unmerged; budget recurring ₹0; **21 production acceptance subphases across six major incomplete phases remain**.
+
+
+## Landscape code-card typography safety
+
+During the 24-scene rewrite, the landscape panel was found to have inherited a four-line code layout whose fourth line extended below the content card and could overlap its `ILLUSTRATIVE SIMULATION` provenance label. Code was moved higher, its line spacing tightened and its Latin font moderately reduced **only for the landscape long-video code scenes**. The short-video code panel is unchanged. The added test evaluates all scene-specific code samples against the installed Latin font's actual text widths and verifies the fourth line fits above the footer with a measurable vertical gap. The render still requires independent human review at native HD.
