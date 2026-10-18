@@ -65,6 +65,44 @@ class HindiRealVisualTests(unittest.TestCase):
         y=render_hindi_frame("csv_tutorial_short_hi",1.25,width=360)
         self.assertNotEqual(x.tobytes(),y.tobytes())
 
+    def test_24_long_scenes_use_accurate_source_specific_storyboard(self):
+        from autopilot.phase3_hindi_visual_preview import (
+            LONG_SCENE_STORYBOARD, LONG_CODE_SNIPPETS, LONG_ROW_CALLOUTS,
+        )
+        self.assertEqual(len(LONG_SCENE_STORYBOARD),24)
+        self.assertEqual(len({label for _,label in LONG_SCENE_STORYBOARD}),24)
+        self.assertEqual(set(mode for mode,_ in LONG_SCENE_STORYBOARD),
+                         {0,1,2,3,4,5})
+        # No generic position%4 cycling: actual narrative flow is
+        # intro -> privacy -> CSV concepts -> writer/reader -> math ->
+        # CSV edge cases -> privacy -> recap.
+        for index,mode in {
+            0:0,1:4,2:0,5:2,6:2,7:2,8:2,9:2,10:5,
+            11:1,12:1,13:1,14:3,16:2,17:2,18:4,19:5,
+            20:5,21:2,22:5,23:3,
+        }.items():
+            with self.subTest(scene=index):
+                self.assertEqual(LONG_SCENE_STORYBOARD[index][0],mode)
+        self.assertEqual(
+            set(LONG_CODE_SNIPPETS),
+            {i for i,(mode,_) in enumerate(LONG_SCENE_STORYBOARD)
+             if mode==2},
+        )
+        self.assertEqual(set(LONG_ROW_CALLOUTS),{11,12,13})
+        self.assertIn("50",LONG_ROW_CALLOUTS[12])
+        self.assertIn("58",LONG_ROW_CALLOUTS[13])
+
+    def test_privacy_math_and_workflow_long_frames_render_distinctly(self):
+        # The same long video now has multiple source-specific visual modes
+        # whose actual pixels render; no external graphic/voice is fetched.
+        slots=[1,5,11,14,19,22]
+        images=[render_hindi_frame("csv_tutorial_long_hi",
+                    i*18+9,width=640) for i in slots]
+        self.assertTrue(all(img.size==(640,360) for img in images))
+        self.assertEqual(len({img.tobytes() for img in images}),len(images))
+        self.assertNotEqual(images[0].getpixel((320,190)),
+                            images[2].getpixel((320,190)))
+
     def test_cue_changes_during_first_video_scene(self):
         short=_authored_profile("csv_tutorial_short_hi")
         self.assertNotEqual(_shown_cue(short,500),_shown_cue(short,8500))

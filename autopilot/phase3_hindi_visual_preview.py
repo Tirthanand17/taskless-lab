@@ -34,6 +34,67 @@ COLUMNS = (
     ("Notebook", "1", "30"),
     ("Eraser", "4", "2"),
 )
+
+# Each LONG video scene maps to its *actual authored* lesson concept. The old
+# renderer simply looped 4 generic scenes six times (position % 4), so
+# narration about privacy, CSV validation, quoted cells or newline rules
+# could be paired with an unrelated 58-total graphic.
+#
+# Art modes: 0 CSV rows, 1 row math, 2 illustrative code,
+#            3 fictional total, 4 privacy, 5 workflow/recap.
+# Titles are short enough for the existing Hindi/Latin font-safe header.
+LONG_SCENE_STORYBOARD = (
+    (0, "CSV से शुरुआत"),
+    (4, "निजी डेटा नहीं"),
+    (0, "CSV के नाम वाले कॉलम"),
+    (0, "तीन नकली रिकॉर्ड"),
+    (4, "सिर्फ़ उदाहरण"),
+    (2, "Python में csv"),
+    (2, "मेमोरी में CSV"),
+    (2, "DictWriter चरण"),
+    (2, "DictReader चरण"),
+    (2, "टेक्स्ट से संख्या"),
+    (5, "डेटा वैलिडेशन"),
+    (1, "पेन की गणना"),
+    (1, "नोटबुक की गणना"),
+    (1, "इरेज़र की गणना"),
+    (3, "उदाहरण कुल 58"),
+    (5, "डेटा प्रकार जाँचें"),
+    (2, "कॉमा वाला CSV मान"),
+    (2, "newline नियम"),
+    (4, "सुरक्षित निजी डेटा"),
+    (5, "चार आसान चरण"),
+    (5, "आगे ऑटोमेशन"),
+    (2, "कोड का अभ्यास"),
+    (5, "अगले सवाल"),
+    (3, "तीन ज़रूरी बातें"),
+)
+LONG_CODE_SNIPPETS = {
+    5: ("import csv", "# Python standard library",
+        "# No external AI service", "# Educational example"),
+    6: ("import io", "csv_text = 'product,units,price'",
+        "stream = io.StringIO(csv_text)", "# In-memory illustration"),
+    7: ("fields = ['product','units','price']",
+        "writer = csv.DictWriter(stream,", "    fieldnames=fields)",
+        "writer.writeheader()"),
+    8: ("reader = csv.DictReader(stream)",
+        "for row in reader:", "    print(row['product'])", "# Named columns"),
+    9: ("units = int(row['units'])", "price = int(row['price'])",
+        "line_total = units * price", "# Fictional numbers"),
+    16: ('product = "Pen, blue"', "# Quotes protect the comma",
+         "csv.writer(stream).writerow([product])", "# Illustrative only"),
+    17: ('with open("demo.csv", newline="") as f:',
+         "    reader = csv.DictReader(f)", "# Documented newline rule",
+         "# No actual file is opened here"),
+    21: ("total = 20 + 30 + 8", "print(total)  # 58",
+         "# Original fictional CSV example", "# Try only safe sample data"),
+}
+LONG_ROW_CALLOUTS = {
+    11: "2 x 10 = 20  |  FICTIONAL",
+    12: "20 + 30 = 50  |  FICTIONAL",
+    13: "50 + 8 = 58  |  FICTIONAL",
+}
+
 FONT_CANDIDATES = (
     "/usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf",
     "/usr/share/fonts/truetype/noto/NotoSansDevanagariUI-Regular.ttf",
@@ -85,6 +146,14 @@ def _authored_profile(episode_id: str):
         beats[i-1][1]!=beats[i][0] for i in range(1,len(beats))
     ):
         raise WorkflowError("Original authored voice scene timing altered")
+    if kind=="long" and (
+        len(LONG_SCENE_STORYBOARD)!=len(beats)
+        or any(mode not in range(6) or not title or len(title)>38
+               for mode,title in LONG_SCENE_STORYBOARD)
+        or set(LONG_CODE_SNIPPETS)!={i for i,(mode,_) in
+                                    enumerate(LONG_SCENE_STORYBOARD) if mode==2}
+    ):
+        raise WorkflowError("Full long-form storyboard requires one semantic scene per beat")
     script_srt=build_subtitles_from_authored_csv()[episode_id]["srt"]
     subtitles=[]
     for block in script_srt.strip().split("\n\n"):
@@ -181,11 +250,14 @@ def render_hindi_frame(
                         radius=r(24),fill=(7,44,71,240),
                         outline=(57,212,225,205),width=r(2))
 
-    # Semantic content changes with actual authored scene number, not just
-    # a slideshow of arbitrary cards. Four repeating styles reuse the same
-    # tiny original fictional CSV dataset, never private user information.
-    mode=position%4
-    label=("CSV के 3 कॉलम","काल्पनिक डेटा","DictReader उदाहरण","कुल = 58")[mode]
+    # Short scenes retain their original four source-aligned concepts.
+    # The 24 long scenes use a hand-authored, scene-specific plan instead
+    # of the old repetitive position % 4 template. Still an illustration.
+    if kind=="long":
+        mode,label=LONG_SCENE_STORYBOARD[position]
+    else:
+        mode=position
+        label=("CSV के 3 कॉलम","काल्पनिक डेटा","DictReader उदाहरण","कुल = 58")[mode]
     devanagari=_font(r(22 if kind=="short" else 26),devanagari=True)
     d.text((x(left+25),x(top+25+bob)),label,font=devanagari,fill=(239,250,249))
     if mode==0:
@@ -221,6 +293,7 @@ def render_hindi_frame(
         origin=top+(115 if kind=="short" else 95)
         interval=79 if kind=="short" else 54
         progress=min(1,max(0.2,(time_seconds-beats[position][0]/1000)/2))
+        focus_row={11:0,12:1,13:2}.get(position) if kind=="long" else None
         for row_index,(item,units) in enumerate(contributions):
             cy=origin+row_index*interval+bob
             d.text((x(left+29),x(cy+2)),item,font=label_font,fill=(229,242,247))
@@ -228,21 +301,66 @@ def render_hindi_frame(
                                 radius=r(8),fill=(22,84,114,215))
             span=max(12,round(length*(units/30)*progress))
             colors=((57,216,205,240),(248,195,100,240),(81,158,247,240))
+            fill=colors[row_index]
+            if focus_row is not None and row_index!=focus_row:
+                fill=(65,109,127,132)
             d.rounded_rectangle((x(bar_left),x(cy),x(bar_left+span),x(cy+25)),
-                                radius=r(8),fill=colors[row_index])
+                                radius=r(8),fill=fill)
             d.text((x(bar_right-53),x(cy-26 if kind=="long" else cy+28)),
                    str(units),font=label_font,fill=(252,250,215))
         d.text((x(left+30),x(bottom-50+bob)),
-               "20 + 30 + 8 = 58  |  FICTIONAL",
+               LONG_ROW_CALLOUTS.get(position,"20 + 30 + 8 = 58  |  FICTIONAL")
+               if kind=="long" else "20 + 30 + 8 = 58  |  FICTIONAL",
                font=_font(r(14 if kind=="short" else 17)),
                fill=(158,239,215))
     elif mode==2:
-        snippets=["import csv","csv.DictReader(rows)","row['units']  ->  2","row['price']  ->  10"]
+        snippets=(LONG_CODE_SNIPPETS[position] if kind=="long"
+                  else ("import csv","csv.DictReader(rows)",
+                        "row['units']  ->  2","row['price']  ->  10"))
         for i,code in enumerate(snippets):
             d.text((x(left+43),x(top+113+i*(68 if kind=="short" else 46)+bob)),
                    code,font=_font(r(20 if kind=="short" else 28)),fill=(128,238,220))
         d.text((x(left+33),x(bottom-51+bob)),"ILLUSTRATIVE SIMULATION",
                font=_font(r(13)),fill=(251,208,139))
+    elif mode==4:
+        # An explicit, illustrative privacy/data-rights visual—not a
+        # screenshot or assertion that real client accounts were accessed.
+        mid=x(canvas_w/2)
+        cy=x(top+171+bob if kind=="long" else top+218+bob)
+        rad=r(63 if kind=="long" else 76)
+        d.ellipse((mid-rad,cy-rad,mid+rad,cy+rad),
+                  fill=(9,89,109,180),outline=(93,232,213,220),width=r(4))
+        d.rounded_rectangle((mid-r(22),cy-r(5),mid+r(22),cy+r(30)),
+                            radius=r(8),fill=(112,226,204,220))
+        d.arc((mid-r(17),cy-r(29),mid+r(17),cy+r(15)),
+              180,360,fill=(230,250,247,250),width=r(5))
+        message="FICTIONAL DATA  /  NO REAL RECORDS"
+        font=_font(r(14 if kind=="short" else 18))
+        d.text((x(left+25),x(bottom-51+bob)),message,
+               font=font,fill=(170,238,221))
+    elif mode==5:
+        # Four-step educational diagram, not a fabricated live app UI.
+        labels=("CSV","READ","VALIDATE","CHECK")
+        if kind=="long" and position==22:
+            labels=("CSV","DictReader","QUESTION","NEXT")
+        line_y=top+143+bob if kind=="short" else top+127+bob
+        pad=(right-left-62)/4
+        for i,step in enumerate(labels):
+            xx=left+31+i*pad
+            d.rounded_rectangle((x(xx),x(line_y),x(xx+pad-9),x(line_y+54)),
+                                radius=r(9),fill=(15,93,111,226),
+                                outline=(83,218,216,212),width=r(2))
+            step_font=_font(r(13 if kind=="short" else 18))
+            tw=d.textlength(step,font=step_font)
+            d.text((x(xx+(pad-9)/2)-tw/2,x(line_y+15)),step,
+                   font=step_font,fill=(238,253,246))
+            if i<3:
+                d.line((x(xx+pad-7),x(line_y+27),x(xx+pad+5),x(line_y+27)),
+                       fill=(120,225,223,240),width=r(2))
+        caption="SOURCE  →  COLS  →  VALIDATE  →  EXAMPLE"
+        d.text((x(left+28),x(bottom-50+bob)),caption,
+               font=_font(r(15 if kind=="short" else 18)),
+               fill=(167,240,215))
     else:
         center=(x(canvas_w/2),x(top+246+bob if kind=="short" else top+147+bob))
         rad=r(82 if kind=="short" else 96)
