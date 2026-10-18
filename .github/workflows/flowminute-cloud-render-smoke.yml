@@ -204,3 +204,38 @@ jobs:
       - name: Discard video output; never store public/unreviewed drafts
         if: always()
         run: rm -rf /tmp/flowminute-cloud-preview
+
+  native_hd_long_silent_qa:
+    # Strictly ORIGINAL source video, no voice, credentials, cloud artifact
+    # upload, paid runner, OAuth or publishing permission.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    permissions:
+      contents: read
+    env:
+      CI: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install installed/free open-source Hindi video prerequisites
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core
+          python -m pip install 'pillow>=11,<13'
+          test -f /usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf
+          mkdir -p /tmp/flowminute-native-hd-long-silent-qa
+      - name: Render all 432 native-HD Hindi long seconds, probe and full decode
+        run: |
+          set -euo pipefail
+          # Fails rather than inflating a one-second proof into a complete movie.
+          # 432 individually bounded 24-frame clips; exactly 10,368 output frames.
+          timeout 850s python -m autopilot.phase3_full_hd_long_assembly \
+            --output /tmp/flowminute-native-hd-long-silent-qa/UNAPPROVED-432S-VISUAL-ONLY.mp4
+          echo "NATIVE_HD_FULL_432_SECOND_HINDI_LONG_SILENT_QA_PASSED"
+      - name: Delete all temporary source and output video files
+        if: always()
+        run: rm -rf /tmp/flowminute-native-hd-long-silent-qa
