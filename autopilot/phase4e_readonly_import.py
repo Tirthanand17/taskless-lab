@@ -96,6 +96,18 @@ def parse_d1_schema_observation(
         indexes=[]
         for item in _list(detail.get("indexes",[]),max_items=40,label="indexes"):
             row=_mapping(item,"index metadata")
+            # SQLite PRAGMA index_list reports integer 0/1 for both
+            # "unique" and "partial". A partial UNIQUE index constrains only
+            # a subset of rows, not the complete release identity. Discard
+            # known partial / WHERE-constrained index claims entirely.
+            partial=row.get("partial",0)
+            if type(partial) not in (int,bool) or partial not in (0,False):
+                continue
+            if row.get("where") not in (None,""):
+                continue
+            claimed_unique=row.get("unique",False)
+            if type(claimed_unique) not in (int,bool) or claimed_unique not in (0,1,False,True):
+                continue
             names=_list(row.get("columns",[]),max_items=30,label="index columns")
             fields=[]
             for column in names:
@@ -105,7 +117,7 @@ def parse_d1_schema_observation(
             if len(fields)!=len(names) or not fields:
                 # Never claim that a redacted index proves uniqueness.
                 continue
-            indexes.append({"unique":row.get("unique") is True,"columns":fields})
+            indexes.append({"unique":bool(claimed_unique),"columns":fields})
         safe_objects.append({"name":name,"kind":kind,
                              "columns":sorted(cols,key=lambda x:x["name"]),
                              "indexes":sorted(indexes,key=lambda x:(x["columns"],x["unique"]))})
