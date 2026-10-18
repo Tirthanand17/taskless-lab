@@ -7,6 +7,7 @@ import unittest
 
 from autopilot.phase3_csv_visual_preview import (
     english_script_rows, visual_frame, render_visual_preview,
+    _estimated_caption_at, _english_srt_timing,
 )
 
 
@@ -17,6 +18,12 @@ class ProceduralCsvVideoTests(unittest.TestCase):
         self.assertIn("Your CSV",lines[0])
         self.assertIn("DictReader",lines[2])
         self.assertIn("fifty eight",lines[3])
+
+    def test_caption_advances_within_same_long_scene(self):
+        self.assertNotEqual(_estimated_caption_at(0.5),_estimated_caption_at(7))
+        self.assertEqual(_english_srt_timing()[0][0],0)
+        self.assertEqual(_english_srt_timing()[-1][1],42000)
+        self.assertTrue(all((end-start)<=6000 for start,end,_ in _english_srt_timing()))
 
     def test_first_and_other_scene_are_real_distinct_pixels(self):
         a=visual_frame(2,width=360)
