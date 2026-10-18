@@ -118,8 +118,11 @@ def _checked_d1(s:dict)->tuple[list[str],int]:
                     or type(ix["unique"]) is not bool
                     or not isinstance(ix["columns"],list)
                     or not 1<=len(ix["columns"])<=30
-                    or len(set(ix["columns"]))!=len(ix["columns"])
-                    or any(not _safe_identifier(f) or f not in fields for f in ix["columns"])):
+                    # Validate types and allowed schema names BEFORE set().
+                    # Unhashable nested JSON must produce a fixed refusal,
+                    # never an uncontrolled TypeError or an echoed payload.
+                    or any(not _safe_identifier(f) or f not in fields for f in ix["columns"])
+                    or len(set(ix["columns"]))!=len(ix["columns"])):
                 raise ObservationBlocked("D1 index metadata invalid or unproven")
         if fields>=_RECOGNIZED_CANONICAL and obj["kind"]=="table":
             canonical_candidates.append(name)
