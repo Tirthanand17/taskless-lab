@@ -80,7 +80,13 @@ class VoiceReadinessPacketTests(unittest.TestCase):
         raw=SOURCE.read_text(encoding="utf-8")
         start=raw.index("## SHORT 1")
         stop=raw.index("## SHORT 2")
-        changed=raw[:start]+raw[start:stop].replace("क्या", "This",1)+raw[stop:]
+        # Replace every Devanagari character in the first Hindi section,
+        # not one harmless Hinglish token: this is a true lane substitution.
+        section="".join(
+            "x" if "\u0900" <= char <= "\u097f" else char
+            for char in raw[start:stop]
+        )
+        changed=raw[:start]+section+raw[stop:]
         self.assertNotEqual(raw,changed)
         with self.assertRaises(WorkflowError):
             build_voice_acquisition_readiness_packet(markdown=changed)
