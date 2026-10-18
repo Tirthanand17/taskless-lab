@@ -218,7 +218,10 @@ def visual_frame(time_s: float, *, width: int,
 def render_visual_preview(output: Path, *, duration_s: float = 3,
                           fps: int = 12, width: int = 360) -> dict:
     """Render a safe original visual-only MP4 using FFmpeg and no network."""
-    if not 0.5 <= duration_s <= 42 or fps not in (8,12,15,24) or width not in (360,540,720,1080):
+    if (not 0.5 <= duration_s <= 42
+            or fps not in (8,12,15,24)
+            or width not in (360,540,720,1080)
+            or (width == 1080 and round(duration_s*fps) > 36)):
         raise ValueError("Unsafe render preview size, rate or duration")
     if shutil.which("ffmpeg") is None:
         raise RuntimeError("FFmpeg must already be installed")
@@ -226,9 +229,8 @@ def render_visual_preview(output: Path, *, duration_s: float = 3,
     output = Path(output)
     if output.suffix != ".mp4":
         raise ValueError("MP4 visual-only output required")
-    if output.is_symlink():
-        raise ValueError("Do not overwrite symlink destinations")
-    output.parent.mkdir(parents=True, exist_ok=True)
+    if output.is_symlink() or output.exists() or not output.parent.is_dir():
+        raise ValueError("Fresh MP4 in an existing ordinary output folder required")
     command = ["ffmpeg", "-nostdin", "-v", "error", "-y",
                "-f", "rawvideo", "-pixel_format", "rgb24",
                "-video_size", f"{width}x{width*16//9}", "-framerate", str(fps),
