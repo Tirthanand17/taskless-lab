@@ -96,6 +96,42 @@ class PacingAuditRealPCMTests(unittest.TestCase):
                 with self.assertRaisesRegex(WorkflowError,"pauses"):
                     self.check(sha)
 
+    def test_sparse_interleaved_audio_in_one_short_scene_fails_closed(self):
+        # Ten-second first visual beat: 4 active and 6 quiet sampled seconds.
+        # No silence run is over two seconds; global silence < 60%, so
+        # the previous whole-clip pacing screen would have accepted it.
+        first = [("complex",1),("quiet",2)] * 3 + [("complex",1)]
+        sha=self.write(first + [("complex",32)])
+        with self.assertRaisesRegex(WorkflowError,"scene has insufficient"):
+            self.check(sha)
+
+    def test_sparse_interleaved_audio_in_one_long_scene_fails_closed(self):
+        # Eighteen-second first visual beat: 6 active, 12 quiet, never a
+        # sixteen-second quiet run. Other 23 scenes contain a full signal.
+        first = [("complex",1),("quiet",2)] * 6
+        sha=self.write(first + [("complex",414)])
+        with self.assertRaisesRegex(WorkflowError,"scene has insufficient"):
+            self.check(sha,episode="csv_tutorial_long_hi")
+
+    def test_regular_pauses_and_scene_coverage_remain_unverified(self):
+        sha=self.write([("complex",8),("quiet",2),("complex",32)])
+        r=self.check(sha)
+        self.assertEqual(r["authored_scenes_sampled"],4)
+        self.assertGreaterEqual(r["minimum_scene_active_sampled_fraction"],.8)
+        self.assertFalse(r["authored_scene_presence_is_speech_verification"])
+        self.assertFalse(r["natural_human_speech_verified"])
+        self.assertFalse(r["word_audio_alignment_verified"])
+        self.assertFalse(r["ready_for_mux_or_upload"])
+        self.assertFalse(r["publishing_authorized"])
+
+    def test_long_authored_scene_count_and_zero_claimed_authority(self):
+        sha=self.write([("complex",432)])
+        r=self.check(sha,episode="csv_tutorial_long_hi")
+        self.assertEqual(r["authored_scenes_sampled"],24)
+        self.assertEqual(r["minimum_scene_active_sampled_fraction"],1.)
+        self.assertFalse(r["copyright_and_voice_rights_verified"])
+        self.assertEqual(r["network_calls"],0)
+
     def test_hard_clipping_rejected(self):
         sha=self.write([("clipped",42)])
         with self.assertRaisesRegex(WorkflowError,"clipped"):
