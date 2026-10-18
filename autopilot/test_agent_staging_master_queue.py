@@ -188,6 +188,150 @@ class MasterQueueTests(unittest.TestCase):
         with self.assertRaises(WorkflowError):
             self.master.report()
 
+    def _advance_to_two_parallel_tasks(self,ep:EpisodeSpec)->None:
+        """Reach script + hooks using original evidence-fenced contracts."""
+        child=SQLiteStagingClaims(
+            self.master.children[ep.episode_id],episode_id=ep.episode_id,
+            kind=ep.kind,language=ep.language,
+        )
+        previous={}
+        for index,stage in enumerate(("research","fact_review")):
+            tid=f"{ep.episode_id}:{stage}"
+            contract=child.contracts[tid]
+            at=BASE+timedelta(seconds=index*4)
+            gen=self.master.claim_active(ep.episode_id,tid,actor=contract.owner,
+                                         now=at)
+            digest=sha256(tid.encode()).hexdigest()
+            parents=tuple("sha256:"+previous[dep] for dep in contract.requires)
+            handoff=Handoff(tid,contract.produces,digest,
+                            parents+("sha256:"+digest,),contract.owner,
+                            BASE.isoformat())
+            self.master.complete_active(ep.episode_id,handoff,
+                                        actor=contract.owner,generation=gen,
+                                        now=at+timedelta(seconds=1))
+            previous[tid]=digest
+        self.assertEqual(
+            {tid.split(":")[-1] for tid in child.report()["ready_tasks"]},
+            {"script","hooks"},
+        )
+
+    def test_unadmitted_and_queued_videos_cannot_claim_master_tasks(self):
+        first=EPISODES[0]
+        tid=f"{first.episode_id}:research"
+        with self.assertRaises(WorkflowError):
+            self.master.claim_active(first.episode_id,tid,
+                                      actor="research.launch_researcher",now=BASE)
+        self.master.reconcile()
+        waiting=EPISODES[3]
+        with self.assertRaises(WorkflowError):
+            self.master.claim_active(waiting.episode_id,
+                                      f"{waiting.episode_id}:research",
+                                      actor="research.launch_researcher",now=BASE)
+        with self.assertRaises(WorkflowError):
+            self.master.recover_expired_active(waiting.episode_id,now=BASE)
+        self.assertFalse(self.master.children[waiting.episode_id].exists())
+
+    def test_master_only_releases_next_episode_when_reconciled(self):
+        self.master.reconcile()
+        first=EPISODES[0]
+        self._complete_episode(first)
+        self.master.reconcile()
+        with self.assertRaises(WorkflowError):
+            self.master.claim_active(first.episode_id,
+                                      f"{first.episode_id}:research",
+                                      actor="research.launch_researcher",now=BASE)
+        promoted=EPISODES[3]
+        token=self.master.claim_active(
+            promoted.episode_id,f"{promoted.episode_id}:research",
+            actor="research.launch_researcher",now=BASE)
+        self.assertGreater(token,0)
+
+    def test_round_robin_fairness_and_four_total_inflight_tasks(self):
+        self.master.reconcile()
+        self._advance_to_two_parallel_tasks(EPISODES[0])
+        self._advance_to_two_parallel_tasks(EPISODES[1])
+        suggestions=self.master.ready_assignments(limit=4)
+        self.assertEqual(len(suggestions),4)
+        self.assertEqual(
+            [ep for ep,_,_ in suggestions[:3]],
+            [ep.episode_id for ep in EPISODES[:3]]
+        )
+        self.assertEqual(suggestions[3][0],EPISODES[0].episode_id)
+        tokens=[]
+        for index,(ep,task,owner) in enumerate(suggestions):
+            token=self.master.claim_active(ep,task,actor=owner,
+                                           now=BASE+timedelta(seconds=10+index))
+            tokens.append((ep,task,owner,token))
+        self.assertEqual(self.master.ready_assignments(),())
+        spare=f"{EPISODES[1].episode_id}:script"
+        if spare==tokens[1][1]:
+            spare=f"{EPISODES[1].episode_id}:hooks"
+        with self.assertRaises(WorkflowError):
+            self.master.claim_active(EPISODES[1].episode_id,spare,
+                actor="creative.shorts_writer" if spare.endswith(":script")
+                else "creative.hook_writer",now=BASE+timedelta(seconds=16))
+        ep,task,owner,token=tokens[0]
+        self.master.fail_active(ep,task,actor=owner,generation=token,
+                               category="STAGING_RETRY",now=BASE+timedelta(seconds=17))
+        # One free slot becomes available after explicit fail.
+        self.assertEqual(len(self.master.ready_assignments(limit=4)),1)
+
+    def test_master_gated_two_contenders_cannot_both_claim(self):
+        self.master.reconcile()
+        ep=EPISODES[0]
+        task=f"{ep.episode_id}:research"
+        def contender(_):
+            worker=SQLiteStagingMasterQueue(self.path,episodes=EPISODES)
+            try:
+                return worker.claim_active(ep.episode_id,task,
+                     actor="research.launch_researcher",now=BASE)
+            except WorkflowError:
+                return None
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            tokens=list(pool.map(contender,range(2)))
+        self.assertEqual(sum(x is not None for x in tokens),1)
+        self.assertEqual(len(self.master.ready_assignments()),2)
+
+    def test_master_gated_heartbeat_recovery_and_stale_token(self):
+        self.master.reconcile()
+        ep=EPISODES[0]
+        task=f"{ep.episode_id}:research"
+        actor="research.launch_researcher"
+        first=self.master.claim_active(ep.episode_id,task,actor=actor,
+                                        now=BASE,lease_seconds=10)
+        self.master.heartbeat_active(
+            ep.episode_id,task,actor=actor,generation=first,
+            now=BASE+timedelta(seconds=8),lease_seconds=30)
+        self.assertEqual(self.master.recover_expired_active(
+            ep.episode_id,now=BASE+timedelta(seconds=20)),())
+        self.assertEqual(self.master.recover_expired_active(
+            ep.episode_id,now=BASE+timedelta(seconds=38)),(task,))
+        second=self.master.claim_active(ep.episode_id,task,actor=actor,
+                                        now=BASE+timedelta(seconds=39))
+        self.assertGreater(second,first)
+        with self.assertRaises(WorkflowError):
+            self.master.fail_active(ep.episode_id,task,actor=actor,
+                generation=first,category="STAGING_RETRY",
+                now=BASE+timedelta(seconds=40))
+
+    def test_cross_episode_handoffs_cannot_complete_active_stage(self):
+        self.master.reconcile()
+        a,b=EPISODES[:2]
+        tid=f"{a.episode_id}:research"
+        generation=self.master.claim_active(
+            a.episode_id,tid,actor="research.launch_researcher",now=BASE)
+        foreign=f"{b.episode_id}:research"
+        digest=sha256(foreign.encode()).hexdigest()
+        wrong=Handoff(foreign,"research.package",digest,
+                      ("sha256:"+digest,),"research.launch_researcher",
+                      BASE.isoformat())
+        with self.assertRaises(WorkflowError):
+            self.master.complete_active(a.episode_id,wrong,
+                actor="research.launch_researcher",
+                generation=generation,now=BASE+timedelta(seconds=1))
+        self.assertEqual(self.master.report()["active"],
+                         [ep.episode_id for ep in EPISODES[:3]])
+
     def test_fanout_and_release_remain_disabled(self):
         with self.assertRaises(WorkflowError):
             self.master.ready_assignments(limit=5)

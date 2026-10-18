@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from contextlib import closing, contextmanager
 from dataclasses import asdict
+from datetime import datetime
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -23,7 +24,8 @@ import sqlite3
 from typing import Iterator
 
 from .agent_org import (
-    CHANNEL_ID, MAX_FANOUT, EpisodeSpec, MasterOrchestrator, WorkflowError,
+    CHANNEL_ID, MAX_FANOUT, EpisodeSpec, Handoff, MasterOrchestrator,
+    WorkflowError,
 )
 from .agent_staging_claims import SQLiteStagingClaims
 
@@ -245,21 +247,97 @@ class SQLiteStagingMasterQueue:
         with self._transaction() as conn:
             return self._snapshot(self._inspect(conn))
 
+    def _active_workload(self, states:dict[str,str]) -> tuple[int,list[list[tuple[str,str,str]]]]:
+        """Review all current child states while holding master transaction."""
+        running=0
+        lanes=[]
+        for ep in self.episodes:
+            if states[ep.episode_id]!="active":
+                continue
+            store=self._child(ep)
+            report=store.report()
+            running+=report["running_count"]
+            ready=sorted(
+                report["ready_tasks"],
+                key=lambda tid:(-store.contracts[tid].priority,tid),
+            )
+            lanes.append([
+                (ep.episode_id,tid,store.contracts[tid].owner)
+                for tid in ready
+            ])
+        return running,lanes
+
     def ready_assignments(self,*,limit:int=MAX_FANOUT)->tuple[tuple[str,str,str],...]:
-        """Return bounded draft suggestions; task claims remain separately fenced."""
+        """Advisory draft candidates, fairness and global active worker cap.
+
+        Iterate one task from each active episode before taking a second
+        from any episode, rather than filling all four slots with the first
+        video's parallel draft tasks. Claims must use claim_active().
+        """
         if type(limit) is not int or not 1<=limit<=MAX_FANOUT:
             raise WorkflowError("Master agent fanout exceeds staging policy")
         with self._transaction() as conn:
             states=self._inspect(conn)
+            running,lanes=self._active_workload(states)
+            available=min(limit,max(0,MAX_FANOUT-running))
             suggestions=[]
-            for ep in self.episodes:
-                if states[ep.episode_id]!="active":
-                    continue
-                store=self._child(ep)
-                ready=store.report()["ready_tasks"]
-                for tid in sorted(
-                    ready,key=lambda x:(-store.contracts[x].priority,x)
-                ):
-                    suggestions.append((ep.episode_id,tid,
-                                        store.contracts[tid].owner))
-            return tuple(suggestions[:limit])
+            while len(suggestions)<available and any(lanes):
+                for lane in lanes:
+                    if lane and len(suggestions)<available:
+                        suggestions.append(lane.pop(0))
+            return tuple(suggestions)
+
+    def _require_active(self,states:dict[str,str],episode_id:str)->EpisodeSpec:
+        for ep in self.episodes:
+            if ep.episode_id==episode_id and states[episode_id]=="active":
+                return ep
+        raise WorkflowError("Only a master-admitted active staging video may run")
+
+    def claim_active(self,episode_id:str,task_id:str,*,actor:str,now:datetime,
+                     lease_seconds:int=120)->int:
+        """Master-serialized active admission plus child-fenced task claim.
+
+        Both SQLite databases are local; this is not a production security
+        boundary against someone opening a child file directly.
+        """
+        with self._transaction() as conn:
+            states=self._inspect(conn)
+            ep=self._require_active(states,episode_id)
+            running,_lanes=self._active_workload(states)
+            if running>=MAX_FANOUT:
+                raise WorkflowError("Global staging task fanout limit reached")
+            return self._child(ep).claim(
+                task_id,actor=actor,now=now,lease_seconds=lease_seconds
+            )
+
+    def heartbeat_active(self,episode_id:str,task_id:str,*,actor:str,
+                         generation:int,now:datetime,lease_seconds:int=120)->None:
+        with self._transaction() as conn:
+            ep=self._require_active(self._inspect(conn),episode_id)
+            self._child(ep).heartbeat(
+                task_id,actor=actor,generation=generation,now=now,
+                lease_seconds=lease_seconds,
+            )
+
+    def complete_active(self,episode_id:str,handoff:Handoff,*,actor:str,
+                        generation:int,now:datetime)->None:
+        with self._transaction() as conn:
+            ep=self._require_active(self._inspect(conn),episode_id)
+            if (not isinstance(handoff,Handoff)
+                    or handoff.task_id not in self._child(ep).contracts):
+                raise WorkflowError("Handoff cannot cross active video boundaries")
+            self._child(ep).complete(handoff,actor=actor,
+                                     generation=generation,now=now)
+
+    def fail_active(self,episode_id:str,task_id:str,*,actor:str,
+                    generation:int,category:str,now:datetime)->None:
+        with self._transaction() as conn:
+            ep=self._require_active(self._inspect(conn),episode_id)
+            self._child(ep).fail(task_id,actor=actor,generation=generation,
+                                 category=category,now=now)
+
+    def recover_expired_active(self,episode_id:str,*,now:datetime)->tuple[str,...]:
+        """Recover lost task leases for one admitted episode; reconcile separately."""
+        with self._transaction() as conn:
+            ep=self._require_active(self._inspect(conn),episode_id)
+            return self._child(ep).recover_expired(now=now)
