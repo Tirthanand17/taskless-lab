@@ -116,7 +116,8 @@ class SQLiteStagingClaims:
                 )
             self._inspect(conn)
 
-    def _inspect(self, conn: sqlite3.Connection) -> dict:
+    def _inspect(self, conn: sqlite3.Connection, *,
+                 allow_unblocked_transition: bool = False) -> dict:
         meta = conn.execute("SELECT fingerprint,channel,budget_inr,"
                             "publisher_enabled,last_now FROM stage_policy WHERE id=1"
                            ).fetchone()
@@ -150,7 +151,12 @@ class SQLiteStagingClaims:
         for tid, (status, *_rest) in found.items():
             completed = all(found[parent][0]=="complete"
                             for parent in self.contracts[tid].requires)
-            if (status == "blocked") == completed:
+            # Completion transaction can briefly have a blocked dependent
+            # whose last parent has just completed, before READY promotion.
+            if (status != "blocked" and not completed) or (
+                status == "blocked" and completed
+                and not allow_unblocked_transition
+            ):
                 raise WorkflowError("Staging dependency readiness invariant violated")
         return found
 
@@ -163,13 +169,14 @@ class SQLiteStagingClaims:
         return sec
 
     def _ready_after_completion(self, conn: sqlite3.Connection) -> None:
-        states=self._inspect(conn)
+        states=self._inspect(conn, allow_unblocked_transition=True)
         for tid, (status, *_rest) in states.items():
             if status=="blocked" and all(
                 states[dep][0]=="complete" for dep in self.contracts[tid].requires
             ):
                 conn.execute("UPDATE stage_tasks SET status='ready' WHERE task_id=?",
                              (tid,))
+        self._inspect(conn)
 
     def claim(self, task_id: str, *, actor: str, now: datetime,
               lease_seconds: int = 120) -> int:
