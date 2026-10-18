@@ -350,7 +350,7 @@ class OfflineOneUseNonceTests(unittest.TestCase):
             initialize_offline_nonce_fixture(keeper)
             crashed.execute("BEGIN IMMEDIATE")
             digest=sha256(
-                b"FlowMinute/4E11/offline-nonce-rehearsal/v1\\x00"
+                b"FlowMinute/4E11/offline-nonce-rehearsal/v1\x00"
                 +fixtures.NONCE.encode("ascii")
             ).hexdigest()
             crashed.execute(
