@@ -201,6 +201,60 @@ class HindiRealVisualTests(unittest.TestCase):
                 self.assertEqual(img.size,(640,360))
                 self.assertTrue(_shown_cue(profile,int(mid*1000)))
 
+    def test_hindi_short_stages_match_executable_fictional_source(self):
+        from autopilot.examples.flowminute_csv_demo import (
+            ROWS, demonstrate_csv_total,
+        )
+        from autopilot.phase3_hindi_visual_preview import (
+            SHORT_SCENE_STORYBOARD, SHORT_ITEM_NAMES, SHORT_CODE_SNIPPETS,
+            COLUMNS, _SAMPLE_LINE_TOTALS,
+        )
+        self.assertEqual(len(SHORT_SCENE_STORYBOARD),4)
+        self.assertEqual(tuple(mode for mode,_ in SHORT_SCENE_STORYBOARD),
+                         (0,1,2,3))
+        self.assertTrue(all(any("\u0900"<=letter<="\u097f" for letter in label)
+                            for _,label in SHORT_SCENE_STORYBOARD))
+        self.assertEqual(tuple(SHORT_ITEM_NAMES),tuple(row["product"] for row in ROWS))
+        self.assertEqual(tuple(tuple(row[k] for k in COLUMNS[0])
+                               for row in ROWS),COLUMNS[1:])
+        self.assertEqual(
+            tuple(x["line_total"] for x in demonstrate_csv_total()["rows"]),
+            _SAMPLE_LINE_TOTALS,
+        )
+        self.assertEqual(tuple(_SAMPLE_LINE_TOTALS),(20,30,8))
+        self.assertEqual(len(SHORT_CODE_SNIPPETS),4)
+        code=" ".join(SHORT_CODE_SNIPPETS)
+        self.assertIn("output.getvalue()",code)
+        self.assertIn("StringIO(csv_text)",code)
+        self.assertIn("csv.DictReader(source)",code)
+        self.assertNotIn("csv.DictReader(rows)",code)
+        self.assertFalse(demonstrate_csv_total()["publishing_authorized"])
+
+    def test_hindi_short_portrait_text_fits_source_visual_card(self):
+        from PIL import Image, ImageDraw
+        from autopilot.phase3_hindi_visual_preview import (
+            SHORT_ITEM_NAMES, SHORT_CODE_SNIPPETS, _font,
+        )
+        d=ImageDraw.Draw(Image.new("RGB",(540,960)))
+        # Short card extends from x=34 to x=506. New code starts x=77.
+        code_font=_font(20)
+        for line in SHORT_CODE_SNIPPETS:
+            with self.subTest(line=line):
+                self.assertLess(d.textlength(line,font=code_font),506-77-15)
+        labels=_font(24,devanagari=True)
+        for word in SHORT_ITEM_NAMES.values():
+            with self.subTest(item=word):
+                self.assertLess(d.textlength(word,font=labels),380)
+        # 3 item cards: top=235; first start 333, last ends 620,
+        # proof footer above bottom=704. No voice or user data loaded.
+        self.assertLess(235+98+2*102+83,704-39)
+
+    def test_four_hindi_short_scenes_draw_distinct_topic_graphics(self):
+        frames=[render_hindi_frame("csv_tutorial_short_hi",moment,width=360)
+                for moment in (5,15,25,36)]
+        self.assertTrue(all(frame.size==(360,640) for frame in frames))
+        self.assertEqual(len(set(frame.tobytes() for frame in frames)),4)
+
     def test_every_hindi_short_scene_renders_and_last_frame(self):
         profile=_authored_profile("csv_tutorial_short_hi")
         for index,(start,end,*_) in enumerate(profile[2]):

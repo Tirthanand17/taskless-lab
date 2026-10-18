@@ -53,6 +53,29 @@ if (_SAMPLE_LINE_TOTALS != (20, 30, 8)
     raise WorkflowError("Fictional source row math has drifted from video")
 _SAMPLE_TOTAL = sum(_SAMPLE_LINE_TOTALS)
 
+# Only the original Hindi Short uses these four exact authored beats.
+# The Hindi long-form has an independent 24-scene concept storyboard.
+SHORT_SCENE_STORYBOARD = (
+    (0, "CSV के 3 कॉलम"),
+    (1, "तीन नकली चीज़ें"),
+    (2, "DictReader कैसे पढ़े"),
+    (3, "कुल 58 उदाहरण"),
+)
+SHORT_ITEM_NAMES = {
+    "Pen": "पेन",
+    "Notebook": "नोटबुक",
+    "Eraser": "इरेज़र",
+}
+SHORT_CODE_SNIPPETS = (
+    "csv_text = output.getvalue()",
+    "source = StringIO(csv_text)",
+    "reader = csv.DictReader(source)",
+    "row['product']  ->  'Pen'",
+)
+if (set(SHORT_ITEM_NAMES) != {row["product"] for row in DEMO_ROWS}
+        or len(SHORT_CODE_SNIPPETS) != 4):
+    raise WorkflowError("Hindi Short fictional products or educational code changed")
+
 
 # Each LONG video scene maps to its *actual authored* lesson concept. The old
 # renderer simply looped 4 generic scenes six times (position % 4), so
@@ -187,6 +210,11 @@ def _authored_profile(episode_id: str):
         beats[i-1][1]!=beats[i][0] for i in range(1,len(beats))
     ):
         raise WorkflowError("Original authored voice scene timing altered")
+    if kind=="short" and (
+        len(SHORT_SCENE_STORYBOARD)!=len(beats)
+        or tuple(mode for mode,_ in SHORT_SCENE_STORYBOARD)!=(0,1,2,3)
+    ):
+        raise WorkflowError("Hindi Short visual/storyboard inventory drift")
     if kind=="long" and (
         len(LONG_SCENE_STORYBOARD)!=len(beats)
         or any(mode not in range(7) or not title or len(title)>38
@@ -294,18 +322,16 @@ def render_hindi_frame(
                         radius=r(24),fill=(7,44,71,240),
                         outline=(57,212,225,205),width=r(2))
 
-    # Short scenes retain their original four source-aligned concepts.
-    # The 24 long scenes use a hand-authored, scene-specific plan instead
-    # of the old repetitive position % 4 template. Still an illustration.
+    # Each scene is explicitly mapped to its *original* script lesson:
+    # four Hindi Short visual beats, twenty-four long-form visual beats.
     if kind=="long":
         mode,label=LONG_SCENE_STORYBOARD[position]
     else:
-        mode=position
-        label=("CSV के 3 कॉलम","काल्पनिक डेटा","DictReader उदाहरण","कुल = 58")[mode]
+        mode,label=SHORT_SCENE_STORYBOARD[position]
     devanagari=_font(r(22 if kind=="short" else 26),devanagari=True)
     d.text((x(left+25),x(top+25+bob)),label,font=devanagari,fill=(239,250,249))
     if mode==0:
-        header=("PRODUCT","UNITS","PRICE")
+        header=tuple(name.upper() for name in COLUMNS[0])
         data=COLUMNS[1:]
         x0=[left+30,left+140,left+257] if kind=="short" else [left+70,left+300,left+525]
         font_small=_font(r(15 if kind=="short" else 22))
@@ -326,6 +352,26 @@ def render_hindi_frame(
                        fill=(245,247,248))
         d.text((x(left+26),x(bottom-51+bob)),"FICTIONAL SAMPLE DATA",
                font=_font(r(14)),fill=(119,236,209))
+    elif kind=="short" and mode==1:
+        # Source-matched Hindi items in the original 10–20s authored beat:
+        # quantity × example price, not unrelated contribution-only bars.
+        # Short captions below are still script-time estimates, not audio ASR.
+        for row_index,(row,line_total) in enumerate(zip(DEMO_ROWS,_SAMPLE_LINE_TOTALS)):
+            yy=top+98+row_index*102+bob
+            d.rounded_rectangle(
+                (x(left+23),x(yy),x(right-23),x(yy+83)),
+                radius=r(13),fill=(18,90,116,222),
+                outline=(73,215,211,195),width=r(2),
+            )
+            item=SHORT_ITEM_NAMES[row["product"]]
+            d.text((x(left+43),x(yy+10)),item,
+                   font=_font(r(24),devanagari=True),fill=(239,250,249))
+            equation=f"{row['units']} × {row['price']} = {line_total}"
+            d.text((x(left+43),x(yy+47)),equation,
+                   font=_font(r(21)),fill=(248,229,174))
+        d.text((x(left+32),x(bottom-39+bob)),
+               "FICTIONAL EXAMPLE  /  NO PURCHASE",
+               font=_font(r(13)),fill=(146,244,217))
     elif mode==1:
         # Real explanatory contrast: fictional row contributions, not
         # the previous static table or a fabricated live app screenshot.
@@ -362,8 +408,7 @@ def render_hindi_frame(
                fill=(158,239,215))
     elif mode==2:
         snippets=(LONG_CODE_SNIPPETS[position] if kind=="long"
-                  else ("import csv","csv.DictReader(rows)",
-                        "row['units']  ->  2","row['price']  ->  10"))
+                  else SHORT_CODE_SNIPPETS)
         # On the landscape panel, the previous 4-line code block used
         # top+113+i*46 and could draw past the card and over its proof
         # label. Keep all 4 lines AND the simulation footer inside it.
