@@ -14,7 +14,6 @@ from hashlib import sha256
 from pathlib import Path
 import json
 import math
-import re
 import subprocess
 
 from .agent_org import WorkflowError
@@ -38,7 +37,7 @@ def _sample_times(episode_id: str) -> tuple[float,...]:
     return (0.5,10.5,20.5,30.5,41.5)
 
 
-def _probe(path:Path) -> tuple[int,int,int]:
+def _probe(path:Path) -> tuple[int,int,int,float,float]:
     try:
         p=subprocess.run(
             ["ffprobe","-v","error","-show_entries",
@@ -155,8 +154,7 @@ def inspect_authored_visual_signal(*,episode_id:str, path:Path)->dict:
     if (p.is_symlink() or not p.is_file() or p.suffix!=".mp4"
             or not 2048<=p.stat().st_size<=MAX_MEDIA_BYTES):
         raise WorkflowError("Bounded existing ordinary original MP4 required")
-    duration,w,h,fps,frames=(*EPISODES[episode_id][:1],*EPISODES[episode_id][1:3],
-                             EPISODES[episode_id][3],EPISODES[episode_id][4])
+    duration,w,h,fps,frames=EPISODES[episode_id]
     pw,ph,pn,pr,pt=_probe(p)
     if ((pw,ph,pn)!=(w,h,frames) or abs(pr-fps)>0.01
             or abs(pt-duration)>0.12):
