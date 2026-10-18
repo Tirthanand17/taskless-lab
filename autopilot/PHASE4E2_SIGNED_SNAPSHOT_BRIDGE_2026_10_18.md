@@ -21,3 +21,12 @@ The exact source of provider-shaped input is still wholly untrusted. A caller ma
 Phase 4E still requires a separately permitted provider-supported read-only capture of **real** D1 schema + release history and genuine exact-channel authorized YouTube video readback in an owner-controlled trusted environment, including review of trust roots/nonce replay and any sensitive metadata. Only then can 4F draft a reversible schema-specific diff. 4G cannot write until owner explicitly approves migration/rollout. Phase 5 YouTube private pilot requires separate authorization.
 
 Full architecture still has **21 unfinished production acceptance subphases** and 6 incomplete top-level phases (2–7); this addition is 4E.2 staging, not production acceptance. Owner constraints remain ₹0 recurring, no Nirala/laptop, no paid service, OAuth modification, D1 mutation or video upload/schedule/publish. Public draft PR #4 is intentionally unmerged.
+
+
+## Phase 4E.8 — public index-field parser fail-closed hardening (18 October 2026)
+
+The public 4E.2 standalone verifier previously built `set(ix["columns"])` before checking that all elements were safe string identifiers. Arbitrary JSON nested lists and objects could raise an uncontrolled `TypeError`, even though the separate PRIVATE 4E.7a boundary now rejects them. This public verifier is also independently callable, so private sanitization alone is insufficient.
+
+The branch now validates **every** index column element with `_safe_identifier` and known-column membership before attempting duplicate detection with a set. Regression tests pass malformed nested arrays, objects, null, integers, a protected-looking fake payload, repeated columns, nonidentifiers, and unknown columns directly to the public verifier. These must raise the same fixed `ObservationBlocked` category without echoing any hostile marker.
+
+This is an offline input-validation fix, **not** a provider-origin or cryptographic trust improvement. Both signed-snapshot inputs remain UNAUTHENTICATED even with valid signatures; real D1/YouTube provider evidence, crosswalk, owner consent, reversible migration and single writer stay blocked. No private video/schema values were transferred to the public repo. No paid runner was deliberately started or new workflow added; CI status must be verified separately. Both PRs remain DRAFT/unmerged; budget ₹0/month recurring, no laptop, live API calls, D1 change, upload, scheduling or publication.
