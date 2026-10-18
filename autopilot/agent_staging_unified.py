@@ -30,6 +30,17 @@ from .agent_staging_master_queue import (
 
 TASK_STATES=frozenset(("blocked","ready","running","complete","quarantined","cancelled"))
 EPISODE_STATES=frozenset(("queued","active","complete","quarantined"))
+REQUEST_ID_RE=re.compile(r"[a-z][a-z0-9_-]{7,63}")
+
+
+def _completion_request_sha(eid:str, actor:str, generation:int,
+                            handoff_payload:str)->str:
+    """Stable across retry clocks; binds task, producer, token and payload."""
+    blob=json.dumps({
+        "episode":eid,"actor":actor,"generation":generation,
+        "handoff":handoff_payload,
+    },sort_keys=True,separators=(",",":"))
+    return sha256(blob.encode("utf-8")).hexdigest()
 
 
 class UnifiedStagingCoordinator:
@@ -100,6 +111,14 @@ class UnifiedStagingCoordinator:
                 "handoff TEXT NOT NULL DEFAULT '', "
                 "handoff_sha TEXT NOT NULL DEFAULT '', "
                 "PRIMARY KEY(episode,task_id))"
+            )
+            db.execute(
+                "CREATE TABLE completion_receipts ("
+                "request_id TEXT PRIMARY KEY,"
+                "episode TEXT NOT NULL,task_id TEXT NOT NULL,"
+                "actor TEXT NOT NULL,generation INTEGER NOT NULL,"
+                "request_sha TEXT NOT NULL,response TEXT NOT NULL,"
+                "response_sha TEXT NOT NULL)"
             )
             db.execute(
                 "INSERT INTO queue_policy VALUES(1,?,?,?,0,0,0)",
@@ -219,6 +238,46 @@ class UnifiedStagingCoordinator:
                     handoffs[eid,tid].evidence_refs for r in reqs
                 ):
                     raise WorkflowError("Staging evidence loses direct parent lineage")
+        # Receipt and output are committed under one SQLite transaction.
+        # On restart, confirm each acknowledgement still refers to the
+        # original completed stage and original typed handoff payload.
+        receipts=db.execute(
+            "SELECT request_id,episode,task_id,actor,generation,"
+            "request_sha,response,response_sha FROM completion_receipts"
+        ).fetchall()
+        if len(receipts)>len(states):
+            raise WorkflowError("Staging completion receipts exceed task inventory")
+        for key,eid,tid,actor,generation,request_sha,response,response_sha in receipts:
+            stored=handoffs.get((eid,tid))
+            if (not isinstance(key,str)
+                    or REQUEST_ID_RE.fullmatch(key) is None
+                    or stored is None
+                    or actor!=self.contracts[eid][tid].owner
+                    or type(generation) is not int
+                    or generation<1 or generation>states[eid,tid][2]
+                    or not isinstance(response,str)
+                    or len(response.encode("utf-8"))>4096
+                    or not isinstance(response_sha,str)
+                    or sha256(response.encode("utf-8")).hexdigest()
+                    !=response_sha
+                    or request_sha!=_completion_request_sha(
+                        eid,actor,generation,
+                        json.dumps(asdict(stored),sort_keys=True,
+                                   separators=(",",":"))
+                    )):
+                raise WorkflowError("Staging receipt does not match completed task")
+            try:
+                old=json.loads(response)
+                if (not isinstance(old,dict)
+                        or old.get("publish_enabled") is not False
+                        or old.get("monthly_inr")!=0
+                        or old.get("single_sqlite_transaction_for_admission_and_tasks")
+                        is not True
+                        or json.dumps(old,sort_keys=True,
+                                      separators=(",",":"))!=response):
+                    raise WorkflowError("Receipt contains impossible staging policy")
+            except (ValueError,TypeError,UnicodeError) as exc:
+                raise WorkflowError("Malformed staging receipt") from exc
         return episodes,states
 
     def _now(self,db:sqlite3.Connection,now:datetime)->int:
@@ -361,7 +420,15 @@ class UnifiedStagingCoordinator:
                        "AND task_id=?",(sec+seconds,eid,tid))
 
     def complete(self,eid:str,handoff:Handoff,*,actor:str,
-                 generation:int,now:datetime)->dict:
+                 generation:int,now:datetime,
+                 request_id:str|None=None)->dict:
+        """Atomically finish and optionally persist replayable draft receipt.
+
+        A lost acknowledgement may be retried with the EXACT SAME
+        request_id, handoff, owner and fence. No duplicate state transition.
+        Receipts are historical outcomes, NOT current lease ownership and
+        NEVER a publishing authorization.
+        """
         if not isinstance(handoff,Handoff):
             raise WorkflowError("Unified staging requires typed handoff")
         tid=handoff.task_id
@@ -375,8 +442,24 @@ class UnifiedStagingCoordinator:
         payload=json.dumps(asdict(handoff),sort_keys=True,separators=(",",":"))
         if len(payload.encode("utf-8"))>MAX_HANDOFF_JSON_BYTES:
             raise WorkflowError("Staging evidence exceeds safe size bound")
+        if request_id is not None and (
+            not isinstance(request_id,str)
+            or REQUEST_ID_RE.fullmatch(request_id) is None
+        ):
+            raise WorkflowError("Staging receipt needs a bounded request ID")
+        input_sha=_completion_request_sha(eid,actor,generation,payload)
         with self._tx() as db:
             slots,states=self._check(db)
+            if request_id is not None:
+                prior=db.execute(
+                    "SELECT request_sha,response FROM completion_receipts "
+                    "WHERE request_id=?",(request_id,)
+                ).fetchone()
+                if prior is not None:
+                    if prior[0]!=input_sha:
+                        raise WorkflowError("Idempotency key reused with changed handoff")
+                    # Do NOT reapply, advance local clock or return ownership.
+                    return json.loads(prior[1])
             sec=self._now(db,now)
             self._running(slots,states,eid,tid,actor,generation,sec)
             if not all(
@@ -409,7 +492,18 @@ class UnifiedStagingCoordinator:
             )
             self._finish_or_abort(db,eid,after_states,after_slots)
             final_slots,final_states=self._check(db)
-            return self._report(final_slots,final_states)
+            result=self._report(final_slots,final_states)
+            if request_id is not None:
+                serialized=json.dumps(result,sort_keys=True,separators=(",",":"))
+                db.execute(
+                    "INSERT INTO completion_receipts "
+                    "(request_id,episode,task_id,actor,generation,"
+                    "request_sha,response,response_sha) VALUES(?,?,?,?,?,?,?,?)",
+                    (request_id,eid,tid,actor,generation,input_sha,
+                     serialized,sha256(serialized.encode("utf-8")).hexdigest()),
+                )
+                self._check(db)
+            return result
 
     def fail(self,eid:str,tid:str,*,actor:str,generation:int,
              now:datetime,category:str)->dict:

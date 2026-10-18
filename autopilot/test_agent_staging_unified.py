@@ -1,6 +1,10 @@
 """One-database atomic master/task staging acceptance tests; no live data."""
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 from dataclasses import replace
+from unittest.mock import patch
+import json
+import sqlite3
 from datetime import datetime,timedelta,timezone
 from hashlib import sha256
 from pathlib import Path
@@ -219,6 +223,150 @@ class UnifiedStagingTests(unittest.TestCase):
         with self.assertRaises(WorkflowError):
             self.master.heartbeat(eid,tid,actor=actor,generation=second,
                                   now=BASE)
+
+    def test_lost_completion_ack_replays_after_restart_without_reexecution(self):
+        self.master.reconcile()
+        eid=EPISODES[0].episode_id
+        tid=f"{eid}:research"
+        actor="research.launch_researcher"
+        gen=self.master.claim(eid,tid,actor=actor,now=BASE)
+        h=handoff(self.master,eid,tid,{})
+        first=self.master.complete(
+            eid,h,actor=actor,generation=gen,
+            now=BASE+timedelta(seconds=1),request_id="research-ack-0001",
+        )
+        resumed=UnifiedStagingCoordinator(self.path,episodes=EPISODES)
+        # A simulated lost ACK is replayed far later; clock and task
+        # generation are untouched and no replacement claim occurs.
+        again=resumed.complete(
+            eid,h,actor=actor,generation=gen,
+            now=BASE+timedelta(minutes=10),request_id="research-ack-0001",
+        )
+        self.assertEqual(again,first)
+        self.assertEqual(resumed.report(),first)
+        with closing(sqlite3.connect(self.path)) as db:
+            receipt_count=db.execute("SELECT count(*) FROM completion_receipts"
+                                     ).fetchone()[0]
+            status=db.execute(
+                "SELECT status,generation FROM stage_tasks "
+                "WHERE episode=? AND task_id=?",(eid,tid),
+            ).fetchone()
+        self.assertEqual(receipt_count,1)
+        self.assertEqual(status,("complete",gen))
+        self.assertFalse(again["publish_enabled"])
+
+    def test_idempotency_key_refuses_changed_payload_or_other_episode(self):
+        self.master.reconcile()
+        eid=EPISODES[0].episode_id
+        tid=f"{eid}:research"
+        actor="research.launch_researcher"
+        gen=self.master.claim(eid,tid,actor=actor,now=BASE)
+        h=handoff(self.master,eid,tid,{})
+        self.master.complete(eid,h,actor=actor,generation=gen,
+                             now=BASE,request_id="research-ack-0002")
+        changed=replace(h,sha256_hex=sha256(b"another").hexdigest())
+        for value in (changed,replace(h,recorded_at_utc=
+                                      (BASE+timedelta(seconds=1)).isoformat())):
+            with self.subTest(value=value.sha256_hex),self.assertRaises(WorkflowError):
+                self.master.complete(eid,value,actor=actor,generation=gen,
+                    now=BASE+timedelta(seconds=2),request_id="research-ack-0002")
+        with self.assertRaises(WorkflowError):
+            self.master.complete(eid,h,actor=actor,generation=gen+1,
+                                 now=BASE,request_id="research-ack-0002")
+        second=EPISODES[1].episode_id
+        foreign=handoff(self.master,second,f"{second}:research",{})
+        with self.assertRaises(WorkflowError):
+            self.master.complete(second,foreign,actor=actor,generation=gen,
+                                 now=BASE,request_id="research-ack-0002")
+        self.assertEqual(self.master.report()["completed_tasks"],1)
+
+    def test_two_concurrent_lost_ack_replays_share_one_receipt(self):
+        self.master.reconcile()
+        eid=EPISODES[0].episode_id
+        tid=f"{eid}:research"
+        actor="research.launch_researcher"
+        gen=self.master.claim(eid,tid,actor=actor,now=BASE)
+        h=handoff(self.master,eid,tid,{})
+        def finish(_):
+            worker=UnifiedStagingCoordinator(self.path,episodes=EPISODES)
+            return worker.complete(
+                eid,h,actor=actor,generation=gen,
+                now=BASE+timedelta(seconds=1),request_id="research-race-0003",
+            )
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            receipts=list(pool.map(finish,range(2)))
+        self.assertEqual(receipts[0],receipts[1])
+        self.assertEqual(self.master.report()["completed_tasks"],1)
+        with closing(sqlite3.connect(self.path)) as db:
+            self.assertEqual(db.execute(
+                "SELECT count(*) FROM completion_receipts"
+            ).fetchone()[0],1)
+
+    def test_completion_and_receipt_both_rollback_on_interrupted_transition(self):
+        self.master.reconcile()
+        eid=EPISODES[0].episode_id
+        tid=f"{eid}:research"
+        actor="research.launch_researcher"
+        gen=self.master.claim(eid,tid,actor=actor,now=BASE)
+        h=handoff(self.master,eid,tid,{})
+        with patch.object(self.master,"_finish_or_abort",
+                          side_effect=RuntimeError("simulated interruption")):
+            with self.assertRaisesRegex(RuntimeError,"interruption"):
+                self.master.complete(
+                    eid,h,actor=actor,generation=gen,
+                    now=BASE+timedelta(seconds=1),
+                    request_id="research-rollback-0004",
+                )
+        with closing(sqlite3.connect(self.path)) as db:
+            self.assertEqual(db.execute(
+                "SELECT count(*) FROM completion_receipts"
+            ).fetchone()[0],0)
+            self.assertEqual(db.execute(
+                "SELECT status FROM stage_tasks WHERE episode=? AND task_id=?",
+                (eid,tid),
+            ).fetchone()[0],"running")
+        self.master.complete(eid,h,actor=actor,generation=gen,
+                             now=BASE+timedelta(seconds=1),
+                             request_id="research-rollback-0004")
+        self.assertEqual(self.master.report()["completed_tasks"],1)
+
+    def test_corrupted_receipt_refused_even_with_rehashed_response(self):
+        self.master.reconcile()
+        eid=EPISODES[0].episode_id
+        tid=f"{eid}:research"
+        actor="research.launch_researcher"
+        gen=self.master.claim(eid,tid,actor=actor,now=BASE)
+        h=handoff(self.master,eid,tid,{})
+        self.master.complete(eid,h,actor=actor,generation=gen,
+                             now=BASE,request_id="research-tamper-0005")
+        with closing(sqlite3.connect(self.path)) as db:
+            raw=db.execute("SELECT response FROM completion_receipts").fetchone()[0]
+            response=json.loads(raw)
+            response["publish_enabled"]=True
+            changed=json.dumps(response,sort_keys=True,separators=(",",":"))
+            db.execute("UPDATE completion_receipts SET response=?,response_sha=?",
+                (changed,sha256(changed.encode()).hexdigest()))
+            db.commit()
+        with self.assertRaises(WorkflowError):
+            UnifiedStagingCoordinator(self.path,episodes=EPISODES)
+
+    def test_idempotent_receipt_identifier_strict_and_optional_legacy_path(self):
+        self.master.reconcile()
+        eid=EPISODES[0].episode_id
+        tid=f"{eid}:research"
+        actor="research.launch_researcher"
+        gen=self.master.claim(eid,tid,actor=actor,now=BASE)
+        h=handoff(self.master,eid,tid,{})
+        for request_id in ("x",True, "too/much", "UPPERCASE", "a"*65):
+            with self.subTest(request_id=request_id),self.assertRaises(WorkflowError):
+                self.master.complete(eid,h,actor=actor,generation=gen,
+                                     now=BASE,request_id=request_id)
+        # Backward compatibility: the original caller needs no key.
+        result=self.master.complete(eid,h,actor=actor,generation=gen,now=BASE)
+        self.assertEqual(result["completed_tasks"],1)
+        with closing(sqlite3.connect(self.path)) as db:
+            self.assertEqual(db.execute("SELECT count(*) FROM completion_receipts"
+                                        ).fetchone()[0],0)
 
     def test_bounded_fanout_types_and_denied_release_handoff(self):
         self.master.reconcile()
