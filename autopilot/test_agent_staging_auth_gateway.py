@@ -86,7 +86,7 @@ class SignedWorkerGatewayTests(unittest.TestCase):
         signed = self.sign()
         for forged in (
             replace(signed, signature="0" * 64),
-            replace(signed, task=EP + ":fact_review"),
+            replace(signed, task_id=EP + ":fact_review"),
             replace(signed, worker_id="worker_review"),
             self.sign(key=self.other_key),
         ):
