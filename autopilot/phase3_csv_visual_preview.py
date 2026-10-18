@@ -64,7 +64,7 @@ def english_script_rows() -> tuple[str, ...]:
 def _english_srt_timing() -> tuple[tuple[int,int,str], ...]:
     """Actual authored English SRT; estimated scene timing, never speech ASR."""
     srt=build_subtitles_from_authored_csv()["csv_tutorial_short_en"]["srt"]
-    blocks=srt.strip().split("\\n\\n")
+    blocks=srt.strip().split("\n\n")
     records=[]
     for block in blocks:
         lines=block.splitlines()
