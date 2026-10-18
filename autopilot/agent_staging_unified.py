@@ -118,7 +118,8 @@ class UnifiedStagingCoordinator:
                     )
             self._check(db)
 
-    def _check(self,db:sqlite3.Connection)->tuple[dict,dict]:
+    def _check(self,db:sqlite3.Connection,*,
+               allow_terminal_transition:bool=False)->tuple[dict,dict]:
         policy=db.execute(
             "SELECT channel,manifest,manifest_sha,budget_inr,publishing,last_now "
             "FROM queue_policy WHERE id=1"
@@ -200,9 +201,10 @@ class UnifiedStagingCoordinator:
                     or episode_state=="quarantined" and (
                         not any(st=="quarantined" for st in sub)
                         or any(st in ("ready","running") for st in sub))
-                    or episode_state=="active" and (
-                        all(st=="complete" for st in sub)
-                        or any(st=="quarantined" for st in sub))):
+                    or (episode_state=="active" and
+                        not allow_terminal_transition and (
+                            all(st=="complete" for st in sub)
+                            or any(st=="quarantined" for st in sub)))):
                 raise WorkflowError("Unified episode status conflicts with task inventory")
             for tid in self.order[eid]:
                 st=states[eid,tid][0]
@@ -402,7 +404,9 @@ class UnifiedStagingCoordinator:
                         (eid,next_tid),
                     )
             # One transaction transitions video state AND admits next video.
-            after_slots,after_states=self._check(db)
+            after_slots,after_states=self._check(
+                db,allow_terminal_transition=True
+            )
             self._finish_or_abort(db,eid,after_states,after_slots)
             final_slots,final_states=self._check(db)
             return self._report(final_slots,final_states)
@@ -422,7 +426,9 @@ class UnifiedStagingCoordinator:
                 "generation=generation+1 WHERE episode=? AND task_id=?",
                 (outcome,failures,eid,tid),
             )
-            after_slots,after_states=self._check(db)
+            after_slots,after_states=self._check(
+                db,allow_terminal_transition=True
+            )
             self._finish_or_abort(db,eid,after_states,after_slots)
             final_slots,final_states=self._check(db)
             return self._report(final_slots,final_states)
@@ -444,7 +450,9 @@ class UnifiedStagingCoordinator:
                     changed.append(tid)
             # A single expired episode may have other running tasks. Atomically
             # cancel them before releasing its video slot and filling the queue.
-            mid_slots,mid_states=self._check(db)
+            mid_slots,mid_states=self._check(
+                db,allow_terminal_transition=True
+            )
             for ep in self.episodes:
                 if mid_slots[ep.episode_id]=="active":
                     self._finish_or_abort(db,ep.episode_id,mid_states,mid_slots)
