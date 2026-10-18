@@ -120,13 +120,21 @@ class ThreeOriginalVideoHandoffTests(unittest.TestCase):
             "source_script_sha256":"c"*64,
         }
 
-    def check(self, items=None, *, audio=None,video=None,caption=None):
+    def check(self, items=None, *, audio=None,video=None,caption=None,signal=None):
         with (patch("autopilot.phase3_three_video_handoff.review_complete_narration_takes",
                     side_effect=audio or self.mocked_audio),
               patch("autopilot.phase3_three_video_handoff.verify_quarantined_receipt",
                     side_effect=video or self.mocked_video),
               patch("autopilot.phase3_three_video_handoff.review_candidate_caption",
-                    side_effect=caption or self.mocked_caption)):
+                    side_effect=caption or self.mocked_caption),
+              patch("autopilot.phase3_three_video_handoff.inspect_nonplaceholder_audio_candidate",
+                    side_effect=signal or (lambda *,wav_path,episode_id,expected_sha256: {
+                        "status":"OBVIOUS_AUDIO_PLACEHOLDER_NOT_DETECTED_UNVERIFIED",
+                        "episode_id":episode_id,"wav_sha256":expected_sha256,
+                        "publishing_authorized":False,
+                        "intelligible_speech_recognized":False,
+                        "ready_for_mux_or_upload":False,
+                    }))):
             return prepare_three_video_technical_handoff(self.items if items is None else items)
 
     def modified(self, index, **changes):
@@ -258,6 +266,25 @@ class ThreeOriginalVideoHandoffTests(unittest.TestCase):
                 self.check(caption=stricter)
         finally:
             self.audio_receipts=old
+
+    def test_voice_signal_rejects_forged_speech_clearance(self):
+        def forged(*,wav_path,episode_id,expected_sha256):
+            return {
+                "status":"OBVIOUS_AUDIO_PLACEHOLDER_NOT_DETECTED_UNVERIFIED",
+                "episode_id":episode_id,
+                "wav_sha256":expected_sha256,
+                "intelligible_speech_recognized":True,
+                "ready_for_mux_or_upload":True,
+                "publishing_authorized":False,
+            }
+        with self.assertRaisesRegex(WorkflowError,"signal screen"):
+            self.check(signal=forged)
+
+    def test_voice_signal_true_placeholder_failure_blocks_handoff(self):
+        def blocked(*,wav_path,episode_id,expected_sha256):
+            raise WorkflowError("Sustained synthetic-like pure tone")
+        with self.assertRaisesRegex(WorkflowError,"pure tone"):
+            self.check(signal=blocked)
 
     def test_invalid_user_provided_receipt_type_or_bulk_claim_rejected(self):
         with self.assertRaises(WorkflowError):

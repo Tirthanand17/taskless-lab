@@ -28,6 +28,7 @@ from .phase3_quarantined_video_receipt import (
     MAX_RECEIPT_BYTES, verify_quarantined_receipt, _hash_file,
 )
 from .phase3_visual_signal_audit import EPISODES as VISUAL_EPISODES, MAX_MEDIA_BYTES
+from .phase3_voice_signal_screen import inspect_nonplaceholder_audio_candidate
 
 VERSION = "flowminute-untrusted-three-episode-handoff-v1"
 MAX_PATHS = 20
@@ -156,6 +157,18 @@ def prepare_three_video_technical_handoff(
                 or video_receipt.get("video_frame_count") != frames):
             raise WorkflowError("A real full-resolution full-duration original video is required")
         voice=wav_receipts[ep]
+        signal=inspect_nonplaceholder_audio_candidate(
+            wav_path=item.narration_take.wav_path,
+            episode_id=ep,
+            expected_sha256=item.narration_take.wav_sha256,
+        )
+        if (signal.get("status")!="OBVIOUS_AUDIO_PLACEHOLDER_NOT_DETECTED_UNVERIFIED"
+                or signal.get("wav_sha256")!=voice["clip_sha256"]
+                or signal.get("episode_id")!=ep
+                or signal.get("publishing_authorized") is not False
+                or signal.get("intelligible_speech_recognized") is not False
+                or signal.get("ready_for_mux_or_upload") is not False):
+            raise WorkflowError("Voice signal screen cannot assert speech or rights clearance")
         sub=review_candidate_caption(item.caption_candidate,voice)
         if (sub.get("publishing_authorized") is not False
                 or sub.get("true_speech_to_caption_alignment_verified") is not False
@@ -183,6 +196,8 @@ def prepare_three_video_technical_handoff(
             "source_original_spoken_sha256":sub["source_script_sha256"],
             "signed_source_or_editorial_attestation_available":False,
             "audibly_distinct_voices_verified":False,
+            "obvious_audio_placeholder_screened":True,
+            "actual_voice_speech_verified":False,
             "actual_speech_timing_verified":False,
             "license_or_voice_consent_authenticated":False,
             "mux_permitted":False,
