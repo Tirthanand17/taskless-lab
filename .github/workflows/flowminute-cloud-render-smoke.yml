@@ -2,6 +2,8 @@ name: FlowMinute Cloud Render Smoke (no secrets)
 on:
   workflow_dispatch:
   pull_request:
+    # Run the full PR media smoke when a previously draft PR is made ready.
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       # Media/code changes only. Pure master-agent/ledger edits already
       # run Content Quality Gate + dedicated orchestration tests; don't
