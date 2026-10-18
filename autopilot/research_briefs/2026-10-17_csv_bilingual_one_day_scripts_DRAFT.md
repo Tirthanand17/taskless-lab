@@ -32,7 +32,7 @@ Planned narrator B: distinct from A, English, brighter/faster natural teacher de
 | 00:00–00:10 | Your CSV looks like a wall of rows? Here's one tiny Python trick that helps you understand the columns without uploading your data. | 3D table emerges and reorders into clear columns |
 | 00:10–00:20 | We create three fictional products: a pen, a notebook and an eraser. Each has a quantity and an example price. | Three illustrated synthetic items appear, no real company logos |
 | 00:20–00:30 | Python's built in DictReader uses each column heading as a key. This is a demonstration, not a real purchase or website action. | Motion graphics show keys product / units / price |
-| 00:30–00:42 | Multiply units by price for each row and add the results. The example total is fifty eight units. Follow for the full walkthrough. | 3D tokens count up 20, 30, 8, then 58 |
+| 00:30–00:42 | Multiply units by price for each row and add the results. The example total is fifty eight units. Follow for more English Python lessons. | 3D tokens count up 20, 30, 8, then 58 |
 
 CTA: Follow for the complete practical walkthrough. Show no fabricated real app UI.
 
