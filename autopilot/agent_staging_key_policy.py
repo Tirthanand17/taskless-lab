@@ -12,6 +12,7 @@ succeed through that local gateway, including replayed completion receipts.
 from __future__ import annotations
 from contextlib import closing
 from pathlib import Path
+from typing import Callable
 import re
 import sqlite3
 
@@ -22,6 +23,9 @@ WORKER_ID_RE = re.compile(r"[a-z][a-z0-9_]{3,47}")
 KEY_ID_RE = re.compile(r"[a-z][a-z0-9_-]{7,63}")
 MAX_ENROLLED_WORKERS = 64
 MAX_ROTATION_GENERATION = 100
+MAX_ADMIN_COMMANDS = 4096
+ADMIN_NONCE_RE = re.compile(r"[a-z][a-z0-9_-]{11,63}")
+ADMIN_ID_RE = re.compile(r"[a-z][a-z0-9_]{3,47}")
 
 
 class StagingKeyPolicy:
@@ -41,6 +45,11 @@ class StagingKeyPolicy:
             db.execute(
                 "CREATE TABLE IF NOT EXISTS staging_retired_keys ("
                 "key_id TEXT PRIMARY KEY, worker_id TEXT NOT NULL)"
+            )
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS staging_admin_commands ("
+                "nonce TEXT PRIMARY KEY, admin_id TEXT NOT NULL, "
+                "action TEXT NOT NULL, request_sha TEXT NOT NULL)"
             )
             self._validate(db)
 
@@ -78,8 +87,51 @@ class StagingKeyPolicy:
         tombstones={entry[0] for entry in old}
         if (len(tombstones)!=len(old) or all_keys&tombstones):
             raise WorkflowError("Active key overlaps permanently retired key")
+        commands=db.execute(
+            "SELECT nonce,admin_id,action,request_sha FROM staging_admin_commands"
+        ).fetchall()
+        if len(commands)>MAX_ADMIN_COMMANDS:
+            raise WorkflowError("Admin replay ledger exceeded policy bound")
+        for nonce,admin,action,digest in commands:
+            if (not isinstance(nonce,str)
+                    or ADMIN_NONCE_RE.fullmatch(nonce) is None
+                    or not isinstance(admin,str)
+                    or ADMIN_ID_RE.fullmatch(admin) is None
+                    or action not in ("enroll","rotate","revoke")
+                    or not isinstance(digest,str)
+                    or re.fullmatch(r"[0-9a-f]{64}",digest) is None):
+                raise WorkflowError("Staging admin audit/nonce record is malformed")
 
-    def enroll(self, worker_id: str, role: str, key_id: str) -> None:
+    def consume_admin_nonce(self,db:sqlite3.Connection,*,nonce:str,
+                            admin_id:str,action:str,request_sha:str)->None:
+        """One-time local ledger insertion inside the caller's write TX.
+
+        This method trusts its caller; only the optional signed admin
+        gateway verifies the HMAC and passes this hook to mutation methods.
+        """
+        if (not isinstance(nonce,str) or ADMIN_NONCE_RE.fullmatch(nonce) is None
+                or not isinstance(admin_id,str)
+                or ADMIN_ID_RE.fullmatch(admin_id) is None
+                or action not in ("enroll","rotate","revoke")
+                or not isinstance(request_sha,str)
+                or re.fullmatch(r"[0-9a-f]{64}",request_sha) is None):
+            raise WorkflowError("Malformed staging admin idempotency scope")
+        count=db.execute(
+            "SELECT count(*) FROM staging_admin_commands"
+        ).fetchone()[0]
+        if count>=MAX_ADMIN_COMMANDS:
+            raise WorkflowError("Staging admin replay ledger full; fail closed")
+        if db.execute(
+            "SELECT 1 FROM staging_admin_commands WHERE nonce=?",(nonce,)
+        ).fetchone():
+            raise WorkflowError("Signed admin command nonce already consumed")
+        db.execute(
+            "INSERT INTO staging_admin_commands VALUES(?,?,?,?)",
+            (nonce,admin_id,action,request_sha),
+        )
+
+    def enroll(self, worker_id: str, role: str, key_id: str, *,
+               _admin_guard:Callable[[sqlite3.Connection],None]|None=None)->None:
         if (not isinstance(worker_id,str)
                 or WORKER_ID_RE.fullmatch(worker_id) is None
                 or role not in ROLES
@@ -88,6 +140,8 @@ class StagingKeyPolicy:
             raise WorkflowError("Invalid operator-created enrollment")
         with self._tx() as db:
             self._validate(db)
+            if _admin_guard is not None:
+                _admin_guard(db)
             count=db.execute("SELECT count(*) FROM staging_key_policy").fetchone()[0]
             if count>=MAX_ENROLLED_WORKERS:
                 raise WorkflowError("Enrollment cap reached")
@@ -110,12 +164,15 @@ class StagingKeyPolicy:
             )
 
     def rotate(self, worker_id: str, *, old_key_id: str,
-               new_key_id: str) -> int:
+               new_key_id: str,
+               _admin_guard:Callable[[sqlite3.Connection],None]|None=None)->int:
         if (not isinstance(new_key_id,str)
                 or KEY_ID_RE.fullmatch(new_key_id) is None):
             raise WorkflowError("Malformed new key ID")
         with self._tx() as db:
             self._validate(db)
+            if _admin_guard is not None:
+                _admin_guard(db)
             record=db.execute(
                 "SELECT key_id,generation,state FROM staging_key_policy "
                 "WHERE worker_id=?",(worker_id,)
@@ -141,9 +198,12 @@ class StagingKeyPolicy:
             )
             return record[1]+1
 
-    def revoke(self, worker_id: str, *, expected_key_id: str) -> None:
+    def revoke(self, worker_id: str, *, expected_key_id: str,
+               _admin_guard:Callable[[sqlite3.Connection],None]|None=None)->None:
         with self._tx() as db:
             self._validate(db)
+            if _admin_guard is not None:
+                _admin_guard(db)
             record=db.execute(
                 "SELECT key_id,state FROM staging_key_policy WHERE worker_id=?",
                 (worker_id,)
@@ -181,6 +241,9 @@ class StagingKeyPolicy:
                     "generation":x[3],"state":x[4]
                 } for x in rows],
                 "stores_secrets":False,
+                "admin_replay_nonces_consumed":db.execute(
+                    "SELECT count(*) FROM staging_admin_commands"
+                ).fetchone()[0],
                 "admin_calls_remotely_authenticated":False,
                 "locally_atomic_revocation_checks":True,
                 "cloud_deployed":False,
