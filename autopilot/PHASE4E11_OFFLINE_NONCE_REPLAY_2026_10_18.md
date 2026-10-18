@@ -43,3 +43,29 @@ The test and module use only Python standard-library SQLite plus the project's e
 6. Release gates: no publication from cryptographic integrity alone; require real authenticated D1 and exact-channel YouTube readback, safe historical reconciliation, reviewed D1 migration/rollback and a separately authorized single writer.
 
 **Current acceptance:** 4E.12 is only offline engineering staging, not 4E production completion. All **21 production acceptance subphases across six incomplete major phases** remain. Public/private PRs stay DRAFT and unmerged; no laptop/Nirala, Cloudflare/YouTube requests, new services/charges or uploads/schedules.
+
+
+## Phase 4E.13 — complete offline failure recovery and replay-consistency checkpoint (18 October 2026)
+
+**Scope and acceptance:** The requested 4E.13 SOFTWARE checkpoint is complete only after a successful full public GitHub quality gate, cloud-scouter and synthetic render-smoke CI on one exact branch SHA, and a recorded PR checkpoint. It does not imply completion of overarching **production Phase 4E**.
+
+**Failure handling repair:** An unexpected exception from a validator or malformed caller could previously be re-raised with attacker-controlled diagnostic text. `verify_and_reserve_once_offline` now rolls back and translates arbitrary ordinary Python `Exception` errors into fixed `ObservationBlocked("Offline evidence verification failed closed")`, while maintaining its original fixed validation errors. `sqlite3.Error` remains redacted, and true cancellation/KeyboardInterrupt/SystemExit cause best-effort rollback and propagate. A failed rollback leaves an open transaction, which the next invocation explicitly refuses until the caller repairs or discards its connection. No failure path yields a success report or grants release authority.
+
+**Deterministic recovery matrix** added to existing synthetic suite:
+
+| Failure point | Expected result |
+| --- | --- |
+| Begin transaction denied by SQLite authorizer | Error, no nonce consumed, clean retry succeeds |
+| Insert denied | Rollback, no nonce, retry succeeds |
+| Commit denied | Rollback, no nonce, retry succeeds |
+| Both commit and rollback denied | Error, active transaction blocks all reuse until recovery |
+| Signed validator raises arbitrary secret-containing RuntimeError | Fixed redacted error, no nonce, subsequent valid input succeeds |
+| Fake validator returns authenticated/provider authorization | Refused; no nonce consumed |
+| Same request nonce signed again for a DIFFERENT metadata hash | Refused despite new valid signatures |
+| Worker closes before COMMIT (uncommitted synthetic insertion) | Automatic rollback, survivor may make one verified attempt |
+| Two simultaneous worker attempts sharing one in-memory DB | Exactly one success and one blocked attempt; one recorded nonce |
+| Reopening a brand-new memory DB after final shutdown | Replay remains possible: explicit evidence of missing durable production storage |
+
+The tests intentionally never touch actual Cloudflare D1, any persistent SQLite files, Google OAuth, provider accounts or media; all are disposable in-memory synthetic fixtures and ephemeral signing keys. Existing Phase 4E.11/4E.12 tests remain in place.
+
+**Non-negotiable production 4E closure blockers:** (1) separately approved actual read-only D1 schema/index and release-row history inventory, including protected-content handling and pagination; (2) exact owner-authorized YouTube channel history with privacy, processing, schedule and full pages; (3) independently configured trusted collector signing keys, durable cross-worker nonce database and trusted server clock with replay tested across process crashes; (4) reconciliation of historical release/video identities and missing/duplicate releases; (5) evidence retained privately with real provenance and explicit ₹0 recurring hard limits. This offline branch accomplishes **none** of these real provider operations. Production 4E remains OPEN, 4F/4G remain blocked, and **21 production acceptance subphases across six incomplete major phases remain**. Both GitHub PRs remain drafts/unmerged. Never use Nirala without fresh authorization, create a new service/charge, connect accounts, change OAuth or perform upload/schedule/publish without the required separate approvals.

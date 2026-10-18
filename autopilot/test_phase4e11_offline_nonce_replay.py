@@ -1,6 +1,10 @@
 """Phase 4E.11 in-memory replay rehearsal; fake Ed25519 keys, no APIs."""
 import sqlite3
 import tempfile
+import threading
+from concurrent.futures import ThreadPoolExecutor
+from hashlib import sha256
+from unittest.mock import patch
 from pathlib import Path
 from copy import deepcopy
 from dataclasses import replace
@@ -252,6 +256,147 @@ class OfflineOneUseNonceTests(unittest.TestCase):
             verify_and_reserve_once_offline(**self.args())
         self.assertNotIn("FAKE_SECRET_DO_NOT_ECHO", str(error.exception))
         self.assertEqual(self.count(), 0)
+
+    def test_denied_begin_insert_or_commit_rolls_back_and_can_retry(self):
+        # SQLite authorizer gives deterministic injection at exact phases
+        # without any production database or global mocking.
+        for phase in ("BEGIN", "INSERT", "COMMIT"):
+            with self.subTest(phase=phase):
+                self.conn.execute("DELETE FROM " + TABLE)
+                def deny(action, arg1, arg2, dbname, source):
+                    if (phase in ("BEGIN", "COMMIT")
+                            and action == sqlite3.SQLITE_TRANSACTION
+                            and arg1 == phase):
+                        return sqlite3.SQLITE_DENY
+                    if (phase == "INSERT" and action == sqlite3.SQLITE_INSERT
+                            and arg1 == TABLE):
+                        return sqlite3.SQLITE_DENY
+                    return sqlite3.SQLITE_OK
+                self.conn.set_authorizer(deny)
+                try:
+                    with self.assertRaises(ObservationBlocked):
+                        verify_and_reserve_once_offline(**self.args())
+                finally:
+                    self.conn.set_authorizer(None)
+                self.assertFalse(self.conn.in_transaction)
+                self.assertEqual(self.count(), 0)
+                verify_and_reserve_once_offline(**self.args())
+                self.assertEqual(self.count(), 1)
+
+    def test_rollback_denial_never_returns_success_or_reuses_open_txn(self):
+        def deny_commit_and_rollback(action, arg1, arg2, db, source):
+            if (action == sqlite3.SQLITE_TRANSACTION
+                    and arg1 in ("COMMIT", "ROLLBACK")):
+                return sqlite3.SQLITE_DENY
+            return sqlite3.SQLITE_OK
+        self.conn.set_authorizer(deny_commit_and_rollback)
+        try:
+            with self.assertRaises(ObservationBlocked):
+                verify_and_reserve_once_offline(**self.args())
+            self.assertTrue(self.conn.in_transaction)
+            with self.assertRaises(ObservationBlocked):
+                verify_and_reserve_once_offline(**self.args())
+        finally:
+            self.conn.set_authorizer(None)
+            self.conn.rollback()
+        self.assertEqual(self.count(), 0)
+        verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 1)
+
+    def test_unexpected_validator_exception_is_sanitized_and_not_consumed(self):
+        with patch(
+            "autopilot.phase4e11_offline_nonce_replay."
+            "inspect_signed_sanitized_phase4e_snapshots",
+            side_effect=RuntimeError("synthetic_secret_never_echo"),
+        ):
+            with self.assertRaises(ObservationBlocked) as cm:
+                verify_and_reserve_once_offline(**self.args())
+        self.assertNotIn("synthetic_secret_never_echo",str(cm.exception))
+        self.assertFalse(self.conn.in_transaction)
+        self.assertEqual(self.count(), 0)
+        verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 1)
+
+    def test_forged_provider_approval_result_is_rejected_and_recoverable(self):
+        with patch(
+            "autopilot.phase4e11_offline_nonce_replay."
+            "inspect_signed_sanitized_phase4e_snapshots",
+            return_value={"signed_integrity_for_exact_sanitized_snapshot_bytes":True,
+                          "live_authenticated_d1_access_verified":True},
+        ):
+            with self.assertRaises(ObservationBlocked):
+                verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 0)
+        verify_and_reserve_once_offline(**self.args())
+        self.assertFalse(self.conn.in_transaction)
+
+    def test_same_nonce_with_new_valid_signed_payload_is_still_replay(self):
+        first=verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(first["youtube_non_succeeded_processing_count"],0)
+        self.fixture.youtube=deepcopy(self.fixture.youtube)
+        self.fixture.youtube["videos"][0]["processing"]="processing"
+        self.fixture.resign()
+        with self.assertRaises(ObservationBlocked):
+            verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 1)
+
+    def test_precommit_simulated_worker_crash_rolls_back_and_recovers(self):
+        # Close a connection with an uncommitted synthetic digest, as if
+        # the worker vanished before SQLite COMMIT. Another worker can retry.
+        uri="file:flowminute_phase4e13_crash?mode=memory&cache=shared"
+        keeper=sqlite3.connect(uri, uri=True, isolation_level=None,timeout=0)
+        crashed=sqlite3.connect(uri, uri=True, isolation_level=None,timeout=0)
+        try:
+            initialize_offline_nonce_fixture(keeper)
+            crashed.execute("BEGIN IMMEDIATE")
+            digest=sha256(
+                b"FlowMinute/4E11/offline-nonce-rehearsal/v1\\x00"
+                +fixtures.NONCE.encode("ascii")
+            ).hexdigest()
+            crashed.execute(
+                "INSERT INTO " + TABLE + " (nonce_sha256) VALUES (?)",
+                (digest,),
+            )
+            crashed.close()  # uncommitted entry is rolled back on close
+            self.assertEqual(self.count(keeper),0)
+            verify_and_reserve_once_offline(**self.args(conn=keeper))
+            self.assertEqual(self.count(keeper),1)
+            with self.assertRaises(ObservationBlocked):
+                verify_and_reserve_once_offline(**self.args(conn=keeper))
+        finally:
+            crashed.close()
+            keeper.close()
+
+    def test_simultaneous_worker_attempts_allow_at_most_one_success(self):
+        # Every thread gets its own connection to a single shared in-memory
+        # database. One wins or gets SQLITE_BUSY, the other is rejected.
+        # Exactly one successful reservation must remain afterwards.
+        for attempt in range(3):
+            uri=(f"file:flowminute_phase4e13_race_{attempt}"
+                 "?mode=memory&cache=shared")
+            keeper=sqlite3.connect(uri,uri=True,isolation_level=None,timeout=0)
+            initialize_offline_nonce_fixture(keeper)
+            barrier=threading.Barrier(2)
+            def worker():
+                conn=sqlite3.connect(uri,uri=True,isolation_level=None,timeout=0)
+                try:
+                    barrier.wait(timeout=5)
+                    try:
+                        result=verify_and_reserve_once_offline(**self.args(conn=conn))
+                        self.assertFalse(result["public_publishing_authorized"])
+                        return "accepted"
+                    except ObservationBlocked:
+                        return "blocked"
+                finally:
+                    conn.close()
+            try:
+                with ThreadPoolExecutor(max_workers=2) as executor:
+                    futures=[executor.submit(worker) for _ in range(2)]
+                    results=[future.result(timeout=10) for future in futures]
+                self.assertEqual(sorted(results),["accepted","blocked"])
+                self.assertEqual(self.count(keeper),1)
+            finally:
+                keeper.close()
 
     def test_fixture_is_not_durable_across_connection_restart(self):
         verify_and_reserve_once_offline(**self.args())

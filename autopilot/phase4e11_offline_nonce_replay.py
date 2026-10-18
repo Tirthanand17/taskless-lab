@@ -144,10 +144,23 @@ def verify_and_reserve_once_offline(
         # Neither SQLite lock states nor attacker-defined trigger errors can
         # reveal SQL text, raw fixture metadata or invented secret markers.
         raise ObservationBlocked("Offline nonce fixture transaction unavailable") from None
-    except BaseException:
+    except BaseException as exc:
         if conn.in_transaction:
             try:
                 conn.rollback()
             except sqlite3.Error:
+                # Leave the connection explicitly unusable until its caller
+                # rolls it back or discards it; next call rejects open txn.
                 pass
+        if isinstance(exc, ObservationBlocked):
+            # Only our fixed validation messages can cross this boundary.
+            raise
+        if isinstance(exc, Exception):
+            # Signed-claim validators and provider-shaped caller payloads may
+            # fail unexpectedly. Never surface their arbitrary exception text.
+            raise ObservationBlocked(
+                "Offline evidence verification failed closed"
+            ) from None
+        # Cancellation, KeyboardInterrupt, SystemExit: rollback attempted,
+        # then propagate. Never return a successfully reserved observation.
         raise
