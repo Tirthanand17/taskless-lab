@@ -1,5 +1,7 @@
 """Phase 4E.11 in-memory replay rehearsal; fake Ed25519 keys, no APIs."""
 import sqlite3
+import tempfile
+from pathlib import Path
 from copy import deepcopy
 from dataclasses import replace
 from datetime import timedelta
@@ -141,12 +143,115 @@ class OfflineOneUseNonceTests(unittest.TestCase):
             "CREATE TRIGGER offline_rehearsal_fault BEFORE INSERT ON "
             + TABLE + " BEGIN SELECT RAISE(ABORT, 'fake failure'); END"
         )
-        with self.assertRaises(sqlite3.Error):
+        with self.assertRaises(ObservationBlocked):
             verify_and_reserve_once_offline(**self.args())
         self.assertEqual(self.count(), 0)
         self.conn.execute("DROP TRIGGER offline_rehearsal_fault")
         verify_and_reserve_once_offline(**self.args())
         self.assertEqual(self.count(), 1)
+
+    def test_suppressed_insert_trigger_fails_closed_and_recovers(self):
+        self.conn.execute(
+            "CREATE TRIGGER ignore_replay BEFORE INSERT ON " + TABLE
+            + " BEGIN SELECT RAISE(IGNORE); END"
+        )
+        with self.assertRaises(ObservationBlocked):
+            verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 0)
+        self.conn.execute("DROP TRIGGER ignore_replay")
+        verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 1)
+
+    def test_deleting_trigger_fails_closed_and_recovers(self):
+        self.conn.execute(
+            "CREATE TRIGGER erase_replay AFTER INSERT ON " + TABLE
+            + " BEGIN DELETE FROM " + TABLE + "; END"
+        )
+        with self.assertRaises(ObservationBlocked):
+            verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 0)
+        self.conn.execute("DROP TRIGGER erase_replay")
+        verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 1)
+
+    def test_fake_table_and_schema_drift_cannot_approve_nonce(self):
+        self.conn.execute("DROP TABLE " + TABLE)
+        self.conn.execute(
+            "CREATE TABLE " + TABLE + " (nonce_sha256 TEXT)"
+        )
+        with self.assertRaises(ObservationBlocked):
+            initialize_offline_nonce_fixture(self.conn)
+        with self.assertRaises(ObservationBlocked):
+            verify_and_reserve_once_offline(**self.args())
+        self.conn.execute("DROP TABLE " + TABLE)
+        initialize_offline_nonce_fixture(self.conn)
+        self.conn.execute("ALTER TABLE " + TABLE + " ADD COLUMN attacker TEXT")
+        with self.assertRaises(ObservationBlocked):
+            verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 0)
+
+    def test_file_backed_fixture_is_refused_and_never_mutated(self):
+        with tempfile.TemporaryDirectory() as folder:
+            filename = str(Path(folder) / "synthetic-only.sqlite")
+            disk = sqlite3.connect(filename, isolation_level=None)
+            try:
+                with self.assertRaises(ObservationBlocked):
+                    initialize_offline_nonce_fixture(disk)
+                with self.assertRaises(ObservationBlocked):
+                    verify_and_reserve_once_offline(**self.args(conn=disk))
+                self.assertEqual(
+                    disk.execute("SELECT count(*) FROM sqlite_master").fetchone()[0],
+                    0,
+                )
+            finally:
+                disk.close()
+
+    def test_locked_shared_memory_fixture_fails_closed_then_recovers(self):
+        uri = "file:flowminute_phase4e12_lock_fixture?mode=memory&cache=shared"
+        a = sqlite3.connect(uri, uri=True, isolation_level=None, timeout=0)
+        b = sqlite3.connect(uri, uri=True, isolation_level=None, timeout=0)
+        try:
+            initialize_offline_nonce_fixture(a)
+            a.execute("BEGIN IMMEDIATE")
+            with self.assertRaises(ObservationBlocked) as error:
+                verify_and_reserve_once_offline(**self.args(conn=b))
+            self.assertNotIn("database",str(error.exception).lower())
+            a.rollback()
+            verify_and_reserve_once_offline(**self.args(conn=b))
+            self.assertEqual(self.count(a), 1)
+        finally:
+            a.close()
+            b.close()
+
+    def test_bounded_capacity_blocks_new_nonce_and_no_success_report(self):
+        # Directly populate only synthetic digests, never user-supplied values.
+        self.conn.executemany(
+            "INSERT INTO " + TABLE + "(nonce_sha256) VALUES (?)",
+            [(format(x, "064x"),) for x in range(256)],
+        )
+        self.assertEqual(self.count(), 256)
+        with self.assertRaises(ObservationBlocked):
+            verify_and_reserve_once_offline(**self.args())
+        self.assertEqual(self.count(), 256)
+
+    def test_only_domain_separated_digest_stored_not_raw_nonce(self):
+        verify_and_reserve_once_offline(**self.args())
+        saved = self.conn.execute(
+            "SELECT nonce_sha256 FROM " + TABLE
+        ).fetchone()[0]
+        self.assertEqual(len(saved), 64)
+        self.assertNotIn(fixtures.NONCE, saved)
+        self.assertEqual(self.count(), 1)
+
+    def test_trigger_defined_sql_error_is_redacted(self):
+        self.conn.execute(
+            "CREATE TRIGGER leak_marker BEFORE INSERT ON " + TABLE
+            + " BEGIN SELECT RAISE(ABORT, 'FAKE_SECRET_DO_NOT_ECHO'); END"
+        )
+        with self.assertRaises(ObservationBlocked) as error:
+            verify_and_reserve_once_offline(**self.args())
+        self.assertNotIn("FAKE_SECRET_DO_NOT_ECHO", str(error.exception))
+        self.assertEqual(self.count(), 0)
 
     def test_fixture_is_not_durable_across_connection_restart(self):
         verify_and_reserve_once_offline(**self.args())
