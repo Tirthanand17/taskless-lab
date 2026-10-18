@@ -84,6 +84,39 @@ class QuarantinedVideoReceiptTests(unittest.TestCase):
         self.assertIs(verified["publishing_authorized"],False)
         self.assertIs(verified["signed_by_trusted_reviewer"],False)
 
+    def test_each_quarantined_media_receipt_binds_distinct_viewer_language(self):
+        expected={
+            "csv_tutorial_short_hi":("hi","narrator_hindi_a"),
+            "csv_tutorial_short_en":("en","narrator_english_b"),
+            "csv_tutorial_long_hi":("hi","narrator_hindi_long_c"),
+        }
+        for episode,(language,narrator) in expected.items():
+            with self.subTest(episode=episode):
+                packet=self.create(episode)
+                self.assertEqual(packet["original_language_intended"],language)
+                self.assertEqual(packet["audience_language_intended"],language)
+                self.assertEqual(packet["narrator_plan_id"],narrator)
+                self.assertEqual(len(packet["audience_language_lane_sha256"]),64)
+                self.assertFalse(packet["audience_language_recommendation_guaranteed"])
+                self.assertFalse(self.verify(packet,episode)["publishing_authorized"])
+
+    def test_rehashed_wrong_language_or_planned_narrator_denied(self):
+        receipt=self.create("csv_tutorial_short_hi")
+        for field,new in (
+            ("original_language_intended","en"),
+            ("audience_language_intended","en"),
+            ("narrator_plan_id","narrator_english_b"),
+            ("audience_language_lane_sha256","0"*64),
+            ("audience_language_recommendation_guaranteed",True),
+        ):
+            with self.subTest(field=field):
+                mutated=dict(receipt)
+                mutated[field]=new
+                bare={k:v for k,v in mutated.items() if k!="receipt_integrity_sha256"}
+                mutated["receipt_integrity_sha256"]=sha256(_canonical_bytes(bare)).hexdigest()
+                with self.assertRaises(WorkflowError):
+                    self.verify(mutated,"csv_tutorial_short_hi")
+
     def test_original_media_mutation_detected_even_with_same_name(self):
         receipt=self.create()
         self.p.write_bytes(b"other-contents"*300)
