@@ -203,6 +203,7 @@ class AgentOrgTests(unittest.TestCase):
                                        separators=(",",":"))
                     c.execute("UPDATE workflow_snapshot SET data=?,digest=?",
                         (payload,sha256(payload.encode()).hexdigest()))
+                    c.commit()  # Restore reads through a separate SQLite connection.
                     with self.subTest(state=new_state),self.assertRaises(WorkflowError):
                         Workflow.restore(path)
 
@@ -221,6 +222,7 @@ class AgentOrgTests(unittest.TestCase):
                                        separators=(",",":"))
                     c.execute("UPDATE workflow_snapshot SET data=?,digest=?",
                               (payload,sha256(payload.encode()).hexdigest()))
+                    c.commit()  # Flush fixture mutation before restore's connection.
                     with self.subTest(retries=retries),self.assertRaises(WorkflowError):
                         Workflow.restore(path)
 
