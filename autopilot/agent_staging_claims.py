@@ -25,6 +25,8 @@ from .agent_org import (
 MAX_LEASE_SECONDS = 900
 MIN_LEASE_SECONDS = 10
 MAX_NOW_EPOCH = 4_102_444_800  # year 2100; offline clock bound only
+MAX_HANDOFF_JSON_BYTES = 4096
+MAX_HANDOFF_EVIDENCE_REFS = 12
 
 
 def _utc_seconds(value: datetime) -> int:
@@ -105,6 +107,11 @@ class SQLiteStagingClaims:
                 "expires INTEGER NOT NULL DEFAULT 0, "
                 "artifact_sha TEXT NOT NULL DEFAULT '')"
             )
+            conn.execute(
+                "CREATE TABLE stage_handoffs (task_id TEXT PRIMARY KEY, "
+                "payload TEXT NOT NULL, digest TEXT NOT NULL, "
+                "FOREIGN KEY(task_id) REFERENCES stage_tasks(task_id))"
+            )
             conn.execute("INSERT INTO stage_policy(id,fingerprint,channel,budget_inr,"
                          "publisher_enabled,last_now) VALUES(1,?,?,0,0,0)",
                          (self.fingerprint, CHANNEL_ID))
@@ -139,7 +146,9 @@ class SQLiteStagingClaims:
                     or type(generation) is not int or generation < 0
                     or type(expires) is not int or expires < 0
                     or not isinstance(artifact,str)
-                    or (status == "complete") != bool(re.fullmatch(r"[0-9a-f]{64}",artifact))
+                    or (status == "complete" and not
+                        re.fullmatch(r"[0-9a-f]{64}",artifact))
+                    or (status != "complete" and artifact != "")
                     or (status == "running") != (expires > 0)
                     or (status == "quarantined") !=
                        (failures == contract.max_retries+1)
@@ -148,7 +157,45 @@ class SQLiteStagingClaims:
             found[tid] = (status, failures, generation, expires, artifact)
         if set(found)!=set(self.contracts):
             raise WorkflowError("Duplicate or missing staging task IDs")
+        persisted=conn.execute(
+            "SELECT task_id,payload,digest FROM stage_handoffs"
+        ).fetchall()
+        if len(persisted)!=sum(x[0]=="complete" for x in found.values()):
+            raise WorkflowError("Staging completion lacks durable handoff evidence")
+        handoffs={}
+        for tid,payload,digest in persisted:
+            if (tid not in found or found[tid][0]!="complete"
+                    or not isinstance(payload,str)
+                    or not 0<len(payload.encode("utf-8"))<=MAX_HANDOFF_JSON_BYTES
+                    or not isinstance(digest,str)
+                    or sha256(payload.encode("utf-8")).hexdigest()!=digest):
+                raise WorkflowError("Staging completion evidence missing or mismatched")
+            try:
+                obj=json.loads(payload)
+                if (not isinstance(obj,dict)
+                        or set(obj)!={
+                            "task_id","artifact_type","sha256_hex",
+                            "evidence_refs","produced_by","recorded_at_utc",
+                            "review_state"}
+                        or not isinstance(obj["evidence_refs"],list)
+                        or not 1<=len(obj["evidence_refs"])<=MAX_HANDOFF_EVIDENCE_REFS
+                        or len(set(obj["evidence_refs"]))!=len(obj["evidence_refs"])
+                        or json.dumps(obj,sort_keys=True,
+                                      separators=(",",":"))!=payload):
+                    raise WorkflowError("Malformed stored staging handoff metadata")
+                h=Handoff(**{**obj,"evidence_refs":tuple(obj["evidence_refs"])})
+                h.validate(self.contracts[tid],self.contracts[tid].owner)
+            except (KeyError,TypeError,ValueError,UnicodeError) as exc:
+                raise WorkflowError("Invalid stored handoff provenance") from exc
+            if h.sha256_hex!=found[tid][4] or tid in handoffs:
+                raise WorkflowError("Completed evidence does not match source task")
+            handoffs[tid]=h
         for tid, (status, *_rest) in found.items():
+            if status=="complete" and not all(
+                "sha256:"+found[parent][4] in handoffs[tid].evidence_refs
+                for parent in self.contracts[tid].requires
+            ):
+                raise WorkflowError("Completed staging task has missing parent lineage")
             completed = all(found[parent][0]=="complete"
                             for parent in self.contracts[tid].requires)
             # Completion transaction can briefly have a blocked dependent
@@ -220,10 +267,26 @@ class SQLiteStagingClaims:
         if not isinstance(handoff,Handoff) or handoff.task_id not in self.contracts:
             raise WorkflowError("Staging output must match a known task")
         handoff.validate(self.contracts[handoff.task_id],actor)
+        if (not 1<=len(handoff.evidence_refs)<=MAX_HANDOFF_EVIDENCE_REFS
+                or len(set(handoff.evidence_refs))!=len(handoff.evidence_refs)):
+            raise WorkflowError("Unbounded or duplicate staging evidence references")
+        payload=json.dumps(asdict(handoff),sort_keys=True,separators=(",",":"))
+        if len(payload.encode("utf-8"))>MAX_HANDOFF_JSON_BYTES:
+            raise WorkflowError("Staging handoff metadata exceeds size bound")
+        digest=sha256(payload.encode("utf-8")).hexdigest()
         with self._tx() as conn:
             states=self._inspect(conn)
             sec=self._clock(conn,now)
             self._fence(handoff.task_id,actor,generation,sec,states)
+            if not all(
+                "sha256:"+states[parent][4] in handoff.evidence_refs
+                for parent in self.contracts[handoff.task_id].requires
+            ):
+                raise WorkflowError("Handoff does not reference every parent artifact")
+            conn.execute(
+                "INSERT INTO stage_handoffs(task_id,payload,digest) VALUES(?,?,?)",
+                (handoff.task_id,payload,digest),
+            )
             conn.execute("UPDATE stage_tasks SET status='complete',expires=0,"
                          "artifact_sha=? WHERE task_id=?",
                          (handoff.sha256_hex,handoff.task_id))
@@ -271,6 +334,9 @@ class SQLiteStagingClaims:
                 "tasks":len(states),"ready_tasks":ready,
                 "running_count":sum(x[0]=="running" for x in states.values()),
                 "completed_count":sum(x[0]=="complete" for x in states.values()),
+                "durable_staging_handoffs_verified":
+                    sum(x[0]=="complete" for x in states.values()),
+                "evidence_independently_authenticated":False,
                 "quarantined_count":sum(x[0]=="quarantined" for x in states.values()),
                 "worker_identities_authenticated":False,
                 "clock_independently_trusted":False,

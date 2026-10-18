@@ -4,6 +4,9 @@ from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from contextlib import closing
+import json
+import sqlite3
 from dataclasses import replace
 import unittest
 
@@ -73,6 +76,102 @@ class StagingLocalLeaseTests(unittest.TestCase):
         with self.assertRaises(WorkflowError):
             self.staging.complete(output(RESEARCH,OWNER),actor=OWNER,
                                   generation=token,now=BASE+timedelta(seconds=31))
+
+    def test_completed_handoff_metadata_survives_reopen_and_is_not_approval(self):
+        token=self.staging.claim(RESEARCH,actor=OWNER,now=BASE)
+        self.staging.complete(output(RESEARCH,OWNER),actor=OWNER,
+                              generation=token,now=BASE+timedelta(seconds=1))
+        with closing(sqlite3.connect(self.path)) as db:
+            payload,digest=db.execute(
+                "SELECT payload,digest FROM stage_handoffs WHERE task_id=?",
+                (RESEARCH,),
+            ).fetchone()
+        data=json.loads(payload)
+        self.assertEqual(data["task_id"],RESEARCH)
+        self.assertEqual(data["review_state"],"UNVERIFIED_STAGING_ARTIFACT")
+        self.assertEqual(sha256(payload.encode()).hexdigest(),digest)
+        again=SQLiteStagingClaims(self.path,episode_id=EP,kind="short",language="hi")
+        self.assertEqual(again.report()["durable_staging_handoffs_verified"],1)
+        self.assertFalse(again.report()["evidence_independently_authenticated"])
+        self.assertEqual(again.report()["ready_tasks"],[FACT])
+
+    def test_dependent_fact_handoff_requires_exact_source_artifact_lineage(self):
+        parent=output(RESEARCH,OWNER)
+        token=self.staging.claim(RESEARCH,actor=OWNER,now=BASE)
+        self.staging.complete(parent,actor=OWNER,generation=token,
+                              now=BASE+timedelta(seconds=1))
+        actor="quality.fact_reviewer"
+        child_token=self.staging.claim(FACT,actor=actor,
+                                       now=BASE+timedelta(seconds=2))
+        unbound=output(FACT,actor)
+        with self.assertRaises(WorkflowError):
+            self.staging.complete(unbound,actor=actor,generation=child_token,
+                                  now=BASE+timedelta(seconds=3))
+        self.assertEqual(self.staging.report()["completed_count"],1)
+        linked=replace(unbound,evidence_refs=(
+            "sha256:"+parent.sha256_hex,"sha256:"+unbound.sha256_hex,
+        ))
+        self.staging.complete(linked,actor=actor,generation=child_token,
+                              now=BASE+timedelta(seconds=4))
+        reopened=SQLiteStagingClaims(self.path,episode_id=EP,kind="short",language="hi")
+        self.assertEqual(reopened.report()["durable_staging_handoffs_verified"],2)
+        self.assertEqual(set(reopened.report()["ready_tasks"]),{
+            f"{EP}:script",f"{EP}:hooks",
+        })
+
+    def test_saved_forged_review_rejected_even_after_rehash(self):
+        token=self.staging.claim(RESEARCH,actor=OWNER,now=BASE)
+        self.staging.complete(output(RESEARCH,OWNER),actor=OWNER,
+                              generation=token,now=BASE+timedelta(seconds=1))
+        with closing(sqlite3.connect(self.path)) as db:
+            raw=db.execute("SELECT payload FROM stage_handoffs "
+                           "WHERE task_id=?",(RESEARCH,)).fetchone()[0]
+            forged=json.loads(raw)
+            forged["review_state"]="SIGNED_APPROVED_RELEASE"
+            altered=json.dumps(forged,sort_keys=True,separators=(",",":"))
+            db.execute("UPDATE stage_handoffs SET payload=?,digest=? "
+                       "WHERE task_id=?",
+                       (altered,sha256(altered.encode()).hexdigest(),RESEARCH))
+            db.commit()
+        with self.assertRaises(WorkflowError):
+            SQLiteStagingClaims(self.path,episode_id=EP,kind="short",language="hi")
+
+    def test_rehashed_child_metadata_cannot_erase_parent_lineage(self):
+        parent=output(RESEARCH,OWNER)
+        t1=self.staging.claim(RESEARCH,actor=OWNER,now=BASE)
+        self.staging.complete(parent,actor=OWNER,generation=t1,
+                              now=BASE+timedelta(seconds=1))
+        actor="quality.fact_reviewer"
+        t2=self.staging.claim(FACT,actor=actor,now=BASE+timedelta(seconds=2))
+        child=output(FACT,actor)
+        bound=replace(child,evidence_refs=("sha256:"+parent.sha256_hex,))
+        self.staging.complete(bound,actor=actor,generation=t2,
+                              now=BASE+timedelta(seconds=3))
+        with closing(sqlite3.connect(self.path)) as db:
+            raw=db.execute("SELECT payload FROM stage_handoffs "
+                           "WHERE task_id=?",(FACT,)).fetchone()[0]
+            modified=json.loads(raw)
+            modified["evidence_refs"]=["sha256:"+child.sha256_hex]
+            altered=json.dumps(modified,sort_keys=True,separators=(",",":"))
+            db.execute("UPDATE stage_handoffs SET payload=?,digest=? "
+                       "WHERE task_id=?",
+                       (altered,sha256(altered.encode()).hexdigest(),FACT))
+            db.commit()
+        with self.assertRaises(WorkflowError):
+            SQLiteStagingClaims(self.path,episode_id=EP,kind="short",language="hi")
+
+    def test_evidence_ref_count_and_duplicates_bounded(self):
+        token=self.staging.claim(RESEARCH,actor=OWNER,now=BASE)
+        base=output(RESEARCH,OWNER)
+        duplicates=replace(base,evidence_refs=base.evidence_refs*2)
+        too_many=replace(base,evidence_refs=tuple(
+            "sha256:"+sha256(str(i).encode()).hexdigest()
+            for i in range(13)
+        ))
+        for candidate in (duplicates,too_many):
+            with self.subTest(evidence=candidate.evidence_refs),self.assertRaises(WorkflowError):
+                self.staging.complete(candidate,actor=OWNER,generation=token,now=BASE)
+        self.assertEqual(self.staging.report()["completed_count"],0)
 
     def test_lease_expiry_charges_retry_and_stale_generation_refused(self):
         token=self.staging.claim(RESEARCH,actor=OWNER,now=BASE,lease_seconds=10)
