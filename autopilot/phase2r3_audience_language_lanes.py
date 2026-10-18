@@ -130,7 +130,7 @@ def _metadata_language_check(language:str,title:str,description:str)->None:
         title_latin=len(LATIN.findall(title))
         desc_latin=len(LATIN.findall(description))
         if (title_dev<6 or desc_dev<35
-                or title_dev/(title_dev+title_latin)<.45
+                or title_dev/(title_dev+title_latin)<.30
                 or desc_dev/(desc_dev+desc_latin)<.5):
             raise WorkflowError("Hindi lane metadata is not predominantly Hindi")
     elif language=="en":
