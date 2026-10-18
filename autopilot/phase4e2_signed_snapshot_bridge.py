@@ -14,7 +14,7 @@ signatures, keys or arbitrary claimant strings. All authority remains FALSE.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import json
 import re
@@ -24,7 +24,7 @@ from .core import CHANNEL_ID
 from .phase4b_readonly_audit import AuditBlocked, PROTECTED, VIDEO_ID
 from .phase4d_signed_observations import (
     CollectorTrust, SignedObservation, ObservationBlocked,
-    sanitized_snapshot_hash, verify_readonly_observation_bundle,
+    sanitized_snapshot_hash, verify_readonly_observation_bundle, _instant,
 )
 
 _IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]{0,99}\Z")
@@ -55,6 +55,7 @@ _RECOGNIZED_CANONICAL = frozenset((
 ))
 _MAX_SCHEMA_OBJECTS = 200
 _MAX_VIDEO_RECORDS = 500
+_MAX_SIGNED_CLAIM_SKEW = timedelta(minutes=5)  # receipt claims, NOT provider query time
 
 
 def _bounded_snapshot(value: Mapping, expected_keys: frozenset, label:str)->None:
@@ -131,7 +132,7 @@ def _checked_d1(s:dict)->tuple[list[str],int]:
     return canonical_candidates,len(rows)
 
 
-def _checked_youtube(s:dict)->tuple[int,int,bool]:
+def _checked_youtube(s:dict)->tuple[int,int,int,bool]:
     _bounded_snapshot(s,_YT_TOP,"YouTube")
     if (s["origin"]!="UNAUTHENTICATED_YOUTUBE_SHAPED_METADATA"
             or s["channel_id"]!=CHANNEL_ID
@@ -161,6 +162,7 @@ def _checked_youtube(s:dict)->tuple[int,int,bool]:
         raise ObservationBlocked("YouTube report omitted mandatory untrusted-source warning")
     video_ids=set()
     uncertain=0
+    non_succeeded_processing=0
     for rec in records:
         if not isinstance(rec,dict) or set(rec)!=_YT_VIDEO:
             raise ObservationBlocked("Unredacted YouTube video metadata")
@@ -189,12 +191,14 @@ def _checked_youtube(s:dict)->tuple[int,int,bool]:
             raise ObservationBlocked("Video privacy/processing uncertainty was suppressed")
         if should_uncertain:
             uncertain+=1
+        if rec["processing"] != "succeeded":
+            non_succeeded_processing+=1
     if s["has_conflicting_state"] is not bool(uncertain):
         raise ObservationBlocked("Overall unknown processing state hidden")
     incomplete=not s["pagination_complete"]
     if incomplete != ("VIDEO_PAGINATION_INCOMPLETE" in s["blockers"]):
         raise ObservationBlocked("Pagination completeness issue concealed")
-    return len(records),uncertain,incomplete
+    return len(records),uncertain,non_succeeded_processing,incomplete
 
 
 def inspect_signed_sanitized_phase4e_snapshots(
@@ -211,7 +215,7 @@ def inspect_signed_sanitized_phase4e_snapshots(
     a Cloudflare or Google API request. No source-to-ledger reconciliation.
     """
     candidate_tables,table_count=_checked_d1(d1_snapshot)
-    video_count,uncertain_count,incomplete=_checked_youtube(youtube_snapshot)
+    video_count,uncertain_count,non_succeeded_count,incomplete=_checked_youtube(youtube_snapshot)
     hashes={
         "d1_schema":sanitized_snapshot_hash(d1_snapshot),
         "youtube_history":sanitized_snapshot_hash(youtube_snapshot),
@@ -232,6 +236,14 @@ def inspect_signed_sanitized_phase4e_snapshots(
             or review.production_upload_ready is not False
             or review.production_schedule_ready is not False):
         raise ObservationBlocked("Signed receipt verifier promoted untrusted evidence")
+    # A valid signature binds only the signed metadata bytes and a
+    # self-reported collection timestamp. It cannot prove any real API call.
+    # Reject mutually distant receipt claims rather than depicting their
+    # associated D1/YouTube inventories as one contemporaneous observation.
+    claim_times=[_instant(r.claim.collected_at_utc) for r in signed_observations]
+    claim_skew=max(claim_times)-min(claim_times)
+    if claim_skew > _MAX_SIGNED_CLAIM_SKEW:
+        raise ObservationBlocked("Signed collector receipt claims are too far apart")
     issues=[
         "NO_LIVE_PROVIDER_REQUEST_ATTESTED",
         "NO_DURABLE_TRUSTED_NONCE_STORE_OR_COLLECTOR_ENROLLMENT",
@@ -245,6 +257,8 @@ def inspect_signed_sanitized_phase4e_snapshots(
         issues.append("INCOMPLETE_YOUTUBE_VIDEO_PAGINATION")
     if uncertain_count:
         issues.append("UNKNOWN_OR_CONFLICTING_VIDEO_STATUS")
+    if non_succeeded_count:
+        issues.append("NON_SUCCEEDED_YOUTUBE_PROCESSING_OBSERVED")
     return {
         "status":"OFFLINE_SIGNED_SANITIZED_READBACK_ONLY_PRODUCTION_BLOCKED",
         "channel_bound_to_expected_label":True,
@@ -252,6 +266,8 @@ def inspect_signed_sanitized_phase4e_snapshots(
         "candidate_canonical_table_count":len(candidate_tables),
         "youtube_video_count":video_count,
         "youtube_unknown_or_conflicting_count":uncertain_count,
+        "youtube_non_succeeded_processing_count":non_succeeded_count,
+        "signed_receipt_claim_skew_seconds":int(claim_skew.total_seconds()),
         "youtube_pagination_complete":not incomplete,
         "signed_integrity_for_exact_sanitized_snapshot_bytes":True,
         "separate_pinned_collector_keys_used":True,
