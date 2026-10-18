@@ -122,6 +122,15 @@ jobs:
               )
               print(f"FULL_42_SECOND_{language.upper()}_VIDEO_ONLY_QA_PASSED")
           PY
+      - name: Assemble FULL 7m12s Hindi silent 16x9 video from 24 bounded scenes
+        run: |
+          set -euo pipefail
+          # Entire 432s silent H264 proof at 640x360 / 8fps, not a
+          # publishable video. Do not upload or persist any unreviewed media.
+          timeout 480s python -m autopilot.phase3_long_visual_assembly \
+            --output /tmp/flowminute-cloud-preview/csv-hindi-long-FULL-VISUAL-ONLY.mp4 \
+            --fps 8 --width 640
+          echo "FULL_432_SECOND_HINDI_VISUAL_ONLY_QA_PASSED"
       - name: Audio mux proof using SYNTHETIC tone only (NEVER release)
         run: |
           set -euo pipefail
