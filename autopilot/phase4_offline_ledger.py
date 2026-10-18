@@ -180,6 +180,55 @@ class OfflineLedger:
                       {"worker":owner,"fence":fence,"expires_utc":until})
             return version,fence
 
+    def claim_db_clock_rehearsal(self, episode: str, *,
+                                 expected_version: int, owner: str,
+                                 ttl_seconds: int = 120) -> tuple[int,int]:
+        """Claim the existing OFFLINE ledger using a SQLite-selected UTC clock.
+
+        A caller cannot provide the current time to this method. It gets time
+        directly from the SAME SQLite connection INSIDE the write transaction,
+        guards both version and lease expiry in the conditional UPDATE, and
+        emits its event inside that transaction. This is a protocol rehearsal:
+        SQLite/runner host wall time is NOT authenticated Cloudflare D1
+        server time, and no actual remote permission is granted. The older
+        caller-time claim() remains for compatibility with existing tests and
+        MUST NEVER be published as a trusted production writer endpoint.
+        """
+        if (not isinstance(episode, str) or EPISODE.fullmatch(episode) is None
+                or type(expected_version) is not int or expected_version < 0
+                or not isinstance(owner, str) or OWNER.fullmatch(owner) is None
+                or type(ttl_seconds) is not int
+                or not 1 <= ttl_seconds <= 300):
+            raise ProtocolBlocked("Invalid bounded offline database-clock lease request")
+        with self._atomic():
+            now_utc = self.db.execute(
+                "SELECT strftime('%Y-%m-%dT%H:%M:%S+00:00','now')"
+            ).fetchone()[0]
+            if not isinstance(now_utc,str):
+                raise ProtocolBlocked("No database-selected UTC seconds available")
+            now = _instant(now_utc)
+            until = (now+dt.timedelta(seconds=ttl_seconds)).isoformat(timespec="seconds")
+            row = self._row(episode)
+            if (not row or row["version"]!=expected_version
+                    or row["stage"] in ("public_verified","quarantined")):
+                raise ProtocolBlocked("Stale, absent or terminal offline lease claim")
+            next_version=expected_version+1
+            next_fence=row["fence"]+1
+            changed=self.db.execute(
+                "UPDATE phase4_releases "
+                "SET version=?,fence=?,lease_owner=?,lease_until=? "
+                "WHERE channel_id=? AND episode_id=? AND version=? "
+                "AND stage NOT IN ('public_verified','quarantined') "
+                "AND (lease_until IS NULL OR lease_until <= ?)",
+                (next_version,next_fence,owner,until,CHANNEL_ID,episode,
+                 expected_version,now_utc),
+            ).rowcount
+            if changed!=1:
+                raise ProtocolBlocked("Active or concurrently changed offline lease")
+            self._log(episode,next_version,"lease_claimed",now_utc,
+                      {"worker":owner,"fence":next_fence,"expires_utc":until})
+            return next_version,next_fence
+
     def _check(self, episode: str, *, stage: str, version: int, owner: str,
                fence: int, now_utc: str):
         now=_instant(now_utc)
