@@ -16,8 +16,10 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+from functools import lru_cache
 
 from PIL import Image, ImageDraw, ImageFont
+from .phase3_voice_subtitle_handoff import build_subtitles_from_authored_csv
 
 SCRIPT = (Path(__file__).parent / "research_briefs" /
           "2026-10-17_csv_bilingual_one_day_scripts_DRAFT.md")
@@ -56,6 +58,36 @@ def english_script_rows() -> tuple[str, ...]:
     if len(rows) != 4:
         raise ValueError("Authored English Short must have four timed rows")
     return tuple(text.strip() for text, _ in rows)
+
+
+@lru_cache(maxsize=1)
+def _english_srt_timing() -> tuple[tuple[int,int,str], ...]:
+    """Actual authored English SRT; estimated scene timing, never speech ASR."""
+    srt=build_subtitles_from_authored_csv()["csv_tutorial_short_en"]["srt"]
+    blocks=srt.strip().split("\\n\\n")
+    records=[]
+    for block in blocks:
+        lines=block.splitlines()
+        if len(lines)!=3 or not lines[0].isdigit() or " --> " not in lines[1]:
+            raise ValueError("Malformed internally generated SRT")
+        start,end=lines[1].split(" --> ")
+        def stamp(value: str) -> int:
+            hours,minute,second=value.split(":")
+            sec,milli=second.split(",")
+            return ((int(hours)*3600+int(minute)*60+int(sec))*1000+int(milli))
+        records.append((stamp(start),stamp(end),lines[2]))
+    if not records or records[0][0]!=0 or records[-1][1]!=42000:
+        raise ValueError("Incorrect authored English Short SRT duration")
+    return tuple(records)
+
+
+def _estimated_caption_at(time_s: float) -> str:
+    """Return one readable estimated caption, not an audio-aligned word cue."""
+    millis=round(time_s*1000)
+    for start,end,spoken in _english_srt_timing():
+        if start <= millis < end:
+            return spoken
+    raise ValueError("No authored SRT cue covers requested video time")
 
 
 def _wrap(text: str, *, font, draw, max_width: int) -> list[str]:
@@ -173,7 +205,8 @@ def visual_frame(time_s: float, *, width: int,
                            fill=(3, 17, 32, 245), outline=(47, 189, 210, 185),
                            width=max(1, s(2)))
     font = _font(s(17), bold=True)
-    lines = _wrap(text[scene_idx],font=font,draw=draw,max_width=s(433))
+    cue = _estimated_caption_at(time_s) if spoken is None else text[scene_idx]
+    lines = _wrap(cue,font=font,draw=draw,max_width=s(433))
     for i, line in enumerate(lines):
         draw.text((width//2-draw.textlength(line,font=font)/2,s(766+24*i)),
                   line,font=font,fill=(246,248,253))
@@ -205,7 +238,7 @@ def render_visual_preview(output: Path, *, duration_s: float = 3,
                             stderr=subprocess.PIPE)
     try:
         for i in range(round(duration_s*fps)):
-            frame = visual_frame(i/fps, width=width, spoken=captions)
+            frame = visual_frame(i/fps, width=width)
             proc.stdin.write(frame.tobytes())
         proc.stdin.close()
         error = proc.stderr.read()
