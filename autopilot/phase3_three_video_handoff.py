@@ -29,6 +29,7 @@ from .phase3_quarantined_video_receipt import (
 )
 from .phase3_visual_signal_audit import EPISODES as VISUAL_EPISODES, MAX_MEDIA_BYTES
 from .phase3_voice_signal_screen import inspect_nonplaceholder_audio_candidate
+from .phase3_voice_pacing_audit import inspect_voice_pacing_candidate
 
 VERSION = "flowminute-untrusted-three-episode-handoff-v1"
 MAX_PATHS = 20
@@ -169,6 +170,18 @@ def prepare_three_video_technical_handoff(
                 or signal.get("intelligible_speech_recognized") is not False
                 or signal.get("ready_for_mux_or_upload") is not False):
             raise WorkflowError("Voice signal screen cannot assert speech or rights clearance")
+        pacing=inspect_voice_pacing_candidate(
+            wav_path=item.narration_take.wav_path,
+            episode_id=ep,
+            expected_sha256=item.narration_take.wav_sha256,
+        )
+        if (pacing.get("status")!="PACING_AND_WAVEFORM_TECHNICAL_SCREEN_ONLY_UNVERIFIED"
+                or pacing.get("wav_sha256")!=voice["clip_sha256"]
+                or pacing.get("episode_id")!=ep
+                or pacing.get("publishing_authorized") is not False
+                or pacing.get("natural_human_speech_verified") is not False
+                or pacing.get("ready_for_mux_or_upload") is not False):
+            raise WorkflowError("Pacing/waveform technical screen falsely claimed approval")
         sub=review_candidate_caption(item.caption_candidate,voice)
         if (sub.get("publishing_authorized") is not False
                 or sub.get("true_speech_to_caption_alignment_verified") is not False
@@ -197,6 +210,7 @@ def prepare_three_video_technical_handoff(
             "signed_source_or_editorial_attestation_available":False,
             "audibly_distinct_voices_verified":False,
             "obvious_audio_placeholder_screened":True,
+            "pacing_and_pcm_damage_screened":True,
             "actual_voice_speech_verified":False,
             "actual_speech_timing_verified":False,
             "license_or_voice_consent_authenticated":False,
