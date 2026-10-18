@@ -131,50 +131,15 @@ jobs:
             --output /tmp/flowminute-cloud-preview/csv-hindi-long-FULL-VISUAL-ONLY.mp4 \
             --fps 8 --width 640
           echo "FULL_432_SECOND_HINDI_VISUAL_ONLY_QA_PASSED"
-      - name: Probe THREE full-HD 24fps scenes (NO voice, NO release)
+      - name: Measure THREE native-HD later-scene renders and decode (NO voice/release)
         run: |
           set -euo pipefail
-          root=/tmp/flowminute-cloud-preview
-          # One real second each, not a production-length full-HD render.
-          timeout 180s python -m autopilot.phase3_csv_visual_preview \
-            --output "$root/english-fhd-24fps-VISUAL-ONLY.mp4" \
-            --duration 1 --fps 24 --width 1080
-          timeout 180s python -m autopilot.phase3_hindi_visual_preview \
-            --episode csv_tutorial_short_hi \
-            --output "$root/hindi-fhd-24fps-VISUAL-ONLY.mp4" \
-            --duration 1 --fps 24 --width 1080
-          timeout 180s python -m autopilot.phase3_hindi_visual_preview \
-            --episode csv_tutorial_long_hi \
-            --output "$root/long-fhd-24fps-VISUAL-ONLY.mp4" \
-            --duration 1 --fps 24 --width 1920
-          python - <<'PY'
-          import json, subprocess
-          from pathlib import Path
-          root=Path("/tmp/flowminute-cloud-preview")
-          for name,dim in (
-              ("english-fhd-24fps-VISUAL-ONLY.mp4",(1080,1920)),
-              ("hindi-fhd-24fps-VISUAL-ONLY.mp4",(1080,1920)),
-              ("long-fhd-24fps-VISUAL-ONLY.mp4",(1920,1080)),
-          ):
-              target=root/name
-              proc=subprocess.run(
-                  ["ffprobe","-v","error","-show_entries",
-                   "stream=codec_type,codec_name,width,height,nb_frames:format=duration",
-                   "-of","json",str(target)],
-                  capture_output=True,text=True,check=True,timeout=25)
-              meta=json.loads(proc.stdout)
-              streams=meta["streams"]
-              assert len(streams)==1 and streams[0]["codec_type"]=="video"
-              assert streams[0]["codec_name"]=="h264"
-              assert (streams[0]["width"],streams[0]["height"])==dim
-              assert int(streams[0]["nb_frames"])==24
-              assert abs(float(meta["format"]["duration"])-1.0)<0.15
-              subprocess.run(
-                  ["ffmpeg","-nostdin","-v","error","-xerror",
-                   "-i",str(target),"-f","null","-"],
-                  check=True,timeout=90)
-              print(f"FULL_HD_24FPS_VISUAL_PROOF_PASSED {name}")
-          PY
+          # The fixed bench renders 24 frames at 24fps per format. Includes
+          # actual later-scene code/number overlays, CPU wall time, RSS and
+          # encoded bytes; never upgrades 1s evidence to full HD capacity.
+          timeout 360s python -m autopilot.phase3_hd_capacity_benchmark \
+            --existing-scratch-dir /tmp/flowminute-cloud-preview
+          echo "FULL_HD_CAPACITY_SAMPLES_MEASURED__PRODUCTION_UNVERIFIED"
       - name: Audio mux proof using SYNTHETIC tone only (NEVER release)
         run: |
           set -euo pipefail
