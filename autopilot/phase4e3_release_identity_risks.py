@@ -7,7 +7,13 @@ about the real database or partial constraints.
 """
 from __future__ import annotations
 from collections.abc import Mapping
-from .phase4d_signed_observations import ObservationBlocked
+
+# Share the strict 4E.2 *untrusted* snapshot parser, rather than maintaining
+# a second weaker validator. 4E.2 checks exact envelope/nested fields,
+# ownership label, safe identifiers, bounded JSON, uniqueness-column shapes,
+# all objects (including noncandidate views), and FALSE authority flags.
+# It still does NOT prove any actual D1 request or global uniqueness.
+from .phase4e2_signed_snapshot_bridge import _checked_d1
 
 CANONICAL_FIELDS=frozenset(("channel_id","episode_id","planned_utc","media_sha256","version"))
 LEGACY_FIELDS=frozenset(("release_date","episode_id","stage","youtube_id"))
@@ -20,53 +26,30 @@ REQUIRED_UNIQUE_INDEXES=(
 )
 
 def inspect_release_identity_risks(snapshot: Mapping) -> dict:
-    """Classify D1-shaped source claims without trusting or exposing any rows."""
-    if (not isinstance(snapshot,dict)
-            or snapshot.get("origin")!="UNAUTHENTICATED_D1_SHAPED_METADATA"
-            or snapshot.get("saw_authenticated_provider_request") is not False
-            or snapshot.get("migration_authorized") is not False
-            or snapshot.get("contains_data_rows") is not False
-            or snapshot.get("production_writes")!=0
-            or snapshot.get("generated_sql")!=[]
-            or not isinstance(snapshot.get("objects"),list)
-            or len(snapshot["objects"])>200):
-        raise ObservationBlocked("Untrusted schema shape cannot establish authority")
+    """Classify *untrusted* schema claims; no release rows or SQL executed.
+
+    All index entries, including ones on noncanonical objects, are validated
+    before any set construction. A complete declaration is diagnostic ONLY.
+    """
+    _checked_d1(snapshot)
     legacy=canonical=complete=0
     reported_missing_by_key=[0]*len(REQUIRED_UNIQUE_INDEXES)
     for item in snapshot["objects"]:
-        if (not isinstance(item,dict)
-                or item.get("kind") not in ("table","view","virtual","shadow")
-                or not isinstance(item.get("columns"),list)
-                or not isinstance(item.get("indexes"),list)
-                or len(item["columns"])>100 or len(item["indexes"])>40):
-            raise ObservationBlocked("Untrusted schema object invalid")
-        fields=set()
-        for c in item["columns"]:
-            if (not isinstance(c,dict) or not isinstance(c.get("name"),str)
-                    or c["name"] in fields):
-                raise ObservationBlocked("Duplicate or malformed column")
-            fields.add(c["name"])
+        # Names and nested index column types were already checked by 4E.2.
+        fields={column["name"] for column in item["columns"]}
         if item["kind"]!="table":
             continue
         if LEGACY_FIELDS<=fields and "channel_id" not in fields:
             legacy+=1
         if CANONICAL_FIELDS<=fields:
             canonical+=1
-            unique_sets=set()
-            for ix in item["indexes"]:
-                if not isinstance(ix,dict) or type(ix.get("unique")) is not bool:
-                    raise ObservationBlocked("Malformed claimed index")
-                names=ix.get("columns")
-                if not isinstance(names,list) or not names:
-                    raise ObservationBlocked("Missing claimed index columns")
-                if len(names)!=len(set(names)) or any(
-                    not isinstance(n,str) or n not in fields for n in names
-                ):
-                    raise ObservationBlocked("Impossible claimed index")
-                if ix["unique"]:
-                    # A claimed unique index is not proof of global uniqueness.
-                    # Caller omitted index predicates and actual D1 row history.
-                    unique_sets.add(frozenset(names))
+            # These are CLAIMED unique-column groups, never proven constraints.
+            # 4E.2 rejects partial/SQL-expression or extra index fields:
+            # predicate completeness of the actual DB remains unverified.
+            unique_sets={
+                frozenset(ix["columns"])
+                for ix in item["indexes"] if ix["unique"]
+            }
             present=[req in unique_sets for req in REQUIRED_UNIQUE_INDEXES]
             complete+=int(all(present))
             for i,found in enumerate(present):

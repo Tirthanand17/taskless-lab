@@ -102,6 +102,107 @@ class ReleaseIdentityRiskAuditTests(unittest.TestCase):
         with self.assertRaises(ObservationBlocked):
             audit(s)
 
+    def test_malformed_nested_index_payloads_rejected_consistently(self):
+        # Includes a fake credential marker that must never appear in errors.
+        for bad in ([], {}, None, 42, ["inner"], {"oauth_secret":"NEVER_ECHO"}):
+            with self.subTest(value_type=type(bad).__name__):
+                s=snapshot(CANONICAL,FIVE)
+                s["objects"][0]["indexes"][0]["columns"]=["channel_id",bad]
+                with self.assertRaises(ObservationBlocked) as cm:
+                    audit(s)
+                self.assertNotIn("NEVER_ECHO",str(cm.exception))
+                self.assertNotIn("oauth_secret",str(cm.exception))
+
+    def test_invalid_indexes_on_noncanonical_table_are_not_skipped(self):
+        s=snapshot(("other_field",),name="unrelated_table")
+        s["objects"][0]["indexes"]=[{"unique":True,"columns":[{}]}]
+        with self.assertRaises(ObservationBlocked):
+            audit(s)
+        s["objects"][0]["kind"]="view"
+        with self.assertRaises(ObservationBlocked):
+            audit(s)
+
+    def test_structural_schema_envelope_and_write_authority_forgeries_denied(self):
+        for key,bad in (
+            ("expected_channel_id","ANOTHER_CHANNEL"),
+            ("object_count",99),
+            ("object_count",True),
+            ("skipped_protected_objects",-1),
+            ("skipped_unsafe_objects",201),
+            ("contains_data_rows",0),
+            ("saw_authenticated_provider_request",0),
+            ("migration_authorized",0),
+            ("production_writes",False),
+            ("generated_sql",None),
+            ("requires_authorized_schema_provenance",False),
+        ):
+            with self.subTest(field=key):
+                s=snapshot(CANONICAL,FIVE)
+                s[key]=bad
+                with self.assertRaises(ObservationBlocked):
+                    audit(s)
+        for forbidden in ("oauth_token","live_provider_attested","raw_sql"):
+            with self.subTest(extra_field=forbidden):
+                s=snapshot(CANONICAL,FIVE)
+                s[forbidden]="NEVER_ECHO"
+                with self.assertRaises(ObservationBlocked) as cm:
+                    audit(s)
+                self.assertNotIn("NEVER_ECHO",str(cm.exception))
+
+    def test_missing_or_extra_nested_fields_and_protected_names_denied(self):
+        s=snapshot(CANONICAL,FIVE)
+        s["objects"][0]["columns"][0]["default_value"]="NEVER_ECHO"
+        with self.assertRaises(ObservationBlocked) as cm:
+            audit(s)
+        self.assertNotIn("NEVER_ECHO",str(cm.exception))
+        for name in ("oauth_refresh_token","sqlite_hidden","invalid name"):
+            with self.subTest(object_name=name):
+                s=snapshot(CANONICAL,FIVE)
+                s["objects"][0]["name"]=name
+                with self.assertRaises(ObservationBlocked):
+                    audit(s)
+        for field,bad in (("primary_key",1),("name",["unhashable"])):
+            with self.subTest(column_field=field):
+                s=snapshot(CANONICAL,FIVE)
+                s["objects"][0]["columns"][0][field]=bad
+                with self.assertRaises(ObservationBlocked):
+                    audit(s)
+        s=snapshot(CANONICAL,FIVE)
+        s["objects"][0]["indexes"][0]["where"]="channel_id IS NOT NULL"
+        with self.assertRaises(ObservationBlocked):
+            audit(s)
+
+    def test_duplicate_object_or_index_and_declaration_mismatch_denied(self):
+        s=snapshot(CANONICAL,FIVE)
+        s["objects"].append(deepcopy(s["objects"][0]))
+        s["object_count"]=2
+        with self.assertRaises(ObservationBlocked):
+            audit(s)
+        for indexes in (
+            [{"unique":True,"columns":["channel_id","channel_id"]}],
+            [{"unique":True,"columns":["channel_id","missing"]}],
+            [{"unique":1,"columns":["channel_id","episode_id"]}],
+            [{"unique":True,"columns":"channel_id"}],
+        ):
+            with self.subTest(indexes=indexes):
+                s=snapshot(CANONICAL,FIVE)
+                s["objects"][0]["indexes"]=indexes
+                with self.assertRaises(ObservationBlocked):
+                    audit(s)
+
+    def test_valid_five_claimed_groups_remain_only_diagnostics(self):
+        s=snapshot(CANONICAL,FIVE)
+        r=audit(s)
+        self.assertEqual(r["candidate_with_five_declared_unique_indexes_count"],1)
+        self.assertEqual(r["missing_declared_unique_index_groups"],(0,0,0,0,0))
+        self.assertNotIn("releases",str(r))
+        self.assertNotIn("channel_id",str(r))
+        self.assertFalse(r["live_schema_authenticated"])
+        self.assertFalse(r["real_global_uniqueness_verified"])
+        self.assertFalse(r["migration_or_writes_authorized"])
+        self.assertEqual(r["network_calls"],0)
+        self.assertEqual(r["database_writes"],0)
+
     def test_empty_schema_never_migrates_or_uploads(self):
         s=parse_d1_schema_observation(table_list_rows=[],table_details={})
         r=audit(s)
