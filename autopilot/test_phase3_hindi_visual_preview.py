@@ -40,6 +40,26 @@ class HindiRealVisualTests(unittest.TestCase):
         self.assertEqual(l.size,(640,360))
         self.assertEqual(s.mode,"RGB")
 
+    def test_real_full_hd_frames_use_correct_portrait_and_landscape(self):
+        portrait=render_hindi_frame("csv_tutorial_short_hi",1,width=1080)
+        landscape=render_hindi_frame("csv_tutorial_long_hi",1,width=1920)
+        self.assertEqual(portrait.size,(1080,1920))
+        self.assertEqual(landscape.size,(1920,1080))
+        self.assertNotEqual(portrait.getpixel((10,10)),portrait.getpixel((10,1000)))
+        self.assertNotEqual(landscape.getpixel((10,10)),landscape.getpixel((10,1000)))
+
+    def test_full_hd_preview_is_hard_capped_to_36_frames(self):
+        with tempfile.TemporaryDirectory() as root:
+            for episode,width in (
+                ("csv_tutorial_short_hi",1080),
+                ("csv_tutorial_long_hi",1920),
+            ):
+                with self.subTest(episode=episode),self.assertRaises(WorkflowError):
+                    render_hindi_visual_preview(
+                        episode,Path(root)/(episode+".mp4"),
+                        width=width,fps=24,duration_s=2)
+                self.assertFalse((Path(root)/(episode+".mp4")).exists())
+
     def test_animated_pixels_change_in_same_scene(self):
         x=render_hindi_frame("csv_tutorial_short_hi",1,width=360)
         y=render_hindi_frame("csv_tutorial_short_hi",1.25,width=360)
