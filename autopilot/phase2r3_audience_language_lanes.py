@@ -16,6 +16,7 @@ from __future__ import annotations
 from hashlib import sha256
 import json
 import re
+import unicodedata
 from typing import Any
 
 from .agent_org import WorkflowError
@@ -72,6 +73,28 @@ TAGS={
     "hi":("Python","CSV","डेटा","हिंदी","ऑटोमेशन"),
     "en":("Python","CSV","data","automation","tutorial"),
 }
+# Draft-only metadata: unapproved links, invisible text directions and false
+# action/engagement promises must never be passed to a publishing adapter.
+# Do NOT ban zero-width joiner/non-joiner: legitimate Hindi orthography may use it.
+_FORBIDDEN_DIRECTIONAL = frozenset("\u200b\u200e\u200f\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069")
+_EXTERNAL_URL = re.compile(
+    r"(?i)(?:https?://|www\.|\b[a-z0-9-]+\.(?:com|net|org|io|app|ai|in)\b)"
+)
+_UNSUPPORTED_CLAIM = re.compile(
+    r"(?i)(?:guaranteed|100%\s*free|officially\s+verified|"
+    r"we\s+(?:booked|purchased)|buy\s+now|"
+    r"गारंटी|पक्की\s+कमाई|लाखों\s+व्यू)"
+)
+
+
+def _safe_draft_metadata(text:str)->None:
+    """Refuse unreviewed URLs, promises and invisible text manipulation."""
+    if (any(unicodedata.category(char) == "Cc" or char in _FORBIDDEN_DIRECTIONAL
+            for char in text)
+            or _EXTERNAL_URL.search(text) is not None
+            or _UNSUPPORTED_CLAIM.search(text) is not None):
+        raise WorkflowError("Unreviewed links, invisible controls or claims in metadata")
+
 
 
 def _spoken_language_check(text:str,expected:str)->dict:
@@ -97,11 +120,19 @@ def _metadata_language_check(language:str,title:str,description:str)->None:
         raise WorkflowError("Unapproved title length")
     if not isinstance(description,str) or not 80<=len(description)<=1500:
         raise WorkflowError("Unapproved audience-language description")
+    _safe_draft_metadata(title)
+    _safe_draft_metadata(description)
     title_dev=len(DEVANAGARI.findall(title))
     desc_dev=len(DEVANAGARI.findall(description))
     if language=="hi":
-        if title_dev<6 or desc_dev<35:
-            raise WorkflowError("Hindi lane must have actual native-script metadata")
+        # Requiring only a few Hindi letters permitted largely English copy
+        # decorated with a token Hindi fragment: poor audience-language intent.
+        title_latin=len(LATIN.findall(title))
+        desc_latin=len(LATIN.findall(description))
+        if (title_dev<6 or desc_dev<35
+                or title_dev/(title_dev+title_latin)<.45
+                or desc_dev/(desc_dev+desc_latin)<.5):
+            raise WorkflowError("Hindi lane metadata is not predominantly Hindi")
     elif language=="en":
         if title_dev or desc_dev:
             raise WorkflowError("English lane metadata must not be cross-language")
@@ -185,6 +216,8 @@ def prepare_audience_language_lanes(*,markdown:str|None=None,
         episodes.append(lane)
     if len({e["episode_id"] for e in episodes})!=3 or len(narrators)!=3:
         raise WorkflowError("Episode and narrator collisions")
+    if len({e["title"].casefold().strip() for e in episodes})!=len(episodes):
+        raise WorkflowError("Duplicate audience-facing video title")
     if {e["original_spoken_language"] for e in episodes if e["episode_kind"]=="short"}!={"hi","en"}:
         raise WorkflowError("Both target Short languages mandatory")
     # Treat metadata as metadata. Never claim a ready-to-send live YouTube

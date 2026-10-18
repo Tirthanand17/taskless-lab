@@ -127,6 +127,79 @@ class LanguageSeparationTests(unittest.TestCase):
             prepare_audience_language_lanes(
                 markdown=self.original[:start]+en+self.original[end:])
 
+    def test_hindi_metadata_cannot_be_mostly_english_with_small_hindi_fragment(self):
+        specs=deepcopy(LANES)
+        specs["csv_tutorial_short_hi"]["title"]=(
+            "Learn Python CSV reader basics and data science for beginners अब सीखें"
+        )
+        with self.assertRaises(WorkflowError):
+            prepare_audience_language_lanes(lane_specs=specs)
+        specs=deepcopy(LANES)
+        specs["csv_tutorial_short_hi"]["description"]=(
+            "हम हिंदी में डेटा सीखेंगे और समझेंगे। "
+            + "Practice the basics of Python data science and file import workflows "
+              "in a complete beginner tutorial with helpful examples. "*5
+        )
+        with self.assertRaises(WorkflowError):
+            prepare_audience_language_lanes(lane_specs=specs)
+
+    def test_refuses_external_links_in_both_video_languages(self):
+        for episode,key,extra in (
+            ("csv_tutorial_short_en","description"," Visit https://unsafe.example/invite"),
+            ("csv_tutorial_short_en","title"," www.example.com"),
+            ("csv_tutorial_short_hi","description"," example.app पर और सीखें"),
+        ):
+            with self.subTest(episode=episode,key=key):
+                specs=deepcopy(LANES)
+                specs[episode][key]+=extra
+                with self.assertRaises(WorkflowError):
+                    prepare_audience_language_lanes(lane_specs=specs)
+
+    def test_refuses_unreviewed_promises_and_fake_actions(self):
+        for episode,key,promise in (
+            ("csv_tutorial_short_en","description"," This is guaranteed viral."),
+            ("csv_tutorial_short_en","description"," We booked your ticket."),
+            ("csv_tutorial_short_hi","description"," पक्की कमाई की गारंटी।"),
+            ("csv_tutorial_long_hi","title"," गारंटी"),
+        ):
+            with self.subTest(episode=episode,key=key):
+                specs=deepcopy(LANES)
+                specs[episode][key]+=promise
+                with self.assertRaises(WorkflowError):
+                    prepare_audience_language_lanes(lane_specs=specs)
+
+    def test_refuses_bidi_and_control_character_metadata_injection(self):
+        for marker in ("\\n","\\t","\\u202e","\\u2066","\\u200b"):
+            with self.subTest(marker=repr(marker)):
+                specs=deepcopy(LANES)
+                specs["csv_tutorial_short_en"]["title"]+=marker+"secret"
+                with self.assertRaises(WorkflowError):
+                    prepare_audience_language_lanes(lane_specs=specs)
+
+    def test_unicode_hindi_joiner_is_not_banned_as_directional_attack(self):
+        # ZWJ can form intentional Devanagari conjuncts; do not confuse it
+        # with bidi controls or U+200B invisible word-break characters.
+        specs=deepcopy(LANES)
+        specs["csv_tutorial_short_hi"]["description"]+=" क्ष\\u200dमा उदाहरण।"
+        plan=prepare_audience_language_lanes(lane_specs=specs)
+        self.assertFalse(plan["publishing_authorized"])
+
+    def test_same_hindi_title_across_short_and_long_is_rejected(self):
+        specs=deepcopy(LANES)
+        specs["csv_tutorial_long_hi"]["title"]=specs["csv_tutorial_short_hi"]["title"]
+        with self.assertRaises(WorkflowError):
+            prepare_audience_language_lanes(lane_specs=specs)
+
+    def test_legitimate_technical_english_terms_in_hindi_copy_still_pass(self):
+        specs=deepcopy(LANES)
+        specs["csv_tutorial_short_hi"]["description"]+=(
+            " CSV, Python और DictReader से सीखने का आसान तरीका।"
+        )
+        plan=prepare_audience_language_lanes(lane_specs=specs)
+        self.assertEqual(len(plan["episodes"]),3)
+        self.assertEqual(plan["actual_uploaded_videos"],0)
+        self.assertFalse(plan["publishing_authorized"])
+
     def test_normal_english_technical_words_allowed_in_hinglish(self):
         self.assertGreater(_spoken_language_check(
             "Python CSV के लिए हम डेटा फ़ाइल बनाएँगे। Python का DictReader डेटा पढ़कर परिणाम दिखाएगा।"*5,
