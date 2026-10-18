@@ -216,13 +216,17 @@ def visual_frame(time_s: float, *, width: int,
 
 
 def render_visual_preview(output: Path, *, duration_s: float = 3,
-                          fps: int = 12, width: int = 360) -> dict:
+                          fps: int = 12, width: int = 360,
+                          start_s: float = 0) -> dict:
     """Render a safe original visual-only MP4 using FFmpeg and no network."""
-    if (not 0.5 <= duration_s <= 42
+    if (not isinstance(start_s,(int,float)) or isinstance(start_s,bool)
+            or not math.isfinite(start_s)
+            or not 0 <= start_s < 42 or start_s + duration_s > 42
+            or not 0.5 <= duration_s <= 42
             or fps not in (8,12,15,24)
             or width not in (360,540,720,1080)
             or (width == 1080 and round(duration_s*fps) > 36)):
-        raise ValueError("Unsafe render preview size, rate or duration")
+        raise ValueError("Unsafe render preview size, rate, offset or duration")
     if shutil.which("ffmpeg") is None:
         raise RuntimeError("FFmpeg must already be installed")
     captions = english_script_rows()
@@ -240,7 +244,7 @@ def render_visual_preview(output: Path, *, duration_s: float = 3,
                             stderr=subprocess.PIPE)
     try:
         for i in range(round(duration_s*fps)):
-            frame = visual_frame(i/fps, width=width)
+            frame = visual_frame(start_s+i/fps, width=width)
             proc.stdin.write(frame.tobytes())
         proc.stdin.close()
         error = proc.stderr.read()
@@ -258,6 +262,7 @@ def render_visual_preview(output: Path, *, duration_s: float = 3,
         "status": "REAL_MP4_VISUALS_ONLY_NOT_PUBLISHABLE",
         "duration_s": duration_s, "width": width, "height": width*16//9,
         "frame_rate": fps, "size_bytes": output.stat().st_size,
+        "preview_offset_seconds": start_s,
         "media_audio_present": False, "narration_recorded": False,
         "audio_rights_verified": False, "source_fact_review_authenticated": False,
         "youtube_upload_authorized": False, "publishing_authorized": False,
@@ -270,9 +275,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--duration", type=float, default=3)
     parser.add_argument("--fps", type=int, default=12)
     parser.add_argument("--width", type=int, default=360)
+    parser.add_argument("--start", type=float, default=0)
     options=parser.parse_args(argv)
     print(json.dumps(render_visual_preview(options.output,
-        duration_s=options.duration,fps=options.fps,width=options.width),
+        duration_s=options.duration,fps=options.fps,width=options.width,
+        start_s=options.start),
         sort_keys=True))
     return 0
 
