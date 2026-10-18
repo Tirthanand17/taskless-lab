@@ -180,6 +180,71 @@ class OfflineSignedSnapshotBridgeTests(unittest.TestCase):
                 with self.assertRaises(ObservationBlocked):
                     self.review(d1=changed)
 
+    def _resign_d1_receipt_with_older_claim(self, skew_seconds):
+        # Both signatures remain cryptographically correct and within the
+        # Phase 4D per-receipt TTL. Only their cross-collector skew changes.
+        prior=self.signed[0]
+        changed=replace(
+            prior.claim,
+            collected_at_utc=(
+                NOW-timedelta(minutes=1,seconds=skew_seconds)
+            ).isoformat(timespec="seconds"),
+        )
+        self.signed[0]=SignedObservation(
+            changed,
+            base64.b64encode(
+                self.keys["d1_schema"].sign(_canonical(changed))
+            ).decode(),
+        )
+
+    def test_five_minute_receipt_claim_boundary_still_not_provider_proof(self):
+        self._resign_d1_receipt_with_older_claim(300)
+        report=self.review()
+        self.assertEqual(report["signed_receipt_claim_skew_seconds"],300)
+        self.assertTrue(report["signed_integrity_for_exact_sanitized_snapshot_bytes"])
+        self.assertFalse(report["live_authenticated_d1_access_verified"])
+        self.assertFalse(report["live_authenticated_youtube_channel_owner_verified"])
+        self.assertFalse(report["migration_authorized"])
+        self.assertFalse(report["public_publishing_authorized"])
+
+    def test_sixth_minute_cross_collector_gap_denied_even_when_signed(self):
+        self._resign_d1_receipt_with_older_claim(301)
+        with self.assertRaisesRegex(
+            ObservationBlocked,
+            "Signed collector receipt claims are too far apart",
+        ):
+            self.review()
+
+    def test_no_normal_receipt_skew_in_fixture_and_no_provider_authentication(self):
+        report=self.review()
+        self.assertEqual(report["signed_receipt_claim_skew_seconds"],0)
+        self.assertEqual(report["youtube_non_succeeded_processing_count"],0)
+        self.assertNotIn("NON_SUCCEEDED_YOUTUBE_PROCESSING_OBSERVED",report["blockers"])
+
+    def test_non_succeeded_video_processing_reported_without_private_ids(self):
+        for state in ("processing","failed","terminated","unknown"):
+            with self.subTest(processing_state=state):
+                self.youtube=parse_youtube_channel_video_observation(
+                    channel_response={"items":[{"id":CHANNEL_ID}]},
+                    video_response={"items":[{
+                        "id":VID,
+                        "snippet":{"channelId":CHANNEL_ID},
+                        "status":{"privacyStatus":"private"},
+                        "processingDetails":{"processingStatus":state},
+                    }]},
+                )
+                self.resign()
+                report=self.review()
+                self.assertEqual(report["youtube_non_succeeded_processing_count"],1)
+                self.assertIn("NON_SUCCEEDED_YOUTUBE_PROCESSING_OBSERVED",report["blockers"])
+                self.assertEqual(
+                    report["youtube_unknown_or_conflicting_count"],
+                    int(state=="unknown"),
+                )
+                self.assertNotIn(VID,str(report))
+                self.assertFalse(report["private_upload_or_scheduling_authorized"])
+                self.assertFalse(report["public_publishing_authorized"])
+
     def test_missing_signature_wrong_nonce_and_replay_blocked(self):
         with self.assertRaises(ObservationBlocked):
             self.review(signed=self.signed[:1])
