@@ -140,6 +140,44 @@ jobs:
           timeout 360s python -m autopilot.phase3_hd_capacity_benchmark \
             --existing-scratch-dir /tmp/flowminute-cloud-preview
           echo "FULL_HD_CAPACITY_SAMPLES_MEASURED__PRODUCTION_UNVERIFIED"
+      - name: Render both COMPLETE native-HD 42s Shorts without voice or publication
+        run: |
+          set -euo pipefail
+          root=/tmp/flowminute-cloud-preview
+          # Each 42s Short is composed of forty-two fresh <=24-frame clips,
+          # respecting the strict 36-frame HD cap. These are disposable
+          # *silent* technical videos, NEVER upload to YouTube.
+          timeout 240s python -m autopilot.phase3_full_hd_short_assembly \
+            --episode csv_tutorial_short_en \
+            --output "$root/english-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4"
+          timeout 240s python -m autopilot.phase3_full_hd_short_assembly \
+            --episode csv_tutorial_short_hi \
+            --output "$root/hindi-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4"
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          root=Path("/tmp/flowminute-cloud-preview")
+          for language in ("english","hindi"):
+              path=root/f"{language}-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4"
+              data=json.loads(subprocess.run(
+                ["ffprobe","-v","error","-show_entries",
+                 "stream=codec_type,codec_name,width,height,nb_frames:format=duration",
+                 "-of","json",str(path)],
+                capture_output=True,text=True,check=True,timeout=20
+              ).stdout)
+              assert len(data["streams"])==1
+              stream=data["streams"][0]
+              assert stream["codec_type"]=="video" and stream["codec_name"]=="h264"
+              assert (stream["width"],stream["height"])==(1080,1920)
+              assert int(stream["nb_frames"])==1008
+              assert abs(float(data["format"]["duration"])-42)<0.15
+              subprocess.run(
+                ["ffmpeg","-nostdin","-v","error","-xerror",
+                 "-i",str(path),"-f","null","-"],
+                check=True,timeout=120
+              )
+              print(f"COMPLETE_NATIVE_HD_42S_{language.upper()}_SILENT_SHORT_QA_PASSED")
+          PY
       - name: Audio mux proof using SYNTHETIC tone only (NEVER release)
         run: |
           set -euo pipefail
