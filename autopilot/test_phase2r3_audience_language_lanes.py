@@ -169,7 +169,7 @@ class LanguageSeparationTests(unittest.TestCase):
                     prepare_audience_language_lanes(lane_specs=specs)
 
     def test_refuses_bidi_and_control_character_metadata_injection(self):
-        for marker in ("\\n","\\t","\\u202e","\\u2066","\\u200b"):
+        for marker in ("\n","\t","\u202e","\u2066","\u200b"):
             with self.subTest(marker=repr(marker)):
                 specs=deepcopy(LANES)
                 specs["csv_tutorial_short_en"]["title"]+=marker+"secret"
@@ -180,7 +180,7 @@ class LanguageSeparationTests(unittest.TestCase):
         # ZWJ can form intentional Devanagari conjuncts; do not confuse it
         # with bidi controls or U+200B invisible word-break characters.
         specs=deepcopy(LANES)
-        specs["csv_tutorial_short_hi"]["description"]+=" क्ष\\u200dमा उदाहरण।"
+        specs["csv_tutorial_short_hi"]["description"]+=" क्ष\u200dमा उदाहरण।"
         plan=prepare_audience_language_lanes(lane_specs=specs)
         self.assertFalse(plan["publishing_authorized"])
 
