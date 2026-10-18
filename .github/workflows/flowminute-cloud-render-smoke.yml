@@ -178,24 +178,31 @@ jobs:
               )
               print(f"COMPLETE_NATIVE_HD_42S_{language.upper()}_SILENT_SHORT_QA_PASSED")
           PY
-      - name: Sample actual completed native-HD Shorts for blank/frozen video
+      - name: Inspect completed HD Shorts and bind QUARANTINED provenance receipts
         run: |
           set -euo pipefail
           python - <<'PY'
+          import json
           from pathlib import Path
-          from autopilot.phase3_visual_signal_audit import inspect_authored_visual_signal
+          from autopilot.phase3_quarantined_video_receipt import (
+              create_quarantined_video_receipt, verify_quarantined_receipt)
           root=Path("/tmp/flowminute-cloud-preview")
           for lang,episode in (
               ("english","csv_tutorial_short_en"),
               ("hindi","csv_tutorial_short_hi"),
           ):
-              result=inspect_authored_visual_signal(
-                  episode_id=episode,
-                  path=root/f"{lang}-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4")
-              assert result["status"]=="VISUAL_SIGNAL_QA_PASS_UNPUBLISHABLE",result["issues"]
-              assert not result["publishing_authorized"]
+              path=root/f"{lang}-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4"
+              receipt=create_quarantined_video_receipt(
+                  episode_id=episode,mp4=path)
+              integrity=verify_quarantined_receipt(
+                  receipt=receipt,episode_id=episode,mp4=path)
+              assert receipt["actual_video_pixel_samples"]==5
+              assert not receipt["publishing_authorized"]
+              assert not receipt["media_has_narration"]
+              assert integrity["status"].endswith("NOT_RELEASE_APPROVAL")
+              print("QUARANTINED_HD_SHORT_RECEIPT "+json.dumps(receipt,sort_keys=True))
               print(f"ACTUAL_FULL_HD_{lang.upper()}_VISUAL_SCENE_SIGNAL_PASS_NO_RELEASE"
-                    f" scene_samples={result['visual_signal']['sample_count']}")
+                    " scene_samples=5")
           PY
       - name: Audio mux proof using SYNTHETIC tone only (NEVER release)
         run: |
@@ -255,18 +262,25 @@ jobs:
           timeout 850s python -m autopilot.phase3_full_hd_long_assembly \
             --output /tmp/flowminute-native-hd-long-silent-qa/UNAPPROVED-432S-VISUAL-ONLY.mp4
           echo "NATIVE_HD_FULL_432_SECOND_HINDI_LONG_SILENT_QA_PASSED"
-      - name: Sample all 24 real HD long scenes for blank/frozen content
+      - name: Inspect full-HD long scene pixels and bind QUARANTINED source receipt
         run: |
           set -euo pipefail
           python - <<'PY'
+          import json
           from pathlib import Path
-          from autopilot.phase3_visual_signal_audit import inspect_authored_visual_signal
+          from autopilot.phase3_quarantined_video_receipt import (
+              create_quarantined_video_receipt, verify_quarantined_receipt)
           path=Path("/tmp/flowminute-native-hd-long-silent-qa/UNAPPROVED-432S-VISUAL-ONLY.mp4")
-          result=inspect_authored_visual_signal(
-              episode_id="csv_tutorial_long_hi",path=path)
-          assert result["status"]=="VISUAL_SIGNAL_QA_PASS_UNPUBLISHABLE",result["issues"]
-          assert result["visual_signal"]["sample_count"]==26
-          assert not result["publishing_authorized"]
+          episode="csv_tutorial_long_hi"
+          receipt=create_quarantined_video_receipt(
+              episode_id=episode,mp4=path)
+          integrity=verify_quarantined_receipt(
+              receipt=receipt,episode_id=episode,mp4=path)
+          assert receipt["actual_video_pixel_samples"]==26
+          assert not receipt["publishing_authorized"]
+          assert not receipt["media_has_narration"]
+          assert integrity["status"].endswith("NOT_RELEASE_APPROVAL")
+          print("QUARANTINED_HD_LONG_RECEIPT "+json.dumps(receipt,sort_keys=True))
           print("ACTUAL_432S_HINDI_LONG_24_SCENE_VISUAL_SIGNAL_PASS_NO_RELEASE")
           PY
       - name: Delete all temporary source and output video files
