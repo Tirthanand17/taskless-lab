@@ -65,6 +65,24 @@ class VisualSampleStatsTests(unittest.TestCase):
         with self.assertRaises(WorkflowError):
             _sample_times("other")
 
+    def test_authored_long_storyboard_scene_change_diagnostic(self):
+        # A cheap but real Pillow pixel regression, not an MP4 or speech proof.
+        # Uses the exact long-video authored scene sample clock and reports
+        # any near-static neighboring images with precise timestamps.
+        from PIL import Image
+        from autopilot.phase3_hindi_visual_preview import render_hindi_frame
+        stamps=_sample_times("csv_tutorial_long_hi")
+        raw=tuple(render_hindi_frame(
+            "csv_tutorial_long_hi",t,width=640
+        ).resize((160,90),Image.Resampling.BILINEAR).tobytes() for t in stamps)
+        metrics=analyze_rgb_samples(raw,width=160,height=90)
+        violations=[
+            (stamps[i],stamps[i+1],delta)
+            for i,delta in enumerate(metrics["adjacent_mean_absolute_rgb_change"])
+            if delta<1.0
+        ]
+        self.assertEqual(violations,[],f"Near-static authored scenes: {violations}")
+
     def test_missing_or_tampered_video_rejected(self):
         with tempfile.TemporaryDirectory() as root:
             p=Path(root)/"none.mp4"
