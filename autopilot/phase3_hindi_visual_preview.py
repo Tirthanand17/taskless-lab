@@ -188,22 +188,54 @@ def render_hindi_frame(
     label=("CSV के 3 कॉलम","काल्पनिक डेटा","DictReader उदाहरण","कुल = 58")[mode]
     devanagari=_font(r(22 if kind=="short" else 26),devanagari=True)
     d.text((x(left+25),x(top+25+bob)),label,font=devanagari,fill=(239,250,249))
-    if mode in (0,1):
+    if mode==0:
         header=("PRODUCT","UNITS","PRICE")
         data=COLUMNS[1:]
         x0=[left+30,left+140,left+257] if kind=="short" else [left+70,left+300,left+525]
         font_small=_font(r(15 if kind=="short" else 22))
+        # Animated row scanner draws attention to actual fictional data.
+        focus=int(time_seconds/2)%len(data)
         for i,col in enumerate(header):
             d.text((x(x0[i]),x(top+98+bob)),col,font=font_small,fill=(100,231,216))
         for row_index, row in enumerate(data):
             cy=top+148+row_index*(79 if kind=="short" else 55)
+            highlight=row_index==focus
             d.rounded_rectangle((x(left+24),x(cy+bob),x(right-24),x(cy+57+bob if kind=="short" else cy+43+bob)),
-                                radius=r(10),fill=(30,91,118,170))
+                                radius=r(10),
+                                fill=((25,162,168,230) if highlight else (30,91,118,170)),
+                                outline=((132,253,229,205) if highlight else (55,153,173,90)),
+                                width=r(1))
             for i,value in enumerate(row):
                 d.text((x(x0[i]),x(cy+15+bob)),value,font=font_small,
                        fill=(245,247,248))
         d.text((x(left+26),x(bottom-51+bob)),"FICTIONAL SAMPLE DATA",
                font=_font(r(14)),fill=(119,236,209))
+    elif mode==1:
+        # Real explanatory contrast: fictional row contributions, not
+        # the previous static table or a fabricated live app screenshot.
+        contributions=(("Pen",20),("Notebook",30),("Eraser",8))
+        label_font=_font(r(15 if kind=="short" else 21))
+        bar_left=left+(133 if kind=="short" else 225)
+        bar_right=right-38
+        length=bar_right-bar_left
+        origin=top+(115 if kind=="short" else 95)
+        interval=79 if kind=="short" else 54
+        progress=min(1,max(0.2,(time_seconds-beats[position][0]/1000)/2))
+        for row_index,(item,units) in enumerate(contributions):
+            cy=origin+row_index*interval+bob
+            d.text((x(left+29),x(cy+2)),item,font=label_font,fill=(229,242,247))
+            d.rounded_rectangle((x(bar_left),x(cy),x(bar_right),x(cy+25)),
+                                radius=r(8),fill=(22,84,114,215))
+            span=max(12,round(length*(units/30)*progress))
+            colors=((57,216,205,240),(248,195,100,240),(81,158,247,240))
+            d.rounded_rectangle((x(bar_left),x(cy),x(bar_left+span),x(cy+25)),
+                                radius=r(8),fill=colors[row_index])
+            d.text((x(bar_right-53),x(cy-26 if kind=="long" else cy+28)),
+                   str(units),font=label_font,fill=(252,250,215))
+        d.text((x(left+30),x(bottom-50+bob)),
+               "20 + 30 + 8 = 58  |  FICTIONAL",
+               font=_font(r(14 if kind=="short" else 17)),
+               fill=(158,239,215))
     elif mode==2:
         snippets=["import csv","csv.DictReader(rows)","row['units']  ->  2","row['price']  ->  10"]
         for i,code in enumerate(snippets):
