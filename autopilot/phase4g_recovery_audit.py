@@ -72,6 +72,7 @@ def _reconstruct(row:sqlite3.Row, entries:list[sqlite3.Row])->dict:
     fence=0
     uploads=0
     schedules=0
+    schedule_receipt_recorded=False
     video=None
     intent=None
     review=None
@@ -170,6 +171,7 @@ def _reconstruct(row:sqlite3.Row, entries:list[sqlite3.Row])->dict:
                     or details.get("youtube_id")!=video
                     or details.get("publish_at_utc")!=row["planned_utc"]):
                 _reject()
+            schedule_receipt_recorded=True
             stage="scheduled_verified"
         elif action=="public_verified":
             if stage!="scheduled_verified" or details.get("youtube_id")!=video:
@@ -190,8 +192,29 @@ def _reconstruct(row:sqlite3.Row, entries:list[sqlite3.Row])->dict:
         _reject()
     if stage in ("planned","research_verified","script_verified") and row["review_digest"] is not None:
         _reject()
-    return {"stage":stage,"upload_intents":uploads,"schedule_intents":schedules,
-            "fences":fence}
+    # A terminal quarantine does not erase a previously reserved remote
+    # side-effect. Reconstruct exposure from ALL historical events, not solely
+    # from the final row stage. Caller-supplied "authenticated" booleans in
+    # the simulator never constitute real provider reconciliation.
+    return {
+        "stage":stage,
+        "upload_intents":uploads,
+        "schedule_intents":schedules,
+        "fences":fence,
+        "remote_intent_ever_reserved":bool(uploads or schedules),
+        "remote_upload_without_simulated_readback":bool(uploads and video is None),
+        "remote_schedule_without_simulated_readback":bool(
+            schedules and not schedule_receipt_recorded
+        ),
+        "quarantined_after_remote_intent":bool(
+            stage=="quarantined" and (uploads or schedules)
+        ),
+        "quarantined_with_unresolved_intent":bool(
+            stage=="quarantined" and
+            ((uploads and video is None)
+             or (schedules and not schedule_receipt_recorded))
+        ),
+    }
 
 
 def inspect_offline_release_recovery(ledger:OfflineLedger)->dict:
@@ -233,6 +256,11 @@ def inspect_offline_release_recovery(ledger:OfflineLedger)->dict:
     intent_total=0
     scheduled_total=0
     total_fences=0
+    remote_intent_releases=0
+    unresolved_upload_count=0
+    unresolved_schedule_count=0
+    quarantined_remote_intent_count=0
+    quarantined_unresolved_intent_count=0
     for row in releases:
         key=(row["channel_id"],row["episode_id"])
         reconstruction=_reconstruct(row,event_groups.pop(key,[]))
@@ -240,6 +268,21 @@ def inspect_offline_release_recovery(ledger:OfflineLedger)->dict:
         intent_total+=reconstruction["upload_intents"]
         scheduled_total+=reconstruction["schedule_intents"]
         total_fences+=reconstruction["fences"]
+        remote_intent_releases+=int(
+            reconstruction["remote_intent_ever_reserved"]
+        )
+        unresolved_upload_count+=int(
+            reconstruction["remote_upload_without_simulated_readback"]
+        )
+        unresolved_schedule_count+=int(
+            reconstruction["remote_schedule_without_simulated_readback"]
+        )
+        quarantined_remote_intent_count+=int(
+            reconstruction["quarantined_after_remote_intent"]
+        )
+        quarantined_unresolved_intent_count+=int(
+            reconstruction["quarantined_with_unresolved_intent"]
+        )
         versions["events"]+=row["version"]+1
     if event_groups or versions["events"]!=len(events):
         _reject()
@@ -254,8 +297,21 @@ def inspect_offline_release_recovery(ledger:OfflineLedger)->dict:
         "schedule_uncertain_count":counts["schedule_uncertain"],
         "terminal_quarantined_count":counts["quarantined"],
         "terminal_public_claim_count":counts["public_verified"],
-        "needs_real_provider_reconciliation_count":
-            counts["upload_uncertain"]+counts["schedule_uncertain"],
+        # Count ALL simulated releases that reserved any remote operation,
+        # including quarantined, private-claimed and public-claimed states.
+        # None of the simulator's readback booleans came from real Google.
+        "needs_real_provider_reconciliation_count":remote_intent_releases,
+        "remote_intent_releases_requiring_live_reconciliation_count":
+            remote_intent_releases,
+        "upload_intents_missing_even_simulated_remote_readback_count":
+            unresolved_upload_count,
+        "schedule_intents_missing_even_simulated_remote_readback_count":
+            unresolved_schedule_count,
+        "quarantined_after_remote_intent_count":
+            quarantined_remote_intent_count,
+        "quarantined_with_unresolved_remote_intent_count":
+            quarantined_unresolved_intent_count,
+        "release_quarantine_does_not_clear_remote_intent_debt":True,
         "client_clock_trusted_by_simulator":True,
         "real_server_clock_enforced":False,
         "real_authenticated_provider_readback_verified":False,

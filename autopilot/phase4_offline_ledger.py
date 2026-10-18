@@ -479,5 +479,30 @@ class OfflineLedger:
             return self._move(episode,"quarantined",expected_version,now_utc,
                               detail={"reason":reason.strip()})
 
+    def quarantine_db_clock_rehearsal(
+        self, episode: str, *, expected_version: int,
+        owner: str, fence: int, reason: str,
+    ) -> int:
+        """Stop a nonterminal OFFLINE release without caller-supplied time.
+
+        Quarantine is not a claim that any attempted YouTube side effect did
+        not occur. The append-only upload/schedule events survive, and the
+        read-only recovery audit still requires independent live reconciliation.
+        No production D1/API access or auto-retry is provided here.
+        """
+        if (not isinstance(reason,str)
+                or not 8<=len(reason.strip())<=160
+                or "\x00" in reason):
+            raise ProtocolBlocked("Bounded plain quarantine reason required")
+        row=self._row(episode)
+        if (not row or row["stage"] in ("public_verified","quarantined")
+                or row["stage"] not in STAGES):
+            raise ProtocolBlocked("Cannot quarantine terminal or unknown release")
+        return self._db_clock_fenced_mutation(
+            episode,expected_stage=row["stage"],next_stage="quarantined",
+            expected_version=expected_version,owner=owner,fence=fence,
+            action="quarantined",detail={"reason":reason.strip()},
+        )
+
     def close(self) -> None:
         self.db.close()
