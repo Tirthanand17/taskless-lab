@@ -104,8 +104,8 @@ class StagingLocalLeaseTests(unittest.TestCase):
     def test_three_lost_workers_are_bounded_and_quarantined(self):
         for number in (1,2,3):
             token=self.staging.claim(RESEARCH,actor=OWNER,
-                now=BASE+timedelta(seconds=number*20))
-            expired=BASE+timedelta(seconds=number*20+120)
+                now=BASE+timedelta(seconds=number*200))
+            expired=BASE+timedelta(seconds=number*200+120)
             self.assertEqual(self.staging.recover_expired(now=expired),(RESEARCH,))
         report=self.staging.report()
         self.assertEqual(report["quarantined_count"],1)
