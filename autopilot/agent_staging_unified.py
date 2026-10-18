@@ -388,7 +388,16 @@ class UnifiedStagingCoordinator:
             raise WorkflowError("Stale or unauthorized unified staging claim")
 
     def claim(self,eid:str,tid:str,*,actor:str,now:datetime,
-              lease_seconds:int=120)->int:
+              lease_seconds:int=120,expected_generation:int|None=None)->int:
+        """Expected generation fences authenticated signed claim replay.
+
+        Optional for existing direct offline tests; only the signed gateway
+        supplies this value in the authenticated worker rehearsal.
+        """
+        if expected_generation is not None and (
+            type(expected_generation) is not int or expected_generation<0
+        ):
+            raise WorkflowError("Expected task generation must be a nonnegative integer")
         seconds=_lease(lease_seconds)
         with self._tx() as db:
             slots,states=self._check(db)
@@ -396,6 +405,8 @@ class UnifiedStagingCoordinator:
             contract=self.contracts.get(eid,{}).get(tid)
             if (slots.get(eid)!="active" or contract is None
                     or contract.owner!=actor or states[eid,tid][0]!="ready"
+                    or (expected_generation is not None and
+                        states[eid,tid][2]!=expected_generation)
                     or sum(x[0]=="running" for x in states.values())>=MAX_FANOUT):
                 raise WorkflowError("Unified staging claim denied or capacity full")
             db.execute("UPDATE stage_tasks SET status='running',"
