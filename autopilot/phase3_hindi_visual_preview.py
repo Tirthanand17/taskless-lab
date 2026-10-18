@@ -45,6 +45,7 @@ LATIN_FONTS = (
     "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf",
 )
 MAX_FRAMES = 540
+MAX_HIRES_FRAMES = 36  # <= 1.5 seconds at 24 fps per preview, no full-sized batch
 
 
 def _font(size: int, *, devanagari: bool = False) -> ImageFont.FreeTypeFont:
@@ -134,7 +135,7 @@ def render_hindi_frame(
     No real app screen is depicted; all work is an illustrative *simulation*.
     """
     kind,seconds,beats,cues=_authored_profile(episode_id)
-    valid_widths=(360,540,720) if kind=="short" else (640,960,1280)
+    valid_widths=(360,540,720,1080) if kind=="short" else (640,960,1280,1920)
     if width not in valid_widths or not 0 <= time_seconds < seconds:
         raise WorkflowError("Unsupported script, bounded dimensions or video timestamp")
     ratio=16/9 if kind=="short" else 9/16
@@ -247,9 +248,14 @@ def render_hindi_visual_preview(
 ) -> dict:
     kind,seconds,_,_=_authored_profile(episode_id)
     width=width or (360 if kind=="short" else 640)
+    # Full-size video frames are much heavier than the existing 360/640px
+    # previews. Prove the aspect/glyph/encoder contract with <=36 high-res
+    # frames only, without silently authorizing a full production-length job.
+    high_resolution = width in (1080,1920)
+    max_frames = MAX_HIRES_FRAMES if high_resolution else MAX_FRAMES
     if (not 0.5 <= duration_s <= seconds or fps not in (8,12,24)
             or not 0 <= start_s < seconds or start_s+duration_s > seconds
-            or round(duration_s*fps)>MAX_FRAMES):
+            or round(duration_s*fps)>max_frames):
         raise WorkflowError("Preview exceeds bounded rendering limits")
     output=Path(output)
     if output.suffix.lower()!=".mp4" or output.is_symlink() or output.exists():
