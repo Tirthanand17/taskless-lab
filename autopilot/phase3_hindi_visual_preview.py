@@ -317,10 +317,17 @@ def render_hindi_frame(
         snippets=(LONG_CODE_SNIPPETS[position] if kind=="long"
                   else ("import csv","csv.DictReader(rows)",
                         "row['units']  ->  2","row['price']  ->  10"))
+        # On the landscape panel, the previous 4-line code block used
+        # top+113+i*46 and could draw past the card and over its proof
+        # label. Keep all 4 lines AND the simulation footer inside it.
+        line_start=63 if kind=="long" else 113
+        line_step=36 if kind=="long" else 68
+        line_size=22 if kind=="long" else 20
         for i,code in enumerate(snippets):
-            d.text((x(left+43),x(top+113+i*(68 if kind=="short" else 46)+bob)),
-                   code,font=_font(r(20 if kind=="short" else 28)),fill=(128,238,220))
-        d.text((x(left+33),x(bottom-51+bob)),"ILLUSTRATIVE SIMULATION",
+            d.text((x(left+43),x(top+line_start+i*line_step+bob)),
+                   code,font=_font(r(line_size)),fill=(128,238,220))
+        footer_bottom=26 if kind=="long" else 51
+        d.text((x(left+33),x(bottom-footer_bottom+bob)),"ILLUSTRATIVE SIMULATION",
                font=_font(r(13)),fill=(251,208,139))
     elif mode==4:
         # An explicit, illustrative privacy/data-rights visual—not a
