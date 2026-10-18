@@ -1,4 +1,5 @@
 """Phase 4G recovery snapshot audit against actual EXISTING SQLite simulator."""
+import json
 import unittest
 
 from autopilot.core import CHANNEL_ID
@@ -124,6 +125,77 @@ class ExistingReleaseRecoveryTests(unittest.TestCase):
     def test_release_row_stage_tamper_detected(self):
         self.begin_upload()
         self.ledger.db.execute("UPDATE phase4_releases SET stage='public_verified'")
+        with self.assertRaisesRegex(ProtocolBlocked,"integrity inconsistent"):
+            self.audit()
+
+    def _append_fake_action(self,*,action,at_utc,detail,stage=None,
+                            fence=None,owner=None,lease_until=None):
+        row=self.ledger.get("tut_01")
+        new_version=row["version"]+1
+        self.ledger.db.execute(
+            "INSERT INTO phase4_events "
+            "(channel_id,episode_id,version,action,at_utc,detail_json) "
+            "VALUES (?,?,?,?,?,?)",
+            (CHANNEL_ID,"tut_01",new_version,action,at_utc,
+             json.dumps(detail,sort_keys=True)),
+        )
+        parts=["version=?"]
+        args=[new_version]
+        for name,value in (("stage",stage),("fence",fence),
+                           ("lease_owner",owner),("lease_until",lease_until)):
+            if value is not None:
+                parts.append(name+"=?")
+                args.append(value)
+        self.ledger.db.execute(
+            "UPDATE phase4_releases SET "+",".join(parts)+
+            " WHERE channel_id=? AND episode_id=?",
+            (*args,CHANNEL_ID,"tut_01"),
+        )
+
+    def test_fake_lease_takeover_during_existing_lease_is_detected(self):
+        self._append_fake_action(
+            action="lease_claimed",at_utc="2026-10-18T08:00:45+00:00",
+            detail={"worker":"worker_two","fence":2,
+                    "expires_utc":"2026-10-18T08:02:45+00:00"},
+            fence=2,owner="worker_two",
+            lease_until="2026-10-18T08:02:45+00:00",
+        )
+        with self.assertRaisesRegex(ProtocolBlocked,"integrity inconsistent"):
+            self.audit()
+
+    def test_backdated_forged_lease_event_is_detected(self):
+        self._append_fake_action(
+            action="lease_claimed",at_utc="2026-10-18T07:59:00+00:00",
+            detail={"worker":"worker_two","fence":2,
+                    "expires_utc":"2026-10-18T08:01:00+00:00"},
+            fence=2,owner="worker_two",
+            lease_until="2026-10-18T08:01:00+00:00",
+        )
+        with self.assertRaises(ProtocolBlocked):
+            self.audit()
+
+    def test_forged_local_step_after_expired_lease_is_detected(self):
+        self._append_fake_action(
+            action="research_verified",at_utc="2026-10-18T08:04:00+00:00",
+            detail={},stage="research_verified",
+        )
+        with self.assertRaisesRegex(ProtocolBlocked,"integrity inconsistent"):
+            self.audit()
+
+    def test_media_review_digest_tamper_is_detected_against_event(self):
+        self.ready()
+        self.assertEqual(self.audit()["event_count"],5)
+        self.ledger.db.execute(
+            "UPDATE phase4_releases SET review_digest=?",("c"*64,),
+        )
+        with self.assertRaisesRegex(ProtocolBlocked,"integrity inconsistent"):
+            self.audit()
+
+    def test_no_extra_approval_claims_allowed_in_event_details(self):
+        self._append_fake_action(
+            action="research_verified",at_utc=LATER,
+            detail={"fake_authenticated":True},stage="research_verified",
+        )
         with self.assertRaisesRegex(ProtocolBlocked,"integrity inconsistent"):
             self.audit()
 

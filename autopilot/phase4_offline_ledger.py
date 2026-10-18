@@ -220,7 +220,9 @@ class OfflineLedger:
             if target!="media_qa_passed" and review_digest is not None:
                 raise ProtocolBlocked("Review digest only accepted at media step")
             return self._move(episode,target,expected_version,now_utc,
-                              updates={"review_digest":review_digest} if review_digest else None)
+                              updates={"review_digest":review_digest} if review_digest else None,
+                              detail={"review_digest":review_digest}
+                              if target=="media_qa_passed" else None)
 
     def begin_upload_once(self, episode: str, *, expected_version: int,owner: str,
                           fence: int, media_sha256: str, intent_id: str,

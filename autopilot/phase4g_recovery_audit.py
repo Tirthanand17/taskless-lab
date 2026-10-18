@@ -31,6 +31,22 @@ VALID_ACTIONS=frozenset((
     "remote_private_verified","SCHEDULE_INTENT_RESERVED_NO_NETWORK",
     "scheduled_verified","public_verified","quarantined",
 ))
+# Strict event payload shapes prevent extra or misleading claimed approval data.
+# Review digest is now recorded at the source event; it is a byte binding only,
+# NOT independent proof that real editorial/media review occurred.
+EVENT_DETAIL_KEYS={
+    "reserved":frozenset(("slot_utc","media_sha256")),
+    "lease_claimed":frozenset(("worker","fence","expires_utc")),
+    "research_verified":frozenset(),
+    "script_verified":frozenset(),
+    "media_qa_passed":frozenset(("review_digest",)),
+    "UPLOAD_INTENT_RESERVED_NO_NETWORK":frozenset(("intent_id",)),
+    "remote_private_verified":frozenset(("youtube_id",)),
+    "SCHEDULE_INTENT_RESERVED_NO_NETWORK":frozenset(),
+    "scheduled_verified":frozenset(("youtube_id","publish_at_utc")),
+    "public_verified":frozenset(("youtube_id",)),
+    "quarantined":frozenset(("reason",)),
+}
 UNCERTAIN=frozenset(("upload_uncertain","schedule_uncertain"))
 TERMINAL=frozenset(("public_verified","quarantined"))
 
@@ -61,6 +77,7 @@ def _reconstruct(row:sqlite3.Row, entries:list[sqlite3.Row])->dict:
     review=None
     lease_owner=None
     lease_until=None
+    previous_event_time=None
     for expected_version,event in enumerate(entries):
         if (event["channel_id"]!=CHANNEL_ID
                 or event["episode_id"]!=row["episode_id"]
@@ -69,13 +86,17 @@ def _reconstruct(row:sqlite3.Row, entries:list[sqlite3.Row])->dict:
                 or event["action"] not in VALID_ACTIONS):
             _reject()
         try:
-            _instant(event["at_utc"])
+            event_time=_instant(event["at_utc"])
             details=json.loads(event["detail_json"])
         except (TypeError, ValueError, ProtocolBlocked):
             _reject()
-        if not isinstance(details,dict) or len(details)>8:
-            _reject()
         action=event["action"]
+        if (not isinstance(details,dict)
+                or set(details)!=EVENT_DETAIL_KEYS[action]
+                or (previous_event_time is not None
+                    and event_time < previous_event_time)):
+            _reject()
+        previous_event_time=event_time
         if expected_version==0:
             if (action!="reserved"
                     or details.get("media_sha256")!=row["media_sha256"]
@@ -87,7 +108,16 @@ def _reconstruct(row:sqlite3.Row, entries:list[sqlite3.Row])->dict:
             _reject()
         if action=="reserved":
             _reject()
+        if action not in ("lease_claimed","reserved"):
+            # Every state-changing operation must have an unexpired fenced lease
+            # at its event time. This checks historical consistency only.
+            if (lease_until is None or lease_owner is None
+                    or event_time >= _instant(lease_until)):
+                _reject()
         if action=="lease_claimed":
+            # A second lease must never steal a lease that is still live.
+            if lease_until is not None and event_time < _instant(lease_until):
+                _reject()
             fence+=1
             if (not isinstance(details.get("worker"),str)
                     or not isinstance(details.get("fence"),int)
@@ -108,9 +138,12 @@ def _reconstruct(row:sqlite3.Row, entries:list[sqlite3.Row])->dict:
                 _reject()
             stage=action
             if action=="media_qa_passed":
-                # Actual row digest is not independently signed QA evidence.
-                review=row["review_digest"]
-                if not isinstance(review,str) or HEX64.fullmatch(review) is None:
+                # Historical digest must be bound to the original media event.
+                # Both may still be synthetic caller claims, NOT rights approval.
+                review=details.get("review_digest")
+                if (not isinstance(review,str)
+                        or HEX64.fullmatch(review) is None
+                        or row["review_digest"]!=review):
                     _reject()
         elif action=="UPLOAD_INTENT_RESERVED_NO_NETWORK":
             if stage!="media_qa_passed" or uploads or lease_owner is None:
