@@ -144,13 +144,16 @@ def export_subtitle_files(destination: Path) -> dict:
     folder=Path(destination)
     if folder.is_symlink() or not folder.is_dir():
         raise WorkflowError("Destination must already be an ordinary directory")
+    targets={episode:folder/(episode+".draft_estimated.srt")
+             for episode in output}
+    # Validate *all* paths before creating any draft files; a conflict must
+    # never produce a partial three-video subtitle package.
+    if any(target.is_symlink() or target.exists() for target in targets.values()):
+        raise WorkflowError("Refusing to overwrite any existing caption asset")
     summaries={}
     for episode,record in sorted(output.items()):
-        target=folder/(episode+".draft_estimated.srt")
-        if target.is_symlink() or target.exists():
-            raise WorkflowError("Refusing to overwrite any existing caption asset")
         # No network, subprocess, published video or outside file reads.
-        target.write_text(record["srt"],encoding="utf-8",newline="\n")
+        targets[episode].write_text(record["srt"],encoding="utf-8",newline="\n")
         summaries[episode]={
             key:value for key,value in record.items() if key!="srt"
         }
