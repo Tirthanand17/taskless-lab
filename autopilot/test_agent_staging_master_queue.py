@@ -276,6 +276,44 @@ class MasterQueueTests(unittest.TestCase):
         # One free slot becomes available after explicit fail.
         self.assertEqual(len(self.master.ready_assignments(limit=4)),1)
 
+    def test_quarantined_parallel_video_fences_running_peer_before_slot_reuse(self):
+        self.master.reconcile()
+        first=EPISODES[0]
+        self._advance_to_two_parallel_tasks(first)
+        script=f"{first.episode_id}:script"
+        hooks=f"{first.episode_id}:hooks"
+        hook_actor="creative.hook_writer"
+        script_actor="creative.shorts_writer"
+        hook_gen=self.master.claim_active(
+            first.episode_id,hooks,actor=hook_actor,
+            now=BASE+timedelta(seconds=10))
+        for attempt in range(3):
+            at=BASE+timedelta(seconds=11+2*attempt)
+            gen=self.master.claim_active(first.episode_id,script,
+                                          actor=script_actor,now=at)
+            self.master.fail_active(
+                first.episode_id,script,actor=script_actor,generation=gen,
+                category="RETRY_EXHAUSTED",now=at+timedelta(seconds=1))
+        child=SQLiteStagingClaims(
+            self.master.children[first.episode_id],
+            episode_id=first.episode_id,kind=first.kind,language=first.language,
+        )
+        report=child.report()
+        self.assertEqual(report["running_count"],0)
+        self.assertEqual(report["quarantined_count"],1)
+        self.assertEqual(report["cancelled_peer_count"],1)
+        self.assertTrue(report["episode_aborted"])
+        after=self.master.reconcile()
+        self.assertEqual(after["quarantined"],[first.episode_id])
+        self.assertEqual(after["active"],[ep.episode_id for ep in EPISODES[1:4]])
+        self.assertEqual(len(after["active"]),3)
+        with self.assertRaises(WorkflowError):
+            child.heartbeat(
+                hooks,actor=hook_actor,generation=hook_gen,
+                now=BASE+timedelta(seconds=19))
+        self.assertFalse(after["publication_enabled"])
+        self.assertEqual(after["monthly_budget_inr"],0)
+
     def test_master_gated_two_contenders_cannot_both_claim(self):
         self.master.reconcile()
         ep=EPISODES[0]
