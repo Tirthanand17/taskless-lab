@@ -54,6 +54,26 @@ class HindiRealVisualTests(unittest.TestCase):
         b=render_hindi_frame("csv_tutorial_long_hi",3,width=640)
         self.assertEqual(a.tobytes(),b.tobytes())
 
+    def test_every_authored_long_scene_renders_with_real_devanagari(self):
+        profile=_authored_profile("csv_tutorial_long_hi")
+        for index,(start,end,*_) in enumerate(profile[2]):
+            # Real scene midpoint, not just the beginning of an unfinished plan.
+            with self.subTest(scene=index+1):
+                mid=(start+end)/2000
+                img=render_hindi_frame("csv_tutorial_long_hi",mid,width=640)
+                self.assertEqual(img.size,(640,360))
+                self.assertTrue(_shown_cue(profile,int(mid*1000)))
+
+    def test_every_hindi_short_scene_renders_and_last_frame(self):
+        profile=_authored_profile("csv_tutorial_short_hi")
+        for index,(start,end,*_) in enumerate(profile[2]):
+            with self.subTest(scene=index+1):
+                img=render_hindi_frame("csv_tutorial_short_hi",
+                                      (start+end)/2000,width=360)
+                self.assertEqual(img.size,(360,640))
+        final=render_hindi_frame("csv_tutorial_short_hi",41.875,width=360)
+        self.assertEqual(final.size,(360,640))
+
     def test_bounds_fail_closed(self):
         with self.assertRaises(WorkflowError):
             render_hindi_frame("not_a_video",1,width=360)
