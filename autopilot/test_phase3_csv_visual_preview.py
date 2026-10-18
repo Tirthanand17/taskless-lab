@@ -69,6 +69,25 @@ class ProceduralCsvVideoTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 render_visual_preview(Path(tmp)/"too_fast.mp4",fps=120)
 
+    def test_1080p_visual_proof_is_limited_to_36_frames(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output=Path(tmp)/"guarded.mp4"
+            with self.assertRaises(ValueError):
+                render_visual_preview(output,duration_s=2,fps=24,width=1080)
+            self.assertFalse(output.exists())
+
+    def test_render_does_not_overwrite_existing_or_create_folders(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output=Path(tmp)/"already.mp4"
+            output.write_bytes(b"do-not-change")
+            with self.assertRaises(ValueError):
+                render_visual_preview(output)
+            self.assertEqual(output.read_bytes(),b"do-not-change")
+            missing=Path(tmp)/"new_folder"/"clip.mp4"
+            with self.assertRaises(ValueError):
+                render_visual_preview(missing)
+            self.assertFalse(missing.parent.exists())
+
     @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"),
                          "FFmpeg is missing")
     def test_actual_mp4_renders_decodes_and_contains_no_audio(self):
