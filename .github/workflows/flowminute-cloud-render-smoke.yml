@@ -178,6 +178,25 @@ jobs:
               )
               print(f"COMPLETE_NATIVE_HD_42S_{language.upper()}_SILENT_SHORT_QA_PASSED")
           PY
+      - name: Sample actual completed native-HD Shorts for blank/frozen video
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from autopilot.phase3_visual_signal_audit import inspect_authored_visual_signal
+          root=Path("/tmp/flowminute-cloud-preview")
+          for lang,episode in (
+              ("english","csv_tutorial_short_en"),
+              ("hindi","csv_tutorial_short_hi"),
+          ):
+              result=inspect_authored_visual_signal(
+                  episode_id=episode,
+                  path=root/f"{lang}-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4")
+              assert result["status"]=="VISUAL_SIGNAL_QA_PASS_UNPUBLISHABLE",result["issues"]
+              assert not result["publishing_authorized"]
+              print(f"ACTUAL_FULL_HD_{lang.upper()}_VISUAL_SCENE_SIGNAL_PASS_NO_RELEASE"
+                    f" scene_samples={result['visual_signal']['sample_count']}")
+          PY
       - name: Audio mux proof using SYNTHETIC tone only (NEVER release)
         run: |
           set -euo pipefail
@@ -236,6 +255,20 @@ jobs:
           timeout 850s python -m autopilot.phase3_full_hd_long_assembly \
             --output /tmp/flowminute-native-hd-long-silent-qa/UNAPPROVED-432S-VISUAL-ONLY.mp4
           echo "NATIVE_HD_FULL_432_SECOND_HINDI_LONG_SILENT_QA_PASSED"
+      - name: Sample all 24 real HD long scenes for blank/frozen content
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from autopilot.phase3_visual_signal_audit import inspect_authored_visual_signal
+          path=Path("/tmp/flowminute-native-hd-long-silent-qa/UNAPPROVED-432S-VISUAL-ONLY.mp4")
+          result=inspect_authored_visual_signal(
+              episode_id="csv_tutorial_long_hi",path=path)
+          assert result["status"]=="VISUAL_SIGNAL_QA_PASS_UNPUBLISHABLE",result["issues"]
+          assert result["visual_signal"]["sample_count"]==26
+          assert not result["publishing_authorized"]
+          print("ACTUAL_432S_HINDI_LONG_24_SCENE_VISUAL_SIGNAL_PASS_NO_RELEASE")
+          PY
       - name: Delete all temporary source and output video files
         if: always()
         run: rm -rf /tmp/flowminute-native-hd-long-silent-qa
