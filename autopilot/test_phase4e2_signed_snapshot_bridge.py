@@ -157,6 +157,29 @@ class OfflineSignedSnapshotBridgeTests(unittest.TestCase):
         with self.assertRaises(ObservationBlocked):
             self.review(d1=changed)
 
+    def test_malformed_unhashable_index_fields_fail_with_redacted_observation_blocked(self):
+        # The public verifier is separately callable with untrusted,
+        # provider-shaped JSON; it must not rely on a private pre-validator.
+        for invalid in ([], {}, None, 42, ["embedded"], {"oauth_refresh_token": "NEVER_ECHO"}):
+            with self.subTest(invalid_type=type(invalid).__name__):
+                changed=deepcopy(self.d1)
+                changed["objects"][0]["indexes"][0]["columns"]=[
+                    "channel_id",invalid]
+                with self.assertRaises(ObservationBlocked) as cm:
+                    self.review(d1=changed)
+                self.assertNotIn("NEVER_ECHO",str(cm.exception))
+                self.assertNotIn("oauth_refresh_token",str(cm.exception))
+
+    def test_duplicate_or_non_identifier_index_columns_fail_closed(self):
+        for columns in (["channel_id","channel_id"],
+                        ["channel_id","not-a-valid-identifier"],
+                        ["channel_id","nonexistent_field"]):
+            with self.subTest(columns=columns):
+                changed=deepcopy(self.d1)
+                changed["objects"][0]["indexes"][0]["columns"]=columns
+                with self.assertRaises(ObservationBlocked):
+                    self.review(d1=changed)
+
     def test_missing_signature_wrong_nonce_and_replay_blocked(self):
         with self.assertRaises(ObservationBlocked):
             self.review(signed=self.signed[:1])
