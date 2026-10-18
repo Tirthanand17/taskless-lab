@@ -132,7 +132,7 @@ def _checked_d1(s:dict)->tuple[list[str],int]:
     return canonical_candidates,len(rows)
 
 
-def _checked_youtube(s:dict)->tuple[int,int,int,bool]:
+def _checked_youtube(s:dict)->tuple[int,int,bool]:
     _bounded_snapshot(s,_YT_TOP,"YouTube")
     if (s["origin"]!="UNAUTHENTICATED_YOUTUBE_SHAPED_METADATA"
             or s["channel_id"]!=CHANNEL_ID
@@ -162,7 +162,6 @@ def _checked_youtube(s:dict)->tuple[int,int,int,bool]:
         raise ObservationBlocked("YouTube report omitted mandatory untrusted-source warning")
     video_ids=set()
     uncertain=0
-    non_succeeded_processing=0
     for rec in records:
         if not isinstance(rec,dict) or set(rec)!=_YT_VIDEO:
             raise ObservationBlocked("Unredacted YouTube video metadata")
@@ -191,14 +190,12 @@ def _checked_youtube(s:dict)->tuple[int,int,int,bool]:
             raise ObservationBlocked("Video privacy/processing uncertainty was suppressed")
         if should_uncertain:
             uncertain+=1
-        if rec["processing"] != "succeeded":
-            non_succeeded_processing+=1
     if s["has_conflicting_state"] is not bool(uncertain):
         raise ObservationBlocked("Overall unknown processing state hidden")
     incomplete=not s["pagination_complete"]
     if incomplete != ("VIDEO_PAGINATION_INCOMPLETE" in s["blockers"]):
         raise ObservationBlocked("Pagination completeness issue concealed")
-    return len(records),uncertain,non_succeeded_processing,incomplete
+    return len(records),uncertain,incomplete
 
 
 def inspect_signed_sanitized_phase4e_snapshots(
@@ -215,7 +212,12 @@ def inspect_signed_sanitized_phase4e_snapshots(
     a Cloudflare or Google API request. No source-to-ledger reconciliation.
     """
     candidate_tables,table_count=_checked_d1(d1_snapshot)
-    video_count,uncertain_count,non_succeeded_count,incomplete=_checked_youtube(youtube_snapshot)
+    video_count,uncertain_count,incomplete=_checked_youtube(youtube_snapshot)
+    # Preserve the established 3-item validation API. Count the extra
+    # diagnostic only AFTER that strict full snapshot validation succeeds.
+    non_succeeded_count=sum(
+        row["processing"]!="succeeded" for row in youtube_snapshot["videos"]
+    )
     hashes={
         "d1_schema":sanitized_snapshot_hash(d1_snapshot),
         "youtube_history":sanitized_snapshot_hash(youtube_snapshot),
