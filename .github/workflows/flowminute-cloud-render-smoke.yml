@@ -204,6 +204,20 @@ jobs:
               print(f"ACTUAL_FULL_HD_{lang.upper()}_VISUAL_SCENE_SIGNAL_PASS_NO_RELEASE"
                     " scene_samples=5")
           PY
+      - name: FULL LENGTH HD Shorts real H264/AAC mux with FAKE tones, self-delete
+        run: |
+          set -euo pipefail
+          root=/tmp/flowminute-cloud-preview
+          timeout 160s python -m autopilot.phase3_full_synthetic_audio_smoke \
+            --episode csv_tutorial_short_en \
+            --silent-mp4 "$root/english-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4" \
+            --scratch-dir "$root"
+          timeout 160s python -m autopilot.phase3_full_synthetic_audio_smoke \
+            --episode csv_tutorial_short_hi \
+            --silent-mp4 "$root/hindi-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4" \
+            --scratch-dir "$root"
+          echo "TWO_REAL_FULL_HD_SHORT_FAKE_AUDIO_MUX_SMOKES_PASS_NO_PUBLISH"
+
       - name: Audio mux proof using SYNTHETIC tone only (NEVER release)
         run: |
           set -euo pipefail
@@ -283,6 +297,16 @@ jobs:
           print("QUARANTINED_HD_LONG_RECEIPT "+json.dumps(receipt,sort_keys=True))
           print("ACTUAL_432S_HINDI_LONG_24_SCENE_VISUAL_SIGNAL_PASS_NO_RELEASE")
           PY
+      - name: FULL LENGTH 432s HD Hindi real H264/AAC mux with FAKE tone, self-delete
+        run: |
+          set -euo pipefail
+          root=/tmp/flowminute-native-hd-long-silent-qa
+          timeout 420s python -m autopilot.phase3_full_synthetic_audio_smoke \
+            --episode csv_tutorial_long_hi \
+            --silent-mp4 "$root/UNAPPROVED-432S-VISUAL-ONLY.mp4" \
+            --scratch-dir "$root"
+          echo "REAL_FULL_HD_LONG_FAKE_AUDIO_MUX_SMOKE_PASS_NO_PUBLISH"
+
       - name: Delete all temporary source and output video files
         if: always()
         run: rm -rf /tmp/flowminute-native-hd-long-silent-qa
