@@ -17,6 +17,7 @@ import re
 
 from .agent_org import Handoff, ROLES, WorkflowError
 from .agent_staging_unified import UnifiedStagingCoordinator
+from .agent_staging_key_policy import StagingKeyPolicy, KEY_ID_RE
 
 WORKER_RE = re.compile(r"[a-z][a-z0-9_]{3,47}")
 REQUEST_RE = re.compile(r"[a-z][a-z0-9_-]{7,63}")
@@ -34,6 +35,7 @@ class SignedStagingRequest:
     lease_seconds: int = 0
     handoff_sha: str = ""
     request_id: str = ""
+    key_id: str = ""
     signature: str = ""
 
     def unsigned(self) -> dict:
@@ -74,30 +76,43 @@ class SignedStagingGateway:
     The clock is still not independently attested cloud database time.
     """
     def __init__(self, coordinator: UnifiedStagingCoordinator, *,
-                 worker_keys: Mapping[str, tuple[str, bytes]],
-                 clock: Callable[[], datetime] | None = None):
+                 worker_keys: Mapping[str, tuple],
+                 clock: Callable[[], datetime] | None = None,
+                 key_policy: StagingKeyPolicy | None = None):
         if not isinstance(coordinator, UnifiedStagingCoordinator):
             raise WorkflowError("Signed gateway needs the unified coordinator")
         if not isinstance(worker_keys, Mapping) or not 1 <= len(worker_keys) <= 64:
             raise WorkflowError("Bounded worker registry missing")
+        if key_policy is not None and (
+            not isinstance(key_policy, StagingKeyPolicy)
+            or key_policy.db_path != coordinator.path
+        ):
+            raise WorkflowError("Persistent policy must bind the SAME coordinator DB")
         checked = {}
         seen_secrets = set()
         for name, registration in worker_keys.items():
             if (not isinstance(name, str)
                     or WORKER_RE.fullmatch(name) is None
                     or not isinstance(registration, tuple)
-                    or len(registration) != 2):
+                    or len(registration) != (3 if key_policy is not None else 2)):
                 raise WorkflowError("Malformed worker enrollment")
-            role, secret = registration
+            if key_policy is None:
+                role, secret = registration
+                key_id = ""
+            else:
+                role, key_id, secret = registration
+                if not isinstance(key_id,str) or KEY_ID_RE.fullmatch(key_id) is None:
+                    raise WorkflowError("Persistent worker key ID invalid")
             if (not isinstance(role, str) or role not in ROLES
                     or type(secret) is not bytes or len(secret) < 32
                     or secret in seen_secrets):
                 raise WorkflowError("Unknown role, reused, or weak HMAC key")
-            checked[name] = (role, secret)
+            checked[name] = (role, key_id, secret)
             seen_secrets.add(secret)
         if clock is not None and not callable(clock):
             raise WorkflowError("Service clock must be callable")
         self._workers = checked
+        self._key_policy = key_policy
         self.coordinator = coordinator
         self._clock = clock or (lambda: datetime.now(timezone.utc))
 
@@ -118,10 +133,13 @@ class SignedStagingGateway:
                 or type(request.lease_seconds) is not int
                 or not isinstance(request.handoff_sha, str)
                 or not isinstance(request.request_id, str)
+                or not isinstance(request.key_id, str)
                 or not isinstance(request.signature, str)
                 or re.fullmatch(r"[0-9a-f]{64}", request.signature) is None):
             raise WorkflowError("Malformed authenticated staging scope")
-        actor, key = registration
+        actor, key_id, key = registration
+        if request.key_id != key_id:
+            raise WorkflowError("Worker key ID does not match signed enrollment")
         expected = hmac.new(key, _canonical(request), sha256).hexdigest()
         if not hmac.compare_digest(expected, request.signature):
             raise WorkflowError("Worker HMAC authentication failed")
@@ -148,12 +166,21 @@ class SignedStagingGateway:
             raise WorkflowError("Completion scope invalid")
         return actor, now
 
+    def _enforce_policy(self, request: SignedStagingRequest):
+        if self._key_policy is None:
+            return None
+        role, key_id, _secret = self._workers[request.worker_id]
+        return lambda db: self._key_policy.require_active(
+            db, request.worker_id, role, key_id
+        )
+
     def claim(self, request: SignedStagingRequest) -> int:
         role, now = self._authenticate(request, "claim")
         return self.coordinator.claim(
             request.episode_id, request.task_id, actor=role, now=now,
             lease_seconds=request.lease_seconds,
             expected_generation=request.generation,
+            _authz_check=self._enforce_policy(request),
         )
 
     def complete(self, request: SignedStagingRequest, handoff: Handoff) -> dict:
@@ -166,6 +193,7 @@ class SignedStagingGateway:
             request.episode_id, handoff, actor=role,
             generation=request.generation, now=now,
             request_id=request.request_id,
+            _authz_check=self._enforce_policy(request),
         )
 
     def status(self) -> dict:
@@ -174,6 +202,7 @@ class SignedStagingGateway:
             "registered_workers": len(self._workers),
             "role_derived_from_verified_worker": True,
             "worker_secrets_stored_in_sqlite": False,
+            "persistent_key_revocation_enforced": self._key_policy is not None,
             "real_remote_worker_identity_authenticated": False,
             "direct_coordinator_access_blocked": False,
             "remotely_trusted_database_clock": False,

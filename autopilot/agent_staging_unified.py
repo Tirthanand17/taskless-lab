@@ -14,6 +14,7 @@ from contextlib import closing, contextmanager
 from dataclasses import asdict
 from datetime import datetime
 from hashlib import sha256
+from typing import Callable
 import json
 from pathlib import Path
 import re
@@ -388,7 +389,8 @@ class UnifiedStagingCoordinator:
             raise WorkflowError("Stale or unauthorized unified staging claim")
 
     def claim(self,eid:str,tid:str,*,actor:str,now:datetime,
-              lease_seconds:int=120,expected_generation:int|None=None)->int:
+              lease_seconds:int=120,expected_generation:int|None=None,
+              _authz_check:Callable[[sqlite3.Connection],None]|None=None)->int:
         """Expected generation fences authenticated signed claim replay.
 
         Optional for existing direct offline tests; only the signed gateway
@@ -401,6 +403,8 @@ class UnifiedStagingCoordinator:
         seconds=_lease(lease_seconds)
         with self._tx() as db:
             slots,states=self._check(db)
+            if _authz_check is not None:
+                _authz_check(db)
             current=self._now(db,now)
             contract=self.contracts.get(eid,{}).get(tid)
             if (slots.get(eid)!="active" or contract is None
@@ -432,7 +436,8 @@ class UnifiedStagingCoordinator:
 
     def complete(self,eid:str,handoff:Handoff,*,actor:str,
                  generation:int,now:datetime,
-                 request_id:str|None=None)->dict:
+                 request_id:str|None=None,
+                 _authz_check:Callable[[sqlite3.Connection],None]|None=None)->dict:
         """Atomically finish and optionally persist replayable draft receipt.
 
         A lost acknowledgement may be retried with the EXACT SAME
@@ -461,6 +466,10 @@ class UnifiedStagingCoordinator:
         input_sha=_completion_request_sha(eid,actor,generation,payload)
         with self._tx() as db:
             slots,states=self._check(db)
+            # Durable revocation is checked under the SAME database write
+            # transaction, including for completed-request receipt replays.
+            if _authz_check is not None:
+                _authz_check(db)
             if request_id is not None:
                 prior=db.execute(
                     "SELECT request_sha,response FROM completion_receipts "
