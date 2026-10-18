@@ -4,6 +4,7 @@ The fixture starts from existing unverified script-estimated subtitles. Moving
 a test timestamp does not make the synthetic candidate accurately aligned.
 """
 from dataclasses import replace
+import re
 from hashlib import sha256
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -13,10 +14,11 @@ import unittest
 from autopilot.agent_org import WorkflowError
 from autopilot.phase3_caption_candidate_intake import (
     CandidateCaption, review_candidate_caption, review_three_caption_candidates,
+    _check_authored_scene_anchors, _parse_srt,
 )
 from autopilot.phase3_voice_subtitle_handoff import build_subtitles_from_authored_csv
 from autopilot.phase3_complete_narration_intake import EPISODES
-from autopilot.phase2r3_authored_pack_audit import SECTIONS
+from autopilot.phase2r3_authored_pack_audit import SECTIONS, SOURCE, _sections, TIME
 
 
 class CandidateCaptionIntakeTests(unittest.TestCase):
@@ -84,6 +86,55 @@ class CandidateCaptionIntakeTests(unittest.TestCase):
                 with self.subTest(episode=candidate.episode_id, field=field):
                     self.assertFalse(r[field])
             self.assertEqual(r["network_calls"], 0)
+
+    def test_unchanged_scene_anchors_preserve_unverified_status(self):
+        for i in range(3):
+            report=self.valid_one(i)
+            expected = 3 if i < 2 else 23
+            self.assertEqual(
+                report["authored_visual_scene_boundaries_screened"], expected
+            )
+            self.assertLessEqual(
+                report["max_claimed_scene_boundary_drift_ms"],
+                3000 if i < 2 else 7000,
+            )
+            self.assertTrue(report["scene_boundary_timing_is_unverified_estimate"])
+            self.assertFalse(report["true_speech_to_caption_alignment_verified"])
+            self.assertFalse(report["ready_for_upload"])
+
+    def test_globally_identical_script_with_shifted_scenes_is_rejected(self):
+        # Shift earlier words progressively later, while retaining original
+        # cue text, order, duration, numbering, and nonoverlapping intervals.
+        # The first cue begins at ~4.5s (within the preexisting 5s limit).
+        # The first planned scene ends at 10s but its words end near 13.5s.
+        def warp_srt(raw):
+            def shift(match):
+                minutes,seconds,millis=map(int,match.groups())
+                stamp=60_000*minutes + 1000*seconds + millis
+                warped=round(stamp + 4500*(1-stamp/42000))
+                return (
+                    f"00:{warped//60000:02}:{(warped//1000)%60:02},"
+                    f"{warped%1000:03}"
+                )
+            return re.sub(r"00:(\\d\\d):([0-5]\\d),(\\d{3})",shift,raw)
+        for idx in (0,1):
+            with self.subTest(language=self.candidates[idx].declared_language):
+                candidate=self.change_srt(idx,warp_srt)
+                with self.assertRaisesRegex(WorkflowError,
+                                            "drift beyond authored visual scene"):
+                    self.valid_one(idx,candidate=candidate)
+
+    def test_boundary_validator_does_not_claim_actual_voice_alignment(self):
+        # Unit-level counterexample: every expected word remains present,
+        # but a fabricated time offset is incompatible with the visual beats.
+        section=_sections(SOURCE.read_text(encoding="utf-8"))[0]
+        authored=TIME.findall(section)
+        cues=_parse_srt(self.candidates[0].srt_path.read_text("utf-8"))
+        baseline=_check_authored_scene_anchors(cues,authored,episode_kind="short")
+        self.assertEqual(baseline[0],3)
+        warped=[(a+5000,b+5000,words) for a,b,words in cues]
+        with self.assertRaisesRegex(WorkflowError,"drift beyond"):
+            _check_authored_scene_anchors(warped,authored,episode_kind="short")
 
     def test_original_estimated_captions_are_never_passed_as_corrected(self):
         c = self.candidates[0]

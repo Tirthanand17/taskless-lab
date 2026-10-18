@@ -25,3 +25,14 @@ Tests deliberately use a **shifted screenplay-derived SRT** and *fake WAV hashes
 4. Resolve authenticated owner-held Cloudflare/YouTube OAuth/storage and durable publication-status readback on the independent release-controller branch. Until then, no YouTube upload, scheduling or publishing.
 
 The owner's cloud recurring infrastructure budget is **₹0**. GitHub-hosted public standard runners only; no Nirala/desktop, new payment, external provider connection, storage purchase, OAuth scope, remote publishing or account mutation. **The existing 21 production acceptance subphases remain open** (a technical partial subgate does not close any whole subphase).
+
+
+## Continued Phase 3R2 — visual-scene subtitle drift screen (18 October 2026)
+
+The previous SRT candidate gate checked that all spoken source words appeared in the same order, that individual cues had legal durations, and that the SRT roughly matched total audio runtime. This could still admit a wholly rewritten SRT whose **correct words appeared at the wrong authored 3D visual scene**. For the original CSV tutorial, words about the first fictional data table might appear when the video has moved to the next explanation.
+
+The existing `phase3_caption_candidate_intake.py` now also checks every original per-scene word boundary against the original **authored visual scene clock**. It estimates the boundary instant proportionally within whichever candidate cue contains the boundary word, with generous permitted drift: **3 seconds for 42-second Shorts** and **7 seconds for the 432-second long video**. It rejects a substantially displaced scene even when the full words and all content hashes match. The accepted report includes only the number of scene boundaries screened and maximum estimated drift in milliseconds, not original script or SRT text. Previously admitted 50-millisecond-shifted synthetic SRT fixtures stay admissible as candidate proposals.
+
+New tests preserve accepted Hindi and English cue behavior while constructing SRTs with identical words, cue numbering and overall runtime but intentionally warped timestamps around visual scene changes. A separate unit test checks obvious displaced anchors. This is **neither audio-to-subtitle synchronization** nor speaker pronunciation verification. The true time at which any particular word is spoken still requires actual licensed narration with independently reviewed listening or trusted alignment. The SRT remains an untrusted, quarantined candidate with all upload/publish permissions FALSE.
+
+No producer-run media files, new model/provider account, cloud media storage, private source/voice data, local laptop/Nirala access, D1/Google OAuth, YouTube upload, schedule, publish, charge or production flag change. Both PRs remain draft/unmerged. ₹0 recurring budget and **21 incomplete production acceptance subphases** unchanged.

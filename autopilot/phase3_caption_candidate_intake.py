@@ -17,7 +17,7 @@ import re
 from typing import Sequence
 
 from .agent_org import WorkflowError
-from .phase2r3_authored_pack_audit import SOURCE, SECTIONS, TIME, _sections
+from .phase2r3_authored_pack_audit import SOURCE, SECTIONS, TIME, _sections, _seconds
 from .phase3_complete_narration_intake import (
     CompleteNarrationTake, EPISODES, review_complete_narration_takes,
 )
@@ -34,6 +34,10 @@ MAX_CUES = 800
 MAX_INTER_CUE_GAP_MS = 15_000
 MAX_FIRST_CUE_DELAY_MS = 5_000
 MAX_END_TRAILING_MS = 8_000
+# Scene boundary estimates are NOT proof of audible speech alignment. They
+# only detect grossly shifted scripted words against existing authored visuals.
+MAX_SCENE_BOUNDARY_DRIFT_SHORT_MS = 3_000
+MAX_SCENE_BOUNDARY_DRIFT_LONG_MS = 7_000
 ALLOWED_ORIGINS = frozenset(("manually_timecoded_unverified", "automatic_alignment_unverified"))
 
 
@@ -105,6 +109,60 @@ def _parse_srt(raw: str) -> list[tuple[int, int, str]]:
     return parsed
 
 
+def _check_authored_scene_anchors(
+    cues: list[tuple[int, int, str]],
+    authored_rows: list[tuple[str, str, str, str, str, str]],
+    *,
+    episode_kind: str,
+) -> tuple[int, int]:
+    """Bound approximate cue/scene textual timing drift, NOT WAV word alignment.
+
+    The accepted screenplay is contiguous across authored scenes. A rewritten
+    SRT may preserve every single word in order yet shift the entire first
+    scene's words into the next visual, harming educational comprehension.
+    Approximate each scene boundary from its word offset within an SRT cue;
+    allow generous slack for real speakers' differing pacing. This cannot
+    establish what anyone actually said, or when, without trusted listening.
+    """
+    limit = (MAX_SCENE_BOUNDARY_DRIFT_SHORT_MS
+             if episode_kind == "short" else MAX_SCENE_BOUNDARY_DRIFT_LONG_MS)
+    if episode_kind not in ("short", "long") or len(authored_rows) < 2:
+        raise WorkflowError("Unknown authored visual scene plan")
+    boundaries = []
+    consumed = 0
+    for row in authored_rows[:-1]:
+        consumed += len(row[4].split())
+        boundaries.append((consumed, _seconds(row[2], row[3]) * 1000))
+    count = 0
+    max_drift = 0
+    pointer = 0
+    cue_begin_word = 0
+    for boundary_tokens, expected_ms in boundaries:
+        while pointer < len(cues):
+            start, end, phrase = cues[pointer]
+            cue_end_word = cue_begin_word + len(phrase.split())
+            if cue_end_word >= boundary_tokens:
+                if cue_end_word == cue_begin_word:
+                    raise WorkflowError("Empty SRT cue cannot anchor scene")
+                relative = (boundary_tokens - cue_begin_word) / (
+                    cue_end_word - cue_begin_word
+                )
+                approx = round(start + relative * (end - start))
+                drift = abs(approx - expected_ms)
+                if drift > limit:
+                    raise WorkflowError(
+                        "Candidate SRT words drift beyond authored visual scene"
+                    )
+                max_drift = max(max_drift, drift)
+                count += 1
+                break
+            pointer += 1
+            cue_begin_word = cue_end_word
+        else:
+            raise WorkflowError("Missing authored scene boundary in captions")
+    return count, max_drift
+
+
 def review_candidate_caption(candidate: CandidateCaption, audio_receipt: dict) -> dict:
     """Check one SRT against original written words and a technical WAV receipt.
 
@@ -146,7 +204,8 @@ def review_candidate_caption(candidate: CandidateCaption, audio_receipt: dict) -
         raise WorkflowError("Audio receipt does not bind the current draft screenplay")
     source_sections = _sections(SOURCE.read_text(encoding="utf-8"))
     original = dict(zip((entry[2] for entry in SECTIONS), source_sections))[ep]
-    spoken = " ".join(match[4] for match in TIME.findall(original))
+    authored_rows = TIME.findall(original)
+    spoken = " ".join(match[4] for match in authored_rows)
     raw, found_sha = _load_plain_file(candidate.srt_path)
     if found_sha != candidate.srt_sha256:
         raise WorkflowError("SRT bytes were changed after candidate submission")
@@ -156,6 +215,9 @@ def review_candidate_caption(candidate: CandidateCaption, audio_receipt: dict) -
     submitted = " ".join(text for _, _, text in cues)
     if submitted.split() != spoken.split():
         raise WorkflowError("Candidate captions omit, duplicate, reorder or alter original speech text")
+    anchor_count, max_scene_drift_ms = _check_authored_scene_anchors(
+        cues, authored_rows, episode_kind=planned[0]
+    )
     max_audio_ms = round(duration * 1000)
     if cues[-1][1] > min(max_audio_ms, expected_seconds * 1000 + 1500):
         raise WorkflowError("Captions run beyond actual technically measured WAV")
@@ -169,6 +231,9 @@ def review_candidate_caption(candidate: CandidateCaption, audio_receipt: dict) -
         "draft_estimated_srt_sha256": draft["srt_sha256"],
         "cue_count": len(cues), "caption_end_ms": cues[-1][1],
         "wav_duration_ms_technical": max_audio_ms,
+        "authored_visual_scene_boundaries_screened": anchor_count,
+        "max_claimed_scene_boundary_drift_ms": max_scene_drift_ms,
+        "scene_boundary_timing_is_unverified_estimate": True,
         "all_authored_text_preserved_exactly": True,
         "timestamps_structurally_plausible": True,
         "claimed_origin": candidate.origin_claim,
