@@ -229,6 +229,128 @@ class OfflineLedger:
                       {"worker":owner,"fence":next_fence,"expires_utc":until})
             return next_version,next_fence
 
+    def _db_clock_fenced_mutation(self, episode: str, *,
+                                  expected_stage: str,
+                                  next_stage: str,
+                                  expected_version: int,
+                                  owner: str, fence: int,
+                                  updates: dict | None = None,
+                                  action: str | None = None,
+                                  detail: dict | None = None) -> int:
+        """Single atomic, clock-selected, fenced OFFLINE transition.
+
+        Internal-only: callers never select SQL column names (all mutation
+        fields are fixed in this module). SQLite current UTC is selected
+        inside this same write transaction. This method offers NO external
+        upload or provider-readback capability. The older legacy functions
+        remain untrusted test compatibility code.
+        """
+        if (not isinstance(episode,str) or EPISODE.fullmatch(episode) is None
+                or type(expected_version) is not int or expected_version < 0
+                or not isinstance(owner,str) or OWNER.fullmatch(owner) is None
+                or type(fence) is not int or fence < 1):
+            raise ProtocolBlocked("Invalid offline clock-guarded mutation")
+        if not isinstance(updates,(dict,type(None))):
+            raise ProtocolBlocked("Expected fixed internal mutation values")
+        selected=updates or {}
+        if not set(selected).issubset({"review_digest","intent_id"}):
+            raise ProtocolBlocked("Unapproved offline ledger update fields")
+        with self._atomic():
+            now_utc=self.db.execute(
+                "SELECT strftime('%Y-%m-%dT%H:%M:%S+00:00','now')"
+            ).fetchone()[0]
+            if not isinstance(now_utc,str):
+                raise ProtocolBlocked("Database-selected UTC unavailable")
+            _instant(now_utc)
+            # Explicit clock and fence in WHERE, not only an application check.
+            row=self._row(episode)
+            if (not row or row["stage"]!=expected_stage
+                    or row["version"]!=expected_version
+                    or row["lease_owner"]!=owner or row["fence"]!=fence
+                    or row["lease_until"] is None
+                    or row["lease_until"]<=now_utc):
+                raise ProtocolBlocked("Expired/stale/off-stage fenced mutation")
+            values={"stage":next_stage,"version":expected_version+1,**selected}
+            columns=", ".join(f"{key}=?" for key in values)
+            try:
+                count=self.db.execute(
+                    f"UPDATE phase4_releases SET {columns} "
+                    "WHERE channel_id=? AND episode_id=? "
+                    "AND version=? AND stage=? AND lease_owner=? AND fence=? "
+                    "AND lease_until>? ",
+                    (*values.values(),CHANNEL_ID,episode,expected_version,
+                     expected_stage,owner,fence,now_utc),
+                ).rowcount
+            except sqlite3.IntegrityError as exc:
+                raise ProtocolBlocked("Duplicate simulated remote intent") from exc
+            if count!=1:
+                raise ProtocolBlocked("Offline fenced compare-and-swap lost")
+            self._log(episode,expected_version+1,action or next_stage,
+                      now_utc,detail or {})
+            return expected_version+1
+
+    def local_step_db_clock_rehearsal(self, episode: str, *,
+                                      target: str, expected_version: int,
+                                      owner: str, fence: int,
+                                      review_digest: str | None = None) -> int:
+        """Move a *local*, NON-PUBLISHING stage using SQLite-selected UTC."""
+        if target not in LOCAL_NEXT.values():
+            raise ProtocolBlocked("Only ordered local stages supported")
+        previous=next(stage for stage,nxt in LOCAL_NEXT.items() if nxt==target)
+        if target=="media_qa_passed":
+            if not _sha(review_digest):
+                raise ProtocolBlocked("Review digest required, not release approval")
+        elif review_digest is not None:
+            raise ProtocolBlocked("Review digest only accepted at media QA stage")
+        return self._db_clock_fenced_mutation(
+            episode,expected_stage=previous,next_stage=target,
+            expected_version=expected_version,owner=owner,fence=fence,
+            updates={"review_digest":review_digest}
+                    if target=="media_qa_passed" else None,
+            detail={"review_digest":review_digest}
+                   if target=="media_qa_passed" else None,
+        )
+
+    def begin_upload_intent_db_clock_rehearsal(
+        self, episode: str, *, expected_version: int, owner: str,
+        fence: int, media_sha256: str, intent_id: str,
+    ) -> int:
+        """Reserve an OFFLINE upload-intent row only; NEVER contact YouTube.
+
+        No supplied clock; this is *not* permission to perform an upload.
+        Existing ambiguity means no second upload-intent reservation is legal.
+        """
+        if (not isinstance(intent_id,str) or OWNER.fullmatch(intent_id) is None
+                or not _sha(media_sha256)):
+            raise ProtocolBlocked("Bad offline upload-intent parameters")
+        r=self._row(episode)
+        if (not r or r["media_sha256"]!=media_sha256
+                or not _sha(r["review_digest"])
+                or r["intent_id"] is not None):
+            raise ProtocolBlocked("Unreviewed or repeated offline upload intent")
+        return self._db_clock_fenced_mutation(
+            episode,expected_stage="media_qa_passed",
+            next_stage="upload_uncertain",expected_version=expected_version,
+            owner=owner,fence=fence,updates={"intent_id":intent_id},
+            action="UPLOAD_INTENT_RESERVED_NO_NETWORK",
+            detail={"intent_id":intent_id},
+        )
+
+    def begin_schedule_intent_db_clock_rehearsal(
+        self, episode: str, *, expected_version: int, owner: str, fence: int,
+    ) -> int:
+        """Simulate schedule uncertainty only; no provider API or permission."""
+        r=self._row(episode)
+        if not r or not isinstance(r["youtube_id"],str) or VIDEO.fullmatch(
+                r["youtube_id"]) is None:
+            raise ProtocolBlocked("No matching simulated private-video identity")
+        return self._db_clock_fenced_mutation(
+            episode,expected_stage="remote_private_verified",
+            next_stage="schedule_uncertain",expected_version=expected_version,
+            owner=owner,fence=fence,
+            action="SCHEDULE_INTENT_RESERVED_NO_NETWORK",
+        )
+
     def _check(self, episode: str, *, stage: str, version: int, owner: str,
                fence: int, now_utc: str):
         now=_instant(now_utc)
