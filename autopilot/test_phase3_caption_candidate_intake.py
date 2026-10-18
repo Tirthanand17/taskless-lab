@@ -116,7 +116,7 @@ class CandidateCaptionIntakeTests(unittest.TestCase):
                     f"00:{warped//60000:02}:{(warped//1000)%60:02},"
                     f"{warped%1000:03}"
                 )
-            return re.sub(r"00:(\\d\\d):([0-5]\\d),(\\d{3})",shift,raw)
+            return re.sub(r"00:(\d\d):([0-5]\d),(\d{3})",shift,raw)
         for idx in (0,1):
             with self.subTest(language=self.candidates[idx].declared_language):
                 candidate=self.change_srt(idx,warp_srt)
