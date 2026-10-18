@@ -173,6 +173,66 @@ class StagingLocalLeaseTests(unittest.TestCase):
                 self.staging.complete(candidate,actor=OWNER,generation=token,now=BASE)
         self.assertEqual(self.staging.report()["completed_count"],0)
 
+    def test_full_18_agent_staging_dag_survives_reopen_at_each_handoff(self):
+        """Actual SQLite handoffs through all 18 stages, still ONLY drafts."""
+        from autopilot.agent_org import Handoff
+        stages=self.staging.workflow.order
+        self.assertEqual(len(stages),18)
+        known={}
+        for index,task_id in enumerate(stages):
+            with self.subTest(stage=task_id):
+                # Mimic a separate ephemeral worker/CI invocation every stage.
+                node=SQLiteStagingClaims(
+                    self.path,episode_id=EP,kind="short",language="hi"
+                )
+                self.assertIn(task_id,node.report()["ready_tasks"])
+                contract=node.contracts[task_id]
+                now=BASE+timedelta(seconds=10*index)
+                generation=node.claim(task_id,actor=contract.owner,now=now)
+                digest=sha256(task_id.encode("utf-8")).hexdigest()
+                parent_refs=tuple("sha256:"+known[dep]
+                                  for dep in contract.requires)
+                handoff=Handoff(
+                    task_id,contract.produces,digest,
+                    parent_refs+("sha256:"+digest,),
+                    contract.owner,BASE.isoformat(),
+                )
+                # Four-parent independent staging release review must link
+                # *every* prerequisite, and missing one fails transactionally.
+                if task_id.endswith(":release_review"):
+                    self.assertEqual(len(contract.requires),4)
+                    corrupted=replace(
+                        handoff,evidence_refs=parent_refs[:-1]+
+                        ("sha256:"+digest,)
+                    )
+                    with self.assertRaises(WorkflowError):
+                        node.complete(corrupted,actor=contract.owner,
+                                      generation=generation,
+                                      now=now+timedelta(seconds=1))
+                node.complete(handoff,actor=contract.owner,
+                              generation=generation,
+                              now=now+timedelta(seconds=2))
+                known[task_id]=digest
+                reopened=SQLiteStagingClaims(
+                    self.path,episode_id=EP,kind="short",language="hi"
+                )
+                self.assertEqual(
+                    reopened.report()["durable_staging_handoffs_verified"],index+1
+                )
+                self.assertFalse(reopened.report()["youtube_publishing_authorized"])
+                self.assertFalse(
+                    reopened.report()["evidence_independently_authenticated"]
+                )
+        final=SQLiteStagingClaims(
+            self.path,episode_id=EP,kind="short",language="hi"
+        ).report()
+        self.assertEqual(final["completed_count"],18)
+        self.assertEqual(final["ready_tasks"],[])
+        self.assertEqual(final["running_count"],0)
+        self.assertEqual(final["quarantined_count"],0)
+        self.assertFalse(final["multi_worker_d1_or_cloud_deployed"])
+        self.assertEqual(final["monthly_infrastructure_inr"],0)
+
     def test_lease_expiry_charges_retry_and_stale_generation_refused(self):
         token=self.staging.claim(RESEARCH,actor=OWNER,now=BASE,lease_seconds=10)
         self.assertEqual(self.staging.recover_expired(
