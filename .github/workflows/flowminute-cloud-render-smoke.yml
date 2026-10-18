@@ -3,7 +3,16 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "autopilot/**"
+      # Media/code changes only. Pure master-agent/ledger edits already
+      # run Content Quality Gate + dedicated orchestration tests; don't
+      # consume full media runner capacity for unrelated staging changes.
+      - "autopilot/phase3_*"
+      - "autopilot/phase2r3_*"
+      - "autopilot/narration_inspection.py"
+      - "autopilot/render_inspection.py"
+      - "autopilot/media_rights_review.py"
+      - "autopilot/research_briefs/**"
+      - "autopilot/examples/flowminute_csv_demo.py"
       - "motion-v2/src/**"
       - ".github/workflows/flowminute-cloud-render-smoke.yml"
 permissions:
@@ -246,6 +255,10 @@ jobs:
         run: rm -rf /tmp/flowminute-cloud-preview
 
   native_hd_long_silent_qa:
+    # This 10,368-frame full 432s native-HD render is deliberately an
+    # owner-triggered capacity benchmark, NOT a PR/agent-code side effect.
+    # Never run it on recurring pull_request builds or as an always-on farm.
+    if: github.event_name == 'workflow_dispatch'
     # Strictly ORIGINAL source video, no voice, credentials, cloud artifact
     # upload, paid runner, OAuth or publishing permission.
     runs-on: ubuntu-24.04
