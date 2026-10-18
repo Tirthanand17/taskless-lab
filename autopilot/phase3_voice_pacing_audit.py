@@ -165,20 +165,9 @@ def inspect_voice_pacing_candidate(*, wav_path:Path, episode_id:str,
     except (OSError,EOFError,wave.Error) as exc:
         raise WorkflowError("Cannot inspect bounded original WAV") from exc
 
-    # Reject a largely absent single *authored* explanation even if scattered
-    # signal bursts avoid the previous longest-silence/global-quiet thresholds.
-    # Sampled energy is insufficient to assert actual spoken language/words.
-    scene_windows = _authored_scene_windows(episode_id)
+    # Preserve original whole-clip failure precedence; the scene gate adds
+    # finer-grained checks only after the established diagnostics pass.
     short=EPISODES[episode_id]<=60
-    activity_floor = MIN_SCENE_ACTIVITY_SHORT if short else MIN_SCENE_ACTIVITY_LONG
-    scene_fractions: list[float] = []
-    for begin, end in scene_windows:
-        observed = active_seconds[begin:min(end, len(active_seconds))]
-        if (len(observed) < max(1, end - begin - 1)
-                or sum(observed) < ceil(activity_floor * len(observed))):
-            raise WorkflowError("Authored narration scene has insufficient sampled audio")
-        scene_fractions.append(sum(observed) / len(observed))
-    # Detect grossly unusable edits while accommodating ordinary pauses.
     if ((leading>=4 if short else leading>=9)
             or (trailing>=6 if short else trailing>=12)
             or (longest>=7 if short else longest>=16)
@@ -188,6 +177,18 @@ def inspect_voice_pacing_candidate(*, wav_path:Path, episode_id:str,
         raise WorkflowError("Severe saturated/clipped original narrator PCM")
     if offset>=max(3,ceil(.09*seconds)):
         raise WorkflowError("Severe sustained DC offset in original PCM")
+    # Reject a largely absent *single authored scene* even when scattered
+    # bursts avoid whole-clip longest-quiet and global-quiet thresholds.
+    # Sampled energy cannot prove spoken words, identities, or rights.
+    scene_windows = _authored_scene_windows(episode_id)
+    activity_floor = MIN_SCENE_ACTIVITY_SHORT if short else MIN_SCENE_ACTIVITY_LONG
+    scene_fractions: list[float] = []
+    for begin, end in scene_windows:
+        observed = active_seconds[begin:min(end, len(active_seconds))]
+        if (len(observed) < max(1, end - begin - 1)
+                or sum(observed) < ceil(activity_floor * len(observed))):
+            raise WorkflowError("Authored narration scene has insufficient sampled audio")
+        scene_fractions.append(sum(observed) / len(observed))
     return {
         "status":"PACING_AND_WAVEFORM_TECHNICAL_SCREEN_ONLY_UNVERIFIED",
         "episode_id":episode_id,
