@@ -233,6 +233,86 @@ class StagingLocalLeaseTests(unittest.TestCase):
         self.assertFalse(final["multi_worker_d1_or_cloud_deployed"])
         self.assertEqual(final["monthly_infrastructure_inr"],0)
 
+    def _parallel_stages(self):
+        parent=output(RESEARCH,OWNER)
+        t1=self.staging.claim(RESEARCH,actor=OWNER,now=BASE)
+        self.staging.complete(parent,actor=OWNER,generation=t1,
+                              now=BASE+timedelta(seconds=1))
+        actor="quality.fact_reviewer"
+        t2=self.staging.claim(FACT,actor=actor,
+                              now=BASE+timedelta(seconds=2))
+        review=replace(output(FACT,actor),
+                       evidence_refs=("sha256:"+parent.sha256_hex,))
+        self.staging.complete(review,actor=actor,generation=t2,
+                              now=BASE+timedelta(seconds=3))
+        return f"{EP}:script",f"{EP}:hooks"
+
+    def test_failed_parallel_agent_quarantines_and_fences_active_sibling(self):
+        script,hooks=self._parallel_stages()
+        script_owner="creative.shorts_writer"
+        hook_owner="creative.hook_writer"
+        hook_generation=self.staging.claim(
+            hooks,actor=hook_owner,now=BASE+timedelta(seconds=4))
+        for attempt in range(3):
+            moment=BASE+timedelta(seconds=5+2*attempt)
+            script_generation=self.staging.claim(
+                script,actor=script_owner,now=moment)
+            self.staging.fail(
+                script,actor=script_owner,generation=script_generation,
+                category="STAGING_FAILURE",now=moment+timedelta(seconds=1))
+        state=self.staging.report()
+        self.assertEqual(state["quarantined_count"],1)
+        self.assertEqual(state["cancelled_peer_count"],1)
+        self.assertEqual(state["running_count"],0)
+        self.assertEqual(state["ready_tasks"],[])
+        self.assertTrue(state["episode_aborted"])
+        with self.assertRaises(WorkflowError):
+            self.staging.heartbeat(
+                hooks,actor=hook_owner,generation=hook_generation,
+                now=BASE+timedelta(seconds=12))
+        with self.assertRaises(WorkflowError):
+            self.staging.complete(
+                Handoff(hooks,"creative.hooks",
+                        sha256(hooks.encode()).hexdigest(),
+                        ("sha256:"+sha256(hooks.encode()).hexdigest(),),
+                        hook_owner,BASE.isoformat()),
+                actor=hook_owner,generation=hook_generation,
+                now=BASE+timedelta(seconds=13),
+            )
+        reopened=SQLiteStagingClaims(
+            self.path,episode_id=EP,kind="short",language="hi",
+        )
+        self.assertEqual(reopened.report(),state)
+        self.assertEqual(reopened.abort_quarantined_siblings(),())
+
+    def test_one_expired_parallel_stage_quarantines_other_inflight_work(self):
+        script,hooks=self._parallel_stages()
+        actor="creative.shorts_writer"
+        # Use two prior ordinary failures to consume retry allowance.
+        for offset in (4,6):
+            generation=self.staging.claim(
+                script,actor=actor,now=BASE+timedelta(seconds=offset))
+            self.staging.fail(
+                script,actor=actor,generation=generation,
+                category="RENDER_FAILED",now=BASE+timedelta(seconds=offset+1))
+        self.staging.claim(
+            hooks,actor="creative.hook_writer",
+            now=BASE+timedelta(seconds=8),lease_seconds=100)
+        self.staging.claim(
+            script,actor=actor,now=BASE+timedelta(seconds=8),
+            lease_seconds=10)
+        expired=self.staging.recover_expired(
+            now=BASE+timedelta(seconds=18))
+        self.assertEqual(expired,(script,))
+        state=self.staging.report()
+        self.assertEqual(state["quarantined_count"],1)
+        self.assertEqual(state["cancelled_peer_count"],1)
+        self.assertEqual(state["running_count"],0)
+        self.assertEqual(state["ready_tasks"],[])
+        self.assertFalse(state["publishing_authorized"]
+                         if "publishing_authorized" in state
+                         else state["youtube_publishing_authorized"])
+
     def test_lease_expiry_charges_retry_and_stale_generation_refused(self):
         token=self.staging.claim(RESEARCH,actor=OWNER,now=BASE,lease_seconds=10)
         self.assertEqual(self.staging.recover_expired(

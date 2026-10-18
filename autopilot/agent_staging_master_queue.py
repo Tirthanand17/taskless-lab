@@ -170,7 +170,9 @@ class SQLiteStagingMasterQueue:
 
     @staticmethod
     def _terminal(report:dict)->str|None:
-        if report["quarantined_count"]>0:
+        if (report["quarantined_count"]>0
+                and report["running_count"]==0
+                and not report["ready_tasks"]):
             return "quarantined"
         if (report["tasks"]==18 and report["completed_count"]==18
                 and report["running_count"]==0
@@ -192,7 +194,12 @@ class SQLiteStagingMasterQueue:
             for ep in self.episodes:
                 if states[ep.episode_id]!="active":
                     continue
-                report=self._child(ep).report()
+                child=self._child(ep)
+                # A hard stage quarantine aborts any simultaneously
+                # running/ready independent sibling stage before the master
+                # releases this episode's active slot.
+                child.abort_quarantined_siblings()
+                report=child.report()
                 terminal=self._terminal(report)
                 if terminal:
                     conn.execute(

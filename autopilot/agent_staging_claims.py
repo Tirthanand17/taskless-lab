@@ -140,7 +140,7 @@ class SQLiteStagingClaims:
         for tid, owner, status, failures, generation, expires, artifact in rows:
             contract = self.contracts.get(tid)
             if (contract is None or owner != contract.owner
-                    or status not in ("blocked","ready","running","complete","quarantined")
+                    or status not in ("blocked","ready","running","complete","quarantined","cancelled")
                     or type(failures) is not int or failures < 0
                     or failures > contract.max_retries+1
                     or type(generation) is not int or generation < 0
@@ -207,6 +207,38 @@ class SQLiteStagingClaims:
                 raise WorkflowError("Staging dependency readiness invariant violated")
         return found
 
+    def _abort_quarantined_siblings(self,conn:sqlite3.Connection)->tuple[str,...]:
+        """Atomically revoke still-running/ready peers after any hard failure.
+
+        A sibling with no own failures is CANCELLED (not misreported as a
+        three-failure quarantine). Completing it with an old generation is
+        fenced out. Previously completed parent evidence stays unchanged.
+        """
+        states=self._inspect(conn)
+        if not any(info[0]=="quarantined" for info in states.values()):
+            return ()
+        aborted=[]
+        for tid,(status,*_rest) in states.items():
+            if status in ("ready","running"):
+                conn.execute(
+                    "UPDATE stage_tasks SET status='cancelled',"
+                    "generation=generation+1,expires=0 WHERE task_id=?",
+                    (tid,),
+                )
+                aborted.append(tid)
+        self._inspect(conn)
+        return tuple(sorted(aborted))
+
+    def abort_quarantined_siblings(self)->tuple[str,...]:
+        """Idempotent local recovery after interrupted abort propagation."""
+        with self._tx() as conn:
+            return self._abort_quarantined_siblings(conn)
+
+    @staticmethod
+    def _require_no_quarantine(states:dict)->None:
+        if any(data[0]=="quarantined" for data in states.values()):
+            raise WorkflowError("Episode already quarantined; refuse staging work")
+
     def _clock(self, conn: sqlite3.Connection, now: datetime) -> int:
         sec = _utc_seconds(now)
         last = conn.execute("SELECT last_now FROM stage_policy WHERE id=1").fetchone()
@@ -233,6 +265,7 @@ class SQLiteStagingClaims:
             raise WorkflowError("Staging task/owner mismatch")
         with self._tx() as conn:
             states=self._inspect(conn)
+            self._require_no_quarantine(states)
             sec=self._clock(conn,now)
             if states[task_id][0]!="ready":
                 raise WorkflowError("Staging task not ready for a new worker claim")
@@ -247,6 +280,7 @@ class SQLiteStagingClaims:
         duration=_lease(lease_seconds)
         with self._tx() as conn:
             state=self._inspect(conn)
+            self._require_no_quarantine(state)
             sec=self._clock(conn,now)
             self._fence(task_id,actor,generation,sec,state)
             conn.execute("UPDATE stage_tasks SET expires=? WHERE task_id=?",
@@ -276,6 +310,7 @@ class SQLiteStagingClaims:
         digest=sha256(payload.encode("utf-8")).hexdigest()
         with self._tx() as conn:
             states=self._inspect(conn)
+            self._require_no_quarantine(states)
             sec=self._clock(conn,now)
             self._fence(handoff.task_id,actor,generation,sec,states)
             if not all(
@@ -298,6 +333,7 @@ class SQLiteStagingClaims:
             raise WorkflowError("Only bounded staging failure categories permitted")
         with self._tx() as conn:
             states=self._inspect(conn)
+            self._require_no_quarantine(states)
             sec=self._clock(conn,now)
             self._fence(task_id,actor,generation,sec,states)
             failures=states[task_id][1]+1
@@ -306,6 +342,8 @@ class SQLiteStagingClaims:
             conn.execute("UPDATE stage_tasks SET status=?,failures=?,"
                          "expires=0,generation=generation+1 WHERE task_id=?",
                          (status,failures,task_id))
+            if status=="quarantined":
+                self._abort_quarantined_siblings(conn)
 
     def recover_expired(self, *, now: datetime) -> tuple[str,...]:
         """Atomic expiry recovery, no model/user publishing side effects."""
@@ -322,6 +360,7 @@ class SQLiteStagingClaims:
                                  "expires=0,generation=generation+1 WHERE task_id=?",
                                  (outcome,failures,tid))
                     result.append(tid)
+            self._abort_quarantined_siblings(conn)
             self._inspect(conn)
             return tuple(sorted(result))
 
@@ -338,6 +377,8 @@ class SQLiteStagingClaims:
                     sum(x[0]=="complete" for x in states.values()),
                 "evidence_independently_authenticated":False,
                 "quarantined_count":sum(x[0]=="quarantined" for x in states.values()),
+                "cancelled_peer_count":sum(x[0]=="cancelled" for x in states.values()),
+                "episode_aborted":any(x[0]=="quarantined" for x in states.values()),
                 "worker_identities_authenticated":False,
                 "clock_independently_trusted":False,
                 "multi_worker_d1_or_cloud_deployed":False,
