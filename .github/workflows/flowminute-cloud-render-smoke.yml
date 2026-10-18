@@ -84,6 +84,29 @@ jobs:
             test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of csv=p=0 "$f" | wc -l)" = "0"
           done
           echo "HINDI_GLYPHS_PORTRAIT_LANDSCAPE_VIDEO_ONLY_PREVIEWS_PASS"
+      - name: Audio mux proof using SYNTHETIC tone only (NEVER release)
+        run: |
+          set -euo pipefail
+          ffmpeg -nostdin -v error -f lavfi -i "sine=frequency=220:sample_rate=16000" \
+            -t 3 -ac 1 -c:a pcm_s16le \
+            /tmp/flowminute-cloud-preview/THIS_IS_NOT_SPEECH.wav
+          python - <<'PY'
+          from pathlib import Path
+          from autopilot.phase3_quarantined_audio_mux import mux_visual_with_external_wav
+          base=Path("/tmp/flowminute-cloud-preview")
+          result=mux_visual_with_external_wav(
+            episode_id="csv_tutorial_short_en",
+            video_path=base/"csv-visual-only.mp4",
+            wav_path=base/"THIS_IS_NOT_SPEECH.wav",
+            output_path=base/"SYNTHETIC_TONE_QA_ONLY.mp4",
+          )
+          assert result["audio_codec"] == "aac"
+          assert not result["actual_natural_speech_verified"]
+          assert not result["audio_caption_alignment_verified"]
+          assert not result["voice_rights_verified"]
+          assert not result["publishing_authorized"]
+          print("REAL_AAC_MUX_WITH_FAKE_TONE_ONLY__PUBLICATION_BLOCKED")
+          PY
       - name: Discard video output; never store public/unreviewed drafts
         if: always()
         run: rm -rf /tmp/flowminute-cloud-preview
