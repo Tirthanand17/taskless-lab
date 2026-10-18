@@ -9,6 +9,8 @@ on:
       - "autopilot/test_agent_staging_claims.py"
       - "autopilot/agent_staging_master_queue.py"
       - "autopilot/test_agent_staging_master_queue.py"
+      - "autopilot/agent_staging_unified.py"
+      - "autopilot/test_agent_staging_unified.py"
       - ".github/workflows/flowminute-agent-foundation-ci.yml"
   pull_request:
     paths:
@@ -19,6 +21,8 @@ on:
       - "autopilot/test_agent_staging_claims.py"
       - "autopilot/agent_staging_master_queue.py"
       - "autopilot/test_agent_staging_master_queue.py"
+      - "autopilot/agent_staging_unified.py"
+      - "autopilot/test_agent_staging_unified.py"
       - ".github/workflows/flowminute-agent-foundation-ci.yml"
   workflow_dispatch:
 permissions:
@@ -44,8 +48,8 @@ jobs:
           python-version: "3.11"
       - name: Compile and execute no-network orchestration unit tests
         run: |
-          python -m py_compile autopilot/agent_org.py autopilot/agent_org_demo.py autopilot/test_agent_org.py autopilot/agent_staging_claims.py autopilot/test_agent_staging_claims.py autopilot/agent_staging_master_queue.py autopilot/test_agent_staging_master_queue.py
-          python -m unittest autopilot.test_agent_org autopilot.test_agent_staging_claims autopilot.test_agent_staging_master_queue -v
+          python -m py_compile autopilot/agent_org.py autopilot/agent_org_demo.py autopilot/test_agent_org.py autopilot/agent_staging_claims.py autopilot/test_agent_staging_claims.py autopilot/agent_staging_master_queue.py autopilot/test_agent_staging_master_queue.py autopilot/agent_staging_unified.py autopilot/test_agent_staging_unified.py
+          python -m unittest autopilot.test_agent_org autopilot.test_agent_staging_claims autopilot.test_agent_staging_master_queue autopilot.test_agent_staging_unified -v
       - name: Demonstrate nine-video staging queue without uploads
         run: |
           python -m autopilot.agent_org_demo --count 9
