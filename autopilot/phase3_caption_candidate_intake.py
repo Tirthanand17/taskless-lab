@@ -69,7 +69,7 @@ def _load_plain_file(path: Path) -> tuple[str, str]:
         value = content.decode("utf-8", errors="strict")
     except UnicodeError as exc:
         raise WorkflowError("SRT must be valid UTF-8") from exc
-    if ("\r" in value or BLOCKED.search(value) or "<" in value or ">" in value
+    if ("\r" in value or BLOCKED.search(value) or "<" in value
             or "\t" in value):
         raise WorkflowError("Potentially unsafe subtitle control or markup")
     return value, sha256(content).hexdigest()
@@ -94,7 +94,7 @@ def _parse_srt(raw: str) -> list[tuple[int, int, str]]:
         phrase = lines[2]
         if not 250 <= end - begin <= MAX_CUE_DURATION_MS:
             raise WorkflowError("Unreadable or out-of-bounds cue duration")
-        if not phrase or not phrase.strip() == phrase or len(phrase) > MAX_CUE_CHARS:
+        if not phrase or not phrase.strip() == phrase or len(phrase) > MAX_CUE_CHARS or ">" in phrase:
             raise WorkflowError("Invalid or overlong subtitle line")
         if index == 1 and begin > MAX_FIRST_CUE_DELAY_MS:
             raise WorkflowError("Excessive subtitle introduction delay")
