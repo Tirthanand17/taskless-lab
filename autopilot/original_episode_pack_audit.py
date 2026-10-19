@@ -200,7 +200,7 @@ def audit_original_editorial_pack(*,source_json:str|None=None)->dict:
                     or type(chapter["source_ids"]) is not list
                     or len(chapter["source_ids"])>3
                     or len(chapter["source_ids"])!=len(set(
-                        str(x) for x in chapter["source_ids"])):
+                        str(x) for x in chapter["source_ids"]))):
                 _deny()
             if any(type(s) is not str or s not in SOURCES
                    for s in chapter["source_ids"]):
