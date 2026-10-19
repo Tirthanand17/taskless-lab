@@ -17,6 +17,8 @@ on:
       - "autopilot/test_agent_staging_key_policy.py"
       - "autopilot/agent_staging_admin_gateway.py"
       - "autopilot/test_agent_staging_admin_gateway.py"
+      - "autopilot/agent_staging_command_boundary.py"
+      - "autopilot/test_agent_staging_command_boundary.py"
       - ".github/workflows/flowminute-agent-foundation-ci.yml"
   pull_request:
     paths:
@@ -35,6 +37,8 @@ on:
       - "autopilot/test_agent_staging_key_policy.py"
       - "autopilot/agent_staging_admin_gateway.py"
       - "autopilot/test_agent_staging_admin_gateway.py"
+      - "autopilot/agent_staging_command_boundary.py"
+      - "autopilot/test_agent_staging_command_boundary.py"
       - ".github/workflows/flowminute-agent-foundation-ci.yml"
   workflow_dispatch:
 permissions:
@@ -60,8 +64,8 @@ jobs:
           python-version: "3.11"
       - name: Compile and execute no-network orchestration unit tests
         run: |
-          python -m py_compile autopilot/agent_org.py autopilot/agent_org_demo.py autopilot/test_agent_org.py autopilot/agent_staging_claims.py autopilot/test_agent_staging_claims.py autopilot/agent_staging_master_queue.py autopilot/test_agent_staging_master_queue.py autopilot/agent_staging_unified.py autopilot/test_agent_staging_unified.py autopilot/agent_staging_auth_gateway.py autopilot/test_agent_staging_auth_gateway.py autopilot/agent_staging_key_policy.py autopilot/test_agent_staging_key_policy.py autopilot/agent_staging_admin_gateway.py autopilot/test_agent_staging_admin_gateway.py
-          python -m unittest autopilot.test_agent_org autopilot.test_agent_staging_claims autopilot.test_agent_staging_master_queue autopilot.test_agent_staging_unified autopilot.test_agent_staging_auth_gateway autopilot.test_agent_staging_key_policy autopilot.test_agent_staging_admin_gateway -v
+          python -m py_compile autopilot/agent_org.py autopilot/agent_org_demo.py autopilot/test_agent_org.py autopilot/agent_staging_claims.py autopilot/test_agent_staging_claims.py autopilot/agent_staging_master_queue.py autopilot/test_agent_staging_master_queue.py autopilot/agent_staging_unified.py autopilot/test_agent_staging_unified.py autopilot/agent_staging_auth_gateway.py autopilot/test_agent_staging_auth_gateway.py autopilot/agent_staging_key_policy.py autopilot/test_agent_staging_key_policy.py autopilot/agent_staging_admin_gateway.py autopilot/test_agent_staging_admin_gateway.py autopilot/agent_staging_command_boundary.py autopilot/test_agent_staging_command_boundary.py
+          python -m unittest autopilot.test_agent_org autopilot.test_agent_staging_claims autopilot.test_agent_staging_master_queue autopilot.test_agent_staging_unified autopilot.test_agent_staging_auth_gateway autopilot.test_agent_staging_key_policy autopilot.test_agent_staging_admin_gateway autopilot.test_agent_staging_command_boundary -v
       - name: Demonstrate nine-video staging queue without uploads
         run: |
           python -m autopilot.agent_org_demo --count 9
