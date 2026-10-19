@@ -134,6 +134,38 @@ class FourPromptBundleIntegrationTests(unittest.TestCase):
         self.assertNotIn("videos.insert",raw)
         self.assertEqual(obj["monthly_recurring_budget_inr"],0)
 
+    def test_real_cli_prints_draft_manifest_and_obeys_pause(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+        from autopilot.four_prompt_autopilot_bridge import main
+        standard=StringIO()
+        with redirect_stdout(standard):
+            self.assertEqual(main(["--day","2026-10-20"]),0)
+        data=json.loads(standard.getvalue())
+        self.assertEqual(data["calendar_draft_slots"],3)
+        self.assertFalse(data["real_upload_scheduling_or_publication_performed"])
+
+        paused=StringIO()
+        with redirect_stdout(paused):
+            self.assertEqual(main([
+                "--day","2026-10-20",
+                "--today","2026-10-19",
+                "--calendar-command","Pause all videos tomorrow",
+            ]),0)
+        halted=json.loads(paused.getvalue())
+        self.assertEqual(halted["calendar_draft_slots"],0)
+        self.assertEqual(halted["specialist_task_contracts"],0)
+
+    def test_real_cli_invalid_instruction_exits_without_fake_success(self):
+        from contextlib import redirect_stderr
+        from io import StringIO
+        from autopilot.four_prompt_autopilot_bridge import main
+        with redirect_stderr(StringIO()):
+            with self.assertRaises(SystemExit):
+                main(["--day","2026-10-20",
+                      "--today","2026-10-19",
+                      "--calendar-command","Publish everything immediately"])
+
     def test_reject_datetime_and_malformed_user_provided_metadata(self):
         from datetime import datetime
         for wrong in (None,datetime(2026,10,20,8,30),"2026-10-20",True):
