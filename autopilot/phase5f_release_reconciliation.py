@@ -21,7 +21,7 @@ STATES = frozenset((
     "UPLOAD_STARTED","REMOTE_PRIVATE_VERIFIED","SCHEDULED_VERIFIED",
     "PUBLIC_VERIFIED","RENDERING",
 ))
-EXTERNAL_STATES = frozenset(("SCHEDULED_VERIFIED","PUBLIC_VERIFIED","RENDERING","PLANNED","UPLOAD_STARTED"))
+EXTERNAL_STATES = frozenset(("SCHEDULED_VERIFIED","PUBLIC_VERIFIED","REMOTE_PRIVATE_VERIFIED","RENDERING","PLANNED","UPLOAD_STARTED"))
 OBS_STATES = frozenset(("SCHEDULED_OBSERVED","PUBLIC_OBSERVED","UNKNOWN","PRIVATE_OBSERVED"))
 RESULT_SOURCE = "OFFLINE_UNATTESTED_SANITIZED_INPUT"
 
@@ -112,7 +112,7 @@ def reconcile(snapshot:Mapping[str,Any])->dict:
         if not isinstance(ep,str) or not EPISODE.fullmatch(ep) or ep in known:
             raise ReconciliationBlocked("INVALID_OR_DUPLICATE_EPISODE")
         slot=r["slot_ist"]
-        if slot not in SLOTS or not isinstance(r["state"],str) or r["state"] not in STATES:
+        if not isinstance(slot,str) or slot not in SLOTS or not isinstance(r["state"],str) or r["state"] not in STATES:
             raise ReconciliationBlocked("BAD_D1_STATE_OR_SLOT")
         _video(r["youtube_id"])
         _utc(r["publish_at_utc"])
@@ -125,7 +125,8 @@ def reconcile(snapshot:Mapping[str,Any])->dict:
     for r in obs:
         _shape(r,{"release_date","slot_ist","status","api_rechecked","has_schedule"}, "BAD_OBSERVATION")
         _day(r["release_date"])
-        if r["slot_ist"] not in SLOTS or r["status"] not in OBS_STATES or \
+        if not isinstance(r["slot_ist"],str) or r["slot_ist"] not in SLOTS or \
+            not isinstance(r["status"],str) or r["status"] not in OBS_STATES or \
             type(r["api_rechecked"]) is not bool or type(r["has_schedule"]) is not bool:
             raise ReconciliationBlocked("BAD_OBSERVATION_VALUE")
         observed.append(r)
@@ -135,9 +136,9 @@ def reconcile(snapshot:Mapping[str,Any])->dict:
         _shape(r,{"slot","episode_id","youtube_id","status","publish_at_utc"}, "BAD_EXTERNAL_LANE")
         slot=r["slot"]
         ep=r["episode_id"]
-        if slot not in SLOTS or slot in planned or \
+        if not isinstance(slot,str) or slot not in SLOTS or slot in planned or \
           not isinstance(ep,str) or not EPISODE.fullmatch(ep) or \
-          r["status"] not in EXTERNAL_STATES:
+          not isinstance(r["status"],str) or r["status"] not in EXTERNAL_STATES:
             raise ReconciliationBlocked("BAD_OR_DUPLICATE_EXTERNAL_LANE")
         _video(r["youtube_id"])
         expected=_expect(day,slot)
@@ -147,6 +148,8 @@ def reconcile(snapshot:Mapping[str,Any])->dict:
         if r["status"] in ("SCHEDULED_VERIFIED","PUBLIC_VERIFIED") and \
            (r["youtube_id"] is None or at is None):
             raise ReconciliationBlocked("ASSERTED_RELEASE_WITHOUT_ID_AND_TIME")
+        if r["status"]=="REMOTE_PRIVATE_VERIFIED" and (r["youtube_id"] is None or at is not None):
+            raise ReconciliationBlocked("PRIVATE_VIDEO_WITHOUT_SAFE_UNSCHEDULED_RECEIPT")
         if r["youtube_id"] is not None:
             if r["youtube_id"] in external_ids:
                 raise ReconciliationBlocked("DUPLICATE_EXTERNAL_VIDEO_ID")
@@ -160,6 +163,7 @@ def reconcile(snapshot:Mapping[str,Any])->dict:
     missing_remote_records=0
     wrong_remote_ids=0
     stuck_uploads=0
+    unscheduled_private=0
     disagreements=0
     lanes=[]
     for slot in SLOTS:
@@ -168,6 +172,9 @@ def reconcile(snapshot:Mapping[str,Any])->dict:
             else "NO_EXTERNAL_VIDEO_ID"
         db=known.get(expected["episode_id"])
         reason=[]
+        if expected["status"]=="REMOTE_PRIVATE_VERIFIED":
+            unscheduled_private+=1
+            reason.append("PRIVATE_VIDEO_SCHEDULE_NOT_VERIFIED")
         if db is None:
             missing_rows+=1
             reason.append("MISSING_CANONICAL_D1_ROW")
@@ -195,6 +202,7 @@ def reconcile(snapshot:Mapping[str,Any])->dict:
     if slot_collisions:risks.append("DUPLICATE_D1_SLOTS")
     if wrong_remote_ids:risks.append("REMOTE_ID_RECONCILIATION_NEEDED")
     if stuck_uploads:risks.append("UNCERTAIN_UPLOAD_NO_RETRY")
+    if unscheduled_private:risks.append("PRIVATE_UPLOAD_SCHEDULE_UNCONFIRMED")
     if disagreements:risks.append("RELEASE_KEY_OR_TIME_CONFLICT")
     if events_count and not row_count:risks.append("EVENTS_WITHOUT_RELEASES_REVIEW")
     if rechecked_today==0:risks.append("NO_SAME_DAY_AUTHENTICATED_RECHECK_TIMESTAMP")
@@ -213,12 +221,14 @@ def reconcile(snapshot:Mapping[str,Any])->dict:
         "d1_duplicate_slot_surplus":slot_collisions,
         "remote_id_disagreement_count":wrong_remote_ids,
         "uncertain_upload_count":stuck_uploads,
+        "private_video_schedule_unconfirmed_count":unscheduled_private,
         "risk_codes":risks,
         "lanes":lanes,
         "real_owner_api_readback_performed":False,
         "real_cloudflare_query_performed_by_this_module":False,
         "automatic_backfill_authorized":False,
         "automatic_upload_retry_authorized":False,
+        "automatic_schedule_retry_authorized":False,
         "canonical_ledger_write_authorized":False,
         "migration_sql_generated":[],
         "youtube_uploads_attempted":0,

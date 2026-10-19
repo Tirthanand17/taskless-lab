@@ -24,7 +24,7 @@ def input_packet():
              "youtube_id":"AbCdEfGhIj0","status":"SCHEDULED_VERIFIED",
              "publish_at_utc":"2026-10-20T05:30:00Z"},
             {"slot":"long","episode_id":"fm_20261020_long_hi",
-             "youtube_id":None,"status":"RENDERING","publish_at_utc":None},
+             "youtube_id":"MnOpQrStUv2","status":"REMOTE_PRIVATE_VERIFIED","publish_at_utc":None},
             {"slot":"short_evening","episode_id":"fm_20261020_short_hi",
              "youtube_id":"KlMnOpQrSt1","status":"SCHEDULED_VERIFIED",
              "publish_at_utc":"2026-10-20T15:00:00Z"},
@@ -48,11 +48,14 @@ class Phase5FReconciliationTests(unittest.TestCase):
         self.assertEqual(result["prior_day_observations"],3)
         self.assertEqual(result["current_day_recheck_timestamps"],0)
         self.assertEqual(result["missing_d1_episode_count"],3)
-        self.assertEqual(result["external_video_ids_without_canonical_row"],2)
+        self.assertEqual(result["external_video_ids_without_canonical_row"],3)
+        self.assertEqual(result["private_video_schedule_unconfirmed_count"],1)
+        self.assertIn("PRIVATE_UPLOAD_SCHEDULE_UNCONFIRMED",result["risk_codes"])
+        self.assertFalse(result["automatic_schedule_retry_authorized"])
         self.assertFalse(result["automatic_backfill_authorized"])
         self.assertFalse(result["automatic_upload_retry_authorized"])
         self.assertFalse(result["cloud_autopilot_ready"])
-        for v in ("AbCdEfGhIj0","KlMnOpQrSt1","fm_20261020_short_en"):
+        for v in ("AbCdEfGhIj0","KlMnOpQrSt1","MnOpQrStUv2","fm_20261020_short_en"):
             self.assertNotIn(v,json.dumps(result))
 
     def test_consistent_three_d1_records_still_not_certified(self):
@@ -60,7 +63,7 @@ class Phase5FReconciliationTests(unittest.TestCase):
         rows=[
             row("fm_20261020_short_en","short_morning","AbCdEfGhIj0",
                 "SCHEDULED_VERIFIED","2026-10-20T05:30:00Z"),
-            row("fm_20261020_long_hi","long"),
+            row("fm_20261020_long_hi","long","MnOpQrStUv2","REMOTE_PRIVATE_VERIFIED"),
             row("fm_20261020_short_hi","short_evening","KlMnOpQrSt1",
                 "SCHEDULED_VERIFIED","2026-10-20T15:00:00Z"),
         ]
@@ -196,10 +199,12 @@ class Phase5FReconciliationTests(unittest.TestCase):
     def test_quiet_snapshot_with_live_recheck_still_no_automation(self):
         p=input_packet()
         p["d1"]["observations"][0].update(release_date="2026-10-20",api_rechecked=True)
+        p["external"][1].update(status="SCHEDULED_VERIFIED",publish_at_utc="2026-10-20T10:30:00Z")
         p["d1"].update(row_count=3,rows=[
             row("fm_20261020_short_en","short_morning","AbCdEfGhIj0",
                 "SCHEDULED_VERIFIED","2026-10-20T05:30:00Z"),
-            row("fm_20261020_long_hi","long"),
+            row("fm_20261020_long_hi","long","MnOpQrStUv2",
+                "SCHEDULED_VERIFIED","2026-10-20T10:30:00Z"),
             row("fm_20261020_short_hi","short_evening","KlMnOpQrSt1",
                 "SCHEDULED_VERIFIED","2026-10-20T15:00:00Z")
         ])
@@ -207,6 +212,19 @@ class Phase5FReconciliationTests(unittest.TestCase):
         self.assertEqual(r["status"],"CONSISTENT_UNATTESTED_NO_WRITE")
         self.assertFalse(r["automatic_backfill_authorized"])
         self.assertFalse(r["cloud_autopilot_ready"])
+
+    def test_private_long_must_have_immutable_id_and_no_unverified_schedule(self):
+        for change in ({"youtube_id":None},{"publish_at_utc":"2026-10-20T10:30:00Z"}):
+            p=input_packet()
+            p["external"][1].update(change)
+            with self.assertRaisesRegex(ReconciliationBlocked,"PRIVATE_VIDEO_WITHOUT_SAFE"):
+                reconcile(p)
+
+    def test_malformed_unhashable_slot_is_safe_rejection(self):
+        p=input_packet()
+        p["external"][1]["slot"]=["long"]
+        with self.assertRaises(ReconciliationBlocked):
+            reconcile(p)
 
 if __name__=="__main__":
     unittest.main()
