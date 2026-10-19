@@ -37,7 +37,7 @@ class KineticBilingualStoryboardTests(unittest.TestCase):
                 hindi=CHROME["hi"][label]
                 english=CHROME["en"][label]
                 self.assertNotEqual(hindi,english)
-                self.assertTrue(any("\\u0900"<=ch<="\\u097f" for ch in hindi))
+                self.assertTrue(any("\u0900"<=ch<="\u097f" for ch in hindi))
         self.assertIn("अनुमति",CHROME["hi"]["approval"])
         self.assertIn("अपलोड",CHROME["hi"]["footer"])
 
