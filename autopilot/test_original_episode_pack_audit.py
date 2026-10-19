@@ -192,6 +192,36 @@ class OriginalBilingualProductionPackTests(unittest.TestCase):
             audit(model)
         self.assertNotIn("LEAK_ME_NEVER",str(error.exception))
 
+    def test_oct20_planned_slots_match_existing_daily_config_but_no_booking(self):
+        from pathlib import Path
+        base=PACK.parents[2]
+        plan=json.loads((base/"state/planned/oct20-pack.json").read_text("utf-8"))
+        cadence=json.loads((base/"config/daily-publishing-v1.json").read_text("utf-8"))
+        episodes={e["episode_id"]:e for e in load()["episodes"]}
+        slots=plan["planned_slots_not_bookings"]
+        self.assertEqual(plan["date_local"],"2026-10-20")
+        self.assertEqual(plan["timezone"],"Asia/Kolkata")
+        self.assertEqual(len(slots),3)
+        self.assertEqual(
+            [s["local_target"][11:16] for s in slots],
+            [s["publish_local"] for s in cadence["cadence"]["slots"]],
+        )
+        self.assertEqual({s["episode_id"] for s in slots},set(episodes))
+        self.assertEqual(len({s["narrator_id"] for s in slots}),3)
+        for slot in slots:
+            current=episodes[slot["episode_id"]]
+            self.assertEqual(slot["language"],current["original_spoken_language"])
+            self.assertEqual(slot["format"],current["kind"])
+            self.assertEqual(slot["duration_seconds"],current["target_duration_seconds"])
+            self.assertEqual(slot["narrator_id"],current["narrator_plan_id"])
+        for key in ("youtube_schedule_created","publication_confirmed",
+                    "external_provider_connected"):
+            self.assertIs(plan[key],False)
+        self.assertEqual(plan["real_youtube_uploads"],0)
+        self.assertEqual(plan["actual_hd_video_files"],0)
+        self.assertEqual(plan["verified_human_voice_assets"],0)
+        self.assertEqual(plan["monthly_recurring_infrastructure_inr"],0)
+
     def test_candidate_footage_must_be_original_not_reuploaded(self):
         model=load()
         self.assertIn("original",model["visualization_direction"]["rights"].lower())
