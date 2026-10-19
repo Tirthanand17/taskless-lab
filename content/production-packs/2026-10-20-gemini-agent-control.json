@@ -80,7 +80,7 @@
           "start_second": 4,
           "end_second": 10,
           "narration": "Imagine a grocery list with messy options and changing prices.",
-          "visual_guide": "Original fictional whiteboard of milk, rice and vegetables. Price fields are blank, never fake current retailer quotes.",
+          "visual_guide": "Original fictional whiteboard of milk, rice and vegetables. Price fields are blank, never fake current retailer quotes. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         },
@@ -98,7 +98,7 @@
           "start_second": 16,
           "end_second": 22,
           "narration": "The trap is letting it buy before you check the total and delivery address.",
-          "visual_guide": "Illustrated BUY button locked behind a human finger and approval toggle; no real checkout.",
+          "visual_guide": "Illustrated BUY button locked behind a human finger and approval toggle; no real checkout. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         },
@@ -106,7 +106,7 @@
           "start_second": 22,
           "end_second": 29,
           "narration": "My rule: plan first, review sources, preview the action, then approve.",
-          "visual_guide": "Four original icons animate one by one: PLAN, SOURCES, PREVIEW, APPROVAL.",
+          "visual_guide": "Four original icons animate one by one: PLAN, SOURCES, PREVIEW, APPROVAL. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         },
@@ -124,7 +124,7 @@
           "start_second": 36,
           "end_second": 42,
           "narration": "Save this: good automation keeps the final decision with you.",
-          "visual_guide": "Return to original split graphic, freeze-frame on HUMAN APPROVAL; original ending.",
+          "visual_guide": "Return to original split graphic, freeze-frame on HUMAN APPROVAL; original ending. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         }
@@ -162,7 +162,7 @@
           "start_second": 11,
           "end_second": 17,
           "narration": "Agent लिस्ट बनाकर चीज़ों की तुलना करने में मदद कर सकता है।",
-          "visual_guide": "Original 3D LIST → COMPARE steps. Do not show a fake real store screenshot.",
+          "visual_guide": "Original 3D LIST → COMPARE steps. Do not show a fake real store screenshot. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [
             "google_argon_app"
           ],
@@ -172,7 +172,7 @@
           "start_second": 17,
           "end_second": 24,
           "narration": "लेकिन कीमत, पता और पेमेंट आप चेक किए बिना ऑर्डर नहीं करवाइए।",
-          "visual_guide": "Realistic-but-original illustrated approval sheet; empty address and payment placeholders.",
+          "visual_guide": "Realistic-but-original illustrated approval sheet; empty address and payment placeholders. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         },
@@ -180,7 +180,7 @@
           "start_second": 24,
           "end_second": 31,
           "narration": "चार कदम रखिए: प्लान, सही जानकारी, प्रीव्यू और आपका अप्रूवल।",
-          "visual_guide": "Four 3D cards with Devanagari labels; distinct pacing, not the English Short's exact edit.",
+          "visual_guide": "Four 3D cards with Devanagari labels; distinct pacing, not the English Short's exact edit. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         },
@@ -198,7 +198,7 @@
           "start_second": 38,
           "end_second": 44,
           "narration": "याद रखिए: AI काम करे, लेकिन आख़िरी फैसला आपका रहे।",
-          "visual_guide": "Freeze on hand-controlled approval switch and native Hindi CTA.",
+          "visual_guide": "Freeze on hand-controlled approval switch and native Hindi CTA. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         }
@@ -263,7 +263,7 @@
           "start_second": 225,
           "end_second": 270,
           "narration": "अब समझिए कि tool access क्या बदलता है। केवल text chat चल रहा हो, तो AI सामान्य सलाह दे सकता है। अगर कोई अनुमत connector और सही permissions हों, तो agent दूसरे चरणों में जानकारी ढूँढने या draft तैयार करने का प्रयास कर सकता है। लेकिन हमारा आज का वीडियो किसी असली connector को जोड़ नहीं रहा। आपकी अनुमति के बिना किसी खाते में साइन इन करने या निजी जानकारी पढ़ने की जरूरत नहीं है।",
-          "visual_guide": "3D permissions perimeter: NO CONNECTION → PREVIEW ONLY → EXPLICIT PERMISSION; screenshot never resembles an actual Google privacy dialog.",
+          "visual_guide": "3D permissions perimeter: NO CONNECTION → PREVIEW ONLY → EXPLICIT PERMISSION; screenshot never resembles an actual Google privacy dialog. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [
             "google_workspace_agent"
           ],
@@ -281,7 +281,7 @@
           "start_second": 315,
           "end_second": 362,
           "narration": "एक आसान नियम है: read, draft और act। Read का मतलब जानकारी देखना। Draft का मतलब आपके लिए सुझाव और मसौदा बनाना। Act का मतलब असली दुनिया में बदलाव करना, जैसे ऑर्डर देना या फाइल हटाना। हर स्तर की permission अलग सोचनी चाहिए। शुरुआत में agent को सिर्फ read और draft तक सीमित रखिए। उसके बाद ही ज़रूरत और जोखिम देखकर अगला कदम तय कीजिए।",
-          "visual_guide": "Three-layer original animated glass boxes READ / DRAFT / ACT; ACT separated by human key and bold APPROVAL REQUIRED.",
+          "visual_guide": "Three-layer original animated glass boxes READ / DRAFT / ACT; ACT separated by human key and bold APPROVAL REQUIRED. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         },
@@ -299,7 +299,7 @@
           "start_second": 410,
           "end_second": 453,
           "narration": "सारांश देखिए। पहले साफ लक्ष्य और बजट लिखिए। फिर sources के साथ draft माँगिए। हर कीमत, मात्रा और delivery detail खुद verify कीजिए। असली कार्रवाई से पहले explicit approval दीजिए। यही चार बातें साधारण AI जवाब को जिम्मेदार workflow में बदलती हैं। इस lesson की सबसे बड़ी सीख यह नहीं कि AI सब कुछ कर सकता है, बल्कि यह कि automation तभी उपयोगी है जब जिम्मेदारी और control स्पष्ट हों।",
-          "visual_guide": "Original final 4-step 3D lane diagram, comparisons of unsafe automatic checkout vs approved draft; cite Google official source card at end.",
+          "visual_guide": "Original final 4-step 3D lane diagram, comparisons of unsafe automatic checkout vs approved draft; cite Google official source card at end. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         },
@@ -307,7 +307,7 @@
           "start_second": 453,
           "end_second": 480,
           "narration": "अब आपका छोटा homework है: अपनी एक दोहराई जाने वाली task चुनिए। लिखिए कौन सा हिस्सा read है, कौन सा draft और कौन सा act। कमेंट में बताइए कि आप approval किस जगह लगाएँगे। अगर आप ऐसे व्यावहारिक AI examples हिंदी में चाहते हैं, तो FlowMinute Lab को follow कीजिए। अगली बार हम इसी workflow के लिए एक साफ checklist बनाएँगे।",
-          "visual_guide": "3D learning challenge card, phone-free CTA, bold REPEAT TASK → PERMISSION → APPROVAL; no fake schedule promise.",
+          "visual_guide": "3D learning challenge card, phone-free CTA, bold REPEAT TASK → PERMISSION → APPROVAL; no fake schedule promise. Clearly label the illustrative frame CONCEPT MOCKUP.",
           "source_ids": [],
           "original_research_demo": true
         }
