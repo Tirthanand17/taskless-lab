@@ -89,7 +89,8 @@ function assertInputs(operation, values) {
   }
   const nonce = values.nonce;
   const epoch = values.epoch;
-  if (typeof nonce !== "string" || !NONCE.test(nonce) ||
+  if (typeof nonce !== "string" || nonce.length < 32 || nonce.length > 64 ||
+      nonce.trim() !== nonce || !NONCE.test(nonce) ||
       !Number.isSafeInteger(epoch) || epoch < 0 || epoch > 999999998) return null;
   if (operation === "claim" || operation === "renew") {
     const ttl = values.ttlSeconds;
@@ -101,8 +102,12 @@ function assertInputs(operation, values) {
   }
   if (operation === "reserve") {
     if (epoch === 0 || !canonicalUtcDay(values.releaseDate) ||
-        typeof values.episodeId !== "string" || !EPISODE.test(values.episodeId) ||
-        typeof values.mediaSha256 !== "string" || !SHA256.test(values.mediaSha256) ||
+        typeof values.episodeId !== "string" ||
+        values.episodeId.trim() !== values.episodeId ||
+        !EPISODE.test(values.episodeId) ||
+        typeof values.mediaSha256 !== "string" ||
+        values.mediaSha256.length !== 64 ||
+        !SHA256.test(values.mediaSha256) ||
         Object.keys(values).sort().join(",") !==
           "episodeId,epoch,mediaSha256,nonce,releaseDate") return null;
     return [values.releaseDate,values.episodeId,values.mediaSha256,nonce,epoch];
@@ -136,7 +141,13 @@ export async function exerciseSyntheticD1PreparedCAS(db, operation, values) {
       typeof db.prepare !== "function") {
     return base(false, "REAL_D1_BINDING_OR_DISABLED_GATE_DENIED");
   }
-  const bindings = assertInputs(operation, values);
+  let bindings;
+  try {
+    bindings = assertInputs(operation, values);
+  } catch {
+    // Proxy/getter errors are untrusted caller input; never leak details.
+    return base(false, "INVALID_CAS_OPERATION_OR_BINDINGS");
+  }
   if (bindings === null || !Object.prototype.hasOwnProperty.call(D1_CAS_SQL,operation)) {
     return base(false, "INVALID_CAS_OPERATION_OR_BINDINGS");
   }
