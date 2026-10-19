@@ -30,6 +30,7 @@ from .cloud_acoustic_review_evidence import verify_signed_acoustic_sidecars
 
 MAX_REVIEW_EVENTS=4096
 GENESIS_SHA="0"*64
+COMMAND_NONCE=re.compile(r"[a-z0-9_]{16,64}\Z")
 SHA=re.compile(r"[0-9a-f]{64}\Z")
 SCHEMA=(
     "CREATE TABLE IF NOT EXISTS transcript_review_events("
@@ -51,6 +52,10 @@ SCHEMA=(
     "event_sha TEXT NOT NULL, role TEXT NOT NULL,"
     "reviewer_id TEXT NOT NULL, evidence_sha TEXT NOT NULL,"
     "PRIMARY KEY(event_sha,role),"
+    "FOREIGN KEY(event_sha) REFERENCES transcript_review_events(event_sha))",
+    "CREATE TABLE IF NOT EXISTS transcript_review_command_nonces("
+    "nonce TEXT PRIMARY KEY, event_sha TEXT NOT NULL UNIQUE,"
+    "expires_at_epoch INTEGER NOT NULL,"
     "FOREIGN KEY(event_sha) REFERENCES transcript_review_events(event_sha))",
 )
 
@@ -164,6 +169,22 @@ class OfflineTranscriptReviewLedger:
             if (len(entries)!=2 or {x[0] for x in entries}!=ROLES
                     or entries[0][1]==entries[1][1]):
                 raise WorkflowError("Incomplete or duplicate signed sidecar index")
+        nonce_rows=db.execute(
+            "SELECT nonce,event_sha,expires_at_epoch "
+            "FROM transcript_review_command_nonces"
+        ).fetchall()
+        if len(nonce_rows)>MAX_REVIEW_EVENTS:
+            raise WorkflowError("Transcript nonce audit over bound")
+        nonces_by_event={}
+        for nonce,event_id,expiry in nonce_rows:
+            if (not isinstance(nonce,str)
+                    or COMMAND_NONCE.fullmatch(nonce) is None
+                    or not isinstance(event_id,str)
+                    or SHA.fullmatch(event_id) is None
+                    or type(expiry) is not int or expiry<=0
+                    or event_id in nonces_by_event):
+                raise WorkflowError("Transcript nonce audit index corrupted")
+            nonces_by_event[event_id]=(nonce,expiry)
         last=GENESIS_SHA
         heads={}
         receipts={}
@@ -175,6 +196,12 @@ class OfflineTranscriptReviewLedger:
             evidence=by_event.get(row[1])
             if evidence:
                 detail["sidecar_evidence"]=tuple(sorted(evidence))
+            command=nonces_by_event.get(row[1])
+            if command is not None:
+                if not evidence:
+                    raise WorkflowError("Command nonce lacks signed evidence")
+                detail["signed_command_nonce"]=command[0]
+                detail["signed_command_expiry_epoch"]=command[1]
             visited_events.add(row[1])
             if (type(detail["seq"]) is not int or detail["seq"]!=pos
                     or row[2]!=last
@@ -207,6 +234,8 @@ class OfflineTranscriptReviewLedger:
             heads[detail["episode"]]=last
         if set(by_event)-visited_events:
             raise WorkflowError("Orphaned transcript review sidecar")
+        if set(nonces_by_event)-visited_events:
+            raise WorkflowError("Orphaned transcript review nonce")
         actual=db.execute(
             "SELECT episode,event_sha FROM transcript_review_heads"
         ).fetchall()
