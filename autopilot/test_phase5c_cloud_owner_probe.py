@@ -11,7 +11,7 @@ from autopilot.phase5c_cloud_owner_probe import inspect_owner_readonly
 
 NOW = datetime(2026, 10, 19, 13, 0, tzinfo=timezone.utc)
 DAY = "2026-10-20"
-IDS = {"short_morning": "DUd_Gb9yo_g", "long": "ABCDEFGHIJK", "short_evening": "zg8YD4_iVbI"}
+IDS = {"short_morning": "AbCdEfGhIj0", "long": "ABCDEFGHIJK", "short_evening": "KlMnOpQrSt1"}
 TIMES = {"short_morning": "2026-10-20T05:30:00Z",
          "long": "2026-10-20T10:30:00Z", "short_evening": "2026-10-20T15:00:00Z"}
 SECRET = "TEST-ONLY-TOKEN-NEVER-REPORT-123456789"

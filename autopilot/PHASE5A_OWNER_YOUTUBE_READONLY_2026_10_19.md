@@ -24,7 +24,7 @@ The process reads `FLOWMINUTE_YOUTUBE_ACCESS_TOKEN` **at execution time**. The m
 
 ## Relation to live October 20 release
 
-Prior authorized local YouTube publishing verified an **11:00 IST English Short** (video `DUd_Gb9yo_g`) and an **20:30 IST Hindi Short** (video `zg8YD4_iVbI`). The long episode was **still rendering** at the previous real-time check, so its video ID is unknown and **not** counted. These direct/manual release results do not turn this cloud-only candidate into a deployed autopilot.
+Prior authorized local YouTube publishing verified an **11:00 IST English Short** (video `[see private release ledger]`) and an **20:30 IST Hindi Short** (video `[see private release ledger]`). The long episode was **still rendering** at the previous real-time check, so its video ID is unknown and **not** counted. These direct/manual release results do not turn this cloud-only candidate into a deployed autopilot.
 
 ## Remaining blockers (unchanged)
 

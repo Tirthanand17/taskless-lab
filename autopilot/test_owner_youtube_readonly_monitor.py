@@ -9,7 +9,7 @@ from autopilot.owner_youtube_readonly_monitor import (
 
 DAY = "2026-10-20"
 TITLES = {"short_morning": "English Safe Agent", "long": "Hindi Grocery Tutor", "short_evening": "Hindi Safe Agent"}
-IDS = {"short_morning": "DUd_Gb9yo_g", "long": "abcdefghijk", "short_evening": "zg8YD4_iVbI"}
+IDS = {"short_morning": "AbCdEfGhIj0", "long": "abcdefghijk", "short_evening": "KlMnOpQrSt1"}
 AT = {"short_morning": "2026-10-20T05:30:00Z", "long": "2026-10-20T10:30:00Z", "short_evening": "2026-10-20T15:00:00Z"}
 
 

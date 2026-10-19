@@ -21,12 +21,12 @@ def input_packet():
         ]},
         "external":[
             {"slot":"short_morning","episode_id":"fm_20261020_short_en",
-             "youtube_id":"DUd_Gb9yo_g","status":"SCHEDULED_VERIFIED",
+             "youtube_id":"AbCdEfGhIj0","status":"SCHEDULED_VERIFIED",
              "publish_at_utc":"2026-10-20T05:30:00Z"},
             {"slot":"long","episode_id":"fm_20261020_long_hi",
              "youtube_id":None,"status":"RENDERING","publish_at_utc":None},
             {"slot":"short_evening","episode_id":"fm_20261020_short_hi",
-             "youtube_id":"zg8YD4_iVbI","status":"SCHEDULED_VERIFIED",
+             "youtube_id":"KlMnOpQrSt1","status":"SCHEDULED_VERIFIED",
              "publish_at_utc":"2026-10-20T15:00:00Z"},
         ],
     }
@@ -52,16 +52,16 @@ class Phase5FReconciliationTests(unittest.TestCase):
         self.assertFalse(result["automatic_backfill_authorized"])
         self.assertFalse(result["automatic_upload_retry_authorized"])
         self.assertFalse(result["cloud_autopilot_ready"])
-        for v in ("DUd_Gb9yo_g","zg8YD4_iVbI","fm_20261020_short_en"):
+        for v in ("AbCdEfGhIj0","KlMnOpQrSt1","fm_20261020_short_en"):
             self.assertNotIn(v,json.dumps(result))
 
     def test_consistent_three_d1_records_still_not_certified(self):
         p=input_packet()
         rows=[
-            row("fm_20261020_short_en","short_morning","DUd_Gb9yo_g",
+            row("fm_20261020_short_en","short_morning","AbCdEfGhIj0",
                 "SCHEDULED_VERIFIED","2026-10-20T05:30:00Z"),
             row("fm_20261020_long_hi","long"),
-            row("fm_20261020_short_hi","short_evening","zg8YD4_iVbI",
+            row("fm_20261020_short_hi","short_evening","KlMnOpQrSt1",
                 "SCHEDULED_VERIFIED","2026-10-20T15:00:00Z"),
         ]
         p["d1"].update(rows=rows,row_count=3)
@@ -177,7 +177,7 @@ class Phase5FReconciliationTests(unittest.TestCase):
     def test_d1_wrong_slot_time_detected_without_sql(self):
         p=input_packet()
         p["d1"].update(row_count=1,rows=[
-            row("fm_20261020_short_en","short_morning","DUd_Gb9yo_g",
+            row("fm_20261020_short_en","short_morning","AbCdEfGhIj0",
                 "SCHEDULED_VERIFIED","2026-10-20T06:00:00Z"),
         ])
         r=reconcile(p)
@@ -197,10 +197,10 @@ class Phase5FReconciliationTests(unittest.TestCase):
         p=input_packet()
         p["d1"]["observations"][0].update(release_date="2026-10-20",api_rechecked=True)
         p["d1"].update(row_count=3,rows=[
-            row("fm_20261020_short_en","short_morning","DUd_Gb9yo_g",
+            row("fm_20261020_short_en","short_morning","AbCdEfGhIj0",
                 "SCHEDULED_VERIFIED","2026-10-20T05:30:00Z"),
             row("fm_20261020_long_hi","long"),
-            row("fm_20261020_short_hi","short_evening","zg8YD4_iVbI",
+            row("fm_20261020_short_hi","short_evening","KlMnOpQrSt1",
                 "SCHEDULED_VERIFIED","2026-10-20T15:00:00Z")
         ])
         r=reconcile(p)
