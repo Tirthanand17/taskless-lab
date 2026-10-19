@@ -1,0 +1,317 @@
+{
+  "schema_version": "flowminute-original-editorial-pack-v1",
+  "date_local": "2026-10-20",
+  "timezone": "Asia/Kolkata",
+  "project": "FlowMinute Lab",
+  "status": "SCRIPT_AND_STORYBOARD_CANDIDATE_ONLY",
+  "source_checked_on": "2026-10-19",
+  "topical_reason": "Google's October 2026 agent/task announcements plus YouTube originality emphasis; original grocery approval lesson rather than a reupload.",
+  "sources": [
+    {
+      "id": "google_argon_app",
+      "publisher": "Google",
+      "published_date": "2026-10-13",
+      "url": "https://blog.google/innovation-and-ai/products/gemini-app/gemini-4-argon-availability/",
+      "use": "Argon availability, Gemini chat-to-tasks concept, subscriber eligibility; not evidence of the owner's account access"
+    },
+    {
+      "id": "google_workspace_agent",
+      "publisher": "Google Cloud",
+      "published_date": "2026-10-08",
+      "url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026",
+      "use": "Cloud-hosted agent and multi-agent announcements; not proof of local availability"
+    },
+    {
+      "id": "youtube_original_short",
+      "publisher": "TeamYouTube",
+      "published_date": "2026-10-01",
+      "url": "https://support.google.com/youtube/blog/470890423/prioritizing-original-content-on-shorts?hl=en",
+      "use": "Original commentary, distinct visuals and creator-added value rather than reuploads"
+    }
+  ],
+  "content_release_policy": {
+    "two_separate_shorts_one_hindi_one_english": true,
+    "one_hindi_long": true,
+    "original_illustration_only": true,
+    "original_footage_and_audio_available": false,
+    "prerecorded_voice_exists": false,
+    "real_asr_word_timing_checked": false,
+    "license_and_consent_verified": false,
+    "actual_provider_demo_executed": false,
+    "original_narrator_identity_verified": false,
+    "actual_thumbnail_rendered": false,
+    "actual_media_encoded": false,
+    "youtube_schedule_verified": false,
+    "private_upload_authorized": false,
+    "public_publish_authorized": false,
+    "recurring_infrastructure_inr": 0
+  },
+  "visualization_direction": {
+    "editorial_style": "Cinematic original 3D motion with concrete physical examples; mixed with clearly labeled conceptual diagrams. Never pretend a mock checkout or provider UI is genuine.",
+    "shorts": "Vertical 1080x1920 concept board, hooked by four seconds, fast explanatory cuts and clear lower third native captions; no fake checkout UI.",
+    "long": "Wide 1920x1080 teaching frames, custom kitchen props, original diagrams and readable spreadsheet mockups; screen examples must carry DEMO DATA/MOCK label.",
+    "rights": "Use only rights-cleared original visual materials and separately approved voices. Do not scrape or reuse other creators' shorts.",
+    "speech": "Narration text is a proposed script. Timing is a scene edit plan, NOT an ASR timestamp or verified WAV take."
+  },
+  "episodes": [
+    {
+      "episode_id": "fm_20261020_short_en",
+      "kind": "short",
+      "original_spoken_language": "en",
+      "narrator_plan_id": "voice_en_short_oct20_unlicensed",
+      "target_duration_seconds": 42,
+      "title": "AI Agents Can Act. Here's the One Safety Rule",
+      "thumbnail_copy": "AGENT ≠ AUTO-BUY",
+      "description": "AI agents can help plan workflows, but external actions should be previewed and approved. The grocery example is an original concept illustration, not a live purchase or recorded Gemini interface. Google described tasks in the Gemini app on October 13, 2026; access varies by account and plan. Sources: Google Gemini launch and Google Cloud Gemini at Work. #AIAgents #Gemini #Automation #Shorts",
+      "hook_strategy": "contrast concrete action vs permission in first four seconds",
+      "aspect_ratio": "9:16",
+      "segments": [
+        {
+          "start_second": 0,
+          "end_second": 4,
+          "narration": "Chatbots answer questions. Agents can act. But who approves?",
+          "visual_guide": "Original 3D split: CHAT bubble on left, ACTION checklist on right; giant red approval latch; labels are illustrative.",
+          "source_ids": [
+            "google_workspace_agent"
+          ],
+          "original_research_demo": false
+        },
+        {
+          "start_second": 4,
+          "end_second": 10,
+          "narration": "Imagine a grocery list with messy options and changing prices.",
+          "visual_guide": "Original fictional whiteboard of milk, rice and vegetables. Price fields are blank, never fake current retailer quotes.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 10,
+          "end_second": 16,
+          "narration": "An agent might organize choices and draft a cart when you've allowed the tools.",
+          "visual_guide": "3D flow nodes LIST → COMPARE → DRAFT CART; show CONCEPT MOCKUP watermark.",
+          "source_ids": [
+            "google_argon_app"
+          ],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 16,
+          "end_second": 22,
+          "narration": "The trap is letting it buy before you check the total and delivery address.",
+          "visual_guide": "Illustrated BUY button locked behind a human finger and approval toggle; no real checkout.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 22,
+          "end_second": 29,
+          "narration": "My rule: plan first, review sources, preview the action, then approve.",
+          "visual_guide": "Four original icons animate one by one: PLAN, SOURCES, PREVIEW, APPROVAL.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 29,
+          "end_second": 36,
+          "narration": "Features vary by app, region and plan. Don't assume every account can run tasks.",
+          "visual_guide": "Neutral entitlement checklist, subscription icons without invented prices.",
+          "source_ids": [
+            "google_argon_app"
+          ],
+          "original_research_demo": false
+        },
+        {
+          "start_second": 36,
+          "end_second": 42,
+          "narration": "Save this: good automation keeps the final decision with you.",
+          "visual_guide": "Return to original split graphic, freeze-frame on HUMAN APPROVAL; original ending.",
+          "source_ids": [],
+          "original_research_demo": true
+        }
+      ]
+    },
+    {
+      "episode_id": "fm_20261020_short_hi",
+      "kind": "short",
+      "original_spoken_language": "hi",
+      "narrator_plan_id": "voice_hi_short_oct20_unlicensed",
+      "target_duration_seconds": 44,
+      "title": "AI Agent से ऑर्डर? ये Approval Rule याद रखें",
+      "thumbnail_copy": "AI खरीदे? पहले पूछे!",
+      "description": "AI agent और chatbot में फर्क एक काल्पनिक shopping example से समझिए। कोई असली checkout, भुगतान या Gemini interface recording नहीं हुई है। Tasks के features account और plan के हिसाब से अलग हो सकते हैं। मूल स्रोत: Google Gemini 4 Argon announcement, 13 October 2026. #AIHindi #AIAgents #Automation #Shorts",
+      "hook_strategy": "Hindi-first shopping consequence and concrete remedy; not literal English translation",
+      "aspect_ratio": "9:16",
+      "segments": [
+        {
+          "start_second": 0,
+          "end_second": 5,
+          "narration": "AI से सामान मंगवाना है? पहले एक ज़रूरी गलती रोकिए।",
+          "visual_guide": "Original Hindi typography; red purchase button with transparent 3D lock. Mark CONCEPT on corner.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 5,
+          "end_second": 11,
+          "narration": "मान लीजिए आपके पास हज़ार रुपये की किराने की लिस्ट है।",
+          "visual_guide": "Illustrated personal-free fictional grocery list with hypothetical budget ₹1,000; Hindi captions.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 11,
+          "end_second": 17,
+          "narration": "Agent लिस्ट बनाकर चीज़ों की तुलना करने में मदद कर सकता है।",
+          "visual_guide": "Original 3D LIST → COMPARE steps. Do not show a fake real store screenshot.",
+          "source_ids": [
+            "google_argon_app"
+          ],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 17,
+          "end_second": 24,
+          "narration": "लेकिन कीमत, पता और पेमेंट आप चेक किए बिना ऑर्डर नहीं करवाइए।",
+          "visual_guide": "Realistic-but-original illustrated approval sheet; empty address and payment placeholders.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 24,
+          "end_second": 31,
+          "narration": "चार कदम रखिए: प्लान, सही जानकारी, प्रीव्यू और आपका अप्रूवल।",
+          "visual_guide": "Four 3D cards with Devanagari labels; distinct pacing, not the English Short's exact edit.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 31,
+          "end_second": 38,
+          "narration": "हर अकाउंट में ये फीचर नहीं होगा। पहले प्लान और उपलब्धता जाँचिए।",
+          "visual_guide": "Original availability checklist with a question-mark plan tier, no UI impersonation.",
+          "source_ids": [
+            "google_argon_app"
+          ],
+          "original_research_demo": false
+        },
+        {
+          "start_second": 38,
+          "end_second": 44,
+          "narration": "याद रखिए: AI काम करे, लेकिन आख़िरी फैसला आपका रहे।",
+          "visual_guide": "Freeze on hand-controlled approval switch and native Hindi CTA.",
+          "source_ids": [],
+          "original_research_demo": true
+        }
+      ]
+    },
+    {
+      "episode_id": "fm_20261020_long_hi",
+      "kind": "long",
+      "original_spoken_language": "hi",
+      "narrator_plan_id": "voice_hi_long_oct20_unlicensed",
+      "target_duration_seconds": 480,
+      "title": "AI Agent से Grocery Plan बनाना सीखें | Gemini Tasks क्या कर सकता है?",
+      "thumbnail_copy": "AI AGENT: पहले PLAN फिर APPROVE",
+      "description": "इस हिंदी tutorial में हम एक काल्पनिक ₹1,000 grocery budget पर AI agent की planning, data checks, draft cart और approval system समझते हैं। वीडियो के flow diagrams और tool screens ORIGINAL CONCEPT MOCKUPS हैं; कोई असली grocery account connect, खरीदारी, Gemini task execution या भुगतान नहीं किया गया है। Gemini 4 Argon और tasks announcements की उपलब्धता आपके account, country और plan के हिसाब से जाँची जानी चाहिए।\n\nSources:\nGoogle Gemini 4 Argon (Oct 13): https://blog.google/innovation-and-ai/products/gemini-app/gemini-4-argon-availability/\nGoogle Gemini at Work (Oct 8): https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026\n\nयह स्वतंत्र शैक्षणिक व्याख्या है, Google का आधिकारिक walkthrough नहीं। #AIAgents #Gemini #HindiTutorial #AIAutomation",
+      "hook_strategy": "start with an imagined wrong automatic purchase and reverse-engineer safer approved planning; original, not supplier marketing",
+      "aspect_ratio": "16:9",
+      "segments": [
+        {
+          "start_second": 0,
+          "end_second": 36,
+          "narration": "सोचिए, आपने AI से कहा, आठ सौ से हज़ार रुपये तक की किराने की चीज़ें चुनो। अगले ही पल अगर आपके घर गलत पता और गलत कीमत वाला ऑर्डर पहुँच जाए, तो तकनीक का फायदा क्या हुआ? आज हम इसी समस्या को हल करेंगे। एक ऐसा सिस्टम समझेंगे जो पहले योजना बनाता है, फिर जानकारी दिखाता है, और आपके स्पष्ट अप्रूवल के बिना खरीदी नहीं करता। यह एक शैक्षणिक डेमो है, असली ऑर्डर नहीं।",
+          "visual_guide": "Photoreal original 3D home kitchen with fictional grocery bag; close-up locked checkout flow; watermark ORIGINAL CONCEPT DEMO.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 36,
+          "end_second": 80,
+          "narration": "सबसे पहले फर्क समझिए। Chatbot आपके सवाल का जवाब देता है। Agent को कोई टास्क, टूल और सीमित परमिशन मिल सकती है, ताकि वह कई चरणों वाला काम संभाल सके। आठ अक्टूबर को Google Cloud ने लंबे समय तक चलने वाले agents के बारे में बताया। तेरह अक्टूबर को Google ने Gemini ऐप में chat से tasks की सुविधा और Gemini 4 Argon की घोषणा की। लेकिन घोषणा का मतलब यह नहीं कि यह फीचर हर फोन, हर देश या हर अकाउंट में उपलब्ध है।",
+          "visual_guide": "Original 3D side-by-side CHAT → ANSWER versus GOAL → PLAN → TOOL → REVIEW; date label and small Google attribution, never fake screen recording.",
+          "source_ids": [
+            "google_workspace_agent",
+            "google_argon_app"
+          ],
+          "original_research_demo": false
+        },
+        {
+          "start_second": 80,
+          "end_second": 128,
+          "narration": "अब हमारा काल्पनिक example शुरू करते हैं। स्क्रीन पर चार चीज़ें हैं: चावल दो किलो, दूध दो पैकेट, दाल एक किलो और सब्ज़ियाँ। कुल बजट एक हज़ार रुपये मानिए। यहाँ कोई असली किराना ऐप, व्यक्तिगत पता या कार्ड नंबर नहीं है। वीडियो में जो भी कीमत दिखाई जाएगी, वह केवल अभ्यास के लिए कल्पित होगी। आगे के हर परिणाम को असली खरीदारी के पहले दोबारा जाँचना पड़ेगा।",
+          "visual_guide": "3D kitchen product props; transparent sheet with 4 products and budget; mock prices explicitly HYPOTHETICAL.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 128,
+          "end_second": 177,
+          "narration": "आप AI को एक बेहतर निर्देश दे सकते हैं। मेरी इस किराने की लिस्ट को साफ तालिका में बदलो। अगर किसी चीज़ की कीमत पता नहीं है, तो अनुमान लगाकर सच मत बताओ। कीमत का स्रोत और जाँच की तारीख अलग कॉलम में दिखाओ। कुल बजट के भीतर विकल्प सुझाओ, लेकिन कोई कार्ट सबमिट मत करो और कभी भुगतान मत करो। पहले मुझसे पुष्टि माँगो। इस निर्देश में लक्ष्य भी है, सीमा भी है और approval point भी।",
+          "visual_guide": "Demonstrate typing in generic unbranded mock interface clearly labelled MOCK PROMPT; reveal each instruction highlight without simulating actual provider functionality.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 177,
+          "end_second": 225,
+          "narration": "देखिए AI के जवाब को कैसे जाँचेंगे। पहली जाँच: क्या हर सामान और मात्रा सही है? दूसरी: क्या कीमत के सामने असली स्रोत है, या सिर्फ अनुमान? तीसरी: क्या shipping और taxes बजट में शामिल हैं? चौथी: क्या किसी सामान का आकार या ब्रांड अलग हो गया है? इसी जगह लोग गलती कर देते हैं। अच्छा दिखने वाला जवाब जरूरी नहीं कि खरीदने के लायक जवाब भी हो।",
+          "visual_guide": "Split-screen sample table with columns ITEM QTY PRICE SOURCE VERIFIED; any example price carries DEMO DATA watermarks; magnifying lens reveals unsupported source as UNVERIFIED.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 225,
+          "end_second": 270,
+          "narration": "अब समझिए कि tool access क्या बदलता है। केवल text chat चल रहा हो, तो AI सामान्य सलाह दे सकता है। अगर कोई अनुमत connector और सही permissions हों, तो agent दूसरे चरणों में जानकारी ढूँढने या draft तैयार करने का प्रयास कर सकता है। लेकिन हमारा आज का वीडियो किसी असली connector को जोड़ नहीं रहा। आपकी अनुमति के बिना किसी खाते में साइन इन करने या निजी जानकारी पढ़ने की जरूरत नहीं है।",
+          "visual_guide": "3D permissions perimeter: NO CONNECTION → PREVIEW ONLY → EXPLICIT PERMISSION; screenshot never resembles an actual Google privacy dialog.",
+          "source_ids": [
+            "google_workspace_agent"
+          ],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 270,
+          "end_second": 315,
+          "narration": "अब सबसे जरूरी checkpoint। मान लीजिए एक draft cart तैयार है। AI को चाहिए कि वह item list, quantity, कुल कीमत, delivery charges, पता और final action का preview दिखाए। आप एक एक बदलाव देख सकते हैं। जब तक सब जाँच न लें, ऑर्डर करने वाला बटन बंद रहना चाहिए। खासकर पेमेंट या किसी दूसरे व्यक्ति की निजी जानकारी से जुड़ी कार्रवाई में सीधे ऑटोमेशन करने से पहले सोचना जरूरी है।",
+          "visual_guide": "Illustrated checkout preview without names, address, accounts or live price; 3D lock and clear editable fields; NOT CONNECTED stamp.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 315,
+          "end_second": 362,
+          "narration": "एक आसान नियम है: read, draft और act। Read का मतलब जानकारी देखना। Draft का मतलब आपके लिए सुझाव और मसौदा बनाना। Act का मतलब असली दुनिया में बदलाव करना, जैसे ऑर्डर देना या फाइल हटाना। हर स्तर की permission अलग सोचनी चाहिए। शुरुआत में agent को सिर्फ read और draft तक सीमित रखिए। उसके बाद ही ज़रूरत और जोखिम देखकर अगला कदम तय कीजिए।",
+          "visual_guide": "Three-layer original animated glass boxes READ / DRAFT / ACT; ACT separated by human key and bold APPROVAL REQUIRED.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 362,
+          "end_second": 410,
+          "narration": "Google ने Gemini 4 Argon और tasks से जुड़े नए फीचर्स की जानकारी अक्टूबर दो हज़ार छब्बीस में दी है। अगर आपको अपने खाते में tasks का विकल्प दिखे, तो उसकी उपलब्धता, प्लान, connected apps और confirmation controls आधिकारिक ऐप में ही जाँचिए। केवल इस वीडियो को देखकर मान मत लीजिए कि आपकी subscription में सब कुछ चालू है। कोई फीचर न दिखे तो mock workflow से अवधारणा सीखना भी ठीक है; हम असली access होने का दावा नहीं कर रहे।",
+          "visual_guide": "Conceptual neutral app availability matrix: CHECK APP, PLAN, REGION, PERMISSIONS; small source date lower third, no invented app screenshots.",
+          "source_ids": [
+            "google_argon_app"
+          ],
+          "original_research_demo": false
+        },
+        {
+          "start_second": 410,
+          "end_second": 453,
+          "narration": "सारांश देखिए। पहले साफ लक्ष्य और बजट लिखिए। फिर sources के साथ draft माँगिए। हर कीमत, मात्रा और delivery detail खुद verify कीजिए। असली कार्रवाई से पहले explicit approval दीजिए। यही चार बातें साधारण AI जवाब को जिम्मेदार workflow में बदलती हैं। इस lesson की सबसे बड़ी सीख यह नहीं कि AI सब कुछ कर सकता है, बल्कि यह कि automation तभी उपयोगी है जब जिम्मेदारी और control स्पष्ट हों।",
+          "visual_guide": "Original final 4-step 3D lane diagram, comparisons of unsafe automatic checkout vs approved draft; cite Google official source card at end.",
+          "source_ids": [],
+          "original_research_demo": true
+        },
+        {
+          "start_second": 453,
+          "end_second": 480,
+          "narration": "अब आपका छोटा homework है: अपनी एक दोहराई जाने वाली task चुनिए। लिखिए कौन सा हिस्सा read है, कौन सा draft और कौन सा act। कमेंट में बताइए कि आप approval किस जगह लगाएँगे। अगर आप ऐसे व्यावहारिक AI examples हिंदी में चाहते हैं, तो FlowMinute Lab को follow कीजिए। अगली बार हम इसी workflow के लिए एक साफ checklist बनाएँगे।",
+          "visual_guide": "3D learning challenge card, phone-free CTA, bold REPEAT TASK → PERMISSION → APPROVAL; no fake schedule promise.",
+          "source_ids": [],
+          "original_research_demo": true
+        }
+      ]
+    }
+  ]
+}
