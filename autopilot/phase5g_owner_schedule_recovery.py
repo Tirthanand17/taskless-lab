@@ -114,7 +114,7 @@ def verify_scheduled_receipts(payload: Mapping[str,Any], *, now:datetime) -> dic
             raise OwnerReadbackHold("INVALID_OBSERVED_CHANNEL")
         if not isinstance(entry["title"],str) or len(entry["title"])>100:
             raise OwnerReadbackHold("INVALID_OBSERVED_TITLE")
-        if entry["privacy_status"] not in ALLOWED_PRIVACY or not isinstance(entry["privacy_status"],str):
+        if not isinstance(entry["privacy_status"],str) or entry["privacy_status"] not in ALLOWED_PRIVACY:
             raise OwnerReadbackHold("INVALID_PRIVACY")
         if not isinstance(entry["upload_status"],str) or entry["upload_status"] not in ("processed","uploaded","rejected","failed","deleted"):
             raise OwnerReadbackHold("INVALID_UPLOAD_STATUS")
