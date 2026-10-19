@@ -1,0 +1,131 @@
+{
+  "status": "REJECTED_MECHANICAL_ESPEAK_SCENE_PACING_EXPERIMENT_ONLY",
+  "created_local_date": "2026-10-19",
+  "measured_in": "isolated ChatGPT sandbox with preinstalled eSpeak 1.48.15 on Linux, not Nirala",
+  "source": "Original October 20 script tokens recovered by previously source-tested SRT; all 14 source scenes separately spoken by already-installed eSpeak using --stdin and --stdout",
+  "audio_measurement": "Measured actually decoded PCM bytes; streaming RIFF header getnframes is a bogus sentinel and MUST NOT be used",
+  "normal_voice_quality_accepted": false,
+  "human_voice_consent_confirmed": false,
+  "native_hindi_speech_quality_confirmed": false,
+  "source_voice_rights_authenticated": false,
+  "shorts_completed": false,
+  "automated_publishing_authorized": false,
+  "scene_cut_recommendations_are_nonbinding": true,
+  "breath_pause_allowance_ms_per_scene": 250,
+  "video_fps": 24,
+  "episodes": [
+    {
+      "episode_id": "fm_20261020_short_en",
+      "language": "en",
+      "voice": "en-us",
+      "speed": 150,
+      "plan": [
+        4,
+        6,
+        6,
+        6,
+        7,
+        7,
+        6
+      ],
+      "observed": [
+        5396,
+        4483,
+        4978,
+        4661,
+        5724,
+        6179,
+        4177
+      ],
+      "recommended_visual_frames": [
+        136,
+        134,
+        144,
+        137,
+        163,
+        168,
+        126
+      ],
+      "recommended_cuts_frames": [
+        0,
+        136,
+        270,
+        414,
+        551,
+        714,
+        882,
+        1008
+      ],
+      "mechanical_total_ms": 35598,
+      "mechanical_total_script_slack_ms": 6402,
+      "scenes_over_target": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "episode_id": "fm_20261020_short_hi",
+      "language": "hi",
+      "voice": "hi",
+      "speed": 135,
+      "plan": [
+        5,
+        6,
+        6,
+        7,
+        7,
+        7,
+        6
+      ],
+      "observed": [
+        5686,
+        4542,
+        5214,
+        5810,
+        6347,
+        6381,
+        5449
+      ],
+      "recommended_visual_frames": [
+        143,
+        130,
+        144,
+        159,
+        168,
+        168,
+        144
+      ],
+      "recommended_cuts_frames": [
+        0,
+        143,
+        273,
+        417,
+        576,
+        744,
+        912,
+        1056
+      ],
+      "mechanical_total_ms": 39429,
+      "mechanical_total_script_slack_ms": 4571,
+      "scenes_over_target": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ],
+  "original_programmatic_voice_files_saved": false,
+  "upstream_model_or_service_downloads": 0,
+  "external_network_calls": 0,
+  "monthly_recurring_infrastructure_inr": 0,
+  "action": "Use proposed nonbinding cuts as storyboard editing experiment only. Actual rights-cleared natural human voice timing overrides these cuts and existing estimated SRT. Never speed narration to fit fake scenes."
+}
