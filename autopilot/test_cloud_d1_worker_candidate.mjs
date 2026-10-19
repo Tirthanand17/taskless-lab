@@ -143,6 +143,7 @@ test("malformed, missing, forged metadata or results array denied",()=>{
 test("invalid nonce, invalid epoch, ttl, SHA, dates and extra keys never prepare",async()=>{
   const candidates=[
     ["claim",{...CLAIM,nonce:"invalid"}],
+    ["claim",{...CLAIM,nonce:NONCE+"\n"}],
     ["claim",{...CLAIM,epoch:1.5}],
     ["claim",{...CLAIM,epoch:-1}],
     ["claim",{...CLAIM,ttlSeconds:301}],
@@ -150,6 +151,8 @@ test("invalid nonce, invalid epoch, ttl, SHA, dates and extra keys never prepare
     ["claim",{...CLAIM,ttlSeconds:"30"}],
     ["claim",{...CLAIM,cloudToken:"SHOULD_NOT_LEAK"}],
     ["reserve",{...RESERVE,mediaSha256:"b".repeat(63)}],
+    ["reserve",{...RESERVE,mediaSha256:SHA+"\n"}],
+    ["reserve",{...RESERVE,episodeId:"tutorial_short_en\n"}],
     ["reserve",{...RESERVE,releaseDate:"2026-02-30"}],
     ["reserve",{...RESERVE,episodeId:"../bad"}],
     ["reserve",{...RESERVE,epoch:0}],
@@ -167,6 +170,30 @@ test("invalid nonce, invalid epoch, ttl, SHA, dates and extra keys never prepare
     assert.equal(result.reason_code,"INVALID_CAS_OPERATION_OR_BINDINGS");
   }
   assert.equal(called,0);
+});
+
+test("hostile getter and proxy errors are sanitized before preparing",async()=>{
+  let calls=0;
+  const fake={
+    __flowminuteSyntheticD1:true,
+    prepare(){calls++;throw new Error("UNEXPECTED_SQL_CALL");}
+  };
+  const cases=[
+    new Proxy({}, {getPrototypeOf(){throw new Error("SECRET_PROXY_SOURCE");}}),
+    Object.defineProperty({
+      epoch:3,ttlSeconds:60
+    },"nonce",{
+      enumerable:true,get(){throw new Error("LEAKED_GETTER_VALUE");}
+    })
+  ];
+  for(const candidate of cases){
+    const out=await exerciseSyntheticD1PreparedCAS(fake,"claim",candidate);
+    assert.equal(out.decision,"HOLD");
+    assert.equal(out.reason_code,"INVALID_CAS_OPERATION_OR_BINDINGS");
+    assert.ok(!JSON.stringify(out).includes("SECRET_"));
+    assert.ok(!JSON.stringify(out).includes("LEAKED_"));
+  }
+  assert.equal(calls,0);
 });
 
 test("provider error including quota details is redacted and not retried",async()=>{
