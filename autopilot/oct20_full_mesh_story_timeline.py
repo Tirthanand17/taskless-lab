@@ -25,6 +25,7 @@ from PIL import Image,ImageDraw,ImageFilter
 
 from .agent_org import WorkflowError
 from .oct20_full_silent_timeline import full_silent_scene_plan
+from .hybrid_scene_director import render_scene_world,scene_recipe_plan
 from .oct20_mesh_cinematic_proof import (
     BLUE,FPS,HEIGHT,LANES,NAVY,TEAL,WHITE,WIDTH,
     _camera,_fitted,_font,mesh_cube,project_vertex,
@@ -136,59 +137,12 @@ def draw_oct20_full_mesh_frame(episode_id,frame):
     d=ImageDraw.Draw(image)
     cam=_camera(frame+number*13)
 
-    # Perspective world grid projects genuine 3D coordinates through camera.
-    for k in range(-4,5):
-        for a,b in (
-          ((k*.78,-1.6,-4), (k*.78,-1.6,4)),
-          ((-4,-1.6,k*.78), (4,-1.6,k*.78)),
-        ):
-            pa=project_vertex(a,cam)
-            pb=project_vertex(b,cam)
-            d.line((pa[0],pa[1],pb[0],pb[1]),fill=(28,73,98,165),width=1)
-
-    # Three- or four-step original physical box meshes change per scene.
-    n=len(steps)
-    if n not in (3,4):
+    # Real differentiated teaching scene: seven independent environments,
+    # not the old three/four repeated rotating cubes plus label variations.
+    recipe=scene_recipe_plan(episode_id)["shot_recipes"][number]
+    if recipe["beat"]!=number or recipe["actual_real_app_screenshot"]:
         _hold()
-    separation=1.92 if n==3 else 1.55
-    positions=[(i-(n-1)/2)*separation for i in range(n)]
-    world_centers=[]
-    render_faces=[]
-    for i,x in enumerate(positions):
-        z=.26*cos(number*.8+i)
-        center=(x,.20*sin(phase*1.22+i*.9)+.06*i,z)
-        world_centers.append(center)
-        spin=phase*(.38+.028*i)+number*.44+i*.24
-        size=1.45 if n==3 else 1.16
-        render_faces.extend(mesh_cube(
-            center,size,spin,SCENE_TONES[number][i],cam
-        ))
-    for depth,polygon,color,_face in sorted(render_faces,key=lambda p:-p[0]):
-        d.polygon(polygon,fill=(*color,255))
-        d.line([*polygon,polygon[0]],fill=(118,216,242,230),width=2)
-
-    # Inter-object connection is projected from actual world coordinates.
-    for link in range(n-1):
-        x1=world_centers[link][0]
-        x2=world_centers[link+1][0]
-        curve=[]
-        for point in range(17):
-            f=point/16
-            xyz=(x1+(x2-x1)*f,1.04+.19*sin(f*pi),-.48)
-            curve.append(project_vertex(xyz,cam))
-        d.line([(p[0],p[1]) for p in curve],fill=(*TEAL,255),width=3)
-        travel=(phase*.65+link*.34)%1
-        point=curve[min(16,int(travel*16))]
-        d.ellipse((point[0]-6,point[1]-6,point[0]+6,point[1]+6),
-                  fill=(*WHITE,255),outline=(*BLUE,255),width=2)
-
-    for i,x in enumerate(world_centers):
-        label=steps[i]
-        p=project_vertex((x[0],x[1]+1.0,x[2]),cam)
-        font=_fitted(d,label,lang,132 if n==3 else 100,20)
-        width=d.textlength(label,font=font)
-        px=max(4,min(WIDTH-width-4,p[0]-width/2))
-        d.text((px,p[1]-23),label,font=font,fill=WHITE)
+    render_scene_world(image,episode_id,number,frame)
 
     d.rounded_rectangle((22,18,518,101),radius=17,
                         fill=(9,26,46,248),outline=(*BLUE,182),width=2)
@@ -220,7 +174,7 @@ def draw_oct20_full_mesh_frame(episode_id,frame):
     d.rounded_rectangle((26,904,26+int(488*(
         (frame+1)/TOTAL_FRAMES[episode_id])),912),
         radius=4,fill=(*TEAL,255))
-    footer=("मूल 3D दृश्य / बिना आवाज़ / अपलोड नहीं"
+    footer=("मूल दृश्य / बिना आवाज़ / अपलोड नहीं"
             if lang=="hi" else "STYLIZED 3D / SILENT / NOT FOR UPLOAD")
     d.text((25,930),footer,
            font=_fitted(d,footer,lang,490,13),fill=(160,186,201))
@@ -305,6 +259,9 @@ def render_oct20_full_mesh_review(
         "authored_script_scenes":len(cuts),
         "rendered_scenes":1 if smoke_one_second else len(cuts),
         "actually_rendered_3d_geometry":True,
+        "mixed_3d_and_digital_illustration":True,
+        "seven_distinct_visual_subjects":True,
+        "real_app_demo_recorded":False,
         "all_seven_script_scenes_rendered":not smoke_one_second,
         "fps":FPS,"width":WIDTH,"height":HEIGHT,"frames":count,
         "audio_tracks":0,"photorealistic_final_video":False,
