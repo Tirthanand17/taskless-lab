@@ -142,9 +142,10 @@ class SignedTranscriptionTests(unittest.TestCase):
             replace(registry[reviewer],key_id="key_replaced"),
         ):
             changed={**registry,reviewer:bad}
-            with self.subTest(registration=bad),self.assertNotEqual(
-                verify(f,registry=changed)["blocking_reasons"],(),
-            )
+            with self.subTest(registration=bad):
+                self.assertNotEqual(
+                    verify(f,registry=changed)["blocking_reasons"],(),
+                )
 
     def test_excluded_creator_or_publisher_cannot_sign_as_independent_listener(self):
         f=fixture()
