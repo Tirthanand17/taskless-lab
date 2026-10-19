@@ -14,7 +14,7 @@ from PIL import Image
 
 from autopilot.agent_org import WorkflowError
 from autopilot.oct20_kinetic_motion_preview import (
-    BEATS,FPS,WIDTH,HEIGHT,MAX_PREVIEW_SECONDS,
+    BEATS,CHROME,FPS,WIDTH,HEIGHT,MAX_PREVIEW_SECONDS,
     _design_valid,draw_motion_frame,render_kinetic_silent_excerpt,
 )
 
@@ -30,6 +30,16 @@ class KineticBilingualStoryboardTests(unittest.TestCase):
                             BEATS["fm_20261020_short_hi"][0])
         _design_valid("fm_20261020_short_en",9)
         _design_valid("fm_20261020_short_hi",12)
+
+    def test_hindi_lane_keeps_approval_and_labels_in_devanagari(self):
+        for label in ("concept","tagline","step","review","lock","approval","footer"):
+            with self.subTest(label=label):
+                hindi=CHROME["hi"][label]
+                english=CHROME["en"][label]
+                self.assertNotEqual(hindi,english)
+                self.assertTrue(any("\\u0900"<=ch<="\\u097f" for ch in hindi))
+        self.assertIn("अनुमति",CHROME["hi"]["approval"])
+        self.assertIn("अपलोड",CHROME["hi"]["footer"])
 
     def test_real_english_hindi_first_frame_draws_without_font_fallback(self):
         for episode in sorted(BEATS):
