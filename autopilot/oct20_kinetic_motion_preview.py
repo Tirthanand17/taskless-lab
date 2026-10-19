@@ -89,7 +89,7 @@ def _font(lang:str,size:int,bold:bool=False):
 
 def _draw_fit(d:ImageDraw.ImageDraw,label:str,lang:str,xy:tuple,
               max_width:int,desired:int,color:tuple):
-    for sz in range(desired,12,-1):
+    for sz in range(desired,9,-1):
         f=_font(lang,sz,bold=True)
         if d.textlength(label,font=f)<=max_width:
             d.text(xy,label,font=f,fill=color)
