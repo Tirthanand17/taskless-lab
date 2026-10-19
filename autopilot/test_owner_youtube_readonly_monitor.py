@@ -3,7 +3,7 @@ import datetime as dt
 import json
 import unittest
 from unittest.mock import patch
-from .owner_youtube_readonly_monitor import (
+from autopilot.owner_youtube_readonly_monitor import (
     CHANNEL, OwnerYouTubeReader, ReleaseAuditError, audit_day,
 )
 
