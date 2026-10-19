@@ -31,6 +31,14 @@ class OriginalWorld3DGeometryTests(unittest.TestCase):
                 self.assertEqual(len(data["episodes"]),3)
                 self.assertIn("CONCEPT",LANES["fm_20261020_short_en"]["footer"])
                 self.assertIn("अनुमति",LANES["fm_20261020_short_hi"]["lock"])
+                # Latin AI/3D in a Hindi-only RAQM font previously displayed
+                # as empty replacement boxes. Keep audience text Devanagari.
+                hi=LANES["fm_20261020_short_hi"]
+                self.assertIn("एआई",hi["headline"])
+                self.assertIn("त्रिआयामी",hi["footer"])
+                self.assertFalse(any(ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                    for ch in hi["headline"]+hi["footer"]))
+
 
     def test_real_3d_world_vertices_have_projective_depth(self):
         camera=_camera(0)
