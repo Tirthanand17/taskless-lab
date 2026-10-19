@@ -90,10 +90,10 @@ def _preflight(packet: Any, now: datetime) -> tuple[list[dict], str]:
                     "snapshot_timestamp_utc"})
     if _int(info["release_rows"]) != 0 or _int(info["event_rows"]) != 0:
         raise MigrationHold("NONEMPTY_D1_REQUIRES_INDEPENDENT_RECONCILIATION")
-    if not isinstance(info["column_names"], list) or set(info["column_names"])!=COLUMNS or \
+    if not isinstance(info["column_names"], list) or any(not isinstance(c,str) for c in info["column_names"]) or set(info["column_names"])!=COLUMNS or \
         len(info["column_names"])!=len(COLUMNS):
         raise MigrationHold("PRODUCTION_SCHEMA_NOT_CONFIRMED")
-    if not isinstance(info["release_indexes"],list) or set(info["release_indexes"])!=INDEXES or \
+    if not isinstance(info["release_indexes"],list) or any(not isinstance(i,str) for i in info["release_indexes"]) or set(info["release_indexes"])!=INDEXES or \
         len(info["release_indexes"])!=len(INDEXES):
         raise MigrationHold("INDEX_EVIDENCE_DIFFERENT")
     if info["date_slot_unique_index_exists"] is not False:
@@ -211,7 +211,7 @@ def _simulate(packet: dict, now: datetime, *, fault_at: str | None) -> dict:
               (release_date,episode_id,channel_id,slot_ist,publish_at_utc,state,
                media_sha256,youtube_id,updated_at_utc)
               VALUES (?,?,?,?,?,?,?,?,?)""",
-              (day,"fm_"+day.replace("-","")+"_short_hi",CHANNEL,
+              (day,"fm_"+day.replace("-","")+"_short_zz",CHANNEL,
                "short_morning",receipts[0]["publish_at_utc"],"PLANNED",
                "0"*64,"0123456789A","2026-10-19T00:00:00Z"))
         except sqlite3.IntegrityError:
