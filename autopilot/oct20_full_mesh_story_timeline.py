@@ -98,6 +98,7 @@ def _background():
     )
 
 
+@lru_cache(maxsize=2)
 def _authored_cuts(episode_id):
     if type(episode_id) is not str or episode_id not in SCENE_STORIES:
         _hold()
