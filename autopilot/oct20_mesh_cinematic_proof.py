@@ -285,6 +285,7 @@ def render_true_mesh_excerpt(*,episode_id:str,output_path:Path,seconds:int=3):
              "-pix_fmt","yuv420p","-movflags","+faststart",
              str(output_path)]
     proc=None
+    validated=False
     try:
         proc=subprocess.Popen(command,stdin=subprocess.PIPE,
                               stdout=subprocess.DEVNULL,
@@ -309,6 +310,7 @@ def render_true_mesh_excerpt(*,episode_id:str,output_path:Path,seconds:int=3):
                 or int(tracks[0].get("nb_frames"))!=seconds*FPS
                 or abs(float(parsed["format"]["duration"])-seconds)>.1):
             _deny()
+        validated=True
     except (OSError,ValueError,KeyError,TypeError,
             subprocess.CalledProcessError,subprocess.TimeoutExpired):
         if proc is not None and proc.poll() is None:
@@ -316,8 +318,12 @@ def render_true_mesh_excerpt(*,episode_id:str,output_path:Path,seconds:int=3):
             proc.wait(timeout=5)
         _deny()
     finally:
-        # Do not keep an incomplete / ambiguous output from a failed render.
-        if proc is None or proc.returncode!=0:
+        # Do not keep an incomplete or misprobed output as a successful
+        # render. A process can exit 0 and still output invalid media.
+        if proc is not None and proc.poll() is None:
+            proc.kill()
+            proc.wait(timeout=5)
+        if not validated:
             output_path.unlink(missing_ok=True)
     return {
         "status":"REAL_ORIGINAL_3D_MESH_SILENT_PREVIEW_ONLY",
