@@ -32,7 +32,6 @@ STAMP=re.compile(
     r"(\d{2}):(\d{2}):(\d{2}),(\d{3})\Z")
 METHODS=frozenset(("unverified_manual","unverified_asr","synthetic_test"))
 MAX_WORDS=1500
-MAX_SHIFT_MS=10_000
 
 
 def _deny():
@@ -154,7 +153,6 @@ def inspect_oct20_untrusted_word_timing(candidate:Oct20TranscriptCandidate)->dic
         _deny()
     previous=0
     max_deviation=0
-    observed_min=None
     for proposed,(a,b,source_word,_cue) in zip(
         candidate.words,binding["expected_words"],
     ):
@@ -178,8 +176,6 @@ def inspect_oct20_untrusted_word_timing(candidate:Oct20TranscriptCandidate)->dic
             0,a-proposed.start_ms,proposed.end_ms-b,
         )
         max_deviation=max(max_deviation,deviation)
-        observed_min=(proposed.start_ms if observed_min is None
-                      else observed_min)
         previous=proposed.end_ms
     return {
         "status":"OCT20_CLAIMED_WORD_TIMING_EDITOR_REVIEW_ONLY",
@@ -217,8 +213,27 @@ def summarize_oct20_word_timing_batch(
     if type(reviews) is not tuple or len(reviews)!=3:
         _deny()
     lanes=set()
+    # Exact report schema: caller-provided extras must never be treated as
+    # voice proof or release authority by a downstream consumer.
+    allowed_fields=frozenset((
+        "status","episode_id","language","duration_ms",
+        "authored_scene_count","source_caption_count","claimed_word_count",
+        "exact_script_and_srt_text_shape_matched",
+        "largest_outside_estimated_caption_window_ms",
+        "retime_editor_attention_required",
+        "claimed_audio_sha_is_authenticated",
+        "source_wav_technical_evidence_verified",
+        "word_timings_observed_from_actual_audio",
+        "ASR_provenance_authenticated","natural_human_speech_verified",
+        "commercial_voice_rights_authenticated","speaker_consent_authenticated",
+        "spoken_language_pronunciation_verified",
+        "two_short_narrators_distinct_verified",
+        "actual_audio_caption_alignment_verified","ready_for_mux",
+        "youtube_upload_authorized","youtube_publish_authorized",
+        "external_network_calls","monthly_recurring_infrastructure_inr",
+    ))
     for record in reviews:
-        if (type(record) is not dict
+        if (type(record) is not dict or set(record)!=allowed_fields
                 or record.get("status")!="OCT20_CLAIMED_WORD_TIMING_EDITOR_REVIEW_ONLY"
                 or record.get("episode_id") not in ALLOWED):
             _deny()
@@ -253,8 +268,10 @@ def summarize_oct20_word_timing_batch(
         ):
             if record.get(flag) is not False:
                 _deny()
-        if (record.get("external_network_calls")!=0
-                or record.get("monthly_recurring_infrastructure_inr")!=0):
+        if (type(record.get("external_network_calls")) is not int
+                or record["external_network_calls"]!=0
+                or type(record.get("monthly_recurring_infrastructure_inr")) is not int
+                or record["monthly_recurring_infrastructure_inr"]!=0):
             _deny()
         lanes.add(ep)
     if lanes!=set(ALLOWED):
