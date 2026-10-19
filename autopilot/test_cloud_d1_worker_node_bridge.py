@@ -29,7 +29,7 @@ class D1WorkersPreparedCandidateNodeTests(unittest.TestCase):
             "Native Node synthetic D1 candidate suite failed:\n"
             + (run.stdout+run.stderr)[-6000:],
         )
-        self.assertIn("# pass 12",run.stdout)
+        self.assertIn("# pass 13",run.stdout)
         self.assertIn("# fail 0",run.stdout)
 
 
