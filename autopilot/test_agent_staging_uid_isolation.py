@@ -34,7 +34,9 @@ from autopilot.agent_staging_admin_gateway import (
 from autopilot.agent_staging_auth_gateway import (
     SignedStagingRequest, sign_staging_request,
 )
-from autopilot.agent_staging_ipc_service import serve_offline_staging
+from autopilot.agent_staging_ipc_service import (
+    serve_offline_staging, send_signed_ipc,
+)
 from autopilot.agent_staging_command_boundary import SQLiteHostClock
 
 IPCCLIENT=Path(__file__).with_name("phase1_synthetic_ipc_client.py")
@@ -152,7 +154,7 @@ class DistinctUIDStagingTests(unittest.TestCase):
             self.process=None
         self.sock.unlink(missing_ok=True)
 
-    def _invoke_as(self,uid:int,gid:int,script:Path,*
+    def _invoke_as(self,uid:int,gid:int,script:Path,*,
                    args:tuple[str,...]=(),stdin:str="")->subprocess.CompletedProcess:
         return subprocess.run(
             [sys.executable,"-I","-B",str(script),*args],
@@ -200,11 +202,13 @@ class DistinctUIDStagingTests(unittest.TestCase):
             args=(str(self.db),),
         )
         self.assertEqual(denial.returncode,0,denial.stderr)
-        signed_admin=self._invoke_as(
-            self.worker_uid,self.group_gid,self.publicdir/"client.py",
-            args=(str(self.sock),),stdin=self._admin_command(),
+        # Enrollment is a privileged management act from the trusted
+        # controller, not a transferable admin credential supplied to the
+        # lower-privileged worker process.
+        admin_result=send_signed_ipc(self.sock,self._admin_command().strip())
+        self.assertTrue(
+            admin_result["admin_outcome"]["signed_admin_command_committed"]
         )
-        self.assertEqual(signed_admin.returncode,0,signed_admin.stderr)
         signed_task=self._invoke_as(
             self.worker_uid,self.group_gid,self.publicdir/"client.py",
             args=(str(self.sock),),stdin=self._worker_command(),
