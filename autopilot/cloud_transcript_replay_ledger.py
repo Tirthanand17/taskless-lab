@@ -24,8 +24,9 @@ from .cloud_muxed_audio_screen import MuxedAudioScreen
 from .cloud_transcript_alignment_intake import CandidateWordTranscript
 from .cloud_signed_transcript_reviews import (
     SignedTranscriptAttestation,TrustedTranscriptReviewer,
-    transcript_digest,verify_signed_transcript_attestations,
+    transcript_digest,verify_signed_transcript_attestations,ROLES,SAFE_ID,
 )
+from .cloud_acoustic_review_evidence import verify_signed_acoustic_sidecars
 
 MAX_REVIEW_EVENTS=4096
 GENESIS_SHA="0"*64
@@ -45,6 +46,11 @@ SCHEMA=(
     "CREATE TABLE IF NOT EXISTS transcript_review_consumed("
     "receipt_id TEXT PRIMARY KEY, event_sha TEXT NOT NULL,"
     "role TEXT NOT NULL CHECK(role IN ('transcriber','independent_listener')),"
+    "FOREIGN KEY(event_sha) REFERENCES transcript_review_events(event_sha))",
+    "CREATE TABLE IF NOT EXISTS transcript_review_sidecars("
+    "event_sha TEXT NOT NULL, role TEXT NOT NULL,"
+    "reviewer_id TEXT NOT NULL, evidence_sha TEXT NOT NULL,"
+    "PRIMARY KEY(event_sha,role),"
     "FOREIGN KEY(event_sha) REFERENCES transcript_review_events(event_sha))",
 )
 
@@ -137,13 +143,39 @@ class OfflineTranscriptReviewLedger:
         ).fetchall()
         if len(rows)>MAX_REVIEW_EVENTS:
             raise WorkflowError("Transcript audit reached bounded event cap")
+        sidecar_rows=db.execute(
+            "SELECT event_sha,role,reviewer_id,evidence_sha "
+            "FROM transcript_review_sidecars ORDER BY event_sha,role"
+        ).fetchall()
+        if len(sidecar_rows)>2*MAX_REVIEW_EVENTS:
+            raise WorkflowError("Transcript sidecar index exceeds bound")
+        by_event={}
+        for event_id,role,reviewer_id,evidence_sha in sidecar_rows:
+            if (not isinstance(event_id,str) or SHA.fullmatch(event_id) is None
+                    or role not in ROLES
+                    or not isinstance(reviewer_id,str)
+                    or SAFE_ID.fullmatch(reviewer_id) is None
+                    or not isinstance(evidence_sha,str)
+                    or SHA.fullmatch(evidence_sha) is None):
+                raise WorkflowError("Transcript sidecar index malformed")
+            by_event.setdefault(event_id,[]).append(
+                (role,reviewer_id,evidence_sha))
+        for entries in by_event.values():
+            if (len(entries)!=2 or {x[0] for x in entries}!=ROLES
+                    or entries[0][1]==entries[1][1]):
+                raise WorkflowError("Incomplete or duplicate signed sidecar index")
         last=GENESIS_SHA
         heads={}
         receipts={}
         seen_media=set()
         previous_timestamp=None
+        visited_events=set()
         for pos,row in enumerate(rows,1):
             detail=_event(row)
+            evidence=by_event.get(row[1])
+            if evidence:
+                detail["sidecar_evidence"]=tuple(sorted(evidence))
+            visited_events.add(row[1])
             if (type(detail["seq"]) is not int or detail["seq"]!=pos
                     or row[2]!=last
                     or not isinstance(row[1],str) or SHA.fullmatch(row[1]) is None
@@ -173,6 +205,8 @@ class OfflineTranscriptReviewLedger:
                 receipts[receipt]=(last,role)
             last=row[1]
             heads[detail["episode"]]=last
+        if set(by_event)-visited_events:
+            raise WorkflowError("Orphaned transcript review sidecar")
         actual=db.execute(
             "SELECT episode,event_sha FROM transcript_review_heads"
         ).fetchall()
@@ -198,6 +232,7 @@ class OfflineTranscriptReviewLedger:
                registry:Mapping[str,TrustedTranscriptReviewer],
                excluded_creator_publisher_ids:frozenset[str],
                now:datetime|None=None,
+               evidence_files:Mapping[str,Path]|None=None,
                expected_current_sha:str|None=None)->dict:
         """One signed-review batch per immutable MP4; replacement needs CAS.
 
@@ -236,6 +271,25 @@ class OfflineTranscriptReviewLedger:
             )
             if verified["blocking_reasons"]:
                 raise WorkflowError("No accepted two-role transcript signatures")
+            sidecar_evidence=()
+            if evidence_files is not None:
+                # Open and check real sidecar file bytes while transaction
+                # holds the SQLite admission lock, before using receipts.
+                checked=verify_signed_acoustic_sidecars(
+                    candidate=candidate,media=media,audio_screen=audio_screen,
+                    signed_attestations=signed_attestations,registry=registry,
+                    excluded_creator_publisher_ids=excluded_creator_publisher_ids,
+                    evidence_files=evidence_files,now=verified_time,
+                )
+                digests=dict(checked["signed_sidecar_hashes"])
+                sidecar_evidence=tuple(sorted(
+                    (entry.claim.role,entry.claim.reviewer_id,
+                     digests[entry.claim.reviewer_id])
+                    for entry in signed_attestations
+                ))
+                if (len(sidecar_evidence)!=2
+                        or {x[0] for x in sidecar_evidence}!=ROLES):
+                    raise WorkflowError("Signed acoustic sidecar set incomplete")
             if heads.get(candidate.episode_id)!=expected_current_sha:
                 raise WorkflowError("Transcript current-head changed; revision denied")
             receipts={}
@@ -271,7 +325,12 @@ class OfflineTranscriptReviewLedger:
                 "supersedes_sha":expected_current_sha,
                 "accepted_at_utc":verified_time.isoformat(),
             }
-            event_sha=_hash_event(row)
+            # Historical detached-only hashes are unchanged. The new strict
+            # mode commits both role-linked SHA digests into event_sha.
+            event_sha=_hash_event(
+                {**row,"sidecar_evidence":sidecar_evidence}
+                if sidecar_evidence else row
+            )
             db.execute(
                 "INSERT INTO transcript_review_events("
                 "seq,event_sha,prev_sha,episode,lane,media_sha,"
@@ -284,6 +343,11 @@ class OfflineTranscriptReviewLedger:
                     "supersedes_sha","accepted_at_utc",
                 ))),
             )
+            for role,reviewer_id,evidence_sha in sidecar_evidence:
+                db.execute(
+                    "INSERT INTO transcript_review_sidecars VALUES(?,?,?,?)",
+                    (event_sha,role,reviewer_id,evidence_sha),
+                )
             for role,receipt in receipts.items():
                 db.execute(
                     "INSERT INTO transcript_review_consumed VALUES(?,?,?)",
@@ -306,11 +370,19 @@ class OfflineTranscriptReviewLedger:
                 "accepted_at_host_utc":verified_time.isoformat(),
                 "local_sqlite_time_checked_in_transaction":True,
                 "remotely_trusted_database_time":False,
+                "signed_sidecar_digests_chained":bool(sidecar_evidence),
                 "actual_audio_content_independently_verified":False,
                 "reviewer_identity_independently_verified":False,
                 "youtube_publishing_authorized":False,
                 "monthly_recurring_infrastructure_inr":0,
             }
+
+    def commit_sidecar_bound(self,*,evidence_files:Mapping[str,Path],
+                             **kwargs)->dict:
+        """No fallback to digest-only reviews in this offline strict path."""
+        if not isinstance(evidence_files,Mapping) or not evidence_files:
+            raise WorkflowError("Two signed acoustic sidecars required")
+        return self.commit(evidence_files=evidence_files,**kwargs)
 
     def current_status(self,episode_id:str)->dict:
         if not isinstance(episode_id,str) or not 3<=len(episode_id)<=64:
@@ -322,6 +394,12 @@ class OfflineTranscriptReviewLedger:
                 "current_event_sha256":heads.get(episode_id),
                 "total_accepted_review_batches":count,
                 "audit_tip_sha256":last,
+                "current_event_has_chained_sidecar_digests":bool(
+                    heads.get(episode_id) and db.execute(
+                        "SELECT count(*) FROM transcript_review_sidecars "
+                        "WHERE event_sha=?",(heads[episode_id],)
+                    ).fetchone()[0]==2
+                ),
                 "source_signed_record_only":True,
                 "actual_audio_content_independently_verified":False,
                 "youtube_publishing_authorized":False,
