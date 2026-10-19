@@ -32,6 +32,8 @@ jobs:
           test -f /usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf
       - name: Run tests
         run: python -m pytest -q
+      - name: Verify read-only Cloudflare Worker contract (no secrets)
+        run: node --test autopilot/test_phase5d_cloudflare_owner_readback.mjs
       - name: Validate episode editorial metadata (not publish approval)
         shell: bash
         run: |
