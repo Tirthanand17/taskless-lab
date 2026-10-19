@@ -242,3 +242,88 @@ def reconcile_release_snapshots(
         "external_api_requests":0,
         "monthly_recurring_infrastructure_inr":0,
     }
+
+
+# Shape of the EXISTING private control/ledger.py six-field SELECT and
+# control/youtube_upload_inventory.py read-only result. No provider call here.
+_PRIVATE_INVENTORY_KEYS=frozenset((
+    "status","channel_id","playlist_page_count","video_count","videos",
+    "playlist_and_details_matched",
+    "processing_or_schedule_uncertain_count",
+    "live_authentication_independently_attested",
+    "d1_release_rows_reconciled","owner_publish_consent_verified",
+    "migration_authorized","private_upload_authorized",
+    "schedule_or_public_publishing_authorized",
+    "raw_oauth_tokens_in_output","storage_writes",
+))
+_PRIVATE_VIDEO_KEYS=frozenset((
+    "youtube_id","privacy","processing","publish_at_utc",
+    "uncertain_metadata",
+))
+
+
+def reconcile_existing_private_shapes(
+    *,existing_ledger_rows:tuple[tuple,...],
+    private_youtube_inventory:dict,
+    expected_channel_id:str,
+    local_ledger_snapshot_complete:bool,
+)->dict:
+    """Pure compatibility adapter; consumes existing private API shapes.
+
+    Client must invoke inside a protected memory-only runtime with an
+    authorized, complete read-only snapshot. No direct dependency on
+    private credentials, storage SDK or Cloudflare adapter is created.
+    """
+    if (type(existing_ledger_rows) is not tuple
+            or len(existing_ledger_rows)>MAX_ROWS
+            or not isinstance(private_youtube_inventory,dict)
+            or set(private_youtube_inventory)!=_PRIVATE_INVENTORY_KEYS):
+        raise WorkflowError("Untrusted or incomplete private snapshot envelope")
+    inv=private_youtube_inventory
+    if (inv["status"]!="PRIVATE_READ_ONLY_RESPONSE_NOT_RELEASE_AUTHORITY"
+            or type(inv["playlist_page_count"]) is not int
+            or not 1<=inv["playlist_page_count"]<=12
+            or type(inv["video_count"]) is not int
+            or not isinstance(inv["videos"],list)
+            or len(inv["videos"])>MAX_ROWS
+            or len(inv["videos"])!=inv["video_count"]
+            or inv["playlist_and_details_matched"] is not True
+            or type(inv["processing_or_schedule_uncertain_count"]) is not int
+            or not 0<=inv["processing_or_schedule_uncertain_count"]<=len(inv["videos"])
+            or any(inv[k] is not False for k in (
+                "live_authentication_independently_attested",
+                "d1_release_rows_reconciled",
+                "owner_publish_consent_verified","migration_authorized",
+                "private_upload_authorized",
+                "schedule_or_public_publishing_authorized",
+                "raw_oauth_tokens_in_output",
+            ))
+            or type(inv["storage_writes"]) is not int
+            or inv["storage_writes"]!=0):
+        raise WorkflowError("Untrusted private owner video inventory flags")
+    staged_releases=[]
+    for record in existing_ledger_rows:
+        if type(record) is not tuple or len(record)!=6:
+            raise WorkflowError("Existing private release ledger row shape changed")
+        staged_releases.append(ReleaseSnapshot(*record))
+    staged_remote=[]
+    for item in inv["videos"]:
+        if not isinstance(item,dict) or set(item)!=_PRIVATE_VIDEO_KEYS:
+            raise WorkflowError("Unknown private owner video detail fields")
+        staged_remote.append(OwnerVideoSnapshot(
+            item["youtube_id"],item["privacy"],item["processing"],
+            item["publish_at_utc"],item["uncertain_metadata"],
+        ))
+    if sum(r.uncertain_metadata for r in staged_remote)!=(
+            inv["processing_or_schedule_uncertain_count"]):
+        raise WorkflowError("Remote inventory uncertainty count concealed")
+    return reconcile_release_snapshots(
+        tuple(staged_releases),tuple(staged_remote),
+        expected_channel_id=expected_channel_id,
+        observed_channel_id=inv["channel_id"],
+        # The original private collector hard-fails on pagination overflow,
+        # missing detailed video IDs and malformed API results. It still
+        # does not prove historical completeness or trusted provenance.
+        remote_pagination_complete=True,
+        local_ledger_snapshot_complete=local_ledger_snapshot_complete,
+    )
