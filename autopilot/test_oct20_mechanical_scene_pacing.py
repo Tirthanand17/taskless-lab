@@ -84,6 +84,39 @@ class MechanicalSevenSceneReframeTests(unittest.TestCase):
         self.assertEqual(one,two)
         self.assertEqual(sum(one),1056)
 
+    def test_checked_in_actual_14_scene_benchmark_evidence_is_consistent(self):
+        import json
+        root=Path(__file__).resolve().parents[1]
+        record=json.loads((root/"state/production/"
+            "oct20_rejected_mechanical_scene_pacing_2026_10_19.json"
+        ).read_text(encoding="utf-8"))
+        self.assertEqual(record["status"],
+                         "REJECTED_MECHANICAL_ESPEAK_SCENE_PACING_EXPERIMENT_ONLY")
+        self.assertEqual(record["video_fps"],24)
+        self.assertEqual(record["breath_pause_allowance_ms_per_scene"],250)
+        self.assertFalse(record["normal_voice_quality_accepted"])
+        self.assertFalse(record["automated_publishing_authorized"])
+        self.assertFalse(record["shorts_completed"])
+        self.assertEqual(record["external_network_calls"],0)
+        self.assertEqual(record["monthly_recurring_infrastructure_inr"],0)
+        self.assertEqual(len(record["episodes"]),2)
+        for entry in record["episodes"]:
+            with self.subTest(episode=entry["episode_id"]):
+                original=tuple(s*24 for s in entry["plan"])
+                observed=tuple(entry["observed"])
+                recommended=propose_scene_frame_retime(
+                    planned_frames=original,actual_observed_ms=observed)
+                self.assertEqual(tuple(entry["recommended_visual_frames"]),
+                                 recommended)
+                starts=[0]
+                for frames in recommended:
+                    starts.append(starts[-1]+frames)
+                self.assertEqual(entry["recommended_cuts_frames"],starts)
+                self.assertEqual(entry["mechanical_total_ms"],sum(observed))
+                self.assertEqual(entry["mechanical_total_script_slack_ms"],
+                                 sum(entry["plan"])*1000-sum(observed))
+                self.assertEqual(sum(entry["scenes_over_target"]),1)
+
     def test_invalid_audio_bytes_and_fake_header_are_not_accepted(self):
         for data in (
             b"",b"garbage" * 20,
