@@ -305,7 +305,13 @@ def reconcile_existing_private_shapes(
     for record in existing_ledger_rows:
         if type(record) is not tuple or len(record)!=6:
             raise WorkflowError("Existing private release ledger row shape changed")
-        staged_releases.append(ReleaseSnapshot(*record))
+        # Private Ledger._row SELECT is date,episode,MEDIA,STAGE,id,time;
+        # explicit keyword mapping prevents silent field-order corruption.
+        staged_releases.append(ReleaseSnapshot(
+            release_date=record[0],episode_id=record[1],
+            stage=record[3],media_sha256=record[2],
+            youtube_id=record[4],publish_at_utc=record[5],
+        ))
     staged_remote=[]
     for item in inv["videos"]:
         if not isinstance(item,dict) or set(item)!=_PRIVATE_VIDEO_KEYS:
