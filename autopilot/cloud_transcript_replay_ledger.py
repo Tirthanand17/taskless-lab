@@ -262,7 +262,9 @@ class OfflineTranscriptReviewLedger:
                excluded_creator_publisher_ids:frozenset[str],
                now:datetime|None=None,
                evidence_files:Mapping[str,Path]|None=None,
-               expected_current_sha:str|None=None)->dict:
+               expected_current_sha:str|None=None,
+               signed_command_nonce:str|None=None,
+               signed_command_expires_at_epoch:int|None=None)->dict:
         """One signed-review batch per immutable MP4; replacement needs CAS.
 
         Reused receipt IDs are rejected even if their signatures remain valid.
@@ -273,12 +275,28 @@ class OfflineTranscriptReviewLedger:
                 (not isinstance(expected_current_sha,str)
                  or SHA.fullmatch(expected_current_sha) is None)):
             raise WorkflowError("Malformed expected transcript audit head")
+        if (signed_command_nonce is None)!=(signed_command_expires_at_epoch is None):
+            raise WorkflowError("Signed command nonce and expiry must be paired")
+        if signed_command_nonce is not None and (
+                not isinstance(signed_command_nonce,str)
+                or COMMAND_NONCE.fullmatch(signed_command_nonce) is None
+                or type(signed_command_expires_at_epoch) is not int
+                or evidence_files is None):
+            raise WorkflowError("Signed nonce requires strict acoustic evidence")
         with self._transaction() as db:
             count,last,heads=self._audit(db)
             if count>=MAX_REVIEW_EVENTS:
                 raise WorkflowError("Transcript audit full; fail closed")
             tick=_sqlite_host_epoch(db)
             verified_time=datetime.fromtimestamp(tick,timezone.utc)
+            if signed_command_nonce is not None:
+                if not tick<=signed_command_expires_at_epoch<=tick+300:
+                    raise WorkflowError("Signed command expired by SQLite host clock")
+                if db.execute(
+                    "SELECT 1 FROM transcript_review_command_nonces "
+                    "WHERE nonce=?",(signed_command_nonce,)
+                ).fetchone():
+                    raise WorkflowError("Signed command nonce already committed")
             if now is not None:
                 if (not isinstance(now,datetime)
                         or now.tzinfo is None or now.utcoffset() is None
@@ -356,10 +374,13 @@ class OfflineTranscriptReviewLedger:
             }
             # Historical detached-only hashes are unchanged. The new strict
             # mode commits both role-linked SHA digests into event_sha.
-            event_sha=_hash_event(
-                {**row,"sidecar_evidence":sidecar_evidence}
-                if sidecar_evidence else row
-            )
+            digest_row=dict(row)
+            if sidecar_evidence:
+                digest_row["sidecar_evidence"]=sidecar_evidence
+            if signed_command_nonce is not None:
+                digest_row["signed_command_nonce"]=signed_command_nonce
+                digest_row["signed_command_expiry_epoch"]=signed_command_expires_at_epoch
+            event_sha=_hash_event(digest_row)
             db.execute(
                 "INSERT INTO transcript_review_events("
                 "seq,event_sha,prev_sha,episode,lane,media_sha,"
@@ -376,6 +397,11 @@ class OfflineTranscriptReviewLedger:
                 db.execute(
                     "INSERT INTO transcript_review_sidecars VALUES(?,?,?,?)",
                     (event_sha,role,reviewer_id,evidence_sha),
+                )
+            if signed_command_nonce is not None:
+                db.execute(
+                    "INSERT INTO transcript_review_command_nonces VALUES(?,?,?)",
+                    (signed_command_nonce,event_sha,signed_command_expires_at_epoch),
                 )
             for role,receipt in receipts.items():
                 db.execute(
@@ -400,6 +426,7 @@ class OfflineTranscriptReviewLedger:
                 "local_sqlite_time_checked_in_transaction":True,
                 "remotely_trusted_database_time":False,
                 "signed_sidecar_digests_chained":bool(sidecar_evidence),
+                "signed_command_nonce_chained":signed_command_nonce is not None,
                 "actual_audio_content_independently_verified":False,
                 "reviewer_identity_independently_verified":False,
                 "youtube_publishing_authorized":False,
@@ -428,6 +455,12 @@ class OfflineTranscriptReviewLedger:
                         "SELECT count(*) FROM transcript_review_sidecars "
                         "WHERE event_sha=?",(heads[episode_id],)
                     ).fetchone()[0]==2
+                ),
+                "current_event_has_chained_command_nonce":bool(
+                    heads.get(episode_id) and db.execute(
+                        "SELECT count(*) FROM transcript_review_command_nonces "
+                        "WHERE event_sha=?",(heads[episode_id],)
+                    ).fetchone()[0]==1
                 ),
                 "source_signed_record_only":True,
                 "actual_audio_content_independently_verified":False,
