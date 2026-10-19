@@ -5,13 +5,29 @@ from hashlib import sha256
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from threading import Event
-from time import monotonic
+from time import monotonic, sleep
+import os
+import subprocess
+import sys
 import unittest
 
 from autopilot.agent_org import EpisodeSpec,Handoff,WorkflowError
 from autopilot.agent_staging_unified import UnifiedStagingCoordinator
 from autopilot.agent_staging_command_boundary import SQLiteHostClock
 from autopilot.agent_staging_process_supervisor import LocalStagingProcessSupervisor
+
+FIXTURE=Path(__file__).with_name("phase1_synthetic_supervisor_crash.py")
+
+
+def _linux_pid_running(pid):
+    """A kill can leave a briefly unreaped zombie, which is not executing."""
+    stat=Path("/proc")/str(pid)/"stat"
+    try:
+        fields=stat.read_text().split(") ",1)[1].split()
+        return bool(fields) and fields[0] not in ("Z","X","x")
+    except (FileNotFoundError,ProcessLookupError):
+        return False
+
 
 
 class LocalWorkerProcessTests(unittest.TestCase):
@@ -127,6 +143,54 @@ class LocalWorkerProcessTests(unittest.TestCase):
         self.assertEqual(outcome["quarantined"],[self.eid])
         self.assertEqual(outcome["running_tasks"],0)
         self.assertFalse(outcome["publish_enabled"])
+
+    def test_cancelled_worker_kills_fixed_descendant_in_same_group(self):
+        if not sys.platform.startswith("linux"):
+            self.skipTest("Linux-only process-group test")
+        g=self.claim(self.research,self.actor)
+        started=Event()
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            result=pool.submit(
+                self.supervisor.run,self.eid,self.research,
+                actor=self.actor,generation=g,mode="tree",
+                timeout=5.0,started=started,
+            )
+            self.assertTrue(started.wait(2))
+            proc=self.supervisor.last_process
+            child_line=proc.stdout.readline().strip()
+            self.assertTrue(child_line.startswith("CHILD_PID:"))
+            grandchild=int(child_line.split(":",1)[1])
+            self.assertTrue(_linux_pid_running(grandchild))
+            self.core.fail(
+                self.eid,self.research,actor=self.actor,generation=g,
+                now=None,category="PROBE_RETRY",
+            )
+            with self.assertRaises(WorkflowError):
+                result.result(timeout=3)
+        self.assertIsNotNone(self.supervisor.last_process.poll())
+        for _ in range(50):
+            if not _linux_pid_running(grandchild):
+                break
+            sleep(0.02)
+        self.assertFalse(_linux_pid_running(grandchild))
+        self.assertFalse(self.core.report()["publish_enabled"])
+
+    def test_parent_crash_stops_child_without_monitor_polling(self):
+        if not sys.platform.startswith("linux"):
+            self.skipTest("Linux-only parent death test")
+        proc=subprocess.run(
+            [sys.executable,"-I","-B",str(FIXTURE)],
+            capture_output=True,text=True,timeout=4,
+            env={"PYTHONIOENCODING":"utf-8","PYTHONDONTWRITEBYTECODE":"1"},
+        )
+        self.assertEqual(proc.returncode,0,proc.stderr)
+        pid=int(proc.stdout.strip())
+        for _ in range(75):
+            if not _linux_pid_running(pid):
+                break
+            sleep(0.02)
+        self.assertFalse(_linux_pid_running(pid))
+        self.assertFalse(self.core.report()["publish_enabled"])
 
     def test_execution_deadline_terminates_unresponsive_child(self):
         g=self.claim(self.research,self.actor)

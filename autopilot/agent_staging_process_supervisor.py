@@ -8,13 +8,15 @@ only unverified synthetic status, not a completed task handoff.
 
 It proves cooperative local process control in a no-secrets CI runner,
 NOT production distributed cancellation, OS-user security isolation or
-safety against malicious descendants (the fixed child never forks).
+safety against malicious descendants that escape their process group.
 """
 from __future__ import annotations
 
 from hashlib import sha256
 from pathlib import Path
 import json
+import os
+import signal
 import subprocess
 import sys
 import threading
@@ -29,7 +31,8 @@ PROBE_SCRIPT=Path(__file__).with_name("phase1_synthetic_subprocess.py")
 class LocalStagingProcessSupervisor:
     def __init__(self,core:UnifiedStagingCoordinator,*,sandbox:Path):
         self.sandbox=Path(sandbox)
-        if (not isinstance(core,UnifiedStagingCoordinator)
+        if (not sys.platform.startswith("linux")
+                or not isinstance(core,UnifiedStagingCoordinator)
                 or not self.sandbox.is_dir()
                 or self.sandbox.is_symlink()
                 or not PROBE_SCRIPT.is_file()
@@ -41,7 +44,7 @@ class LocalStagingProcessSupervisor:
     def run(self,episode_id:str,task_id:str,*,actor:str,generation:int,
             mode:str="brief",duration:float=0.05,
             timeout:float=2.0,started:threading.Event|None=None)->dict:
-        if (mode not in ("brief","block","error")
+        if (mode not in ("brief","block","error","tree")
                 or type(duration) not in (int,float)
                 or not 0<=duration<=2
                 or type(timeout) not in (int,float)
@@ -56,13 +59,13 @@ class LocalStagingProcessSupervisor:
         # identifiers in environment, and sandbox never contains media.
         argv=[
             sys.executable,"-I","-B",str(PROBE_SCRIPT),
-            task_id,mode,str(duration),
+            task_id,mode,str(duration),str(os.getpid()),
         ]
         proc=subprocess.Popen(
             argv,cwd=self.sandbox,
             env={"PYTHONIOENCODING":"utf-8","PYTHONDONTWRITEBYTECODE":"1"},
             stdout=subprocess.PIPE,stderr=subprocess.PIPE,
-            text=True,
+            text=True,start_new_session=True,
         )
         self.last_process=proc
         if started is not None:
@@ -106,7 +109,21 @@ class LocalStagingProcessSupervisor:
             }
         finally:
             if proc.poll() is None:
-                # The fixed child never spawns descendants. A future remote
-                # runner needs a real process-tree/cgroup/remote kill protocol.
+                # New Linux session/process group is anchored at this
+                # not-yet-reaped child's PID. Never signal an arbitrary PID
+                # provided by an agent; fixed child can only spawn a fixed
+                # synthetic grandchild in the same process group.
+                try:
+                    os.killpg(proc.pid,signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+            try:
+                proc.communicate(timeout=2)
+            except subprocess.TimeoutExpired:
+                # Fail closed if a peer left pipes open unexpectedly.
+                try:
+                    os.killpg(proc.pid,signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
                 proc.kill()
-            proc.communicate(timeout=2)
+                proc.communicate(timeout=2)
