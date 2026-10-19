@@ -26,19 +26,20 @@ def sha(path:Path)->str:
 
 
 def synthetic_tone_pcm(path:Path,seconds:int)->None:
-    # 250ms of mechanical square waves repeated to exact planned duration.
-    # An audio technical check can pass this; it is NEVER a human narrator.
-    samples=array("h",(5200 if (i//80)%2 else -5200
-                       for i in range(4000)))
-    if sys.byteorder!="little":
-        samples.byteswap()
-    chunk=samples.tobytes()
+    # Intentionally changing loudness of a mechanical square wave every
+    # 250ms. It is STILL NOT A HUMAN VOICE, but is not the exact repeated
+    # fixture now quarantined by the new signal-shape screen.
     with wave.open(str(path),"wb") as writer:
         writer.setnchannels(1)
         writer.setsampwidth(2)
         writer.setframerate(16000)
-        for _ in range(seconds*4):
-            writer.writeframesraw(chunk)
+        for block_number in range(seconds*4):
+            amplitude=5200+(block_number*31)%2900
+            samples=array("h",(amplitude if (i//80)%2 else -amplitude
+                               for i in range(4000)))
+            if sys.byteorder!="little":
+                samples.byteswap()
+            writer.writeframesraw(samples.tobytes())
 
 
 class Oct20OwnedVoiceHandoffTests(unittest.TestCase):
@@ -114,6 +115,9 @@ class Oct20OwnedVoiceHandoffTests(unittest.TestCase):
         self.assertEqual(result["distinct_wav_file_bytes"],3)
         self.assertTrue(result["recording_lengths_matched_targets"])
         self.assertTrue(result["local_rights_document_hashes_matched"])
+        self.assertTrue(result["actual_pcm_signal_anomaly_screen_passed"])
+        self.assertFalse(result["obvious_repeated_test_tones_or_clipping_hold"])
+        self.assertFalse(result["acoustic_voice_naturalness_or_identity_determined"])
         for denied in (
             "independent_human_voice_confirmed",
             "real_speech_language_verified",
