@@ -580,7 +580,14 @@ class UnifiedStagingCoordinator:
             final_slots,final_states=self._check(db)
             return self._report(final_slots,final_states)
 
-    def recover_expired(self,*,now:datetime)->tuple[str,...]:
+    def recover_expired(self,*,now:datetime|None)->tuple[str,...]:
+        """Reclaim stale leases from trusted local SQLite time if now=None.
+
+        One atomic transaction fences expired worker generations and
+        quarantines exhausted episodes before admitting replacements.
+        A service restart may call it repeatedly without extra failures
+        for already reclaimed leases.
+        """
         with self._tx() as db:
             slots,states=self._check(db)
             sec=self._now(db,now)

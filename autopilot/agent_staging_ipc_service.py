@@ -102,6 +102,38 @@ class OfflineStagingIPCService(socketserver.ThreadingMixIn,
             pass
 
 
+def preflight_offline_staging(core:UnifiedStagingCoordinator)->dict:
+    """Verify local storage, then recover and admit before opening IPC.
+
+    A failed validation raises with no listening socket; each recovery
+    mutation remains an atomic SQLite transaction. No external services
+    or real workers are contacted.
+    """
+    if not isinstance(core,UnifiedStagingCoordinator):
+        raise WorkflowError("Startup requires original staging coordinator")
+    with core._tx() as db:
+        result=db.execute("PRAGMA quick_check(1)").fetchall()
+        if result != [("ok",)]:
+            raise WorkflowError("Offline coordinator SQLite integrity failed")
+        core._check(db)
+    expired=core.recover_expired(now=None)
+    report=core.reconcile()
+    if (report["running_tasks"]>report["global_fanout"]
+            or len(report["active"])>report["active_limit"]
+            or report["publish_enabled"] is not False
+            or report["monthly_inr"]!=0):
+        raise WorkflowError("Offline recovery violated fixed safety invariants")
+    return {
+        "expired_lease_count":len(expired),
+        "running_after_recovery":report["running_tasks"],
+        "active_video_count":len(report["active"]),
+        "queue_reconciled":True,
+        "publishing_authorized":False,
+        "monthly_recurring_infrastructure_inr":0,
+        "remotely_trusted_clock":False,
+    }
+
+
 def serve_offline_staging(db_path:Path,episodes:tuple[EpisodeSpec,...],
                           socket_path:Path,worker_keys:Mapping[str,tuple],
                           admin_id:str,admin_secret:bytes,
@@ -114,11 +146,13 @@ def serve_offline_staging(db_path:Path,episodes:tuple[EpisodeSpec,...],
     """
     try:
         core=UnifiedStagingCoordinator(Path(db_path),episodes=episodes)
-        core.reconcile()
+        # Before admitting new task claims, validate key policy and all
+        # committed task state; only afterward recover stranded leases.
         boundary=StagingLocalCommandBoundary(
             core,worker_keys=worker_keys,
             admin_id=admin_id,admin_secret=admin_secret,
         )
+        preflight_offline_staging(core)
         with OfflineStagingIPCService(
             Path(socket_path),boundary,socket_group_gid=socket_group_gid
         ) as service:

@@ -9,6 +9,7 @@ from secrets import token_bytes
 from tempfile import TemporaryDirectory
 import json
 import os
+import sqlite3
 import stat
 import subprocess
 import sys
@@ -25,6 +26,7 @@ from autopilot.agent_staging_admin_gateway import (
 )
 from autopilot.agent_staging_ipc_service import (
     OfflineStagingIPCService,serve_offline_staging,send_signed_ipc,
+    preflight_offline_staging,
 )
 
 CLIENT_PROBE=Path(__file__).with_name("phase1_synthetic_ipc_client.py")
@@ -118,6 +120,87 @@ class StagingIPCBoundaryTests(unittest.TestCase):
         digest=sha256(self.task.encode()).hexdigest()
         return Handoff(self.task,"research.package",digest,
                        ("sha256:"+digest,),self.role,self._now().isoformat())
+
+    def test_crashed_worker_lease_recovered_before_socket_accepts_claim(self):
+        self._enroll()
+        # At the first service restart, the original claimed worker is no
+        # longer alive. Simulate a lease that expired while the service was
+        # offline, without sleeping or altering the machine clock.
+        self._stop_service()
+        old=SQLiteHostClock(self.core).now()-timedelta(seconds=30)
+        generation=self.core.claim(
+            self.ep,self.task,actor=self.role,now=old,
+            lease_seconds=10,expected_generation=0,
+        )
+        self.assertEqual(generation,1)
+        self.assertEqual(self.core.report()["running_tasks"],1)
+        self._start_service()
+        self.assertEqual(self.core.report()["running_tasks"],0)
+        new_token=self._send("worker.claim",self._claim(generation=2))
+        self.assertEqual(new_token["generation"],3)
+        self.assertEqual(self.core.report()["running_tasks"],1)
+        # A second preflight does not charge the now live claim a failure.
+        safe=preflight_offline_staging(self.core)
+        self.assertEqual(safe["expired_lease_count"],0)
+        self.assertFalse(safe["publishing_authorized"])
+
+    def test_preflight_rejects_future_clock_without_opening_socket(self):
+        self._stop_service()
+        with sqlite3.connect(self.db) as db:
+            db.execute(
+                "UPDATE queue_policy SET last_now = "
+                "CAST(strftime('%s','now') AS INTEGER) + 86400"
+            )
+            db.commit()
+        with self.assertRaises(AssertionError):
+            self._start_service()
+        self.assertFalse(self.socket.exists())
+
+    def test_preflight_rejects_corrupt_task_inventory_before_admission(self):
+        self._stop_service()
+        with sqlite3.connect(self.db) as db:
+            db.execute(
+                "UPDATE stage_tasks SET owner='unauthorized_actor' "
+                "WHERE task_id=?",(self.task,)
+            )
+            db.commit()
+        with self.assertRaises(AssertionError):
+            self._start_service()
+        self.assertFalse(self.socket.exists())
+
+    def test_preflight_fences_third_expired_claim_before_next_video_admitted(self):
+        # Test the full atomic quarantine handoff with two videos using a
+        # separate private database and no extra process/subprocess.
+        with TemporaryDirectory() as d:
+            path=Path(d)/"recovery.sqlite3"
+            specs=(
+                EpisodeSpec("recover_one_01","short","hi",99),
+                EpisodeSpec("recover_two_02","short","en",98),
+            )
+            core=UnifiedStagingCoordinator(path,episodes=specs,create=True)
+            core.reconcile()
+            task="recover_one_01:research"
+            actor="research.launch_researcher"
+            old=SQLiteHostClock(core).now()-timedelta(seconds=40)
+            for i in range(2):
+                at=old+timedelta(seconds=i*4)
+                gen=core.claim("recover_one_01",task,actor=actor,now=at)
+                core.fail("recover_one_01",task,actor=actor,generation=gen,
+                          now=at+timedelta(seconds=1),category="CRASH_RETRY")
+            final_gen=core.claim("recover_one_01",task,actor=actor,
+                                 now=old+timedelta(seconds=9),
+                                 lease_seconds=10)
+            self.assertEqual(final_gen,5)
+            recovered=preflight_offline_staging(core)
+            self.assertEqual(recovered["expired_lease_count"],1)
+            state=core.report()
+            self.assertEqual(state["quarantined"],["recover_one_01"])
+            self.assertEqual(state["active"],["recover_two_02"])
+            self.assertEqual(state["running_tasks"],0)
+            self.assertFalse(state["publish_enabled"])
+            self.assertEqual(
+                preflight_offline_staging(core)["expired_lease_count"],0
+            )
 
     def test_restricted_local_socket_with_no_tcp_or_secrets(self):
         mode=self.socket.stat().st_mode
