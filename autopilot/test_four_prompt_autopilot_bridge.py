@@ -68,7 +68,7 @@ class FourPromptBundleIntegrationTests(unittest.TestCase):
     def test_all_four_original_prompt_requirements_tracked_without_false_approval(self):
         obj=staging_cycle_for_day(PACK_DAY)
         self.assertEqual(len(obj["bundles_applied"]),4)
-        self.assertEqual(obj["pending_production_gates"],HARD_PRODUCTION_BLOCKERS)
+        self.assertEqual(obj["pending_production_gates"],list(HARD_PRODUCTION_BLOCKERS))
         self.assertEqual(len(obj["pending_production_gates"]),6)
         for field in (
             "verified_engagement_analytics_loaded",
