@@ -14,7 +14,7 @@
 
 ## Runtime and testing
 
-- `autopilot/test_phase5d_cloudflare_owner_readback.mjs` uses Node Request/Response and fake Google endpoints, without live internet or credentials. The branch's Content Quality Gate runs `node --test autopilot/test_phase5d_cloudflare_owner_readback.mjs` after Python tests.
+- `autopilot/test_phase5d_cloudflare_owner_readback.mjs` uses Node Request/Response, a fake native rate-limit binding, and fake Google endpoints, without live internet or credentials. The branch's Content Quality Gate runs `node --test autopilot/test_phase5d_cloudflare_owner_readback.mjs` after Python tests.
 - Valid coverage: disabled flags, zero-overage gating, admin authentication, 2-of-3 verified slots, withheld video IDs, fixed UTC times, duplicate IDs, invalid manifest, access token expiry, wrong owner channel, incomplete processing, raw errors, public-vs-private distinction, route refusal and cache/CORS restriction.
 
 ## Critical limits
