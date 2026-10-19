@@ -20,7 +20,9 @@ const env=(overrides={})=>({
   FM_OWNER_READBACK_ENABLED:"1",FM_UPLOADS_ENABLED:"0",FM_SCHEDULING_ENABLED:"0",
   FM_HARD_ZERO_OVERAGE_VERIFIED:"1",FM_EXPECTED_CHANNEL_ID:CHANNEL,
   FM_YOUTUBE_ACCESS_TOKEN:TOKEN,FM_YOUTUBE_ACCESS_EXPIRES_AT:future(60),
-  FM_ADMIN_READBACK_KEY:ADMIN,...overrides
+  FM_ADMIN_READBACK_KEY:ADMIN,
+  FM_READBACK_RATE_LIMITER:{async limit({key}){assert.equal(key,"flowminute:owner-readback");return {success:true};}},
+  ...overrides
 });
 const expected=(date,slot)=>{
   const time=slot==="short_morning"?"11:00":slot==="long"?"16:00":"20:30";
@@ -183,5 +185,16 @@ test("future release marked public is NOT a verified scheduled release",async()=
   const result=await (await run()).json();
   assert.equal(result.verified_platform_state_count,0);
   assert.equal(result.anonymous_playability_verified,false);
+ }finally{m.restore();}
+});
+
+test("fail-closed absent or denied rate limiter before Google read",async()=>{
+ const m=fakeGoogle();
+ try{
+  for(const limiter of [null,{async limit(){return {success:false};}}]){
+   const r=await run({runtime:env({FM_READBACK_RATE_LIMITER:limiter})});
+   assert.equal(r.status,limiter===null?403:429);
+  }
+  assert.equal(m.calls.length,0);
  }finally{m.restore();}
 });
