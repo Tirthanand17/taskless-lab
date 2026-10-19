@@ -10,16 +10,26 @@ const TABLES=Object.freeze([
  "fm_release_writer_lease",
  "fm_writer_release_shadow",
  "fm_releases_shadow",
- "fm_releases"
+ "fm_releases",
+ "releases",
+ "release_events",
+ "audit_heartbeats",
+ "youtube_release_observations"
 ]);
 const BRAND_PROOF="fm_oauth_channel_proofs";
-const SQL="SELECT name, type FROM sqlite_master WHERE type='table' AND name IN ('fm_release_writer_lease','fm_writer_release_shadow','fm_releases_shadow','fm_releases','fm_oauth_channel_proofs') ORDER BY name LIMIT 6";
+const SQL="SELECT name, type FROM sqlite_master WHERE type='table' AND name IN ('fm_release_writer_lease','fm_writer_release_shadow','fm_releases_shadow','fm_releases','releases','release_events','audit_heartbeats','youtube_release_observations','fm_oauth_channel_proofs') ORDER BY name LIMIT 10";
 const PRAGMA=Object.freeze({
  "fm_release_writer_lease":'PRAGMA table_info("fm_release_writer_lease")',
  "fm_writer_release_shadow":'PRAGMA table_info("fm_writer_release_shadow")',
  "fm_releases_shadow":'PRAGMA table_info("fm_releases_shadow")',
- "fm_releases":'PRAGMA table_info("fm_releases")'
+ "fm_releases":'PRAGMA table_info("fm_releases")',
+ "releases":'PRAGMA table_info("releases")',
+ "release_events":'PRAGMA table_info("release_events")',
+ "audit_heartbeats":'PRAGMA table_info("audit_heartbeats")',
+ "youtube_release_observations":'PRAGMA table_info("youtube_release_observations")'
 });
+const RELEASE_INDEX_LIST='PRAGMA index_list("releases")';
+const YOUTUBE_UNIQUE_INDEX_INFO='PRAGMA index_info("sqlite_autoindex_releases_2")';
 const COLUMN=/^[a-zA-Z_][a-zA-Z0-9_]{0,63}$/;
 const REDACT=/oauth|token|refresh|secret|password|cookie|credential|private|cipher|nonce|signature|key/i;
 const HEADERS={"content-type":"application/json; charset=utf-8",
@@ -56,7 +66,9 @@ async function authenticate(given,secret){
 async function select(db,sql,max){
  // Constant query strings only. Never construct SQL from request or
  // provider-result names. Require success and bounded result shape.
- if(sql!==SQL && !Object.values(PRAGMA).includes(sql))throw Error("UNKNOWN_QUERY");
+ if(sql!==SQL && !Object.values(PRAGMA).includes(sql) &&
+    sql!==RELEASE_INDEX_LIST && sql!==YOUTUBE_UNIQUE_INDEX_INFO)
+    throw Error("UNKNOWN_QUERY");
  const bound=db.prepare(sql);
  if(!bound || typeof bound.all!=="function")throw Error("NO_ALL");
  const result=await bound.all();
@@ -67,7 +79,7 @@ async function select(db,sql,max){
  return result.results;
 }
 async function inspect(db){
- const rows=await select(db,SQL,5);
+ const rows=await select(db,SQL,9);
  const seen=new Set();
  for(const row of rows){
   if(typeof row.name!=="string" || typeof row.type!=="string" ||
@@ -94,8 +106,29 @@ async function inspect(db){
     protected_column_count:columns.length-report.length,
     unknown_unique_indexes:true});
  }
+ let knownUniqueYoutubeIndex=false;
+ if(seen.has("releases")) {
+  const indexRows=await select(db,RELEASE_INDEX_LIST,32);
+  const names=new Set();
+  for(const item of indexRows) {
+   if(typeof item.name!=="string" || !COLUMN.test(item.name) || names.has(item.name) ||
+      ![0,1,false,true].includes(item.unique) ||
+      ![0,1,false,true].includes(item.partial))throw Error("INVALID_INDEX_METADATA");
+   names.add(item.name);
+  }
+  if(indexRows.some(item=>item.name==="sqlite_autoindex_releases_2" &&
+      (item.unique===1 || item.unique===true) &&
+      (item.partial===0 || item.partial===false))) {
+   const columns=await select(db,YOUTUBE_UNIQUE_INDEX_INFO,8);
+   knownUniqueYoutubeIndex=columns.length===1 && columns[0].name==="youtube_id" &&
+     columns[0].seqno===0;
+  }
+ }
  return {
   state:"READ_ONLY_D1_SCHEMA_SNAPSHOT_UNATTESTED",
+  existing_canonical_release_tables_detected:seen.has("releases") && seen.has("release_events"),
+  observed_youtube_id_unique_index:knownUniqueYoutubeIndex,
+  release_slot_uniqueness_verified:false,
   source_trust:"INJECTED_D1_BINDING_NOT_PROVEN_IN_OFFLINE_TEST",
   observed_candidate_tables:output,
   found_candidate_count:output.length,

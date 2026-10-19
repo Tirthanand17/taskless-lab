@@ -3,15 +3,24 @@ import test from "node:test";
 import worker from "./phase5e_cloudflare_d1_readonly_inventory.mjs";
 const ADMIN="Z".repeat(48);
 const URL="https://candidate.invalid/v1/d1/schema-inventory";
-const NAMES=["fm_release_writer_lease","fm_writer_release_shadow","fm_releases_shadow","fm_releases"];
+const NAMES=["fm_release_writer_lease","fm_writer_release_shadow","fm_releases_shadow","fm_releases","releases","release_events","audit_heartbeats","youtube_release_observations"];
 const BRAND="fm_oauth_channel_proofs";
-const SQL="SELECT name, type FROM sqlite_master WHERE type='table' AND name IN ('fm_release_writer_lease','fm_writer_release_shadow','fm_releases_shadow','fm_releases','fm_oauth_channel_proofs') ORDER BY name LIMIT 6";
+const SQL="SELECT name, type FROM sqlite_master WHERE type='table' AND name IN ('fm_release_writer_lease','fm_writer_release_shadow','fm_releases_shadow','fm_releases','releases','release_events','audit_heartbeats','youtube_release_observations','fm_oauth_channel_proofs') ORDER BY name LIMIT 10";
 const PRAGMAS=Object.fromEntries(NAMES.map(x=>[x,'PRAGMA table_info("'+x+'")']));
 function harness({rows=[{name:NAMES[0],type:"table"},{name:BRAND,type:"table"}], columns=null, overrides={}}={}){
  const queries=[];
  const db={prepare(sql){
   queries.push(sql);
   if(sql===SQL)return {all:async()=>({success:true,results:rows})};
+  if(sql==='PRAGMA index_list("releases")')
+   return {all:async()=>({success:true,results:[
+     {name:"idx_release_state",unique:0,partial:0},
+     {name:"idx_release_date_slot",unique:0,partial:0},
+     {name:"sqlite_autoindex_releases_2",unique:1,partial:0},
+     {name:"sqlite_autoindex_releases_1",unique:1,partial:0}
+   ]})};
+  if(sql==='PRAGMA index_info("sqlite_autoindex_releases_2")')
+   return {all:async()=>({success:true,results:[{seqno:0,cid:7,name:"youtube_id"}]})};
   if(Object.values(PRAGMAS).includes(sql))
    return {all:async()=>({success:true,results:columns??[
     {name:"singleton",pk:1},{name:"owner_nonce",pk:0},
@@ -140,4 +149,21 @@ test("no-cache response and no CORS grant",async()=>{
  const h=harness();const r=await call(h.env);
  assert.equal(r.headers.get("cache-control"),"no-store, max-age=0");
  assert.equal(r.headers.get("access-control-allow-origin"),null);
+});
+
+test("real-world canonical releases and event table names are accepted and uniqueness is index-backed",async()=>{
+ const rows=[{name:"releases",type:"table"},{name:"release_events",type:"table"},
+   {name:BRAND,type:"table"}];
+ const h=harness({rows,columns:[{name:"release_date",pk:1},
+  {name:"episode_id",pk:2},{name:"youtube_id",pk:0}]});
+ const response=await call(h.env);
+ assert.equal(response.status,200);
+ const result=await response.json();
+ assert.equal(result.existing_canonical_release_tables_detected,true);
+ assert.equal(result.observed_youtube_id_unique_index,true);
+ assert.equal(result.release_slot_uniqueness_verified,false);
+ assert.equal(result.production_d1_writes,0);
+ assert.equal(result.cloud_autopilot_ready,false);
+ assert.ok(h.queries.some(x=>x==='PRAGMA index_list("releases")'));
+ assert.ok(h.queries.some(x=>x==='PRAGMA index_info("sqlite_autoindex_releases_2")'));
 });
