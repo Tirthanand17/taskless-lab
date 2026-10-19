@@ -62,7 +62,9 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: flowminute-agent-ci
+  # Pull-request and push runs both matter: Linux UID isolation is exercised
+  # on trusted own-branch pushes only. They must not cancel each other.
+  group: flowminute-agent-ci-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   deterministic_agent_tests:
