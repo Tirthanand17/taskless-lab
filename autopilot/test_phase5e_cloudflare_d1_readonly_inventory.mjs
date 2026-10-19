@@ -106,9 +106,13 @@ test("never expose D1 exception message or secret-bearing columns",async()=>{
  const h=harness({columns:[{name:"oauth_refresh_token",pk:0},
   {name:"ciphertext",pk:0},{name:"episode_id",pk:1}]});
  const r=await call(h.env);assert.equal(r.status,200);
- const body=await r.text();
- assert.ok(!body.includes("oauth_refresh_token"));assert.ok(!body.includes("ciphertext"));
- assert.ok(body.includes("episode_id"));
+ const body=await r.json();
+ const columns=body.observed_candidate_tables[0].visible_columns.map(x=>x.name);
+ assert.ok(!columns.includes("oauth_refresh_token"));
+ assert.ok(!columns.includes("ciphertext"));
+ assert.deepEqual(columns,["episode_id"]);
+ assert.equal(body.observed_candidate_tables[0].protected_column_count,2);
+ assert.equal(body.oauth_ciphertext_or_secrets_read,false);
 });
 test("synthetic D1 failure redacted and no write",async()=>{
  const h=harness({overrides:{DB:{prepare(){throw Error("REFRESH_TOKEN=secret");}}}});
