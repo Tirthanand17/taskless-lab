@@ -127,12 +127,12 @@ def staging_cycle_for_day(
         "day_local":day.isoformat(),
         "timezone":"Asia/Kolkata",
         "channel_id":CHANNEL_ID,
-        "bundles_applied":(
+        "bundles_applied":[
             "MASTER_CONTENT_GROWTH_AND_SAFETY",
             "NESTED_EIGHT_DEPARTMENT_48_SPECIALIST_ORGANIZATION",
             "PRACTICAL_ORIGINAL_3D_AND_DIGITAL_TUTORIAL_VISUALS",
             "ADAPTIVE_CALENDAR_NEWS_AND_OBSERVATIONAL_ANALYTICS",
-        ),
+        ],
         "calendar_draft_slots":len(slots),
         "source_matched_original_episodes":accepted,
         "source_missing_slots":needs_content,
@@ -151,7 +151,7 @@ def staging_cycle_for_day(
         "estimated_srt_promoted_to_real_asr":False,
         "visual_3d_preview_is_final_movie":False,
         "real_human_or_model_voice_accepted":False,
-        "pending_production_gates":HARD_PRODUCTION_BLOCKERS,
+        "pending_production_gates":list(HARD_PRODUCTION_BLOCKERS),
         "authenticated_youtube_receipts_used":False,
         "real_upload_scheduling_or_publication_performed":False,
         "cloud_deployment_performed":False,
