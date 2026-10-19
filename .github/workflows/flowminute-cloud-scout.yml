@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Unit tests and security boundaries
-        run: python -m unittest autopilot.test_cloud_foundation autopilot.test_core autopilot.test_phase2_source_evidence autopilot.test_phase2_public_collector autopilot.test_phase2_public_capture_preflight autopilot.test_phase2r3_bilingual_scripts autopilot.test_phase2r3_authored_pack_audit autopilot.test_flowminute_csv_demo autopilot.test_flowminute_csv_draft_content -v
+        run: python -m unittest autopilot.test_cloud_foundation autopilot.test_cloud_capacity_admission autopilot.test_core autopilot.test_phase2_source_evidence autopilot.test_phase2_public_collector autopilot.test_phase2_public_capture_preflight autopilot.test_phase2r3_bilingual_scripts autopilot.test_phase2r3_authored_pack_audit autopilot.test_flowminute_csv_demo autopilot.test_flowminute_csv_draft_content -v
       - name: Verify public capture preview (strictly no network)
         run: python -m autopilot.phase2_public_capture_preflight --mode preview
       - name: Audit the actual authored bilingual CSV drafts (no rendering)
