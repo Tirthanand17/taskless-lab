@@ -63,16 +63,19 @@ class SignedStagingAdminGateway:
     """One explicit trusted admin ID, not a production KMS or remote API."""
 
     def __init__(self,policy:StagingKeyPolicy,*,admin_id:str,
-                 secret:bytes,clock:Callable[[],datetime]|None=None):
+                 secret:bytes,clock:Callable[[],datetime]|None=None,
+                 use_local_sqlite_time:bool=False):
         if (not isinstance(policy,StagingKeyPolicy)
                 or not isinstance(admin_id,str)
                 or ADMIN_ID_RE.fullmatch(admin_id) is None
                 or type(secret) is not bytes or len(secret)<32
-                or (clock is not None and not callable(clock))):
+                or (clock is not None and not callable(clock))
+                or type(use_local_sqlite_time) is not bool):
             raise WorkflowError("Invalid test-only staging admin registration")
         self._policy=policy
         self._admin_id=admin_id
         self._secret=secret
+        self._use_local_sqlite_time=use_local_sqlite_time
         self._clock=clock or (lambda:datetime.now(timezone.utc))
 
     def _authorize(self,command:SignedStagingAdminCommand):
@@ -114,6 +117,13 @@ class SignedStagingAdminGateway:
         digest=sha256(_payload(command)).hexdigest()
 
         def one_time_guard(db):
+            if self._use_local_sqlite_time:
+                tick=db.execute(
+                    "SELECT CAST(strftime('%s','now') AS INTEGER)"
+                ).fetchone()[0]
+                if (type(tick) is not int or command.expires_epoch<=tick
+                        or command.expires_epoch-tick>TTL_SECONDS):
+                    raise WorkflowError("Signed admin command stale at mutation")
             self._policy.consume_admin_nonce(
                 db,nonce=command.nonce,admin_id=command.admin_id,
                 action=command.action,request_sha=digest,
@@ -157,6 +167,7 @@ class SignedStagingAdminGateway:
             "direct_local_admin_policy_methods_blocked":False,
             "admin_hmac_secret_stored_in_db":False,
             "trusted_cloud_database_time":False,
+            "local_sqlite_mutation_clock_enforced":self._use_local_sqlite_time,
             "production_deployment":False,
             "youtube_publishing_authorized":False,
             "monthly_recurring_infrastructure_inr":0,

@@ -78,7 +78,8 @@ class SignedStagingGateway:
     def __init__(self, coordinator: UnifiedStagingCoordinator, *,
                  worker_keys: Mapping[str, tuple],
                  clock: Callable[[], datetime] | None = None,
-                 key_policy: StagingKeyPolicy | None = None):
+                 key_policy: StagingKeyPolicy | None = None,
+                 use_local_sqlite_time: bool = False):
         if not isinstance(coordinator, UnifiedStagingCoordinator):
             raise WorkflowError("Signed gateway needs the unified coordinator")
         if not isinstance(worker_keys, Mapping) or not 1 <= len(worker_keys) <= 64:
@@ -111,6 +112,9 @@ class SignedStagingGateway:
             seen_secrets.add(secret)
         if clock is not None and not callable(clock):
             raise WorkflowError("Service clock must be callable")
+        if type(use_local_sqlite_time) is not bool:
+            raise WorkflowError("SQLite clock mode must be a Boolean")
+        self._use_local_sqlite_time = use_local_sqlite_time
         self._workers = checked
         self._key_policy = key_policy
         self.coordinator = coordinator
@@ -167,17 +171,29 @@ class SignedStagingGateway:
         return actor, now
 
     def _enforce_policy(self, request: SignedStagingRequest):
-        if self._key_policy is None:
+        if self._key_policy is None and not self._use_local_sqlite_time:
             return None
         role, key_id, _secret = self._workers[request.worker_id]
-        return lambda db: self._key_policy.require_active(
-            db, request.worker_id, role, key_id
-        )
+
+        def validate_at_mutation(db):
+            if self._key_policy is not None:
+                self._key_policy.require_active(
+                    db, request.worker_id, role, key_id
+                )
+            if self._use_local_sqlite_time:
+                tick=db.execute(
+                    "SELECT CAST(strftime('%s','now') AS INTEGER)"
+                ).fetchone()[0]
+                if (type(tick) is not int or request.expires_epoch<=tick
+                        or request.expires_epoch-tick>MAX_REQUEST_TTL_SECONDS):
+                    raise WorkflowError("Signed worker request stale at mutation")
+        return validate_at_mutation
 
     def claim(self, request: SignedStagingRequest) -> int:
         role, now = self._authenticate(request, "claim")
         return self.coordinator.claim(
-            request.episode_id, request.task_id, actor=role, now=now,
+            request.episode_id, request.task_id, actor=role,
+            now=None if self._use_local_sqlite_time else now,
             lease_seconds=request.lease_seconds,
             expected_generation=request.generation,
             _authz_check=self._enforce_policy(request),
@@ -191,7 +207,8 @@ class SignedStagingGateway:
             raise WorkflowError("Signed completion Handoff mismatch")
         return self.coordinator.complete(
             request.episode_id, handoff, actor=role,
-            generation=request.generation, now=now,
+            generation=request.generation,
+            now=None if self._use_local_sqlite_time else now,
             request_id=request.request_id,
             _authz_check=self._enforce_policy(request),
         )
@@ -206,6 +223,7 @@ class SignedStagingGateway:
             "real_remote_worker_identity_authenticated": False,
             "direct_coordinator_access_blocked": False,
             "remotely_trusted_database_clock": False,
+            "local_sqlite_mutation_clock_enforced": self._use_local_sqlite_time,
             "real_execution_cancellation": False,
             "youtube_publishing_authorized": False,
             "monthly_infrastructure_inr": 0,

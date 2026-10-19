@@ -281,8 +281,17 @@ class UnifiedStagingCoordinator:
                 raise WorkflowError("Malformed staging receipt") from exc
         return episodes,states
 
-    def _now(self,db:sqlite3.Connection,now:datetime)->int:
-        sec=_utc_seconds(now)
+    def _now(self,db:sqlite3.Connection,now:datetime|None)->int:
+        # None reads SQLite host time inside BEGIN IMMEDIATE. This is a
+        # single-host OS clock, never an independently trusted cloud clock.
+        if now is None:
+            sec=db.execute(
+                "SELECT CAST(strftime('%s','now') AS INTEGER)"
+            ).fetchone()[0]
+            if type(sec) is not int or sec<=0:
+                raise WorkflowError("SQLite local host clock unavailable")
+        else:
+            sec=_utc_seconds(now)
         last=db.execute("SELECT last_now FROM queue_policy WHERE id=1").fetchone()[0]
         if sec<last:
             raise WorkflowError("Unified offline staging clock rolled back")
@@ -388,7 +397,7 @@ class UnifiedStagingCoordinator:
                 or state[2]!=generation or state[3]<=sec):
             raise WorkflowError("Stale or unauthorized unified staging claim")
 
-    def claim(self,eid:str,tid:str,*,actor:str,now:datetime,
+    def claim(self,eid:str,tid:str,*,actor:str,now:datetime|None,
               lease_seconds:int=120,expected_generation:int|None=None,
               _authz_check:Callable[[sqlite3.Connection],None]|None=None)->int:
         """Expected generation fences authenticated signed claim replay.
@@ -435,7 +444,7 @@ class UnifiedStagingCoordinator:
                        "AND task_id=?",(sec+seconds,eid,tid))
 
     def complete(self,eid:str,handoff:Handoff,*,actor:str,
-                 generation:int,now:datetime,
+                 generation:int,now:datetime|None,
                  request_id:str|None=None,
                  _authz_check:Callable[[sqlite3.Connection],None]|None=None)->dict:
         """Atomically finish and optionally persist replayable draft receipt.
