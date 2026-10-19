@@ -29,6 +29,27 @@ BEAT_SECONDS=4
 MAX_BEATS=3
 MAX_PREVIEW_SECONDS=12
 
+CHROME={
+ "en":{
+    "concept":"ORIGINAL 2.5D CONCEPT  /  NO LIVE APP",
+    "tagline":"HUMAN CONTROL  >  AUTONOMY",
+    "step":"STEP",
+    "review":"REVIEWABLE",
+    "lock":"FINAL ACTION LOCKED",
+    "approval":"REQUIRES EXPLICIT HUMAN APPROVAL",
+    "footer":"SILENT DRAFT / NOT FOR UPLOAD",
+ },
+ "hi":{
+    "concept":"मूल 2.5D अवधारणा / असली ऐप नहीं",
+    "tagline":"नियंत्रण आपके हाथ में",
+    "step":"कदम",
+    "review":"जाँच",
+    "lock":"अंतिम कार्रवाई बंद",
+    "approval":"आपकी स्पष्ट अनुमति ज़रूरी है",
+    "footer":"बिना आवाज़ / अपलोड के लिए नहीं",
+ },
+}
+
 BEATS={
  "fm_20261020_short_en":(
   ("CHAT TO ACTION","Question","Tool plan","Review"),
@@ -132,8 +153,10 @@ def _card(layer:Image.Image,index:int,text:str,language:str,
     d.ellipse((x+16,y+21,x+44,y+49),fill=(*COLORS["teal"],255))
     d.line((x+22,y+35,x+29,y+42,x+40,y+26),fill=(*COLORS["bg"],255),width=3)
     _draw_fit(d,text,language,(x+57,y+16),w-76,22,(*COLORS["white"],255))
-    d.text((x+59,y+52),f"STEP 0{index+1}  /  REVIEWABLE",
-           font=_font("en",10),fill=(*COLORS["muted"],255))
+    c=CHROME[language]
+    subtitle=f"{c['step']} 0{index+1}  /  {c['review']}"
+    _draw_fit(d,subtitle,language,(x+59,y+52),
+              w-75,11,(*COLORS["muted"],255))
     if index<2:
         progress=.5+.5*sin(phase*1.9-index*1.4)
         d.line((x+w-6,y+h+3,x+w-6,y+h+14),fill=(*COLORS["cyan"],255),width=3)
@@ -162,31 +185,31 @@ def draw_motion_frame(episode_id:str,frame_number:int)->Image.Image:
                fill=(29,74,91,60),width=1)
     d.text((26,25),"FM  /  FLOWMINUTE LAB",
            font=_font("en",15,True),fill=(*COLORS["cyan"],255))
-    d.text((26,59),"ORIGINAL 2.5D CONCEPT  /  NO LIVE APP",
-           font=_font("en",10),fill=(*COLORS["muted"],255))
+    _draw_fit(d,CHROME[lang]["concept"],lang,(26,59),380,12,
+              (*COLORS["muted"],255))
     d.line((26,90,406,90),fill=(*COLORS["cyan"],115),width=2)
     heading,*steps=BEATS[episode_id][beat]
     entrance=(1-min(1,local*5))**2
     heading_y=int(127-27*entrance+2*sin(phase))
     _draw_fit(d,heading,lang,(27,heading_y),376,34,(*COLORS["white"],255))
-    d.text((29,202),"HUMAN CONTROL  >  AUTONOMY",
-           font=_font("en",14,True),fill=(*COLORS["teal"],255))
+    _draw_fit(d,CHROME[lang]["tagline"],lang,(29,202),375,18,
+              (*COLORS["teal"],255))
     for i,item in enumerate(steps):
         _card(base,i,item,lang,phase,beat)
     # Meaningful animation: progress advances, human approval remains LOCKED.
     d=ImageDraw.Draw(base)
     d.rounded_rectangle((27,634,407,697),radius=17,
                         fill=(5,20,38,245),outline=(57,164,165,255),width=2)
-    d.text((47,649),"FINAL ACTION LOCKED",
-           font=_font("en",17,True),fill=(*COLORS["cyan"],255))
-    d.text((47,677),"REQUIRES EXPLICIT HUMAN APPROVAL",
-           font=_font("en",10),fill=(*COLORS["white"],255))
+    _draw_fit(d,CHROME[lang]["lock"],lang,(47,649),333,18,
+              (*COLORS["cyan"],255))
+    _draw_fit(d,CHROME[lang]["approval"],lang,(47,676),329,13,
+              (*COLORS["white"],255))
     d.rounded_rectangle((27,721,407,728),radius=3,fill=(30,62,78,255))
     d.rounded_rectangle((27,721,27+int(380*(frame_number+1)/
                                           (MAX_PREVIEW_SECONDS*FPS)),728),
                         radius=3,fill=(*COLORS["teal"],255))
-    d.text((27,741),"SILENT DRAFT • NOT FOR UPLOAD",
-           font=_font("en",11),fill=(*COLORS["muted"],255))
+    _draw_fit(d,CHROME[lang]["footer"],lang,(27,739),375,12,
+              (*COLORS["muted"],255))
     return base.convert("RGB")
 
 
