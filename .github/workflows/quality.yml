@@ -34,6 +34,8 @@ jobs:
         run: python -m pytest -q
       - name: Verify read-only Cloudflare Worker contract (no secrets)
         run: node --test autopilot/test_phase5d_cloudflare_owner_readback.mjs
+      - name: Verify Cloudflare D1 read-only inventory candidate (no secrets)
+        run: node --test autopilot/test_phase5e_cloudflare_d1_readonly_inventory.mjs
       - name: Validate episode editorial metadata (not publish approval)
         shell: bash
         run: |
