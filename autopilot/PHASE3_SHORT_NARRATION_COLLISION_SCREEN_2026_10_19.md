@@ -26,3 +26,18 @@ These are not actual narrated recordings or real MP4 evidence; FFmpeg output is 
 ## Remaining production acceptance
 
 Genuine rights-cleared Hindi and English recordings, independent authenticated native-listener reviews, actual spoken-word synchronization, zero-cost private media compute/storage, OAuth durability, private readback and an owner-approved publishing pilot remain open. The original 21 production acceptance subphases across six unfinished major phases are unchanged. PR #4/#5 remain draft, no laptop/Nirala usage, external provider or model install, API connection, payment or YouTube publishing.
+
+
+## 19 Oct: three-lane offline technical-audio handoff integration
+
+cloud_three_lane_audio_gate.py now composes:
+- all three full-duration English/Hindi/Hindi-long cue-activity receipts;
+- the pair of final English/Hindi short-track collision fingerprints;
+- a cross-check that the exact short MP4 SHA on each fingerprint is the same one inspected by the respective cue checker;
+- the explicit cue-count, acoustic coverage, decoded-full-duration and no-forged-approval conditions.
+
+Its only positive result is technical_audio_handoff_unblocked, which means the **technical no-silence / no-obvious-track-cloning gates** passed. Unlike the real production QA approval, a synthetic technical pass never asserts two different narrators, actual spoken words, language, human quality, legal rights, synchronized subtitles, uploaded videos, recurring budget capacity or release clearance. Failures identify the technical lane and preserve the independent release veto.
+
+test_cloud_three_lane_audio_gate.py checks a complete fictional three-lane technical pass with publication still false, cloned short soundtrack, silent/unchecked cue, missing/duplicated lane or mismatched media hashes, and attempted reviewer/rights/publish privilege escalation.
+
+There is still NO real spoken audio, authenticated reviewer/rights clearance, cloud provider, OAuth upload, or automatic publishing in this code.
