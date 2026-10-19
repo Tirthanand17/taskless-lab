@@ -78,7 +78,8 @@ def _fence(conn:sqlite3.Connection,owner:str,epoch:int,now:int)->None:
     try:
         conn.execute("BEGIN IMMEDIATE")
         current=conn.execute(_SELECT).fetchone()
-        if current is None or current!=(owner,epoch,current[2]) or current[2]<=now:
+        if (current is None or current[0]!=owner or current[1]!=epoch
+                or current[2]<=now):
             raise WorkflowError("Shadow writer lost lease, stale epoch denied")
         conn.execute("COMMIT")
     except BaseException as ex:
@@ -113,7 +114,6 @@ def rehearse_in_memory_writer_fencing()->dict:
     first,second=_open_pair()
     try:
         epoch_one=_claim(first,"shadow_writer_one",100,10)
-        first_writer_live=True
         _fence(first,"shadow_writer_one",epoch_one,105)
         rejected_overlap=False
         try:
