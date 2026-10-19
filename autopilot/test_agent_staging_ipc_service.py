@@ -127,12 +127,22 @@ class StagingIPCBoundaryTests(unittest.TestCase):
         # longer alive. Simulate a lease that expired while the service was
         # offline, without sleeping or altering the machine clock.
         self._stop_service()
-        old=SQLiteHostClock(self.core).now()-timedelta(seconds=30)
         generation=self.core.claim(
-            self.ep,self.task,actor=self.role,now=old,
+            self.ep,self.task,actor=self.role,now=None,
             lease_seconds=10,expected_generation=0,
         )
         self.assertEqual(generation,1)
+        # Unit-test-only crash/time passage fixture: backdate the running
+        # lease, NOT the coordinator's monotonic clock. This models a
+        # worker lease that actually expired while service was offline.
+        with sqlite3.connect(self.db) as db:
+            db.execute(
+                "UPDATE stage_tasks SET expires="
+                "CAST(strftime('%s','now') AS INTEGER)-1 "
+                "WHERE episode=? AND task_id=?",
+                (self.ep,self.task),
+            )
+            db.commit()
         self.assertEqual(self.core.report()["running_tasks"],1)
         self._start_service()
         self.assertEqual(self.core.report()["running_tasks"],0)
