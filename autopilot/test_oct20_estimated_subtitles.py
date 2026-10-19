@@ -98,6 +98,13 @@ class October20EditorSubtitleTests(unittest.TestCase):
             with self.subTest(episode=episode):
                 self.assertEqual(subtitle,original)
 
+    def test_no_one_word_orphan_caption_in_editor_drafts(self):
+        for episode,entry in create_oct20_provisional_srt().items():
+            all_cues=read_cues(entry["srt"])
+            one_word=[text for _,_,text in all_cues if len(text.split())==1]
+            with self.subTest(episode=episode):
+                self.assertEqual(one_word,[])
+
     def test_hindi_drafts_are_not_latin_dubs(self):
         result=create_oct20_provisional_srt()
         for ep in ("fm_20261020_short_hi","fm_20261020_long_hi"):
