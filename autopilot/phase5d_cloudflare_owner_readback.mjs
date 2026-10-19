@@ -112,6 +112,12 @@ export default{async fetch(req,e){
   if(!enabled(e,now))return denied("READBACK_NOT_APPROVED_OR_EXPIRED");
   if(!await adminOk(req.headers.get("authorization"),e.FM_ADMIN_READBACK_KEY))
    return denied("UNAUTHORIZED",401);
+  // Cloudflare native rate limiter is a MANDATORY binding. No limiter means
+  // no Google requests. Its counters are per edge location, NOT a global cost cap.
+  if(typeof e.FM_READBACK_RATE_LIMITER?.limit!=="function")
+   return denied("RATE_LIMIT_BINDING_MISSING");
+  const rate=await e.FM_READBACK_RATE_LIMITER.limit({key:"flowminute:owner-readback"});
+  if(rate?.success!==true)return denied("RATE_LIMITED",429);
   const claimed=req.headers.get("content-length");
   if(claimed!==null&&(!/^\d+$/.test(claimed)||Number(claimed)>MAX_REQUEST))
    return denied("REQUEST_TOO_LARGE",413);
