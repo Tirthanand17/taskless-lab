@@ -16,10 +16,14 @@ def response(bookmark=ONE):
             "result":{"bookmark":bookmark}}
 
 
-def check(one=None,two=None,mode="workers_free"):
+_UNSET=object()
+
+
+def check(one=_UNSET,two=_UNSET,mode="workers_free"):
+    # None is an invalid caller-supplied response, not a default alias.
     return screen_untrusted_d1_time_travel_bookmarks(
-        initial_response=response() if one is None else one,
-        final_response=response() if two is None else two,
+        initial_response=response() if one is _UNSET else one,
+        final_response=response() if two is _UNSET else two,
         recovery_plan=mode,
     )
 
