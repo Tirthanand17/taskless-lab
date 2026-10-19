@@ -153,7 +153,7 @@ def render_storyboard_keyframe(
 )->dict:
     spec=preview_spec(plan,episode_id)
     if (type(scene_number) is not int or not 0<=scene_number<spec.scenes
-            or type(output_path) is not Path
+            or not isinstance(output_path,Path)
             or output_path.suffix.lower()!=".png"
             or output_path.exists() or output_path.is_symlink()
             or not output_path.parent.is_dir()
@@ -238,7 +238,7 @@ def render_silent_preview_excerpt(
             or not 1<=scenes<=3
             or type(seconds_per_scene) is not int
             or not 1<=seconds_per_scene<=3
-            or type(output_path) is not Path
+            or not isinstance(output_path,Path)
             or output_path.suffix.lower()!=".mp4"
             or output_path.exists() or output_path.is_symlink()
             or not output_path.parent.is_dir()
