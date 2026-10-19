@@ -35,11 +35,11 @@ LANES={
    "footer":"ORIGINAL 3D CONCEPT  /  SILENT UNRELEASED",
  },
  "fm_20261020_short_hi":{
-   "lang":"hi","headline":"AI से काम करवाएँ?",
+   "lang":"hi","headline":"एआई से काम करवाएँ?",
    "subline":"ऑर्डर से पहले खुद जाँच करें",
    "labels":("सवाल","प्लान","जाँच"),
    "lock":"अंतिम अनुमति आपकी",
-   "footer":"मूल 3D अवधारणा / बिना आवाज़ / अपलोड नहीं",
+   "footer":"मूल त्रिआयामी दृश्य / बिना आवाज़ / अपलोड नहीं",
  },
 }
 NAVY=(5,15,32)
@@ -231,8 +231,12 @@ def draw_true_mesh_frame(episode_id,frame):
                            fill=(8,24,45,235),outline=(*BLUE,180),width=2)
     draw.text((39,32),"FLOWMINUTE LAB  /  ORIGINAL 3D",
               font=_font("en",18),fill=WHITE)
-    draw.text((40,66),"CONCEPT SCENE  •  NOT A REAL SHOPPING APP",
-              font=_font("en",12),fill=(150,181,200))
+    draw.text(
+        (40,66),
+        ("काल्पनिक दृश्य / असली शॉपिंग ऐप नहीं"
+         if lang=="hi" else "CONCEPT SCENE  /  NOT A REAL SHOPPING APP"),
+        font=_font(lang,12),fill=(150,181,200)
+    )
     font=_fitted(draw,config["headline"],lang,495,36)
     draw.text((25,128),config["headline"],font=font,fill=WHITE)
     draw.text((25,190),config["subline"],
@@ -252,8 +256,11 @@ def draw_true_mesh_frame(episode_id,frame):
     # Approval locked: no real-world purchase/action is claimed.
     draw.rounded_rectangle((22,769,518,877),radius=20,
                            fill=(7,29,49,241),outline=(*TEAL,255),width=2)
-    draw.text((42,786),"FINAL ACTION  /  LOCKED",
-              font=_font("en",18),fill=(*BLUE,255))
+    draw.text(
+        (42,786),
+        ("अंतिम कार्रवाई बंद" if lang=="hi" else "FINAL ACTION / LOCKED"),
+        font=_font(lang,18),fill=(*BLUE,255)
+    )
     draw.text((42,818),config["lock"],
               font=_fitted(draw,config["lock"],lang,454,21),
               fill=WHITE)
