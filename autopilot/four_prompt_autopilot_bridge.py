@@ -14,13 +14,12 @@ NO autonomous production or authoritatively verified upload is implied.
 from __future__ import annotations
 
 from datetime import date
-from hashlib import sha256
 import json
 
 from .agent_org import (
     CHANNEL_ID,EpisodeSpec,MasterOrchestrator,WorkflowError,
 )
-from .calendar import PublishingCalendar,CalendarError
+from .calendar import PublishingCalendar
 from .hybrid_scene_director import scene_recipe_plan
 from .oct20_silent_concept_preview import load_preview_plan,preview_spec
 
@@ -175,3 +174,34 @@ def staging_cycle_json(
                               existing_reserved_utc=existing_reserved_utc),
         ensure_ascii=False,sort_keys=True,indent=2,
     )+"\n"
+
+
+def main(argv:list[str]|None=None)->int:
+    """Actual offline command entry; never mutates cloud calendar or videos."""
+    import argparse
+    parser=argparse.ArgumentParser(
+        description="FlowMinute offline 4-prompt source/calendar/agents review",
+    )
+    parser.add_argument("--day",required=True,
+                        help="Target YYYY-MM-DD in Asia/Kolkata")
+    parser.add_argument("--today",help="Local YYYY-MM-DD to interpret override")
+    parser.add_argument("--calendar-command",
+                        help="Optional strictly parsed draft calendar override")
+    args=parser.parse_args(argv)
+    try:
+        day=date.fromisoformat(args.day)
+        calendar=PublishingCalendar()
+        if args.calendar_command:
+            if not args.today:
+                parser.error("--today is needed to interpret a calendar command")
+            calendar.apply(args.calendar_command,today=date.fromisoformat(args.today))
+        print(staging_cycle_json(day,calendar=calendar),end="")
+    except (WorkflowError,ValueError) as exc:
+        # Do not dump any potentially sensitive credentials, source bytes or
+        # arbitrary prompts in log errors; CLI has no live side effects.
+        parser.error("Draft staging calendar or source validation refused")
+    return 0
+
+
+if __name__=="__main__":
+    raise SystemExit(main())
