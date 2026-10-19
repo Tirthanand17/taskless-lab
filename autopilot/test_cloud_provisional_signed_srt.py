@@ -18,6 +18,7 @@ from autopilot.cloud_cue_audio_activity import CueAcousticCoverage
 from autopilot.cloud_signed_transcript_reviews import transcript_digest
 from autopilot.cloud_transcript_alignment_intake import _draft_cues
 from autopilot.cloud_provisional_signed_srt import stage_provisional_srt
+from autopilot.cloud_provisional_srt_readback import verify_current_provisional_srt
 from autopilot.test_cloud_transcript_replay_ledger import fixture
 from autopilot.test_cloud_acoustic_review_evidence import _data
 from autopilot.test_cloud_signed_transcript_reviews import resign, EXCLUDED
@@ -190,6 +191,87 @@ class ProvisionalSignedSubtitleTests(unittest.TestCase):
         self.assertIsNone(output["export_basename"])
         self.assertEqual(before,set(self.root.iterdir()))
         self.assertFalse(output["publishing_authorized"])
+
+    def readback(self,event,*,directory=None):
+        return verify_current_provisional_srt(
+            ledger=self.ledger,candidate=self.candidate,
+            media=self.media,audio_screen=self.audio,
+            cue_report=self.cue,expected_event_sha256=event,
+            source_directory=self.root if directory is None else directory,
+        )
+
+    def test_readback_requires_exact_on_disk_digest_and_current_signed_event(self):
+        event=self.admit()
+        self.stage(event["event_sha256"],destination=self.root)
+        found=self.readback(event["event_sha256"])
+        self.assertEqual(found["status"],
+                         "CURRENT_PROVISIONAL_SRT_BYTES_MATCH_EDITOR_ONLY")
+        self.assertTrue(found["current_review_head_rechecked"])
+        self.assertTrue(found["file_reopened_hash_compared"])
+        self.assertFalse(found["genuine_voice_speech_verified"])
+        self.assertFalse(found["actual_spoken_word_timing_verified"])
+        self.assertFalse(found["youtube_upload_authorized"])
+        self.assertFalse(found["publishing_authorized"])
+
+    def test_changed_srt_content_denied_even_if_event_and_filename_match(self):
+        event=self.admit()
+        self.stage(event["event_sha256"],destination=self.root)
+        file=next(self.root.glob("*.reviewed_claim_unverified_speech.srt"))
+        file.write_bytes(file.read_bytes()+b" ")
+        with self.assertRaises(WorkflowError):
+            self.readback(event["event_sha256"])
+
+    def test_srt_replaced_with_symlink_denied(self):
+        event=self.admit()
+        self.stage(event["event_sha256"],destination=self.root)
+        file=next(self.root.glob("*.reviewed_claim_unverified_speech.srt"))
+        replacement=self.root/"untrusted.srt"
+        replacement.write_bytes(file.read_bytes())
+        file.unlink()
+        file.symlink_to(replacement)
+        with self.assertRaises(WorkflowError):
+            self.readback(event["event_sha256"])
+
+    def test_world_readable_subtitle_refused_by_readback(self):
+        event=self.admit()
+        self.stage(event["event_sha256"],destination=self.root)
+        file=next(self.root.glob("*.reviewed_claim_unverified_speech.srt"))
+        file.chmod(0o644)
+        with self.assertRaises(WorkflowError):
+            self.readback(event["event_sha256"])
+
+    def test_private_export_directory_rejects_world_writable_permissions(self):
+        event=self.admit()
+        loose=self.root/"loose"
+        loose.mkdir(mode=0o700)
+        loose.chmod(0o777)
+        with self.assertRaises(WorkflowError):
+            self.stage(event["event_sha256"],destination=loose)
+        self.assertEqual(list(loose.iterdir()),[])
+
+    def test_missing_unapproved_or_corrupt_journal_srt_cannot_be_read(self):
+        event=self.admit()
+        with self.assertRaises(WorkflowError):
+            self.readback(event["event_sha256"])
+        self.stage(event["event_sha256"],destination=self.root)
+        with self.assertRaises(WorkflowError):
+            self.readback("b"*64)
+        with sqlite3.connect(self.ledger.path) as db:
+            db.execute("UPDATE transcript_review_command_nonces "
+                       "SET expires_at_epoch=expires_at_epoch+1")
+        with self.assertRaises(WorkflowError):
+            self.readback(event["event_sha256"])
+
+    def test_failed_export_flush_cleans_exclusively_created_file(self):
+        event=self.admit()
+        with patch("autopilot.cloud_provisional_signed_srt.os.fsync",
+                   side_effect=OSError("synthetic disk failure")):
+            with self.assertRaises(OSError):
+                self.stage(event["event_sha256"],destination=self.root)
+        self.assertFalse(any(self.root.glob("*.reviewed_claim_unverified_speech.srt")))
+        self.stage(event["event_sha256"],destination=self.root)
+        self.assertTrue(self.readback(event["event_sha256"])[
+            "current_review_head_rechecked"])
 
 
 if __name__=="__main__":
