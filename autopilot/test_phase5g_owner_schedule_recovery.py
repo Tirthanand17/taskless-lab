@@ -141,6 +141,12 @@ class RecoveryTests(unittest.TestCase):
         r=verify_scheduled_receipts(p,now=NOW)
         self.assertNotIn("private production title",json.dumps(r))
 
+    def test_non_string_privacy_evidence_rejected_without_dynamic_error(self):
+        p=snapshot()
+        p["remote_observations"][0]["privacy_status"]=["private"]
+        with self.assertRaisesRegex(OwnerReadbackHold,"INVALID_PRIVACY"):
+            verify_scheduled_receipts(p,now=NOW)
+
     def test_not_claiming_live_google_authenticated_from_fake_data(self):
         r=self.evaluate()
         self.assertFalse(r["remote_credentials_authenticated_here"])
