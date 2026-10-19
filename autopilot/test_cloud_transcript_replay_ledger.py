@@ -8,7 +8,7 @@ import sqlite3
 import unittest
 
 from autopilot.agent_org import WorkflowError
-from autopilot.cloud_signed_transcript_reviews import _canonical
+from autopilot.cloud_signed_transcript_reviews import transcript_digest
 from autopilot.test_cloud_signed_transcript_reviews import fixture,resign,NOW,EXCLUDED
 from autopilot.cloud_transcript_replay_ledger import (
     MAX_REVIEW_EVENTS,OfflineTranscriptReviewLedger,
@@ -40,7 +40,7 @@ class TranscriptReviewJournalTests(unittest.TestCase):
         for old in signed:
             owner=old.claim.reviewer_id
             new.append(resign(
-                old,keys[owner],transcript_sha256=old.claim.transcript_sha256,
+                old,keys[owner],transcript_sha256=transcript_digest(a),
                 media_sha256=digest,receipt_id=old.claim.receipt_id+"_"+nonce,
             ))
         return (a,b,c,keys,registry,tuple(new))
