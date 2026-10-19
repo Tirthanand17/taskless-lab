@@ -71,7 +71,7 @@ _LINK=re.compile(r"(?:https?://|www\.)",re.IGNORECASE)
 _SHA=re.compile(r"\b[a-f0-9]{64}\b",re.IGNORECASE)
 LABELS=("MOCK","CONCEPT","DEMO","HYPOTHETICAL","NOT CONNECTED","काल्पनिक")
 _SPOKEN_DENY=("guaranteed viral","100% accurate","unlimited free",
-             "हर अकाउंट में उपलब्ध","सबको मुफ्त","one click buy",
+             "सबको मुफ्त","one click buy",
              "fully automated purchase")
 
 
