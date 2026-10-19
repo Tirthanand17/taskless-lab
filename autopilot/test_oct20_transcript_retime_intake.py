@@ -215,6 +215,20 @@ class Oct20UntrustedWordTimeTests(unittest.TestCase):
                     summarize_oct20_word_timing_batch(
                         (corrupted,good[1],good[2]))
 
+    def test_fake_new_authority_field_or_boolean_quota_is_denied(self):
+        good=tuple(inspect_oct20_untrusted_word_timing(
+            synthetic_claim(ep)) for ep in ALLOWED)
+        for field,value in (
+            ("human_voice_review_authorized",True),
+            ("external_network_calls",False),
+            ("monthly_recurring_infrastructure_inr",False),
+        ):
+            with self.subTest(field=field,value=value):
+                forged=dict(good[0],**{field:value})
+                with self.assertRaises(WorkflowError):
+                    summarize_oct20_word_timing_batch(
+                        (forged,good[1],good[2]))
+
     def test_proposed_candidate_repr_hides_full_transcript_words_hashes(self):
         ep="fm_20261020_short_en"
         candidate=synthetic_claim(ep)
