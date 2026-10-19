@@ -109,8 +109,16 @@ class TranscriptReviewJournalTests(unittest.TestCase):
         past=int(prior.timestamp())-60
         reopened=OfflineTranscriptReviewLedger(self.path)
         with patch.object(ledger_module,"_sqlite_host_epoch",return_value=past):
-            with self.assertRaises(WorkflowError):
-                self.admit(revised,ledger=reopened,expected=first["event_sha256"])
+            # Supply NO caller clock, so the rejection specifically proves
+            # durable persisted-event monotonicity, not caller-skew checking.
+            with self.assertRaisesRegex(WorkflowError,"rolled back"):
+                a,b,c,keys,registry,signed=revised
+                reopened.commit(
+                    candidate=a,media=b,audio_screen=c,
+                    signed_attestations=signed,registry=registry,
+                    excluded_creator_publisher_ids=EXCLUDED,
+                    now=None,expected_current_sha=first["event_sha256"],
+                )
         self.assertEqual(self.ledger.current_status(f[0].episode_id)[
             "total_accepted_review_batches"],1)
 
