@@ -9,6 +9,7 @@ import unittest
 from autopilot.agent_org import WorkflowError
 from autopilot.cloud_release_snapshot_reconcile import (
     ReleaseSnapshot,OwnerVideoSnapshot,reconcile_release_snapshots,
+    reconcile_existing_private_shapes,
 )
 
 CHANNEL="UC"+"x"*22
@@ -185,6 +186,96 @@ class ReleaseReconciliationDryRunTests(unittest.TestCase):
         self.assertIn("NO_LOCAL_RELEASE_RECORDS_TO_RECONCILE",
                       out["blocking_reasons"])
         self.assertIn("NO_OWNER_VIDEOS_IN_READBACK",out["blocking_reasons"])
+
+    def inventory(self,*,video=None,uncertain_count=0):
+        listed=[{
+            "youtube_id":video.youtube_id,
+            "privacy":video.privacy,
+            "processing":video.processing,
+            "publish_at_utc":video.publish_at_utc,
+            "uncertain_metadata":video.uncertain_metadata,
+        }] if video is not None else []
+        return {
+            "status":"PRIVATE_READ_ONLY_RESPONSE_NOT_RELEASE_AUTHORITY",
+            "channel_id":CHANNEL,"playlist_page_count":1,
+            "video_count":len(listed),"videos":listed,
+            "playlist_and_details_matched":True,
+            "processing_or_schedule_uncertain_count":uncertain_count,
+            "live_authentication_independently_attested":False,
+            "d1_release_rows_reconciled":False,
+            "owner_publish_consent_verified":False,
+            "migration_authorized":False,
+            "private_upload_authorized":False,
+            "schedule_or_public_publishing_authorized":False,
+            "raw_oauth_tokens_in_output":False,
+            "storage_writes":0,
+        }
+
+    def bridge(self,*,inventory=None,releases=None):
+        a=release()
+        row=(a.release_date,a.episode_id,a.media_sha256,
+             a.stage,a.youtube_id,a.publish_at_utc)
+        return reconcile_existing_private_shapes(
+            existing_ledger_rows=(row,) if releases is None else releases,
+            private_youtube_inventory=self.inventory(video=remote())
+                if inventory is None else inventory,
+            expected_channel_id=CHANNEL,
+            local_ledger_snapshot_complete=True,
+        )
+
+    def test_private_shape_bridge_uses_real_existing_ledger_row_order(self):
+        outcome=self.bridge()
+        self.assertEqual(outcome["matched_remote_video_id_count"],1)
+        self.assertEqual(outcome["quarantined_local_release_count"],0)
+        self.assertFalse(outcome["publish_or_upload_authorized"])
+        self.assertFalse(outcome["owner_snapshot_origin_independently_authenticated"])
+        for forbidden in (VIDEO_A,CHANNEL,SHA_A,SCHEDULE):
+            self.assertNotIn(forbidden,str(outcome))
+
+    def test_private_shape_bridge_rejects_privilege_escalation_and_unknown_keys(self):
+        valid=self.inventory(video=remote())
+        for name,value in (
+            ("private_upload_authorized",True),
+            ("owner_publish_consent_verified",True),
+            ("d1_release_rows_reconciled",True),
+            ("live_authentication_independently_attested",True),
+            ("storage_writes",2),
+            ("playlist_and_details_matched",False),
+            ("video_count",7),
+            ("processing_or_schedule_uncertain_count",1),
+        ):
+            altered=dict(valid,**{name:value})
+            with self.subTest(field=name),self.assertRaises(WorkflowError):
+                self.bridge(inventory=altered)
+        leaking=dict(valid,oauth_secret="NEVER_ECHO")
+        with self.assertRaises(WorkflowError) as e:
+            self.bridge(inventory=leaking)
+        self.assertNotIn("NEVER_ECHO",str(e.exception))
+
+    def test_private_shape_bridge_unknown_or_wrong_channel_and_row_denied(self):
+        valid=self.inventory(video=remote())
+        for altered in (
+            dict(valid,channel_id=OTHER_CHANNEL),
+            dict(valid,videos=[{"youtube_id":VIDEO_A,"access_token":"XXX"}]),
+            dict(valid,videos="not a list"),
+        ):
+            with self.assertRaises(WorkflowError):
+                self.bridge(inventory=altered)
+        for rows in (
+            ((1,2),),
+            ((release().release_date,release().episode_id),),
+            ([1,2,3,4,5,6],),
+        ):
+            with self.assertRaises(WorkflowError):
+                self.bridge(releases=rows)
+
+    def test_private_shape_bridge_uncertain_processing_never_approves_retry(self):
+        report=self.bridge(inventory=self.inventory(
+            video=remote(processing="unknown",uncertain=True),
+            uncertain_count=1,
+        ))
+        self.assertIn("UNCERTAIN_REMOTE_VIDEO_METADATA",report["blocking_reasons"])
+        self.assertFalse(report["safe_to_retry_any_ambiguous_upload"])
 
 
 if __name__=="__main__":
