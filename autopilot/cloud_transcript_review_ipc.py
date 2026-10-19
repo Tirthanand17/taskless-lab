@@ -144,15 +144,19 @@ class StrictTranscriptReviewCommandBoundary:
             excluded_creator_publisher_ids=bundle.excluded_creator_publisher_ids,
             evidence_files=bundle.evidence_files,
             expected_current_sha=current,
+            signed_command_nonce=nonce,
+            signed_command_expires_at_epoch=expiry,
             now=None,
         )
-        if not response["signed_sidecar_digests_chained"]:
+        if (not response["signed_sidecar_digests_chained"]
+                or not response["signed_command_nonce_chained"]):
             raise WorkflowError("Strict-only transcript admission invariant failed")
         # Do not return raw episode/video/transcript/review identities over IPC.
         return {
             "status":"OFFLINE_STRICT_REVIEW_JOURNALED",
             "event_number":response["event_number"],
             "two_signed_sidecar_digests_chained":True,
+            "signed_command_nonce_persisted":True,
             "real_audio_verified":False,
             "real_reviewer_identity_verified":False,
             "youtube_upload_authorized":False,
@@ -197,6 +201,8 @@ class OfflineStrictTranscriptReviewIPC(socketserver.ThreadingMixIn,
         self.boundary=boundary
         super().__init__(str(self.location),_ReviewHandler)
         os.chmod(self.location,0o600)
+        node=self.location.stat()
+        self._socket_identity=(node.st_dev,node.st_ino)
 
     def server_close(self):
         super().server_close()
@@ -222,8 +228,6 @@ def serve_offline_strict_review(*,db_path:Path,socket_path:Path,
             ledger,reviews=reviews,hmac_key=hmac_key,
         )
         with OfflineStrictTranscriptReviewIPC(Path(socket_path),boundary) as server:
-            node=server.location.stat()
-            server._socket_identity=(node.st_dev,node.st_ino)
             if ready_pipe is not None:
                 ready_pipe.send(True)
                 ready_pipe.close()
