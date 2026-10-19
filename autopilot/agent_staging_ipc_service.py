@@ -70,13 +70,24 @@ class OfflineStagingIPCService(socketserver.ThreadingMixIn,
     request_queue_size=4
 
     def __init__(self,location:Path,
-                 boundary:StagingLocalCommandBoundary):
+                 boundary:StagingLocalCommandBoundary,*,
+                 socket_group_gid:int|None=None):
         if not isinstance(boundary,StagingLocalCommandBoundary):
             raise WorkflowError("Signed command boundary is required")
         self.location=_require_socket_path(location)
         self.command_boundary=boundary
+        # Explicit opt-in to local group-only IPC is restricted to the
+        # service's actual effective GID. Workers in that group receive
+        # socket access but NOT direct DB/file permissions. Default 0600.
+        if socket_group_gid is not None and (
+            type(socket_group_gid) is not int
+            or socket_group_gid<=0
+            or socket_group_gid!=os.getegid()
+        ):
+            raise WorkflowError("Only the local service GID may own IPC access")
+        self.socket_group_gid=socket_group_gid
         super().__init__(str(self.location),_SignedIPCHandler)
-        os.chmod(self.location,0o600)
+        os.chmod(self.location,0o660 if socket_group_gid is not None else 0o600)
         saved=self.location.stat()
         self._identity=(saved.st_dev,saved.st_ino)
 
@@ -94,7 +105,8 @@ class OfflineStagingIPCService(socketserver.ThreadingMixIn,
 def serve_offline_staging(db_path:Path,episodes:tuple[EpisodeSpec,...],
                           socket_path:Path,worker_keys:Mapping[str,tuple],
                           admin_id:str,admin_secret:bytes,
-                          ready_pipe=None)->None:
+                          ready_pipe=None,
+                          socket_group_gid:int|None=None)->None:
     """Separate OS process entrypoint for *offline test harness only*.
 
     In-memory HMAC keys are passed by the trusted test parent at process
@@ -107,7 +119,9 @@ def serve_offline_staging(db_path:Path,episodes:tuple[EpisodeSpec,...],
             core,worker_keys=worker_keys,
             admin_id=admin_id,admin_secret=admin_secret,
         )
-        with OfflineStagingIPCService(Path(socket_path),boundary) as service:
+        with OfflineStagingIPCService(
+            Path(socket_path),boundary,socket_group_gid=socket_group_gid
+        ) as service:
             if ready_pipe is not None:
                 ready_pipe.send(True)
                 ready_pipe.close()
