@@ -24,6 +24,7 @@ from .agent_org import WorkflowError
 from .oct20_silent_concept_preview import load_preview_plan
 from .phase3_voice_subtitle_handoff import inspect_external_voice_wav
 from .phase3_complete_narration_intake import _hash_existing
+from .oct20_voice_signal_triage import inspect_oct20_wav_signal_anomalies
 
 TARGETS={
     "fm_20261020_short_en":("en","short",42,"narrator_en_short_oct20"),
@@ -211,6 +212,28 @@ def screen_oct20_owned_voice_takes(
                 or type(sound.get("duration_seconds")) not in (int,float)
                 or abs(sound["duration_seconds"]-item["target_seconds"])>1.5):
             _deny()
+        # Duration/RMS alone previously let a deliberately repeated 250ms
+        # square wave pass as a putative 480-second narrator recording.
+        # Quarantine exact repeated non-silent PCM, excessive clipping and
+        # long silence BEFORE aggregate technical handoff.
+        try:
+            triage=inspect_oct20_wav_signal_anomalies(take.source_wav)
+        except (OSError,WorkflowError):
+            _deny()
+        if (type(triage) is not dict
+                or triage.get("wav_sha256")!=sound["sha256"]
+                or triage.get("status")!="OCT20_AUDIO_SIGNAL_SHAPE_TECHNICAL_ONLY"
+                or triage.get("technical_anomaly_screen_passed") is not True
+                or triage.get("technical_signal_holds")!=()
+                or any(triage.get(flag) is not False for flag in (
+                    "waveform_verified_as_spoken_language",
+                    "natural_human_voice_verified",
+                    "commercial_voice_rights_verified",
+                    "transcript_acoustic_alignment_verified",
+                    "ready_for_media_mux","youtube_upload_authorized",
+                    "youtube_publish_authorized",
+                ))):
+            _deny()
         if sound["sha256"] in wav_hashes:
             _deny()
         accepted.add(ep)
@@ -225,6 +248,9 @@ def screen_oct20_owned_voice_takes(
         "recording_lengths_matched_targets":True,
         "local_rights_document_hashes_matched":True,
         "declared_owned_recording_source_present":True,
+        "actual_pcm_signal_anomaly_screen_passed":True,
+        "obvious_repeated_test_tones_or_clipping_hold":False,
+        "acoustic_voice_naturalness_or_identity_determined":False,
         "distinct_wav_file_bytes":len(wav_hashes),
         "independent_human_voice_confirmed":False,
         "real_speech_language_verified":False,
