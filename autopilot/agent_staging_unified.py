@@ -361,6 +361,30 @@ class UnifiedStagingCoordinator:
         with self._tx() as db:
             return self._report(*self._check(db))
 
+    def is_current_worker_lease(self,eid:str,tid:str,*,actor:str,
+                                generation:int)->bool:
+        """Read only current staging lease eligibility for a local supervisor.
+
+        The active video, original task role, generation and lease expiry
+        are checked together. Time is SQLite host OS time, not remote
+        authoritative time. Never grants a lease or publishing privilege.
+        """
+        if type(generation) is not int or generation<1:
+            return False
+        with self._tx() as db:
+            slots,states=self._check(db)
+            contract=self.contracts.get(eid,{}).get(tid)
+            state=states.get((eid,tid))
+            if (contract is None or contract.owner!=actor
+                    or slots.get(eid)!="active"
+                    or state is None or state[0]!="running"
+                    or state[2]!=generation):
+                return False
+            sec=db.execute(
+                "SELECT CAST(strftime('%s','now') AS INTEGER)"
+            ).fetchone()[0]
+            return type(sec) is int and sec>0 and state[3]>sec
+
     def assignments(self,*,limit:int=MAX_FANOUT)->tuple:
         if type(limit) is not int or not 1<=limit<=MAX_FANOUT:
             raise WorkflowError("Unified staging fanout invalid")
