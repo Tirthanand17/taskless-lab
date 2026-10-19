@@ -15,6 +15,7 @@ from hashlib import sha256
 from pathlib import Path
 import os
 import re
+import stat
 
 from .agent_org import WorkflowError
 from .cloud_transcript_replay_ledger import OfflineTranscriptReviewLedger
@@ -33,6 +34,71 @@ from .phase3_voice_subtitle_handoff import (
 HEX64=re.compile(r"[0-9a-f]{64}\Z")
 MAX_RENDER_BYTES=250_000
 EXPORT_SUFFIX=".reviewed_claim_unverified_speech.srt"
+
+
+def _open_owned_directory(folder:Path)->int:
+    """Pin the destination inode; don't follow a substituted final symlink.
+
+    This does not make a same-UID local filesystem adversary trustworthy.
+    """
+    if (not isinstance(folder,Path) or not folder.is_absolute()
+            or folder.is_symlink()):
+        raise WorkflowError("Private subtitle output must be absolute directory")
+    flags=os.O_RDONLY|getattr(os,"O_DIRECTORY",0)
+    flags|=getattr(os,"O_CLOEXEC",0)|getattr(os,"O_NOFOLLOW",0)
+    try:
+        fd=os.open(folder,flags)
+        info=os.fstat(fd)
+        if (not stat.S_ISDIR(info.st_mode)
+                or info.st_uid!=os.geteuid()
+                or (stat.S_IMODE(info.st_mode)&0o022)):
+            raise WorkflowError("Subtitle output directory not owner protected")
+        return fd
+    except BaseException:
+        if "fd" in locals():
+            os.close(fd)
+        raise
+
+
+def _write_exclusive_owned(folder:Path,name:str,raw:bytes)->None:
+    """Export relative to pinned directory FD and verify its identity."""
+    fd=_open_owned_directory(folder)
+    opened=None
+    try:
+        info=os.fstat(fd)
+        flags=os.O_WRONLY|os.O_CREAT|os.O_EXCL
+        flags|=getattr(os,"O_CLOEXEC",0)|getattr(os,"O_NOFOLLOW",0)
+        try:
+            opened=os.open(name,flags,0o600,dir_fd=fd)
+        except OSError as exc:
+            raise WorkflowError("Safe exclusive provisional SRT export denied") from exc
+        file_info=os.fstat(opened)
+        try:
+            with os.fdopen(opened,"wb") as writer:
+                opened=None
+                writer.write(raw)
+                writer.flush()
+                os.fsync(writer.fileno())
+                file_info=os.fstat(writer.fileno())
+            directory_now=folder.lstat()
+            target_now=os.stat(name,dir_fd=fd,follow_symlinks=False)
+            if ((info.st_dev,info.st_ino)!=(directory_now.st_dev,directory_now.st_ino)
+                    or not stat.S_ISREG(target_now.st_mode)
+                    or (target_now.st_dev,target_now.st_ino,target_now.st_size)!=
+                        (file_info.st_dev,file_info.st_ino,len(raw))):
+                raise WorkflowError("Provisional SRT output was swapped")
+        except BaseException:
+            try:
+                target_now=os.stat(name,dir_fd=fd,follow_symlinks=False)
+                if (target_now.st_dev,target_now.st_ino)==(file_info.st_dev,file_info.st_ino):
+                    os.unlink(name,dir_fd=fd)
+            except OSError:
+                pass
+            raise
+    finally:
+        if opened is not None:
+            os.close(opened)
+        os.close(fd)
 
 
 def _timecode(milliseconds:int)->str:
@@ -174,23 +240,7 @@ def stage_provisional_srt(
                 ).fetchone()[0]!=1):
             raise WorkflowError("Current signed acoustic review bundle is incomplete")
         if target is not None:
-            flags=os.O_WRONLY|os.O_CREAT|os.O_EXCL|getattr(os,"O_CLOEXEC",0)
-            flags|=getattr(os,"O_NOFOLLOW",0)
-            try:
-                descriptor=os.open(target,flags,0o600)
-            except OSError as exc:
-                raise WorkflowError("Safe exclusive provisional SRT export denied") from exc
-            try:
-                with os.fdopen(descriptor,"wb") as output:
-                    output.write(raw)
-                    output.flush()
-                    os.fsync(output.fileno())
-            except BaseException:
-                try:
-                    target.unlink()
-                except OSError:
-                    pass
-                raise
+            _write_exclusive_owned(folder,name,raw)
 
     return {
         "status":"SIGNED_REVIEW_PROVISIONAL_SUBTITLE_FOR_EDITOR_ONLY",
