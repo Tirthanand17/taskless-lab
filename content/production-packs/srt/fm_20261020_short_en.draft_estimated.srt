@@ -14,38 +14,39 @@ messy options and changing prices.
 4
 00:00:10,000 --> 00:00:13,000
 An agent might organize choices and
-draft a cart when
+draft
 
 5
 00:00:13,000 --> 00:00:16,000
-you've allowed the tools.
+a cart when you've allowed the
+tools.
 
 6
 00:00:16,000 --> 00:00:19,000
 The trap is letting it buy before
-you check the
 
 7
 00:00:19,000 --> 00:00:22,000
-total and delivery address.
+you check the total and delivery
+address.
 
 8
 00:00:22,000 --> 00:00:25,500
 My rule: plan first, review sources,
-preview the action, then
 
 9
 00:00:25,500 --> 00:00:29,000
-approve.
+preview the action, then approve.
 
 10
 00:00:29,000 --> 00:00:32,500
 Features vary by app, region and
-plan. Don't assume every
+plan.
 
 11
 00:00:32,500 --> 00:00:36,000
-account can run tasks.
+Don't assume every account can run
+tasks.
 
 12
 00:00:36,000 --> 00:00:39,000
