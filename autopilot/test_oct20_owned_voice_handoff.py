@@ -141,6 +141,30 @@ class Oct20OwnedVoiceHandoffTests(unittest.TestCase):
         report=screen_oct20_owned_voice_takes(tuple(reversed(self.takes)))
         self.assertEqual(report["wav_digest_checks_passed"],3)
 
+    def test_repeated_42_second_square_wave_newly_refused_by_three_take_intake(self):
+        # This exact 250ms repeated waveform previously passed duration/RMS
+        # and SHA checks even if a caller claimed its consent/rights. The
+        # new actual-PCM triage must quarantine it before editor handoff.
+        repeated=self.root/"repeated_42_second_square_hold.wav"
+        samples=array("h",(6400 if (i//80)%2 else -6400
+                           for i in range(4000)))
+        if sys.byteorder!="little":
+            samples.byteswap()
+        raw=samples.tobytes()
+        try:
+            with wave.open(str(repeated),"wb") as wav:
+                wav.setnchannels(1)
+                wav.setsampwidth(2)
+                wav.setframerate(16000)
+                for _ in range(42*4):
+                    wav.writeframesraw(raw)
+            bad=replace(self.takes[0],source_wav=repeated,
+                        declared_wav_sha256=sha(repeated))
+            with self.assertRaises(WorkflowError):
+                screen_oct20_owned_voice_takes((bad,*self.takes[1:]))
+        finally:
+            repeated.unlink(missing_ok=True)
+
     def test_older_csv_episode_and_wrong_new_script_are_denied(self):
         bad=replace(self.takes[0],episode_id="csv_tutorial_short_en")
         with self.assertRaises(WorkflowError):
