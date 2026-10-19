@@ -81,21 +81,38 @@ def _scene_cues(text:str,start:int,end:int)->list[tuple[int,int,str]]:
     words=tuple(text.split())
     if not 5<=len(words)<=175:
         _deny()
-    groups=_group_words(words)
     span=(end-start)*1000
-    minimum=ceil(span/MAX_CUE_MS)
-    while len(groups)<minimum:
-        # Split the longest viable group near the middle; do not invent
-        # text or stretch a cue beyond the reading limit.
-        options=[(len(" ".join(group)),i) for i,group in enumerate(groups)
-                 if len(group)>1]
-        if not options:
-            _deny()
-        _,i=max(options)
-        words_here=groups[i]
-        at=len(words_here)//2
-        groups[i:i+1]=[words_here[:at],words_here[at:]]
-    if span//len(groups)<MIN_CUE_MS:
+    # Preliminary minimum from the longest legal greedy grouping, plus
+    # explicit per-cue time bounds. Then balance ALL words afresh so no
+    # isolated one-word caption remains after a greedy last chunk.
+    minimum=max(len(_group_words(words)),ceil(span/MAX_CUE_MS))
+    groups=None
+    for number in range(minimum,len(words)+1):
+        if span//number<MIN_CUE_MS:
+            break
+        size,remainder=divmod(len(words),number)
+        if size==0:
+            break
+        pos=0
+        candidate=[]
+        valid=True
+        for index in range(number):
+            length=size+(1 if index<remainder else 0)
+            group=words[pos:pos+length]
+            pos+=length
+            if len(" ".join(group))>MAX_DISPLAY_CHARS:
+                valid=False
+                break
+            try:
+                _lines(group)
+            except WorkflowError:
+                valid=False
+                break
+            candidate.append(group)
+        if valid and pos==len(words):
+            groups=candidate
+            break
+    if groups is None:
         _deny()
     if tuple(w for group in groups for w in group)!=words:
         _deny()
