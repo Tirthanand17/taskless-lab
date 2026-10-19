@@ -97,19 +97,6 @@ def _check_cue_report(candidate:CandidateWordTranscript,
         raise WorkflowError("Required cue-acoustic technical claim missing")
 
 
-def _current_strict_evidence(
-    ledger:OfflineTranscriptReviewLedger,
-    candidate:CandidateWordTranscript,
-    event_sha:str,
-)->None:
-    """MUST be called inside already active journal transaction.
-
-    This helper is deliberately unused outside stage_provisional_srt; the
-    lock protects against superseding the event during file handoff.
-    """
-    raise WorkflowError("Provisional caption journal check requires transaction")
-
-
 def stage_provisional_srt(
     *,ledger:OfflineTranscriptReviewLedger,
     candidate:CandidateWordTranscript,
