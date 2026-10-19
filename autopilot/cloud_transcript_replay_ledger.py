@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import asdict
-from datetime import datetime
+from datetime import datetime,timezone,timedelta
 from hashlib import sha256
 from pathlib import Path
 from typing import Mapping
@@ -47,6 +47,36 @@ SCHEMA=(
     "role TEXT NOT NULL CHECK(role IN ('transcriber','independent_listener')),"
     "FOREIGN KEY(event_sha) REFERENCES transcript_review_events(event_sha))",
 )
+
+
+MAX_CALLER_SKEW_SECONDS=5
+
+
+def _sqlite_host_epoch(db:sqlite3.Connection)->int:
+    """Read local host-clock seconds in the SAME BEGIN IMMEDIATE write TX.
+
+    This is not an independently trusted remote database or attested clock.
+    It prevents an API caller from picking arbitrary historic verifier time.
+    """
+    tick=db.execute("SELECT CAST(strftime('%s','now') AS INTEGER)").fetchone()[0]
+    if type(tick) is not int or tick<=0:
+        raise WorkflowError("Local SQLite host clock unavailable")
+    return tick
+
+
+def _accepted_at(value:str)->datetime:
+    if not isinstance(value,str):
+        raise WorkflowError("Corrupt transcript journal event clock")
+    try:
+        dt=datetime.fromisoformat(value)
+    except (ValueError,OverflowError) as exc:
+        raise WorkflowError("Corrupt transcript audit timestamp") from exc
+    if dt.tzinfo is None or dt.utcoffset() is None:
+        raise WorkflowError("Transcript journal timestamp lacks UTC offset")
+    result=dt.astimezone(timezone.utc)
+    if dt.utcoffset()!=timedelta(0):
+        raise WorkflowError("Transcript journal clock is not UTC")
+    return result
 
 
 def _hash_event(payload:dict)->str:
@@ -111,6 +141,7 @@ class OfflineTranscriptReviewLedger:
         heads={}
         receipts={}
         seen_media=set()
+        previous_timestamp=None
         for pos,row in enumerate(rows,1):
             detail=_event(row)
             if (type(detail["seq"]) is not int or detail["seq"]!=pos
@@ -126,6 +157,10 @@ class OfflineTranscriptReviewLedger:
                         else detail["supersedes_sha"] is not None)
                     or detail["transcriber_receipt"]==detail["listener_receipt"]):
                 raise WorkflowError("Transcript review audit chain corrupted")
+            accepted=_accepted_at(detail["accepted_at_utc"])
+            if previous_timestamp is not None and accepted<previous_timestamp:
+                raise WorkflowError("Transcript journal event clock moved backward")
+            previous_timestamp=accepted
             seen_media.add(detail["media_sha"])
             for role,key in (
                 ("transcriber","transcriber_receipt"),
@@ -162,8 +197,8 @@ class OfflineTranscriptReviewLedger:
                signed_attestations:tuple[SignedTranscriptAttestation,...],
                registry:Mapping[str,TrustedTranscriptReviewer],
                excluded_creator_publisher_ids:frozenset[str],
-               now:datetime,
-               expected_current_sha:str|None)->dict:
+               now:datetime|None=None,
+               expected_current_sha:str|None=None)->dict:
         """One signed-review batch per immutable MP4; replacement needs CAS.
 
         Reused receipt IDs are rejected even if their signatures remain valid.
@@ -178,11 +213,26 @@ class OfflineTranscriptReviewLedger:
             count,last,heads=self._audit(db)
             if count>=MAX_REVIEW_EVENTS:
                 raise WorkflowError("Transcript audit full; fail closed")
+            tick=_sqlite_host_epoch(db)
+            verified_time=datetime.fromtimestamp(tick,timezone.utc)
+            if now is not None:
+                if (not isinstance(now,datetime)
+                        or now.tzinfo is None or now.utcoffset() is None
+                        or abs((now.astimezone(timezone.utc)-
+                                verified_time).total_seconds())
+                           >MAX_CALLER_SKEW_SECONDS):
+                    raise WorkflowError("Caller clock differs from SQLite host")
+            prior=db.execute(
+                "SELECT accepted_at_utc FROM transcript_review_events "
+                "ORDER BY seq DESC LIMIT 1"
+            ).fetchone()
+            if prior is not None and verified_time<_accepted_at(prior[0]):
+                raise WorkflowError("SQLite host clock rolled back since review")
             verified=verify_signed_transcript_attestations(
                 candidate=candidate,media=media,audio_screen=audio_screen,
                 signed_attestations=signed_attestations,registry=registry,
                 excluded_creator_publisher_ids=excluded_creator_publisher_ids,
-                now=now,
+                now=verified_time,
             )
             if verified["blocking_reasons"]:
                 raise WorkflowError("No accepted two-role transcript signatures")
@@ -219,7 +269,7 @@ class OfflineTranscriptReviewLedger:
                 "transcriber_receipt":receipts["transcriber"],
                 "listener_receipt":receipts["independent_listener"],
                 "supersedes_sha":expected_current_sha,
-                "accepted_at_utc":now.isoformat(),
+                "accepted_at_utc":verified_time.isoformat(),
             }
             event_sha=_hash_event(row)
             db.execute(
@@ -253,6 +303,9 @@ class OfflineTranscriptReviewLedger:
                 "media_sha256":media.video_sha256,
                 "transcript_sha256":row["transcript_sha"],
                 "supersedes_sha256":expected_current_sha,
+                "accepted_at_host_utc":verified_time.isoformat(),
+                "local_sqlite_time_checked_in_transaction":True,
+                "remotely_trusted_database_time":False,
                 "actual_audio_content_independently_verified":False,
                 "reviewer_identity_independently_verified":False,
                 "youtube_publishing_authorized":False,

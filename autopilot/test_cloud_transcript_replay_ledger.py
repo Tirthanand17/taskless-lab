@@ -1,7 +1,7 @@
 """No-secrets replay/racing/revision tests using fake editorial attestations."""
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
-from datetime import timedelta
+from datetime import datetime,timedelta,timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import sqlite3
@@ -9,7 +9,25 @@ import unittest
 
 from autopilot.agent_org import WorkflowError
 from autopilot.cloud_signed_transcript_reviews import transcript_digest
-from autopilot.test_cloud_signed_transcript_reviews import fixture,resign,NOW,EXCLUDED
+from autopilot.test_cloud_signed_transcript_reviews import (
+    fixture as old_test_fixture,resign,EXCLUDED,
+)
+
+
+def fixture(lane="short_en"):
+    """Refresh ONLY synthetic signed times against actual disposable host time.
+
+    The original signed-transcript unit fixtures use a fixed reference clock.
+    This ledger tests the stronger SQLite-time boundary instead.
+    """
+    candidate,media,audio,keys,registry,original=old_test_fixture(lane)
+    reference=datetime.now(timezone.utc)
+    refreshed=tuple(resign(
+        record,keys[record.claim.reviewer_id],
+        assessed_at_utc=(reference-timedelta(minutes=7)).isoformat(),
+        expires_at_utc=(reference+timedelta(hours=1)).isoformat(),
+    ) for record in original)
+    return candidate,media,audio,keys,registry,refreshed
 from autopilot.cloud_transcript_replay_ledger import (
     MAX_REVIEW_EVENTS,OfflineTranscriptReviewLedger,
 )
@@ -28,7 +46,7 @@ class TranscriptReviewJournalTests(unittest.TestCase):
             candidate=a,media=b,audio_screen=c,
             signed_attestations=signed,registry=registry,
             excluded_creator_publisher_ids=EXCLUDED,
-            now=NOW,expected_current_sha=expected,
+            now=datetime.now(timezone.utc),expected_current_sha=expected,
         )
 
     def different_media(self,f,*,digest,nonce):
@@ -44,6 +62,76 @@ class TranscriptReviewJournalTests(unittest.TestCase):
                 media_sha256=digest,receipt_id=old.claim.receipt_id+"_"+nonce,
             ))
         return (a,b,c,keys,registry,tuple(new))
+
+    def test_caller_cannot_backdate_or_jump_time_to_bypass_review_expiry(self):
+        f=fixture()
+        a,b,c,keys,reg,old=f
+        for forged in (
+            datetime.now(timezone.utc)-timedelta(days=3),
+            datetime.now(timezone.utc)+timedelta(days=3),
+            datetime.now(timezone.utc).replace(tzinfo=None),
+        ):
+            with self.subTest(clock=str(forged)),self.assertRaises(WorkflowError):
+                self.ledger.commit(
+                    candidate=a,media=b,audio_screen=c,
+                    signed_attestations=old,registry=reg,
+                    excluded_creator_publisher_ids=EXCLUDED,
+                    now=forged,expected_current_sha=None,
+                )
+        self.assertEqual(self.ledger.current_status(a.episode_id)[
+            "total_accepted_review_batches"],0)
+        accepted=self.admit(f)
+        self.assertTrue(accepted["local_sqlite_time_checked_in_transaction"])
+        self.assertFalse(accepted["remotely_trusted_database_time"])
+
+    def test_durable_event_timestamp_uses_transaction_sqlite_time(self):
+        f=fixture()
+        accepted=self.admit(f)
+        with sqlite3.connect(self.path) as db:
+            stored=db.execute(
+                "SELECT accepted_at_utc FROM transcript_review_events"
+            ).fetchone()[0]
+        self.assertEqual(stored,accepted["accepted_at_host_utc"])
+        self.assertEqual(datetime.fromisoformat(stored).microsecond,0)
+        self.assertEqual(datetime.fromisoformat(stored).utcoffset(),
+                         timedelta(0))
+
+    def test_os_clock_rollback_after_reopen_blocks_second_signed_batch(self):
+        from unittest.mock import patch
+        import autopilot.cloud_transcript_replay_ledger as ledger_module
+        f=fixture()
+        first=self.admit(f)
+        revised=self.different_media(f,digest="d"*64,nonce="rollback")
+        with sqlite3.connect(self.path) as db:
+            prior=datetime.fromisoformat(db.execute(
+                "SELECT accepted_at_utc FROM transcript_review_events"
+            ).fetchone()[0])
+        past=int(prior.timestamp())-60
+        reopened=OfflineTranscriptReviewLedger(self.path)
+        with patch.object(ledger_module,"_sqlite_host_epoch",return_value=past):
+            with self.assertRaises(WorkflowError):
+                self.admit(revised,ledger=reopened,expected=first["event_sha256"])
+        self.assertEqual(self.ledger.current_status(f[0].episode_id)[
+            "total_accepted_review_batches"],1)
+
+    def test_suspicious_future_sqlite_time_cannot_validate_expired_attestations(self):
+        from unittest.mock import patch
+        import autopilot.cloud_transcript_replay_ledger as ledger_module
+        f=fixture()
+        later=int(datetime.now(timezone.utc).timestamp())+86400*4
+        with patch.object(ledger_module,"_sqlite_host_epoch",return_value=later):
+            # Do not specify now; even the caller cannot override the
+            # SQLite-selected verifier instant.
+            a,b,c,keys,reg,signed=f
+            with self.assertRaises(WorkflowError):
+                self.ledger.commit(
+                    candidate=a,media=b,audio_screen=c,
+                    signed_attestations=signed,registry=reg,
+                    excluded_creator_publisher_ids=EXCLUDED,
+                    now=None,expected_current_sha=None,
+                )
+        self.assertEqual(self.ledger.current_status(f[0].episode_id)[
+            "total_accepted_review_batches"],0)
 
     def test_first_accept_has_fenced_durable_one_time_receipts(self):
         f=fixture()
