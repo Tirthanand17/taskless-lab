@@ -4,6 +4,7 @@ from hashlib import sha256
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from multiprocessing import get_context
+from unittest.mock import patch
 import hashlib
 import hmac
 import json
@@ -18,6 +19,7 @@ from autopilot.agent_staging_ipc_service import send_signed_ipc
 from autopilot.cloud_transcript_review_ipc import (
     OfflineReviewBundle,StrictTranscriptReviewCommandBoundary,
     canonical_signed_command,serve_offline_strict_review,
+    OfflineStrictTranscriptReviewIPC,
 )
 from autopilot.cloud_transcript_replay_ledger import OfflineTranscriptReviewLedger
 from autopilot.test_cloud_transcript_replay_ledger import fixture
@@ -75,6 +77,7 @@ class StrictTranscriptIPCRehearsalTests(unittest.TestCase):
         )
         result=boundary.execute(pack(self.fields,self.secret))
         self.assertTrue(result["two_signed_sidecar_digests_chained"])
+        self.assertTrue(result["signed_command_nonce_persisted"])
         self.assertFalse(result["real_audio_verified"])
         self.assertFalse(result["publishing_authorized"])
         self.assertFalse(result["youtube_upload_authorized"])
@@ -82,6 +85,8 @@ class StrictTranscriptIPCRehearsalTests(unittest.TestCase):
         self.assertNotIn("episode_id",result)
         self.assertTrue(ledger.current_status(self.episode)[
             "current_event_has_chained_sidecar_digests"])
+        self.assertTrue(ledger.current_status(self.episode)[
+            "current_event_has_chained_command_nonce"])
 
     def test_tampered_unsigned_unknown_stale_or_path_injection_denied(self):
         ledger=OfflineTranscriptReviewLedger(self.db)
@@ -120,7 +125,8 @@ class StrictTranscriptIPCRehearsalTests(unittest.TestCase):
         with sqlite3.connect(self.db) as conn:
             for table in ("transcript_review_events",
                           "transcript_review_consumed",
-                          "transcript_review_sidecars"):
+                          "transcript_review_sidecars",
+                          "transcript_review_command_nonces"):
                 self.assertEqual(conn.execute(
                     "SELECT COUNT(*) FROM "+table
                 ).fetchone()[0],0)
@@ -150,6 +156,7 @@ class StrictTranscriptIPCRehearsalTests(unittest.TestCase):
             result=send_signed_ipc(self.socket,command)
             self.assertEqual(result["status"],"OFFLINE_STRICT_REVIEW_JOURNALED")
             self.assertTrue(result["two_signed_sidecar_digests_chained"])
+            self.assertTrue(result["signed_command_nonce_persisted"])
             self.assertFalse(result["publishing_authorized"])
             for denied in (command,pack({**self.fields,"action":"release.publish"},
                                         self.secret)):
@@ -165,7 +172,96 @@ class StrictTranscriptIPCRehearsalTests(unittest.TestCase):
         status=OfflineTranscriptReviewLedger(self.db).current_status(self.episode)
         self.assertEqual(status["total_accepted_review_batches"],1)
         self.assertTrue(status["current_event_has_chained_sidecar_digests"])
+        self.assertTrue(status["current_event_has_chained_command_nonce"])
         self.assertFalse(status["youtube_publishing_authorized"])
+
+    def test_nonce_reopen_hash_binding_and_tamper_refusal(self):
+        ledger=OfflineTranscriptReviewLedger(self.db)
+        boundary=StrictTranscriptReviewCommandBoundary(
+            ledger,reviews=self.reviews,hmac_key=self.secret
+        )
+        boundary.execute(pack(self.fields,self.secret))
+        with sqlite3.connect(self.db) as conn:
+            rows=conn.execute(
+                "SELECT nonce,event_sha,expires_at_epoch "
+                "FROM transcript_review_command_nonces"
+            ).fetchall()
+        self.assertEqual(len(rows),1)
+        self.assertEqual(rows[0][0],self.fields["nonce"])
+        self.assertEqual(rows[0][2],self.fields["expires_at_epoch"])
+        reopened=OfflineTranscriptReviewLedger(self.db)
+        self.assertTrue(reopened.current_status(self.episode)[
+            "current_event_has_chained_command_nonce"])
+        with sqlite3.connect(self.db) as conn:
+            conn.execute(
+                "UPDATE transcript_review_command_nonces "
+                "SET expires_at_epoch=expires_at_epoch+1"
+            )
+        with self.assertRaises(WorkflowError):
+            OfflineTranscriptReviewLedger(self.db)
+
+    def test_deleted_command_nonce_breaks_hash_chain(self):
+        boundary=StrictTranscriptReviewCommandBoundary(
+            OfflineTranscriptReviewLedger(self.db),
+            reviews=self.reviews,hmac_key=self.secret
+        )
+        boundary.execute(pack(self.fields,self.secret))
+        with sqlite3.connect(self.db) as conn:
+            conn.execute("DELETE FROM transcript_review_command_nonces")
+        with self.assertRaises(WorkflowError):
+            OfflineTranscriptReviewLedger(self.db)
+
+    def test_sqlite_host_clock_rejects_expired_signed_command(self):
+        import autopilot.cloud_transcript_replay_ledger as ledger_module
+        ledger=OfflineTranscriptReviewLedger(self.db)
+        boundary=StrictTranscriptReviewCommandBoundary(
+            ledger,reviews=self.reviews,hmac_key=self.secret
+        )
+        # IPC process wall-time preflight still passes, but the journal's
+        # transactional SQLite clock considers the exact HMAC expiry stale.
+        simulated=int(time.time())+400
+        with patch.object(ledger_module,"_sqlite_host_epoch",
+                          return_value=simulated):
+            with self.assertRaises(WorkflowError):
+                boundary.execute(pack(self.fields,self.secret))
+        with sqlite3.connect(self.db) as conn:
+            self.assertEqual(conn.execute(
+                "SELECT COUNT(*) FROM transcript_review_command_nonces"
+            ).fetchone()[0],0)
+            self.assertEqual(conn.execute(
+                "SELECT COUNT(*) FROM transcript_review_consumed"
+            ).fetchone()[0],0)
+
+    def test_bad_evidence_rolls_back_nonce_and_later_valid_try_is_single_use(self):
+        ledger=OfflineTranscriptReviewLedger(self.db)
+        boundary=StrictTranscriptReviewCommandBoundary(
+            ledger,reviews=self.reviews,hmac_key=self.secret
+        )
+        command=pack(self.fields,self.secret)
+        path=next(iter(self.evidence.values()))
+        original=path.read_bytes()
+        path.write_bytes(original+b" ")
+        with self.assertRaises(WorkflowError):
+            boundary.execute(command)
+        with sqlite3.connect(self.db) as conn:
+            self.assertEqual(conn.execute(
+                "SELECT COUNT(*) FROM transcript_review_command_nonces"
+            ).fetchone()[0],0)
+        path.write_bytes(original)
+        self.assertTrue(boundary.execute(command)["signed_command_nonce_persisted"])
+        with self.assertRaises(WorkflowError):
+            boundary.execute(command)
+
+    def test_socket_direct_close_cleans_only_owned_node(self):
+        ledger=OfflineTranscriptReviewLedger(self.db)
+        boundary=StrictTranscriptReviewCommandBoundary(
+            ledger,reviews=self.reviews,hmac_key=self.secret
+        )
+        service=OfflineStrictTranscriptReviewIPC(self.socket,boundary)
+        self.assertTrue(self.socket.exists())
+        self.assertEqual(stat.S_IMODE(self.socket.stat().st_mode),0o600)
+        service.server_close()
+        self.assertFalse(self.socket.exists())
 
 
 if __name__=="__main__":
