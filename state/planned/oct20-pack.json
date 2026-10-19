@@ -1,0 +1,51 @@
+{
+  "date_local": "2026-10-20",
+  "timezone": "Asia/Kolkata",
+  "status": "original_editorial_script_only_not_rendered",
+  "latest_content_source": "content/production-packs/2026-10-20-gemini-agent-control.json",
+  "latest_source_review_date": "2026-10-19",
+  "objective": "Two independently authored audience-language Shorts plus one 480-second Hindi beginner tutorial, source-checked and illustrated with original clearly labelled conceptual demos.",
+  "source_story": "Gemini 4 Argon and tasks announced Oct 13, 2026; YouTube originality emphasis Oct 1, 2026.",
+  "planned_slots_not_bookings": [
+    {
+      "local_target": "2026-10-20T11:00:00+05:30",
+      "episode_id": "fm_20261020_short_en",
+      "language": "en",
+      "format": "short",
+      "duration_seconds": 42,
+      "narrator_id": "voice_en_short_oct20_unlicensed"
+    },
+    {
+      "local_target": "2026-10-20T16:00:00+05:30",
+      "episode_id": "fm_20261020_long_hi",
+      "language": "hi",
+      "format": "long",
+      "duration_seconds": 480,
+      "narrator_id": "voice_hi_long_oct20_unlicensed"
+    },
+    {
+      "local_target": "2026-10-20T20:30:00+05:30",
+      "episode_id": "fm_20261020_short_hi",
+      "language": "hi",
+      "format": "short",
+      "duration_seconds": 44,
+      "narrator_id": "voice_hi_short_oct20_unlicensed"
+    }
+  ],
+  "source_rights_holds": [
+    "licensed_natural_human_narration_not_received",
+    "actual_spoken_word_asr_and_srt_alignment_not_verified",
+    "original_3d_full_video_and_thumbnail_not_rendered",
+    "media_usage_rights_and_voice_consent_not_authenticated",
+    "zero_rupee_remote_render_and_storage_capacity_not_proven",
+    "owner_approved_private_upload_not_completed",
+    "actual_youtube_upload_and_publish_readback_not_completed"
+  ],
+  "verified_human_voice_assets": 0,
+  "actual_hd_video_files": 0,
+  "real_youtube_uploads": 0,
+  "youtube_schedule_created": false,
+  "publication_confirmed": false,
+  "external_provider_connected": false,
+  "monthly_recurring_infrastructure_inr": 0
+}
