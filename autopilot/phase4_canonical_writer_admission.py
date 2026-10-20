@@ -60,7 +60,7 @@ def _valid(packet: Any) -> dict:
         raise UnsafeReservation("INCORRECT_IST_UTC_SLOT")
     if packet["channel_id"]!=CHANNEL:
         raise UnsafeReservation("WRONG_CHANNEL")
-    if (type(episode) is not str or not EP.fullmatch(episode) or
+    if (type(episode) is not str or not EPISODE.fullmatch(episode) or
         not episode.startswith("fm_"+day.replace("-","")+"_") or
         (slot=="long") != ("_long_" in episode)):
         raise UnsafeReservation("INVALID_EPISODE_ID")
