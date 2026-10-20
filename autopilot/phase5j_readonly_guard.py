@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from autopilot.phase5j_full_workflow_inventory import enumerate_workflows, SourceHold
+from autopilot.phase5j_multi_worker_inventory import inspect_workers, UnsafeInventory
 
 CHANNEL="UCCcL9Q_jqVq6LJmnYUSAFZA"
 WORKFLOWS={
@@ -13,7 +14,7 @@ WORKFLOWS={
 class InvalidEvidence(ValueError):
     pass
 
-def assess(data, repository, *, now):
+def assess(data, repository, *, now, runtime_worker_evidence=None):
     expected={"channel","checked_at_utc","cloudflare","github","backup","budget"}
     if type(data) is not dict or set(data)!=expected: raise InvalidEvidence("SCHEMA")
     if data["channel"]!=CHANNEL: raise InvalidEvidence("CHANNEL")
@@ -71,6 +72,18 @@ def assess(data, repository, *, now):
         full_source_ok=False
     if not full_source_ok:
         issues.append("FULL_GITHUB_WORKFLOW_INVENTORY_NOT_VERIFIED")
+    multi_worker_source=None
+    if runtime_worker_evidence is None:
+        issues.append("CLOUDFLARE_THREE_WORKER_RUNTIME_EVIDENCE_MISSING")
+    else:
+        try:
+            multi_worker_source=inspect_workers(runtime_worker_evidence,now=now)
+            if multi_worker_source["risk_codes"]:
+                issues.append("CLOUDFLARE_MULTIPLE_WORKER_WRITE_SURFACES_NOT_VERIFIED")
+        except UnsafeInventory:
+            issues.append("CLOUDFLARE_MULTIPLE_WORKER_EVIDENCE_MALFORMED")
+    # Even a synthetically clean multi-worker packet is untrusted. Only
+    # separately authenticated account/provider evidence can close this gate.
     if not all(data["github"].values()):
         issues.append("GITHUB_PRODUCTION_VARIABLES_OR_WRITERS_UNVERIFIED")
     if not all(data["backup"].values()):
@@ -83,6 +96,8 @@ def assess(data, repository, *, now):
        "full_source_video_upload_workflows":full_source["video_upload_workflows"],
        "full_source_repo_write_workflows":full_source["repo_write_workflows"],
        "full_source_research_cron_workflows":full_source["scheduled_research_workflows"],
+       "multi_worker_observations_supplied":runtime_worker_evidence is not None,
+       "multi_worker_risk_codes":multi_worker_source["risk_codes"] if multi_worker_source else [],
        "caller_evidence_not_authenticated":True,
        "production_d1_writes":0,"youtube_upload_attempts":0,
        "production_migration_authorized":False,
