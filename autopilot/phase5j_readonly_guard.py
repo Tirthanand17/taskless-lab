@@ -1,6 +1,7 @@
 """FlowMinute 5J: offline inventory review. No provider connection or mutations."""
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from autopilot.phase5j_full_workflow_inventory import enumerate_workflows, SourceHold
 
 CHANNEL="UCCcL9Q_jqVq6LJmnYUSAFZA"
 WORKFLOWS={
@@ -61,6 +62,15 @@ def assess(data, repository, *, now):
         issues.append("CLOUDFLARE_WRITER_INVENTORY_INCOMPLETE")
     if not all(x["source_guard_present"] for x in source):
         issues.append("GITHUB_PUBLISH_SOURCE_GUARD_MISSING")
+    try:
+        full_source=enumerate_workflows(repository)
+        full_source_ok=full_source["source_guards_passed"]
+    except SourceHold:
+        full_source={"total_workflows":0,"video_upload_workflows":0,
+                     "repo_write_workflows":0,"scheduled_research_workflows":0}
+        full_source_ok=False
+    if not full_source_ok:
+        issues.append("FULL_GITHUB_WORKFLOW_INVENTORY_NOT_VERIFIED")
     if not all(data["github"].values()):
         issues.append("GITHUB_PRODUCTION_VARIABLES_OR_WRITERS_UNVERIFIED")
     if not all(data["backup"].values()):
@@ -68,7 +78,12 @@ def assess(data, repository, *, now):
     if not all(data["budget"].values()):
         issues.append("ACCOUNT_WIDE_ZERO_SPEND_NOT_PROVEN")
     return {"state":"HOLD_WRITER_BACKUP_AND_COST","issues":issues,
-       "workflows":source,"caller_evidence_not_authenticated":True,
+       "workflows":source,"full_source_inventory_reviewed":full_source_ok,
+       "full_source_workflow_count":full_source["total_workflows"],
+       "full_source_video_upload_workflows":full_source["video_upload_workflows"],
+       "full_source_repo_write_workflows":full_source["repo_write_workflows"],
+       "full_source_research_cron_workflows":full_source["scheduled_research_workflows"],
+       "caller_evidence_not_authenticated":True,
        "production_d1_writes":0,"youtube_upload_attempts":0,
        "production_migration_authorized":False,
        "cloud_publishing_authorized":False,"cloud_autopilot_ready":False}
