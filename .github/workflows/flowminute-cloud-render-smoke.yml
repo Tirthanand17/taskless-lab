@@ -2,8 +2,19 @@ name: FlowMinute Cloud Render Smoke (no secrets)
 on:
   workflow_dispatch:
   pull_request:
+    # Run the full PR media smoke when a previously draft PR is made ready.
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - "autopilot/**"
+      # Media/code changes only. Pure master-agent/ledger edits already
+      # run Content Quality Gate + dedicated orchestration tests; don't
+      # consume full media runner capacity for unrelated staging changes.
+      - "autopilot/phase3_*"
+      - "autopilot/phase2r3_*"
+      - "autopilot/narration_inspection.py"
+      - "autopilot/render_inspection.py"
+      - "autopilot/media_rights_review.py"
+      - "autopilot/research_briefs/**"
+      - "autopilot/examples/flowminute_csv_demo.py"
       - "motion-v2/src/**"
       - ".github/workflows/flowminute-cloud-render-smoke.yml"
 permissions:
@@ -13,6 +24,12 @@ concurrency:
   cancel-in-progress: true
 jobs:
   short_render_and_quality_probe:
+    # Pull requests evaluate path filters over their whole cumulative diff.
+    # Draft PR #5 already includes media changes, so every agent commit
+    # otherwise retriggers the lengthy media job. Unit/media codec tests
+    # still run in Content Quality Gate; real full smoke is for manual
+    # dispatch or a PR explicitly marked ready for review.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false
     runs-on: ubuntu-24.04
     timeout-minutes: 18
     env:
@@ -30,6 +47,9 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
+          sudo apt-get install -y -qq fonts-noto-core
+          test -f /usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf
+          python -m pip install 'pillow>=11,<13'
           cd motion-v2
           npm install --no-audit --no-fund
       - name: Cloud Remotion screenshot smoke (original template)
@@ -55,6 +75,259 @@ jobs:
           test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$f")" = "aac"
           sha256sum "$f"
           echo "CLOUD_1080x1920_SHORT_SMOKE_QA_PASSED"
+      - name: Generate REAL original CSV visual preview (no narrator, no upload)
+        run: |
+          set -euo pipefail
+          python -m autopilot.phase3_csv_visual_preview \
+            --output /tmp/flowminute-cloud-preview/csv-visual-only.mp4 \
+            --duration 3 --fps 12 --width 360
+          ffmpeg -v error -xerror -i /tmp/flowminute-cloud-preview/csv-visual-only.mp4 -f null -
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 /tmp/flowminute-cloud-preview/csv-visual-only.mp4)" = "360"
+          test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of csv=p=0 /tmp/flowminute-cloud-preview/csv-visual-only.mp4 | wc -l)" = "0"
+          echo "ORIGINAL_CSV_VISUAL_MP4_DECODED__NOT_READY_TO_PUBLISH"
+      - name: Render actual Hindi Short and 16x9 long visual-only QA
+        run: |
+          set -euo pipefail
+          python -m autopilot.phase3_hindi_visual_preview \
+            --episode csv_tutorial_short_hi \
+            --output /tmp/flowminute-cloud-preview/csv-hindi-short-visual.mp4 \
+            --duration 0.5 --fps 8 --width 360
+          python -m autopilot.phase3_hindi_visual_preview \
+            --episode csv_tutorial_long_hi \
+            --output /tmp/flowminute-cloud-preview/csv-hindi-long-visual.mp4 \
+            --duration 0.5 --fps 8 --width 640
+          for f in /tmp/flowminute-cloud-preview/csv-hindi-{short,long}-visual.mp4; do
+            ffmpeg -nostdin -v error -xerror -i "$f" -f null -
+            test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of csv=p=0 "$f" | wc -l)" = "0"
+          done
+          echo "HINDI_GLYPHS_PORTRAIT_LANDSCAPE_VIDEO_ONLY_PREVIEWS_PASS"
+      - name: Render both FULL 42s CSV Shorts VISUAL ONLY within free-runner cap
+        run: |
+          set -euo pipefail
+          root=/tmp/flowminute-cloud-preview
+          # Original 8fps/360w moving visual proof, NOT final publication quality.
+          timeout 240s python -m autopilot.phase3_csv_visual_preview \
+            --output "$root/csv-english-FULL-VISUAL-ONLY.mp4" \
+            --duration 42 --fps 8 --width 360
+          timeout 240s python -m autopilot.phase3_hindi_visual_preview \
+            --episode csv_tutorial_short_hi \
+            --output "$root/csv-hindi-FULL-VISUAL-ONLY.mp4" \
+            --duration 42 --fps 8 --width 360
+          python - <<'PY'
+          from pathlib import Path
+          import json, subprocess
+          root=Path("/tmp/flowminute-cloud-preview")
+          for language in ("english","hindi"):
+              media=root/f"csv-{language}-FULL-VISUAL-ONLY.mp4"
+              probe=subprocess.run(
+                  ["ffprobe","-v","error","-show_entries",
+                   "stream=codec_type,codec_name,width,height,nb_frames:format=duration",
+                   "-of","json",str(media)],
+                  capture_output=True,text=True,check=True,timeout=20,
+              )
+              data=json.loads(probe.stdout)
+              video=data["streams"]
+              assert len(video)==1 and video[0]["codec_type"]=="video"
+              assert video[0]["codec_name"]=="h264"
+              assert (video[0]["width"],video[0]["height"])==(360,640)
+              assert abs(float(data["format"]["duration"])-42)<0.15
+              assert int(video[0]["nb_frames"])==336
+              subprocess.run(
+                  ["ffmpeg","-nostdin","-v","error","-xerror",
+                   "-i",str(media),"-f","null","-"],
+                  check=True,timeout=90,
+              )
+              print(f"FULL_42_SECOND_{language.upper()}_VIDEO_ONLY_QA_PASSED")
+          PY
+      - name: Assemble FULL 7m12s Hindi silent 16x9 video from 24 bounded scenes
+        run: |
+          set -euo pipefail
+          # Entire 432s silent H264 proof at 640x360 / 8fps, not a
+          # publishable video. Do not upload or persist any unreviewed media.
+          timeout 480s python -m autopilot.phase3_long_visual_assembly \
+            --output /tmp/flowminute-cloud-preview/csv-hindi-long-FULL-VISUAL-ONLY.mp4 \
+            --fps 8 --width 640
+          echo "FULL_432_SECOND_HINDI_VISUAL_ONLY_QA_PASSED"
+      - name: Measure THREE native-HD later-scene renders and decode (NO voice/release)
+        run: |
+          set -euo pipefail
+          # The fixed bench renders 24 frames at 24fps per format. Includes
+          # actual later-scene code/number overlays, CPU wall time, RSS and
+          # encoded bytes; never upgrades 1s evidence to full HD capacity.
+          timeout 360s python -m autopilot.phase3_hd_capacity_benchmark \
+            --existing-scratch-dir /tmp/flowminute-cloud-preview
+          echo "FULL_HD_CAPACITY_SAMPLES_MEASURED__PRODUCTION_UNVERIFIED"
+      - name: Render both COMPLETE native-HD 42s Shorts without voice or publication
+        run: |
+          set -euo pipefail
+          root=/tmp/flowminute-cloud-preview
+          # Each 42s Short is composed of forty-two fresh <=24-frame clips,
+          # respecting the strict 36-frame HD cap. These are disposable
+          # *silent* technical videos, NEVER upload to YouTube.
+          timeout 240s python -m autopilot.phase3_full_hd_short_assembly \
+            --episode csv_tutorial_short_en \
+            --output "$root/english-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4"
+          timeout 240s python -m autopilot.phase3_full_hd_short_assembly \
+            --episode csv_tutorial_short_hi \
+            --output "$root/hindi-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4"
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          root=Path("/tmp/flowminute-cloud-preview")
+          for language in ("english","hindi"):
+              path=root/f"{language}-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4"
+              data=json.loads(subprocess.run(
+                ["ffprobe","-v","error","-show_entries",
+                 "stream=codec_type,codec_name,width,height,nb_frames:format=duration",
+                 "-of","json",str(path)],
+                capture_output=True,text=True,check=True,timeout=20
+              ).stdout)
+              assert len(data["streams"])==1
+              stream=data["streams"][0]
+              assert stream["codec_type"]=="video" and stream["codec_name"]=="h264"
+              assert (stream["width"],stream["height"])==(1080,1920)
+              assert int(stream["nb_frames"])==1008
+              assert abs(float(data["format"]["duration"])-42)<0.15
+              subprocess.run(
+                ["ffmpeg","-nostdin","-v","error","-xerror",
+                 "-i",str(path),"-f","null","-"],
+                check=True,timeout=120
+              )
+              print(f"COMPLETE_NATIVE_HD_42S_{language.upper()}_SILENT_SHORT_QA_PASSED")
+          PY
+      - name: Inspect completed HD Shorts and bind QUARANTINED provenance receipts
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from autopilot.phase3_quarantined_video_receipt import (
+              create_quarantined_video_receipt, verify_quarantined_receipt)
+          root=Path("/tmp/flowminute-cloud-preview")
+          for lang,episode in (
+              ("english","csv_tutorial_short_en"),
+              ("hindi","csv_tutorial_short_hi"),
+          ):
+              path=root/f"{lang}-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4"
+              receipt=create_quarantined_video_receipt(
+                  episode_id=episode,mp4=path)
+              integrity=verify_quarantined_receipt(
+                  receipt=receipt,episode_id=episode,mp4=path)
+              assert receipt["actual_video_pixel_samples"]==5
+              assert not receipt["publishing_authorized"]
+              assert not receipt["media_has_narration"]
+              assert integrity["status"].endswith("NOT_RELEASE_APPROVAL")
+              print("QUARANTINED_HD_SHORT_RECEIPT "+json.dumps(receipt,sort_keys=True))
+              print(f"ACTUAL_FULL_HD_{lang.upper()}_VISUAL_SCENE_SIGNAL_PASS_NO_RELEASE"
+                    " scene_samples=5")
+          PY
+      - name: FULL LENGTH HD Shorts real H264/AAC mux with FAKE tones, self-delete
+        run: |
+          set -euo pipefail
+          root=/tmp/flowminute-cloud-preview
+          timeout 160s python -m autopilot.phase3_full_synthetic_audio_smoke \
+            --episode csv_tutorial_short_en \
+            --silent-mp4 "$root/english-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4" \
+            --scratch-dir "$root"
+          timeout 160s python -m autopilot.phase3_full_synthetic_audio_smoke \
+            --episode csv_tutorial_short_hi \
+            --silent-mp4 "$root/hindi-42s-nativeHD-SILENT-NOT-PUBLISHABLE.mp4" \
+            --scratch-dir "$root"
+          echo "TWO_REAL_FULL_HD_SHORT_FAKE_AUDIO_MUX_SMOKES_PASS_NO_PUBLISH"
+
+      - name: Audio mux proof using SYNTHETIC tone only (NEVER release)
+        run: |
+          set -euo pipefail
+          ffmpeg -nostdin -v error -f lavfi -i "sine=frequency=220:sample_rate=16000" \
+            -t 3 -ac 1 -c:a pcm_s16le \
+            /tmp/flowminute-cloud-preview/THIS_IS_NOT_SPEECH.wav
+          python - <<'PY'
+          from pathlib import Path
+          from autopilot.phase3_quarantined_audio_mux import mux_visual_with_external_wav
+          base=Path("/tmp/flowminute-cloud-preview")
+          result=mux_visual_with_external_wav(
+            episode_id="csv_tutorial_short_en",
+            video_path=base/"csv-visual-only.mp4",
+            wav_path=base/"THIS_IS_NOT_SPEECH.wav",
+            output_path=base/"SYNTHETIC_TONE_QA_ONLY.mp4",
+          )
+          assert result["audio_codec"] == "aac"
+          assert not result["actual_natural_speech_verified"]
+          assert not result["audio_caption_alignment_verified"]
+          assert not result["voice_rights_verified"]
+          assert not result["publishing_authorized"]
+          print("REAL_AAC_MUX_WITH_FAKE_TONE_ONLY__PUBLICATION_BLOCKED")
+          PY
       - name: Discard video output; never store public/unreviewed drafts
         if: always()
         run: rm -rf /tmp/flowminute-cloud-preview
+
+  native_hd_long_silent_qa:
+    # This 10,368-frame full 432s native-HD render is deliberately an
+    # owner-triggered capacity benchmark, NOT a PR/agent-code side effect.
+    # Never run it on recurring pull_request builds or as an always-on farm.
+    if: github.event_name == 'workflow_dispatch'
+    # Strictly ORIGINAL source video, no voice, credentials, cloud artifact
+    # upload, paid runner, OAuth or publishing permission.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    permissions:
+      contents: read
+    env:
+      CI: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install installed/free open-source Hindi video prerequisites
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core
+          python -m pip install 'pillow>=11,<13'
+          test -f /usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf
+          mkdir -p /tmp/flowminute-native-hd-long-silent-qa
+      - name: Render all 432 native-HD Hindi long seconds, probe and full decode
+        run: |
+          set -euo pipefail
+          # Fails rather than inflating a one-second proof into a complete movie.
+          # 432 individually bounded 24-frame clips; exactly 10,368 output frames.
+          timeout 850s python -m autopilot.phase3_full_hd_long_assembly \
+            --output /tmp/flowminute-native-hd-long-silent-qa/UNAPPROVED-432S-VISUAL-ONLY.mp4
+          echo "NATIVE_HD_FULL_432_SECOND_HINDI_LONG_SILENT_QA_PASSED"
+      - name: Inspect full-HD long scene pixels and bind QUARANTINED source receipt
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from autopilot.phase3_quarantined_video_receipt import (
+              create_quarantined_video_receipt, verify_quarantined_receipt)
+          path=Path("/tmp/flowminute-native-hd-long-silent-qa/UNAPPROVED-432S-VISUAL-ONLY.mp4")
+          episode="csv_tutorial_long_hi"
+          receipt=create_quarantined_video_receipt(
+              episode_id=episode,mp4=path)
+          integrity=verify_quarantined_receipt(
+              receipt=receipt,episode_id=episode,mp4=path)
+          assert receipt["actual_video_pixel_samples"]==26
+          assert not receipt["publishing_authorized"]
+          assert not receipt["media_has_narration"]
+          assert integrity["status"].endswith("NOT_RELEASE_APPROVAL")
+          print("QUARANTINED_HD_LONG_RECEIPT "+json.dumps(receipt,sort_keys=True))
+          print("ACTUAL_432S_HINDI_LONG_24_SCENE_VISUAL_SIGNAL_PASS_NO_RELEASE")
+          PY
+      - name: FULL LENGTH 432s HD Hindi real H264/AAC mux with FAKE tone, self-delete
+        run: |
+          set -euo pipefail
+          root=/tmp/flowminute-native-hd-long-silent-qa
+          timeout 420s python -m autopilot.phase3_full_synthetic_audio_smoke \
+            --episode csv_tutorial_long_hi \
+            --silent-mp4 "$root/UNAPPROVED-432S-VISUAL-ONLY.mp4" \
+            --scratch-dir "$root"
+          echo "REAL_FULL_HD_LONG_FAKE_AUDIO_MUX_SMOKE_PASS_NO_PUBLISH"
+
+      - name: Delete all temporary source and output video files
+        if: always()
+        run: rm -rf /tmp/flowminute-native-hd-long-silent-qa

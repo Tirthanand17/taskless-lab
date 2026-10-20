@@ -133,6 +133,99 @@ class AgentOrgTests(unittest.TestCase):
             other=Workflow.restore(path)
             self.assertEqual(other.summary(),self.w.summary())
             self.assertEqual(other.runs[tid].artifact,self.w.runs[tid].artifact)
+    def test_restore_recovers_orphan_running_staging_task(self):
+        tid=self.w.ready()[0]
+        owner=self.w.contracts[tid].owner
+        self.w.claim(tid,actor=owner)
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/"staging.db"
+            self.w.checkpoint(path)
+            recovered=Workflow.restore(path)
+            self.assertEqual(recovered.runs[tid].status,State.READY)
+            self.assertEqual(recovered.runs[tid].retries,1)
+            self.assertEqual(recovered.runs[tid].last_failure,
+                             "INTERRUPTED_STAGING_RUN")
+            self.assertEqual(recovered.events[-1]["action"],"recovered_retry")
+            self.assertEqual(recovered.ready(),(tid,))
+            self.assertEqual(recovered.runs[tid].artifact,None)
+            self.assertFalse(recovered.summary()["publishing_enabled"])
+            # Restarted state is an in-memory recovery; persist checkpoint
+            # explicitly before another no-side-effect staging attempt.
+            recovered.checkpoint(path)
+            resumed=Workflow.restore(path)
+            self.assertEqual(resumed.runs[tid].retries,1)
+            resumed.claim(tid,actor=owner)
+            resumed.complete(receipt(resumed,tid),actor=owner)
+            self.assertEqual(resumed.runs[tid].status,State.COMPLETE)
+            self.assertIn("oct17_ep01:fact_review",resumed.ready())
+
+    def test_second_crash_uses_last_retry_and_third_quarantines(self):
+        tid=self.w.ready()[0]
+        owner=self.w.contracts[tid].owner
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/"staging.db"
+            for number in (1,2,3):
+                self.w.claim(tid,actor=owner)
+                self.w.checkpoint(path)
+                recovered=Workflow.restore(path)
+                self.assertEqual(recovered.runs[tid].retries,number)
+                self.assertFalse(recovered.summary()["publishing_enabled"])
+                self.assertEqual(recovered.events[-1]["action"],
+                    "recovered_quarantined" if number==3 else "recovered_retry")
+                self.assertEqual(
+                    recovered.runs[tid].status,
+                    State.QUARANTINED if number==3 else State.READY
+                )
+                recovered.checkpoint(path)
+                self.w=recovered
+            self.assertEqual(self.w.ready(),())
+            self.assertEqual(self.w.runs[tid].status,State.QUARANTINED)
+            self.assertEqual(Workflow.restore(path).runs[tid].retries,3)
+
+    def test_checkpoint_dependency_inconsistency_denied_even_rehashed(self):
+        # A local SHA can detect changes, not authenticate a checkpoint.
+        # Regression simulates a coherently rehashed *invalid* DAG snapshot.
+        import json
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/"staging.db"
+            self.w.checkpoint(path)
+            with closing(sqlite3.connect(path)) as c,c:
+                row=c.execute("SELECT data FROM workflow_snapshot").fetchone()
+                data=json.loads(row[0])
+                task="oct17_ep01:fact_review"
+                for new_state in ("ready","complete","running"):
+                    modified=json.loads(row[0])
+                    modified["runs"][task]["status"]=new_state
+                    if new_state=="complete":
+                        # Missing artifact is another fail-closed condition.
+                        modified["runs"][task]["artifact"]=None
+                    payload=json.dumps(modified,sort_keys=True,
+                                       separators=(",",":"))
+                    c.execute("UPDATE workflow_snapshot SET data=?,digest=?",
+                        (payload,sha256(payload.encode()).hexdigest()))
+                    c.commit()  # Restore reads through a separate SQLite connection.
+                    with self.subTest(state=new_state),self.assertRaises(WorkflowError):
+                        Workflow.restore(path)
+
+    def test_checkpoint_retry_counter_invalid_even_rehashed(self):
+        import json
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/"staging.db"
+            self.w.checkpoint(path)
+            with closing(sqlite3.connect(path)) as c,c:
+                row=c.execute("SELECT data FROM workflow_snapshot").fetchone()
+                for retries in (-1,True,100):
+                    mutated=json.loads(row[0])
+                    task="oct17_ep01:research"
+                    mutated["runs"][task]["retries"]=retries
+                    payload=json.dumps(mutated,sort_keys=True,
+                                       separators=(",",":"))
+                    c.execute("UPDATE workflow_snapshot SET data=?,digest=?",
+                              (payload,sha256(payload.encode()).hexdigest()))
+                    c.commit()  # Flush fixture mutation before restore's connection.
+                    with self.subTest(retries=retries),self.assertRaises(WorkflowError):
+                        Workflow.restore(path)
+
     def test_checkpoint_tampering_refused(self):
         with tempfile.TemporaryDirectory() as root:
             path=Path(root)/"staging.db";self.w.checkpoint(path)

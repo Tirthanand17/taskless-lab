@@ -5,18 +5,66 @@ on:
       - "autopilot/agent_org.py"
       - "autopilot/agent_org_demo.py"
       - "autopilot/test_agent_org.py"
+      - "autopilot/agent_staging_claims.py"
+      - "autopilot/test_agent_staging_claims.py"
+      - "autopilot/agent_staging_master_queue.py"
+      - "autopilot/test_agent_staging_master_queue.py"
+      - "autopilot/agent_staging_unified.py"
+      - "autopilot/test_agent_staging_unified.py"
+      - "autopilot/agent_staging_auth_gateway.py"
+      - "autopilot/test_agent_staging_auth_gateway.py"
+      - "autopilot/agent_staging_key_policy.py"
+      - "autopilot/test_agent_staging_key_policy.py"
+      - "autopilot/agent_staging_admin_gateway.py"
+      - "autopilot/test_agent_staging_admin_gateway.py"
+      - "autopilot/agent_staging_command_boundary.py"
+      - "autopilot/test_agent_staging_command_boundary.py"
+      - "autopilot/agent_staging_process_supervisor.py"
+      - "autopilot/phase1_synthetic_subprocess.py"
+      - "autopilot/phase1_synthetic_supervisor_crash.py"
+      - "autopilot/test_agent_staging_process_supervisor.py"
+      - "autopilot/agent_staging_ipc_service.py"
+      - "autopilot/phase1_synthetic_ipc_client.py"
+      - "autopilot/test_agent_staging_ipc_service.py"
+      - "autopilot/phase1_synthetic_db_denial.py"
+      - "autopilot/test_agent_staging_uid_isolation.py"
       - ".github/workflows/flowminute-agent-foundation-ci.yml"
   pull_request:
     paths:
       - "autopilot/agent_org.py"
       - "autopilot/agent_org_demo.py"
       - "autopilot/test_agent_org.py"
+      - "autopilot/agent_staging_claims.py"
+      - "autopilot/test_agent_staging_claims.py"
+      - "autopilot/agent_staging_master_queue.py"
+      - "autopilot/test_agent_staging_master_queue.py"
+      - "autopilot/agent_staging_unified.py"
+      - "autopilot/test_agent_staging_unified.py"
+      - "autopilot/agent_staging_auth_gateway.py"
+      - "autopilot/test_agent_staging_auth_gateway.py"
+      - "autopilot/agent_staging_key_policy.py"
+      - "autopilot/test_agent_staging_key_policy.py"
+      - "autopilot/agent_staging_admin_gateway.py"
+      - "autopilot/test_agent_staging_admin_gateway.py"
+      - "autopilot/agent_staging_command_boundary.py"
+      - "autopilot/test_agent_staging_command_boundary.py"
+      - "autopilot/agent_staging_process_supervisor.py"
+      - "autopilot/phase1_synthetic_subprocess.py"
+      - "autopilot/phase1_synthetic_supervisor_crash.py"
+      - "autopilot/test_agent_staging_process_supervisor.py"
+      - "autopilot/agent_staging_ipc_service.py"
+      - "autopilot/phase1_synthetic_ipc_client.py"
+      - "autopilot/test_agent_staging_ipc_service.py"
+      - "autopilot/phase1_synthetic_db_denial.py"
+      - "autopilot/test_agent_staging_uid_isolation.py"
       - ".github/workflows/flowminute-agent-foundation-ci.yml"
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: flowminute-agent-ci
+  # Pull-request and push runs both matter: Linux UID isolation is exercised
+  # on trusted own-branch pushes only. They must not cancel each other.
+  group: flowminute-agent-ci-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   deterministic_agent_tests:
@@ -36,8 +84,14 @@ jobs:
           python-version: "3.11"
       - name: Compile and execute no-network orchestration unit tests
         run: |
-          python -m py_compile autopilot/agent_org.py autopilot/agent_org_demo.py autopilot/test_agent_org.py
-          python -m unittest autopilot.test_agent_org -v
+          python -m py_compile autopilot/agent_org.py autopilot/agent_org_demo.py autopilot/test_agent_org.py autopilot/agent_staging_claims.py autopilot/test_agent_staging_claims.py autopilot/agent_staging_master_queue.py autopilot/test_agent_staging_master_queue.py autopilot/agent_staging_unified.py autopilot/test_agent_staging_unified.py autopilot/agent_staging_auth_gateway.py autopilot/test_agent_staging_auth_gateway.py autopilot/agent_staging_key_policy.py autopilot/test_agent_staging_key_policy.py autopilot/agent_staging_admin_gateway.py autopilot/test_agent_staging_admin_gateway.py autopilot/agent_staging_command_boundary.py autopilot/test_agent_staging_command_boundary.py autopilot/agent_staging_process_supervisor.py autopilot/phase1_synthetic_subprocess.py autopilot/phase1_synthetic_supervisor_crash.py autopilot/test_agent_staging_process_supervisor.py autopilot/agent_staging_ipc_service.py autopilot/phase1_synthetic_ipc_client.py autopilot/test_agent_staging_ipc_service.py autopilot/phase1_synthetic_db_denial.py autopilot/test_agent_staging_uid_isolation.py
+          python -m unittest autopilot.test_agent_org autopilot.test_agent_staging_claims autopilot.test_agent_staging_master_queue autopilot.test_agent_staging_unified autopilot.test_agent_staging_auth_gateway autopilot.test_agent_staging_key_policy autopilot.test_agent_staging_admin_gateway autopilot.test_agent_staging_command_boundary autopilot.test_agent_staging_process_supervisor autopilot.test_agent_staging_ipc_service autopilot.test_agent_staging_uid_isolation -v
+      - name: Verify worker/database Unix UID separation in disposable runner
+        # Explicit root use is confined to own-repository branch pushes.
+        # No persistent users/accounts, secrets or cloud instances created.
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feature/flowminute-phase2-evidence-preflight'
+        run: |
+          sudo -n "$(command -v python)" -m unittest autopilot.test_agent_staging_uid_isolation -v
       - name: Demonstrate nine-video staging queue without uploads
         run: |
           python -m autopilot.agent_org_demo --count 9

@@ -1,0 +1,198 @@
+"""Local Unix-domain staging command service: isolated process, NO network API.
+
+This offline prototype owns the SQLite coordinator, signing-key registry and
+admin gateway in one *separate* service process. Clients send ONLY a single
+bounded, pre-signed JSON command on AF_UNIX. No TCP, HTTP, generic Python,
+SQL, arbitrary command, uploads or paid operations are exposed.
+
+OS process separation here does NOT enforce different OS users/file ACLs;
+a hostile client running as the same UID can open the DB path if it learns
+it. Linux sandboxing, secret management and production cloud identity are
+NOT implemented. Never treat this as a deployed secure cloud service.
+"""
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Mapping
+import json
+import os
+import socket
+import socketserver
+import stat
+
+from .agent_org import EpisodeSpec, WorkflowError
+from .agent_staging_unified import UnifiedStagingCoordinator
+from .agent_staging_command_boundary import StagingLocalCommandBoundary
+
+MAX_IPC_FRAME = 8192
+MAX_IPC_REPLY = 8192
+
+
+def _require_socket_path(location: Path) -> Path:
+    p=Path(location)
+    if (not p.is_absolute() or not p.parent.is_dir()
+            or p.parent.is_symlink() or p.exists() or p.is_symlink()
+            or len(os.fsencode(p)) >= 99):
+        raise WorkflowError("IPC needs a fresh local Unix socket path")
+    return p
+
+
+class _SignedIPCHandler(socketserver.StreamRequestHandler):
+    def handle(self) -> None:
+        self.request.settimeout(2.0)
+        try:
+            payload=self.rfile.readline(MAX_IPC_FRAME + 2)
+            if (not payload.endswith(b"\n") or len(payload) > MAX_IPC_FRAME+1):
+                raise WorkflowError("Invalid bounded Unix command frame")
+            raw=payload[:-1].decode("utf-8",errors="strict")
+            result=self.server.command_boundary.execute(raw)
+            response={"ok":True,"result":result}
+        except (WorkflowError, UnicodeError, ValueError, TypeError,
+                OSError, TimeoutError):
+            # Never expose role validation diagnostics, file paths,
+            # SQLite details, or keys to unauthenticated clients.
+            response={"ok":False,"error":"STAGING_COMMAND_DENIED"}
+        wire=json.dumps(response,sort_keys=True,separators=(",",":")).encode()
+        if len(wire) > MAX_IPC_REPLY:
+            wire=b'{"error":"STAGING_REPLY_TOO_LARGE","ok":false}'
+        try:
+            self.wfile.write(wire+b"\n")
+            self.wfile.flush()
+        except (OSError, TimeoutError):
+            pass
+
+
+class OfflineStagingIPCService(socketserver.ThreadingMixIn,
+                               socketserver.UnixStreamServer):
+    """A bounded AF_UNIX request socket owned by the coordinator process."""
+    daemon_threads=True
+    allow_reuse_address=False
+    request_queue_size=4
+
+    def __init__(self,location:Path,
+                 boundary:StagingLocalCommandBoundary,*,
+                 socket_group_gid:int|None=None):
+        if not isinstance(boundary,StagingLocalCommandBoundary):
+            raise WorkflowError("Signed command boundary is required")
+        self.location=_require_socket_path(location)
+        self.command_boundary=boundary
+        # Explicit opt-in to local group-only IPC is restricted to the
+        # service's actual effective GID. Workers in that group receive
+        # socket access but NOT direct DB/file permissions. Default 0600.
+        if socket_group_gid is not None and (
+            type(socket_group_gid) is not int
+            or socket_group_gid<=0
+            or socket_group_gid!=os.getegid()
+        ):
+            raise WorkflowError("Only the local service GID may own IPC access")
+        self.socket_group_gid=socket_group_gid
+        super().__init__(str(self.location),_SignedIPCHandler)
+        os.chmod(self.location,0o660 if socket_group_gid is not None else 0o600)
+        saved=self.location.stat()
+        self._identity=(saved.st_dev,saved.st_ino)
+
+    def server_close(self) -> None:
+        super().server_close()
+        try:
+            current=self.location.lstat()
+            if ((current.st_dev,current.st_ino)==self._identity
+                    and stat.S_ISSOCK(current.st_mode)):
+                self.location.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def preflight_offline_staging(core:UnifiedStagingCoordinator)->dict:
+    """Verify local storage, then recover and admit before opening IPC.
+
+    A failed validation raises with no listening socket; each recovery
+    mutation remains an atomic SQLite transaction. No external services
+    or real workers are contacted.
+    """
+    if not isinstance(core,UnifiedStagingCoordinator):
+        raise WorkflowError("Startup requires original staging coordinator")
+    with core._tx() as db:
+        result=db.execute("PRAGMA quick_check(1)").fetchall()
+        if result != [("ok",)]:
+            raise WorkflowError("Offline coordinator SQLite integrity failed")
+        core._check(db)
+    expired=core.recover_expired(now=None)
+    report=core.reconcile()
+    if (report["running_tasks"]>report["global_fanout"]
+            or len(report["active"])>report["active_limit"]
+            or report["publish_enabled"] is not False
+            or report["monthly_inr"]!=0):
+        raise WorkflowError("Offline recovery violated fixed safety invariants")
+    return {
+        "expired_lease_count":len(expired),
+        "running_after_recovery":report["running_tasks"],
+        "active_video_count":len(report["active"]),
+        "queue_reconciled":True,
+        "publishing_authorized":False,
+        "monthly_recurring_infrastructure_inr":0,
+        "remotely_trusted_clock":False,
+    }
+
+
+def serve_offline_staging(db_path:Path,episodes:tuple[EpisodeSpec,...],
+                          socket_path:Path,worker_keys:Mapping[str,tuple],
+                          admin_id:str,admin_secret:bytes,
+                          ready_pipe=None,
+                          socket_group_gid:int|None=None)->None:
+    """Separate OS process entrypoint for *offline test harness only*.
+
+    In-memory HMAC keys are passed by the trusted test parent at process
+    start; never placed on the socket, in the worker subprocess, or in SQLite.
+    """
+    try:
+        core=UnifiedStagingCoordinator(Path(db_path),episodes=episodes)
+        # Before admitting new task claims, validate key policy and all
+        # committed task state; only afterward recover stranded leases.
+        boundary=StagingLocalCommandBoundary(
+            core,worker_keys=worker_keys,
+            admin_id=admin_id,admin_secret=admin_secret,
+        )
+        preflight_offline_staging(core)
+        with OfflineStagingIPCService(
+            Path(socket_path),boundary,socket_group_gid=socket_group_gid
+        ) as service:
+            if ready_pipe is not None:
+                ready_pipe.send(True)
+                ready_pipe.close()
+            service.serve_forever(poll_interval=0.05)
+    except Exception:
+        if ready_pipe is not None:
+            try:
+                ready_pipe.send(False)
+                ready_pipe.close()
+            except (BrokenPipeError,EOFError,OSError):
+                pass
+        raise
+
+
+def send_signed_ipc(location:Path,command:str)->dict:
+    """Send pre-signed staging JSON with no secrets or generic execution."""
+    if (type(command) is not str or not 0<len(command.encode("utf-8"))
+            <=MAX_IPC_FRAME):
+        raise WorkflowError("Signed IPC command too large or malformed")
+    location=Path(location)
+    if not location.is_absolute():
+        raise WorkflowError("Unix staging socket path must be absolute")
+    wire=command.encode("utf-8")+b"\n"
+    with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as client:
+        client.settimeout(2)
+        client.connect(str(location))
+        client.sendall(wire)
+        with client.makefile("rb") as response:
+            msg=response.readline(MAX_IPC_REPLY+2)
+    if not msg.endswith(b"\n") or len(msg)>MAX_IPC_REPLY+1:
+        raise WorkflowError("Invalid server reply")
+    try:
+        parsed=json.loads(msg)
+    except (ValueError,UnicodeError) as exc:
+        raise WorkflowError("Staging service replied with malformed JSON") from exc
+    if (not isinstance(parsed,dict) or parsed.get("ok") is not True
+            or set(parsed)!={"ok","result"}
+            or not isinstance(parsed["result"],dict)):
+        raise WorkflowError("Signed staging command was denied")
+    return parsed["result"]

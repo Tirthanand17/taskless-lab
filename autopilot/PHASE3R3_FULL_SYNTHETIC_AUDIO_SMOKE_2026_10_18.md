@@ -1,0 +1,11 @@
+# Phase 3R3 next: actual full-duration SYNTHETIC tone mux probe, NOT narration
+
+**18 October 2026.** This checkpoint does **not** acquire or simulate natural human speech. Existing requirements for separate, commercially cleared Hindi + English voices, two audibly distinct Short speakers, true aligned subtitles, factual/rights review and release OAuth all remain blocked.
+
+New \`autopilot/phase3_full_synthetic_audio_smoke.py\` uses FFmpeg in existing standard **public GitHub Actions** runner to create a **clearly labeled sine wave test signal**, combines it with an actual already-rendered and re-probed **single silent H264 original HD video** by stream copy, checks exact episode duration, pixel geometry, frame count, H264/AAC codecs and 48kHz sample rate, FULL decodes AV, inspects actual decoded AAC RMS and hashes temporary output. Temporary WAV and MP4 are removed via \`TemporaryDirectory\` on both success and failure. Metadata only leaves function, not raw or durable media.
+
+The existing \`.github/workflows/flowminute-cloud-render-smoke.yml\` runs actual synthetic mux once **after** real 42s/42s HD original Shorts validation, and once **after** real 432s full-HD original Hindi long validation. It leaves release flags off and cleans all source/output video. The existing 3-second English proof remains, but the new full-duration smoke no longer claims a tiny clip demonstrates longer AV capability.
+
+Unit tests include an **actual 1-second FFmpeg audio/video encode, AAC mux, full decode and cleanup** plus malformed and forged safety input checks. Only the CI smoke on exact GitHub source SHA can establish full-duration ephemeral synthetic-tone AV verification; before that check completes, report as pending rather than done. A successful synthetic tone smoke proves technical codecs/frames, **not intelligible narration, speaker rights, language, synchronization, cinematic quality, persistence or publication readiness**.
+
+**No installed voice model, external TTS, audio/video artifact upload, private account, API/OAuth scope, cloud service connection, new charge, D1 modification, desktop/Nirala permission, YouTube scheduling or publishing.** Existing owner recurring infra budget ₹0; publication remains disabled; public research PR #5 and release-controller PR #4 stay DRAFT and unmerged. **21 production acceptance subphases still open.**
