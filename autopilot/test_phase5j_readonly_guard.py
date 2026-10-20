@@ -52,9 +52,22 @@ class Phase5JGuardTests(unittest.TestCase):
         for part in ("cloudflare","github","backup","budget"):
             for name in f[part]:f[part][name]=True
         r=self.check(f)
-        self.assertEqual(r["issues"],[])
+        self.assertIn("CLOUDFLARE_THREE_WORKER_RUNTIME_EVIDENCE_MISSING",r["issues"])
         self.assertFalse(r["production_migration_authorized"])
         self.assertFalse(r["cloud_publishing_authorized"])
+        self.assertFalse(r["cloud_autopilot_ready"])
+
+    def test_multi_worker_live_snapshot_retains_hold(self):
+        from autopilot.test_phase5j_multi_worker_inventory import evidence
+        e=evidence()
+        r=assess(fixture(),ROOT,now=NOW,runtime_worker_evidence=e)
+        self.assertIn("CLOUDFLARE_MULTIPLE_WORKER_WRITE_SURFACES_NOT_VERIFIED",r["issues"])
+        self.assertIn("PUBLIC_D1_BOUND_WORKER_MAY_WRITE",r["multi_worker_risk_codes"])
+        self.assertFalse(r["production_migration_authorized"])
+
+    def test_malformed_multi_worker_packet_never_promotes(self):
+        r=assess(fixture(),ROOT,now=NOW,runtime_worker_evidence={"token":"hidden"})
+        self.assertIn("CLOUDFLARE_MULTIPLE_WORKER_EVIDENCE_MALFORMED",r["issues"])
         self.assertFalse(r["cloud_autopilot_ready"])
 
     def test_flag_zero_is_not_global_cost_proof(self):
