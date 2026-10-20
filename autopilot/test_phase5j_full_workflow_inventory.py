@@ -99,7 +99,7 @@ class Phase5JWorkflowInventoryTests(unittest.TestCase):
         temp,root,out=fixture()
         try:
             path=out/"render-long-001.yml"
-            path.write_text(path.read_text()+"\n  PRIVATE_TOKEN: \${{ secrets.YOUTUBE_TOKEN_JSON }}\n")
+            path.write_text(path.read_text()+"\n  PRIVATE_TOKEN: ${{ secrets.YOUTUBE_TOKEN_JSON }}\n")
             r=enumerate_workflows(root)
             self.assertIn("UNEXPECTED_YOUTUBE_OWNER_ACCESS_IN_WORKFLOW",r["risk_codes"])
         finally:temp.cleanup()
