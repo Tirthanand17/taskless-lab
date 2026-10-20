@@ -30,6 +30,15 @@ class Phase5JGuardTests(unittest.TestCase):
         self.assertEqual(len(r["workflows"]),4)
         self.assertTrue(all(w["source_guard_present"] for w in r["workflows"]))
 
+    def test_gate_integrates_all_28_workflow_source_edges(self):
+        result=self.check()
+        self.assertTrue(result["full_source_inventory_reviewed"])
+        self.assertEqual(result["full_source_workflow_count"],28)
+        self.assertEqual(result["full_source_video_upload_workflows"],2)
+        self.assertEqual(result["full_source_repo_write_workflows"],8)
+        self.assertEqual(result["full_source_research_cron_workflows"],1)
+        self.assertNotIn("FULL_GITHUB_WORKFLOW_INVENTORY_NOT_VERIFIED",result["issues"])
+
     def test_account_control_gaps_remain_hold(self):
         r=self.check()
         self.assertEqual(r["state"],"HOLD_WRITER_BACKUP_AND_COST")
@@ -107,6 +116,19 @@ class Phase5JGuardTests(unittest.TestCase):
     def test_integer_not_coerced_to_boolean(self):
         f=fixture();f["github"]["live_publish_variable_off"]=1
         with self.assertRaises(InvalidEvidence):self.check(f)
+
+    def test_incomplete_repository_inventory_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo=Path(tmp)
+            folder=repo/".github"/"workflows"
+            folder.mkdir(parents=True)
+            for name in WORKFLOWS:
+                (folder/name).write_text(
+                    (ROOT/".github"/"workflows"/name).read_text())
+            result=self.check(repo=repo)
+        self.assertIn("FULL_GITHUB_WORKFLOW_INVENTORY_NOT_VERIFIED",result["issues"])
+        self.assertFalse(result["full_source_inventory_reviewed"])
+        self.assertFalse(result["cloud_autopilot_ready"])
 
     def test_source_missing_never_approves(self):
         with tempfile.TemporaryDirectory() as tmp:
