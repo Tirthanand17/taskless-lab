@@ -2,11 +2,11 @@
   "schema_version": 1,
   "release_date_ist": "2026-10-24",
   "timezone": "Asia/Kolkata",
-  "state": "ENGLISH_REVIEW_REBUILT_SCHEDULER_SAFETY_TESTED_RELEASE_BLOCKED",
-  "meaning": "The 48-second English Short is fully rendered with 13 ASR-timed captions, reproducibly rebuilt and integrity checked in GitHub Actions. Scheduled release is still blocked by final human creative/legal approval and unverified YouTube OAuth. Hindi episodes incomplete.",
+  "state": "CREATIVE_REJECTED_CURRENT_ENGLISH_48S_REBUILD_NEEDED",
+  "meaning": "Owner explicitly rejects the 48s English draft due to ~17s major silences and flat vector diagrams after first 8s. Replacement planned as 32s original cinematic 3D, but 3 new 8s clips not generated. No release approvals or confirmed YouTube schedules.",
   "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
   "channel_name": "FlowMinute Lab",
-  "checked_at_local": "2026-10-23T20:57:00+05:30",
+  "checked_at_local": "2026-10-23T21:00:00+05:30",
   "checks": {
     "approved_final_videos": 0,
     "actual_google_flow_clips": 0,
@@ -46,7 +46,14 @@
     "scheduler_metadata_created": "content/episodes/fm_20261024_short_en.json",
     "release_metadata_privacy_validator_fixed": true,
     "release_metadata_privacy_validator_preserves_phone_email_secret_rejection": true,
-    "release_metadata_validate_passes": true
+    "release_metadata_validate_passes": true,
+    "owner_rejected_current_english_48s_video": true,
+    "old_english_48s_audio_pacing_pass": false,
+    "old_english_48s_major_gap_total_seconds": 17.033,
+    "cinematic_32s_rebuild_plan_committed": true,
+    "new_cinematic_3d_clips_generated": 0,
+    "new_32s_actual_full_video_exists": false,
+    "google_flow_live_credit_balance_verified": false
   },
   "intended_slots": [
     {
@@ -58,7 +65,7 @@
       "publish_at_utc": "2026-10-24T05:30:00Z",
       "media_file_sha256": null,
       "youtube_video_id": null,
-      "status": "48S_COMPLETE_ASR_CAPTIONED_CLOUD_REBUILD_HUMAN_APPROVAL_PENDING",
+      "status": "CREATIVELY_REJECTED_48S_REPLACEMENT_MEDIA_NOT_PRODUCED",
       "review_copy_sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9"
     },
     {
@@ -85,12 +92,12 @@
     }
   ],
   "unblock_conditions": [
-    "Owner and final reviewer listen to full English 48s clip, confirm natural voices, dialogue, exact caption accuracy and visuals",
-    "Complete rights and factual verification, record 5 true approvals bound to exact MP4 SHA (currently all false)",
-    "Ensure approved MP4 and SRT belong to one artifact; final approval must reference that same actual byte hash",
-    "Confirm real YouTube OAuth, publishing enablement and access to FlowMinute Lab channel on protected main branch",
-    "Upload once using exact future private status.publishAt; verify YouTube ID and schedule readback, preserve pending ID on partial failure",
-    "Generate quality-approved original full-length Hindi Short and Hindi Long before attempting their direct YouTube scheduling"
+    "Generate three physically grounded cinematic 8s clips with same Asha/Jay identities and film lighting as existing approved opener; no vector/low-poly substitutions",
+    "Produce a continuous natural 32s voiced story and verify silence gaps no more than 1.2s in explanatory body",
+    "Human visually approves all new 3D clips, audio quality, factual accuracy, rights and synchronized subtitles",
+    "Ensure enough existing Google Flow credits and confirm real per-generation cost; never buy credits",
+    "Only then verify YouTube OAuth, upload exact approved SHA to correct channel, and read back publishAt",
+    "Complete separate Hindi Short and Hindi long approved media"
   ],
   "do_not_treat_as_publication_approval": true
 }
