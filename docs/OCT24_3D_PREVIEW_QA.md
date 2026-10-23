@@ -14,7 +14,7 @@ A 6.0-second animation was generated in a disposable ChatGPT session using *real
 | Full decode | PASS, ffmpeg exit code 0 |
 | SHA-256 of final MP4 | `f96c21545f29f93539c3d2623d4061d038feb86ed9e29fab84e6cb053836b7c4` |
 | Original video storage | Temporary ChatGPT session file, not a durable hosted media URL |
-| Script storage | Temporary ChatGPT session only (not yet registered as cloud production renderer) |
+| Script storage | Original session source is temporary; a similar standalone geometry probe is now in `scripts/vtk_story3d_probe.py` on this branch |
 
 ## Visual QA
 
@@ -31,3 +31,13 @@ A 6.0-second animation was generated in a disposable ChatGPT session using *real
 Make one 5–10 second **high-quality** character shot with original or cleared full-body rigged 3D avatars, multiple active characters, real set objects, believable animation curves, human-sounding localized audio and captions. Review spoken timing and object-to-camera continuity. Repeat only after that shot is accepted, then render full episodes and follow the existing authenticated YouTube publication controller.
 
 This is a truthful prototype QA checkpoint, not a substitute for the original episode release manifests. Keep the ₹0/month guardrail.
+
+## Reproducible technical probe
+
+The branch now contains `scripts/vtk_story3d_probe.py`, an optional offline generator for a similar procedural scene with VTK, NumPy and OpenCV. Run it **only** in an explicitly permitted renderer environment with the necessary libraries and an existing output folder:
+
+```bash
+python scripts/vtk_story3d_probe.py --output /existing/path/true3d_probe.mp4
+```
+
+The repository script is not byte-for-byte the same generator as the preview MP4's temporary session source; no identical-output guarantee is made. The probe uses a simple MPEG-4 encoder; final use requires H.264 transcode and fresh decode checks. Running the probe never satisfies the production QA gates or uploads video.
