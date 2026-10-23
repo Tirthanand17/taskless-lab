@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "episode": "fm_20261024_short_en",
+  "user_feedback": "Opening 3D acceptable; rest too low-quality and there are long explanatory gaps",
+  "decision": "REJECT_CURRENT_48S_REVIEW_CUT_FOR_CREATIVE_RELEASE",
+  "old_candidate_sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9",
+  "source_file": "FlowMinute_Oct24_English_48s_BALANCED_REVIEW_ONLY.mp4",
+  "measured": {
+    "silence_threshold_db": -36,
+    "min_duration_for_detection_s": 0.35,
+    "major_silence_intervals_seconds": [
+      [
+        12.644,
+        16.223
+      ],
+      [
+        21.143,
+        24.213
+      ],
+      [
+        28.375,
+        32.254
+      ],
+      [
+        36.391,
+        40.223
+      ],
+      [
+        45.349,
+        48.021
+      ]
+    ],
+    "major_silence_sum_seconds": 17.03,
+    "peak_gap_seconds": 3.88,
+    "quality_drop_timestamp_seconds": 8,
+    "quality_drop_description": "Approved HeyGen cinematic 3D human motion replaced by basic flat geometric vector diagrams"
+  },
+  "new_plan": {
+    "duration_seconds": 32,
+    "existing_approved_8s": "dac55a35aa6745028a4d4051fb1fb249",
+    "replacement_clips": 3,
+    "seconds_per_replacement": 8,
+    "model": "Gemini Omni Flash 720p through user-connected Google Flow",
+    "estimated_credits_each": 12,
+    "estimated_credits_total": 36,
+    "balance_checked_live": false,
+    "actual_new_generations": 0,
+    "media_available": false,
+    "forbidden_fill": "Flat infographic/low-poly cartoon/static still/stock generic interface",
+    "expected_real_scenes": [
+      {
+        "id": "02",
+        "time": "08–16s",
+        "topic": "Model Garden shelf"
+      },
+      {
+        "id": "03",
+        "time": "16–24s",
+        "topic": "Physical workflow choice"
+      },
+      {
+        "id": "04",
+        "time": "24–32s",
+        "topic": "Access and pricing caveat"
+      }
+    ]
+  },
+  "creative_review_accepted": false,
+  "video_completed": false,
+  "ready_to_schedule": false,
+  "youtube_scheduled": false,
+  "spend_inr": 0,
+  "allow_paid_credit_purchase": false,
+  "no_laptop_access": true
+}
