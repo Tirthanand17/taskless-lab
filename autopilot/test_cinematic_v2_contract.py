@@ -26,7 +26,7 @@ def test_four_real_cinematic_source_slots_have_strict_32s_contract():
 
 
 def test_actual_media_still_required_no_fake_release_from_manifest():
-    with pytest.raises(AssemblyError,"Missing, symlinked"):
+    with pytest.raises(AssemblyError,match="Missing, symlinked"):
         validate_manifest(shot_manifest())
 
 
@@ -39,52 +39,52 @@ def test_unknown_revision_is_rejected(mode):
 
 def test_three_new_clips_must_exist():
     j=shot_manifest();j["segments"].pop()
-    with pytest.raises(AssemblyError,"exactly four"):
+    with pytest.raises(AssemblyError,match="exactly four"):
         check_cinematic_v2_contract(j)
 
 
 def test_cannot_use_original_rejected_48_second_export():
     j=shot_manifest();j["segments"][2]["sha256"]=REJECTED_48S_SHA256
-    with pytest.raises(AssemblyError,"owner-rejected"):
+    with pytest.raises(AssemblyError,match="owner-rejected"):
         check_cinematic_v2_contract(j)
 
 
 def test_cannot_duplicate_one_8_second_video_as_three_scenes():
     j=shot_manifest();j["segments"][2]["sha256"]=j["segments"][1]["sha256"]
-    with pytest.raises(AssemblyError,"Duplicate"):
+    with pytest.raises(AssemblyError,match="Duplicate"):
         check_cinematic_v2_contract(j)
 
 
 def test_cannot_repeat_clip_path_under_separate_aliases():
     j=shot_manifest();j["segments"][2]["path"]=j["segments"][1]["path"]
-    with pytest.raises(AssemblyError,"unique"):
+    with pytest.raises(AssemblyError,match="unique"):
         check_cinematic_v2_contract(j)
 
 
 def test_cannot_replace_owner_approved_opening_with_random_start():
     j=shot_manifest();j["segments"][0]["sha256"]="e"*64
-    with pytest.raises(AssemblyError,"exact approved"):
+    with pytest.raises(AssemblyError,match="exact approved"):
         check_cinematic_v2_contract(j)
 
 
 def test_cannot_shuffle_storyboard_scenes():
     j=shot_manifest();j["segments"][2],j["segments"][3]=j["segments"][3],j["segments"][2]
-    with pytest.raises(AssemblyError,"Wrong 32s order"):
+    with pytest.raises(AssemblyError,match="Wrong 32s order"):
         check_cinematic_v2_contract(j)
 
 
 def test_no_padding_from_missing_duration():
     j=shot_manifest();j["segments"][-1]["duration_ms"]=6000
-    with pytest.raises(AssemblyError,"eight-second"):
+    with pytest.raises(AssemblyError,match="eight-second"):
         check_cinematic_v2_contract(j)
 
 
 def test_no_partial_preview_claimed_as_final_cinematic_32s():
-    with pytest.raises(AssemblyError,"refuses synthetic"):
+    with pytest.raises(AssemblyError,match="refuses synthetic"):
         validate_manifest(shot_manifest(),test_mode=True)
 
 
 def test_wrong_english_episode_cannot_activate_special_short_target():
     j=shot_manifest();j["episode_id"]="fm_20261024_short_hi"
-    with pytest.raises(AssemblyError,"Only the approved English"):
+    with pytest.raises(AssemblyError,match="Only the approved English"):
         check_cinematic_v2_contract(j)
