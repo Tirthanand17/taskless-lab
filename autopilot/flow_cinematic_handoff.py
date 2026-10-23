@@ -118,13 +118,15 @@ def build_plan(package: dict, *, mode: str = "pilot", price: int = PRICE_CREDITS
             })
     demand(len(selected) == len(set((c["episode_id"],c["clip_id"]) for c in selected)),
            "Duplicate selected clip")
-    seconds = len(selected)*CLIP_SECONDS
-    remaining = {
-        ep_id: EXPECTED_DURATIONS[ep_id] - sum(CLIP_SECONDS for c in selected
-                                                if c["episode_id"]==ep_id)
-        for ep_id in EXPECTED_DURATIONS
-    }
-    demand(all(n >= 0 for n in remaining.values()), "Cinematic clips exceed episode length")
+    generated_seconds = len(selected)*CLIP_SECONDS
+    count_by_episode = {ep_id:sum(1 for clip in selected if clip["episode_id"] == ep_id)
+                        for ep_id in EXPECTED_DURATIONS}
+    usable = {ep_id:min(EXPECTED_DURATIONS[ep_id], count * CLIP_SECONDS)
+              for ep_id,count in count_by_episode.items()}
+    trim_seconds = {ep_id:max(0,count * CLIP_SECONDS-EXPECTED_DURATIONS[ep_id])
+                    for ep_id,count in count_by_episode.items()}
+    remaining = {ep_id:EXPECTED_DURATIONS[ep_id]-usable[ep_id]
+                 for ep_id in EXPECTED_DURATIONS}
     return {
         "status":"STAGED_NO_PROVIDER_CONNECTION",
         "selection_mode":mode,
@@ -134,7 +136,9 @@ def build_plan(package: dict, *, mode: str = "pilot", price: int = PRICE_CREDITS
         "actual_available_credits":None,
         "real_credits_spent":0,
         "new_money_spent_inr":0,
-        "cinematic_seconds_planned":seconds,
+        "raw_ai_generated_seconds":generated_seconds,
+        "cinematic_seconds_planned":sum(usable.values()),
+        "trim_seconds_by_episode":trim_seconds,
         "non_cinematic_seconds_still_to_produce":remaining,
         "clips":selected,
         "actual_render_count":0,
@@ -170,7 +174,7 @@ def validate_import_receipt(receipt: dict, *, selection: dict) -> dict:
            and receipt["source"] in ("google_flow_download", "user_supplied_file"),
            "Source provenance missing")
     demand(isinstance(receipt.get("file_name"),str)
-           and re.fullmatch("[a-zA-Z0-9][a-zA-Z0-9_.-]{2,120}\.mp4",
+           and re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]{2,120}\.mp4",
                             receipt["file_name"]) is not None
            and ".." not in receipt["file_name"],"Unsafe media filename")
     return {"status":"INTAKE_PENDING_INDEPENDENT_MEDIA_QA",
