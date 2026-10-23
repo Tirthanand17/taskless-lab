@@ -77,3 +77,23 @@ def test_pending_checkpoint_and_receipt_are_json_safe():
         pending.write_text(json.dumps({"video_id":"test_123","youtube_schedule_verified":False})+"\n")
         assert json.loads(pending.read_text())["youtube_schedule_verified"] is False
         assert not p.exists()
+
+
+def test_creator_rejection_blocks_even_five_positive_checkboxes():
+    digest="a"*64
+    approval={k:True for k in MODULE.REQUIRED_APPROVALS}
+    approval.update({"approved_video_sha256":digest,
+        "owner_rejected_current_candidate":True,
+        "release_status":"EXPLICITLY_REJECTED_CURRENT_48S_CREATIVE_QA"})
+    assert not MODULE.approval_allows_exact_video(approval,digest)
+
+
+def test_creative_approval_requires_exact_hash_and_all_true_checks():
+    digest="b"*64
+    approval={k:True for k in MODULE.REQUIRED_APPROVALS}
+    approval.update({"approved_video_sha256":digest,"owner_rejected_current_candidate":False,
+        "release_status":"HUMAN_REVIEW_APPROVED"})
+    assert MODULE.approval_allows_exact_video(approval,digest)
+    assert not MODULE.approval_allows_exact_video(approval,"c"*64)
+    approval["human_voice_approved"]=False
+    assert not MODULE.approval_allows_exact_video(approval,digest)
