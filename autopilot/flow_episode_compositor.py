@@ -18,6 +18,11 @@ TARGETS = {
     "fm_20261024_short_hi": (48000, 720, 1280),
     "fm_20261024_long_hi": (300000, 1280, 720),
 }
+# Creator-rejected 48s cut is NEVER an acceptable source for cinematic V2.
+CINEMATIC_V2_ID = "cinematic_v2_32s"
+CINEMATIC_V2_SHOTS = ("asha_jay_opening", "cinematic_02", "cinematic_03", "cinematic_04")
+APPROVED_REEXPORTED_OPENING_SHA256 = "536652db768052c69e640d0bcd5c950cafcfcee37cc062286dcef2e2d4938517"
+REJECTED_48S_SHA256 = "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9"
 VIDEO_SAFE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{2,120}\.mp4")
 HEX = re.compile(r"[0-9a-f]{64}")
 MAX_BYTES = 1_073_741_824
@@ -76,12 +81,48 @@ def _file_check(path: Path, digest: str) -> tuple[dict, float]:
     return video, duration
 
 
+def check_cinematic_v2_contract(manifest: dict) -> int:
+    """Review-only structural gate; a plan or pretty storyboard is not video footage.
+
+    Returns intended duration, but grants NO rights, creative QA, or publication.
+    """
+    if manifest.get("creative_revision") is None:
+        return 0
+    _require(manifest["creative_revision"] == CINEMATIC_V2_ID,
+             "Unknown creative revision")
+    _require(manifest.get("episode_id") == "fm_20261024_short_en",
+             "Only the approved English Short has a 32s cinematic revision")
+    segments = manifest.get("segments")
+    _require(isinstance(segments,list) and len(segments) == 4,
+             "Cinematic 32s video needs exactly four real video clips")
+    ids = tuple(x.get("id") if isinstance(x,dict) else None for x in segments)
+    _require(ids == CINEMATIC_V2_SHOTS,
+             "Wrong 32s order; missing 3D scenes or opening footage")
+    _require(all(x.get("duration_ms") == 8000 and x.get("source_start_ms") == 0
+                 for x in segments),
+             "Cinematic revision requires exactly four contiguous eight-second scenes")
+    _require(segments[0].get("sha256") == APPROVED_REEXPORTED_OPENING_SHA256,
+             "Opening must be the exact approved 8s reference MP4")
+    sha = [x.get("sha256") for x in segments]
+    _require(all(isinstance(x,str) and HEX.fullmatch(x) for x in sha),
+             "Every real 3D scene must carry its own pinned MP4 digest")
+    _require(len(set(sha)) == 4 and REJECTED_48S_SHA256 not in sha,
+             "Duplicate footage or owner-rejected flat video is prohibited")
+    _require(len({x.get("path") for x in segments}) == 4,
+             "Four unique real scene files required; no repeated filler")
+    return 32000
+
+
 def validate_manifest(manifest: dict, *, test_mode: bool = False) -> dict:
     _require(isinstance(manifest, dict) and manifest.get("schema_version") == 1,
              "Invalid assembly schema")
     eid = manifest.get("episode_id")
     _require(eid in TARGETS, "Unsupported episode ID")
     planned, width, height = TARGETS[eid]
+    cinematic_duration = check_cinematic_v2_contract(manifest)
+    if cinematic_duration:
+        _require(not test_mode, "Cinematic V2 refuses synthetic partial test assembly")
+        planned = cinematic_duration
     segments = manifest.get("segments")
     _require(isinstance(segments, list) and 1 <= len(segments) <= 60,
              "Need actual video segments")
