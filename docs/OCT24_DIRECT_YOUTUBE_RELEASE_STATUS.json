@@ -2,11 +2,11 @@
   "schema_version": 1,
   "release_date_ist": "2026-10-24",
   "timezone": "Asia/Kolkata",
-  "state": "RELEASE_BLOCKED_HUMAN_QA_OAUTH_AND_HINDI_MEDIA",
-  "meaning": "English 48s review has all 13 ASR-timed captions; YouTube scheduling code is implemented and unit-tested but no YouTube upload/schedule receipt exists. Hindi videos incomplete.",
+  "state": "ENGLISH_REVIEW_REBUILT_SCHEDULER_SAFETY_TESTED_RELEASE_BLOCKED",
+  "meaning": "The 48-second English Short is fully rendered with 13 ASR-timed captions, reproducibly rebuilt and integrity checked in GitHub Actions. Scheduled release is still blocked by final human creative/legal approval and unverified YouTube OAuth. Hindi episodes incomplete.",
   "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
   "channel_name": "FlowMinute Lab",
-  "checked_at_local": "2026-10-23T20:39:00+05:30",
+  "checked_at_local": "2026-10-23T20:57:00+05:30",
   "checks": {
     "approved_final_videos": 0,
     "actual_google_flow_clips": 0,
@@ -33,7 +33,17 @@
     "publisher_utc_schedule_guard_implemented": true,
     "publisher_schedule_live_api_verified": false,
     "release_approval_manifest_present": false,
-    "publisher_offline_test_regressions": "365 passed and 6 subtests on commit 0f2c1e4"
+    "publisher_offline_test_regressions": "373 passed + 6 subtests at commit 4d73a396",
+    "english_48s_final_review_cloud_run_id": 39977033010,
+    "english_48s_final_review_cloud_artifact_id": 12511073414,
+    "english_48s_cloud_captioned_review_sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9",
+    "english_48s_review_rebuilt_with_original_heygen_and_asr_srt": true,
+    "english_48s_review_full_ffmpeg_decode_passed": true,
+    "scheduler_duplicate_upload_pending_checkpoint_implemented": true,
+    "scheduler_expected_upload_status_allowlist_implemented": true,
+    "scheduler_restricted_to_main_branch": true,
+    "scheduler_approval_template_created": "state/approvals/fm_20261024_short_en.json",
+    "scheduler_metadata_created": "content/episodes/fm_20261024_short_en.json"
   },
   "intended_slots": [
     {
@@ -45,8 +55,8 @@
       "publish_at_utc": "2026-10-24T05:30:00Z",
       "media_file_sha256": null,
       "youtube_video_id": null,
-      "status": "48S_ASR_CAPTIONED_REVIEW_NOT_SCHEDULED",
-      "review_copy_sha256": "2d31d44d16a739a8d70f09654923dfbbdd59e7ce62cd0eecca7072588c488603"
+      "status": "48S_COMPLETE_ASR_CAPTIONED_CLOUD_REBUILD_HUMAN_APPROVAL_PENDING",
+      "review_copy_sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9"
     },
     {
       "episode_id": "fm_20261024_long_hi",
@@ -72,11 +82,12 @@
     }
   ],
   "unblock_conditions": [
-    "English Short: human listen/approve the full 48s synthetic voices and exact subtitles; factual and rights clearance",
-    "Approve pinned SHA-256 of specific final MP4 using human release manifest; never interpret draft QA as approval",
-    "Confirm working YouTube OAuth token and PUBLISH_ENABLED for correct target channel",
-    "Invoke manual schedule only with future exact UTC publishAt and read back verified YouTube video ID, scheduled time and privacy",
-    "Complete and independently approve both Hindi Short and Hindi long with actual audio/video media"
+    "Owner and final reviewer listen to full English 48s clip, confirm natural voices, dialogue, exact caption accuracy and visuals",
+    "Complete rights and factual verification, record 5 true approvals bound to exact MP4 SHA (currently all false)",
+    "Ensure approved MP4 and SRT belong to one artifact; final approval must reference that same actual byte hash",
+    "Confirm real YouTube OAuth, publishing enablement and access to FlowMinute Lab channel on protected main branch",
+    "Upload once using exact future private status.publishAt; verify YouTube ID and schedule readback, preserve pending ID on partial failure",
+    "Generate quality-approved original full-length Hindi Short and Hindi Long before attempting their direct YouTube scheduling"
   ],
   "do_not_treat_as_publication_approval": true
 }
