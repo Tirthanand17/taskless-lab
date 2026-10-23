@@ -55,9 +55,14 @@ permissions:
   contents: write
   actions: read
 
+# Never start simultaneous upload jobs to this channel.
+concurrency:
+  group: flowminute-youtube-verified-publication
+  cancel-in-progress: false
+
 jobs:
   publish:
-    if: ${{ vars.PUBLISH_ENABLED == 'true' }}
+    if: ${{ github.ref == 'refs/heads/main' && vars.PUBLISH_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     environment: youtube-production
     steps:
@@ -102,14 +107,24 @@ jobs:
             --receipt "${{ inputs.receipt }}" \
             --confirm-publish
 
-      - name: Commit publication receipt
+      - name: Commit confirmed schedule receipt or incomplete-upload recovery checkpoint
+        if: always()
         shell: bash
+        env:
+          RECEIPT_FILE: ${{ inputs.receipt }}
         run: |
           git config user.name "flowminute-lab-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "${{ inputs.receipt }}"
+          if ! [[ "$RECEIPT_FILE" =~ ^state/published/[A-Za-z0-9_.-]+\.json$ ]]; then
+            echo "Unsafe receipt file; refuse to touch Git history" >&2
+            exit 1
+          fi
+          git add -- "$RECEIPT_FILE"
+          if [ -f "$RECEIPT_FILE.pending.json" ]; then
+            git add -- "$RECEIPT_FILE.pending.json"
+          fi
           git diff --cached --quiet && exit 0
-          git commit -m "Record YouTube publication receipt: ${{ inputs.episode }}"
+          git commit -m "Record recoverable YouTube upload status (scheduled only after API readback)"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
