@@ -38,7 +38,7 @@ def verify_youtube_schedule(video: dict, requested: str, channel_id: str) -> boo
     try:
         dt = datetime.datetime.fromisoformat(got.replace("Z", "+00:00"))
         requested_dt = datetime.datetime.fromisoformat(requested.replace("Z", "+00:00"))
-        return dt == requested_dt and status.get("uploadStatus") != "rejected"
+        return dt == requested_dt and status.get("uploadStatus") in {"uploaded", "processed"}
     except (ValueError, AttributeError, TypeError):
         return False
 
@@ -83,6 +83,8 @@ def main():
 
     schedule = None
     digest = None
+    receipt_path=root/args.receipt
+    pending_path=receipt_path.with_suffix(receipt_path.suffix+".pending.json")
     if args.schedule_at_utc is not None:
         schedule = parse_scheduled_utc(args.schedule_at_utc)
         if args.privacy != "private":
@@ -107,8 +109,8 @@ def main():
             digest=hashlib.file_digest(stream,"sha256").hexdigest()
         if digest != args.expected_sha256:
             raise SystemExit("Approved video hash does not match source bytes")
-        if (root/args.receipt).exists():
-            raise SystemExit("Publication receipt already exists: refuse duplicate upload")
+        if receipt_path.exists() or pending_path.exists():
+            raise SystemExit("Receipt or prior pending upload exists: refuse potential duplicate upload")
 
     from googleapiclient.http import MediaFileUpload
     youtube=load_service()
@@ -139,6 +141,19 @@ def main():
         _,response=req.next_chunk()
     video_id=response["id"]
     print(f"uploaded video {video_id} as {args.privacy}")
+    if schedule:
+        # Persist the real remote video ID before optional subtitle/thumbnail operations.
+        # The workflow must commit this checkpoint even if later validation fails.
+        pending_path.parent.mkdir(parents=True,exist_ok=True)
+        checkpoint={"episode_id":meta.get("id"),"video_id":video_id,
+            "state":"UPLOAD_EXISTS_SCHEDULE_NOT_YET_VERIFIED",
+            "youtube_schedule_verified":False,
+            "expected_publish_at_utc":schedule,
+            "source_mp4_sha256":digest,
+            "created_utc":datetime.datetime.now(datetime.timezone.utc).isoformat()}
+        tmp=pending_path.with_suffix(pending_path.suffix+".tmp")
+        tmp.write_text(json.dumps(checkpoint,indent=2)+"\n",encoding="utf-8")
+        tmp.replace(pending_path)
 
     thumb_path=root/args.thumbnail
     if thumb_path.exists():
@@ -179,18 +194,21 @@ def main():
                            "verified_via":"youtube.videos.list"}
         print(f"YouTube confirmed video {video_id} is scheduled at {schedule}")
 
-    receipt_path=root/args.receipt
     receipt_path.parent.mkdir(parents=True,exist_ok=True)
     receipt_path.write_text(json.dumps({
       "episode_id":meta.get("id"),
       "video_id":video_id,
       "youtube_url":f"https://www.youtube.com/watch?v={video_id}",
       "privacy":args.privacy,
-      "published_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+      "uploaded_at_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+      "scheduled_publish_at_utc":schedule,
+      "published_at":None if schedule else datetime.datetime.now(datetime.timezone.utc).isoformat(),
       "title":meta["title"],
       "youtube_schedule_verified": bool(schedule_readback),
       "schedule_readback":schedule_readback
-    },indent=2)+"\\n",encoding="utf-8")
+    },indent=2)+"\n",encoding="utf-8")
+    if schedule:
+        pending_path.unlink(missing_ok=True)
     print(f"wrote receipt {receipt_path}")
 
 if __name__=="__main__":
