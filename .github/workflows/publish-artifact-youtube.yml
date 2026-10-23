@@ -119,7 +119,13 @@ jobs:
             echo "Unsafe receipt file; refuse to touch Git history" >&2
             exit 1
           fi
-          git add -- "$RECEIPT_FILE"
+          if [ ! -f "$RECEIPT_FILE" ] && [ ! -f "$RECEIPT_FILE.pending.json" ]; then
+            echo "No remote upload recorded; nothing to checkpoint"
+            exit 0
+          fi
+          if [ -f "$RECEIPT_FILE" ]; then
+            git add -- "$RECEIPT_FILE"
+          fi
           if [ -f "$RECEIPT_FILE.pending.json" ]; then
             git add -- "$RECEIPT_FILE.pending.json"
           fi
