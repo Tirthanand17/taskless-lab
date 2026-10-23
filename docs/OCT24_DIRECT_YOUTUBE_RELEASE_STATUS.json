@@ -2,11 +2,11 @@
   "schema_version": 1,
   "release_date_ist": "2026-10-24",
   "timezone": "Asia/Kolkata",
-  "state": "RELEASE_BLOCKED_NO_APPROVED_MEDIA",
-  "meaning": "Staging plan ONLY. This file is not a YouTube schedule, upload receipt, or an automation trigger.",
+  "state": "RELEASE_BLOCKED_FINAL_QA_AND_NO_VERIFIED_YOUTUBE_PUBLISHER",
+  "meaning": "One 48-second English Short REVIEW-ONLY draft now exists and passed technical QA; no complete approved media for Hindi videos; NO YouTube upload or scheduled publication.",
   "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
   "channel_name": "FlowMinute Lab",
-  "checked_at_local": "2026-10-23T17:34:00+05:30",
+  "checked_at_local": "2026-10-23T20:10:00+05:30",
   "checks": {
     "approved_final_videos": 0,
     "actual_google_flow_clips": 0,
@@ -19,7 +19,12 @@
     "google_drive_video_files_found": 0,
     "repository_oct24_release_receipts_found": 0,
     "desktop_access_used": false,
-    "new_spend_inr": 0
+    "new_spend_inr": 0,
+    "english_48s_technically_valid_combined_draft": true,
+    "english_48s_audio_balanced_review_copy": true,
+    "english_48s_caption_review_draft": true,
+    "last_english_review_workflow_run_id": 39971905081,
+    "final_english_48s_captioned_review_sha256": "2f3bd87b93f36113595021b2917cd0a65bf370690f949e82e73be421f8f9e59a"
   },
   "intended_slots": [
     {
@@ -31,7 +36,8 @@
       "publish_at_utc": "2026-10-24T05:30:00Z",
       "media_file_sha256": null,
       "youtube_video_id": null,
-      "status": "BLOCKED_NO_MEDIA"
+      "status": "COMPLETE_48S_REVIEW_DRAFT_NOT_YOUTUBE_UPLOADED",
+      "review_copy_sha256": "2f3bd87b93f36113595021b2917cd0a65bf370690f949e82e73be421f8f9e59a"
     },
     {
       "episode_id": "fm_20261024_long_hi",
@@ -57,10 +63,10 @@
     }
   ],
   "unblock_conditions": [
-    "Three completed, independently reviewed audio-video MP4s with full technical QA and exact immutable file hashes",
-    "Bilingual factual review, subtitles and voice licensing complete",
-    "Verified authenticated YouTube uploader capable of direct upload/scheduling and idempotent duplicate prevention",
-    "Video IDs, publishAt timestamps and processing status read back from YouTube before claiming scheduled"
+    "English 48-second draft: final human review of synthetic narration, opening speech, full caption synchronization, source licensing and factual accuracy",
+    "Hindi Short and Hindi long: generate and independently approve the entire video/audio durations",
+    "Confirm working authorized direct YouTube uploader and idempotent upload/schedule flow",
+    "Read back real YouTube video IDs, processing status and exact scheduled timestamps before any release claim"
   ],
   "do_not_treat_as_publication_approval": true
 }
