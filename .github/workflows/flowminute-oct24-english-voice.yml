@@ -36,7 +36,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-dejavu-core espeak-ng libsndfile1
           python -m pip install --no-input --disable-pip-version-check \
-            numpy pillow opencv-python-headless soundfile 'kokoro-onnx==0.3.9'
+            numpy pillow opencv-python-headless soundfile 'kokoro-onnx==0.6.1'
 
       - name: Fetch public Apache-2.0 model weights only into ephemeral storage
         shell: bash
