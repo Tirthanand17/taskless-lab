@@ -2,11 +2,11 @@
   "schema_version": 1,
   "release_date_ist": "2026-10-24",
   "timezone": "Asia/Kolkata",
-  "state": "RELEASE_BLOCKED_FINAL_QA_AND_NO_VERIFIED_YOUTUBE_PUBLISHER",
-  "meaning": "One 48-second English Short REVIEW-ONLY draft now exists and passed technical QA; no complete approved media for Hindi videos; NO YouTube upload or scheduled publication.",
+  "state": "RELEASE_BLOCKED_HUMAN_QA_OAUTH_AND_HINDI_MEDIA",
+  "meaning": "English 48s review has all 13 ASR-timed captions; YouTube scheduling code is implemented and unit-tested but no YouTube upload/schedule receipt exists. Hindi videos incomplete.",
   "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
   "channel_name": "FlowMinute Lab",
-  "checked_at_local": "2026-10-23T20:10:00+05:30",
+  "checked_at_local": "2026-10-23T20:39:00+05:30",
   "checks": {
     "approved_final_videos": 0,
     "actual_google_flow_clips": 0,
@@ -24,7 +24,16 @@
     "english_48s_audio_balanced_review_copy": true,
     "english_48s_caption_review_draft": true,
     "last_english_review_workflow_run_id": 39971905081,
-    "final_english_48s_captioned_review_sha256": "2f3bd87b93f36113595021b2917cd0a65bf370690f949e82e73be421f8f9e59a"
+    "final_english_48s_captioned_review_sha256": "2f3bd87b93f36113595021b2917cd0a65bf370690f949e82e73be421f8f9e59a",
+    "english_48s_asr_timed_captioned_review_available": true,
+    "english_48s_full_13_caption_cues": true,
+    "english_opening_transcript_machine_matched": true,
+    "human_voice_listening_signoff": false,
+    "exact_captions_human_approved": false,
+    "publisher_utc_schedule_guard_implemented": true,
+    "publisher_schedule_live_api_verified": false,
+    "release_approval_manifest_present": false,
+    "publisher_offline_test_regressions": "365 passed and 6 subtests on commit 0f2c1e4"
   },
   "intended_slots": [
     {
@@ -36,8 +45,8 @@
       "publish_at_utc": "2026-10-24T05:30:00Z",
       "media_file_sha256": null,
       "youtube_video_id": null,
-      "status": "COMPLETE_48S_REVIEW_DRAFT_NOT_YOUTUBE_UPLOADED",
-      "review_copy_sha256": "2f3bd87b93f36113595021b2917cd0a65bf370690f949e82e73be421f8f9e59a"
+      "status": "48S_ASR_CAPTIONED_REVIEW_NOT_SCHEDULED",
+      "review_copy_sha256": "2d31d44d16a739a8d70f09654923dfbbdd59e7ce62cd0eecca7072588c488603"
     },
     {
       "episode_id": "fm_20261024_long_hi",
@@ -63,10 +72,11 @@
     }
   ],
   "unblock_conditions": [
-    "English 48-second draft: final human review of synthetic narration, opening speech, full caption synchronization, source licensing and factual accuracy",
-    "Hindi Short and Hindi long: generate and independently approve the entire video/audio durations",
-    "Confirm working authorized direct YouTube uploader and idempotent upload/schedule flow",
-    "Read back real YouTube video IDs, processing status and exact scheduled timestamps before any release claim"
+    "English Short: human listen/approve the full 48s synthetic voices and exact subtitles; factual and rights clearance",
+    "Approve pinned SHA-256 of specific final MP4 using human release manifest; never interpret draft QA as approval",
+    "Confirm working YouTube OAuth token and PUBLISH_ENABLED for correct target channel",
+    "Invoke manual schedule only with future exact UTC publishAt and read back verified YouTube video ID, scheduled time and privacy",
+    "Complete and independently approve both Hindi Short and Hindi long with actual audio/video media"
   ],
   "do_not_treat_as_publication_approval": true
 }
