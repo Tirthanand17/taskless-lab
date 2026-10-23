@@ -8,7 +8,7 @@ import re
 import os
 from pathlib import Path
 
-UTC_TIME = re.compile(r"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$")
+UTC_TIME = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 REQUIRED_APPROVALS = (
     "human_voice_approved", "exact_captions_approved",
     "rights_cleared", "factual_review_approved", "final_video_approved"
