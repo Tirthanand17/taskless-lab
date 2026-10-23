@@ -14,6 +14,18 @@ The earlier 3D preview relied on fixed arm positions and a self-moving floating 
 - Audio contains original synthetic sound effects only. No voiceover, lip sync, rights signoff or finished episode.
 - The preview MP4 remains a conversation artifact and **is not a GitHub-hosted or scheduled video**.
 
+## Reproducible no-upload render runner
+
+The implementation is now also versioned as `scripts/render_character_contact.py`. It consumes the tested `autopilot.character_motion.sample()` poses and produces an actual 3D VTK mesh MP4, with physical limb transforms. It does **not** generate narration, run YouTube upload, or pretend its procedural models are premium-quality assets.
+
+Run only on an explicitly allowed renderer with VTK, NumPy, Pillow and FFmpeg installed; provide an existing non-Desktop folder:
+
+```bash
+python scripts/render_character_contact.py --out /existing/allowed/render-folder
+```
+
+One isolated test run of the reproducible renderer produced a separate 8.000-second, 854×480 H.264 technical proof (96 frames, 130,386 bytes), FFmpeg full decode PASS. SHA256: `b49cbfd943b0ad55987349030b713b505f939f0a2de20d6cc5eb3ef30e5b17d4`. This is not the same artifact as the larger 960×540 sound-effects demonstration; the simplified reproducible proof has no audio. Neither is publish-ready.
+
 ## Premium rig research
 
 See \`content/asset_research/free_character_rig_candidates.json\`. Official free Blender Studio *Rain* and *Einar* rigs (CC-BY attribution required) are higher-detail prospects than procedural mannequin characters. Kenney's animated character pack is CC0, but deliberately low-poly; not comparable to premium 3D faces. Older Quaternius character packs may be usable but exact pack licenses must be checked against its newer license policy.
