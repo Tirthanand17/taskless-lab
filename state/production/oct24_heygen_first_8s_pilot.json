@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "release_date_ist": "2026-10-24",
+  "episode_id": "fm_20261024_short_en",
+  "clip_id": "01",
+  "created_on": "2026-10-23",
+  "provider": "HeyGen",
+  "generation_route": "heygen-video-1/text-to-video",
+  "provider_video_id": "dac55a35aa6745028a4d4051fb1fb249",
+  "provider_account_plan_observed": "free",
+  "wallet_balance_observed": null,
+  "usage_billing_observed": null,
+  "output": {
+    "duration_requested_seconds": 8,
+    "aspect_ratio": "9:16",
+    "resolution_requested": "768p",
+    "character_names": [
+      "Asha",
+      "Jay"
+    ],
+    "language": "en"
+  },
+  "submitted_first_attempt": true,
+  "do_not_retry_automatically": true,
+  "observed_generation_status": "processing",
+  "last_status_source": "show_video player accepted creation and began tracking",
+  "finished_mp4_url": null,
+  "actual_duration_verified": false,
+  "actual_dimensions_verified": false,
+  "full_mp4_decode_verified": false,
+  "character_identity_reviewed": false,
+  "lip_sync_reviewed": false,
+  "prop_physics_reviewed": false,
+  "realism_reviewed": false,
+  "rights_and_audio_reviewed": false,
+  "claims_reviewed": false,
+  "video_export_sha256": null,
+  "pass_final_quality_gate": false,
+  "entire_48_second_episode_complete": false,
+  "youtube_video_id": null,
+  "youtube_scheduled": false,
+  "comment": "First actual provider generation accepted and visible in HeyGen inline player. Output pending. Text-to-video cannot guarantee consistency with original Asha/Jay image pack; do not claim release-ready."
+}
