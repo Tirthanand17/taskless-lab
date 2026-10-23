@@ -63,11 +63,20 @@ def build(visual, model_dir, out, voice="af_sarah", speed=1.12):
             if not 2.4 <= d <= 13: raise ValueError(f"Unusable beat {i+1} duration: {d}")
             tempo=max(1.0,d/7.42)
             if tempo>1.45: raise ValueError(f"Beat {i+1} needs human script revision")
-            filt=(f"aresample=48000,atempo={tempo:.5f},adelay=160,"
-                  "apad,atrim=0:8,asetpts=N/SR/TB,"
-                  "afade=t=in:st=0:d=.13,afade=t=out:st=7.67:d=.33")
+            import numpy as np
+            tempo_fixed=tmp/f"tempo_fixed_{i}.wav"
             run(["ffmpeg","-hide_banner","-loglevel","error","-y","-i",str(raw),
-                 "-af",filt,"-ar","48000","-ac","1","-c:a","pcm_s16le",str(adjusted)])
+                 "-af",f"aresample=48000,atempo={tempo:.5f}",
+                 "-ar","48000","-ac","1","-c:a","pcm_s16le",str(tempo_fixed)])
+            waveform,rate=sf.read(str(tempo_fixed),dtype="float32")
+            if rate != 48000 or waveform.ndim != 1 or len(waveform)>int(7.77*rate):
+                raise RuntimeError(f"Neural speech overflows eight-second beat {i+1}")
+            target=np.zeros(int(8*rate),dtype=np.float32)
+            offset=int(.16*rate)
+            target[offset:offset+len(waveform)]=waveform
+            fade=int(.1*rate)
+            target[offset:offset+fade]*=np.linspace(0,1,fade)
+            sf.write(str(adjusted),target,rate,subtype="PCM_16")
             if not 7.99<=length(adjusted)<=8.01:
                 raise RuntimeError(f"Incorrect speech beat {i+1} timing")
             report.append({"start_in_full_short":8+i*8,"text":line,
