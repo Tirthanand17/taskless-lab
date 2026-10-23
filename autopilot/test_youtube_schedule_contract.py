@@ -53,3 +53,27 @@ def test_readback_fails_on_wrong_channel():
 def test_readback_requires_real_status_and_snippet():
     for payload in [{},None,{"status":{"privacyStatus":"private"}},{"snippet":{"channelId":CHANNEL}}]:
         assert not MODULE.verify_youtube_schedule(payload,"2026-10-24T05:30:00Z",CHANNEL)
+
+@pytest.mark.parametrize("invalid_state",["failed","rejected","deleted",None,"processing",""])
+def test_youtube_schedule_rejects_incomplete_or_bad_upload_states(invalid_state):
+    x=good_resource()
+    if invalid_state is None:
+        del x["status"]["uploadStatus"]
+    else:
+        x["status"]["uploadStatus"]=invalid_state
+    assert not MODULE.verify_youtube_schedule(x,"2026-10-24T05:30:00Z",CHANNEL)
+
+def test_processed_youtube_upload_may_have_valid_private_schedule():
+    x=good_resource()
+    x["status"]["uploadStatus"]="processed"
+    assert MODULE.verify_youtube_schedule(x,"2026-10-24T05:30:00Z",CHANNEL)
+
+def test_pending_checkpoint_and_receipt_are_json_safe():
+    import json
+    from tempfile import TemporaryDirectory
+    with TemporaryDirectory() as d:
+        p=Path(d)/"example.json"
+        pending=p.with_suffix(p.suffix+".pending.json")
+        pending.write_text(json.dumps({"video_id":"test_123","youtube_schedule_verified":False})+"\n")
+        assert json.loads(pending.read_text())["youtube_schedule_verified"] is False
+        assert not p.exists()
