@@ -40,7 +40,10 @@ class FlowHandoffTests(unittest.TestCase):
         p=build_plan(loaded(),mode="full_keyshots")
         self.assertEqual(p["clip_count"],16)
         self.assertEqual(p["estimated_flow_credits"],240)
-        self.assertEqual(p["cinematic_seconds_planned"],160)
+        self.assertEqual(p["raw_ai_generated_seconds"],160)
+        self.assertEqual(p["cinematic_seconds_planned"],156)
+        self.assertEqual(p["trim_seconds_by_episode"],{"fm_20261024_short_en":2,
+            "fm_20261024_short_hi":2,"fm_20261024_long_hi":0})
 
     def test_price_is_assumption_not_live_credit(self):
         p=build_plan(loaded(),price=18)
