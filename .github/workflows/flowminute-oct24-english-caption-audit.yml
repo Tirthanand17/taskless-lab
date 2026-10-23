@@ -58,10 +58,14 @@ jobs:
           set -euo pipefail
           cd "$RUNNER_TEMP/flowminute-asr"
           python - <<'PY'
-          import json, pathlib, re
+          import json, pathlib, re, wave
+          import numpy as np
           from faster_whisper import WhisperModel
+          with wave.open("actual_audio_48s.wav","rb") as audio:
+              assert audio.getnchannels()==1 and audio.getsampwidth()==2 and audio.getframerate()==16000
+              samples=np.frombuffer(audio.readframes(audio.getnframes()),dtype="<i2").astype(np.float32)/32768
           model=WhisperModel("small.en",device="cpu",compute_type="int8",cpu_threads=3)
-          segments,info=model.transcribe("actual_audio_48s.wav",language="en",
+          segments,info=model.transcribe(samples,language="en",
                 beam_size=5,word_timestamps=True,vad_filter=False,
                 condition_on_previous_text=False)
           data=[]
