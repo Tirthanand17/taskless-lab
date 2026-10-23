@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "release_date_ist": "2026-10-24",
+  "timezone": "Asia/Kolkata",
+  "state": "RELEASE_BLOCKED_NO_APPROVED_MEDIA",
+  "meaning": "Staging plan ONLY. This file is not a YouTube schedule, upload receipt, or an automation trigger.",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "channel_name": "FlowMinute Lab",
+  "checked_at_local": "2026-10-23T17:34:00+05:30",
+  "checks": {
+    "approved_final_videos": 0,
+    "actual_google_flow_clips": 0,
+    "youtube_upload_receipts": 0,
+    "youtube_schedule_verified": false,
+    "eligible_youtube_scheduling_via_vidiq": false,
+    "vidiq_available_credits": 2,
+    "vidiq_private_video_listing_required_credits": 5,
+    "metricool_youtube_connection": false,
+    "google_drive_video_files_found": 0,
+    "repository_oct24_release_receipts_found": 0,
+    "desktop_access_used": false,
+    "new_spend_inr": 0
+  },
+  "intended_slots": [
+    {
+      "episode_id": "fm_20261024_short_en",
+      "title": "OpenAI on Google Cloud: what really changes?",
+      "format": "short",
+      "language": "en",
+      "publish_at_ist": "2026-10-24T11:00:00+05:30",
+      "publish_at_utc": "2026-10-24T05:30:00Z",
+      "media_file_sha256": null,
+      "youtube_video_id": null,
+      "status": "BLOCKED_NO_MEDIA"
+    },
+    {
+      "episode_id": "fm_20261024_long_hi",
+      "title": "AI Agents और Software Security: आसान 3D कहानी",
+      "format": "long",
+      "language": "hi",
+      "publish_at_ist": "2026-10-24T16:00:00+05:30",
+      "publish_at_utc": "2026-10-24T10:30:00Z",
+      "media_file_sha256": null,
+      "youtube_video_id": null,
+      "status": "BLOCKED_NO_MEDIA"
+    },
+    {
+      "episode_id": "fm_20261024_short_hi",
+      "title": "हजारों AI एजेंट और 32 मिनट का ब्रेन डेटा",
+      "format": "short",
+      "language": "hi",
+      "publish_at_ist": "2026-10-24T20:30:00+05:30",
+      "publish_at_utc": "2026-10-24T15:00:00Z",
+      "media_file_sha256": null,
+      "youtube_video_id": null,
+      "status": "BLOCKED_NO_MEDIA"
+    }
+  ],
+  "unblock_conditions": [
+    "Three completed, independently reviewed audio-video MP4s with full technical QA and exact immutable file hashes",
+    "Bilingual factual review, subtitles and voice licensing complete",
+    "Verified authenticated YouTube uploader capable of direct upload/scheduling and idempotent duplicate prevention",
+    "Video IDs, publishAt timestamps and processing status read back from YouTube before claiming scheduled"
+  ],
+  "do_not_treat_as_publication_approval": true
+}
