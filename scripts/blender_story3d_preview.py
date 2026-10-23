@@ -22,6 +22,7 @@ except ImportError as exc:
     raise SystemExit("Requires Blender Python (bpy); this is not a 2.5D replacement") from exc
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 STORIES = ROOT / "content" / "episodes" / "oct24_multicharacter_3d_plans.json"
 
 
@@ -188,7 +189,7 @@ def build(episode, shot, output, frames):
         try: scene.render.engine="BLENDER_EEVEE_NEXT"
         except Exception: scene.render.engine="BLENDER_EEVEE"
     scene.world.color=(.018,.027,.052)
-    scene.view_settings.view_transform="AgX" if "AgX" in bpy.types.ColorManagedViewSettings.bl_rna.properties["view_transform"].enum_items.keys() else "Standard"
+    scene.view_settings.view_transform="Standard"
     scene.render.image_settings.file_format="FFMPEG"
     scene.render.ffmpeg.format="MPEG4"
     scene.render.ffmpeg.codec="H264"
