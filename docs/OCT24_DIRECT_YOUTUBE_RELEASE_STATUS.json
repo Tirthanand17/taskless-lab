@@ -33,7 +33,7 @@
     "publisher_utc_schedule_guard_implemented": true,
     "publisher_schedule_live_api_verified": false,
     "release_approval_manifest_present": false,
-    "publisher_offline_test_regressions": "373 passed + 6 subtests at commit 4d73a396",
+    "publisher_offline_test_regressions": "377 passed, 6 subtests passed on commit ea743166",
     "english_48s_final_review_cloud_run_id": 39977033010,
     "english_48s_final_review_cloud_artifact_id": 12511073414,
     "english_48s_cloud_captioned_review_sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9",
@@ -43,7 +43,10 @@
     "scheduler_expected_upload_status_allowlist_implemented": true,
     "scheduler_restricted_to_main_branch": true,
     "scheduler_approval_template_created": "state/approvals/fm_20261024_short_en.json",
-    "scheduler_metadata_created": "content/episodes/fm_20261024_short_en.json"
+    "scheduler_metadata_created": "content/episodes/fm_20261024_short_en.json",
+    "release_metadata_privacy_validator_fixed": true,
+    "release_metadata_privacy_validator_preserves_phone_email_secret_rejection": true,
+    "release_metadata_validate_passes": true
   },
   "intended_slots": [
     {
