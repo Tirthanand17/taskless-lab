@@ -98,6 +98,19 @@ class SceneContractTests(unittest.TestCase):
         with self.assertRaisesRegex(Story3DError, "appear in order"):
             validate_3d_lesson(doc)
 
+    def test_scene_voice_density_blocks_long_silent_gaps(self):
+        doc = sample(2)
+        doc["shots"][2]["dialogue"] = [
+            {"speaker":"omar","text":"यह बहुत छोटे शब्द हैं।"}]
+        with self.assertRaisesRegex(Story3DError, "too sparse or too fast"):
+            validate_3d_lesson(doc)
+
+    def test_scene_voice_density_blocks_unreadably_fast_speech(self):
+        doc = sample(0)
+        doc["shots"][0]["duration_seconds"] = 2
+        with self.assertRaisesRegex(Story3DError, "too sparse or too fast"):
+            validate_3d_lesson(doc)
+
     def test_source_urls_must_use_https(self):
         doc = sample()
         doc["source_urls"] = ["http://example.org/story"]
