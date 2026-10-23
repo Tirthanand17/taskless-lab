@@ -1,0 +1,298 @@
+{
+  "contract_version": 1,
+  "scope": "Evidence-informed creative planning only; no production readiness, no observed retention or lift.",
+  "supporting_research": [
+    "https://blog.youtube/creator-and-artist-stories/youtube-shorts-deep-dive/",
+    "https://support.google.com/youtube/answer/9314415",
+    "https://support.google.com/youtube/answer/12220281",
+    "https://support.google.com/youtube/answer/16391400",
+    "https://support.google.com/youtube/answer/14075157",
+    "https://support.google.com/youtube/answer/6373554",
+    "https://support.google.com/youtube/answer/1311392",
+    "https://doi.org/10.1016/j.learninstruc.2024.102077"
+  ],
+  "episodes": [
+    {
+      "episode_id": "fm_20261024_short_en",
+      "schema_version": 1,
+      "format": "short",
+      "language": "en",
+      "first_seconds": {
+        "start_second": 0.2,
+        "character_id": "jay",
+        "physical_action": "Jay reaches to remove a glowing Gemini-labelled model cube from an illustrative workshop, while Asha stops him.",
+        "viewer_question": "Did this new cloud partnership actually replace Gemini?",
+        "payoff_promise": "See what the announcement changes for cloud developers, and what it does not."
+      },
+      "instructional_moments": [
+        {
+          "scene_number": 1,
+          "focal_object": "Two clearly separate model cubes",
+          "visual_cause_effect": "Jay mistakenly removes one cube; Asha returns it and reveals multiple choices.",
+          "takeaway": "Collaboration is not replacement.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 3,
+          "focal_object": "Modular AI model cube and workflow board",
+          "visual_cause_effect": "Asha plugs a model cube into a physical workflow track so the result becomes visible.",
+          "takeaway": "Cloud developers may get another model option.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 5,
+          "focal_object": "Clearly marked illustrative checklist card",
+          "visual_cause_effect": "A glowing checklist flips through rollout, pricing and security controls.",
+          "takeaway": "Verify availability before trying.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 6,
+          "focal_object": "Model cube and a crossed-out free-upgrade symbol",
+          "visual_cause_effect": "Asha leaves the model in its cloud workspace, not inside a consumer smartphone.",
+          "takeaway": "Don't assume the consumer app changed.",
+          "highlight_count": 1
+        }
+      ],
+      "dialogue_design": {
+        "learner_question": "So does this mean my Gemini phone app gets the tools instantly?",
+        "presenter_response": "No. This is a cloud marketplace announcement, not an automatic consumer upgrade.",
+        "vocal_delivery": "Conversational adult English voices, subtle contrast between surprise and patient explanation, no artificial hype.",
+        "independent_pronunciation_review": false
+      },
+      "originality_angle": "Correct the common misconception that a new cloud collaboration replaces a competing consumer chatbot, using a tangible model-workshop analogy.",
+      "audience_question": "Which everyday task would you like us to show with an AI tool next?",
+      "packaging": {
+        "title_candidates": [
+          "OpenAI + Google Cloud: What Actually Changes?",
+          "OpenAI Models on Google Cloud — Not What You Think"
+        ],
+        "thumbnail_visual": "Asha holding two distinct glowing model cubes; a bold illustrated cloud workshop, readable on a phone.",
+        "claims_checked_for_clickbait": false,
+        "youtube_native_ab_test": "not_available_for_shorts"
+      },
+      "cross_video_plan": {
+        "related_video": "conditional_after_release",
+        "end_screen": "not_supported_for_shorts",
+        "verified_destination_video_id": null
+      },
+      "measurements": {
+        "evaluate_metrics": [
+          "engaged_views",
+          "stayed_to_watch",
+          "average_view_duration",
+          "likes",
+          "comments",
+          "subscribers_gained"
+        ],
+        "observed_values": null,
+        "claim_of_lift": null,
+        "compare_similar_age_and_format": true,
+        "test_one_primary_variable": true
+      },
+      "production_state": "CREATIVE_BRIEF_ONLY"
+    },
+    {
+      "episode_id": "fm_20261024_short_hi",
+      "schema_version": 1,
+      "format": "short",
+      "language": "hi",
+      "first_seconds": {
+        "start_second": 0,
+        "character_id": "riya",
+        "physical_action": "Riya opens a holographic mouse brain cell dataset and thousands of small data tiles fan outward around her.",
+        "viewer_question": "इतना बड़ा वैज्ञानिक डेटा सिर्फ 32 मिनट में कैसे पढ़ा गया?",
+        "payoff_promise": "समझिए एआई टीम क्या करती है और वैज्ञानिकों की पुष्टि क्यों जरूरी है।"
+      },
+      "instructional_moments": [
+        {
+          "scene_number": 1,
+          "focal_object": "Mouse brain cell data hologram",
+          "visual_cause_effect": "The dataset expands into more tiles than Riya can inspect by hand.",
+          "takeaway": "This is a very large scientific analysis task.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 2,
+          "focal_object": "Physical library shelves",
+          "visual_cause_effect": "Kabir delegates separate research books to miniature 3D helper desks.",
+          "takeaway": "Divide big questions into smaller research jobs.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 4,
+          "focal_object": "Agent workstations and evidence board",
+          "visual_cause_effect": "Independent workstations send colored clues to one shared display.",
+          "takeaway": "Parallel assistants combine findings.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 5,
+          "focal_object": "Hypothesis versus verified evidence trays",
+          "visual_cause_effect": "A 'lead' card stays separate from a physical verification tray.",
+          "takeaway": "A fast hypothesis is not a medical cure.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 6,
+          "focal_object": "Evidence box and cell model",
+          "visual_cause_effect": "Characters close the hypothesis box and point at future lab verification.",
+          "takeaway": "Science must test AI-produced ideas.",
+          "highlight_count": 1
+        }
+      ],
+      "dialogue_design": {
+        "learner_question": "तो क्या एआई ने वैज्ञानिकों के बिना इलाज खोज लिया?",
+        "presenter_response": "नहीं, उसने आगे परीक्षण करने लायक संकेत खोजने में मदद की।",
+        "vocal_delivery": "Natural Hindi speech, curious second voice, pauses after '32 मिनट' and 'इलाज नहीं'.",
+        "independent_pronunciation_review": false
+      },
+      "originality_angle": "Explain the division of scientific work using a working 3D research library and avoid claiming mouse brain research establishes human treatments.",
+      "audience_question": "आप अगली 3D कहानी में कौन-सा AI concept समझना चाहेंगे?",
+      "packaging": {
+        "title_candidates": [
+          "हजारों AI एजेंट ने 32 मिनट में क्या किया?",
+          "32 मिनट और लाखों Brain Cells: AI का असली काम"
+        ],
+        "thumbnail_visual": "Human researcher faces an enormous holographic mouse brain cell data field and a clearly illustrated stopwatch.",
+        "claims_checked_for_clickbait": false,
+        "youtube_native_ab_test": "not_available_for_shorts"
+      },
+      "cross_video_plan": {
+        "related_video": "conditional_after_release",
+        "end_screen": "not_supported_for_shorts",
+        "verified_destination_video_id": null
+      },
+      "measurements": {
+        "evaluate_metrics": [
+          "engaged_views",
+          "stayed_to_watch",
+          "average_view_duration",
+          "likes",
+          "comments",
+          "subscribers_gained"
+        ],
+        "observed_values": null,
+        "claim_of_lift": null,
+        "compare_similar_age_and_format": true,
+        "test_one_primary_variable": true
+      },
+      "production_state": "CREATIVE_BRIEF_ONLY"
+    },
+    {
+      "episode_id": "fm_20261024_long_hi",
+      "schema_version": 1,
+      "format": "long",
+      "language": "hi",
+      "first_seconds": {
+        "start_second": 0,
+        "character_id": "riya",
+        "physical_action": "A red alert lights a tiny city of symbolic software towers; Riya reaches for an emergency switch and Kabir stops her.",
+        "viewer_question": "क्या एक लाल साइबर अलर्ट का मतलब इंटरनेट हैक हो गया?",
+        "payoff_promise": "तीन डी कहानी में जानिए कैसे एआई सुराग से सुरक्षित अपडेट तक मदद करता है।"
+      },
+      "instructional_moments": [
+        {
+          "scene_number": 1,
+          "focal_object": "Glowing red symbolic alert tower",
+          "visual_cause_effect": "Riya's reflex to sound a siren is stopped by Kabir pointing at an uncertain evidence label.",
+          "takeaway": "A warning is not yet proof.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 2,
+          "focal_object": "Code library shelf",
+          "visual_cause_effect": "An agent assistant finds a marked unusual line inside one of many books.",
+          "takeaway": "AI speeds search, not final judgment.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 3,
+          "focal_object": "Sealed laboratory cube",
+          "visual_cause_effect": "Omar transfers the suspicious code cube into a sealed safe research cube.",
+          "takeaway": "Test only with authorization.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 4,
+          "focal_object": "Two evidence trays",
+          "visual_cause_effect": "Riya physically moves unconfirmed evidence back to pending review.",
+          "takeaway": "Distinguish suspicion from confirmation.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 5,
+          "focal_object": "Sealed private report envelope",
+          "visual_cause_effect": "Kabir hands the report to a defender, never broadcasting sensitive details.",
+          "takeaway": "Coordinated disclosure helps maintainers.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 6,
+          "focal_object": "Repair patch cube and test gate",
+          "visual_cause_effect": "Omar replaces the damaged symbol and sends the repaired part through tests.",
+          "takeaway": "Fixes need checks.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 7,
+          "focal_object": "Many server racks",
+          "visual_cause_effect": "A released update travels only to a rack that has opted into the change.",
+          "takeaway": "The update must be installed correctly.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 8,
+          "focal_object": "Fact check cards beside a social-media warning",
+          "visual_cause_effect": "Asha compares the misleading broad claim with official version-specific guidance.",
+          "takeaway": "Check affected products.",
+          "highlight_count": 1
+        },
+        {
+          "scene_number": 10,
+          "focal_object": "Five physical stair blocks",
+          "visual_cause_effect": "Each character lays a block in order: find, verify, report, patch, update.",
+          "takeaway": "Learn five repeatable defensive stages.",
+          "highlight_count": 1
+        }
+      ],
+      "dialogue_design": {
+        "learner_question": "क्या हर लाल सिक्योरिटी अलर्ट पर घबराकर सब बंद करना चाहिए?",
+        "presenter_response": "नहीं, पहले खामी, प्रभावित संस्करण और ज़िम्मेदार प्रक्रिया की पुष्टि जरूरी है।",
+        "vocal_delivery": "Three to four differentiated Hindi character voices, professional delivery, gentle urgency at the first alarm then calm explanation.",
+        "independent_pronunciation_review": false
+      },
+      "originality_angle": "Follow a fictional cyber-response team through an original ten-scene story. The audience can reconstruct the five safe process steps with physical objects, not see exploit instructions.",
+      "audience_question": "इस पाँच-स्टेप सुरक्षा प्रक्रिया में आपको सबसे महत्वपूर्ण कदम कौन-सा लगता है और क्यों?",
+      "packaging": {
+        "title_candidates": [
+          "AI ने Code में खतरा कैसे ढूँढा? आसान 3D Story",
+          "AI Agents से Security Bugs कैसे मिलते हैं? 5 Steps"
+        ],
+        "thumbnail_visual": "Asha, Kabir and Riya in a glowing 3D digital city, with a single large red evidence cube and the words 'AI BUG?' kept minimal.",
+        "claims_checked_for_clickbait": false,
+        "youtube_native_ab_test": "candidate_when_eligible"
+      },
+      "cross_video_plan": {
+        "related_video": "not_short",
+        "end_screen": "candidate_last_5_to_20_seconds",
+        "verified_destination_video_id": null
+      },
+      "measurements": {
+        "evaluate_metrics": [
+          "impressions",
+          "click_through_rate",
+          "watch_time",
+          "average_view_duration",
+          "audience_retention",
+          "subscribers_gained"
+        ],
+        "observed_values": null,
+        "claim_of_lift": null,
+        "compare_similar_age_and_format": true,
+        "test_one_primary_variable": true
+      },
+      "production_state": "CREATIVE_BRIEF_ONLY"
+    }
+  ]
+}
