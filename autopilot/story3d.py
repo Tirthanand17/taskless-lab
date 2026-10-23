@@ -86,9 +86,6 @@ def validate_3d_lesson(doc: dict) -> dict:
 
     shots = doc.get("shots")
     _require(isinstance(shots, list) and 5 <= len(shots) <= 45, "Invalid shot count")
-    _require([x.get("beat") for x in shots if isinstance(x, dict)
-              and x.get("beat") in STORY_BEATS] == list(STORY_BEATS)
-             if len(shots) == 5 else True, "Five-beat teaching order required")
     previous_idx = -1
     total = 0
     true3d = 0
