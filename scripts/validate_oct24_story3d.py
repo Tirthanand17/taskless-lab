@@ -2,9 +2,10 @@
 from pathlib import Path
 import json
 import sys
-from autopilot.story3d import validate_3d_lesson, Story3DError
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from autopilot.story3d import validate_3d_lesson, Story3DError
 PACK = ROOT / "content" / "episodes" / "oct24_multicharacter_3d_plans.json"
 
 
