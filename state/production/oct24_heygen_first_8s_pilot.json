@@ -22,11 +22,11 @@
   },
   "submitted_first_attempt": true,
   "do_not_retry_automatically": true,
-  "observed_generation_status": "processing",
+  "observed_generation_status": "completed",
   "last_status_source": "show_video player accepted creation and began tracking",
   "finished_mp4_url": null,
-  "actual_duration_verified": false,
-  "actual_dimensions_verified": false,
+  "actual_duration_verified": true,
+  "actual_dimensions_verified": true,
   "full_mp4_decode_verified": false,
   "character_identity_reviewed": false,
   "lip_sync_reviewed": false,
@@ -39,5 +39,19 @@
   "entire_48_second_episode_complete": false,
   "youtube_video_id": null,
   "youtube_scheduled": false,
-  "comment": "First actual provider generation accepted and visible in HeyGen inline player. Output pending. Text-to-video cannot guarantee consistency with original Asha/Jay image pack; do not claim release-ready."
+  "comment": "HeyGen provider completed and vidIQ imported source privately for QA. No full visual/lip/audio-content examination, exact 9:16 ratio not matched, no YouTube upload.",
+  "provider_duration_seconds": 8,
+  "provider_video_page": "https://app.heygen.com/videos/dac55a35aa6745028a4d4051fb1fb249",
+  "vidiq_qa_only_upload_id": "74967a99-bb9f-42b6-a3e0-b0cfbd4abfae",
+  "technical_probe": {
+    "source": "vidIQ media_file_info",
+    "duration_seconds": 8.083344,
+    "width": 768,
+    "height": 1344,
+    "streams": 2,
+    "bytes": 14434046,
+    "format": "MP4 container",
+    "aspect_ratio_note": "768/1344 = 4:7, not exact 9:16; verify downstream acceptance"
+  },
+  "media_transfer_completed_to_vidiq_qa_only": true
 }
