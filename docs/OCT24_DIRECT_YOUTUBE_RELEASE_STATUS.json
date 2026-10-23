@@ -2,8 +2,8 @@
   "schema_version": 1,
   "release_date_ist": "2026-10-24",
   "timezone": "Asia/Kolkata",
-  "state": "CREATIVE_REJECTED_CURRENT_ENGLISH_48S_REBUILD_NEEDED",
-  "meaning": "Owner explicitly rejects the 48s English draft due to ~17s major silences and flat vector diagrams after first 8s. Replacement planned as 32s original cinematic 3D, but 3 new 8s clips not generated. No release approvals or confirmed YouTube schedules.",
+  "state": "CINEMATIC_V2_AUDIO_READY_THREE_3D_MEDIA_SHOTS_MISSING",
+  "meaning": "The first 8s approved 3D footage and new uninterrupted 24s voice have real verified media files, but zero of the three required NEW 3D visuals are generated. Rejected 48s version is blocked. No actual 32s visual production or YouTube schedule exists.",
   "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
   "channel_name": "FlowMinute Lab",
   "checked_at_local": "2026-10-23T21:00:00+05:30",
@@ -33,7 +33,7 @@
     "publisher_utc_schedule_guard_implemented": true,
     "publisher_schedule_live_api_verified": false,
     "release_approval_manifest_present": false,
-    "publisher_offline_test_regressions": "377 passed, 6 subtests passed on commit ea743166",
+    "publisher_offline_test_regressions": "407 tests + 6 subtests passed on commit 01396bb8",
     "english_48s_final_review_cloud_run_id": 39977033010,
     "english_48s_final_review_cloud_artifact_id": 12511073414,
     "english_48s_cloud_captioned_review_sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9",
@@ -53,7 +53,19 @@
     "cinematic_32s_rebuild_plan_committed": true,
     "new_cinematic_3d_clips_generated": 0,
     "new_32s_actual_full_video_exists": false,
-    "google_flow_live_credit_balance_verified": false
+    "google_flow_live_credit_balance_verified": false,
+    "v2_real_approved_reexport_opening_8s": true,
+    "v2_approved_reexport_opening_sha256": "536652db768052c69e640d0bcd5c950cafcfcee37cc062286dcef2e2d4938517",
+    "v2_continuous_narration_real_24s": true,
+    "v2_continuous_narration_sha256": "f81dba668732b01b4fc4bbad0e54414f01765e13ec47879dbdb789a334e7d203",
+    "v2_continuous_narration_automated_long_silence_gaps": 0,
+    "v2_full_32s_soundtrack_audio_only_preview": true,
+    "v2_new_3d_scene_count": 0,
+    "v2_full_32s_visual_mp4_exists": false,
+    "v2_mandatory_4_segment_checksum_assembly_implemented": true,
+    "v2_real_flow_mp4_stager_implemented": true,
+    "v2_human_voice_approved": false,
+    "v2_human_scene_3d_quality_approved": false
   },
   "intended_slots": [
     {
@@ -65,7 +77,7 @@
       "publish_at_utc": "2026-10-24T05:30:00Z",
       "media_file_sha256": null,
       "youtube_video_id": null,
-      "status": "CREATIVELY_REJECTED_48S_REPLACEMENT_MEDIA_NOT_PRODUCED",
+      "status": "V2_32S_AUDIO_AND_REFERENCE_READY_3_OF_3_NEW_3D_VISUALS_MISSING",
       "review_copy_sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9"
     },
     {
@@ -92,12 +104,12 @@
     }
   ],
   "unblock_conditions": [
-    "Generate three physically grounded cinematic 8s clips with same Asha/Jay identities and film lighting as existing approved opener; no vector/low-poly substitutions",
-    "Produce a continuous natural 32s voiced story and verify silence gaps no more than 1.2s in explanatory body",
-    "Human visually approves all new 3D clips, audio quality, factual accuracy, rights and synchronized subtitles",
-    "Ensure enough existing Google Flow credits and confirm real per-generation cost; never buy credits",
-    "Only then verify YouTube OAuth, upload exact approved SHA to correct channel, and read back publishAt",
-    "Complete separate Hindi Short and Hindi long approved media"
+    "Generate real scene_02_real.mp4, scene_03_real.mp4, scene_04_real.mp4 with matching premium Asha/Jay 3D and consistent physical camera/props",
+    "Confirm existing free Google Flow credits and exact charge before generation; no paid upgrade, new accounts or Nirala/laptop usage",
+    "Run four-real-source intake and 32s compositor with verified 24s voice stem, no rejected 2D diagram substitutions",
+    "Human listen to 32s full film, visually approve all character motion and voice, then check captions, rights, claims and final exact MP4 SHA",
+    "Verify YouTube OAuth and actual publication schedule through private publishAt and provider readback",
+    "Complete separately approved Hindi Short and Hindi long video real footage and audio"
   ],
   "do_not_treat_as_publication_approval": true
 }
