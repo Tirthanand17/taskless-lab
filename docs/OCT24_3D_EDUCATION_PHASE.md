@@ -27,7 +27,7 @@ Sources:
 ## What is actually implemented
 
 1. `autopilot/story3d.py`: pure Python storyboard validation for two+ characters, role interactions, spoken dialogue, true 3D geometry intent, physical prop interaction, teaching beats, source URLs, and an explicit nine-gate QA state.
-2. `content/episodes/oct24_multicharacter_3d_plans.json`: three individual narrative scene graphs with safe, fictional illustrations and a separate learner takeaway per shot.
+2. `content/storyboards/oct24_multicharacter_3d_plans.json`: three individual narrative scene graphs with safe, fictional illustrations and a separate learner takeaway per shot.
 3. `autopilot/test_story3d.py`: regression cases for fake UI, absent evidence, slide-only scenes, single voices, incomplete QA, learner roles, missing objects, duplicate release states and wrong teaching order.
 4. `scripts/validate_oct24_story3d.py`: offline CLI that validates all three plans and prints a truthful staged status.
 5. `scripts/blender_story3d_preview.py`: optional **real 3D geometry** proof-of-concept, building a procedural lab, multiple stylized avatar placeholders, props and camera movement for a selected shot.
