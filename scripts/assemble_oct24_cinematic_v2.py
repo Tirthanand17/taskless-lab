@@ -58,7 +58,8 @@ def render_v2(manifest:dict, narration:Path, output:Path, *,
     demand(pacing["pass"],"Narration still contains unacceptable silent gaps")
 
     demand(output.suffix==".mp4" and output.parent.is_dir()
-           and not output.parent.is_symlink() and not output.exists(),
+           and not output.parent.is_symlink() and not output.exists()
+           and not output.is_symlink(),
            "Refuse to overwrite or write unsafe final review output")
 
     with TemporaryDirectory(prefix="flowminute-cinematic-32-",dir=output.parent) as work:
@@ -102,10 +103,11 @@ def render_v2(manifest:dict, narration:Path, output:Path, *,
       "duration_seconds":round(secs,3),
       "output_mp4":output.name,
       "output_sha256":sha256(output.read_bytes()).hexdigest(),
-      "actual_source_3d_clips":4,
+      "actual_input_mp4_count":4,
+      "three_generated_3d_scenes_human_verified":False,
       "narration_stem_sha256":expected_voice_sha,
       "voice_only_gap_audit":pacing,
-      "no_vector_substitution":True,
+      "no_vector_substitution_human_verified":False,
       "video_technically_verified":True,
       "voice_human_approved":False,
       "character_consistency_human_approved":False,
