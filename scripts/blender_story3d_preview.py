@@ -23,7 +23,7 @@ except ImportError as exc:
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-STORIES = ROOT / "content" / "episodes" / "oct24_multicharacter_3d_plans.json"
+STORIES = ROOT / "content" / "storyboards" / "oct24_multicharacter_3d_plans.json"
 
 
 def rgba(hexcode):

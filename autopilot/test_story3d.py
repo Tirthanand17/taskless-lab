@@ -6,7 +6,7 @@ import unittest
 
 from autopilot.story3d import Story3DError, validate_3d_lesson
 
-PACK = (Path(__file__).resolve().parents[1] / "content" / "episodes"
+PACK = (Path(__file__).resolve().parents[1] / "content" / "storyboards"
         / "oct24_multicharacter_3d_plans.json")
 
 
