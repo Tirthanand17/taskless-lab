@@ -42,6 +42,23 @@ def verify_youtube_schedule(video: dict, requested: str, channel_id: str) -> boo
     except (ValueError, AttributeError, TypeError):
         return False
 
+def approval_allows_exact_video(approval: dict, approved_sha256: str) -> bool:
+    """Fail closed for explicit creator rejection, even if normal checkboxes are set."""
+    if not isinstance(approval, dict) or not isinstance(approved_sha256, str):
+        return False
+    if approval.get("owner_rejected_current_candidate") is True:
+        return False
+    if approval.get("release_status") in {
+        "EXPLICITLY_REJECTED_CURRENT_48S_CREATIVE_QA",
+        "CREATIVELY_REJECTED",
+        "NOT_APPROVED_REVIEW_ONLY",
+    }:
+        return False
+    if approval.get("approved_video_sha256") != approved_sha256:
+        return False
+    return all(approval.get(key) is True for key in REQUIRED_APPROVALS)
+
+
 def load_service():
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
@@ -99,10 +116,8 @@ def main():
         if not approval_file.is_file():
             raise SystemExit("Approval manifest not found")
         approval=json.loads(approval_file.read_text(encoding="utf-8"))
-        if any(approval.get(field) is not True for field in REQUIRED_APPROVALS):
-            raise SystemExit("Final voice/captions/rights/facts/video approvals not all true")
-        if approval.get("approved_video_sha256") != args.expected_sha256:
-            raise SystemExit("Review approvals do not bind to exact MP4")
+        if not approval_allows_exact_video(approval, args.expected_sha256):
+            raise SystemExit("Human approvals absent, creative review rejected, or exact approved MP4 hash mismatch")
         if not video_path.is_file() or not caption_path.is_file():
             raise SystemExit("Approved MP4 and SRT must exist")
         with video_path.open("rb") as stream:
