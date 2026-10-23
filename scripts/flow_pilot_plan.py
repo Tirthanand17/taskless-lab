@@ -9,8 +9,9 @@ from autopilot.flow_cinematic_handoff import build_plan
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument("--mode",choices=("pilot","lean_day","full_keyshots"),default="pilot")
-    parser.add_argument("--estimated-credits-per-clip",type=int,default=15)
+    parser.add_argument("--mode",choices=("pilot","lean_day","full_keyshots","daily_50_credit"),default="pilot")
+    parser.add_argument("--estimated-credits-per-clip",type=int,default=None,
+                        help="Override provider UI estimate; defaults to duration-sensitive official price")
     parser.add_argument("--out",type=Path)
     opt=parser.parse_args()
     path=ROOT/"content"/"flow"/"oct24_cinematic_flow_scene_package.json"

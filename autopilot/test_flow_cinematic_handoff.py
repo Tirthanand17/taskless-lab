@@ -36,6 +36,34 @@ class FlowHandoffTests(unittest.TestCase):
                           "fm_20261024_long_hi":270})
         self.assertFalse(p["youtube_schedule_verified"])
 
+    def test_daily_free_plan_uses_four_eight_second_clips(self):
+        plan=build_plan(loaded(),mode="daily_50_credit")
+        self.assertEqual(plan["clip_count"],4)
+        self.assertEqual(plan["estimated_flow_credits"],48)
+        self.assertEqual(plan["daily_free_credit_cap"],50)
+        self.assertEqual(plan["raw_ai_generated_seconds"],32)
+        self.assertEqual(plan["cinematic_seconds_planned"],32)
+        self.assertEqual({c["expected_seconds"] for c in plan["clips"]},{8})
+        self.assertEqual(plan["non_cinematic_seconds_still_to_produce"],
+                         {"fm_20261024_short_en":40,
+                          "fm_20261024_short_hi":40,
+                          "fm_20261024_long_hi":284})
+        self.assertFalse(plan["generation_authorized_by_this_plan"])
+        self.assertFalse(plan["publishing_authorized_by_this_plan"])
+
+    def test_daily_free_budget_does_not_permit_overrun(self):
+        with self.assertRaisesRegex(FlowHandoffError,"exceeds its 50-credit"):
+            build_plan(loaded(),mode="daily_50_credit",price=13)
+
+    def test_eight_second_receipt_must_match_eight_seconds(self):
+        selected=build_plan(loaded(),mode="daily_50_credit")["clips"][0]
+        receipt={"episode_id":selected["episode_id"],"clip_id":selected["clip_id"],
+                 "sha256":"1"*64,"duration_seconds":10,
+                 "orientation":"9:16","source":"user_supplied_file",
+                 "file_name":"clip001.mp4"}
+        with self.assertRaisesRegex(FlowHandoffError,"Unexpected clip duration"):
+            validate_import_receipt(receipt,selection=selected)
+
     def test_legacy_full_plan_is_more_expensive(self):
         p=build_plan(loaded(),mode="full_keyshots")
         self.assertEqual(p["clip_count"],16)

@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--archive",type=Path,required=True)
     parser.add_argument("--mapping",type=Path,required=True)
     parser.add_argument("--import-to",type=Path)
-    parser.add_argument("--mode",choices=("pilot","lean_day","full_keyshots"),default="pilot")
+    parser.add_argument("--mode",choices=("pilot","lean_day","full_keyshots","daily_50_credit"),default="pilot")
     args=parser.parse_args()
     if not args.mapping.is_file() or args.mapping.is_symlink():
         parser.error("A real explicit JSON mapping file is required")

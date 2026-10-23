@@ -15,7 +15,7 @@ def main():
     p.add_argument("--file",required=True,type=Path)
     p.add_argument("--episode",required=True)
     p.add_argument("--clip",required=True)
-    p.add_argument("--mode",choices=("pilot","lean_day","full_keyshots"),default="pilot")
+    p.add_argument("--mode",choices=("pilot","lean_day","full_keyshots","daily_50_credit"),default="pilot")
     p.add_argument("--source",choices=("google_flow_download","user_supplied_file"),
                    default="google_flow_download")
     p.add_argument("--report",type=Path)
