@@ -30,7 +30,11 @@ def validate(data: dict, blocked_literals: list[str], *, editorial_only: bool = 
     # URLs and YYYY-MM-DD dates are not personal phone numbers.
     # Keep the full original text for email and secret detection.
     scan = re.sub(r"https?://[^\s]+", " ", text)
-    scan = re.sub(r"\b(?:19|20)\d{2}[-/]\d{1,2}[-/]\d{1,2}\b", " ", scan)
+    # A fully structured timestamp or SHA-256 is technical metadata, not a phone.
+    # Ordinary digits in captions/description are still scanned.
+    scan = re.sub(r"\b(?:19|20)\d{2}[-/]\d{1,2}[-/]\d{1,2}"
+                  r"(?:T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2}))?", " ", scan)
+    scan = re.sub(r"(?<![A-Za-z0-9])[a-fA-F0-9]{64}(?![A-Za-z0-9])", " ", scan)
     if PHONE.search(scan):
         errors.append("release contains a phone-like number")
     if SECRET.search(text):
