@@ -1,0 +1,92 @@
+name: FlowMinute Oct24 English Natural Voice Draft (no publish)
+
+on:
+  pull_request:
+    paths:
+      - "scripts/produce_oct24_english_neural_vo.py"
+      - ".github/workflows/flowminute-oct24-english-voice.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: flowminute-oct24-voice-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  original_visual_and_neural_voice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      OMP_NUM_THREADS: "3"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install open-source media and offline voice runtime
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core espeak-ng libsndfile1
+          python -m pip install --no-input --disable-pip-version-check \
+            numpy pillow opencv-python-headless soundfile 'kokoro-onnx==0.3.9'
+
+      - name: Fetch public Apache-2.0 model weights only into ephemeral storage
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/fm-kokoro"
+          base='https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1'
+          curl --fail --location --retry 2 --connect-timeout 20 --max-time 220 \
+            "$base/kokoro-v1.0.onnx" -o "$RUNNER_TEMP/fm-kokoro/kokoro-v1.0.onnx"
+          curl --fail --location --retry 2 --connect-timeout 20 --max-time 220 \
+            "$base/voices-v1.0.bin" -o "$RUNNER_TEMP/fm-kokoro/voices-v1.0.bin"
+          test "$(stat -c%s "$RUNNER_TEMP/fm-kokoro/kokoro-v1.0.onnx")" -gt 1000000
+          test "$(stat -c%s "$RUNNER_TEMP/fm-kokoro/voices-v1.0.bin")" -gt 100000
+
+      - name: Render verified original illustrated visual
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/flowminute-output"
+          python scripts/render_flowminute_oct24_explainer_insert.py \
+            --output "$RUNNER_TEMP/flowminute-output/FlowMinute_Oct24_English_Explainer_40s_VISUAL_ONLY.mp4"
+
+      - name: Generate and mix original review-only 40-second English neural narration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/produce_oct24_english_neural_vo.py \
+            --visual "$RUNNER_TEMP/flowminute-output/FlowMinute_Oct24_English_Explainer_40s_VISUAL_ONLY.mp4" \
+            --model-dir "$RUNNER_TEMP/fm-kokoro" \
+            --out "$RUNNER_TEMP/flowminute-output" \
+            --voice af_sarah --speed 1.12
+
+      - name: Verify audio output and complete decode before storing draft
+        run: |
+          set -euo pipefail
+          f="$RUNNER_TEMP/flowminute-output/FlowMinute_Oct24_English_40s_NEURAL_VO_REVIEW_ONLY.mp4"
+          test -s "$f"
+          ffmpeg -hide_banner -loglevel error -xerror -i "$f" -f null -
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$f")" = "720"
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$f")" = "1280"
+          test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$f")" = "aac"
+          cat "$RUNNER_TEMP/flowminute-output/review_only_neural_vo_qa.json"
+
+      - name: Retain only review-only output and QA, no model weights
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-oct24-english-neural-vo-review-draft
+          path: |
+            ${{ runner.temp }}/flowminute-output/FlowMinute_Oct24_English_40s_NEURAL_VO_REVIEW_ONLY.mp4
+            ${{ runner.temp }}/flowminute-output/review_only_neural_vo_qa.json
+          retention-days: 1
+          if-no-files-found: error
+          compression-level: 0
