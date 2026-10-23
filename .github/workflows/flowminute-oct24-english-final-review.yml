@@ -1,6 +1,8 @@
 name: FlowMinute Oct24 English Final Review Rebuild (No Publish)
 on:
-  pull_request:
+  push:
+    branches:
+      - "feature/oct24-multicharacter-3d-lesson-contract"
     paths:
       - "content/flow/oct24_english_48s_asr_timed_review.srt"
       - ".github/workflows/flowminute-oct24-english-final-review.yml"

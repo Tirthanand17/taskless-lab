@@ -1,7 +1,9 @@
 name: FlowMinute Oct24 English 48s Combined Review (No Publish)
 
 on:
-  pull_request:
+  push:
+    branches:
+      - "feature/oct24-multicharacter-3d-lesson-contract"
     paths:
       - ".github/workflows/flowminute-oct24-english-combine-review.yml"
   workflow_dispatch:

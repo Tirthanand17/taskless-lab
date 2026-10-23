@@ -1,7 +1,9 @@
 name: FlowMinute Oct24 Original English Visual Render
 
 on:
-  pull_request:
+  push:
+    branches:
+      - "feature/oct24-multicharacter-3d-lesson-contract"
     paths:
       - "scripts/render_flowminute_oct24_explainer_insert.py"
       - ".github/workflows/flowminute-oct24-visual-production.yml"
