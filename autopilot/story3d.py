@@ -119,10 +119,15 @@ def validate_3d_lesson(doc: dict) -> dict:
                  and set(present) <= ids, "Unknown character in scene")
         dialogue = shot.get("dialogue")
         _require(isinstance(dialogue, list) and dialogue, "Narration/dialogue missing")
+        spoken_words = 0
         for line in dialogue:
             _require(isinstance(line, dict) and line.get("speaker") in present
                      and _bounded(line.get("text"), 7, 450), "Dialogue speaker/text invalid")
+            spoken_words += len(line["text"].split())
             with_dialogue.add(line["speaker"])
+        # Estimate only; human-recorded voice and actual sentence timings still need review.
+        _require(1.15 <= spoken_words / duration <= 4.0,
+                 "Narration too sparse or too fast for the proposed scene duration")
         if mode == "true_3d":
             true3d += 1
             _require(shot.get("camera_motion") in ("orbit", "dolly", "pan", "tracking"),
