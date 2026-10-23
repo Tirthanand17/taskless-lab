@@ -2,7 +2,7 @@
   "version": 1,
   "date": "2026-10-23",
   "project": "FlowMinute Lab",
-  "note": "Manual Google Flow studio plan. Does NOT invoke Google API or spend credits.",
+  "note": "Manual Google Flow studio plan. Does NOT invoke Google API or spend credits. Flow character references v2 are one visually consistent ensemble cast; their names, visual references and voice IDs have NOT been registered with Google.",
   "source_docs": [
     "https://support.google.com/flow/answer/16526234",
     "https://support.google.com/flow/answer/16935308",
@@ -19,7 +19,7 @@
     "jay": {
       "id": "jay",
       "role": "English beginner",
-      "design": "Adult Indian man with short wavy brown hair, understated round glasses, dark green crewneck sweater, naturally curious facial expressions and realistic articulated hands, clear conversational English."
+      "design": "Adult Indian man with short wavy brown hair, understated round glasses, dark navy hoodie, naturally curious facial expressions and realistic articulated hands, clear conversational English."
     },
     "kabir": {
       "id": "kabir",
@@ -29,7 +29,7 @@
     "riya": {
       "id": "riya",
       "role": "Hindi learner",
-      "design": "Adult Indian woman in her twenties with dark hair in a tidy bun and teal blazer over a black top; expressive questioning gaze, comfortable gestures, natural spoken Hindi."
+      "design": "Adult Indian woman with a loose dark hair bun, round glasses and teal knit top; expressive questioning gaze, comfortable gestures, natural spoken Hindi. Preserve her distinct appearance from Asha."
     },
     "omar": {
       "id": "omar",

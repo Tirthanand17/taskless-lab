@@ -6,12 +6,13 @@
 
 The user's previous FlowMinute cinematic reference artwork has been prepared in a ChatGPT conversation download, not uploaded to Google Flow or GitHub binaries.
 
-- **Asha**: `asha_full_body.png` (navy jacket, shoulder-length dark hair), the expert
-- **Jay**: `jay_portrait.png` (round glasses, green top), the curious beginner
-- **Kabir**: `kabir_full_body.png` (navy overshirt), Hindi presenter
-- **Riya**: `riya_portrait.png` (teal blazer, dark hair bun), Hindi beginner
+- **Asha**: `asha_cinematic_portrait.png` (navy jacket, shoulder-length dark hair), the expert
+- **Jay**: `jay_cinematic_portrait.png` (round glasses, navy hoodie), the curious beginner
+- **Kabir**: `kabir_cinematic_portrait.png` (navy overshirt), Hindi presenter
+- **Riya**: `riya_cinematic_portrait.png` (teal knit top, glasses and messy bun), Hindi beginner
+- Optional alternative angles: `asha_full_body.png` and `kabir_full_body.png`. Review identities carefully; do not add conflicting faces to the same Flow character.
 
-The download archive includes individual SHA-256 checksums. Images are original concept artwork, not existing human actors, licensed voice tracks, 3D rigs or produced video. Characters and voices have NOT been created in Google Flow.
+The version 2 download archive includes individual SHA-256 checksums, cropped from one previous premium 3D ensemble concept frame. Archive SHA-256: `e3a29b901b2ee2cd6298b3dde6225fb60fc1615179dc341b0e02eac1253ef73e`. This is a conversation attachment, **not stored as a GitHub binary**. Images are original concept artwork, not existing human actors, licensed voice tracks, 3D rigs or produced video. Characters and voices have NOT been created in Google Flow.
 
 ## First and only pilot generation
 
@@ -21,7 +22,7 @@ Select Video → Gemini Omni Flash → 9:16 → 10 seconds → 720p and referenc
 
 ### Copy-paste prompt
 
-> A single continuous 10-second premium stylized-realistic 3D animated-film scene in a practical futuristic technology studio. Use saved characters @Jay (young man with glasses and green sweater) and @Asha (woman with shoulder-length dark hair and navy fitted jacket). Keep their exact reference appearances and voices. Frame one begins immediately with Jay holding a real glowing model-choice cube in his right hand at a clean waist-height workshop desk. He looks from the cube to Asha and asks clearly in natural conversational English, "Does this replace Gemini?" Asha smiles gently, makes brief eye contact, opens a second cabinet slot with her left hand, and replies in a natural confident voice, "No. Developers get another choice." She places a second differently colored cube beside the first. Both objects remain physically present, distinct and unchanged. Smooth 10-second dolly from Jay's hands to the two options; real finger contact, stable faces, coherent eye gaze, realistic cinematic skin, cloth, glass and steel, deep navy and teal with restrained amber rim light, rich depth and plausible physics. Accurate short dialogue only; subtle room ambience, no music. No captions, no fictional app screenshots, no logos, no unnecessary holograms, no scene cuts, no deformed anatomy. Vertical 9:16, 10 seconds.
+> A single continuous 10-second premium stylized-realistic 3D animated-film scene in a practical futuristic technology studio. Use saved characters @Jay (young man with round glasses and dark navy hoodie) and @Asha (woman with shoulder-length dark hair and navy fitted jacket). Keep their exact reference appearances and voices. Frame one begins immediately with Jay holding a real glowing model-choice cube in his right hand at a clean waist-height workshop desk. He looks from the cube to Asha and asks clearly in natural conversational English, "Does this replace Gemini?" Asha smiles gently, makes brief eye contact, opens a second cabinet slot with her left hand, and replies in a natural confident voice, "No. Developers get another choice." She places a second differently colored cube beside the first. Both objects remain physically present, distinct and unchanged. Smooth 10-second dolly from Jay's hands to the two options; real finger contact, stable faces, coherent eye gaze, realistic cinematic skin, cloth, glass and steel, deep navy and teal with restrained amber rim light, rich depth and plausible physics. Accurate short dialogue only; subtle room ambience, no music. No captions, no fictional app screenshots, no logos, no unnecessary holograms, no scene cuts, no deformed anatomy. Vertical 9:16, 10 seconds.
 
 Notes: The above is a narrative analogy. It does NOT assert real app access/pricing or reproduce a real Google Cloud screen. Further video narration must be reviewed for factual accuracy before publication.
 
