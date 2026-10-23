@@ -31,15 +31,25 @@ on:
         description: "Publication receipt path"
         required: true
         type: string
+      publish_at_utc:
+        description: "Exact future UTC scheduled time e.g. 2026-10-24T05:30:00Z"
+        required: true
+        type: string
+      video_sha256:
+        description: "SHA256 of approved final MP4 bytes"
+        required: true
+        type: string
+      approval_manifest:
+        description: "Repo-relative JSON with five human release approvals and pinned video SHA"
+        required: true
+        type: string
       privacy:
-        description: "YouTube privacy"
+        description: "Must remain private until YouTube publishAt"
         required: true
         default: "private"
         type: choice
         options:
           - private
-          - unlisted
-          - public
 
 permissions:
   contents: write
@@ -85,6 +95,10 @@ jobs:
             --captions "incoming/${{ inputs.captions_file }}" \
             --thumbnail "incoming/${{ inputs.thumbnail_file }}" \
             --privacy "${{ inputs.privacy }}" \
+            --schedule-at-utc "${{ inputs.publish_at_utc }}" \
+            --expected-sha256 "${{ inputs.video_sha256 }}" \
+            --expected-channel-id "UCCcL9Q_jqVq6LJmnYUSAFZA" \
+            --approval-manifest "${{ inputs.approval_manifest }}" \
             --receipt "${{ inputs.receipt }}" \
             --confirm-publish
 
