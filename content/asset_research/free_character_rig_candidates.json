@@ -50,10 +50,10 @@
     },
     {
       "id": "quaternius_ultimate_animated",
-      "source_url": "https://quaternius.com/packs/ultimatedanimatedcharacterpack.html",
+      "source_url": "https://quaternius.com/packs/ultimatedanimatedcharacter",
       "role": "multiple_rigged_extras_candidate",
       "format": "fbx/blend",
-      "source_license_claim": "CHECK_PACK_PAGE_CC0_FOR_LEGACY_VERSION",
+      "source_license_claim": "CC0 (legacy pack page 2019; recheck downloaded pack and precise terms)",
       "attribution_required": null,
       "required_credit": null,
       "compatibility": "Different rigs, may require retargeting",
