@@ -1,0 +1,112 @@
+name: FlowMinute Oct24 English Final Review Rebuild (No Publish)
+on:
+  pull_request:
+    paths:
+      - "content/flow/oct24_english_48s_asr_timed_review.srt"
+      - ".github/workflows/flowminute-oct24-english-final-review.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: fm-oct24-review-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      GH_TOKEN: ${{ github.token }}
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install FFmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libass9 fonts-dejavu-core
+      - name: Retrieve exact 48-second cloud composition, verify pinned hash
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/review"
+          gh run download 39971905081 --repo "$GITHUB_REPOSITORY" \
+            --name flowminute-oct24-english-48s-combined-review-only \
+            --dir "$RUNNER_TEMP/review"
+          cd "$RUNNER_TEMP/review"
+          printf '%s  %s\n' e5634ee7dc27cef520a4430a54ff6bb9a13df3226a0bb0e4f4f14b5878a51ea3 FlowMinute_Oct24_English_48s_COMBINED_REVIEW_ONLY.mp4 | sha256sum -c -
+      - name: Verify all 13 actual-audio caption cues including Asha and Jay
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          content=Path("content/flow/oct24_english_48s_asr_timed_review.srt").read_text()
+          cues=[x for x in re.split(r"\n\s*\n",content.strip()) if x.strip()]
+          assert len(cues)==13
+          assert "Does this replace Gemini?" in cues[0]
+          assert "No." in cues[1] and "Developers get another choice." in cues[2]
+          assert all("-->" in cue for cue in cues)
+          print("13_CAPTION_CUES_PRESENT_AND_REVIEW_ONLY")
+          PY
+      - name: Fix eleven-decibel opening audio jump, retain the original footage
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/review"
+          ffmpeg -hide_banner -loglevel error -y \
+            -i FlowMinute_Oct24_English_48s_COMBINED_REVIEW_ONLY.mp4 \
+            -filter_complex "[0:a]volume=0.32:enable='lt(t,8)'[a]" \
+            -map 0:v:0 -map "[a]" -c:v copy -c:a aac -b:a 160k \
+            -movflags +faststart FlowMinute_Oct24_English_48s_BALANCED_REVIEW_ONLY.mp4
+      - name: Burn narrow lower-third ASR captions without covering lesson objects
+        shell: bash
+        run: |
+          set -euo pipefail
+          p="$RUNNER_TEMP/review"
+          srt="$GITHUB_WORKSPACE/content/flow/oct24_english_48s_asr_timed_review.srt"
+          ffmpeg -hide_banner -loglevel error -y \
+            -i "$p/FlowMinute_Oct24_English_48s_BALANCED_REVIEW_ONLY.mp4" \
+            -vf "subtitles=$srt:force_style='FontName=DejaVu Sans,FontSize=9,PrimaryColour=&H00FFFFFF,OutlineColour=&H00101010,BackColour=&H800C1420,BorderStyle=3,Outline=1,Shadow=0,Alignment=2,MarginL=35,MarginR=35,MarginV=10'" \
+            -c:v libx264 -preset veryfast -crf 20 -c:a copy -movflags +faststart \
+            "$p/FlowMinute_Oct24_English_48s_CAPTIONED_REVIEW_ONLY.mp4"
+      - name: Independent full decode, 48s duration, streams and SHA checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/review"
+          for f in FlowMinute_Oct24_English_48s_BALANCED_REVIEW_ONLY.mp4 FlowMinute_Oct24_English_48s_CAPTIONED_REVIEW_ONLY.mp4; do
+            test -s "$f"
+            ffmpeg -hide_banner -loglevel error -xerror -i "$f" -f null -
+            test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$f")" = 720
+            test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$f")" = 1280
+            test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$f")" = aac
+          done
+          python - <<'PY'
+          import hashlib,json,subprocess
+          from pathlib import Path
+          report={"state":"REVIEW_ONLY_NOT_SCHEDULED","episode_id":"fm_20261024_short_en",
+            "full_audio_listening_approved":False,"caption_accuracy_human_approved":False,
+            "rights_and_facts_reviewed":False,"final_video_approved":False,
+            "youtube_uploaded":False,"youtube_scheduled":False,"files":{}}
+          for name in ("BALANCED","CAPTIONED"):
+            p=Path("FlowMinute_Oct24_English_48s_"+name+"_REVIEW_ONLY.mp4")
+            secs=float(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","default=noprint_wrappers=1:nokey=1",str(p)]))
+            assert 47.8<=secs<=48.3
+            with p.open("rb") as fd:digest=hashlib.file_digest(fd,"sha256").hexdigest()
+            report["files"][name.lower()]={"sha256":digest,"duration_seconds":round(secs,3),"bytes":p.stat().st_size,"full_decode":True}
+          Path("review_integrity.json").write_text(json.dumps(report,indent=2)+"\n")
+          print(json.dumps(report,indent=2))
+          PY
+      - name: Upload 1-day review artifact only, no YouTube access
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-oct24-english-48s-rebuilt-captioned-review
+          path: |
+            ${{ runner.temp }}/review/FlowMinute_Oct24_English_48s_BALANCED_REVIEW_ONLY.mp4
+            ${{ runner.temp }}/review/FlowMinute_Oct24_English_48s_CAPTIONED_REVIEW_ONLY.mp4
+            ${{ runner.temp }}/review/review_integrity.json
+          retention-days: 1
+          if-no-files-found: error
+          compression-level: 0
