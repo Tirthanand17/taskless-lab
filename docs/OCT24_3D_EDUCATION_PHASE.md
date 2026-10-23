@@ -53,7 +53,7 @@ This command is a manual demonstration, not a background render or upload. Do no
 
 ## Why the release is still blocked
 
-The storyboards are **not rendered**. All nine independent QA gates are currently false: fact review, rights, character asset review, voice license, pronunciation, subtitle alignment, video decoding, visual motion review, and authenticated release receipt. The five-minute plan needs substantially expanded dialogue / audio timing before final rendering. A preview cannot be labeled a ready-to-publish video.
+The storyboards are **not rendered**. All nine independent QA gates are currently false: fact review, rights, character asset review, voice license, pronunciation, subtitle alignment, video decoding, visual motion review, and authenticated release receipt. The Hindi long-story dialogue has now been expanded to roughly 68–84 words per 30-second scene, but natural-voice delivery, pronunciation, exact scene synchronization and audiovisual review are still required. A preview cannot be labeled a ready-to-publish video.
 
 No new API connection, recurring cloud bill, GitHub Actions-intensive render, upload or YouTube schedule is authorized by this draft. Merging code must not bypass the original publication controller or release ledger.
 
