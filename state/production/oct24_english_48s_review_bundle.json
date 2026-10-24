@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "episode_id": "fm_20261024_short_en",
+  "date_ist": "2026-10-24",
+  "stage": "COMPLETE_48S_REVIEW_CUT_TECHNICALLY_VERIFIED_RELEASE_NOT_APPROVED",
+  "assembled_from": [
+    {
+      "source": "HeyGen",
+      "video_id": "dac55a35aa6745028a4d4051fb1fb249",
+      "timeline": [
+        0,
+        8
+      ],
+      "owner_creative_approval": true
+    },
+    {
+      "source": "Kokoro ONNX and original illustrated renderer",
+      "source_actions_run_id": 39969576256,
+      "timeline": [
+        8,
+        48
+      ],
+      "narration_technical_qa": true,
+      "narration_human_quality_review": false
+    }
+  ],
+  "cloud_composer": {
+    "workflow_run_id": 39971905081,
+    "artifact_id": 12510000965,
+    "conclusion": "success",
+    "source_sha256": "e5634ee7dc27cef520a4430a54ff6bb9a13df3226a0bb0e4f4f14b5878a51ea3"
+  },
+  "postprocess": {
+    "output_width": 720,
+    "output_height": 1280,
+    "audio_rms_dbfs_eight_second_sections": [
+      -23.92,
+      -25.39,
+      -24.76,
+      -25.47,
+      -25.37,
+      -24.62
+    ],
+    "sound_balance_fix": "Opening audio attenuated to 32% to remove approximately 11 dB initial level jump",
+    "audio_balanced_review": {
+      "name": "FlowMinute_Oct24_English_48s_AUDIO_BALANCED_REVIEW_ONLY.mp4",
+      "sha256": "84286bec5278b45cc95c5704ce8920d7219a2cf77dd106908305c00842330c15",
+      "duration_seconds": 48.02,
+      "full_decode_passed": true
+    },
+    "captioned_review": {
+      "name": "FlowMinute_Oct24_English_48s_CAPTIONED_BALANCED_REVIEW_ONLY.mp4",
+      "sha256": "2f3bd87b93f36113595021b2917cd0a65bf370690f949e82e73be421f8f9e59a",
+      "duration_seconds": 48.03,
+      "full_decode_passed": true,
+      "lower_third_overlay_reviewed": true
+    },
+    "caption_status": "Five draft SRT cues on 8–48s only, opening 0–8s NOT CAPTIONED; speech alignment not independently verified"
+  },
+  "delivery": {
+    "conversation_bundle": "FlowMinute_Oct24_English_48s_Complete_Review_Pack.zip",
+    "cloud_artifact_expires": "2026-10-24T14:42:55Z",
+    "actual_mp4_bytes_stored_in_git": false
+  },
+  "qa_gates": {
+    "visual_sequence_sampled": true,
+    "video_technical_pass": true,
+    "voice_naturalness_listening_approved": false,
+    "opening_transcription_verified": false,
+    "all_captions_synchronized": false,
+    "final_factual_rights_review": false,
+    "release_approved": false
+  },
+  "scheduled_to_youtube": false,
+  "youtube_video_id": null,
+  "new_spend_inr": 0,
+  "nirala_access_used": false
+}

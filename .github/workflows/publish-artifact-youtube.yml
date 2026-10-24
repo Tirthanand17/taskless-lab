@@ -31,23 +31,38 @@ on:
         description: "Publication receipt path"
         required: true
         type: string
+      publish_at_utc:
+        description: "Exact future UTC scheduled time e.g. 2026-10-24T05:30:00Z"
+        required: true
+        type: string
+      video_sha256:
+        description: "SHA256 of approved final MP4 bytes"
+        required: true
+        type: string
+      approval_manifest:
+        description: "Repo-relative JSON with five human release approvals and pinned video SHA"
+        required: true
+        type: string
       privacy:
-        description: "YouTube privacy"
+        description: "Must remain private until YouTube publishAt"
         required: true
         default: "private"
         type: choice
         options:
           - private
-          - unlisted
-          - public
 
 permissions:
   contents: write
   actions: read
 
+# Never start simultaneous upload jobs to this channel.
+concurrency:
+  group: flowminute-youtube-verified-publication
+  cancel-in-progress: false
+
 jobs:
   publish:
-    if: ${{ vars.PUBLISH_ENABLED == 'true' }}
+    if: ${{ github.ref == 'refs/heads/main' && vars.PUBLISH_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     environment: youtube-production
     steps:
@@ -85,17 +100,37 @@ jobs:
             --captions "incoming/${{ inputs.captions_file }}" \
             --thumbnail "incoming/${{ inputs.thumbnail_file }}" \
             --privacy "${{ inputs.privacy }}" \
+            --schedule-at-utc "${{ inputs.publish_at_utc }}" \
+            --expected-sha256 "${{ inputs.video_sha256 }}" \
+            --expected-channel-id "UCCcL9Q_jqVq6LJmnYUSAFZA" \
+            --approval-manifest "${{ inputs.approval_manifest }}" \
             --receipt "${{ inputs.receipt }}" \
             --confirm-publish
 
-      - name: Commit publication receipt
+      - name: Commit confirmed schedule receipt or incomplete-upload recovery checkpoint
+        if: always()
         shell: bash
+        env:
+          RECEIPT_FILE: ${{ inputs.receipt }}
         run: |
           git config user.name "flowminute-lab-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "${{ inputs.receipt }}"
+          if ! [[ "$RECEIPT_FILE" =~ ^state/published/[A-Za-z0-9_.-]+\.json$ ]]; then
+            echo "Unsafe receipt file; refuse to touch Git history" >&2
+            exit 1
+          fi
+          if [ ! -f "$RECEIPT_FILE" ] && [ ! -f "$RECEIPT_FILE.pending.json" ]; then
+            echo "No remote upload recorded; nothing to checkpoint"
+            exit 0
+          fi
+          if [ -f "$RECEIPT_FILE" ]; then
+            git add -- "$RECEIPT_FILE"
+          fi
+          if [ -f "$RECEIPT_FILE.pending.json" ]; then
+            git add -- "$RECEIPT_FILE.pending.json"
+          fi
           git diff --cached --quiet && exit 0
-          git commit -m "Record YouTube publication receipt: ${{ inputs.episode }}"
+          git commit -m "Record recoverable YouTube upload status (scheduled only after API readback)"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
