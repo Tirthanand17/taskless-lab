@@ -44,3 +44,21 @@ The first reviewer masters show captions somewhat small at phone scale. Commit `
 No paid API credits, new paid services, Desktop/Nirala operations, local laptop access, cloud ledger mutations or YouTube publication. Existing development branch preserved, no PR merged. Failing unrelated legacy Cloud Scout runs do not establish correctness of these audiovisual renders.
 
 Prepared as an evidence handoff to future AI agents. Do not infer finished/released state from CI green checks alone.
+
+## Final mobile-caption reviewer re-renders (supersede previous two media files)
+
+**English Version 6**:
+- GitHub run https://github.com/Tirthanand17/taskless-lab/actions/runs/41426295160 — completed successfully against commit `2cb2e82d7ae69518593f905c5c2db82dcfbea164`.
+- Actual H.264/AAC GitHub MP4 1080x1920 at 30fps, **896 decoded frames**, **29.867 seconds**. Source SHA256 `196a46f1ff4685bc9b47e3050157e5da77160803acb3464ec4b9ec642b49248b`.
+- Original frame-unchanged, audio-mastered local reviewer version SHA256 `1f1a740002aa035a1eaed8c7a308831efe0ea6a8950c61337ceaafda3a9386fc`. Measured audio **-18.10 LUFS**, **-1.38 dBTP**; full FFmpeg decode passed.
+- English captions now 38px within a 148px caption panel. Six new actual screenshots inspected; no visible clipping in sampled frames. This does not prove every intermediate frame or device overlay is perfect.
+
+**Hindi Version 2**:
+- GitHub run https://github.com/Tirthanand17/taskless-lab/actions/runs/41426295175 — completed successfully against the same commit.
+- Actual H.264/AAC GitHub MP4 1080x1920 at 30fps, **1112 decoded frames**, **37.077 seconds**. Source SHA256 `879db5d26d163c40b1b053edca3cf0974509cc4ba2bbd23a5586a9d4fa34bc2b`.
+- Original frame-unchanged, audio-mastered local reviewer version SHA256 `ba27ed6b3af872b3c5973f4b371c6ff8abfb7885929def88d9e16dc890c0f772`. Measured audio **-18.07 LUFS**, **-2.45 dBTP**; full FFmpeg decode passed.
+- Hindi narration uses 13 phrase-aligned caption cues. Devanagari caption text now 36px inside a 148px panel. Six actual screenshots inspected and visually rendered correctly at sampled frames; no confirmed independent native-speaker pronunciation approval.
+
+**Review package**: `FLOWMINUTE_LAB_Bilingual_AI_Agent_Shorts_Review_V6_EN_V2_HI.zip` provided in ChatGPT conversation with two mastered MP4 review files, original phrase SRTs, voice QA JSON and new real render contact sheets. This ZIP is **not** hosted in the GitHub repo. GitHub code and this receipt are the project source of truth; short-lived GitHub Actions artifacts are not an approved long-term media store.
+
+**Strict release state**: English and Hindi reviewers are both TECHNICAL_QA_PASSED / CREATIVE_AND_RIGHTS_QA_PENDING / YOUTUBE_NOT_PUBLISHED. Do not infer a public URL, video ID, private upload, scheduled release or automated channel integration. No paid API video provider was used and no laptop/Nirala access occurred.
