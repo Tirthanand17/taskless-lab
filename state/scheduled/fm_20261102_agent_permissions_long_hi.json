@@ -1,0 +1,23 @@
+{
+  "id": "fm_20261102_agent_permissions_long_hi",
+  "date_local": "2026-11-03",
+  "scheduled_local": "2026-11-03T16:00:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "youtube_video_id": "OU0fLBh63Og",
+  "title_in_studio": "AI Agent को कितनी Permission दें? Read-Only, Approval और Backup | FLOWMINUTE LAB",
+  "url": "https://youtu.be/OU0fLBh63Og",
+  "status": "scheduled_verified",
+  "remote_privacy": "private",
+  "remote_upload_status": "processed",
+  "remote_publish_at_utc": "2026-11-03T10:30:00Z",
+  "video_sha256": "05cd121643df040727b9e8490341c4bf6e881d27728edea42e3c2de8aa16a213",
+  "caption_status": "serving",
+  "caption_language": "hi",
+  "thumbnail_status": "confirmed",
+  "owner_publication_instruction": "Explicit one-time authorization Nov 2 2026 and subsequent full-review signoff yes",
+  "owner_final_media_review": "owner-attested 2026-11-02",
+  "verification_source": "Authenticated YouTube videos.list and captions.list using Nirala OAuth, all 3 passed",
+  "verified_at_utc": "2026-11-02T13:28:13.048Z",
+  "never_infer_public_until_time": true,
+  "production_channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
+}
