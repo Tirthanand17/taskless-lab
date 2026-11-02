@@ -1,0 +1,59 @@
+{
+  "id": "fm_20261103_ai_link_safety_short_en",
+  "type": "short",
+  "language": "en",
+  "title": "AI Gave You a Link? Check THIS Before Clicking! #Shorts",
+  "description": "Your AI assistant suggests a link—but is it safe? In late October 2026, Norton and ESET announced tools aimed at risks around AI replies, links, scripts and assistant actions. This original animated explainer shows safer habits: verify the real domain, avoid unknown password pages, and understand generated commands before running them. Illustrative demo only, not a real phishing link. Original synthetic narration; no real personal data or accounts are shown.\n\nSources (official announcements):\nNorton, Oct 26 2026: https://www.prnewswire.com/news-releases/norton-launches-safe-ai-to-help-you-use-ai-without-giving-up-control-302919060.html\nESET, Oct 27 2026: https://www.eset.com/us/about/newsroom/products/eset-expands-consumer-and-soho-protection-with-new-ai-security-and-anti-scam-capabilities/\nOpenAI background: https://openai.com/safety/prompt-injections/\n\n#AI #CyberSafety #AITools #Phishing #TechExplained #Shorts",
+  "tags": [
+    "AI safety",
+    "AI chatbot",
+    "phishing links",
+    "Norton Safe AI",
+    "ESET AI Security",
+    "AI generated scripts",
+    "cybersecurity tips",
+    "Flowminute Lab"
+  ],
+  "captions": [
+    {
+      "start": 0,
+      "end": 4.352,
+      "text": "Your AI chatbot gives you a link; would you click it without checking?"
+    },
+    {
+      "start": 4.602,
+      "end": 13.386,
+      "text": "On October twenty-sixth, Norton announced Safe AI protection designed to warn about risky links and unintended assistant actions."
+    },
+    {
+      "start": 13.636,
+      "end": 21.579,
+      "text": "One day later, ESET announced protection for URLs in AI replies and potentially unsafe generated scripts."
+    },
+    {
+      "start": 21.829,
+      "end": 25.754,
+      "text": "But no tool guarantees every AI answer or link is safe."
+    },
+    {
+      "start": 26.004,
+      "end": 32.323,
+      "text": "Check the real website domain before opening it, and never enter passwords on unfamiliar pages."
+    },
+    {
+      "start": 32.573,
+      "end": 40.122,
+      "text": "Inspect AI-generated commands before running them; smart assistants are useful, but blind trust is risky."
+    }
+  ],
+  "renderer": "original PIL motion typography and FFmpeg",
+  "video_master_sha256": "6e86067f945848e6962e5a8c9eaf8c7b32ff484fe941a06dbd1850ecceaf721d",
+  "duration_seconds": 40.122,
+  "narration": "synthetic Kokoro am_michael original",
+  "rights": "Original generated vectors/audio; no stock or external licensed media used",
+  "source_verification": [
+    "Norton announcement 2026-10-26",
+    "ESET announcement 2026-10-27"
+  ],
+  "original_simulated_demo": true
+}
