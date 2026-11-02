@@ -63,11 +63,11 @@ export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean;loca
   const frame=useCurrentFrame();
   const sec=frame/30;
   const idx=Math.max(0,timing.beat_starts.reduce((found,start,i)=>frame>=start?i:found,0));
-  const beatStart=flowTiming.beat_starts[idx]/30;
-  const beatEnd=(flowTiming.beat_starts[idx+1]??timing.duration_frames)/30;
+  const beatStart=timing.beat_starts[idx]/30;
+  const beatEnd=(timing.beat_starts[idx+1]??timing.duration_frames)/30;
   const beat={...selectedBeats[idx],start:beatStart,end:beatEnd};
   const caption=timing.cues.find(c=>frame>=c.start_frame && frame<c.end_frame)?.text??beat.cap;
-  const progress=interpolate(frame,[0,flowTiming.duration_frames],[0,1],{extrapolateRight:'clamp'});
+  const progress=interpolate(frame,[0,timing.duration_frames],[0,1],{extrapolateRight:'clamp'});
   const entered=interpolate(sec,[beat.start,beat.start+0.55],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
   const indicator=interpolate(sec,[beat.start,beat.end],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
   const inspector=
