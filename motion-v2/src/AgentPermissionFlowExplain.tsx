@@ -113,9 +113,9 @@ export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean;loca
       <ActionRoute beatIndex={idx} phase={indicator}/>
       <div style={{...card,marginTop:18,padding:'17px 25px',background:'#132437',fontSize:22,color:colors.muted,textAlign:'center'}}>{locale==='hi'?'डेमो सिमुलेशन · असली फाइलों तक पहुँच नहीं':'TRAINING SIMULATION · NO REAL FILE ACCESS'}</div>
     </div>
-    <div style={{...card,marginTop:40,height:124,padding:'24px 34px',boxSizing:'border-box',display:'flex',alignItems:'center',gap:24,zIndex:1}}>
-      <div style={{width:8,height:72,background:beat.color,borderRadius:6}}/>
-      <div style={{fontSize:locale==='hi'?27:29,fontWeight:730,lineHeight:1.18,overflowWrap:'break-word',maxWidth:810}}>{caption}</div>
+    <div style={{...card,marginTop:40,height:148,padding:'20px 34px',boxSizing:'border-box',display:'flex',alignItems:'center',gap:24,zIndex:1}}>
+      <div style={{width:8,height:96,background:beat.color,borderRadius:6}}/>
+      <div style={{fontSize:locale==='hi'?36:38,fontWeight:730,lineHeight:1.18,overflowWrap:'break-word',maxWidth:810}}>{caption}</div>
     </div>
     <div style={{display:'flex',marginTop:'auto',fontSize:22,color:colors.muted,justifyContent:'space-between'}}>
       <span>0{idx+1} / 06  ·  {beat.tag}</span><span>ORIGINAL EXAMPLE</span>
