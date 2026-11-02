@@ -106,6 +106,10 @@ def main():
                     help="Human review gate JSON with five explicit true approvals")
     args=ap.parse_args()
 
+    # The legacy direct-publication path had no exact-media approval gates.
+    # Production releases must instead use the private future schedule workflow.
+    if args.schedule_at_utc is None:
+        raise SystemExit("Direct unscheduled YouTube uploads are disabled; use hash-pinned private scheduling")
     if not args.confirm_publish:
         raise SystemExit("publishing is blocked unless --confirm-publish is passed")
     if os.environ.get("PUBLISH_ENABLED") != "true":
