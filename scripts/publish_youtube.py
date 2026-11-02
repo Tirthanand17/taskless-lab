@@ -14,6 +14,24 @@ REQUIRED_APPROVALS = (
     "rights_cleared", "factual_review_approved", "final_video_approved"
 )
 
+# Language must be validated before videos.insert: an uploaded video may already
+# exist if captions.insert later rejects an invalid/mislabeled language.
+CAPTION_LANGUAGES = {"en": "English", "hi": "Hindi"}
+
+
+def caption_snippet_for_language(language: str, video_id: str) -> dict:
+    """Build accurate YouTube captions.insert metadata for supported scripts.
+
+    Fail closed, rather than uploading Hindi speech under an English caption track.
+    """
+    if not isinstance(language, str) or language not in CAPTION_LANGUAGES:
+        raise ValueError("Unsupported caption language; expected 'en' or 'hi'")
+    if not isinstance(video_id, str) or not video_id.strip():
+        raise ValueError("Missing real YouTube video ID")
+    return {"videoId": video_id, "language": language,
+            "name": CAPTION_LANGUAGES[language], "isDraft": False}
+
+
 def parse_scheduled_utc(value: str, *, now=None) -> str:
     """Strict scheduled UTC: reject anything but a future Z time, never publish immediately."""
     if not isinstance(value, str) or not UTC_TIME.fullmatch(value):
@@ -97,6 +115,14 @@ def main():
     meta=json.loads((root/args.episode).read_text(encoding="utf-8"))
     video_path=root/args.video
     caption_path=root/args.captions
+    language=meta.get("language", "en")
+    try:
+        # Preflight language before any remote YouTube operation.
+        caption_snippet_for_language(language, "PREFLIGHT")
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+    if not caption_path.is_file():
+        raise SystemExit("Caption file missing; refuse upload without reviewed captions")
 
     schedule = None
     digest = None
@@ -135,7 +161,7 @@ def main():
         "title":meta["title"],
         "description":meta["description"],
         "tags":meta.get("tags", []),
-        "defaultLanguage":meta.get("language", "en"),
+        "defaultLanguage":language,
         "categoryId":"27"
       },
       "status":{
@@ -182,18 +208,13 @@ def main():
             print(f"thumbnail upload skipped/failed: {exc}")
 
     if caption_path.exists():
-        cap_body={"snippet":{
-          "videoId":video_id,
-          "language":"en",
-          "name":"English",
-          "isDraft":False
-        }}
+        cap_body={"snippet": caption_snippet_for_language(language, video_id)}
         youtube.captions().insert(
           part="snippet",
           body=cap_body,
           media_body=MediaFileUpload(str(caption_path),mimetype="application/octet-stream")
         ).execute()
-        print("uploaded English SRT captions")
+        print(f"uploaded {CAPTION_LANGUAGES[language]} SRT captions")
 
     schedule_readback=None
     if schedule:
