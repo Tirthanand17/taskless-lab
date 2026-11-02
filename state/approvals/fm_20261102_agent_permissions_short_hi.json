@@ -16,5 +16,10 @@
   "youtube_uploaded": false,
   "youtube_scheduled": false,
   "video_id": null,
-  "notes": "Owner accepted the two previews for upload. This is not evidence of separate human voice, exact caption, legal-rights and factual signoff. Do not alter false gates by inference. Main-only scheduled GitHub publisher remains blocked until five real approvals and exact hashed artifact are available."
+  "notes": "Owner accepted the two previews for upload. This is not evidence of separate human voice, exact caption, legal-rights and factual signoff. Do not alter false gates by inference. Main-only scheduled GitHub publisher remains blocked until five real approvals and exact hashed artifact are available.",
+  "owner_publish_authorized": true,
+  "owner_publish_authorization_quote": "yes i give you permission to publish",
+  "owner_publish_authorization_scope": "three-video queue: English Short, Hindi Short, Hindi longer-form AI agent explainer, in that order",
+  "owner_publish_authorized_not_yet_executed": true,
+  "approval_note_2026_11_02": "Explicit user authorization to publish the planned 3-video queue. This does not attest to independent rights, voice, factual, caption QA, or authenticate the YouTube channel. Existing release gate flags remain unchanged."
 }
