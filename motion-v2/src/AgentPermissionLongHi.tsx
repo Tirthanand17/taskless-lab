@@ -31,7 +31,7 @@ export const AgentPermissionLongHi:React.FC<{includeNarration?:boolean}>=({inclu
  const progress=interpolate(frame,[start,next],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
  const total=interpolate(frame,[0,timing.duration_frames],[0,1],{extrapolateRight:'clamp'});
  const ease=interpolate(frame,[start,start+15],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
- const cue=timing.cues.find(x=>frame>=x.start_frame&&frame<x.end_frame)?.text;
+ const cue=(timing.cues as Array<{start_frame:number;end_frame:number;text:string}>).find(x=>frame>=x.start_frame&&frame<x.end_frame)?.text;
  const copy=cue??part.description;
  const isScope=idx>=3;const isDenied=idx===4;const isSafe=idx===5;
  const cursor=isScope?isDenied?54:isSafe?83:36+18*progress:12+progress*34;
