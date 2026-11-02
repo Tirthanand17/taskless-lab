@@ -1,0 +1,85 @@
+name: FLOWMINUTE Existing YouTube OAuth Read-Only Diagnostic (No Upload)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/flowminute-youtube-oauth-diagnostic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-youtube-readonly-auth-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  authorized_readonly_diagnostic:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    environment: youtube-production
+    env:
+      PUBLISH_ENABLED: 'false'
+      FLOWMINUTE_ENABLE_PUBLISH: '0'
+      YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+      EXPECTED_CHANNEL_ID: UCCcL9Q_jqVq6LJmnYUSAFZA
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install only official read-only Google API dependencies
+        run: python -m pip install --disable-pip-version-check --no-input google-api-python-client google-auth
+      - name: Check existing YouTube OAuth availability and correct owner channel
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          report = {
+              "diagnostic": "EXISTING_YOUTUBE_CREDENTIAL_READ_ONLY",
+              "credential_configured": bool(os.environ.get("YOUTUBE_TOKEN_JSON", "").strip()),
+              "authenticated": False,
+              "correct_channel": False,
+              "expected_channel_id": os.environ["EXPECTED_CHANNEL_ID"],
+              "publishing_policy_changed": False,
+              "youtube_upload_performed": False,
+              "video_ids_created": [],
+          }
+          if report["credential_configured"]:
+              try:
+                  from google.oauth2.credentials import Credentials
+                  from googleapiclient.discovery import build
+                  info=json.loads(os.environ["YOUTUBE_TOKEN_JSON"])
+                  creds=Credentials.from_authorized_user_info(info)
+                  service=build("youtube","v3",credentials=creds,cache_discovery=False)
+                  result=service.channels().list(part="id",mine=True).execute()
+                  ids=[i["id"] for i in result.get("items", []) if isinstance(i,dict) and i.get("id")]
+                  report["authenticated"]=True
+                  report["correct_channel"]=report["expected_channel_id"] in ids
+                  report["returned_channel_count"]=len(ids)
+              except Exception as exc:
+                  # Do not print token values, Google error bodies, or stack traces.
+                  report["authentication_error_type"]=type(exc).__name__
+          Path("youtube-oauth-readonly-diagnostic.json").write_text(
+              json.dumps(report,indent=2)+"\n",encoding="utf-8")
+          print("READ_ONLY_YOUTUBE_OAUTH_DIAGNOSTIC_RESULT",
+                json.dumps({
+                  "credential_configured": report["credential_configured"],
+                  "authenticated": report["authenticated"],
+                  "correct_channel": report["correct_channel"],
+                  "youtube_upload_performed": False
+                }))
+          PY
+      - name: Save safe diagnostic booleans without tokens
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-existing-youtube-oauth-readonly-diagnostic
+          path: youtube-oauth-readonly-diagnostic.json
+          retention-days: 1
+          if-no-files-found: error
