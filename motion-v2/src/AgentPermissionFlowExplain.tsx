@@ -20,6 +20,33 @@ const card:React.CSSProperties={borderRadius:24,border:'2px solid '+colors.borde
 const label:React.CSSProperties={fontSize:21,letterSpacing:1.2,fontWeight:700,color:colors.muted};
 const dot=(color:string)=><span style={{display:'inline-block',width:12,height:12,borderRadius:'50%',background:color,marginRight:14}}/>;
 const row:React.CSSProperties={display:'flex',alignItems:'center',padding:'15px 19px',borderRadius:14,background:'#15263A',border:'1px solid #2B4055',minHeight:70};
+/** A single persistent action path. The intent cursor stops at the permission gate.
+ * No simulated delete is presented as an executed file-system action.
+ * Every position is derived from Remotion's frame, never from CSS keyframes.
+ */
+const ActionRoute:React.FC<{beatIndex:number;phase:number}>=({beatIndex,phase})=>{
+  const cursorPosition=beatIndex===0?12+phase*9:
+    beatIndex===1?21+phase*11:
+    beatIndex===2?32+phase*13:
+    beatIndex===3?45+phase*7:
+    beatIndex===4?52:
+    52+phase*28;
+  const denied=beatIndex===4;
+  const safe=beatIndex===5;
+  const tone=denied?colors.red:safe?colors.green:beatIndex===3?colors.cyan:colors.amber;
+  const checkpoints=[{name:'REQUEST',x:12,active:true},{name:'PERMISSION',x:52,active:beatIndex>=3},{name:'TOOL',x:87,active:safe}];
+  return <div aria-label="Simulated request progress and permission gate" style={{height:102,position:'relative',margin:'8px 12px 0',border:'1px solid #25445B',borderRadius:16,background:'#0B1A2D',overflow:'hidden'}}>
+    <div style={{position:'absolute',top:34,left:'12%',width:'75%',height:5,borderRadius:4,background:'#264253'}}/>
+    <div style={{position:'absolute',top:34,left:'12%',width:`${Math.max(0,cursorPosition-12)}%`,height:5,borderRadius:4,background:tone,opacity:.9}}/>
+    {checkpoints.map((point,i)=><React.Fragment key={point.name}>
+      <div style={{position:'absolute',left:`calc(${point.x}% - 15px)`,top:21,width:30,height:30,borderRadius:'50%',border:`3px solid ${point.active?(i===1&&denied?colors.red:i===2?colors.green:colors.cyan):colors.border}`,background:point.active?colors.raised:'#152437',boxSizing:'border-box',zIndex:1}}/>
+      <div style={{position:'absolute',left:`calc(${point.x}% - 84px)`,top:65,width:168,textAlign:'center',fontSize:17,fontWeight:750,letterSpacing:.5,color:point.active?colors.white:colors.muted}}>{point.name}</div>
+    </React.Fragment>)}
+    <div style={{position:'absolute',left:`calc(${cursorPosition}% - 15px)`,top:20,width:32,height:32,borderRadius:'50%',background:tone,border:'3px solid #0C1929',boxShadow:`0 0 ${12+phase*17}px ${tone}`,zIndex:3}}/>
+    {denied?<div style={{position:'absolute',right:23,top:5,borderRadius:10,padding:'8px 13px',background:'#4B222F',color:colors.red,fontWeight:800,fontSize:17}}>BLOCKED</div>:null}
+    {safe?<div style={{position:'absolute',right:22,top:5,borderRadius:10,padding:'8px 13px',background:'#164436',color:colors.green,fontWeight:800,fontSize:17}}>READ ONLY</div>:null}
+  </div>;
+};
 export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean}>=({includeNarration=false})=>{
   const frame=useCurrentFrame();
   const sec=frame/30;
@@ -57,12 +84,12 @@ export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean}>=({
         <span style={{fontSize:19,color:colors.cyan,marginLeft:'auto'}}>SIM</span>
       </div>
       <div style={{display:'flex',gap:14,margin:'27px 10px 30px'}}>{beats.map((b,i)=><div key={i} style={{flex:1,height:9,background:i===idx?beat.color:i<idx?'#3A5669':'#1B3044',borderRadius:8}}/>)}</div>
-      <div style={{display:'flex',gap:20,height:550}}>
+      <div style={{display:'flex',gap:20,height:445}}>
         <div style={{...card,flex:1,padding:24,background:'#0C1728'}}>
           <div style={label}>FILES / SAMPLE</div>
           <div style={{borderBottom:'2px solid #294154',margin:'24px 0'}}/>
-          {['reports/','budget_2026.csv','notes.txt'].map((f,i)=><div key={f} style={{...row,marginBottom:22,borderColor:idx===0&&i===0?colors.red:'#2B4055'}}>
-            <span style={{color:i===0?colors.amber:colors.cyan,marginRight:18,fontSize:27}}>{i===0?'▣':'▤'}</span><b style={{fontSize:25,whiteSpace:'nowrap'}}>{f}</b>
+          {['reports/','budget_2026.csv','notes.txt'].map((f,i)=><div key={f} style={{...row,marginBottom:22,borderColor:i===0&&(idx===0||idx>=2)?idx>=4?colors.green:colors.red:'#2B4055',boxShadow:i===0&&idx>=2&&idx<=3?`0 0 ${indicator*16}px #F16B7330`:'none'}}>
+            <span style={{color:i===0?colors.amber:colors.cyan,marginRight:18,fontSize:27}}>{i===0?'▣':'▤'}</span><b style={{fontSize:25,whiteSpace:'nowrap'}}>{f}</b>{i===0&&idx>=4?<span style={{marginLeft:'auto',fontSize:16,color:colors.green,fontWeight:800}}>SAFE</span>:null}
           </div>)}
         </div>
         <div style={{...card,width:310,padding:23,background:'#0C1728',boxSizing:'border-box',fontSize:25}}>
@@ -71,7 +98,8 @@ export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean}>=({
           {inspector}
         </div>
       </div>
-      <div style={{...card,marginTop:24,padding:'17px 25px',background:'#132437',fontSize:22,color:colors.muted,textAlign:'center'}}>TRAINING SIMULATION · NO REAL FILE ACCESS</div>
+      <ActionRoute beatIndex={idx} phase={indicator}/>
+      <div style={{...card,marginTop:18,padding:'17px 25px',background:'#132437',fontSize:22,color:colors.muted,textAlign:'center'}}>TRAINING SIMULATION · NO REAL FILE ACCESS</div>
     </div>
     <div style={{...card,marginTop:40,height:124,padding:'24px 34px',boxSizing:'border-box',display:'flex',alignItems:'center',gap:24,zIndex:1}}>
       <div style={{width:8,height:72,background:beat.color,borderRadius:6}}/>
