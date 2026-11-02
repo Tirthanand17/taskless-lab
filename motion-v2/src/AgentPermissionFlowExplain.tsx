@@ -1,5 +1,6 @@
 import React from 'react';
-import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Audio, interpolate, staticFile, useCurrentFrame} from 'remotion';
+import flowTiming from './flowExplainTiming.json';
 
 /**
  * FLOW//EXPLAIN: original animated, persistent dashboard.
@@ -19,13 +20,15 @@ const card:React.CSSProperties={borderRadius:24,border:'2px solid '+colors.borde
 const label:React.CSSProperties={fontSize:21,letterSpacing:1.2,fontWeight:700,color:colors.muted};
 const dot=(color:string)=><span style={{display:'inline-block',width:12,height:12,borderRadius:'50%',background:color,marginRight:14}}/>;
 const row:React.CSSProperties={display:'flex',alignItems:'center',padding:'15px 19px',borderRadius:14,background:'#15263A',border:'1px solid #2B4055',minHeight:70};
-export const AgentPermissionFlowExplain:React.FC=()=>{
+export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean}>=({includeNarration=false})=>{
   const frame=useCurrentFrame();
   const sec=frame/30;
-  const index=beats.findIndex(b=>sec<b.end);
-  const idx=index<0?beats.length-1:index;
-  const beat=beats[idx];
-  const progress=interpolate(sec,[0,36],[0,1],{extrapolateRight:'clamp'});
+  const idx=Math.max(0,flowTiming.beat_starts.reduce((found,start,i)=>frame>=start?i:found,0));
+  const beatStart=flowTiming.beat_starts[idx]/30;
+  const beatEnd=(flowTiming.beat_starts[idx+1]??flowTiming.duration_frames)/30;
+  const beat={...beats[idx],start:beatStart,end:beatEnd};
+  const caption=flowTiming.cues.find(c=>frame>=c.start_frame && frame<c.end_frame)?.text??beat.cap;
+  const progress=interpolate(frame,[0,flowTiming.duration_frames],[0,1],{extrapolateRight:'clamp'});
   const entered=interpolate(sec,[beat.start,beat.start+0.55],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
   const indicator=interpolate(sec,[beat.start,beat.end],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
   const inspector=
@@ -37,6 +40,7 @@ export const AgentPermissionFlowExplain:React.FC=()=>{
     <><div style={{color:colors.green}}>SAFE MODE</div><div style={{border:'2px solid '+colors.green,color:colors.green,borderRadius:12,padding:20,marginTop:70,fontWeight:800}}>READ ONLY</div><div style={{marginTop:50}}>Approve only what is needed</div></>;
   return <AbsoluteFill style={{background:colors.bg,color:colors.white,fontFamily:'Inter, Arial, sans-serif',padding:'84px 72px',boxSizing:'border-box',overflow:'hidden'}}>
     <AbsoluteFill style={{opacity:.16,backgroundImage:'linear-gradient(#2A4B60 1px,transparent 1px),linear-gradient(90deg,#2A4B60 1px,transparent 1px)',backgroundSize:'68px 68px',pointerEvents:'none'}}/>
+    {includeNarration ? <Audio src={staticFile('flow-explain-voice.wav')} /> : null}
     <div style={{...card,height:90,display:'flex',alignItems:'center',padding:'0 28px',gap:15,zIndex:1}}>
       <div style={{width:34,height:34,borderRadius:9,background:colors.cyan}}/><b style={{fontSize:29,letterSpacing:1}}>FLOWMINUTE</b>
       <span style={{...label,marginLeft:16}}> // EXPLAIN</span><span style={{marginLeft:'auto',color:colors.amber,fontSize:23,fontWeight:800}}>0{idx+1} / 06</span>
@@ -71,7 +75,7 @@ export const AgentPermissionFlowExplain:React.FC=()=>{
     </div>
     <div style={{...card,marginTop:40,height:124,padding:'24px 34px',boxSizing:'border-box',display:'flex',alignItems:'center',gap:24,zIndex:1}}>
       <div style={{width:8,height:72,background:beat.color,borderRadius:6}}/>
-      <div style={{fontSize:31,fontWeight:760,lineHeight:1.2}}>{beat.cap}</div>
+      <div style={{fontSize:29,fontWeight:730,lineHeight:1.18,overflowWrap:'break-word',maxWidth:810}}>{caption}</div>
     </div>
     <div style={{display:'flex',marginTop:'auto',fontSize:22,color:colors.muted,justifyContent:'space-between'}}>
       <span>0{idx+1} / 06  ·  {beat.tag}</span><span>ORIGINAL EXAMPLE</span>
