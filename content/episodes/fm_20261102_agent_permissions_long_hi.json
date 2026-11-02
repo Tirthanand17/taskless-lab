@@ -1,0 +1,25 @@
+{
+  "id": "fm_20261102_agent_permissions_long_hi",
+  "title": "AI Agent को कितनी Permission दें? Read-Only, Approval और Backup | FLOWMINUTE LAB",
+  "description": "क्या AI Agent आपकी files delete कर सकता है? इस Hindi tutorial में चैट और tool execution का अंतर, read-only permissions, simulated folder deletion request, approval review, least-privilege access, logging और backup की अच्छी आदतें समझिए। स्क्रीन पर सभी files और actions केवल training simulation हैं; किसी असली file को access या delete नहीं किया गया। Synthetic Hindi narration का इस्तेमाल हुआ है।\n\n#AIAgents #AIHindi #Automation #CyberSafety #DataScience #FLOWMINUTE",
+  "language": "hi",
+  "format": "16:9",
+  "duration_seconds": 155.712,
+  "video_width": 1920,
+  "video_height": 1080,
+  "video_fps": 24,
+  "voice": "Kokoro synthetic hf_alpha",
+  "source_script": "content/flow/agent_permissions_long_hi_narration.json",
+  "visual_style": "original persistent animated simulated permissions dashboard",
+  "tags": [
+    "AI Agent Permissions",
+    "AI Automation Hindi",
+    "Read Only Permission",
+    "Human approval",
+    "Data safety",
+    "Flowminute Lab"
+  ],
+  "preview_media_sha256": "05cd121643df040727b9e8490341c4bf6e881d27728edea42e3c2de8aa16a213",
+  "preview_media_name": "FLOWMINUTE_HI_LONG_AUDIO_MASTER_REVIEW_ONLY.mp4",
+  "release_status": "TECHNICALLY_VALID_REVIEW_ONLY_PENDING_OWNER_VOICE_CREATIVE_RIGHTS_AND_FACTUAL_APPROVAL"
+}
