@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "episode_id": "fm_20261102_agent_permissions_short_en",
+  "candidate_video_sha256": "1f1a740002aa035a1eaed8c7a308831efe0ea6a8950c61337ceaafda3a9386fc",
+  "approved_video_sha256": "1f1a740002aa035a1eaed8c7a308831efe0ea6a8950c61337ceaafda3a9386fc",
+  "owner_release_requested": true,
+  "owner_approval_observed": true,
+  "owner_approval_context": "Owner wrote 'i saw the good to upload for today. so continue to upload' after watching English V6 / Hindi V2",
+  "final_video_approved": true,
+  "human_voice_approved": false,
+  "exact_captions_approved": false,
+  "rights_cleared": false,
+  "factual_review_approved": false,
+  "channel_owner_auth_verified": false,
+  "release_status": "OWNER_PREVIEW_APPROVED_OTHER_MANDATORY_GATES_BLOCKED",
+  "youtube_uploaded": false,
+  "youtube_scheduled": false,
+  "video_id": null,
+  "notes": "Owner accepted the two previews for upload. This is not evidence of separate human voice, exact caption, legal-rights and factual signoff. Do not alter false gates by inference. Main-only scheduled GitHub publisher remains blocked until five real approvals and exact hashed artifact are available."
+}
