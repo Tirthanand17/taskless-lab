@@ -1,0 +1,23 @@
+{
+  "id": "fm_20261102_agent_permissions_short_hi",
+  "date_local": "2026-11-03",
+  "scheduled_local": "2026-11-03T11:00:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "youtube_video_id": "EUuN680yBtg",
+  "title_in_studio": "AI Agent आपकी Files Delete कर सकता है? Permissions समझिए #Shorts",
+  "url": "https://youtube.com/shorts/EUuN680yBtg",
+  "status": "scheduled_verified",
+  "remote_privacy": "private",
+  "remote_upload_status": "processed",
+  "remote_publish_at_utc": "2026-11-03T05:30:00Z",
+  "video_sha256": "ba27ed6b3af872b3c5973f4b371c6ff8abfb7885929def88d9e16dc890c0f772",
+  "caption_status": "serving",
+  "caption_language": "hi",
+  "thumbnail_status": "not_uploaded_short",
+  "owner_publication_instruction": "Explicit one-time authorization Nov 2 2026 and subsequent full-review signoff yes",
+  "owner_final_media_review": "owner-attested 2026-11-02",
+  "verification_source": "Authenticated YouTube videos.list and captions.list using Nirala OAuth, all 3 passed",
+  "verified_at_utc": "2026-11-02T13:28:13.048Z",
+  "never_infer_public_until_time": true,
+  "production_channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
+}
