@@ -30,6 +30,23 @@ PHRASES = [
  (5, "Remember: least privilege."),
  (5, "Preview changes, review permissions, and keep backups."),
 ]
+
+PHRASES_HI = [
+ (0, "क्या एआई एजेंट आपकी फाइलें डिलीट कर सकता है?"),
+ (0, "पहले एक फर्क समझिए।"),
+ (1, "चैटबॉट जवाब देता है।"),
+ (1, "एजेंट किसी टूल को काम करने को कह सकता है।"),
+ (2, "मानिए उसने डेमो फोल्डर हटाने को कहा।"),
+ (2, "अनुरोध का मतलब अनुमति नहीं।"),
+ (3, "पहले टूल की परमिशन जाँचिए।"),
+ (3, "सिर्फ पढ़ने की अनुमति से डिलीट नहीं हो सकता।"),
+ (3, "कुछ कामों में आपकी मंजूरी भी जरूरी हो सकती है।"),
+ (4, "हम उसे ब्लॉक करते हैं।"),
+ (4, "डेमो की फाइलें सुरक्षित रहती हैं।"),
+ (5, "नियम: केवल जरूरी अनुमति दें।"),
+ (5, "बदलाव देखें। बैकअप रखें।"),
+]
+
 SAMPLE_RATE = 48000
 FPS = 30
 GAP_SECONDS = 0.075
@@ -50,20 +67,26 @@ def ffmpeg(*args: str) -> str:
     return p.stdout
 
 def build(model_dir: Path, script_path: Path, public_dir: Path,
-          timing_path: Path, results_dir: Path) -> dict:
+          timing_path: Path, results_dir: Path, language: str = 'en') -> dict:
     import numpy as np
     import soundfile as sf
     from kokoro_onnx import Kokoro
 
     if not results_dir.is_dir() or not public_dir.is_dir() or not timing_path.parent.is_dir():
         raise FileNotFoundError("Expected existing output folders")
+    if language not in ('en', 'hi'):
+        raise ValueError('Only the two approved FLOWMINUTE language contracts supported')
+    phrases = PHRASES if language == 'en' else PHRASES_HI
+    voice_id = 'af_sarah' if language == 'en' else 'hf_alpha'
+    voice_lang = 'en-us' if language == 'en' else 'hi'
+    suffix = '' if language == 'en' else '-hi'
     script = " ".join(script_path.read_text(encoding="utf-8").split())
-    literal = " ".join(line for _,line in PHRASES)
+    literal = " ".join(line for _,line in phrases)
     if script!=literal:
         raise ValueError("Narration phrases differ from the reviewed canonical script")
-    if [p[0] for p in PHRASES] != sorted(p[0] for p in PHRASES):
+    if [p[0] for p in phrases] != sorted(p[0] for p in phrases):
         raise ValueError("Narration beat numbers must be ordered")
-    if len(PHRASES)!=13:
+    if len(phrases)!=13:
         raise AssertionError("Expected exactly 13 known phrase captions")
     voice=Kokoro(str(model_dir/"kokoro-v1.0.onnx"),
                  str(model_dir/"voices-v1.0.bin"))
@@ -74,8 +97,8 @@ def build(model_dir: Path, script_path: Path, public_dir: Path,
     seen=set()
     with tempfile.TemporaryDirectory() as work:
         temp=Path(work)
-        for idx,(beat,phrase) in enumerate(PHRASES):
-            x,rate=voice.create(phrase,voice="af_sarah",lang="en-us",speed=1.0)
+        for idx,(beat,phrase) in enumerate(phrases):
+            x,rate=voice.create(phrase,voice=voice_id,lang=voice_lang,speed=1.0)
             sample=np.asarray(x,dtype=np.float32)
             if sample.ndim!=1 or not np.isfinite(sample).all():
                 raise ValueError(f"Invalid synthesis samples at phrase {idx}")
@@ -104,14 +127,14 @@ def build(model_dir: Path, script_path: Path, public_dir: Path,
                 "start_seconds":round(start_s,3),
                 "end_seconds":round(end_s,3)
             })
-            if idx<len(PHRASES)-1:
+            if idx<len(phrases)-1:
                 pad=np.zeros(round(GAP_SECONDS*SAMPLE_RATE),dtype=np.float32)
                 all_samples.append(pad)
                 position+=len(pad)
     all_samples.append(np.zeros(round(OUTRO_SECONDS*SAMPLE_RATE),dtype=np.float32))
     audio=np.concatenate(all_samples)
     seconds=len(audio)/SAMPLE_RATE
-    if not (23 <= seconds <= 55):
+    if not (23 <= seconds <= (75 if language == 'hi' else 55)):
         raise ValueError(f"Narration {seconds:.2f}s outside useful Short range")
     if np.max(np.abs(audio)) < 0.002:
         raise ValueError("Silent voice")
@@ -124,7 +147,7 @@ def build(model_dir: Path, script_path: Path, public_dir: Path,
     for i,c in enumerate(cues):
         if c["end_frame"]>duration_frames or c["start_frame"]>=c["end_frame"]:
             raise ValueError(f"Invalid caption cue {i}")
-    audio_path=public_dir/"flow-explain-voice.wav"
+    audio_path=public_dir/f"flow-explain-voice{suffix}.wav"
     sf.write(str(audio_path),audio,SAMPLE_RATE,subtype="PCM_16")
     timing={
        "fps":FPS,"duration_frames":duration_frames,"beat_starts":beat_starts,
@@ -137,13 +160,14 @@ def build(model_dir: Path, script_path: Path, public_dir: Path,
         srt.append(srt_time(c["start_seconds"])+" --> "+srt_time(c["end_seconds"]))
         srt.append(c["text"])
         srt.append("")
-    (results_dir/"flow-explain-english-phrase-captions.srt").write_text(
+    (results_dir/f"flow-explain-{ 'english' if language == 'en' else 'hindi' }-phrase-captions.srt").write_text(
         "\n".join(srt),encoding="utf-8")
     sha=hashlib.sha256(audio_path.read_bytes()).hexdigest()
     data={
         "state":"PHRASE_TIMED_AUDIO_ONLY_REVIEW",
         "voice_model":"Kokoro ONNX v1.0",
-        "voice_id":"af_sarah",
+        "voice_id":voice_id,
+        "language":language,
         "source_text_words":len(script.split()),
         "phrases":len(PHRASES),
         "duration_seconds":round(seconds,3),
@@ -158,12 +182,13 @@ def build(model_dir: Path, script_path: Path, public_dir: Path,
         "rights_cleared":False,
         "youtube_published":False
     }
-    (results_dir/"flow-explain-voice-timing-qa.json").write_text(
+    (results_dir/f"flow-explain-voice-timing-qa{suffix}.json").write_text(
         json.dumps(data,indent=2)+"\n",encoding="utf-8")
     return data
 
 def cli() -> None:
     ap=argparse.ArgumentParser()
+    ap.add_argument('--language',choices=['en','hi'],default='en')
     ap.add_argument("--model-dir",type=Path,required=True)
     ap.add_argument("--script",type=Path,required=True)
     ap.add_argument("--public-dir",type=Path,required=True)
@@ -171,7 +196,7 @@ def cli() -> None:
     ap.add_argument("--output-dir",type=Path,required=True)
     args=ap.parse_args()
     print(json.dumps(build(args.model_dir,args.script,args.public_dir,
-                           args.timing_file,args.output_dir),indent=2))
+                           args.timing_file,args.output_dir,args.language),indent=2))
 
 if __name__=="__main__":
     cli()
