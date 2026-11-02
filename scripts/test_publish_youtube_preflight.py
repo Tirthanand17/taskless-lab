@@ -5,11 +5,12 @@ This suite never imports the Google API client or triggers remote publication.
 from __future__ import annotations
 import datetime as dt
 import unittest
+from unittest.mock import patch
 
 from scripts.publish_youtube import (
     CAPTION_LANGUAGES, approval_allows_exact_video,
     caption_snippet_for_language, parse_scheduled_utc,
-    verify_youtube_schedule,
+    verify_youtube_schedule, main,
 )
 
 HASH = "a" * 64
@@ -95,6 +96,22 @@ class ScheduleTests(unittest.TestCase):
         self.assertFalse(verify_youtube_schedule(video, schedule, "UC" + "Y" * 22))
         video["status"]["privacyStatus"] = "public"
         self.assertFalse(verify_youtube_schedule(video, schedule, channel))
+
+
+class DeprecatedDirectUploadTests(unittest.TestCase):
+    def test_direct_unscheduled_public_upload_is_refused_without_network(self):
+        # This must stop before loading token or sending ANY YouTube API request.
+        with patch("sys.argv", ["publish_youtube.py", "--confirm-publish",
+                                "--privacy", "public"]):
+            with self.assertRaisesRegex(SystemExit, "Direct unscheduled"):
+                main()
+
+    def test_direct_unscheduled_private_upload_is_also_refused(self):
+        with patch("sys.argv", ["publish_youtube.py", "--confirm-publish",
+                                "--privacy", "private"]):
+            with self.assertRaisesRegex(SystemExit, "Direct unscheduled"):
+                main()
+
 
 
 if __name__ == "__main__":
