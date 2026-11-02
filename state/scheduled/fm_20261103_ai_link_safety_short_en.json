@@ -1,0 +1,36 @@
+{
+  "id": "fm_20261103_ai_link_safety_short_en",
+  "date_local": "2026-11-03",
+  "scheduled_local": "2026-11-03T20:30:00+05:30",
+  "timezone": "Asia/Kolkata",
+  "youtube_video_id": "g4xcZnnHFEw",
+  "title_in_studio": "AI Gave You a Link? Check THIS Before Clicking! #Shorts",
+  "url": "https://youtube.com/shorts/g4xcZnnHFEw",
+  "status": "scheduled_verified",
+  "remote_privacy": "private",
+  "remote_upload_status": "processed",
+  "remote_publish_at_utc": "2026-11-03T15:00:00Z",
+  "thumbnail_status": "not_uploaded_short",
+  "caption_status": "serving",
+  "caption_language": "en",
+  "video_sha256": "6e86067f945848e6962e5a8c9eaf8c7b32ff484fe941a06dbd1850ecceaf721d",
+  "media_details": {
+    "resolution": "1080x1920",
+    "fps": 24,
+    "narration_seconds": 40.043,
+    "full_media_decode": "passed",
+    "caption_cues": 6,
+    "synthetic_voice": "am_michael"
+  },
+  "source_verification": [
+    "https://www.prnewswire.com/news-releases/norton-launches-safe-ai-to-help-you-use-ai-without-giving-up-control-302919060.html",
+    "https://www.eset.com/us/about/newsroom/products/eset-expands-consumer-and-soho-protection-with-new-ai-security-and-anti-scam-capabilities/"
+  ],
+  "rights_basis": "Original script, generated vector graphics, offline Kokoro synthetic narration; no external footage/music.",
+  "owner_publication_instruction": "2026-11-02: 'for tommorow make one short on interesting topic and then schedule it'",
+  "human_full_watch": "not claimed; user requested autonomous creation and scheduling and production policy does not mandate it",
+  "source": "Authenticated YouTube API channels.list, videos.list, captions.list from authorized Nirala publisher",
+  "verified_at_local_date": "2026-11-02",
+  "production_channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "not_public_until_youtube_release_at": true
+}
