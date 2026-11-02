@@ -1,3 +1,5 @@
+import {AgentPermissionLongHi} from './AgentPermissionLongHi';
+import flowExplainLongHiTiming from './flowExplainLongHiTiming.json';
 import {AgentPermissionFlowExplain} from './AgentPermissionFlowExplain';
 import flowTiming from './flowExplainTiming.json';
 import flowTimingHi from './flowExplainTimingHi.json';
@@ -29,6 +31,7 @@ export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Composition id="AgentPermissionFlowExplain" component={AgentPermissionFlowExplain} durationInFrames={flowTiming.duration_frames} fps={30} width={1080} height={1920} defaultProps={{includeNarration:false}} />
+      <Composition id="AgentPermissionLongHi" component={AgentPermissionLongHi} durationInFrames={flowExplainLongHiTiming.duration_frames} fps={24} width={1920} height={1080} defaultProps={{includeNarration:false}} />
       <Composition id="AgentPermissionFlowExplainHi" component={AgentPermissionFlowExplain} durationInFrames={flowTimingHi.duration_frames} fps={30} width={1080} height={1920} defaultProps={{includeNarration:false,locale:"hi"}} />
                         <Composition id="IndiaHackathonShort" component={IndiaHackathonShort} durationInFrames={1650} fps={30} width={1080} height={1920} />
       <Composition id="IndiaCybercrimeShort" component={IndiaCybercrimeShort} durationInFrames={1650} fps={30} width={1080} height={1920} />
