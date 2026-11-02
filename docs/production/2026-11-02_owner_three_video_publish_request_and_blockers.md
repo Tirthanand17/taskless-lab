@@ -48,3 +48,19 @@ The project has a GitHub Actions uploader that uses `YOUTUBE_TOKEN_JSON` from a 
 - `scripts/generate_flow_explain_long_hindi_voice.py` emits a separate `hf_alpha` synthetic Hindi narration, phrase-based SRT and chapter timings; `.github/workflows/flowminute-hi-long-full-render.yml` is **review-only** and has no publication action/secret. The dedicated layout smoke passed: https://github.com/Tirthanand17/taskless-lab/actions/runs/41431664151 .
 - Full Hindi long-form audiovisual build started here: https://github.com/Tirthanand17/taskless-lab/actions/runs/41431772149 . **Build initiation is not proof of success; final media, voice performance and approvals must still be independently checked.**
 - Existing production control `publishing_enabled:false` not changed. All three release requests remain in owner-requested order, with **zero confirmed new YouTube video IDs**.
+
+## Latest confirmed result — 2:35.7 Hindi long REVIEW film exists (supersedes earlier "not rendered" line)
+
+The previous entry accurately recorded the state at the start of this task; subsequent source work has now produced an actual real reviewed-*technically* 16:9 long video:
+
+- New native Hindi long Remotion source and exactly timed 29-phrase SRT now exist in the repo.
+- Full GitHub Actions success: https://github.com/Tirthanand17/taskless-lab/actions/runs/41431772149 .
+- Original H.264/AAC export: 1920x1080, 24fps, 3737 frames, 155.712s, SHA256 `518b44a137bbdddec32ee84e7f64cbe0c55e49ae52fab277f75d1bb3158fbb2c`.
+- Mastered **conversation-only** review video: `FLOWMINUTE_HI_LONG_AUDIO_MASTER_REVIEW_ONLY.mp4`, SHA256 `05cd121643df040727b9e8490341c4bf6e881d27728edea42e3c2de8aa16a213`. Full decode verified, approximately -18.1 LUFS and -1.7 dBTP.
+- Exact production receipt: `docs/production/2026-11-02_hindi_long_real_render_receipt.md`.
+- Long-form metadata: `content/episodes/fm_20261102_agent_permissions_long_hi.json`.
+- The long video has **not** been seen and approved by the owner. The corresponding `state/approvals/fm_20261102_agent_permissions_long_hi.json` correctly keeps every approval flag false.
+- `FLOWMINUTE_LAB_2026-11-02_THREE_VIDEO_REVIEW_PACKAGE.zip` is provided in chat with the two owner-accepted Shorts and this *unapproved* long film. It is not a published YouTube release package and is not GitHub-hosted.
+- All three new-video YouTube IDs remain **NONE**, and no protected production publishing policy or credential has been altered.
+
+This is an append-only evidence update to preserve historical chronology; the early text about no long video was true before this later render.
