@@ -14,6 +14,9 @@ import sys
 from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parents[1]
+# Allow direct script invocation to import repository package scripts safely.
+if str(PROJECT) not in sys.path:
+    sys.path.insert(0, str(PROJECT))
 RELEASES = (
     ("en", "fm_20261102_agent_permissions_short_en",
      "FLOWMINUTE_ENGLISH_V6_AUDIO_MASTER_REVIEW_ONLY.mp4",
