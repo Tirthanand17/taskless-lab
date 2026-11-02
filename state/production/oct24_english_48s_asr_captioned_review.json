@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "channel": "FlowMinute Lab",
+  "date_ist": "2026-10-24",
+  "episode_id": "fm_20261024_short_en",
+  "state": "FULL_48S_ASR_CAPTIONED_PREVIEW_NOT_PUBLISHED",
+  "component": "English Short complete 48s human-review candidate",
+  "source_clean_audio_balanced_sha256": "84286bec5278b45cc95c5704ce8920d7219a2cf77dd106908305c00842330c15",
+  "source_asr_run_id": 39974180511,
+  "source_asr_model": "faster-whisper small.en CPU int8",
+  "captioned_mp4_sha256": "2d31d44d16a739a8d70f09654923dfbbdd59e7ce62cd0eecca7072588c488603",
+  "filename": "FlowMinute_Oct24_English_48s_ASR_CAPTIONED_REVIEW_ONLY.mp4",
+  "actual_duration_seconds": 48.033,
+  "dimensions": [
+    720,
+    1280
+  ],
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "caption_cues": 13,
+  "opening_dialogue_machine_verified": [
+    {
+      "seconds": [
+        0.9,
+        2.86
+      ],
+      "speaker": "Jay",
+      "recognized_text": "Does this replace Gemini?"
+    },
+    {
+      "seconds": [
+        4.16,
+        6.96
+      ],
+      "speaker": "Asha",
+      "recognized_text": "No. Developers get another choice."
+    }
+  ],
+  "technical_full_decode_passed": true,
+  "contact_sheet_reviewed": true,
+  "caption_video_file_is_conversation_attachment_only": true,
+  "machine_transcript_is_not_human_listening_verification": true,
+  "human_voice_quality_approved": false,
+  "final_factual_rights_review": false,
+  "subtitles_final_approved": false,
+  "youtube_id": null,
+  "youtube_schedule_readback_verified": false,
+  "oct24_confirmed_scheduled": 0,
+  "direct_publisher_warning": "Existing scripts/publish_youtube.py uses videos().insert with privacyStatus but does not set status.publishAt or read back schedule. Do not dispatch as scheduling workflow.",
+  "budget_inr_new": 0,
+  "nirala_access_used": false
+}

@@ -1,0 +1,14 @@
+{
+  "fps": 24,
+  "duration_frames": 4800,
+  "chapter_starts": [
+    0,
+    800,
+    1600,
+    2400,
+    3200,
+    4000
+  ],
+  "cues": [],
+  "status": "STORYBOARD_TIMING_ONLY_NOT_SYNTHESIZED"
+}

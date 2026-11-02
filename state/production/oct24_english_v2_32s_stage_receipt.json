@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "episode_id": "fm_20261024_short_en",
+  "creative_version": "cinematic_v2_32s",
+  "state": "REAL_APPROVED_8S_AND_NEW_24S_SPEECH_ONLY_THREE_NEW_3D_SHOTS_MISSING",
+  "opening": {
+    "source": "actual owner-approved HeyGen Asha/Jay opening re-exported from verified previous cut",
+    "duration_seconds": 7.999675,
+    "file": "Asha_Jay_Approved_8s_Reference.mp4",
+    "sha256": "536652db768052c69e640d0bcd5c950cafcfcee37cc062286dcef2e2d4938517",
+    "original_heygen_video_id": "dac55a35aa6745028a4d4051fb1fb249",
+    "characters_creatively_approved": true
+  },
+  "narration": {
+    "source": "Kokoro ONNX v1.0 af_sarah continuous English female speech",
+    "run_id": 39981996084,
+    "artifact_id": 12513648229,
+    "artifact_expiry_utc": "2026-10-24T15:53:12Z",
+    "duration_seconds": 24,
+    "raw_generated_seconds": 24.628,
+    "tempo_adjustment": 1.0638,
+    "spoken_words": 72,
+    "sha256": "f81dba668732b01b4fc4bbad0e54414f01765e13ec47879dbdb789a334e7d203",
+    "voice_only_gap_threshold_db": -36,
+    "long_speech_gaps_over_1_2_seconds": 0,
+    "independent_sha_verified_in_working_environment": true,
+    "human_naturalness_approved": false
+  },
+  "full_soundtrack": {
+    "file": "FlowMinute_Oct24_V2_32s_FULL_SOUNDTRACK_REVIEW_ONLY.m4a",
+    "duration_seconds": 32,
+    "sha256": "71e8a4539b99e9d7c09c33723209d471359ae644e03173ca3c62ede41f0e3dcd",
+    "type": "audio_preview_only_not_video",
+    "spoken_opener_preserved": true,
+    "actual_3d_scenes_joined": false
+  },
+  "three_new_3d_scenes": {
+    "expected_clip_ids": [
+      "02",
+      "03",
+      "04"
+    ],
+    "real_generated_count": 0,
+    "actual_media_sha256s": [],
+    "live_flow_balance_verified": false,
+    "estimated_current_account_credits": 36,
+    "credits_used_this_turn": 0
+  },
+  "media_program": {
+    "manifest_stager": "scripts/stage_oct24_cinematic_v2.py",
+    "strict_32s_video_compositor": "autopilot/flow_episode_compositor.py",
+    "v2_voice_compositor": "scripts/assemble_oct24_cinematic_v2.py",
+    "provider_account_api_connected": false
+  },
+  "release": {
+    "old_48s_export_creatively_rejected": true,
+    "owner_accepted_final_32s_video": false,
+    "commercial_rights_approved": false,
+    "voice_human_listened_and_approved": false,
+    "full_32s_final_video_exists": false,
+    "youtube_video_id": null,
+    "youtube_scheduled": false,
+    "new_money_spent_inr": 0,
+    "nirala_accessed": false
+  }
+}

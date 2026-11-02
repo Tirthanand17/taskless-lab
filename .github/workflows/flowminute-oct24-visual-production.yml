@@ -1,0 +1,98 @@
+name: FlowMinute Oct24 Original English Visual Render
+
+on:
+  push:
+    branches:
+      - "feature/oct24-multicharacter-3d-lesson-contract"
+    paths:
+      - "scripts/render_flowminute_oct24_explainer_insert.py"
+      - ".github/workflows/flowminute-oct24-visual-production.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-oct24-visual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  render_english_visual_only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Checkout original visual renderer
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install open-source renderer dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          python -m pip install --disable-pip-version-check --no-input numpy opencv-python-headless pillow
+
+      - name: Render original 40-second animated explanation (no narration)
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/flowminute-oct24"
+          python scripts/render_flowminute_oct24_explainer_insert.py \
+            --output "$RUNNER_TEMP/flowminute-oct24/FlowMinute_Oct24_English_Explainer_40s_VISUAL_ONLY.mp4"
+
+      - name: Independently verify entire output and refuse incomplete media
+        shell: bash
+        run: |
+          set -euo pipefail
+          f="$RUNNER_TEMP/flowminute-oct24/FlowMinute_Oct24_English_Explainer_40s_VISUAL_ONLY.mp4"
+          test -s "$f"
+          ffmpeg -hide_banner -loglevel error -xerror -i "$f" -f null -
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$f")" = "720"
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$f")" = "1280"
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 "$f")" = "h264"
+          test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$f")" = "aac"
+          python - "$f" <<'PY'
+          from pathlib import Path
+          import hashlib, json, subprocess, sys
+          f=Path(sys.argv[1])
+          duration=float(subprocess.check_output([
+              "ffprobe","-v","error","-show_entries","format=duration",
+              "-of","default=noprint_wrappers=1:nokey=1",str(f)],text=True))
+          assert abs(duration-40.0)<0.15, f"Unexpected duration: {duration}"
+          with f.open("rb") as stream:
+              digest=hashlib.file_digest(stream,"sha256").hexdigest()
+          report={
+            "episode_id":"fm_20261024_short_en",
+            "component":"40s_visual_only_not_release",
+            "duration_seconds":round(duration,3),
+            "sha256":digest,
+            "video_dimensions":[720,1280],
+            "has_original_sound_effects_only":True,
+            "natural_narration_verified":False,
+            "sync_captions_verified":False,
+            "combined_with_8s_heygen":False,
+            "youtube_scheduled":False,
+            "publish_approved":False
+          }
+          p=f.parent/"media_integrity_report.json"
+          p.write_text(json.dumps(report,indent=2)+"\n")
+          print(json.dumps(report,indent=2))
+          PY
+
+      - name: Retain real visual-only media and integrity report as temporary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-oct24-english-visual-only
+          path: |
+            ${{ runner.temp }}/flowminute-oct24/FlowMinute_Oct24_English_Explainer_40s_VISUAL_ONLY.mp4
+            ${{ runner.temp }}/flowminute-oct24/media_integrity_report.json
+          retention-days: 1
+          if-no-files-found: error
+          compression-level: 0

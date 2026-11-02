@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "episode_id": "fm_20261024_short_en",
+  "component": "40s_VISUAL_ONLY_CLOUD_RENDER",
+  "state": "CLOUD_RENDER_VERIFIED_WITH_ARTIFACT",
+  "workflow_run_id": 39968282475,
+  "workflow_job_id": 120463827885,
+  "workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/39968282475",
+  "workflow_source_commit": "635ec53f52fd42670d286368d1f539bfe4c0db0c",
+  "artifact": {
+    "id": 12508585271,
+    "name": "flowminute-oct24-english-visual-only",
+    "bytes": 1351809,
+    "expires_at_utc": "2026-10-24T14:17:39Z"
+  },
+  "verified_ffmpeg_media": {
+    "duration_seconds": 40,
+    "width": 720,
+    "height": 1280,
+    "video_codec": "h264",
+    "audio_codec": "aac",
+    "sha256": "1e8bd3c816f3021b70d2bfd83b2dff0bd8936ea4bd64022908d62e5580c918d7",
+    "complete_decode_success": true
+  },
+  "source_file": "scripts/render_flowminute_oct24_explainer_insert.py",
+  "other_local_render_sha256": "8efa40b67b407036c06e87f0fb64662ccf35a8bb096c7c40c72168c0846093e5",
+  "sha_difference_explanation": "GitHub cloud run is independent reproduction and is NOT byte identical to earlier local export. Both must retain their own verified SHA256.",
+  "narration_approved": false,
+  "natural_voice_present": false,
+  "voice_synced_captions_present": false,
+  "heygen_original_eight_second_asset_id": "dac55a35aa6745028a4d4051fb1fb249",
+  "final_48s_join_verified": false,
+  "youtube_video_id": null,
+  "youtube_scheduled": false,
+  "no_laptop_access": true,
+  "no_new_paid_service": true,
+  "budget_inr_new": 0,
+  "safe_for_youtube_release": false
+}

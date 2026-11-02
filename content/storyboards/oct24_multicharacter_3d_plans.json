@@ -1,0 +1,934 @@
+{
+  "package_id": "flowminute_oct24_story3d_v1",
+  "date": "2026-10-24",
+  "notes": "Public storyboard draft only. Long-form Hindi voice script expanded for 30-second teaching shots; audio timing still needs real voice test. No video or YouTube upload.",
+  "source_verification": "Official announcement facts independently reviewed for creative draft; require separate final accuracy verification before release",
+  "episodes": [
+    {
+      "schema_version": 1,
+      "episode_id": "fm_20261024_short_en",
+      "format": "short",
+      "language": "en",
+      "lesson_type": "concept",
+      "title": "OpenAI on Google Cloud: what really changes?",
+      "viewer_question": "Does the partnership mean Gemini is replaced and everyone gets OpenAI models for free?",
+      "learning_outcome": "Understand the difference between a cloud model marketplace and consumer AI products, and why availability needs checking.",
+      "repeatable_takeaway": "Before expecting a new AI feature, check its official access status, pricing, audience and product context.",
+      "source_urls": [
+        "https://openai.com/index/openai-models-google-cloud/",
+        "https://openai.com/form/openai-on-google-cloud/"
+      ],
+      "characters": [
+        {
+          "id": "asha",
+          "role": "explainer",
+          "visual_identity": "South Asian adult woman, navy jacket with thin cyan piping, shoulder-length dark hair",
+          "voice_style": "Warm natural conversational voice with clear short explanations",
+          "rights_state": "original_planned"
+        },
+        {
+          "id": "jay",
+          "role": "learner",
+          "visual_identity": "South Asian adult man, spectacles, charcoal hoodie, curious expressions",
+          "voice_style": "Curious English beginner asking one question at a time",
+          "rights_state": "original_planned"
+        }
+      ],
+      "shots": [
+        {
+          "number": 1,
+          "beat": "problem",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "wide",
+          "location": "Futuristic but physically grounded 3D studio with desk, windows, shelves and lit equipment",
+          "visual_explanation": "Two speaking characters meet beside a physical laptop; no logos imply an official app interface.",
+          "learner_payoff": "Collaboration does not mean one AI replaces another.",
+          "present": [
+            "asha",
+            "jay"
+          ],
+          "dialogue": [
+            {
+              "speaker": "jay",
+              "text": "Did OpenAI just replace Gemini on Google Cloud?"
+            },
+            {
+              "speaker": "asha",
+              "text": "No. This is a new choice for certain cloud customers."
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "jay",
+              "object": "laptop",
+              "action": "tilts the laptop toward Asha to point at the question"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "beat": "analogy",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "medium",
+          "location": "Modern 3D cloud-workshop with tangible glass-front model cabinets and a presenter desk",
+          "visual_explanation": "Asha opens a model-shop cabinet, using physical model cubes to make model choice easy to visualize.",
+          "learner_payoff": "Think of a cloud model marketplace as a shelf of choices.",
+          "present": [
+            "asha",
+            "jay"
+          ],
+          "dialogue": [
+            {
+              "speaker": "asha",
+              "text": "Think of a workshop where developers can choose different AI tools."
+            },
+            {
+              "speaker": "jay",
+              "text": "So the workshop is the platform, not the model itself?"
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "asha",
+              "object": "model cabinet",
+              "action": "slides open the glass cabinet showing labeled example model cubes"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "beat": "demonstration",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "closeup",
+          "location": "Modern 3D cloud-workshop with tangible glass-front model cabinets and a presenter desk",
+          "visual_explanation": "Camera orbits as both characters move a generic model cube into a glowing workflow track; illustrative technology.",
+          "learner_payoff": "Developers choose a model for a specific workflow.",
+          "present": [
+            "asha",
+            "jay"
+          ],
+          "dialogue": [
+            {
+              "speaker": "asha",
+              "text": "OpenAI says its models and Codex workflows are coming to Model Garden."
+            },
+            {
+              "speaker": "jay",
+              "text": "So a team may choose a model for a task?"
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "asha",
+              "object": "model cube",
+              "action": "picks up the model cube and places it onto a modular workflow track"
+            },
+            {
+              "actor": "jay",
+              "object": "workflow track",
+              "action": "touches the next workflow tile and watches a signal move"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "beat": "demonstration",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "medium",
+          "location": "Modern 3D cloud-workshop with tangible glass-front model cabinets and a presenter desk",
+          "visual_explanation": "Moving glass cubes represent an enterprise environment, with no fictional claims about live personal Gemini features.",
+          "learner_payoff": "Business availability differs from personal app access.",
+          "present": [
+            "asha",
+            "jay"
+          ],
+          "dialogue": [
+            {
+              "speaker": "jay",
+              "text": "Does my personal Gemini app get everything today?"
+            },
+            {
+              "speaker": "asha",
+              "text": "No. The announcement is about planned cloud access, not automatic free consumer access."
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "asha",
+              "object": "workspace tower",
+              "action": "rotates the enterprise workspace tower beside the workflow track"
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "beat": "verification",
+          "duration_seconds": 8,
+          "mode": "illustrative_ui",
+          "camera": "wide",
+          "location": "Futuristic but physically grounded 3D studio with desk, windows, shelves and lit equipment",
+          "visual_explanation": "Clearly labeled illustration of a fact-check card showing categories, not simulated official Google Cloud UI.",
+          "learner_payoff": "Check rollout, pricing and access before attempting.",
+          "present": [
+            "asha",
+            "jay"
+          ],
+          "dialogue": [
+            {
+              "speaker": "asha",
+              "text": "Before trying it, check availability, marketplace pricing and the data controls."
+            },
+            {
+              "speaker": "jay",
+              "text": "So we should verify what is live, not guess from headlines."
+            }
+          ],
+          "simulation_label_visible": true
+        },
+        {
+          "number": 6,
+          "beat": "takeaway",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "closeup",
+          "location": "Futuristic but physically grounded 3D studio with desk, windows, shelves and lit equipment",
+          "visual_explanation": "Both characters place final fact and caution cubes on the desk, then camera dollies back.",
+          "learner_payoff": "Partnership means additional cloud model choice, not a free upgrade.",
+          "present": [
+            "asha",
+            "jay"
+          ],
+          "dialogue": [
+            {
+              "speaker": "asha",
+              "text": "Remember: more options for cloud developers, not instant free access for everyone."
+            },
+            {
+              "speaker": "jay",
+              "text": "Got it. Check the product details first."
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "jay",
+              "object": "summary cube",
+              "action": "sets a glowing choice cube onto the center of the desk"
+            }
+          ]
+        }
+      ],
+      "qa_gates": {
+        "fact_review": false,
+        "source_rights": false,
+        "character_asset_review": false,
+        "voice_license": false,
+        "pronunciation_review": false,
+        "subtitle_alignment": false,
+        "render_decode": false,
+        "scene_motion_review": false,
+        "release_receipt": false
+      }
+    },
+    {
+      "schema_version": 1,
+      "episode_id": "fm_20261024_short_hi",
+      "format": "short",
+      "language": "hi",
+      "lesson_type": "concept",
+      "title": "हजारों AI एजेंट और 32 मिनट का ब्रेन डेटा",
+      "viewer_question": "How can thousands of AI agents help scientists analyze millions of mouse brain cells?",
+      "learning_outcome": "Explain parallel research agents, their role in finding testable biological ideas, and the need for lab verification.",
+      "repeatable_takeaway": "When scientific AI news appears, separate the speed of analysis from experimentally validated discoveries and treatments.",
+      "source_urls": [
+        "https://openai.com/index/scaling-ai-research-for-complex-biological-data/"
+      ],
+      "characters": [
+        {
+          "id": "kabir",
+          "role": "explainer",
+          "visual_identity": "South Asian adult man, navy shirt, light stubble, cyan cuff accents",
+          "voice_style": "Conversational Hindi male storyteller with measured pauses",
+          "rights_state": "original_planned"
+        },
+        {
+          "id": "riya",
+          "role": "learner",
+          "visual_identity": "South Asian adult woman, teal top, round glasses and hair bun",
+          "voice_style": "Curious Hindi woman raising practical questions without jargon",
+          "rights_state": "original_planned"
+        }
+      ],
+      "shots": [
+        {
+          "number": 1,
+          "beat": "problem",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "wide",
+          "location": "3D neuroscience laboratory with a cellular hologram and workbenches",
+          "visual_explanation": "Two scientists face a wall of data cubes, expressing how a huge experiment becomes difficult to examine manually.",
+          "learner_payoff": "Large datasets can hide interesting questions.",
+          "present": [
+            "kabir",
+            "riya"
+          ],
+          "dialogue": [
+            {
+              "speaker": "riya",
+              "text": "इतने बड़े डेटा में वैज्ञानिक नए सुराग कैसे ढूँढेंगे?"
+            },
+            {
+              "speaker": "kabir",
+              "text": "इसी में कई एआई एजेंट मिलकर मदद कर सकते हैं।"
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "riya",
+              "object": "data cube",
+              "action": "lifts a transparent data cube to show how many records exist"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "beat": "analogy",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "medium",
+          "location": "3D library hall made of bookcases and digital research tables",
+          "visual_explanation": "A literal library with separate tables stands for agents checking different questions.",
+          "learner_payoff": "Divide a large task into smaller research questions.",
+          "present": [
+            "kabir",
+            "riya"
+          ],
+          "dialogue": [
+            {
+              "speaker": "kabir",
+              "text": "इसे बड़ी लाइब्रेरी समझिए। हर एजेंट अलग शेल्फ का सवाल जाँचता है।"
+            },
+            {
+              "speaker": "riya",
+              "text": "फिर सारे नतीजे एक जगह मिलते हैं?"
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "kabir",
+              "object": "research book",
+              "action": "hands Riya one research book from a nearby rolling cart"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "beat": "demonstration",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "closeup",
+          "location": "3D neuroscience laboratory with suspended mouse brain cell holograms",
+          "visual_explanation": "Distinct cells split into several luminous trays; this is a conceptual simulation, not human medical data.",
+          "learner_payoff": "The source research used data from millions of mouse brain cells.",
+          "present": [
+            "kabir",
+            "riya"
+          ],
+          "dialogue": [
+            {
+              "speaker": "kabir",
+              "text": "इस शोध में चूहों के दिमाग की लाखों कोशिकाओं का डेटा देखा गया।"
+            },
+            {
+              "speaker": "riya",
+              "text": "यानि यह इंसानों में इलाज का परीक्षण नहीं था।"
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "kabir",
+              "object": "cell display",
+              "action": "moves the transparent cell tray to a microscope workbench"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "beat": "demonstration",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "medium",
+          "location": "3D research hall with many small desks representing parallel agents",
+          "visual_explanation": "Camera moves between multiple tiny workstations and a combined evidence board.",
+          "learner_payoff": "Parallel research can connect data with literature.",
+          "present": [
+            "kabir",
+            "riya"
+          ],
+          "dialogue": [
+            {
+              "speaker": "kabir",
+              "text": "हजारों एजेंट्स ने अलग काम करके रिपोर्ट्स एक साथ जोड़ीं।"
+            },
+            {
+              "speaker": "riya",
+              "text": "और उन रिपोर्ट्स को वैज्ञानिकों ने परखा?"
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "riya",
+              "object": "evidence board",
+              "action": "pins a small clue card onto the evidence board"
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "beat": "verification",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "wide",
+          "location": "3D lab verification bench with microscope and locked sample boxes",
+          "visual_explanation": "The lab bench visibly separates glowing hypothesis cards from evidence samples.",
+          "learner_payoff": "Thirty-two minutes is an analysis report, not a cure.",
+          "present": [
+            "kabir",
+            "riya"
+          ],
+          "dialogue": [
+            {
+              "speaker": "kabir",
+              "text": "रिपोर्ट के मुताबिक विश्लेषण बत्तीस मिनट में हुआ।"
+            },
+            {
+              "speaker": "riya",
+              "text": "लेकिन अगला प्रयोग और पुष्टि तो जरूरी है।"
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "kabir",
+              "object": "hypothesis card",
+              "action": "moves a hypothesis card into the box marked for future testing"
+            }
+          ]
+        },
+        {
+          "number": 6,
+          "beat": "takeaway",
+          "duration_seconds": 8,
+          "mode": "true_3d",
+          "camera": "closeup",
+          "location": "3D science studio with researcher desk and closing hologram",
+          "visual_explanation": "The learner and explainer together seal the evidence box and hold up a simple takeaway model.",
+          "learner_payoff": "AI can accelerate scientific leads; human tests still matter.",
+          "present": [
+            "kabir",
+            "riya"
+          ],
+          "dialogue": [
+            {
+              "speaker": "kabir",
+              "text": "एआई वैज्ञानिकों को सुराग देता है, अंतिम प्रमाण नहीं।"
+            },
+            {
+              "speaker": "riya",
+              "text": "मतलब तेज शोध के साथ मजबूत जाँच भी चाहिए।"
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "riya",
+              "object": "evidence box",
+              "action": "closes the evidence box as the camera dollies back"
+            }
+          ]
+        }
+      ],
+      "qa_gates": {
+        "fact_review": false,
+        "source_rights": false,
+        "character_asset_review": false,
+        "voice_license": false,
+        "pronunciation_review": false,
+        "subtitle_alignment": false,
+        "render_decode": false,
+        "scene_motion_review": false,
+        "release_receipt": false
+      }
+    },
+    {
+      "schema_version": 1,
+      "episode_id": "fm_20261024_long_hi",
+      "format": "long",
+      "language": "hi",
+      "lesson_type": "concept",
+      "title": "AI Agents और Software Security: आसान 3D कहानी",
+      "viewer_question": "How do AI-assisted vulnerability discoveries turn into safe software fixes without exaggerating AI capabilities?",
+      "learning_outcome": "Understand five defensive security stages with a fictional team and concrete 3D actions, without exposing exploit methods.",
+      "repeatable_takeaway": "Remember FIND → VERIFY → REPORT → PATCH → UPDATE; confirm affected products and update instructions using official maintainers.",
+      "source_urls": [
+        "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/"
+      ],
+      "characters": [
+        {
+          "id": "asha",
+          "role": "explainer",
+          "visual_identity": "South Asian adult woman, navy jacket with thin cyan piping, shoulder-length dark hair",
+          "voice_style": "Warm natural conversational voice with clear short explanations",
+          "rights_state": "original_planned"
+        },
+        {
+          "id": "kabir",
+          "role": "explainer",
+          "visual_identity": "South Asian adult man, navy shirt, light stubble, cyan cuff accents",
+          "voice_style": "Conversational Hindi male storyteller with measured pauses",
+          "rights_state": "original_planned"
+        },
+        {
+          "id": "riya",
+          "role": "learner",
+          "visual_identity": "South Asian adult woman, teal top, round glasses and hair bun",
+          "voice_style": "Curious Hindi woman raising practical questions without jargon",
+          "rights_state": "original_planned"
+        },
+        {
+          "id": "omar",
+          "role": "demonstrator",
+          "visual_identity": "South Asian adult male developer, navy vest, short hair and headset",
+          "voice_style": "Calm Hindi demonstrator who verifies real-world steps",
+          "rights_state": "original_planned"
+        }
+      ],
+      "shots": [
+        {
+          "number": 1,
+          "beat": "problem",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "wide",
+          "location": "Digital 3D city at night with symbolic software towers",
+          "visual_explanation": "Riya notices warning lights; Kabir explains this is an illustrative security story.",
+          "learner_payoff": "AI can find possible weaknesses, but not all alerts are facts.",
+          "present": [
+            "riya",
+            "kabir"
+          ],
+          "dialogue": [
+            {
+              "speaker": "riya",
+              "text": "कबीर, ये डिजिटल शहर की इमारतें अचानक लाल क्यों चमक रही हैं? क्या किसी ने सारी वेबसाइटें हैक कर लीं?"
+            },
+            {
+              "speaker": "kabir",
+              "text": "नहीं रिया। ये सिर्फ हमारी कहानी का चेतावनी संकेत है। असली दुनिया में एआई कोड में संभावित कमजोरी खोजने में सहायता कर सकता है, पर हर संकेत सच नहीं होता।"
+            },
+            {
+              "speaker": "riya",
+              "text": "तो पहला काम घबराकर इंटरनेट बंद करना नहीं, बल्कि यह समझना है कि सही समस्या क्या है?"
+            },
+            {
+              "speaker": "kabir",
+              "text": "बिल्कुल। इस वीडियो में हम पाँच आसान कदम सीखेंगे: खोज, पुष्टि, ज़िम्मेदार रिपोर्ट, पैच और सुरक्षित अपडेट।"
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "riya",
+              "object": "hologram",
+              "action": "raises a symbolic warning tower to inspect it"
+            }
+          ]
+        },
+        {
+          "number": 2,
+          "beat": "analogy",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "medium",
+          "location": "3D library of code archives and inspection desks",
+          "visual_explanation": "Kabir moves a searchlight along code shelves while Riya asks a beginner question.",
+          "learner_payoff": "An AI agent scans patterns like a fast research assistant.",
+          "present": [
+            "riya",
+            "kabir"
+          ],
+          "dialogue": [
+            {
+              "speaker": "kabir",
+              "text": "इसे एक बहुत बड़ी लाइब्रेरी समझो, जहाँ हर किताब में सॉफ़्टवेयर के लाखों निर्देश हैं। एआई सहायक कुछ असामान्य पैटर्न जल्दी खोज सकता है।"
+            },
+            {
+              "speaker": "riya",
+              "text": "मतलब जैसे किसी किताब में एक अजीब लाइन पर निशान लग जाए, लेकिन कहानी समझे बिना हम उसे गलती नहीं कह सकते?"
+            },
+            {
+              "speaker": "kabir",
+              "text": "सही पकड़ा। एआई का सुझाव शुरुआत है। उसके बाद संदर्भ, उत्पाद का संस्करण और असली व्यवहार देखकर इंसानी विशेषज्ञ फैसला करता है।"
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "kabir",
+              "object": "code shelf",
+              "action": "pulls out a blue symbolic code block for closer review"
+            }
+          ]
+        },
+        {
+          "number": 3,
+          "beat": "demonstration",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "closeup",
+          "location": "Cybersecurity lab with sandbox cubes and evidence shields",
+          "visual_explanation": "The trio examines abstract code cubes without depicting exploit steps or attacking systems.",
+          "learner_payoff": "Only authorized experts should verify findings.",
+          "present": [
+            "kabir",
+            "riya",
+            "omar"
+          ],
+          "dialogue": [
+            {
+              "speaker": "omar",
+              "text": "अब इस कोड के प्रतीक को हम एक बंद रिसर्च लैब में रखेंगे। ये एनिमेशन है, किसी असली वेबसाइट की जाँच नहीं।"
+            },
+            {
+              "speaker": "riya",
+              "text": "आप इसे सीधे इंटरनेट पर क्यों नहीं आज़मा रहे? क्या उससे सच जल्दी पता नहीं चलेगा?"
+            },
+            {
+              "speaker": "omar",
+              "text": "बिना अनुमति किसी दूसरे सिस्टम पर परीक्षण नुकसान पहुँचा सकता है। इसलिए नियंत्रित और अधिकृत वातावरण में ही जाँच होती है।"
+            },
+            {
+              "speaker": "kabir",
+              "text": "याद रखिए, सुरक्षा का पहला नियम है: अधिकार और प्रमाण के बिना कार्रवाई नहीं।"
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "omar",
+              "object": "sandbox cube",
+              "action": "places the code block into a sealed research sandbox"
+            }
+          ]
+        },
+        {
+          "number": 4,
+          "beat": "demonstration",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "medium",
+          "location": "Quality-control laboratory with red and green evidence trays",
+          "visual_explanation": "Riya sorts hypothesis cubes from verified evidence cubes while expert points to limitations.",
+          "learner_payoff": "A suspicious pattern and a confirmed flaw are not the same.",
+          "present": [
+            "riya",
+            "omar"
+          ],
+          "dialogue": [
+            {
+              "speaker": "riya",
+              "text": "यहाँ दो ट्रे हैं: एक में लाल अलर्ट और दूसरी में जाँच के बाद प्रमाण। क्या दोनों का अर्थ अलग है?"
+            },
+            {
+              "speaker": "omar",
+              "text": "हाँ। लाल ट्रे में केवल शक है। किसी विशेषज्ञ को यह देखना होता है कि समस्या वास्तव में है, किस संस्करण पर असर पड़ता है और जोखिम कितना है।"
+            },
+            {
+              "speaker": "riya",
+              "text": "यानि सॉफ़्टवेयर के हर पुराने संस्करण में वही खामी मान लेना गलत होगा?"
+            },
+            {
+              "speaker": "omar",
+              "text": "बिल्कुल। बिना पुष्टि ऐसा दावा करने से लोग गलत फैसले ले सकते हैं।"
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "riya",
+              "object": "evidence tray",
+              "action": "moves an uncertain signal from the red tray to a pending review tray"
+            }
+          ]
+        },
+        {
+          "number": 5,
+          "beat": "demonstration",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "wide",
+          "location": "Private conference room with sealed report envelope",
+          "visual_explanation": "Kabir hands a sealed report to maintainers, emphasizing responsible reporting instead of public exploit details.",
+          "learner_payoff": "Coordinated disclosure gives maintainers a chance to fix problems.",
+          "present": [
+            "kabir",
+            "omar"
+          ],
+          "dialogue": [
+            {
+              "speaker": "kabir",
+              "text": "मान लीजिए विशेषज्ञ ने समस्या की पुष्टि कर ली। अब संवेदनशील जानकारी खुले इंटरनेट पर डालना अगला कदम नहीं है।"
+            },
+            {
+              "speaker": "omar",
+              "text": "उसकी जगह संबंधित सॉफ़्टवेयर मेंटेनर को निजी रिपोर्ट भेजी जाती है, ताकि वे सुधार पर काम शुरू कर सकें।"
+            },
+            {
+              "speaker": "kabir",
+              "text": "इस प्रक्रिया को जिम्मेदार या समन्वित खुलासा कहते हैं। इसमें शोधकर्ता, डेवलपर, सुरक्षा विशेषज्ञ और सेवा प्रदाता अलग-अलग जिम्मेदारी निभाते हैं।"
+            },
+            {
+              "speaker": "omar",
+              "text": "सही लोगों को सही समय पर जानकारी देना, केवल खबर जल्दी प्रकाशित करने से अधिक महत्वपूर्ण हो सकता है।"
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "kabir",
+              "object": "report envelope",
+              "action": "passes a sealed incident report to Omar"
+            }
+          ]
+        },
+        {
+          "number": 6,
+          "beat": "demonstration",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "closeup",
+          "location": "3D developer workshop with circuit boards and testing devices",
+          "visual_explanation": "Developer builds a symbolic patch cube and runs it through test gates.",
+          "learner_payoff": "Fixes need testing so old functions keep working.",
+          "present": [
+            "omar",
+            "riya"
+          ],
+          "dialogue": [
+            {
+              "speaker": "omar",
+              "text": "अब हमारे डेवलपर वर्कशॉप में देखो। हमने प्रतीकात्मक रूप से एक टूटा हुआ हिस्सा बदला है, लेकिन काम अभी पूरा नहीं हुआ।"
+            },
+            {
+              "speaker": "riya",
+              "text": "क्या पैच बनते ही इसे सभी जगह लगा सकते हैं? शायद इससे तुरंत समस्या हल हो जाएगी।"
+            },
+            {
+              "speaker": "omar",
+              "text": "पहले परीक्षण जरूरी है। नया कोड पुरानी सुविधाएँ न तोड़े, सही संस्करण पर काम करे और नई समस्या पैदा न करे।"
+            },
+            {
+              "speaker": "riya",
+              "text": "तो अच्छा समाधान वही है जो सुरक्षा बढ़ाए और बाकी सॉफ़्टवेयर को भी सही रखे।"
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "omar",
+              "object": "patch cube",
+              "action": "slides a repaired component into a safe test fixture"
+            }
+          ]
+        },
+        {
+          "number": 7,
+          "beat": "demonstration",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "wide",
+          "location": "3D operations center with many symbolic server racks",
+          "visual_explanation": "Explainer tracks the patch moving to authorized operators and updates, not to random devices.",
+          "learner_payoff": "A released fix must still reach affected systems.",
+          "present": [
+            "kabir",
+            "omar"
+          ],
+          "dialogue": [
+            {
+              "speaker": "kabir",
+              "text": "अब कल्पना करो कि पैच जारी कर दिया गया, लेकिन कुछ संगठनों के सर्वर अभी पुराने संस्करण पर चल रहे हैं।"
+            },
+            {
+              "speaker": "omar",
+              "text": "इसीलिए सिर्फ पैच रिलीज़ होना पर्याप्त नहीं है। ऑपरेटर को प्रभावित उत्पाद और संस्करण पहचानकर आधिकारिक निर्देशों के अनुसार अपडेट करना पड़ता है।"
+            },
+            {
+              "speaker": "kabir",
+              "text": "जरूरत पड़ने पर बैकअप, बदलाव की योजना और विशेषज्ञ की सहायता भी महत्वपूर्ण होती है।"
+            },
+            {
+              "speaker": "omar",
+              "text": "अपडेट के बाद यह पुष्टि करना कि सही संस्करण चल रहा है, उतना ही जरूरी है।"
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "omar",
+              "object": "server rack",
+              "action": "pushes a labeled update cartridge into a demonstration rack"
+            }
+          ]
+        },
+        {
+          "number": 8,
+          "beat": "verification",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "medium",
+          "location": "3D office desk with projected source cards",
+          "visual_explanation": "Characters compare trusted maintainer guidance with a misleading alarm symbol.",
+          "learner_payoff": "Use the maintainer's official guidance and confirm applicability.",
+          "present": [
+            "asha",
+            "riya"
+          ],
+          "dialogue": [
+            {
+              "speaker": "riya",
+              "text": "सोशल मीडिया पर एक पोस्ट कह रही है कि हर पीएचपी वेबसाइट असुरक्षित है। क्या हमें तुरंत सबको चेतावनी भेज देनी चाहिए?"
+            },
+            {
+              "speaker": "asha",
+              "text": "इतना बड़ा दावा बिना प्रमाण सही नहीं होगा। हमें आधिकारिक मेंटेनर की सलाह, प्रभावित संस्करण और अपनी असली स्थिति जाँचनी चाहिए।"
+            },
+            {
+              "speaker": "riya",
+              "text": "अगर सही जानकारी न मिले तो क्या करना चाहिए?"
+            },
+            {
+              "speaker": "asha",
+              "text": "अटकलें फैलाने के बजाय विश्वसनीय अपडेट का इंतजार करें या योग्य सुरक्षा विशेषज्ञ से पूछें। अनजान डाउनलोड लिंक पर क्लिक न करें।"
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "asha",
+              "object": "guidance card",
+              "action": "places an official-source illustration card beside a caution symbol"
+            }
+          ]
+        },
+        {
+          "number": 9,
+          "beat": "verification",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "closeup",
+          "location": "Three-character 3D classroom with evidence ladder on a board",
+          "visual_explanation": "The entire team rearranges labels for find, verify, report, patch, update.",
+          "learner_payoff": "Security requires verification, permissions and human coordination.",
+          "present": [
+            "kabir",
+            "riya",
+            "omar"
+          ],
+          "dialogue": [
+            {
+              "speaker": "kabir",
+              "text": "अब देखो, हमारी टीम पाँच कार्ड सही क्रम में लगा रही है। सबसे पहले खोज, फिर पुष्टि, फिर रिपोर्ट, पैच और अपडेट।"
+            },
+            {
+              "speaker": "omar",
+              "text": "याद रहे, हर कदम पर अलग विशेषज्ञ काम करता है। एआई खोज की गति बढ़ा सकता है लेकिन अनुमति, जांच और जवाबदेही की जगह नहीं लेता।"
+            },
+            {
+              "speaker": "riya",
+              "text": "तो बेहतर एआई का मतलब बिना देखे सब कुछ अपने आप करना नहीं है?"
+            },
+            {
+              "speaker": "kabir",
+              "text": "बिल्कुल। अच्छे सिस्टम में स्पष्ट सीमाएँ, रिकॉर्ड और सही व्यक्ति की समीक्षा शामिल होती है।"
+            }
+          ],
+          "camera_motion": "dolly",
+          "object_interactions": [
+            {
+              "actor": "riya",
+              "object": "evidence ladder",
+              "action": "moves a verify tile before the report tile"
+            }
+          ]
+        },
+        {
+          "number": 10,
+          "beat": "takeaway",
+          "duration_seconds": 30,
+          "mode": "true_3d",
+          "camera": "medium",
+          "location": "Wide 3D futuristic studio with a physical five-step staircase",
+          "visual_explanation": "All characters move one physical step block each as the camera slowly widens.",
+          "learner_payoff": "Remember five steps: find, verify, report, patch, update.",
+          "present": [
+            "asha",
+            "kabir",
+            "riya",
+            "omar"
+          ],
+          "dialogue": [
+            {
+              "speaker": "riya",
+              "text": "मुझे अब कहानी समझ आ गई। तेज एआई एक उपयोगी सुराग दे सकता है, लेकिन असली सुरक्षा पूरी टीम मिलकर बनाती है।"
+            },
+            {
+              "speaker": "asha",
+              "text": "आज की सीख पाँच आसान शब्दों में याद रखें: खोज, पुष्टि, रिपोर्ट, पैच और अपडेट। यही हमारी तीन डी सुरक्षा कहानी का सार है।"
+            },
+            {
+              "speaker": "kabir",
+              "text": "किसी हेडलाइन पर तुरंत फैसला न करें। पहले आधिकारिक स्रोत और असली जोखिम देखें, फिर सुरक्षित कदम उठाएँ।"
+            },
+            {
+              "speaker": "omar",
+              "text": "अगर ऐसी सरल हिंदी टेक कहानियाँ मदद करती हैं, तो FlowMinute Lab पर अगले वीडियो में मिलते हैं।"
+            }
+          ],
+          "camera_motion": "orbit",
+          "object_interactions": [
+            {
+              "actor": "asha",
+              "object": "five step staircase",
+              "action": "sets the final update block onto the safety staircase"
+            }
+          ]
+        }
+      ],
+      "qa_gates": {
+        "fact_review": false,
+        "source_rights": false,
+        "character_asset_review": false,
+        "voice_license": false,
+        "pronunciation_review": false,
+        "subtitle_alignment": false,
+        "render_decode": false,
+        "scene_motion_review": false,
+        "release_receipt": false
+      }
+    }
+  ]
+}

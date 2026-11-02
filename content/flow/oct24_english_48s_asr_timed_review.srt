@@ -1,0 +1,52 @@
+1
+00:00:00,880 --> 00:00:02,990
+Does this replace Gemini?
+
+2
+00:00:04,130 --> 00:00:05,160
+No.
+
+3
+00:00:05,860 --> 00:00:07,050
+Developers get another choice.
+
+4
+00:00:08,120 --> 00:00:10,120
+No, Gemini isn't replaced.
+
+5
+00:00:10,280 --> 00:00:12,740
+Google Cloud simply offers a new model choice.
+
+6
+00:00:16,200 --> 00:00:18,020
+Model Garden is like a shelf.
+
+7
+00:00:18,200 --> 00:00:21,500
+OpenAI models and Codex workflows are joining it.
+
+8
+00:00:24,000 --> 00:00:26,830
+Developers can choose models for specific tasks,
+
+9
+00:00:26,940 --> 00:00:28,490
+not change your Gemini app.
+
+10
+00:00:31,640 --> 00:00:34,120
+Teams still need access controls,
+
+11
+00:00:34,200 --> 00:00:36,460
+policies, and responsible data governance.
+
+12
+00:00:39,780 --> 00:00:42,100
+Availability will expand later.
+
+13
+00:00:42,190 --> 00:00:45,340
+Always check access, pricing, and your actual use case.
+

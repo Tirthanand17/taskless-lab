@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "episode_id": "fm_20261024_short_en",
+  "release_file_name": "FlowMinute_Oct24_English_48s_CAPTIONED_REVIEW_ONLY.mp4",
+  "candidate_video_sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9",
+  "approved_video_sha256": null,
+  "human_voice_approved": false,
+  "exact_captions_approved": false,
+  "rights_cleared": false,
+  "factual_review_approved": false,
+  "final_video_approved": false,
+  "user_approval_observed": false,
+  "release_status": "EXPLICITLY_REJECTED_CURRENT_48S_CREATIVE_QA",
+  "youtube_uploaded": false,
+  "youtube_scheduled": false,
+  "note": "This is deliberately a blocked template. Approval booleans and approved_video_sha256 must only be set by real reviewers after listening and source/visual/factual checks. The creator's approval of the earlier eight-second opening is not approval of the whole 48-second Short.",
+  "owner_creative_feedback": "3D opening acceptable but post-opening graphics poor; explanation has unacceptable long audio gaps",
+  "owner_rejected_current_candidate": true,
+  "must_not_publish_sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9",
+  "planned_replacement_candidate": {
+    "duration_seconds": 32,
+    "approved_original_opening_seconds": 8,
+    "unproduced_true_3d_scenes": 3,
+    "estimated_existing_google_flow_credits": 36,
+    "actual_new_clips": 0
+  }
+}

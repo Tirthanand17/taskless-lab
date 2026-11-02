@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "created_on": "2026-10-23",
+  "release_date": "2026-10-24",
+  "state": "EDITORIAL_DRAFTS_ONLY_NOT_SCHEDULED",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "reference_release_record": "docs/OCT24_DIRECT_YOUTUBE_RELEASE_STATUS.json",
+  "grounding": [
+    "https://openai.com/index/openai-models-google-cloud/",
+    "https://openai.com/index/scaling-ai-research-for-complex-biological-data/",
+    "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/",
+    "https://support.google.com/youtube/answer/14328491"
+  ],
+  "notes": "Source-backed packaging for prospective publication. It does not assert that finished media, finalized voice/captions or a YouTube scheduled receipt exists. Photorealistic AI dramatizations require separate creator-side AI disclosure review.",
+  "episodes": [
+    {
+      "episode_id": "fm_20261024_short_en",
+      "format": "short",
+      "language": "en",
+      "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+      "publish_at_ist": "2026-10-24T11:00:00+05:30",
+      "publish_at_utc": "2026-10-24T05:30:00Z",
+      "title": "OpenAI on Google Cloud: Does This Replace Gemini?",
+      "description": "OpenAI models and Codex workflows are coming to Google Cloud Model Garden. But does that mean Gemini is being replaced, or that everyone gets free access? Asha and Jay explain the difference between enterprise model choice and a consumer AI app in an easy 3D-style story.\n\nImportant: The announced rollout is planned; features, availability and pricing may vary. This is an illustrative explanation, not an official Google Cloud interface demonstration.\n\nSource: https://openai.com/index/openai-models-google-cloud/\n\n#GoogleCloud #OpenAI #AIExplained #FlowMinuteLab",
+      "tags": [
+        "OpenAI Google Cloud",
+        "Model Garden",
+        "Gemini",
+        "Codex",
+        "AI explained",
+        "enterprise AI",
+        "FlowMinute Lab"
+      ],
+      "hook_first_seconds": "Jay picks up an AI-model cube and asks whether Gemini was replaced.",
+      "pinned_comment_draft": "Which AI or automation concept should we explain with a real demonstration next?",
+      "primary_official_source": "https://openai.com/index/openai-models-google-cloud/",
+      "fact_guardrails": [
+        "Do not claim Gemini was replaced or that all consumers receive free OpenAI access.",
+        "State general availability was planned, not already universally available.",
+        "Use abstract cubes only as an analogy, never as an actual app UI."
+      ],
+      "synthetic_media_disclosure": {
+        "required_if_photorealistic_ai_scenes": true,
+        "creator_review_required": true,
+        "approved": false
+      },
+      "made_for_kids": false,
+      "file_sha256": null,
+      "video_id": null,
+      "final_mp4_verified": false,
+      "natural_narration_verified": false,
+      "subtitles_verified": false,
+      "rights_reviewed": false,
+      "fact_check_signed_off": false,
+      "platform_schedule_receipt_verified": false,
+      "state": "EDITORIAL_METADATA_READY_MEDIA_MISSING"
+    },
+    {
+      "episode_id": "fm_20261024_long_hi",
+      "format": "long",
+      "language": "hi",
+      "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+      "publish_at_ist": "2026-10-24T16:00:00+05:30",
+      "publish_at_utc": "2026-10-24T10:30:00Z",
+      "title": "AI Agents से Security Bugs कैसे मिलते हैं? आसान 3D कहानी",
+      "description": "क्या AI Agents सॉफ्टवेयर की सुरक्षा बेहतर बना सकते हैं? इस सरल हिंदी 3D कहानी में हमारी टीम एक संभावित सुरक्षा संकेत से लेकर उसकी पुष्टि, ज़िम्मेदार रिपोर्टिंग, पैच और अपडेट तक की प्रक्रिया समझाती है।\n\nपाँच चरण याद रखें: खोज → पुष्टि → रिपोर्ट → पैच → अपडेट। केवल अधिकृत वातावरण में सुरक्षा परीक्षण करें और वास्तविक सिस्टम के लिए आधिकारिक मेंटेनर की सलाह देखें। इस वीडियो में दिखाई गई कहानी और पात्र काल्पनिक शिक्षण उदाहरण हैं, वास्तविक हमले या सॉफ्टवेयर इंटरफेस की रिकॉर्डिंग नहीं।\n\nOfficial source: https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/\n\n#CyberSecurity #AIAgents #HindiTech #FlowMinuteLab",
+      "tags": [
+        "AI agents Hindi",
+        "cybersecurity explained",
+        "software vulnerability",
+        "responsible disclosure",
+        "patch management",
+        "Hindi technology",
+        "FlowMinute Lab"
+      ],
+      "hook_first_seconds": "A warning lights up the miniature software city; a learner asks if everything is hacked.",
+      "pinned_comment_draft": "इन पाँच सुरक्षा चरणों में आपको सबसे ज़रूरी कदम कौन-सा लगता है और क्यों?",
+      "primary_official_source": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/",
+      "fact_guardrails": [
+        "A hypothetical warning is not proof of compromise.",
+        "Do not provide exploit steps, false blanket risk claims, or imply all PHP sites are vulnerable.",
+        "Keep verified maintainer patches separate from the fictional teaching scene."
+      ],
+      "synthetic_media_disclosure": {
+        "required_if_photorealistic_ai_scenes": true,
+        "creator_review_required": true,
+        "approved": false
+      },
+      "made_for_kids": false,
+      "file_sha256": null,
+      "video_id": null,
+      "final_mp4_verified": false,
+      "natural_narration_verified": false,
+      "subtitles_verified": false,
+      "rights_reviewed": false,
+      "fact_check_signed_off": false,
+      "platform_schedule_receipt_verified": false,
+      "state": "EDITORIAL_METADATA_READY_MEDIA_MISSING"
+    },
+    {
+      "episode_id": "fm_20261024_short_hi",
+      "format": "short",
+      "language": "hi",
+      "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+      "publish_at_ist": "2026-10-24T20:30:00+05:30",
+      "publish_at_utc": "2026-10-24T15:00:00Z",
+      "title": "32 मिनट में Brain Data Analysis? हजारों AI Agents का कमाल",
+      "description": "हजारों AI एजेंट्स ने लाखों माउस ब्रेन सेल्स के मौजूदा प्रयोगात्मक डेटा का विश्लेषण लगभग 32 मिनट में किया। यह शोधकर्ताओं को नए संकेत और आगे जाँचने योग्य विचार खोजने में मदद कर सकता है। लेकिन इसका मतलब किसी इंसानी बीमारी का इलाज मिल जाना नहीं है।\n\nयह एक सरल, काल्पनिक 3D लैब कहानी है जो वैज्ञानिक प्रक्रिया समझाती है—असली लैब फुटेज नहीं।\n\nOfficial source: https://openai.com/index/scaling-ai-research-for-complex-biological-data/\n\n#AIAgents #BrainResearch #ScienceHindi #FlowMinuteLab",
+      "tags": [
+        "AI agents brain research",
+        "32 minutes",
+        "mouse brain cells",
+        "GPT Rosalind",
+        "science explained Hindi",
+        "biological data",
+        "FlowMinute Lab"
+      ],
+      "hook_first_seconds": "Riya opens a vast brain-cell dataset and asks how analysis could finish in 32 minutes.",
+      "pinned_comment_draft": "AI Agents के काम करने का कौन-सा हिस्सा आप अगली 3D कहानी में देखना चाहेंगे?",
+      "primary_official_source": "https://openai.com/index/scaling-ai-research-for-complex-biological-data/",
+      "fact_guardrails": [
+        "Clarify existing data came from mouse brain cells, not human clinical treatment.",
+        "32 minutes refers to the described analysis, not the invention of a cure.",
+        "Mention that findings need scientific follow-up experiments."
+      ],
+      "synthetic_media_disclosure": {
+        "required_if_photorealistic_ai_scenes": true,
+        "creator_review_required": true,
+        "approved": false
+      },
+      "made_for_kids": false,
+      "file_sha256": null,
+      "video_id": null,
+      "final_mp4_verified": false,
+      "natural_narration_verified": false,
+      "subtitles_verified": false,
+      "rights_reviewed": false,
+      "fact_check_signed_off": false,
+      "platform_schedule_receipt_verified": false,
+      "state": "EDITORIAL_METADATA_READY_MEDIA_MISSING"
+    }
+  ]
+}

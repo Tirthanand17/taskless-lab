@@ -1,0 +1,91 @@
+{
+  "id": "fm_20261102_agent_permissions_short_hi",
+  "title": "AI Agent आपकी Files Delete कर सकता है? Permissions समझिए #Shorts",
+  "description": "क्या एआई एजेंट आपकी फाइल डिलीट कर सकता है? इस आसान डेमो में समझिए AI Agent के tool permissions, read-only access, और approval का अंतर। यह एक सिमुलेशन है—किसी असली फाइल को एक्सेस या डिलीट नहीं किया गया। कम से कम अनुमति दें, बदलाव जाँचें और बैकअप रखें।\n\n#AIagents #AIHindi #Automation #TechHindi #Shorts",
+  "tags": [
+    "एआई एजेंट",
+    "AI agents Hindi",
+    "AI tools",
+    "file permissions",
+    "AI automation",
+    "least privilege",
+    "flowminute lab"
+  ],
+  "language": "hi",
+  "duration_seconds": 37.1,
+  "voice": "Kokoro synthetic hf_alpha",
+  "visual_style": "original FLOW//EXPLAIN Remotion simulated security dashboard",
+  "source_review_mp4_sha256": "ba27ed6b3af872b3c5973f4b371c6ff8abfb7885929def88d9e16dc890c0f772",
+  "source_review_archive": "FLOWMINUTE_LAB_Bilingual_AI_Agent_Shorts_Review_V6_EN_V2_HI.zip",
+  "review_date_utc": "2026-11-02",
+  "approval_status": "OWNER_PREVIEW_ACCEPTED_PUBLISH_GATES_INCOMPLETE",
+  "publish_request": "publish today when approved publishing controls and authorized channel credentials are verified",
+  "privacy": "original synthetic educational simulation, no real personal data",
+  "captions": [
+    {
+      "start": 0.12,
+      "end": 3.885,
+      "text": "क्या एआई एजेंट आपकी फाइलें डिलीट कर सकता है?"
+    },
+    {
+      "start": 3.96,
+      "end": 5.838,
+      "text": "पहले एक फर्क समझिए।"
+    },
+    {
+      "start": 5.913,
+      "end": 7.897,
+      "text": "चैटबॉट जवाब देता है।"
+    },
+    {
+      "start": 7.972,
+      "end": 11.214,
+      "text": "एजेंट किसी टूल को काम करने को कह सकता है।"
+    },
+    {
+      "start": 11.289,
+      "end": 14.404,
+      "text": "मानिए उसने डेमो फोल्डर हटाने को कहा।"
+    },
+    {
+      "start": 14.479,
+      "end": 16.975,
+      "text": "अनुरोध का मतलब अनुमति नहीं।"
+    },
+    {
+      "start": 17.05,
+      "end": 19.439,
+      "text": "पहले टूल की परमिशन जाँचिए।"
+    },
+    {
+      "start": 19.514,
+      "end": 23.12,
+      "text": "सिर्फ पढ़ने की अनुमति से डिलीट नहीं हो सकता।"
+    },
+    {
+      "start": 23.195,
+      "end": 26.992,
+      "text": "कुछ कामों में आपकी मंजूरी भी जरूरी हो सकती है।"
+    },
+    {
+      "start": 27.067,
+      "end": 28.923,
+      "text": "हम उसे ब्लॉक करते हैं।"
+    },
+    {
+      "start": 28.998,
+      "end": 31.579,
+      "text": "डेमो की फाइलें सुरक्षित रहती हैं।"
+    },
+    {
+      "start": 31.654,
+      "end": 34.138,
+      "text": "नियम: केवल जरूरी अनुमति दें।"
+    },
+    {
+      "start": 34.213,
+      "end": 36.495,
+      "text": "बदलाव देखें। बैकअप रखें।"
+    }
+  ]
+}

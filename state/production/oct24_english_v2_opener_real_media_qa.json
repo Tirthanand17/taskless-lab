@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "episode": "fm_20261024_short_en",
+  "scene_id": "asha_jay_opening",
+  "verified_source": "actual owner-approved HeyGen re-export as a conversation MP4",
+  "sha256": "536652db768052c69e640d0bcd5c950cafcfcee37cc062286dcef2e2d4938517",
+  "duration_seconds": 7.9997,
+  "resolution": [
+    720,
+    1280
+  ],
+  "fps": 30,
+  "codec": "h264",
+  "contains_audio": true,
+  "full_decode_passed": true,
+  "freeze_intervals_over_1_1_seconds": 0,
+  "viewer_approved_original_intro": true,
+  "output_state": "TECHNICAL_PASS_AND_PRIOR_OWNER_INTRO_APPROVAL",
+  "owner_approved_new_32_second_short": false,
+  "three_new_google_flow_3d_mp4s_generated": 0,
+  "external_provider_source_not_forged": true,
+  "rights_release_approved": false,
+  "youtube_scheduled": false
+}

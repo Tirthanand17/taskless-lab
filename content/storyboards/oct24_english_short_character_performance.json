@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "episode_id": "fm_20261024_short_en",
+  "scene_number": 1,
+  "characters": [
+    {
+      "id": "asha",
+      "required_joints": [
+        "hips",
+        "spine",
+        "neck",
+        "head",
+        "shoulder_left",
+        "shoulder_right",
+        "elbow_left",
+        "elbow_right",
+        "wrist_left",
+        "wrist_right",
+        "knee_left",
+        "knee_right",
+        "ankle_left",
+        "ankle_right"
+      ],
+      "required_face_shapes": [
+        "blink_left",
+        "blink_right",
+        "jaw_open",
+        "brow_raise",
+        "smile_left",
+        "smile_right",
+        "viseme_A",
+        "viseme_O",
+        "viseme_MBP"
+      ],
+      "asset_status": "requested",
+      "performance_audio_status": "not_generated",
+      "wardrobe_identity": "Original navy lab blazer with cyan piping"
+    },
+    {
+      "id": "jay",
+      "required_joints": [
+        "hips",
+        "spine",
+        "neck",
+        "head",
+        "shoulder_left",
+        "shoulder_right",
+        "elbow_left",
+        "elbow_right",
+        "wrist_left",
+        "wrist_right",
+        "knee_left",
+        "knee_right",
+        "ankle_left",
+        "ankle_right"
+      ],
+      "required_face_shapes": [
+        "blink_left",
+        "blink_right",
+        "jaw_open",
+        "brow_raise",
+        "smile_left",
+        "smile_right",
+        "viseme_A",
+        "viseme_O",
+        "viseme_MBP"
+      ],
+      "asset_status": "requested",
+      "performance_audio_status": "not_generated",
+      "wardrobe_identity": "Original charcoal hoodie with slim glasses"
+    }
+  ],
+  "performance_timeline": [
+    {
+      "actor": "jay",
+      "type": "gaze",
+      "start_second": 0,
+      "end_second": 1.5,
+      "directing_note": "Turns eyes toward two model cubes showing genuine curiosity"
+    },
+    {
+      "actor": "asha",
+      "type": "expression",
+      "start_second": 0.5,
+      "end_second": 2.2,
+      "directing_note": "Raises eyebrows slightly then responds with a warm confident smile"
+    },
+    {
+      "actor": "jay",
+      "type": "prop_contact",
+      "start_second": 1,
+      "end_second": 3.1,
+      "prop_id": "model_cube_1",
+      "contact_target": "right_hand",
+      "directing_note": "Moves a physical cloud model cube away from the display"
+    },
+    {
+      "actor": "asha",
+      "type": "prop_contact",
+      "start_second": 3.3,
+      "end_second": 5.6,
+      "prop_id": "model_cube_1",
+      "contact_target": "left_hand",
+      "directing_note": "Returns the physical cube to the marketplace shelf with contact matching"
+    },
+    {
+      "actor": "asha",
+      "type": "gesture",
+      "start_second": 4.8,
+      "end_second": 7.9,
+      "directing_note": "Points to the second model choice then opens her palm to show two options"
+    },
+    {
+      "actor": "jay",
+      "type": "expression",
+      "start_second": 5.2,
+      "end_second": 7.8,
+      "directing_note": "Shows a small understanding nod without freezing facial expression"
+    }
+  ],
+  "camera": {
+    "move": "dolly",
+    "visual_focus": "Maintain sharp visibility of hands interacting with two separate marketplace model cubes"
+  },
+  "rig_asset_qc": false,
+  "lip_sync_qc": false,
+  "artistic_review": false
+}

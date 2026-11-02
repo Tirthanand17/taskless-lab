@@ -1,0 +1,16 @@
+FLOWMINUTE LAB — October 24 English Short
+ORIGINAL HUMAN-NARRATION DRAFT — NOT RECORDED / NOT LIP-SYNCED
+
+Video 0–8s: Existing approved HeyGen Asha-and-Jay cinematic pilot.
+Use its original spoken lines and generated audio. Verify the exact transcript from the actual MP4 before writing subtitles.
+
+Video 8–16s: "No, Gemini is not replaced. Think of a cloud platform as a workshop with different AI models for different jobs."
+Video 16–24s: "Model Garden is the shelf. OpenAI models and Codex workflows are planned to join the choices for enterprise teams."
+Video 24–32s: "A developer could pick a model for one task. That is very different from changing the Gemini app you use."
+Video 32–40s: "Company policies, access rules, and data governance still matter. The announcement does not mean everyone gets free OpenAI access."
+Video 40–48s: "General availability is planned in the coming weeks. Check your access, pricing, and use case before you build around it."
+
+All segment times approximate; spoken delivery has NOT been timed to footage.
+Natural human-like conversational narration required; no robotic substitute.
+Word timing must be observed and separately aligned; do not fabricate SRT synchronization.
+Primary source: https://openai.com/index/openai-models-google-cloud/

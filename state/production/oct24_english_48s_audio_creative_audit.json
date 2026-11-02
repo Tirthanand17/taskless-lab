@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "episode_id": "fm_20261024_short_en",
+  "quality_status": "CREATIVELY_REJECTED_BY_OWNER",
+  "technical_audio_audit": "FAIL",
+  "source": "48.021s owner-reviewed Oct24 English Short audio-balanced MP4",
+  "threshold_db": -36,
+  "detect_duration_s": 0.35,
+  "silences": [
+    [
+      12.644,
+      16.223
+    ],
+    [
+      21.143,
+      24.213
+    ],
+    [
+      28.375,
+      32.254
+    ],
+    [
+      36.391,
+      40.223
+    ],
+    [
+      45.349,
+      48.021
+    ]
+  ],
+  "total_major_silence_seconds": 17.033,
+  "longest_gap_seconds": 3.879,
+  "allowed_explainer_gap_seconds": 1.2,
+  "second_failure": "0–8s cinematic 3D real characters then 8–48s flat geometric vector diagrams inconsistent with user goals",
+  "publication_authorized": false,
+  "youtube_scheduled": false,
+  "remedy": "Replace with 32s all-cinematic character-led edit; approved 8s plus three true 3D 8s clips",
+  "new_media_generated": 0,
+  "new_spend_inr": 0
+}

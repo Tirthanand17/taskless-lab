@@ -24,6 +24,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install offline unit-test dependencies
+        run: python -m pip install 'cryptography>=44,<47'
+      - name: Install FFmpeg for media safety tests
+        run: |
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
       - name: Unit tests and security boundaries
         run: python -m unittest discover -s autopilot -p 'test_*.py' -v
       - name: Gather public unverified research leads

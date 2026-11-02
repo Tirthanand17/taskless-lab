@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "project": "FlowMinute Lab",
+  "release_date_ist": "2026-10-24",
+  "episode_id": "fm_20261024_short_en",
+  "state": "TECHNICALLY_VALID_SUPPLEMENT_VISUAL_ONLY",
+  "approved_heygen_pilot_video_id": "dac55a35aa6745028a4d4051fb1fb249",
+  "visual_insert_file_name": "FlowMinute_Oct24_English_Explainer_40s_VISUAL_ONLY.mp4",
+  "visual_insert_sha256": "8efa40b67b407036c06e87f0fb64662ccf35a8bb096c7c40c72168c0846093e5",
+  "visual_insert_duration_seconds": 40,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "actual_dimensions": [
+    720,
+    1280
+  ],
+  "visual_insert_size_bytes": 1350684,
+  "full_ffmpeg_decode_verified": true,
+  "integrity_sha256_verified": true,
+  "visual_insert_contains_speech": false,
+  "visual_insert_has_only_generated_sound_effects": true,
+  "narration_script_drafted": true,
+  "natural_narration_recorded": false,
+  "captions_aligned": false,
+  "provider_opening_8s_downloaded_into_this_workspace": false,
+  "joined_48s_video_exists": false,
+  "ready_for_youtube_upload": false,
+  "final_release_qa_approved": false,
+  "youtube_video_id": null,
+  "youtube_schedule_verified": false,
+  "locally_available_artifacts": [
+    "FlowMinute_Oct24_English_Explainer_40s_VISUAL_ONLY.mp4",
+    "FlowMinute_Oct24_English_Supplement_QA.json",
+    "FlowMinute_Oct24_English_VO_Handoff.txt",
+    "render_flowminute_oct24_explainer_insert.py"
+  ],
+  "note": "Validated files exist as conversation artifacts, not in GitHub. Metadata and narration handoff in this branch must not be mistaken for YouTube scheduling or full completion. Source renderer SHA256: 4fabfe6df680c7ee0f07c49abc56d002ab671e075580218c840bdd9d14fe0f4f.",
+  "source": "https://openai.com/index/openai-models-google-cloud/"
+}

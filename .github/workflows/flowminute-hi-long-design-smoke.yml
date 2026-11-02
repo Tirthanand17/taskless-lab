@@ -1,0 +1,81 @@
+name: FLOWMINUTE Hindi Long Explainer Design Smoke (no publish)
+
+on:
+  push:
+    branches:
+      - "feature/oct24-multicharacter-3d-lesson-contract"
+    paths:
+      - "motion-v2/src/AgentPermissionLongHi.tsx"
+      - "motion-v2/src/flowExplainLongHiTiming.json"
+      - "motion-v2/src/Root.tsx"
+      - ".github/workflows/flowminute-hi-long-design-smoke.yml"
+  pull_request:
+    paths:
+      - "motion-v2/src/AgentPermissionLongHi.tsx"
+      - "motion-v2/src/flowExplainLongHiTiming.json"
+      - "motion-v2/src/Root.tsx"
+      - ".github/workflows/flowminute-hi-long-design-smoke.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-hi-long-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check_original_remotion_design:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    env:
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install open-source media dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core
+          cd motion-v2
+          npm install --no-audit --no-fund
+          npx remotion browser ensure
+      - name: Capture all six original Hindi chapter layouts
+        working-directory: motion-v2
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/hi-long-layout"
+          for frame in 300 1100 1900 2700 3500 4300; do
+            npx remotion still src/index.ts AgentPermissionLongHi \
+              "$RUNNER_TEMP/hi-long-layout/chapter-${frame}.png" \
+              --frame="$frame" --log=error
+          done
+          test "$(find "$RUNNER_TEMP/hi-long-layout" -name '*.png' | wc -l)" = 6
+      - name: Decode a short segment from long-form Remotion composition
+        working-directory: motion-v2
+        run: |
+          set -euo pipefail
+          v="$RUNNER_TEMP/hi-long-layout/long-smoke.mp4"
+          npx remotion render src/index.ts AgentPermissionLongHi "$v" \
+            --frames=2800-2823 --concurrency=1 --codec=h264 --crf=28 --pixel-format=yuv420p --log=error
+          ffmpeg -hide_banner -loglevel error -xerror -i "$v" -f null -
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$v")" = 1920
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$v")" = 1080
+          echo ORIGINAL_HINDI_LONG_DESIGN_SMOKE_PASSED
+      - name: Upload layout frames for creator review only
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-hindi-long-original-six-layout-frames
+          path: ${{ runner.temp }}/hi-long-layout/chapter-*.png
+          retention-days: 1
+          if-no-files-found: error
+      - name: Discard preview video
+        if: always()
+        run: rm -f "$RUNNER_TEMP/hi-long-layout/long-smoke.mp4"

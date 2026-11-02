@@ -1,0 +1,45 @@
+{
+  "fps": 30,
+  "duration_frames": 1080,
+  "beat_starts": [
+    0,
+    180,
+    360,
+    570,
+    780,
+    930
+  ],
+  "cues": [
+    {
+      "start_frame": 0,
+      "end_frame": 180,
+      "text": "Could an AI agent delete your files?"
+    },
+    {
+      "start_frame": 180,
+      "end_frame": 360,
+      "text": "A chatbot replies. An agent can request actions."
+    },
+    {
+      "start_frame": 360,
+      "end_frame": 570,
+      "text": "A request is not proof of access."
+    },
+    {
+      "start_frame": 570,
+      "end_frame": 780,
+      "text": "Read-only permissions cannot delete files."
+    },
+    {
+      "start_frame": 780,
+      "end_frame": 930,
+      "text": "Deny actions you do not need."
+    },
+    {
+      "start_frame": 930,
+      "end_frame": 1080,
+      "text": "Use least privilege and keep backups."
+    }
+  ],
+  "status": "DEFAULT_VISUAL_PLACEHOLDER_NOT_VOICE_ALIGNED"
+}

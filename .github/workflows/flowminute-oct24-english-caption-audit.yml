@@ -1,0 +1,108 @@
+name: FlowMinute Oct24 English ASR Caption Audit (No Publish)
+
+on:
+  push:
+    branches:
+      - "feature/oct24-multicharacter-3d-lesson-contract"
+    paths:
+      - ".github/workflows/flowminute-oct24-english-caption-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: flowminute-oct24-caption-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  transcribe_actual_48s_audio:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      GH_TOKEN: ${{ github.token }}
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      OMP_NUM_THREADS: "3"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ASR runtime and free FFmpeg
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install --no-input --disable-pip-version-check \
+            'faster-whisper>=1.1,<2'
+      - name: Retrieve original 48-second clip and verify immutable source bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/flowminute-asr"
+          gh run download 39971905081 --repo "$GITHUB_REPOSITORY" \
+            --name flowminute-oct24-english-48s-combined-review-only \
+            --dir "$RUNNER_TEMP/flowminute-asr"
+          cd "$RUNNER_TEMP/flowminute-asr"
+          printf '%s  %s\n' "e5634ee7dc27cef520a4430a54ff6bb9a13df3226a0bb0e4f4f14b5878a51ea3" \
+            "FlowMinute_Oct24_English_48s_COMBINED_REVIEW_ONLY.mp4" | sha256sum -c -
+          ffmpeg -hide_banner -loglevel error -y -i \
+            FlowMinute_Oct24_English_48s_COMBINED_REVIEW_ONLY.mp4 \
+            -vn -ac 1 -ar 16000 -c:a pcm_s16le actual_audio_48s.wav
+      - name: Open-weight Whisper transcription of actual dialogue and word timings
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/flowminute-asr"
+          python - <<'PY'
+          import json, pathlib, re, wave
+          import numpy as np
+          from faster_whisper import WhisperModel
+          with wave.open("actual_audio_48s.wav","rb") as audio:
+              assert audio.getnchannels()==1 and audio.getsampwidth()==2 and audio.getframerate()==16000
+              samples=np.frombuffer(audio.readframes(audio.getnframes()),dtype="<i2").astype(np.float32)/32768
+          model=WhisperModel("small.en",device="cpu",compute_type="int8",cpu_threads=3)
+          segments,info=model.transcribe(samples,language="en",
+                beam_size=5,word_timestamps=True,vad_filter=False,
+                condition_on_previous_text=False)
+          data=[]
+          for seg in segments:
+              words=[{"start":round(w.start,3),"end":round(w.end,3),
+                    "text":w.word,"confidence":round(w.probability,3)}
+                    for w in (seg.words or [])]
+              data.append({"start":round(seg.start,3),"end":round(seg.end,3),
+                   "text":seg.text.strip(),"words":words,
+                   "avg_logprob":seg.avg_logprob})
+          assert data,"No spoken dialogue detected"
+          assert all(0<=s["start"]<s["end"]<=49 for s in data)
+          out={"schema_version":1,"review_only":True,"source":"original combined 48s MP4",
+            "source_video_sha256":"e5634ee7dc27cef520a4430a54ff6bb9a13df3226a0bb0e4f4f14b5878a51ea3",
+            "model":"faster-whisper small.en CPU-int8",
+            "machine_generated_not_human_verified":True,
+            "language":info.language,"language_probability":info.language_probability,
+            "opening_0_8s_review_required":True,"caption_publish_approved":False,
+            "segments":data}
+          p=pathlib.Path("machine_asr_transcript_word_times.json")
+          p.write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n")
+          print("=== OPENING SPEECH MACHINE TRANSCRIPT ===")
+          for seg in data:
+              if seg["start"]<9:
+                  print(f'{seg["start"]:.2f}-{seg["end"]:.2f}: {seg["text"]}')
+          print("=== REST OF TRANSCRIPT ===")
+          for seg in data:
+              if seg["start"]>=8.0:
+                  print(f'{seg["start"]:.2f}-{seg["end"]:.2f}: {seg["text"]}')
+          print("REVIEW_ONLY_NOT_SCHEDULED")
+          PY
+      - name: Upload only machine-transcription audit, not speech data
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-oct24-english-actual-audio-machine-transcript
+          path: ${{ runner.temp }}/flowminute-asr/machine_asr_transcript_word_times.json
+          retention-days: 1
+          if-no-files-found: error

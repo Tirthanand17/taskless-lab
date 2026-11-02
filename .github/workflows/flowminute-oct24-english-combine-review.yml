@@ -1,0 +1,151 @@
+name: FlowMinute Oct24 English 48s Combined Review (No Publish)
+
+on:
+  push:
+    branches:
+      - "feature/oct24-multicharacter-3d-lesson-contract"
+    paths:
+      - ".github/workflows/flowminute-oct24-english-combine-review.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: flowminute-oct24-english-combine-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  combine_verified_8s_and_40s:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    env:
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout read-only producer files
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install free media inspection dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Fetch existing verified 40s neural-voice draft from prior run
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/flowminute/oct24"
+          gh run download 39969576256 \
+            --repo "$GITHUB_REPOSITORY" \
+            --name flowminute-oct24-english-neural-vo-review-draft \
+            --dir "$RUNNER_TEMP/flowminute/oct24"
+          cd "$RUNNER_TEMP/flowminute/oct24"
+          printf '%s  %s\n' "c89e840bd289d26ff85a742fb4b19cd259a1877e020aa38ff78d4b7224c51df2" \
+            "FlowMinute_Oct24_English_40s_NEURAL_VO_REVIEW_ONLY.mp4" | sha256sum -c -
+
+      - name: Fetch existing owner-approved HeyGen English opening, never regenerate
+        shell: bash
+        env:
+          # User-approved original only; this public source is not an authorization token.
+          ORIGINAL_CLIP_URL: "https://resource2.heygen.ai/videos/55d8c502418a4cada1ae75afd41fb18a/55d8c502418a4cada1ae75afd41fb18a/01a168d1-fbc6-7af2-bf09-fdcb722d78b0.mp4"
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/flowminute/oct24"
+          curl --fail --silent --show-error --location --retry 1 \
+            --connect-timeout 15 --max-time 100 "$ORIGINAL_CLIP_URL" \
+            -o approved_heygen_asha_jay_8s.mp4
+          python - <<'PY'
+          from pathlib import Path
+          import json,subprocess
+          p=Path("approved_heygen_asha_jay_8s.mp4")
+          assert 100000 < p.stat().st_size < 80000000, "Missing/wrong source bytes"
+          meta=json.loads(subprocess.check_output([
+              "ffprobe","-v","error","-show_entries",
+              "stream=codec_type,width,height:format=duration","-of","json",str(p)]))
+          sec=float(meta["format"]["duration"])
+          vid=[s for s in meta["streams"] if s["codec_type"]=="video"]
+          aud=[s for s in meta["streams"] if s["codec_type"]=="audio"]
+          assert len(vid)==1 and len(aud)==1, "Missing original soundtrack"
+          assert abs(sec-8.083344)<0.25, "Not the approved 8s original"
+          assert vid[0]["width"]==768 and vid[0]["height"]==1344, "Unexpected original export"
+          print("SOURCE_PROBE_APPROVED",{"duration_seconds":sec,"bytes":p.stat().st_size,
+              "width":vid[0]["width"],"height":vid[0]["height"],"audio_streams":len(aud)})
+          PY
+          ffmpeg -hide_banner -loglevel error -xerror -i approved_heygen_asha_jay_8s.mp4 -f null -
+
+      - name: Normalize both clips without inventing or repeating footage
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/flowminute/oct24"
+          vf='fps=30,scale=720:1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p'
+          ffmpeg -hide_banner -loglevel error -y -ss 0 \
+            -i approved_heygen_asha_jay_8s.mp4 -t 8 \
+            -vf "$vf" -af 'aresample=48000,aformat=channel_layouts=stereo,apad,atrim=0:8,asetpts=N/SR/TB' \
+            -c:v libx264 -preset veryfast -crf 22 -r 30 -pix_fmt yuv420p \
+            -c:a aac -b:a 160k -ar 48000 -ac 2 -movflags +faststart part_000.mp4
+          ffmpeg -hide_banner -loglevel error -y \
+            -i FlowMinute_Oct24_English_40s_NEURAL_VO_REVIEW_ONLY.mp4 -t 40 \
+            -vf "$vf" -af 'aresample=48000,aformat=channel_layouts=stereo,apad,atrim=0:40,asetpts=N/SR/TB' \
+            -c:v libx264 -preset veryfast -crf 22 -r 30 -pix_fmt yuv420p \
+            -c:a aac -b:a 160k -ar 48000 -ac 2 -movflags +faststart part_001.mp4
+          printf "file 'part_000.mp4'\nfile 'part_001.mp4'\n" > concat.txt
+          ffmpeg -hide_banner -loglevel error -y -f concat -safe 1 \
+            -i concat.txt -c copy -movflags +faststart \
+            FlowMinute_Oct24_English_48s_COMBINED_REVIEW_ONLY.mp4
+
+      - name: Full playback decode and provenance report, NOT release approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/flowminute/oct24"
+          f=FlowMinute_Oct24_English_48s_COMBINED_REVIEW_ONLY.mp4
+          ffmpeg -hide_banner -loglevel error -xerror -i "$f" -f null -
+          python - <<'PY'
+          from pathlib import Path
+          import json,hashlib,subprocess
+          p=Path("FlowMinute_Oct24_English_48s_COMBINED_REVIEW_ONLY.mp4")
+          m=json.loads(subprocess.check_output(["ffprobe","-v","error","-show_entries",
+              "stream=codec_type,codec_name,width,height,sample_rate:format=duration",
+              "-of","json",str(p)]))
+          d=float(m["format"]["duration"])
+          v=[x for x in m["streams"] if x.get("codec_type")=="video"]
+          a=[x for x in m["streams"] if x.get("codec_type")=="audio"]
+          assert len(v)==1 and len(a)==1,"Require one video and audio stream"
+          assert 47.8<=d<=48.25,f"Not 48 seconds: {d}"
+          assert (v[0]["width"],v[0]["height"],v[0]["codec_name"])==(720,1280,"h264")
+          assert a[0]["codec_name"]=="aac"
+          with p.open("rb") as handle:digest=hashlib.file_digest(handle,"sha256").hexdigest()
+          report={"schema_version":1,"episode_id":"fm_20261024_short_en",
+            "state":"COMBINED_48S_TECHNICALLY_VERIFIED_REVIEW_ONLY",
+            "duration_seconds":round(d,4),"width":720,"height":1280,
+            "audio_codec":"aac","video_codec":"h264","full_decode_passed":True,
+            "full_media_sha256":digest,"bytes":p.stat().st_size,
+            "opening":{"provider":"HeyGen","video_id":"dac55a35aa6745028a4d4051fb1fb249",
+              "requested_seconds":8,"original_soundtrack_preserved":True},
+            "body":{"source_workflow_run":39969576256,
+              "expected_original_sha256":"c89e840bd289d26ff85a742fb4b19cd259a1877e020aa38ff78d4b7224c51df2",
+              "source_seconds":40,"neural_narration_reviewed":False},
+            "opening_transcript_verified":False,
+            "human_voice_quality_reviewed":False,"full_srt_burned_or_aligned":False,
+            "factual_rights_final_review":False,
+            "youtube_uploaded":False,"youtube_scheduled":False,"allowed_for_release":False}
+          Path("combined_48s_review_qa.json").write_text(json.dumps(report,indent=2)+"\n")
+          print(json.dumps(report,indent=2))
+          PY
+
+      - name: Preserve only combined review MP4 and QA for 1 day
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-oct24-english-48s-combined-review-only
+          path: |
+            ${{ runner.temp }}/flowminute/oct24/FlowMinute_Oct24_English_48s_COMBINED_REVIEW_ONLY.mp4
+            ${{ runner.temp }}/flowminute/oct24/combined_48s_review_qa.json
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error

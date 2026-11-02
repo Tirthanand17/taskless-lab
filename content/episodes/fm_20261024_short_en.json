@@ -1,0 +1,99 @@
+{
+  "id": "fm_20261024_short_en",
+  "title": "OpenAI on Google Cloud: Did Gemini Get Replaced? #Shorts",
+  "language": "en",
+  "format": "short",
+  "description": "Did OpenAI replace Gemini on Google Cloud? No. FlowMinute Lab explains what adding model choice to Google Cloud Model Garden means for developers and enterprise AI workflows — and why access, pricing and governance still matter.\n\nOriginal animated explanatory illustrations and AI-generated character scenes; not a product demo or official interface.\n\nOfficial announcement: https://openai.com/index/openai-models-google-cloud/\n\n#AI #GoogleCloud #OpenAI #Gemini #Shorts",
+  "tags": [
+    "AI",
+    "OpenAI",
+    "Google Cloud",
+    "Gemini",
+    "Model Garden",
+    "Codex",
+    "AI models",
+    "Cloud AI",
+    "FlowMinute Lab"
+  ],
+  "publish_at_ist": "2026-10-24T11:00:00+05:30",
+  "publish_at_utc": "2026-10-24T05:30:00Z",
+  "original_opening_video_id": "dac55a35aa6745028a4d4051fb1fb249",
+  "reviewed_script_source": "content/flow/oct24_english_48s_asr_timed_review.srt",
+  "captions": [
+    {
+      "start": 0.88,
+      "end": 2.99,
+      "text": "Does this replace Gemini?"
+    },
+    {
+      "start": 4.13,
+      "end": 5.16,
+      "text": "No."
+    },
+    {
+      "start": 5.86,
+      "end": 7.05,
+      "text": "Developers get another choice."
+    },
+    {
+      "start": 8.12,
+      "end": 10.12,
+      "text": "No, Gemini isn't replaced."
+    },
+    {
+      "start": 10.28,
+      "end": 12.74,
+      "text": "Google Cloud simply offers a new model choice."
+    },
+    {
+      "start": 16.2,
+      "end": 18.02,
+      "text": "Model Garden is like a shelf."
+    },
+    {
+      "start": 18.2,
+      "end": 21.5,
+      "text": "OpenAI models and Codex workflows are joining it."
+    },
+    {
+      "start": 24,
+      "end": 26.83,
+      "text": "Developers can choose models for specific tasks,"
+    },
+    {
+      "start": 26.94,
+      "end": 28.49,
+      "text": "not change your Gemini app."
+    },
+    {
+      "start": 31.64,
+      "end": 34.12,
+      "text": "Teams still need access controls,"
+    },
+    {
+      "start": 34.2,
+      "end": 36.46,
+      "text": "policies, and responsible data governance."
+    },
+    {
+      "start": 39.78,
+      "end": 42.1,
+      "text": "Availability will expand later."
+    },
+    {
+      "start": 42.19,
+      "end": 45.34,
+      "text": "Always check access, pricing, and your actual use case."
+    }
+  ],
+  "media_candidate": {
+    "state": "TECHNICALLY_COMPLETE_REVIEW_ONLY",
+    "source_actions_run_id": 39977033010,
+    "file_name": "FlowMinute_Oct24_English_48s_CAPTIONED_REVIEW_ONLY.mp4",
+    "sha256": "7bd6319297fba469709467ac3416fd32be1a5efa9f25ee1d2c8c1dd016050fb9",
+    "duration_seconds": 48.033
+  },
+  "publishing_authorized": false,
+  "youtube_video_id": null,
+  "youtube_schedule_verified": false
+}

@@ -1,0 +1,66 @@
+{
+  "catalog_version": 1,
+  "created_date": "2026-10-23",
+  "policy": "Candidate catalog only: rights checks and asset hashes are mandatory before use in public videos.",
+  "new_paid_services_authorized": false,
+  "asset_downloads_performed": false,
+  "accepted_production_rigs": 0,
+  "assets": [
+    {
+      "id": "blender_studio_rain_v3",
+      "source_url": "https://studio.blender.org/characters/rain/v3/",
+      "role": "premium_stylized_female_character_candidate",
+      "format": "blend",
+      "source_license_claim": "CC-BY 4.0",
+      "attribution_required": true,
+      "required_credit": "Rain Rig (CC) Blender Foundation | studio.blender.org",
+      "compatibility": "Blender 4.1+",
+      "download_status": "NOT_DOWNLOADED",
+      "rig_audit": "NOT_RUN",
+      "rights_state": "SOURCE_PAGE_RESEARCH_ONLY",
+      "notes": "Free according to official character listing. Fully rigged with layered facial controls; adaptation and credit required. Not automatically a FlowMinute original avatar."
+    },
+    {
+      "id": "blender_studio_einar_v1",
+      "source_url": "https://studio.blender.org/characters/einar/v1/",
+      "role": "premium_realistic_male_character_candidate",
+      "format": "blend",
+      "source_license_claim": "CC-BY 4.0",
+      "attribution_required": true,
+      "required_credit": "Einar Rig (CC-BY) Blender Foundation | studio.blender.org",
+      "compatibility": "Blender 3.5+",
+      "download_status": "NOT_DOWNLOADED",
+      "rig_audit": "NOT_RUN",
+      "rights_state": "SOURCE_PAGE_RESEARCH_ONLY",
+      "notes": "Different realistic visual style from Rain, so consistent character art direction needs testing."
+    },
+    {
+      "id": "kenney_animated_characters_3",
+      "source_url": "https://kenney-assets.itch.io/animated-characters-3",
+      "role": "lower-detail_fallback_rig",
+      "format": "fbx",
+      "source_license_claim": "CC0-1.0",
+      "attribution_required": false,
+      "required_credit": null,
+      "compatibility": "Requires import/rig and skin validation",
+      "download_status": "NOT_DOWNLOADED",
+      "rig_audit": "NOT_RUN",
+      "rights_state": "SOURCE_PAGE_RESEARCH_ONLY",
+      "notes": "Contains male/female skins and idle/run/jump animations. CC0; low-poly, not equal to premium cinematic art."
+    },
+    {
+      "id": "quaternius_ultimate_animated",
+      "source_url": "https://quaternius.com/packs/ultimatedanimatedcharacter",
+      "role": "multiple_rigged_extras_candidate",
+      "format": "fbx/blend",
+      "source_license_claim": "CC0 (legacy pack page 2019; recheck downloaded pack and precise terms)",
+      "attribution_required": null,
+      "required_credit": null,
+      "compatibility": "Different rigs, may require retargeting",
+      "download_status": "NOT_DOWNLOADED",
+      "rig_audit": "NOT_RUN",
+      "rights_state": "LICENSE_RECHECK_REQUIRED",
+      "notes": "Older Quaternius packs were described as CC0, but publisher issued a newer license for future releases. Verify exact downloaded pack and license file before reuse."
+    }
+  ]
+}

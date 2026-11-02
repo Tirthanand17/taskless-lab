@@ -1,0 +1,335 @@
+{
+  "version": 1,
+  "date": "2026-10-23",
+  "project": "FlowMinute Lab",
+  "note": "Manual Google Flow studio plan. Does NOT invoke Google API or spend credits. Flow character references v2 are one visually consistent ensemble cast; their names, visual references and voice IDs have NOT been registered with Google.",
+  "source_docs": [
+    "https://support.google.com/flow/answer/16526234",
+    "https://support.google.com/flow/answer/16935308",
+    "https://support.google.com/flow/answer/16353334"
+  ],
+  "model": "Gemini Omni 1.1 Flash via Google Flow UI",
+  "model_caveats": "Final output resembles 3D but is AI-generated video pixels, not an editable 3D mesh/Blender scene; continuity not guaranteed.",
+  "characters": {
+    "asha": {
+      "id": "asha",
+      "role": "English expert",
+      "design": "Adult Indian woman in her late twenties, shoulder-length dark hair, navy tailored blazer with subtle cyan piping, expressive realistic eyes, natural micro-expressions and believable hand anatomy, warm confident English-speaking instructor. Consistent face, outfit, proportions and voice across clips."
+    },
+    "jay": {
+      "id": "jay",
+      "role": "English beginner",
+      "design": "Adult Indian man with short wavy brown hair, understated round glasses, dark navy hoodie, naturally curious facial expressions and realistic articulated hands, clear conversational English."
+    },
+    "kabir": {
+      "id": "kabir",
+      "role": "Hindi expert",
+      "design": "Adult Indian man in his thirties with short thick dark hair, neatly trimmed beard and a navy sweater, gentle teacher energy, natural Hindi speaking style, convincing facial and hand animation."
+    },
+    "riya": {
+      "id": "riya",
+      "role": "Hindi learner",
+      "design": "Adult Indian woman with a loose dark hair bun, round glasses and teal knit top; expressive questioning gaze, comfortable gestures, natural spoken Hindi. Preserve her distinct appearance from Asha."
+    },
+    "omar": {
+      "id": "omar",
+      "role": "Hindi software engineer",
+      "design": "Adult Indian man in his thirties with short hair, blue-gray smart-casual technician shirt; focused eyes and reliable, accurate prop manipulation; Hindi voice."
+    }
+  },
+  "episodes": [
+    {
+      "episode_id": "fm_20261024_short_en",
+      "language": "en",
+      "orientation": "9:16",
+      "existing_storyboard_target_seconds": 48,
+      "engine": "gemini-omni-flash-1.1-in-google-flow",
+      "resolution": "720p",
+      "clip_duration_seconds": 10,
+      "strategy": "cinematic_generated_key_shots_plus_original_diagrams_voice_narration_and_real_demonstrations_for_remaining_duration",
+      "clips": [
+        {
+          "clip_id": "01",
+          "beat": "HOOK",
+          "character_refs": [
+            "jay",
+            "asha"
+          ],
+          "visual_action": "Jay grabs a glowing model tile from a glass cloud-tool shelf and looks confused. Asha gently stops him and points to a second model tile, making it clear that adding a tool does not remove the other.",
+          "camera_direction": "Close-up on Jay's concerned expression and the two distinct physical tiles",
+          "audio_dialogue_draft": "Jay: 'Did Google replace Gemini?'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Jay grabs a glowing model tile from a glass cloud-tool shelf and looks confused. Asha gently stops him and points to a second model tile, making it clear that adding a tool does not remove the other. Camera: Close-up on Jay's concerned expression and the two distinct physical tiles. Dialogue exactly: Jay: 'Did Google replace Gemini?' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "02",
+          "beat": "ANALOGY",
+          "character_refs": [
+            "asha",
+            "jay"
+          ],
+          "visual_action": "The wall of tool shelves opens like a workshop cabinet. Asha slides two differently colored 3D model blocks into adjacent slots; Jay observes closely.",
+          "camera_direction": "Waist-up orbit revealing physical shelf depth and object contact",
+          "audio_dialogue_draft": "Asha: 'Think of cloud AI like a workshop with choices.'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: The wall of tool shelves opens like a workshop cabinet. Asha slides two differently colored 3D model blocks into adjacent slots; Jay observes closely. Camera: Waist-up orbit revealing physical shelf depth and object contact. Dialogue exactly: Asha: 'Think of cloud AI like a workshop with choices.' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "03",
+          "beat": "DEMO",
+          "character_refs": [
+            "asha",
+            "jay"
+          ],
+          "visual_action": "Asha picks up a cyan model block and snaps it into a transparent modular workflow rail, which triggers a small visualization of a processing path. Jay leans in; hands stay anatomically accurate.",
+          "camera_direction": "Follow Asha's hands and the rail connection",
+          "audio_dialogue_draft": "Asha: 'A developer picks the tool for the job.'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Asha picks up a cyan model block and snaps it into a transparent modular workflow rail, which triggers a small visualization of a processing path. Jay leans in; hands stay anatomically accurate. Camera: Follow Asha's hands and the rail connection. Dialogue exactly: Asha: 'A developer picks the tool for the job.' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "04",
+          "beat": "MISCONCEPTION",
+          "character_refs": [
+            "jay",
+            "asha"
+          ],
+          "visual_action": "Jay looks at his phone, expecting an automatic personal app upgrade; nothing changes. Asha turns the model block back toward a cloud-workspace bench, patiently explaining the difference.",
+          "camera_direction": "Start on confused phone close-up; rack focus to instructor",
+          "audio_dialogue_draft": "Jay: 'So my phone app changes today?' Asha: 'Not necessarily.'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Jay looks at his phone, expecting an automatic personal app upgrade; nothing changes. Asha turns the model block back toward a cloud-workspace bench, patiently explaining the difference. Camera: Start on confused phone close-up; rack focus to instructor. Dialogue exactly: Jay: 'So my phone app changes today?' Asha: 'Not necessarily.' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "05",
+          "beat": "TAKEAWAY",
+          "character_refs": [
+            "asha",
+            "jay"
+          ],
+          "visual_action": "Asha sets physical check cards for access, pricing, and availability on a table. Jay gives a small understanding nod; the two blocks remain side by side on the shelf.",
+          "camera_direction": "Slow dolly to the simple check cards, genuine moving fingers",
+          "audio_dialogue_draft": "Asha: 'Check access and pricing before you try it.'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Asha sets physical check cards for access, pricing, and availability on a table. Jay gives a small understanding nod; the two blocks remain side by side on the shelf. Camera: Slow dolly to the simple check cards, genuine moving fingers. Dialogue exactly: Asha: 'Check access and pricing before you try it.' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        }
+      ]
+    },
+    {
+      "episode_id": "fm_20261024_short_hi",
+      "language": "hi",
+      "orientation": "9:16",
+      "existing_storyboard_target_seconds": 48,
+      "engine": "gemini-omni-flash-1.1-in-google-flow",
+      "resolution": "720p",
+      "clip_duration_seconds": 10,
+      "strategy": "cinematic_generated_key_shots_plus_original_diagrams_voice_narration_and_real_demonstrations_for_remaining_duration",
+      "clips": [
+        {
+          "clip_id": "01",
+          "beat": "HOOK",
+          "character_refs": [
+            "riya",
+            "kabir"
+          ],
+          "visual_action": "Riya opens a 3D holographic representation of a mouse-brain-cell dataset; thousands of physical glowing data particles spread outward. Kabir takes one translucent data sphere to demonstrate investigation.",
+          "camera_direction": "Eye-level start on Riya's face, then reveal volumetric cell particles",
+          "audio_dialogue_draft": "Riya: 'इतना डेटा केवल बत्तीस मिनट में?'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Riya opens a 3D holographic representation of a mouse-brain-cell dataset; thousands of physical glowing data particles spread outward. Kabir takes one translucent data sphere to demonstrate investigation. Camera: Eye-level start on Riya's face, then reveal volumetric cell particles. Dialogue exactly: Riya: 'इतना डेटा केवल बत्तीस मिनट में?' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "02",
+          "beat": "ANALOGY",
+          "character_refs": [
+            "kabir",
+            "riya"
+          ],
+          "visual_action": "In a rich three-dimensional research-library set, Kabir places separate question books on several small expert workstations, like dividing a large scientific task.",
+          "camera_direction": "Sideways dolly past actual book spines and hands",
+          "audio_dialogue_draft": "Kabir: 'इसे बड़ी लाइब्रेरी की तरह समझो।'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: In a rich three-dimensional research-library set, Kabir places separate question books on several small expert workstations, like dividing a large scientific task. Camera: Sideways dolly past actual book spines and hands. Dialogue exactly: Kabir: 'इसे बड़ी लाइब्रेरी की तरह समझो।' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "03",
+          "beat": "DEMO",
+          "character_refs": [
+            "riya",
+            "kabir"
+          ],
+          "visual_action": "Riya watches several desk-bound agents send different evidence cards to one central study board. Kabir points to distinct lines of evidence, not a magic cure.",
+          "camera_direction": "Tracking macro focus following a physical evidence card",
+          "audio_dialogue_draft": "Riya: 'तो हर एजेंट अलग सवाल देखता है?'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Riya watches several desk-bound agents send different evidence cards to one central study board. Kabir points to distinct lines of evidence, not a magic cure. Camera: Tracking macro focus following a physical evidence card. Dialogue exactly: Riya: 'तो हर एजेंट अलग सवाल देखता है?' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "04",
+          "beat": "FACT_CHECK",
+          "character_refs": [
+            "kabir",
+            "riya"
+          ],
+          "visual_action": "Kabir sets a luminous hypothesis card in a tray marked for future research, physically separate from a transparent dish representing tested evidence. Riya reacts in understanding.",
+          "camera_direction": "Closeup on two separate trays with realistic object movement",
+          "audio_dialogue_draft": "Kabir: 'तेज़ विश्लेषण इलाज का प्रमाण नहीं है।'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Kabir sets a luminous hypothesis card in a tray marked for future research, physically separate from a transparent dish representing tested evidence. Riya reacts in understanding. Camera: Closeup on two separate trays with realistic object movement. Dialogue exactly: Kabir: 'तेज़ विश्लेषण इलाज का प्रमाण नहीं है।' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "05",
+          "beat": "TAKEAWAY",
+          "character_refs": [
+            "riya",
+            "kabir"
+          ],
+          "visual_action": "Both researchers close a research log and look toward their future laboratory workbench. One clue-shaped blue card remains on a shelf; no human clinical claim.",
+          "camera_direction": "Wide cinematic pull-back from evidence workbench",
+          "audio_dialogue_draft": "Riya: 'सुराग मिले हैं, अंतिम प्रमाण नहीं।'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Both researchers close a research log and look toward their future laboratory workbench. One clue-shaped blue card remains on a shelf; no human clinical claim. Camera: Wide cinematic pull-back from evidence workbench. Dialogue exactly: Riya: 'सुराग मिले हैं, अंतिम प्रमाण नहीं।' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        }
+      ]
+    },
+    {
+      "episode_id": "fm_20261024_long_hi",
+      "language": "hi",
+      "orientation": "16:9",
+      "existing_storyboard_target_seconds": 300,
+      "engine": "gemini-omni-flash-1.1-in-google-flow",
+      "resolution": "720p",
+      "clip_duration_seconds": 10,
+      "strategy": "cinematic_generated_key_shots_plus_original_diagrams_voice_narration_and_real_demonstrations_for_remaining_duration",
+      "clips": [
+        {
+          "clip_id": "01",
+          "beat": "COLD_OPEN",
+          "character_refs": [
+            "riya",
+            "kabir"
+          ],
+          "visual_action": "A tiny physical city model representing software services starts showing one red warning tower. Riya reaches for an emergency switch; Kabir gently intervenes and points to the label 'unverified clue' on a physical tag.",
+          "camera_direction": "Urgent hand-level closeup, then quiet wide reveal",
+          "audio_dialogue_draft": "Riya: 'क्या सब कुछ हैक हो गया?'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: A tiny physical city model representing software services starts showing one red warning tower. Riya reaches for an emergency switch; Kabir gently intervenes and points to the label 'unverified clue' on a physical tag. Camera: Urgent hand-level closeup, then quiet wide reveal. Dialogue exactly: Riya: 'क्या सब कुछ हैक हो गया?' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "02",
+          "beat": "ANALOGY",
+          "character_refs": [
+            "kabir",
+            "riya"
+          ],
+          "visual_action": "A large luminous physical code library appears. Kabir pulls a suspicious page from one book and holds it against many other books to explain contextual verification.",
+          "camera_direction": "Tracking through multi-layered bookcases to the specific page",
+          "audio_dialogue_draft": "Kabir: 'एक संकेत, साबित हुई गलती नहीं है।'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: A large luminous physical code library appears. Kabir pulls a suspicious page from one book and holds it against many other books to explain contextual verification. Camera: Tracking through multi-layered bookcases to the specific page. Dialogue exactly: Kabir: 'एक संकेत, साबित हुई गलती नहीं है।' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "03",
+          "beat": "VERIFICATION",
+          "character_refs": [
+            "omar",
+            "riya"
+          ],
+          "visual_action": "Inside a sealed defensive cybersecurity laboratory, Omar puts a symbolic code cube into a physically isolated testing chamber. Riya watches a status lamp change from unknown to checked; no exploit commands or live interfaces.",
+          "camera_direction": "Smooth orbit of isolation chamber and contact-accurate hands",
+          "audio_dialogue_draft": "Omar: 'जाँच केवल अनुमति वाली लैब में।'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Inside a sealed defensive cybersecurity laboratory, Omar puts a symbolic code cube into a physically isolated testing chamber. Riya watches a status lamp change from unknown to checked; no exploit commands or live interfaces. Camera: Smooth orbit of isolation chamber and contact-accurate hands. Dialogue exactly: Omar: 'जाँच केवल अनुमति वाली लैब में।' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "04",
+          "beat": "DISCLOSURE",
+          "character_refs": [
+            "kabir",
+            "omar"
+          ],
+          "visual_action": "Kabir privately hands Omar a sealed report folder. Omar carefully places it in a secure review cabinet while animated evidence icons stay abstract and non-sensitive.",
+          "camera_direction": "Shoulder-level closeup on folder transfer",
+          "audio_dialogue_draft": "Kabir: 'सही टीम को जिम्मेदार रिपोर्ट भेजते हैं।'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Kabir privately hands Omar a sealed report folder. Omar carefully places it in a secure review cabinet while animated evidence icons stay abstract and non-sensitive. Camera: Shoulder-level closeup on folder transfer. Dialogue exactly: Kabir: 'सही टीम को जिम्मेदार रिपोर्ट भेजते हैं।' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "05",
+          "beat": "PATCH",
+          "character_refs": [
+            "omar",
+            "riya"
+          ],
+          "visual_action": "Omar physically replaces a faulty generic circuit tile in a miniature symbolic server and puts it through a safe testing rig. Riya looks at the two clearly distinct before-and-after pieces.",
+          "camera_direction": "Closeup of precise hand-object contact and physically plausible movement",
+          "audio_dialogue_draft": "Omar: 'पैच के बाद परीक्षण भी ज़रूरी है।'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: Omar physically replaces a faulty generic circuit tile in a miniature symbolic server and puts it through a safe testing rig. Riya looks at the two clearly distinct before-and-after pieces. Camera: Closeup of precise hand-object contact and physically plausible movement. Dialogue exactly: Omar: 'पैच के बाद परीक्षण भी ज़रूरी है।' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        },
+        {
+          "clip_id": "06",
+          "beat": "RECAP",
+          "character_refs": [
+            "riya",
+            "kabir"
+          ],
+          "visual_action": "The two characters assemble five large tactile blocks in order on a glass table: find, verify, report, patch, update. Each block glows gently as placed; camera reveals full modern lab set.",
+          "camera_direction": "Soft cinematic dolly-back with readable shape cues",
+          "audio_dialogue_draft": "Riya: 'अब पूरी सुरक्षा प्रक्रिया समझ आई।'",
+          "flow_prompt": "Cinematic high-end 3D animated story, visually indistinguishable from polished feature-film CG in materials and lighting. Two physically present adult human characters with consistent faces and clothing matching the supplied character references. Original FlowMinute Lab production. Natural face muscle motion, eye convergence, breath, lip shapes and small facial reactions. Natural gravity, anatomically plausible hands, correct five fingers, genuine contact with real 3D props, rich parallax, no frozen mannequin poses. Set: premium futuristic practical technology lab, physically realistic glass and brushed metal, soft navy walls, teal LED accents, warm amber practical lights, cinematic global illumination, subtle volumetric atmosphere and realistic reflections, professional animated feature-film visual detail, believable motion rather than flat-motion-graphics. Camera movement motivated by demonstration. Not a game engine screenshot or flat diagram. No floating unrelated charts, no fake logos, no subtitles, no screen text overlays, no watermarks other than model's native required marks. A scene must show a concrete causal action and result. Only speak the specified short sentence; no additional invented facts. Sound clean, low ambience; do not invent music. Exact narrator identity/voice should follow the reusable saved character voice where supported. Action: The two characters assemble five large tactile blocks in order on a glass table: find, verify, report, patch, update. Each block glows gently as placed; camera reveals full modern lab set. Camera: Soft cinematic dolly-back with readable shape cues. Dialogue exactly: Riya: 'अब पूरी सुरक्षा प्रक्रिया समझ आई।' Scene length 10 seconds. Continuity: same characters, room, lighting and props as reference images; 9:16 for Shorts, 16:9 for long according to selected orientation.",
+          "clip_status": "NOT_GENERATED",
+          "clip_qa": "NOT_REVIEWED",
+          "flow_asset_id": null
+        }
+      ]
+    }
+  ],
+  "credit_calculation": {
+    "pro_plan_monthly_additional_credits": 1000,
+    "daily_all_plans_credits": 50,
+    "omni_flash_720p_10s_cost_each": 15,
+    "proposed_clips": 16,
+    "estimated_first_pass_credits": 240,
+    "actual_available_credits": "UNVERIFIED",
+    "credits_spent": 0,
+    "new_cash_spend_inr": 0
+  },
+  "guardrails": {
+    "no_paid_api": true,
+    "no_service_upgrade": true,
+    "no_automated_browser_to_flow": true,
+    "no_generation_without_user_verified_credit_balance": true,
+    "no_scheduling_without_qa": true
+  }
+}
