@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Audio, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import flowTiming from './flowExplainTiming.json';
+import flowTimingHi from './flowExplainTimingHi.json';
 
 /**
  * FLOW//EXPLAIN: original animated, persistent dashboard.
@@ -16,6 +17,15 @@ const beats=[
   {start:26,end:31,step:'HIGH-RISK ACTION',title:'Delete: blocked',sub:'Files remain in the sandbox.',cap:'Deny risky actions you do not need.',tag:'DENY',color:colors.red},
   {start:31,end:36,step:'MEMORY RULE',title:'Least privilege.',sub:'Grant only the access needed.',cap:'Read-only first. Review. Keep backups.',tag:'SAFE',color:colors.green},
 ] as const;
+const beatsHi=[
+  {start:0,end:6,step:'सवाल',title:'क्या फाइलें डिलीट होंगी?',sub:'एक अनुरोध, असली कार्रवाई नहीं।',cap:'एआई एजेंट आपकी फाइलें डिलीट कर सकता है?',tag:'REQUEST',color:colors.red},
+  {start:6,end:12,step:'जरूरी फर्क',title:'चैट और टूल',sub:'बात करना और काम करना अलग है।',cap:'एजेंट टूल से काम माँग सकता है।',tag:'ACCESS',color:colors.cyan},
+  {start:12,end:19,step:'सिर्फ डेमो',title:'फोल्डर हटाने की माँग',sub:'किसी असली फाइल को नहीं छुआ।',cap:'अनुरोध का मतलब अनुमति नहीं।',tag:'PREVIEW',color:colors.amber},
+  {start:19,end:26,step:'सुरक्षा जाँच',title:'पहले परमिशन देखें',sub:'रीड-ओनली से डिलीट नहीं हो सकता।',cap:'केवल जरूरी टूल एक्सेस दें।',tag:'PERMISSION',color:colors.cyan},
+  {start:26,end:31,step:'जोखिम रोका',title:'अनुरोध ब्लॉक',sub:'डेमो फाइलें सुरक्षित हैं।',cap:'इस अनुरोध को यहीं रोक दिया।',tag:'DENY',color:colors.red},
+  {start:31,end:36,step:'याद रखने की बात',title:'कम से कम एक्सेस',sub:'पहले बदलाव देखें, बैकअप रखें।',cap:'केवल जरूरत की अनुमति दें।',tag:'SAFE',color:colors.green},
+] as const;
+
 const card:React.CSSProperties={borderRadius:24,border:'2px solid '+colors.border,background:'#101B2B'};
 const label:React.CSSProperties={fontSize:21,letterSpacing:1.2,fontWeight:700,color:colors.muted};
 const dot=(color:string)=><span style={{display:'inline-block',width:12,height:12,borderRadius:'50%',background:color,marginRight:14}}/>;
@@ -47,14 +57,16 @@ const ActionRoute:React.FC<{beatIndex:number;phase:number}>=({beatIndex,phase})=
     {safe?<div style={{position:'absolute',right:22,top:5,borderRadius:10,padding:'8px 13px',background:'#164436',color:colors.green,fontWeight:800,fontSize:17}}>READ ONLY</div>:null}
   </div>;
 };
-export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean}>=({includeNarration=false})=>{
+export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean;locale?:'en'|'hi'}>=({includeNarration=false,locale='en'})=>{
+  const timing=locale==='hi'?flowTimingHi:flowTiming;
+  const selectedBeats=locale==='hi'?beatsHi:beats;
   const frame=useCurrentFrame();
   const sec=frame/30;
-  const idx=Math.max(0,flowTiming.beat_starts.reduce((found,start,i)=>frame>=start?i:found,0));
+  const idx=Math.max(0,timing.beat_starts.reduce((found,start,i)=>frame>=start?i:found,0));
   const beatStart=flowTiming.beat_starts[idx]/30;
-  const beatEnd=(flowTiming.beat_starts[idx+1]??flowTiming.duration_frames)/30;
-  const beat={...beats[idx],start:beatStart,end:beatEnd};
-  const caption=flowTiming.cues.find(c=>frame>=c.start_frame && frame<c.end_frame)?.text??beat.cap;
+  const beatEnd=(flowTiming.beat_starts[idx+1]??timing.duration_frames)/30;
+  const beat={...selectedBeats[idx],start:beatStart,end:beatEnd};
+  const caption=timing.cues.find(c=>frame>=c.start_frame && frame<c.end_frame)?.text??beat.cap;
   const progress=interpolate(frame,[0,flowTiming.duration_frames],[0,1],{extrapolateRight:'clamp'});
   const entered=interpolate(sec,[beat.start,beat.start+0.55],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
   const indicator=interpolate(sec,[beat.start,beat.end],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
@@ -65,17 +77,17 @@ export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean}>=({
     idx===3?<><div style={{color:colors.cyan}}>CHECKING</div>{[['Scope','read only'],['Tool','no delete'],['Review','required']].map(([key,value],i)=>{const checked=indicator>(i+1)*0.22;return <div key={key} style={{border:'1px solid '+(checked?colors.green:colors.border),padding:13,borderRadius:10,marginTop:18,fontSize:22,color:checked?colors.green:colors.white}}>{dot(checked?colors.green:colors.muted)}{key}<div style={{color:colors.muted,fontSize:17,marginLeft:28}}>{value}</div></div>})}</>:
     idx===4?<><div style={{color:colors.red,fontWeight:800}}>DENIED</div><div style={{color:colors.red,fontSize:72,textAlign:'center',marginTop:70}}>×</div><div style={{color:colors.green,fontWeight:800,marginTop:40,textAlign:'center'}}>FILES SAFE</div></>:
     <><div style={{color:colors.green}}>SAFE MODE</div><div style={{border:'2px solid '+colors.green,color:colors.green,borderRadius:12,padding:20,marginTop:70,fontWeight:800}}>READ ONLY</div><div style={{marginTop:50}}>Approve only what is needed</div></>;
-  return <AbsoluteFill style={{background:colors.bg,color:colors.white,fontFamily:'Inter, Arial, sans-serif',padding:'84px 72px',boxSizing:'border-box',overflow:'hidden'}}>
+  return <AbsoluteFill style={{background:colors.bg,color:colors.white,fontFamily:locale==='hi'?'Noto Sans Devanagari, Noto Sans, Arial, sans-serif':'Inter, Arial, sans-serif',padding:'84px 72px',boxSizing:'border-box',overflow:'hidden'}}>
     <AbsoluteFill style={{opacity:.16,backgroundImage:'linear-gradient(#2A4B60 1px,transparent 1px),linear-gradient(90deg,#2A4B60 1px,transparent 1px)',backgroundSize:'68px 68px',pointerEvents:'none'}}/>
-    {includeNarration ? <Audio src={staticFile('flow-explain-voice.wav')} /> : null}
+    {includeNarration ? <Audio src={staticFile(locale==='hi'?'flow-explain-voice-hi.wav':'flow-explain-voice.wav')} /> : null}
     <div style={{...card,height:90,display:'flex',alignItems:'center',padding:'0 28px',gap:15,zIndex:1}}>
       <div style={{width:34,height:34,borderRadius:9,background:colors.cyan}}/><b style={{fontSize:29,letterSpacing:1}}>FLOWMINUTE</b>
       <span style={{...label,marginLeft:16}}> // EXPLAIN</span><span style={{marginLeft:'auto',color:colors.amber,fontSize:23,fontWeight:800}}>0{idx+1} / 06</span>
     </div>
     <div style={{position:'relative',marginTop:72,height:275,zIndex:1}}>
       <div style={{...label,color:beat.color}}>{beat.step}</div>
-      <div style={{fontSize:61,lineHeight:1.08,fontWeight:850,letterSpacing:-1.5,marginTop:22,maxWidth:910,opacity:entered,transform:`translateY(${(1-entered)*12}px)`}}>{beat.title}</div>
-      <div style={{fontSize:34,marginTop:22,color:colors.muted}}>{beat.sub}</div>
+      <div style={{fontSize:locale==='hi'?52:61,lineHeight:1.12,fontWeight:850,letterSpacing:-1.5,marginTop:22,maxWidth:910,opacity:entered,transform:`translateY(${(1-entered)*12}px)`}}>{beat.title}</div>
+      <div style={{fontSize:locale==='hi'?30:34,marginTop:22,color:colors.muted}}>{beat.sub}</div>
     </div>
     <div style={{...card,marginTop:0,height:915,zIndex:1,padding:25,boxSizing:'border-box'}}>
       <div style={{height:85,borderRadius:17,background:colors.raised,display:'flex',alignItems:'center',padding:'0 27px',gap:9}}>
@@ -86,24 +98,24 @@ export const AgentPermissionFlowExplain:React.FC<{includeNarration?:boolean}>=({
       <div style={{display:'flex',gap:14,margin:'27px 10px 30px'}}>{beats.map((b,i)=><div key={i} style={{flex:1,height:9,background:i===idx?beat.color:i<idx?'#3A5669':'#1B3044',borderRadius:8}}/>)}</div>
       <div style={{display:'flex',gap:20,height:445}}>
         <div style={{...card,flex:1,padding:24,background:'#0C1728'}}>
-          <div style={label}>FILES / SAMPLE</div>
+          <div style={label}>{locale==='hi'?'डेमो फाइलें':'FILES / SAMPLE'}</div>
           <div style={{borderBottom:'2px solid #294154',margin:'24px 0'}}/>
           {['reports/','budget_2026.csv','notes.txt'].map((f,i)=><div key={f} style={{...row,marginBottom:22,borderColor:i===0&&(idx===0||idx>=2)?idx>=4?colors.green:colors.red:'#2B4055',boxShadow:i===0&&idx>=2&&idx<=3?`0 0 ${indicator*16}px #F16B7330`:'none'}}>
             <span style={{color:i===0?colors.amber:colors.cyan,marginRight:18,fontSize:27}}>{i===0?'▣':'▤'}</span><b style={{fontSize:25,whiteSpace:'nowrap'}}>{f}</b>{i===0&&idx>=4?<span style={{marginLeft:'auto',fontSize:16,color:colors.green,fontWeight:800}}>SAFE</span>:null}
           </div>)}
         </div>
         <div style={{...card,width:310,padding:23,background:'#0C1728',boxSizing:'border-box',fontSize:25}}>
-          <div style={{...label,fontSize:19}}>ACTION INSPECTOR</div>
+          <div style={{...label,fontSize:19}}>{locale==='hi'?'अनुरोध की जाँच':'ACTION INSPECTOR'}</div>
           <div style={{borderBottom:'2px solid #294154',margin:'24px 0'}}/>
           {inspector}
         </div>
       </div>
       <ActionRoute beatIndex={idx} phase={indicator}/>
-      <div style={{...card,marginTop:18,padding:'17px 25px',background:'#132437',fontSize:22,color:colors.muted,textAlign:'center'}}>TRAINING SIMULATION · NO REAL FILE ACCESS</div>
+      <div style={{...card,marginTop:18,padding:'17px 25px',background:'#132437',fontSize:22,color:colors.muted,textAlign:'center'}}>{locale==='hi'?'डेमो सिमुलेशन · असली फाइलों तक पहुँच नहीं':'TRAINING SIMULATION · NO REAL FILE ACCESS'}</div>
     </div>
     <div style={{...card,marginTop:40,height:124,padding:'24px 34px',boxSizing:'border-box',display:'flex',alignItems:'center',gap:24,zIndex:1}}>
       <div style={{width:8,height:72,background:beat.color,borderRadius:6}}/>
-      <div style={{fontSize:29,fontWeight:730,lineHeight:1.18,overflowWrap:'break-word',maxWidth:810}}>{caption}</div>
+      <div style={{fontSize:locale==='hi'?27:29,fontWeight:730,lineHeight:1.18,overflowWrap:'break-word',maxWidth:810}}>{caption}</div>
     </div>
     <div style={{display:'flex',marginTop:'auto',fontSize:22,color:colors.muted,justifyContent:'space-between'}}>
       <span>0{idx+1} / 06  ·  {beat.tag}</span><span>ORIGINAL EXAMPLE</span>
