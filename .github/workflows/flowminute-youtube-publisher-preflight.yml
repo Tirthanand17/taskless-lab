@@ -6,6 +6,8 @@ on:
       - "scripts/publish_youtube.py"
       - "scripts/test_publish_youtube_preflight.py"
       - ".github/workflows/flowminute-youtube-publisher-preflight.yml"
+      - "state/approvals/fm_20261102_agent_permissions_*.json"
+      - "state/scheduled/fm_20261102_agent_permissions_*.json"
   pull_request:
     paths:
       - "scripts/publish_youtube.py"
@@ -42,7 +44,7 @@ jobs:
           set -euo pipefail
           python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py
           python -m unittest scripts.test_publish_youtube_preflight -v
-      - name: Confirm existing owner release is still fail-closed
+      - name: Confirm completed owner releases have matching immutable authenticated schedule receipts
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -60,6 +62,15 @@ jobs:
               info=json.loads(manifest.read_text(encoding="utf-8"))
               digest=info.get("approved_video_sha256") or info.get("candidate_video_sha256")
               assert isinstance(digest,str) and len(digest)==64
-              assert not approval_allows_exact_video(info,digest), f"Unexpected approval: {name}"
-              print("FAIL_CLOSED_OWNER_RELEASE_PENDING",name)
+              assert approval_allows_exact_video(info,digest), f"Owner approval missing: {name}"
+              assert info.get("youtube_uploaded") is True and info.get("youtube_scheduled") is True
+              receipt=json.loads((Path("state/scheduled")/(name+".json")).read_text(encoding="utf-8"))
+              assert receipt["youtube_video_id"]==info["video_id"]
+              assert receipt["video_sha256"]==digest
+              assert receipt["remote_privacy"]=="private"
+              assert receipt["remote_upload_status"]=="processed"
+              assert receipt["status"]=="scheduled_verified"
+              assert receipt["production_channel_id"]=="UCCcL9Q_jqVq6LJmnYUSAFZA"
+              assert receipt["remote_publish_at_utc"]==info["publish_at_utc"]
+              print("CONFIRMED_PRIVATE_SCHEDULE_RECEIPT_NO_UPLOAD",name,info["video_id"])
           PY
