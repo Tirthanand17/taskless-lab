@@ -1,0 +1,45 @@
+{
+  "fps": 30,
+  "duration_frames": 1440,
+  "beat_starts": [
+    0,
+    240,
+    480,
+    720,
+    960,
+    1200
+  ],
+  "cues": [
+    {
+      "start_frame": 0,
+      "end_frame": 240,
+      "text": "क्या एआई एजेंट आपकी फाइलें डिलीट कर सकता है?"
+    },
+    {
+      "start_frame": 240,
+      "end_frame": 480,
+      "text": "एजेंट किसी टूल को काम करने को कह सकता है।"
+    },
+    {
+      "start_frame": 480,
+      "end_frame": 720,
+      "text": "अनुरोध का मतलब अनुमति नहीं।"
+    },
+    {
+      "start_frame": 720,
+      "end_frame": 960,
+      "text": "पहले टूल की परमिशन जाँचिए।"
+    },
+    {
+      "start_frame": 960,
+      "end_frame": 1200,
+      "text": "हम उसे ब्लॉक करते हैं।"
+    },
+    {
+      "start_frame": 1200,
+      "end_frame": 1440,
+      "text": "नियम: केवल जरूरी अनुमति दें।"
+    }
+  ],
+  "status": "DEFAULT_HINDI_LAYOUT_ONLY_NOT_AUDIO_ALIGNED"
+}
