@@ -29,7 +29,7 @@ jobs:
       - name: Install free open-source media dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
+          sudo apt-get install -y -qq ffmpeg python3-pil
           cd motion-v2
           npm install --no-audit --no-fund
       - name: Cloud Remotion screenshot smoke (original template)
@@ -55,6 +55,45 @@ jobs:
           test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$f")" = "aac"
           sha256sum "$f"
           echo "CLOUD_1080x1920_SHORT_SMOKE_QA_PASSED"
+      - name: FLOW//EXPLAIN six-frame preview (zero-upload design QA)
+        working-directory: motion-v2
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-cloud-preview/flow-explain
+          for frame in 60 240 435 675 855 990; do
+            npx remotion still src/index.ts AgentPermissionFlowExplain \
+              "/tmp/flowminute-cloud-preview/flow-explain/frame-${frame}.png" \
+              --frame="${frame}" --log=error
+          done
+          test "$(find /tmp/flowminute-cloud-preview/flow-explain -name '*.png' | wc -l)" -eq 6
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          root=Path("/tmp/flowminute-cloud-preview/flow-explain")
+          for p in root.glob("*.png"):
+              with Image.open(p) as im:
+                  assert im.size==(1080,1920), (p,im.size)
+              assert p.stat().st_size>15000, p
+          print("FLOW_EXPLAIN_SIX_FRAMES_1080x1920_PASS")
+          PY
+      - name: FLOW//EXPLAIN sample animation (silent internal preview)
+        working-directory: motion-v2
+        run: |
+          set -euo pipefail
+          f=/tmp/flowminute-cloud-preview/flow-explain/smoke.mp4
+          npx remotion render src/index.ts AgentPermissionFlowExplain "$f" \
+            --frames=600-629 --concurrency=1 --codec=h264 --crf=25 --pixel-format=yuv420p --log=error
+          ffmpeg -hide_banner -loglevel error -xerror -i "$f" -f null -
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$f")" = 1080
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$f")" = 1920
+          echo FLOW_EXPLAIN_REMOTION_RENDER_SMOKE_PASSED
+      - name: Save review frames only (no publishing)
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-explain-six-review-frames
+          path: /tmp/flowminute-cloud-preview/flow-explain/frame-*.png
+          retention-days: 1
+          if-no-files-found: error
       - name: Discard video output; never store public/unreviewed drafts
         if: always()
         run: rm -rf /tmp/flowminute-cloud-preview
