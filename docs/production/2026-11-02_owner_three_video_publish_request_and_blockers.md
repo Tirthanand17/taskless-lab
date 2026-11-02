@@ -39,3 +39,12 @@ The project has a GitHub Actions uploader that uses `YOUTUBE_TOKEN_JSON` from a 
 - Reconcile via authenticated YouTube API for each video ID, processing status, correct captions, scheduled/published visibility, then write the confirmed receipts.
 
 **Never assert "uploaded" or "published" without a real authenticated YouTube response and readback. Owner consent is recorded; technical and mandatory release controls are still in force.**
+
+## Follow-through update: caption safety fixed and Hindi long-form production started
+
+- Fix committed `6cdd8ab3597d7e8659da9a2b212f298d360b92d9` to `scripts/publish_youtube.py`: YouTube caption tracks now derive `language` and `name` from `meta.language` ('en' -> English, 'hi' -> Hindi), and missing/unsupported SRT configurations fail before a remote upload.
+- No-secret regression tests `scripts/test_publish_youtube_preflight.py` and `.github/workflows/flowminute-youtube-publisher-preflight.yml` confirmed successful on PR/push for commit `de76f35a869aee880309dd47f4d200ab010b3f13`. The tests confirm both desired Shorts remain fail-closed because four individual approval gates are still false.
+- Original Hindi longer-form lesson script `content/flow/agent_permissions_long_hi_narration.json` includes 6 chapters and 29 distinct spoken paragraphs; simulated files only. Long-form Remotion component `motion-v2/src/AgentPermissionLongHi.tsx` is a separate 1920x1080, 24 fps dashboard lesson rather than a stretched Short.
+- `scripts/generate_flow_explain_long_hindi_voice.py` emits a separate `hf_alpha` synthetic Hindi narration, phrase-based SRT and chapter timings; `.github/workflows/flowminute-hi-long-full-render.yml` is **review-only** and has no publication action/secret. The dedicated layout smoke passed: https://github.com/Tirthanand17/taskless-lab/actions/runs/41431664151 .
+- Full Hindi long-form audiovisual build started here: https://github.com/Tirthanand17/taskless-lab/actions/runs/41431772149 . **Build initiation is not proof of success; final media, voice performance and approvals must still be independently checked.**
+- Existing production control `publishing_enabled:false` not changed. All three release requests remain in owner-requested order, with **zero confirmed new YouTube video IDs**.
