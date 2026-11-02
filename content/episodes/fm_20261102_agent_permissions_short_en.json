@@ -1,0 +1,91 @@
+{
+  "id": "fm_20261102_agent_permissions_short_en",
+  "title": "Can AI Delete Your Files? Agent Permissions Explained #Shorts",
+  "description": "Can an AI agent really delete files? Understand the difference between an AI response, a tool request, permissions, and human approval. This is an original simulated demonstration: no real files were accessed or deleted. Learn why least-privilege access, reviewing changes, and backups matter.\n\n#AIagents #Automation #AITools #TechExplained #Shorts",
+  "tags": [
+    "AI agents",
+    "AI automation",
+    "permissions",
+    "least privilege",
+    "tool calling",
+    "technology explainers",
+    "flowminute lab"
+  ],
+  "language": "en",
+  "duration_seconds": 29.9,
+  "voice": "Kokoro synthetic af_sarah",
+  "visual_style": "original FLOW//EXPLAIN Remotion simulated security dashboard",
+  "source_review_mp4_sha256": "1f1a740002aa035a1eaed8c7a308831efe0ea6a8950c61337ceaafda3a9386fc",
+  "source_review_archive": "FLOWMINUTE_LAB_Bilingual_AI_Agent_Shorts_Review_V6_EN_V2_HI.zip",
+  "review_date_utc": "2026-11-02",
+  "approval_status": "OWNER_PREVIEW_ACCEPTED_PUBLISH_GATES_INCOMPLETE",
+  "publish_request": "publish today when approved publishing controls and authorized channel credentials are verified",
+  "privacy": "original synthetic educational simulation, no real personal data",
+  "captions": [
+    {
+      "start": 0.12,
+      "end": 2.369,
+      "text": "Could an AI agent delete your files?"
+    },
+    {
+      "start": 2.444,
+      "end": 4.536,
+      "text": "Here is the part most people miss."
+    },
+    {
+      "start": 4.611,
+      "end": 6.136,
+      "text": "A chatbot replies."
+    },
+    {
+      "start": 6.211,
+      "end": 9.442,
+      "text": "But an agent may request actions through connected tools."
+    },
+    {
+      "start": 9.517,
+      "end": 12.224,
+      "text": "Imagine it asks to delete a sample folder."
+    },
+    {
+      "start": 12.299,
+      "end": 14.452,
+      "text": "That is a request, not proof it can."
+    },
+    {
+      "start": 14.527,
+      "end": 15.806,
+      "text": "Permissions matter."
+    },
+    {
+      "start": 15.881,
+      "end": 18.375,
+      "text": "Read-only access cannot delete files."
+    },
+    {
+      "start": 18.45,
+      "end": 20.721,
+      "text": "Sensitive actions may need approval."
+    },
+    {
+      "start": 20.796,
+      "end": 22.065,
+      "text": "Deny the action."
+    },
+    {
+      "start": 22.14,
+      "end": 24.059,
+      "text": "Your demo files stay untouched."
+    },
+    {
+      "start": 24.134,
+      "end": 25.957,
+      "text": "Remember: least privilege."
+    },
+    {
+      "start": 26.032,
+      "end": 29.289,
+      "text": "Preview changes, review permissions, and keep backups."
+    }
+  ]
+}
