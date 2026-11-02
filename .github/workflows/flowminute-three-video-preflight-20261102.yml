@@ -1,0 +1,58 @@
+name: FLOWMINUTE Three Video Release Media Validation (NO PUBLISH)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/flowminute-three-video-preflight-20261102.yml
+      - scripts/verify_nov02_three_staged_releases.py
+      - content/episodes/fm_20261102_agent_permissions_short_en.json
+      - content/episodes/fm_20261102_agent_permissions_short_hi.json
+      - content/episodes/fm_20261102_agent_permissions_long_hi.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  check_all_three_release_preconditions:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate release metadata (no upload)
+        run: |
+          set -euo pipefail
+          python scripts/validate_release.py content/episodes/fm_20261102_agent_permissions_short_en.json
+          python scripts/validate_release.py content/episodes/fm_20261102_agent_permissions_short_hi.json
+          python scripts/validate_release.py content/episodes/fm_20261102_agent_permissions_long_hi.json
+      - name: Fetch exact owner-reviewed video/captions (GitHub no-publish staging run)
+        run: |
+          set -euo pipefail
+          mkdir -p staged/en staged/hi staged/long
+          gh run download 41436405479 --repo "$GITHUB_REPOSITORY" --name fm-20261102-approved-media-bytes-english-short --dir staged/en
+          gh run download 41436405479 --repo "$GITHUB_REPOSITORY" --name fm-20261102-approved-media-bytes-hindi-short --dir staged/hi
+          gh run download 41436405479 --repo "$GITHUB_REPOSITORY" --name fm-20261102-review-media-bytes-hindi-long --dir staged/long
+      - name: Independently validate exact MP4 hashes and every SRT/metadata phrase
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/verify_nov02_three_staged_releases.py
+          python scripts/verify_nov02_three_staged_releases.py staged
+      - name: Store review-only release QA report (no files published)
+        uses: actions/upload-artifact@v4
+        with:
+          name: fm-20261102-three-video-release-media-preflight-not-published
+          path: three_video_release_preflight_20261102.json
+          retention-days: 30
+          if-no-files-found: error
