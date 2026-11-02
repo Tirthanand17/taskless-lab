@@ -45,26 +45,35 @@ jobs:
           echo '196a46f1ff4685bc9b47e3050157e5da77160803acb3464ec4b9ec642b49248b  incoming/en/FLOWMINUTE_AI_AGENT_FLOW_EXPLAIN_EN_REVIEW_ONLY.mp4' | sha256sum --check --status
           echo '879db5d26d163c40b1b053edca3cf0974509cc4ba2bbd23a5586a9d4fa34bc2b  incoming/hi/FLOWMINUTE_AI_AGENT_FLOW_EXPLAIN_HI_REVIEW_ONLY.mp4' | sha256sum --check --status
           echo '518b44a137bbdddec32ee84e7f64cbe0c55e49ae52fab277f75d1bb3158fbb2c  incoming/long/FLOWMINUTE_AI_AGENT_HINDI_LONG_REVIEW_ONLY.mp4' | sha256sum --check --status
-      - name: Create the exact already-owner-reviewed MP4 bytes via deterministic audio mastering
+      - name: Create approved masters using the pinned original Debian 13 FFmpeg 7.1.5 build
         run: |
           set -euo pipefail
-          for lang in en hi long; do
-            case "$lang" in
-              en) video='FLOWMINUTE_AI_AGENT_FLOW_EXPLAIN_EN_REVIEW_ONLY.mp4'; name='FLOWMINUTE_ENGLISH_V6_AUDIO_MASTER_REVIEW_ONLY.mp4'; captions='flow-explain-english-phrase-captions.srt';;
-              hi) video='FLOWMINUTE_AI_AGENT_FLOW_EXPLAIN_HI_REVIEW_ONLY.mp4'; name='FLOWMINUTE_HINDI_V2_AUDIO_MASTER_REVIEW_ONLY.mp4'; captions='flow-explain-hindi-phrase-captions.srt';;
-              long) video='FLOWMINUTE_AI_AGENT_HINDI_LONG_REVIEW_ONLY.mp4'; name='FLOWMINUTE_HI_LONG_AUDIO_MASTER_REVIEW_ONLY.mp4'; captions='hindi-long-captions.srt';;
-            esac
-            ffmpeg -hide_banner -nostdin -loglevel error -xerror \
-              -i "incoming/$lang/$video" -map 0:v:0 -map 0:a:0 \
-              -c:v copy -c:a aac -b:a 192k \
-              -af 'loudnorm=I=-18:TP=-1.5:LRA=9' \
-              -movflags +faststart "staged/$lang/$name"
-            cp "incoming/$lang/$captions" "staged/$lang/$captions"
-            ffmpeg -hide_banner -nostdin -loglevel error -xerror \
-              -ss 1 -i "staged/$lang/$name" -frames:v 1 "staged/$lang/cover.png"
-            ffmpeg -hide_banner -nostdin -loglevel error -xerror \
-              -i "staged/$lang/$name" -f null -
-          done
+          # Original owner-reviewed master was produced with Debian 13 FFmpeg 7.1.5.
+          # Ubuntu FFmpeg's AAC encoder output is NOT bitwise identical; never relax SHA checks.
+          docker run --rm -v "$PWD:/work" -w /work debian:trixie-slim bash -c '
+            set -euo pipefail
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update -qq
+            apt-get install -y -qq --no-install-recommends ffmpeg
+            ffmpeg -hide_banner -version | head -1 | grep -F "ffmpeg version 7.1.5-0+deb13u1"
+            for lang in en hi long; do
+              case "$lang" in
+                en) video="FLOWMINUTE_AI_AGENT_FLOW_EXPLAIN_EN_REVIEW_ONLY.mp4"; name="FLOWMINUTE_ENGLISH_V6_AUDIO_MASTER_REVIEW_ONLY.mp4"; captions="flow-explain-english-phrase-captions.srt";;
+                hi) video="FLOWMINUTE_AI_AGENT_FLOW_EXPLAIN_HI_REVIEW_ONLY.mp4"; name="FLOWMINUTE_HINDI_V2_AUDIO_MASTER_REVIEW_ONLY.mp4"; captions="flow-explain-hindi-phrase-captions.srt";;
+                long) video="FLOWMINUTE_AI_AGENT_HINDI_LONG_REVIEW_ONLY.mp4"; name="FLOWMINUTE_HI_LONG_AUDIO_MASTER_REVIEW_ONLY.mp4"; captions="hindi-long-captions.srt";;
+              esac
+              ffmpeg -hide_banner -nostdin -loglevel error -xerror \
+                -i "incoming/$lang/$video" -map 0:v:0 -map 0:a:0 \
+                -c:v copy -c:a aac -b:a 192k \
+                -af "loudnorm=I=-18:TP=-1.5:LRA=9" \
+                -movflags +faststart "staged/$lang/$name"
+              cp "incoming/$lang/$captions" "staged/$lang/$captions"
+              ffmpeg -hide_banner -nostdin -loglevel error -xerror \
+                -ss 1 -i "staged/$lang/$name" -frames:v 1 "staged/$lang/cover.png"
+              ffmpeg -hide_banner -nostdin -loglevel error -xerror \
+                -i "staged/$lang/$name" -f null -
+            done
+          '
       - name: Pin exact approved hashes, validate subtitles and media, block all uploader routes
         run: |
           set -euo pipefail
