@@ -1,0 +1,65 @@
+name: FLOWMINUTE YouTube Publisher Preflight Unit Tests (no secrets)
+
+on:
+  push:
+    paths:
+      - "scripts/publish_youtube.py"
+      - "scripts/test_publish_youtube_preflight.py"
+      - ".github/workflows/flowminute-youtube-publisher-preflight.yml"
+  pull_request:
+    paths:
+      - "scripts/publish_youtube.py"
+      - "scripts/test_publish_youtube_preflight.py"
+      - ".github/workflows/flowminute-youtube-publisher-preflight.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-youtube-publisher-preflight-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preflight_offline:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile source and run no-network caption/approval/schedule tests
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py
+          python -m unittest scripts.test_publish_youtube_preflight -v
+      - name: Confirm existing owner release is still fail-closed
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.publish_youtube import approval_allows_exact_video
+          names=['fm_20261102_agent_permissions_short_en',
+                 'fm_20261102_agent_permissions_short_hi',
+                 'fm_20261102_agent_permissions_long_hi']
+          for name in names:
+              manifest=Path("state/approvals")/(name+".json")
+              if not manifest.exists():
+                  print("NO_DEPLOYED_RELEASE_MANIFEST",name)
+                  continue
+              info=json.loads(manifest.read_text(encoding="utf-8"))
+              digest=info.get("approved_video_sha256") or info.get("candidate_video_sha256")
+              assert isinstance(digest,str) and len(digest)==64
+              assert not approval_allows_exact_video(info,digest), f"Unexpected approval: {name}"
+              print("FAIL_CLOSED_OWNER_RELEASE_PENDING",name)
+          PY

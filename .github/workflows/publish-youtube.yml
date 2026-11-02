@@ -18,7 +18,10 @@ permissions:
 
 jobs:
   publish:
-    if: ${{ vars.PUBLISH_ENABLED == 'true' }}
+    # Deprecated direct-publish workflow is permanently disabled.
+    # Use the approval- and SHA-pinned publish-artifact-youtube.yml instead.
+    # Do not remove this gate while the production release policy is disabled.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     environment: youtube-production
     steps:
