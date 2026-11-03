@@ -1,0 +1,90 @@
+{
+  "id": "fm_20261107_incognito_not_invisible_short_en",
+  "type": "short",
+  "language": "en",
+  "title": "Incognito Mode Is NOT Invisible! Here's What It Actually Hides #Shorts",
+  "description": "Does Incognito mode make you anonymous? No. Google Chrome explains that it limits browsing data saved on your device after the private session ends, but websites and network administrators may still observe activity. Firefox gives a similar warning. Downloads and bookmarks stay saved, and a signed-in website still knows the account. This original animated explainer uses fictional sample browsers and no real accounts.\n\nOfficial sources:\nGoogle Chrome Help: https://support.google.com/chrome/answer/95464\nMozilla Firefox Help: https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history\n\n#Incognito #Privacy #CyberSafety #BrowserTips #TechExplained #Shorts",
+  "tags": [
+    "Incognito mode",
+    "private browsing",
+    "Chrome privacy",
+    "Firefox",
+    "browser history",
+    "internet privacy",
+    "Flowminute Lab"
+  ],
+  "source_links": [
+    "https://support.google.com/chrome/answer/95464",
+    "https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history"
+  ],
+  "captions": [
+    {
+      "start": 0,
+      "end": 1.774,
+      "text": "That dark Incognito window?"
+    },
+    {
+      "start": 1.934,
+      "end": 3.58,
+      "text": "It does not make you invisible."
+    },
+    {
+      "start": 3.83,
+      "end": 11.242,
+      "text": "Google says Chrome limits the browsing history and site data saved on your device after you close every Incognito window."
+    },
+    {
+      "start": 11.492,
+      "end": 18.264,
+      "text": "But websites and organizations managing your network, like a school or internet provider, may still observe activity."
+    },
+    {
+      "start": 18.514,
+      "end": 21.481,
+      "text": "Firefox gives a similar warning for Private Browsing."
+    },
+    {
+      "start": 21.731,
+      "end": 25.751,
+      "text": "And downloaded files and saved bookmarks still remain on the device."
+    },
+    {
+      "start": 26.001,
+      "end": 29.041,
+      "text": "If you sign in, the website can recognize your account."
+    },
+    {
+      "start": 29.291,
+      "end": 34.123,
+      "text": "Incognito is useful when sharing a computer or keeping a separate temporary session."
+    },
+    {
+      "start": 34.373,
+      "end": 38.054,
+      "text": "But it is not a disguise, a VPN, or a promise of anonymity."
+    },
+    {
+      "start": 38.304,
+      "end": 42.712,
+      "text": "Remember: private on your device is not the same as invisible on the internet."
+    }
+  ],
+  "technical": {
+    "resolution": "1080x1920",
+    "fps": 24,
+    "frames": 1044,
+    "duration_seconds": 43.462,
+    "animated_scenes": 8,
+    "original_music": true,
+    "original_sound_effects": 8,
+    "synthetic_voice": "Kokoro af_heart",
+    "integrated_lufs": -15.1,
+    "true_peak_dbfs": -3.9,
+    "full_media_decode_passed": true
+  },
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "rights": "Original procedural animation and synthesized soundtrack/effects. Synthetic licensed Kokoro narration; no copyrighted stock music or external footage.",
+  "human_full_video_watch": "not asserted",
+  "youtube_video_id": "qRbCe5ozx5c"
+}
