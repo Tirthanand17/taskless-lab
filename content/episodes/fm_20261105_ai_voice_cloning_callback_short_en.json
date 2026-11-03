@@ -1,0 +1,102 @@
+{
+  "id": "fm_20261105_ai_voice_cloning_callback_short_en",
+  "type": "short",
+  "language": "en",
+  "title": "That Sounds Like Your Friend… But It Could Be AI! #Shorts",
+  "description": "A familiar voice on an urgent phone call is not proof of identity. The FBI has warned about criminals using AI-generated audio to impersonate people, while the FTC advises independently calling the person back on a trusted phone number. This original animated Short demonstrates a fictional scam call and three habits: pause, call back using a saved number, and consider a private family verification phrase. Never share one-time login codes. This is an illustrative safety explainer, not a recording of a real person or an endorsement of any product.\n\nPrimary sources:\nFTC on AI family-emergency voice scams: https://consumer.ftc.gov/consumer-alerts/2023/03/scammers-use-ai-enhance-their-family-emergency-schemes\nFBI AI-generated impersonation warning: https://www.fbi.gov/investigate/cyber/alerts/2025/senior-us-officials-impersonated-in-malicious-messaging-campaign\nFBI generative AI fraud warning: https://www.ic3.gov/psa/2024/psa241203\n\n#AIVoice #Deepfake #ScamAlert #CyberSecurity #TechExplained #Shorts",
+  "tags": [
+    "AI voice cloning",
+    "AI scams",
+    "deepfake audio",
+    "callback verification",
+    "scam awareness",
+    "cyber safety",
+    "Flowminute Lab"
+  ],
+  "captions": [
+    {
+      "start": 0,
+      "end": 3.179,
+      "text": "That urgent call sounds exactly like someone you know."
+    },
+    {
+      "start": 3.429,
+      "end": 5.626,
+      "text": "What if it's an AI-cloned voice?"
+    },
+    {
+      "start": 5.796,
+      "end": 13.34,
+      "text": "The FBI warns that criminals use AI-generated audio to impersonate public figures and people you trust."
+    },
+    {
+      "start": 13.59,
+      "end": 15.851,
+      "text": "A familiar voice is not proof."
+    },
+    {
+      "start": 16.101,
+      "end": 21.178,
+      "text": "If someone demands money or a login code, treat the urgency as a warning."
+    },
+    {
+      "start": 21.428,
+      "end": 24.564,
+      "text": "Step one: stop and hang up before sending anything."
+    },
+    {
+      "start": 24.814,
+      "end": 29.788,
+      "text": "Step two: call back using a number you've already saved, not one the caller gives you."
+    },
+    {
+      "start": 30.038,
+      "end": 36.403,
+      "text": "Step three: agree on a private family verification phrase, and never share one-time account codes."
+    },
+    {
+      "start": 36.653,
+      "end": 41.621,
+      "text": "AI can imitate voices, but a calm independent check can stop a scam."
+    },
+    {
+      "start": 41.871,
+      "end": 44.672,
+      "text": "Verify the caller, not just the sound."
+    }
+  ],
+  "video_master_sha256": "f7150ab75d3b6fde38f241cbd3f680f393ab0345a3bbc071bc515ffe96898dfd",
+  "master_filename": "FLOWMINUTE_20261105_AI_VOICE_SCAM_POLISHED_SHORT.mp4",
+  "duration_seconds": 45.672,
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24,
+    "video": "H.264",
+    "audio": "AAC stereo"
+  },
+  "audio_master": {
+    "integrated_lufs": -15.9,
+    "true_peak_dbfs": -1.8,
+    "voice": "Kokoro am_michael, original synthetic narration",
+    "original_a_minor_ambient_bed": true,
+    "original_sfx_count": 7,
+    "no_third_party_music": true
+  },
+  "rights": "Original procedural animations and synthesized music/effects. Kokoro voice model, no impersonation or real caller recording; no third-party media clips.",
+  "research_sources": [
+    "https://consumer.ftc.gov/consumer-alerts/2023/03/scammers-use-ai-enhance-their-family-emergency-schemes",
+    "https://www.fbi.gov/investigate/cyber/alerts/2025/senior-us-officials-impersonated-in-malicious-messaging-campaign",
+    "https://www.ic3.gov/psa/2024/psa241203"
+  ],
+  "visual_safety": "Illustrated anonymous fake phone call; no real voice clone, personal names or phone numbers.",
+  "technical_qa": {
+    "full_h264_aac_decode_passed": true,
+    "frame_count": 1097,
+    "storyboard_contact_sheet_checked": true,
+    "caption_cue_count": 10
+  },
+  "human_full_watch_or_listen": "not asserted; continuing owner's autonomous production and scheduling workflow",
+  "production_channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "youtube_video_id": "n8F4Be-QFiE"
+}
