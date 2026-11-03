@@ -1,0 +1,98 @@
+{
+  "id": "fm_20261106_photo_gps_metadata_short_en",
+  "type": "short",
+  "language": "en",
+  "title": "Your Photo Could Reveal Your Location! Check This #Shorts",
+  "description": "Sharing a photo sometimes reveals more than pixels: some cameras save GPS metadata. Apple's Photos guide explains how to review location and turn it off in sharing options. Google Photos explains that sharing metadata varies by app, album, original-file export and location settings. Even without GPS metadata, visible landmarks may reveal places. This original animated demonstration uses only a fictional landscape and fake coordinates; no user's private location or identifiable photo is shown.\n\nPrimary sources:\nApple Photos location metadata: https://support.apple.com/guide/personal-safety/manage-location-metadata-in-photos-ips0d7a5df82/web\nGoogle Photos sharing: https://support.google.com/photos/answer/6153599\n\n#Privacy #EXIF #PhotoTips #LocationSafety #TechExplained #Shorts",
+  "tags": [
+    "photo metadata",
+    "EXIF",
+    "location privacy",
+    "GPS tagging",
+    "iPhone Photos",
+    "Google Photos",
+    "privacy tips",
+    "Flowminute Lab"
+  ],
+  "captions": [
+    {
+      "start": 0,
+      "end": 2.275,
+      "text": "That photo might contain more than pixels."
+    },
+    {
+      "start": 2.525,
+      "end": 7.997,
+      "text": "Some cameras save GPS coordinates in photo metadata, revealing where a picture was taken."
+    },
+    {
+      "start": 8.247,
+      "end": 11.384,
+      "text": "Apple says sharing a photo can include that location."
+    },
+    {
+      "start": 11.634,
+      "end": 15.088,
+      "text": "Google says the behavior depends on the sharing app and settings."
+    },
+    {
+      "start": 15.338,
+      "end": 17.035,
+      "text": "Want a fast privacy check?"
+    },
+    {
+      "start": 17.205,
+      "end": 21.886,
+      "text": "On iPhone, open Photos and inspect a picture's information panel for a map."
+    },
+    {
+      "start": 22.136,
+      "end": 25.842,
+      "text": "Before sharing, tap Share, then Options, and turn Location off."
+    },
+    {
+      "start": 26.092,
+      "end": 29.664,
+      "text": "On Android, review location tagging in your Camera settings."
+    },
+    {
+      "start": 29.914,
+      "end": 35.037,
+      "text": "Some platforms remove GPS metadata, but sending an original file may preserve it."
+    },
+    {
+      "start": 35.287,
+      "end": 39.381,
+      "text": "And even without GPS, landmarks in the picture can reveal a place."
+    },
+    {
+      "start": 39.631,
+      "end": 42.394,
+      "text": "Check your photo, check the sharing method, then send."
+    }
+  ],
+  "video_master_sha256": "1e0b713b21114d9823004b25a930fb63716520a66d6eb00f70b4291117ff994a",
+  "master_file": "FLOWMINUTE_20261106_PHOTO_GPS_METADATA_SHORT.mp4",
+  "duration_seconds": 43.244,
+  "production": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24,
+    "frames": 1038,
+    "animation_scenes": 8,
+    "caption_cues": 11,
+    "original_ambient_music": true,
+    "original_sfx_count": 8,
+    "synthetic_voice": "Kokoro af_heart",
+    "rights": "Original visuals/music/SFX and permissively licensed synthetic speech. No external footage, photos, or copied songs.",
+    "full_media_decode": true
+  },
+  "fact_check_sources": [
+    "https://support.apple.com/guide/personal-safety/manage-location-metadata-in-photos-ips0d7a5df82/web",
+    "https://support.google.com/photos/answer/6153599"
+  ],
+  "fictional_sample": true,
+  "no_real_location_information": true,
+  "human_full_video_review": "not asserted",
+  "youtube_video_id": "MfryKP6G5zE"
+}
