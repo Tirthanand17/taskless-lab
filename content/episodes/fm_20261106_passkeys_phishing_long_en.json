@@ -1,0 +1,193 @@
+{
+  "id": "fm_20261106_passkeys_phishing_long_en",
+  "type": "long",
+  "language": "en",
+  "title": "Passkeys Explained: How Passwordless Login Stops Phishing (and What It Can't Fix) | FLOWMINUTE LAB",
+  "description": "Passkeys explained simply, with original animated diagrams: public vs private keys, device biometric/PIN approval, website domain binding, phishing resistance, synced vs device-bound credentials, lost-phone recovery and security tradeoffs. This is an educational illustration, not a login to any real account.\n\nPrimary sources:\nFIDO Alliance: https://fidoalliance.org/passkeys/\nGoogle developers: https://developers.google.com/identity/passkeys\nNIST syncable authenticators: https://pages.nist.gov/800-63-4/sp800-63b/syncable/\nGoogle Account recovery guidance: https://support.google.com/accounts/answer/13548313\n\n#Passkeys #CyberSecurity #Passwordless #PhishingProtection #TechExplained",
+  "tags": [
+    "passkeys",
+    "phishing resistant authentication",
+    "public private key",
+    "WebAuthn",
+    "passwordless login",
+    "account recovery",
+    "FIDO2",
+    "digital security",
+    "Flowminute Lab"
+  ],
+  "captions": [
+    {
+      "start": 0,
+      "end": 3.243,
+      "text": "Signing in with your fingerprint can feel like magic."
+    },
+    {
+      "start": 3.493,
+      "end": 6.842,
+      "text": "No password typed, yet the website knows it's you."
+    },
+    {
+      "start": 7.092,
+      "end": 11.252,
+      "text": "So how do passkeys actually work, and why are they harder to phish?"
+    },
+    {
+      "start": 11.422,
+      "end": 16.966,
+      "text": "A passkey uses public-key cryptography instead of a reusable secret that you type."
+    },
+    {
+      "start": 17.216,
+      "end": 28.117,
+      "text": "Your device creates a key pair for the genuine website: a public key that the site can store, and a private key that stays protected on your device or in your passkey manager."
+    },
+    {
+      "start": 28.367,
+      "end": 31.375,
+      "text": "When you sign in, the site sends a fresh challenge."
+    },
+    {
+      "start": 31.625,
+      "end": 40.482,
+      "text": "Your device asks you to approve using its screen lock, fingerprint, face unlock, or PIN, then signs that challenge with the private key."
+    },
+    {
+      "start": 40.732,
+      "end": 44.145,
+      "text": "The website checks the signature using your public key."
+    },
+    {
+      "start": 44.395,
+      "end": 51.148,
+      "text": "Importantly, your fingerprint is checked locally: the website never receives your fingerprint or your private key."
+    },
+    {
+      "start": 51.398,
+      "end": 55.771,
+      "text": "Now imagine a fake sign-in page with a nearly identical address."
+    },
+    {
+      "start": 56.021,
+      "end": 66.696,
+      "text": "A passkey registered for the real domain cannot be used to authenticate on that imitation domain, because the browser and operating system bind it to the correct website."
+    },
+    {
+      "start": 66.946,
+      "end": 69.378,
+      "text": "This is what phishing-resistant means here."
+    },
+    {
+      "start": 69.628,
+      "end": 74.492,
+      "text": "It does not mean that every possible attack on an account becomes impossible."
+    },
+    {
+      "start": 74.742,
+      "end": 79.286,
+      "text": "Some passkeys are synced in encrypted form across a user's devices."
+    },
+    {
+      "start": 79.536,
+      "end": 84.089,
+      "text": "Others are bound to a physical security key or a particular device."
+    },
+    {
+      "start": 84.339,
+      "end": 91.204,
+      "text": "Syncing can help if you upgrade your phone, but the security of your account and the recovery process still matter."
+    },
+    {
+      "start": 91.454,
+      "end": 97.981,
+      "text": "NIST warns that cloud syncing and recovery introduce their own risks that services need to manage."
+    },
+    {
+      "start": 98.231,
+      "end": 100.343,
+      "text": "What happens if your phone is lost?"
+    },
+    {
+      "start": 100.513,
+      "end": 111.112,
+      "text": "Depending on the account and provider, you may use a second trusted device, another passkey, a hardware security key, or the service's account recovery flow."
+    },
+    {
+      "start": 111.362,
+      "end": 118.404,
+      "text": "Google also notes that adding a passkey does not necessarily remove the old password or recovery options."
+    },
+    {
+      "start": 118.654,
+      "end": 121.979,
+      "text": "Weak fallback methods can remain a path for attackers."
+    },
+    {
+      "start": 122.229,
+      "end": 124.533,
+      "text": "Here's your practical setup checklist."
+    },
+    {
+      "start": 124.783,
+      "end": 131.49,
+      "text": "First, add a passkey to a trusted account that supports it and protect your devices with a strong screen lock."
+    },
+    {
+      "start": 131.74,
+      "end": 139.391,
+      "text": "Second, keep a secure backup sign-in or recovery option, and review the account's list of passkeys after losing a device."
+    },
+    {
+      "start": 139.641,
+      "end": 146.868,
+      "text": "Third, use the passkey prompt only when you started the sign-in yourself, and read unusual requests before approving."
+    },
+    {
+      "start": 147.118,
+      "end": 152.771,
+      "text": "So remember the difference: passwords are reusable strings you can accidentally give away."
+    },
+    {
+      "start": 153.021,
+      "end": 158.796,
+      "text": "Passkeys prove control of a protected key for a specific website, without revealing that key."
+    },
+    {
+      "start": 159.046,
+      "end": 164.471,
+      "text": "Phishing resistance is a major improvement, not a promise of perfect security."
+    },
+    {
+      "start": 164.721,
+      "end": 169.659,
+      "text": "Check your recovery methods, secure your devices, and use passkeys where available."
+    }
+  ],
+  "video_master_sha256": "5c3a1b2d90675d83e08414c1f7247b387d346323464eb68b602da19e694018f6",
+  "master_filename": "FLOWMINUTE_20261106_PASSKEYS_EXPLAINED_LONG_EN.mp4",
+  "technical": {
+    "duration_seconds": 171.859,
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "frame_count": 4125,
+    "animated_scenes": 13,
+    "caption_cues": 29,
+    "full_h264_aac_decode": true,
+    "integrated_loudness_lufs": -16.9,
+    "true_peak_dbfs": -2,
+    "custom_thumbnail": "cover.jpg",
+    "original_ambient_soundtrack": true,
+    "original_sfx": true
+  },
+  "research_source_urls": [
+    "https://fidoalliance.org/passkeys/",
+    "https://developers.google.com/identity/passkeys",
+    "https://pages.nist.gov/800-63-4/sp800-63b/syncable/",
+    "https://support.google.com/accounts/answer/13548313"
+  ],
+  "rights": "13 original diagram animations, generated ambient soundtrack and sound effects, Kokoro am_michael synthetic speech; no third-party songs, stock or copied footage",
+  "sample_login_ui": "Illustrative non-working example domains, no actual credentials",
+  "owner_full_watch_or_listen": "not asserted; user instructed to create and schedule",
+  "youtube_video_id": "0NTkKhlcGtg",
+  "production_channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA"
+}
