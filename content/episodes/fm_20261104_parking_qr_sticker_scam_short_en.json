@@ -1,0 +1,83 @@
+{
+  "id": "fm_20261104_parking_qr_sticker_scam_short_en",
+  "type": "short",
+  "language": "en",
+  "title": "Fake QR Code at Parking? Spot THIS Before You Pay! #Shorts",
+  "description": "That parking-meter QR code may not be the original. The FTC warned in September 2026 that scammers can cover legitimate codes with fake stickers and redirect people to imitation payment pages. This original animated Short demonstrates three habits: check for stickers or tampering, inspect the full destination URL before opening it, and use the parking operator's verified app or website when uncertain. The QR image and payment screen shown are FICTIONAL and nonfunctional; no real payment was made or personal data collected. Original synthesized ambient music and sound effects; synthetic Kokoro narration.\n\nPrimary sources:\nFTC September 2026: https://consumer.ftc.gov/consumer-alerts/2026/09/see-qr-code-parked-somewhere-dont-scan-ityet\nFBI QR tampering prevention: https://www.ic3.gov/PSA/2022/PSA220118\nKokoro voice model license: https://huggingface.co/hexgrad/Kokoro-82M\n\n#QRcode #ScamAlert #CyberSafety #TechExplained #Shorts",
+  "tags": [
+    "QR code scams",
+    "parking QR code",
+    "quishing",
+    "cybersecurity",
+    "fake QR stickers",
+    "phishing prevention",
+    "Flowminute Lab"
+  ],
+  "captions": [
+    {
+      "start": 0,
+      "end": 3.936,
+      "text": "Before you scan a parking-meter QR code, here's a three-second warning."
+    },
+    {
+      "start": 4.186,
+      "end": 11.289,
+      "text": "In September twenty twenty-six, the Federal Trade Commission warned that scammers can cover real parking codes with fake stickers."
+    },
+    {
+      "start": 11.539,
+      "end": 17.405,
+      "text": "A fake code can send you to a convincing payment page, where entering your card details could expose them."
+    },
+    {
+      "start": 17.655,
+      "end": 20.792,
+      "text": "First, check if a new sticker covers the original code."
+    },
+    {
+      "start": 21.042,
+      "end": 24.934,
+      "text": "Second, preview the full website address and look for altered spelling."
+    },
+    {
+      "start": 25.184,
+      "end": 30.056,
+      "text": "Third, if you're unsure, use the parking company's official app or website instead."
+    },
+    {
+      "start": 30.306,
+      "end": 34.967,
+      "text": "QR codes are useful, but blind trust is risky; pause, check, then pay."
+    }
+  ],
+  "video_master_sha256": "8f097faad8b224999c86b844474e2c2156497e188cba3a5ca14047710bcf007c",
+  "master_filename": "FLOWMINUTE_20261104_PARKING_QR_SAFETY_POLISHED_SHORT.mp4",
+  "expected_duration_seconds": 35.958,
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24,
+    "video": "H.264",
+    "audio": "AAC 192 kbps stereo"
+  },
+  "audio_master": {
+    "integrated_lufs": -15,
+    "true_peak_dbfs": -3.4,
+    "original_d_minor_ambient_bed": true,
+    "original_sfx": true,
+    "sfx_count": 7,
+    "voice": "Kokoro af_heart",
+    "no_third_party_music": true
+  },
+  "rights": "Original animated drawn artwork and synthetic source-verified voice, music and SFX; no third-party audio/video, no working QR, no personal payment data",
+  "research_sources": [
+    "https://consumer.ftc.gov/consumer-alerts/2026/09/see-qr-code-parked-somewhere-dont-scan-ityet",
+    "https://www.ic3.gov/PSA/2022/PSA220118"
+  ],
+  "full_video_decode_passed": true,
+  "technical_media_qa": "Original full decoded AV master; exact 7 phrase SRT; storyboard contact sheet visually inspected",
+  "human_full_watch_or_listen": "not asserted; owner requested autonomous production and scheduling",
+  "youtube_channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "youtube_video_id": "6kSCllTcrDo",
+  "youtube_scheduled_publish_at_utc": "2026-11-04T15:00:00Z"
+}
