@@ -25,6 +25,11 @@ TOPICS = (
     ("ISO date validation", "Inspect dates using an explicit year month and day contract. Flag an invalid example without changing the original record."),
     ("duplicate conflict checks", "Compare duplicate keys in an invented dataset. Keep the conflicting records separate and request a documented review decision."),
 )
+WALKTHROUGHS = (
+    "Read an invented five-digit member identifier, execute a string-preserving CSV import, and compare each original leading zero to the computed program result.",
+    "Prepare three made-up calendar values in ISO order. Parse each date and generate an exception report for the mismatched input without guessing its meaning.",
+    "Create conflicting synthetic member records with identical keys but differing dates. Locate each pair and write a review list while keeping both source rows untouched.",
+)
 
 
 def fixture(index: int) -> tuple[dict, dict, dict]:
@@ -52,10 +57,7 @@ def fixture(index: int) -> tuple[dict, dict, dict]:
         "title": f"Practical tutorial for {name} with example values",
         "hook": f"Discover the {name} detail that changes this simple demonstration.",
         "viewer_benefit": f"Understand the {name} rule by following a small reversible technical example.",
-        "example_walkthrough": (
-            f"Create invented values specifically for {name}. Show the unchanged source records, "
-            f"execute one short check, and compare the actual result to the original inputs."
-        ),
+        "example_walkthrough": WALKTHROUGHS[index],
         "narration": (narration + " ") * (4 if slot["format"] == "short" else 14),
         "visual_beats": [
             f"Show step {number} of the {name} sample with labels, actual data and an animated transition."
@@ -113,9 +115,9 @@ class ClaimReviewDossierTests(unittest.TestCase):
         with self.assertRaises(EditorialGateError):
             build_review_dossier(proposal, slot, observations)
 
-    def test_script_changed_after_hash_rejected(self):
+    def test_unbounded_narration_change_rejected(self):
         proposal, slot, observations = fixture(0)
-        proposal["narration"] += " The modified narration was not in the source review."
+        proposal["narration"] += " This inserted draft material is not approved." * 200
         with self.assertRaises(EditorialGateError):
             build_review_dossier(proposal, slot, observations)
 
