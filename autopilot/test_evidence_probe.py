@@ -81,6 +81,24 @@ class FakeOpener:
                             status=self.status, returned_url=self.returned_url)
 
 
+class FeedFallbackOpener:
+    """Simulate a publisher that denies article requests but serves its own RSS."""
+    RSS = (b"<rss version='2.0'><channel><item>"
+           b"<title>AI agent research review and findings</title>"
+           b"<link>https://openai.com/index/research-paper</link>"
+           b"<pubDate>Wed, 04 Nov 2026 02:00:00 GMT</pubDate>"
+           b"</item></channel></rss>")
+
+    def __init__(self):
+        self.requests = []
+
+    def open(self, request, timeout):
+        self.requests.append(request.full_url)
+        if request.full_url == "https://openai.com/news/rss.xml":
+            return FakeResponse(request.full_url, body=self.RSS, mime="application/rss+xml")
+        raise urllib.error.HTTPError(request.full_url, 403, "Forbidden", {}, None)
+
+
 class EvidenceProbeTests(unittest.TestCase):
     def setUp(self):
         self.lead = sample_report()["leads"][0]
@@ -182,6 +200,33 @@ class EvidenceProbeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             probe_report(data, opener=opener)
         self.assertEqual(opener.requests, [])
+
+    def test_rss_fallback_observes_real_entry_but_not_article_or_fact(self):
+        opener = FeedFallbackOpener()
+        report = probe_report({"status": "leads_only_no_publish_authorization",
+                               "leads": [self.lead]}, clock=CLOCK, opener=opener, max_sources=1)
+        self.assertEqual(report["sources_fetched"], 0)
+        self.assertEqual(report["feed_entries_observed_only"], 1)
+        self.assertEqual(report["sources_observed_total"], 1)
+        self.assertEqual(report["sources_failed"], 0)
+        self.assertEqual(opener.requests,
+                         [self.lead["url"], "https://openai.com/news/rss.xml"])
+        observed = report["sources"][0]
+        self.assertEqual(observed["status"], "RSS_ENTRY_ONLY_ARTICLE_NOT_FETCHED")
+        self.assertFalse(observed["source_article_fetched"])
+        self.assertFalse(observed["facts_verified"])
+        self.assertEqual(len(observed["feed_entry_sha256"]), 64)
+        self.assertEqual(observed["response_sha256"], hashlib.sha256(opener.RSS).hexdigest())
+        self.assertNotIn("pubDate", json.dumps(observed))
+
+    def test_rss_fallback_must_match_actual_publisher_title_and_url(self):
+        opener = FeedFallbackOpener()
+        forged = dict(self.lead, title="A made up article headline not in the real RSS feed")
+        result = probe_report({"status": "leads_only_no_publish_authorization",
+                               "leads": [forged]}, clock=CLOCK, opener=opener, max_sources=1)
+        self.assertEqual(result["sources_observed_total"], 0)
+        self.assertEqual(result["sources_failed"], 1)
+        self.assertFalse(result["semantic_corroboration_performed"])
 
     def test_fetched_source_alone_never_grants_approval(self):
         result = probe_report(sample_report(), clock=CLOCK, opener=FakeOpener(), max_sources=3)
