@@ -17,6 +17,7 @@ import binascii
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
+import math
 import json
 import re
 from typing import Mapping, Sequence
@@ -311,6 +312,7 @@ def verify_mock_final_editorial_receipts(
     at=now.astimezone(timezone.utc)
     used_ids=set()
     used_keys=set()
+    used_public_keys=set()
     receipts=set()
     checked_roles=set()
     blocked=[]
@@ -351,8 +353,7 @@ def verify_mock_final_editorial_receipts(
             type(c.claimed_full_watch_seconds) is not int
             or c.claimed_full_watch_seconds < 0
             or (c.role=="human_full_watch_listen" and (
-                c.claimed_full_watch_seconds<docket["media_asset_hashes"][0].get("bytes",-1)*0
-                or c.claimed_full_watch_seconds<int(media_inputs["report"]["seconds"])
+                c.claimed_full_watch_seconds<math.ceil(media_inputs["report"]["seconds"])
             ))
             or (c.role!="human_full_watch_listen" and c.claimed_full_watch_seconds!=0)
             or (c.role=="altered_synthetic_disclosure"
@@ -372,6 +373,8 @@ def verify_mock_final_editorial_receipts(
             sig=base64.b64decode(record.signature_ed25519_b64,validate=True)
             if len(pub)!=32 or len(sig)!=64:
                 raise FinalEditorialEvidenceError("Malformed reviewer public key or detached signature")
+            if pub in used_public_keys:
+                raise FinalEditorialEvidenceError("Same key reused under another reviewer ID")
             Ed25519PublicKey.from_public_bytes(pub).verify(
                 sig,DOMAIN+canonical(asdict(c))
             )
@@ -380,6 +383,7 @@ def verify_mock_final_editorial_receipts(
         checked_roles.add(c.role)
         used_ids.add(c.reviewer_id)
         used_keys.add(c.key_id)
+        used_public_keys.add(pub)
         receipts.add(c.receipt_id)
         if c.decision!="MOCK_ACCEPT":
             blocked.append(c.role)
