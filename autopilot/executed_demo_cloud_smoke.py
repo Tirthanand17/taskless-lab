@@ -17,6 +17,11 @@ from autopilot.computed_demo_storyboards import (
     build_executed_demo, require_exact_demo, RECIPES,
 )
 from autopilot.independent_av_review import review_encoded_episode
+from autopilot.final_media_evidence_gate import (
+    create_unapproved_final_media_inventory,
+    require_exact_unapproved_inventory,
+    inspect_three_different_unapproved_media,
+)
 from autopilot.script_to_preview_bridge import build_signed_preview_plan
 from autopilot.signed_narrated_cloud_pack import produce_signed_narrated_demo
 from autopilot.test_script_continuity_gate import NOW, EXCLUDED, signed_fixture
@@ -47,6 +52,7 @@ def run_pack(model: Path, voices: Path) -> dict:
     reports=[]
     hashes=set()
     thumbs=set()
+    final_evidence_inventories=[]
     root=None
     try:
         with TemporaryDirectory(prefix="flowminute-b3d4c1-computed-no-publish-") as temp:
@@ -94,6 +100,26 @@ def run_pack(model: Path, voices: Path) -> dict:
                     frame_shas.add(digest)
                 if len(frame_shas)!=report["scene_count"]:
                     raise AssertionError("Computed storyboard visual pixels duplicated")
+                evidence_kwargs={
+                    "plan":plan,"proposal":proposal,"slot":slot,
+                    "observations":sources,"seal":seal,
+                    "external_script_anchor_sha256":anchor,
+                    "script_registry":registry,
+                    "excluded_creator_and_publisher_ids":EXCLUDED,
+                    "report":report,"episode_folder":folder,
+                    "demo_recipe":recipe,"now":NOW,
+                }
+                inventory=create_unapproved_final_media_inventory(**evidence_kwargs)
+                require_exact_unapproved_inventory(inventory,**evidence_kwargs)
+                if (
+                    inventory["asset_count"]!=report["scene_count"]+6
+                    or inventory["all_title_thumbnail_caption_visual_claims_verified"] is not False
+                    or inventory["sound_voice_music_license_rights_checked"] is not False
+                    or inventory["full_human_watch_listen_completed"] is not False
+                    or inventory["release_authorized"] is not False
+                ):
+                    raise AssertionError("Final exact-media inventory impersonates an editorial approval")
+                final_evidence_inventories.append(inventory)
                 if (
                     report["computed_test_example_executed"] is not True
                     or report["computed_example_evidence_sha256"]!=executed["evidence_packet_sha256"]
@@ -123,6 +149,9 @@ def run_pack(model: Path, voices: Path) -> dict:
                     "actual_source_data_computation":recipe,
                     "computed_evidence_sha256":executed["evidence_packet_sha256"],
                     "original_unapproved_thumbnail_sha256":thumb_sha,
+                    "exact_final_asset_inventory_sha256":inventory["unapproved_inventory_sha256"],
+                    "exact_final_asset_count":inventory["asset_count"],
+                    "srt_spoken_phrases_exact":inventory["srt_text_and_cue_timing"]["all_spoken_sentences_text_exactly_represented"],
                     "ffmpeg_lufs":independent["ffmpeg_actual_encoded_audio"]["integrated_lufs"],
                     "ffmpeg_true_peak_dbtp":independent["ffmpeg_actual_encoded_audio"]["true_peak_dbtp"],
                     "burned_caption_pixels":independent["caption_visible_changed_pixels"],
@@ -143,8 +172,17 @@ def run_pack(model: Path, voices: Path) -> dict:
                 or [x["format"] for x in reports]!=["short","long","short"]
                 or len({x["actual_voice"] for x in reports})!=3
                 or len({x["computed_evidence_sha256"] for x in reports})!=3
+                or len({x["exact_final_asset_inventory_sha256"] for x in reports})!=3
             ):
                 raise AssertionError("Three independently computed subject-specific video outputs incomplete")
+            cross=inspect_three_different_unapproved_media(final_evidence_inventories)
+            if (cross["semantic_originality_approved"] is not False
+                    or cross["human_fact_and_rights_reviews_complete"] is not False
+                    or cross["youtube_upload_enabled"] is not False
+                    or cross["release_authorized"] is not False):
+                raise AssertionError("Cross-episode file uniqueness forged content approval")
+            print("B3D4C2C1_THREE_EXACT_MP4_SRT_WAV_THUMB_SCENE_INVENTORIES_UNAPPROVED",
+                  json.dumps(cross,sort_keys=True),flush=True)
     finally:
         close=getattr(getattr(engine,"voices",None),"close",None)
         if callable(close):
@@ -160,6 +198,7 @@ def run_pack(model: Path, voices: Path) -> dict:
         "synthetic_data_only":True,
         "external_generative_provider_calls":0,
         "independent_semantic_claim_rights_checks_completed":False,
+        "three_rebuilt_exact_media_inventories_checked":len(final_evidence_inventories)==3,
         "originality_for_new_daily_content_verified":False,
         "private_durable_video_storage_connected":False,
         "all_video_thumb_and_voice_artifacts_deleted":True,
