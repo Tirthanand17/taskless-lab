@@ -1,0 +1,148 @@
+name: FlowMinute B3d4c2d1 Private Versioned Source and Media Escrow (MOTO ONLY; NO DEPLOY)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/private_versioned_media_escrow.py"
+      - "autopilot/test_private_versioned_media_escrow.py"
+      - "autopilot/ci_local_s3_escrow_drill.py"
+      - ".github/workflows/flowminute-b3d4c2d1-private-escrow.yml"
+      - "docs/adr/0030-b3d4c2d1-private-versioned-media-escrow.md"
+      - "docs/runbooks/branch2-private-cloud-owner-activation.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2d1-moto-only-no-external-credentials
+  cancel-in-progress: true
+
+jobs:
+  synthetic_media_exact_claim_and_storage_contract:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - name: Check out PR without persistent GitHub token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python ephemeral hosted
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public Ed25519 signed-story verifier
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Exact fake S3 emulator adversarial source-and-213-media tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_private_versioned_media_escrow \
+            autopilot.test_primary_claim_surface_docket \
+            autopilot.test_primary_sourced_storyboards
+      - name: Demonstrate no real owner reviewer or release authority
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from tempfile import TemporaryDirectory
+          from pathlib import Path
+          from datetime import datetime,timezone
+          from autopilot.test_private_versioned_media_escrow import CONFIG,fixture,FakeS3
+          from autopilot.private_versioned_media_escrow import prepare_exact_private_escrow,escrow_once_and_readback
+          with TemporaryDirectory(prefix="flowminute-synthetic-no-publish-") as tmp:
+              story,folder,report=fixture(Path(tmp),"long")
+              plan=prepare_exact_private_escrow(
+                  story=story,folder=folder,producer_report=report,config=CONFIG
+              )
+              result=escrow_once_and_readback(
+                  s3=FakeS3(),plan=plan,folder=folder,config=CONFIG,
+                  now=datetime.now(timezone.utc)
+              )
+              assert result["original_versioned_object_count"]==127
+              assert result["all_object_versions_independently_read_back"] is True
+              assert result["real_cloud_account_identity_and_bucket_iam_verified"] is False
+              assert result["actual_independent_factual_voice_rights_and_owner_review"] is False
+              assert result["real_cloud_backup_and_cross_region_restore_tested"] is False
+              assert result["release_authorized"] is False
+              print("B3D4C2D1_127_FAKE_LONG_MEDIA_OBJECTS_NEVER_A_PRODUCTION_RELEASE")
+          PY
+
+  real_boto3_http_against_disposable_local_moto_s3:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 22
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_DEFAULT_REGION: "us-east-1"
+      FLOWMINUTE_LOCAL_MOTO_ENDPOINT: "http://127.0.0.1:5000"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Read-only checkout and no saved GitHub auth
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.11 on disposable GitHub host
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install boto3 and local Moto S3 emulator only
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check \
+            'boto3>=1.35,<2' 'moto[server]>=5.1,<6'
+      - name: Start isolated loopback-only S3 mock API, never contact external AWS
+        run: |
+          set -euo pipefail
+          moto_server -H 127.0.0.1 -p 5000 > /tmp/flowminute-s3-emulator-stdout.log 2>&1 &
+          echo $! > /tmp/flowminute-s3-emulator.pid
+          ready=false
+          for attempt in $(seq 1 45); do
+            if curl -fsS --connect-timeout 2 --max-time 2 \
+                http://127.0.0.1:5000/ > /dev/null; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = true || {
+            tail -n 20 /tmp/flowminute-s3-emulator-stdout.log
+            exit 1
+          }
+          echo "B3D4C2D1_LOCAL_MOTO_LOOPBACK_ONLY_NO_EXTERNAL_AWS"
+      - name: Real boto3 HTTP versioned 213 synthetic media PUT + GET + 3 final manifests
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.ci_local_s3_escrow_drill
+      - name: Validate no external spend or cloud credential/publisher permission
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          test "$FLOWMINUTE_LOCAL_MOTO_ENDPOINT" = http://127.0.0.1:5000
+          echo "B3D4C2D1_EMULATOR_ONLY_REAL_AWS_INDEPENDENT_OWNER_APPROVAL_STILL_MISSING"
+      - name: Terminate local fake S3 process and destroy ephemeral test state
+        if: always()
+        run: |
+          if test -f /tmp/flowminute-s3-emulator.pid; then
+            kill "$(cat /tmp/flowminute-s3-emulator.pid)" || true
+          fi
+          rm -f /tmp/flowminute-s3-emulator.pid /tmp/flowminute-s3-emulator-stdout.log
+          echo "B3D4C2D1_ALL_EPHEMERAL_FAKE_MEDIA_REMOVED_NO_REAL_CLOUD_ASSETS"
