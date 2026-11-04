@@ -16,7 +16,7 @@ concurrency:
 jobs:
   research_scout:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 14
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,6 +24,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install actual FFmpeg and signed-review test prerequisites
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+          ffmpeg -hide_banner -version | head -n 1
       - name: Unit tests and security boundaries
         run: python -m unittest discover -s autopilot -p 'test_*.py' -v
       - name: Gather public unverified research leads
