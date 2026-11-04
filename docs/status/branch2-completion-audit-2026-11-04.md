@@ -50,3 +50,8 @@ This evaluation is a deliberately conservative approximation: prototype/test sof
 - Only a real owner-approved live system and remote YouTube readback can earn scores in the large remaining production categories.
 
 **Handoff:** Pending B3d4c2d3 source template validation is still NOT real owner-account activation. The next genuine blockers are out-of-band real owner cloud/billing/retention approval, separately enrolled human reviewers, protected deployed durable media/ledger and real final-media rights decisions. Prototype cloud/media contracts cannot earn the missing production percentages without actual real account, human and remote YouTube evidence. Keep all GitHub PR CI no-secrets/no-publishing defaults until requirements are met. Do not activate real services or incur charges without explicit permission.
+
+## CI provider contingency — CircleCI not yet connected (2026-11-04)
+
+The repo now contains a CircleCI 2.1 config at .circleci/config.yml, plus docs/runbooks/branch2-circleci-ci-migration.md, to provide five hosted read-only jobs for CloudFormation/schema and AWS topology, repository quality, official source and synthetic reviewer, local-only Moto versioned media and isolated Postgres backup/restore. A separate expensive Kokoro 3-video render is explicitly opt-in (full_media_regression defaults false). GitHub Actions 13-run queue was observed; exhausted GitHub Actions usage is unconfirmed. **No CircleCI GitHub App connection or actual CircleCI run is yet verified**, so this is code preparation only, not a passed CI gate or permission to merge PR #35. No real human reviewer, paid cloud, YouTube access or upload has been activated. Goal estimate 38%/62%; autonomous releases 0/21.
+
