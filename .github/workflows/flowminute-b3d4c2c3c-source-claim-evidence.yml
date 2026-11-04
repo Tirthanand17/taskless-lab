@@ -1,0 +1,109 @@
+name: FlowMinute B3d4c2c3c Live Primary Source and Exact Claim Surface Readback (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/primary_claim_surface_docket.py"
+      - "autopilot/public_primary_readback.py"
+      - "autopilot/test_primary_claim_surface_docket.py"
+      - "autopilot/primary_sourced_storyboards.py"
+      - "autopilot/full_topic_narrated_pack.py"
+      - ".github/workflows/flowminute-b3d4c2c3c-source-claim-evidence.yml"
+      - "docs/adr/0029-b3d4c2c3c-live-primary-claim-coverage.md"
+      - "docs/status/branch2-completion-audit-2026-11-04.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2c3c-source-review-evidence-no-privileges
+  cancel-in-progress: true
+
+jobs:
+  every_actual_spoken_visible_thumbnail_and_metadata_surface:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Read-only checkout with no saved GitHub auth
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Temporary GitHub-hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify 70 spoken and 32 scene title/value/actual SVG and unapproved public text surfaces
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_primary_claim_surface_docket \
+            autopilot.test_primary_sourced_storyboards
+      - name: Independently rederive all three no-release proof packages
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json
+          from autopilot.primary_claim_surface_docket import (
+              inspect_three_original_claim_dockets,
+              make_unapproved_claim_surface_docket,
+              require_exact_unapproved_claim_surface_docket,
+          )
+          r=inspect_three_original_claim_dockets()
+          assert r["exact_narration_sentence_cues"]==70
+          assert r["exact_scene_count"]==32
+          assert r["total_curated_atomic_claim_ids"]==14
+          assert r["distinct_primary_source_ids"]==6
+          assert r["release_authorized"] is False
+          for slot in ("short_am","long","short_pm"):
+              d=make_unapproved_claim_surface_docket(slot)
+              require_exact_unapproved_claim_surface_docket(d,slot)
+              assert d["source_pages_current_live_readback_completed"] is False
+              assert d["every_atomic_claim_semantically_supported_by_human"] is False
+              assert d["genuine_owner_fact_and_rights_approvals"] is False
+          print("B3D4C2C3C_ALL_ORIGINAL_NARRATION_VISIBLE_SVG_THUMB_METADATA_CLAIM_SURFACES_UNREVIEWED",
+                json.dumps(r,sort_keys=True))
+          PY
+
+  six_actual_official_live_https_primary_page_readbacks:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 13
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Read-only PR source, with no secret token persistence
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted Python HTTPS with checked system trust roots
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Read directly from six real NASA NIST and USGS HTTPS pages with strict marker and SHA checks
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.public_primary_readback
+      - name: Live readback never independently fact-certifies, grants rights or uploads
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_MODEL_SPEND_USD" = 0
+          test "$PUBLISH_ENABLED" = false
+          echo "B3D4C2C3C_LIVE_PUBLIC_SOURCE_MARKER_READBACK_NOT_AN_INDEPENDENT_HUMAN_EDITORIAL_APPROVAL"
