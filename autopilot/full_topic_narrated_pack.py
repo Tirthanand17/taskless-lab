@@ -30,7 +30,7 @@ from autopilot.full_pack_fixture import ExampleEpisode, Scene
 from autopilot.independent_av_review import review_encoded_episode
 from autopilot.primary_sourced_storyboards import (
     build_story, canonical, render_original_svg, require_exact_draft,
-    evaluate_three_draft_stories, StoryboardError,
+    evaluate_three_draft_stories, THUMB_CONTENT, StoryboardError,
 )
 from autopilot.signed_narrated_cloud_pack import VOICE_FOR_SLOT, inspect_dynamic_media
 
@@ -185,12 +185,7 @@ def _topic_thumbnail(story: dict,output: Path) -> str:
         raise TopicRenderError("Hosted DejaVu fonts are required for original title artwork") from exc
     d.rounded_rectangle((36,32,1244,688),radius=28,outline=accent,width=7)
     d.text((78,89),"FLOWMINUTE • ORIGINAL EDUCATION DRAFT",font=detail,fill=accent)
-    if story["theme"]=="lunar_signal":
-        main_lines=("MOON SIGNAL DELAY","1.28 SECONDS ONE WAY")
-    elif story["theme"]=="file_transfer":
-        main_lines=("MEGABITS ≠ MEGABYTES","40 s versus 41.94 s")
-    else:
-        main_lines=("EARTHQUAKE ENERGY","+1 MAGNITUDE ≈ 32×")
+    main_lines=THUMB_CONTENT[story["theme"]]["lines"]
     for i,line in enumerate(main_lines):
         d.text((78,211+i*115),line,font=main,fill=(240,245,252) if i==0 else accent)
     d.text((78,568),"UNAPPROVED · HUMAN FACT / RIGHTS REVIEW PENDING",
@@ -296,6 +291,26 @@ def _encode_moving_topic(
     return out
 
 
+def _independent_claim_surface_sha(story: dict) -> str:
+    """Re-enumerate canonical source-linked spoken and visible claim surfaces.
+
+    Revalidation makes the exact media bundle depend on its full proposed
+    public metadata/thumbnail/scene/caption review docket, but does not
+    turn proof of a hash into an independent human fact review.
+    """
+    from autopilot.primary_claim_surface_docket import (
+        make_unapproved_claim_surface_docket,
+    )
+    source_day=story["episode_id"][3:7]+"-"+story["episode_id"][7:9]+"-"+story["episode_id"][9:11]
+    record=make_unapproved_claim_surface_docket(story["slot"],source_day)
+    if record["source_draft_sha256"]!=story["draft_sha256"]:
+        raise TopicRenderError("Narrated original media disagrees with source/visual claim docket")
+    if (record["every_atomic_claim_semantically_supported_by_human"] is not False
+            or record["release_authorized"] is not False):
+        raise TopicRenderError("Source docket improperly claims real external human approval")
+    return record["unapproved_claim_surface_docket_sha256"]
+
+
 def _exact_assets(folder: Path,story: dict,report: dict) -> dict:
     """Re-check all actual audio/SRT/MP4/thumb/moving SVG scene bytes."""
     expected={
@@ -334,6 +349,8 @@ def _exact_assets(folder: Path,story: dict,report: dict) -> dict:
         "episode_id":story["episode_id"],
         "source_draft_sha256":story["draft_sha256"],
         "primary_source_ids":sorted(story["primary_sources"]),
+        "all_spoken_visual_thumbnail_title_description_docket_sha256":
+            _independent_claim_surface_sha(story),
         "format":story["format"],
         "theme":story["theme"],
         "exact_file_hashes_and_sizes":records,
