@@ -248,6 +248,36 @@ class ScriptDraftAgentTests(unittest.TestCase):
         self.assertEqual(payload["generationConfig"]["responseSchema"]["type"], "object")
         self.assertFalse(result["youtube_upload_enabled"])
 
+    def test_current_38_flash_default_has_low_thinking_not_deprecated_temperature(self):
+        grant = model_grant()
+        self.assertEqual(grant.model, "gemini-3.8-flash")
+        fake = FakeTransport()
+        propose_with_explicit_gemini_grant(
+            self.draft_input, grant=grant, api_key="ephemeral_fixture_key_"+"x"*24,
+            transport=fake,
+        )
+        req, _ = fake.requests[0]
+        payload = json.loads(req.data)
+        config = payload["generationConfig"]
+        self.assertEqual(config["thinkingConfig"], {"thinkingLevel":"low"})
+        self.assertNotIn("temperature",config)
+        self.assertNotIn("candidateCount",config)
+        self.assertEqual(config["maxOutputTokens"],4096)
+        self.assertIn("gemini-3.8-flash:generateContent",req.full_url)
+
+    def test_old_25_flash_explicit_grant_uses_legacy_config_only(self):
+        grant = ModelGrant(**{**vars(model_grant()),"model":"gemini-2.5-flash"})
+        fake = FakeTransport()
+        propose_with_explicit_gemini_grant(
+            self.draft_input,grant=grant,api_key="ephemeral_fixture_key_"+"x"*24,
+            transport=fake,
+        )
+        req, _ = fake.requests[0]
+        config = json.loads(req.data)["generationConfig"]
+        self.assertEqual(config["temperature"],.25)
+        self.assertNotIn("thinkingConfig",config)
+        self.assertIn("gemini-2.5-flash:generateContent",req.full_url)
+
     def test_model_finish_reason_other_than_stop_rejected(self):
         fake = FakeTransport({"candidates":[{"finishReason":"MAX_TOKENS","content":{"parts":[{"text":json.dumps(short_proposal())}]}}]})
         with self.assertRaises(ScriptDraftError):

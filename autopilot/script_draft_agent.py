@@ -35,7 +35,7 @@ class ScriptDraftError(ValueError):
 @dataclass(frozen=True)
 class ModelGrant:
     """Not a provider account assertion: owner/signed CI configuration is required."""
-    model: str = "gemini-2.5-flash"
+    model: str = "gemini-3.8-flash"
     owner_approved_external_inference: bool = False
     owner_accepted_provider_data_use: bool = False
     free_tier_project_verified: bool = False
@@ -248,12 +248,19 @@ def propose_with_explicit_gemini_grant(
         },
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "generationConfig": {
-            "temperature": 0.25,
-            "maxOutputTokens": 4096,
+            "maxOutputTokens": 4096 if draft_input["format"]=="short" else 8192,
             "responseMimeType": "application/json",
             "responseSchema": SCRIPT_SCHEMA,
         },
     }
+    # Current Gemini 3.8 Flash supports low/medium/high thinking levels
+    # but no longer uses the legacy sampling temperature. 2.5 uses the
+    # older configuration and is not guaranteed for new projects. All
+    # variants remain fully gated by private owner-approved free-tier grants.
+    if grant.model == "gemini-3.8-flash":
+        payload["generationConfig"]["thinkingConfig"] = {"thinkingLevel": "low"}
+    elif grant.model == "gemini-2.5-flash":
+        payload["generationConfig"]["temperature"] = 0.25
     req = urllib.request.Request(
         ENDPOINT + grant.model + ":generateContent",
         data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
