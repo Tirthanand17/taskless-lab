@@ -47,7 +47,7 @@ def parse_loudnorm(stderr: str) -> dict:
     if measured["input_i"] < -31 or measured["input_i"] > -7:
         raise ReviewerError("Audio grossly quiet or overloaded: requires correction")
     if measured["input_tp"] > 0:
-        raise ReviewerError("Unsafe true-peak audio")
+        raise ReviewerError(f"Unsafe actual encoded true-peak audio {measured['input_tp']:.2f} dBTP; zero-dBTP ceiling")
     return {
         "integrated_lufs":round(measured["input_i"],2),
         "true_peak_dbtp":round(measured["input_tp"],2),
