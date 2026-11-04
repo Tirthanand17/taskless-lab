@@ -423,7 +423,7 @@ class MockFinalEditorialEvidenceTests(unittest.TestCase):
             self.verify(records=rec)
 
     def test_duplicate_role_or_receipt_replay_denied(self):
-        for position in (0,1):
+        for position in (0,2):
             rec=list(self.reviews)
             rec[1]=rec[position]
             with self.assertRaises(FinalEditorialEvidenceError):
