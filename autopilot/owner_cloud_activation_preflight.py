@@ -38,12 +38,19 @@ S3_BUCKET_SIDS = frozenset({
     "ExplicitDenyNonComplianceLockUpload",
     "WriterOnlyFullVersionedUnapprovedMediaPrefix",
     "AuditorOnlyReadSpecificVersions",
+    "AuditorOnlyReadBucketConfiguration",
     "ProhibitRuntimeIdentityDeletesOrRetentionBypass",
 })
 S3_WRITER_ACTIONS = frozenset({
     "s3:PutObject","s3:PutObjectRetention","s3:GetObjectVersion","s3:GetObjectRetention",
 })
 S3_AUDITOR_ACTIONS = frozenset({"s3:GetObjectVersion","s3:GetObjectRetention"})
+S3_AUDITOR_BUCKET_READ_ACTIONS = frozenset({
+    "s3:GetBucketVersioning","s3:GetBucketLocation",
+    "s3:GetBucketObjectLockConfiguration","s3:GetBucketPublicAccessBlock",
+    "s3:GetEncryptionConfiguration","s3:GetBucketOwnershipControls",
+    "s3:GetBucketPolicyStatus","s3:GetBucketPolicy","s3:GetBucketTagging",
+})
 KMS_SIDS = frozenset({
     "OwnerAccountAdministratorsRetainKeyControl",
     "MediaWriterKmsForS3Only",
@@ -169,6 +176,16 @@ def _expected_s3_policy(scope:OwnerSelectedStorageScope,body:dict)->None:
                 or _set_actions(st.get("Action"))!=actions or st.get("Resource")!=obj
                 or st.get("Condition") not in (None,{})):
             raise ActivationBoundaryError("Unauthorized writer/reviewer role or too broad S3 permission")
+    # The independent auditor must really be able to READ exactly the nine
+    # bucket-config APIs invoked above. Granting only GetObjectVersion would
+    # make an otherwise valid owner-operated deployment impossible to audit.
+    bucket_read=records["AuditorOnlyReadBucketConfiguration"]
+    if (bucket_read.get("Effect")!="Allow"
+            or bucket_read.get("Principal")!={"AWS":scope.auditor_role_arn}
+            or _set_actions(bucket_read.get("Action"))!=S3_AUDITOR_BUCKET_READ_ACTIONS
+            or bucket_read.get("Resource")!=arn
+            or bucket_read.get("Condition") not in (None,{})):
+        raise ActivationBoundaryError("Auditor may only inspect nine exact S3 bucket settings; no writer/admin actions")
     deny=records["ProhibitRuntimeIdentityDeletesOrRetentionBypass"]
     if (deny.get("Effect")!="Deny"
             or set(deny.get("Principal",{}).get("AWS",[]))!={
