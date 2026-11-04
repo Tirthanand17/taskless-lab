@@ -132,6 +132,7 @@ jobs:
           assert r["release_authorized"] is False
           assert r["human_editorial_approval"] is False
           assert r["youtube_upload_enabled"] is False
+          assert all(v["ffmpeg_actual_encoded_audio"]["typical_online_video_target_diagnostic"] for v in r["episodes"])
           assert all(v["burned_caption_independently_observed"] for v in r["episodes"])
           assert all(v["distinct_encoded_scenes_observed"] for v in r["episodes"])
           assert all(v["every_caption_matches_original_spoken_text"] for v in r["episodes"])
