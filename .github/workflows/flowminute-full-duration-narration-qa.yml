@@ -1,0 +1,124 @@
+name: FlowMinute B3b Full-Duration Narrated Cloud Pack (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/full_pack_fixture.py"
+      - "autopilot/cloud_full_duration_pack.py"
+      - "autopilot/test_cloud_full_duration_pack.py"
+      - ".github/workflows/flowminute-full-duration-narration-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3b-real-full-pack-no-publish
+  cancel-in-progress: true
+
+jobs:
+  cloud_three_video_full_duration_qa:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 43
+    env:
+      CI: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+      PYTHONUNBUFFERED: "1"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+
+    steps:
+      - name: Checkout public source without persistent token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up CPU-only GitHub Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate synthetic demonstration and caption contracts
+        run: |
+          set -euo pipefail
+          python -m unittest -v autopilot.test_cloud_full_duration_pack
+
+      - name: Install only public CPU-only dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng libsndfile1 fonts-dejavu-core
+          python -m pip install --disable-pip-version-check \
+            'kokoro-onnx==0.6.1' 'soundfile>=0.12,<1' 'Pillow>=11,<13' 'numpy>=1.26,<3'
+          python - <<'PY'
+          import importlib.metadata, subprocess
+          for name in ("kokoro-onnx","soundfile","Pillow"):
+              print("PUBLIC_CPU_DEPENDENCY",name,importlib.metadata.version(name))
+          filters=subprocess.check_output(["ffmpeg","-hide_banner","-filters"],text=True)
+          assert "subtitles" in filters, "FFmpeg must support libass captions"
+          PY
+
+      - name: Download and verify immutable public Kokoro model and voices
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-full-model
+          cd /tmp/flowminute-full-model
+          root="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 240 \
+            --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$root/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+          echo "FULL_PACK_UPSTREAM_SHA256_VERIFIED"
+
+      - name: Produce 3 full spoken original demo videos and independently inspect them
+        run: |
+          set -euo pipefail
+          python -m autopilot.cloud_full_duration_pack \
+            --model /tmp/flowminute-full-model/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-full-model/voices-v1.0.bin \
+            --output-dir /tmp/flowminute-full-pack
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          report=json.loads(Path("/tmp/flowminute-full-pack/technical_report.json").read_text(encoding="utf8"))
+          assert report["status"] == "FULL_DURATION_EDUCATIONAL_TECHNICAL_BENCHMARK_NOT_PUBLISHABLE"
+          assert report["cloud_runner_no_laptop"] is True
+          assert report["computed_duplicate_count"] == 1 and report["computed_date_exception_count"] == 1
+          videos=report["videos"]
+          assert len(videos) == 3
+          assert [v["kind"] for v in videos] == ["short","long","short"]
+          assert len({v["voice"] for v in videos}) == 3
+          assert len({v["sha256"] for v in videos}) == 3
+          assert report["youtube_upload_enabled"] is False and report["youtube_schedule_enabled"] is False
+          assert report["full_video_human_watch_and_rights_approved"] is False
+          assert report["external_paid_calls"] == 0
+          assert all(v["full_decode_passed"] and v["subtitles_burned"] for v in videos)
+          assert all(v["human_full_watch_asserted"] is False for v in videos)
+          lines=[
+            "# B3b full-duration GitHub-only technical benchmark — NEVER PUBLISH",
+            "",
+            "Fresh Kokoro speech, original programmatic CSV graphics, scene-level aligned burnt-in subtitles, original transition sounds and full FFmpeg decode.",
+            "",
+            "| Episode | Format | Duration | Resolution | Scenes | Caption cues | Voice seconds | MP4 bytes |",
+            "|---|---|---:|---|---:|---:|---:|---:|",
+          ]
+          for v in videos:
+              lines.append(f'| {v["episode"]} | {v["kind"]} | {v["seconds"]}s | {v["resolution"]} | {v["scene_count"]} | {v["narration_cues"]} | {v["tts_seconds"]}s | {v["bytes"]:,} |')
+          lines += ["",f'**Total benchmark runtime:** {report["total_seconds"]} seconds.',
+                    "", "**NOT release ready.** Scripts are human-authored illustrative fixtures, not AI-created or independently fact-checked. Rights, original voice performance and human complete-watch approval are unasserted.",
+                    "", "No cloud credentials, publishing, private storage or Nirala access. Files destroyed after each job."]
+          Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf8").write("\n".join(lines)+"\n")
+          print("B3B_REAL_FULL_DURATION_3_VIDEO_PACK_TECHNICAL_QA_PASSED_NOT_PUBLISHABLE")
+          PY
+
+      - name: Remove model, narrated MP4s and all original outputs, even on failure
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-full-pack /tmp/flowminute-full-model
+          echo "DISCARDED_EPHEMERAL_PRIVATE_VIDEO_TEST_FILES_AND_MODEL_WEIGHTS"
