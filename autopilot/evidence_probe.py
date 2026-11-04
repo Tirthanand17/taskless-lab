@@ -13,11 +13,13 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import xml.etree.ElementTree as ET
 import urllib.error
 import urllib.request
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from autopilot.scout import FEEDS, _article_link, _find_text
 from autopilot.daily_cloud_plan import (
     APPROVED_RESEARCH_ORIGINS,
     PlanError,
@@ -146,6 +148,69 @@ def probe_source(
     }
 
 
+
+def probe_feed_entry(lead: dict, *, clock: dt.datetime | None = None,
+                     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+                     opener=None) -> dict:
+    """Evidence fallback: observe an existing RSS headline, NOT article content or truth."""
+    url = verify_public_source_url(lead.get("url"), lead.get("publisher"))
+    feed = dict(FEEDS).get(lead["publisher"])
+    if not feed:
+        raise EvidenceError("No pinned RSS feed for publisher")
+    verify_public_source_url(feed, lead["publisher"])
+    if not 1 <= timeout_seconds <= 15:
+        raise EvidenceError("Unsafe timeout")
+    clock = clock or dt.datetime.now(UTC)
+    if clock.tzinfo is None or clock.utcoffset() is None:
+        raise EvidenceError("Timezone-aware observation clock required")
+    agent = opener or urllib.request.build_opener(RejectRedirect())
+    request = urllib.request.Request(
+        feed, headers={"User-Agent": "FlowMinutePublicResearch/1.0", "Accept": "application/rss+xml,application/atom+xml,application/xml,text/xml,*/*"}
+    )
+    try:
+        with agent.open(request, timeout=timeout_seconds) as response:
+            if response.status != 200 or response.geturl() != feed:
+                raise EvidenceError("Feed URL redirected or returned non-200 response")
+            mime = response.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
+            if mime not in ("application/rss+xml", "application/atom+xml",
+                            "application/xml", "text/xml", "text/plain", "text/html"):
+                raise EvidenceError("Invalid feed content type")
+            body = response.read(1_048_577)
+            if not 96 <= len(body) <= 1_048_576:
+                raise EvidenceError("Unbounded RSS feed body")
+        root = ET.fromstring(body)
+        items = (n for n in root.iter() if n.tag.split("}")[-1] in ("entry", "item"))
+        selected = next((item for item in items if
+            _article_link(item) == url and
+            " ".join(_find_text(item, ("title",)).split())[:200] == lead["title"]), None)
+        if selected is None:
+            raise EvidenceError("Article headline not found in observed publisher feed")
+    except (urllib.error.HTTPError, urllib.error.URLError,
+            TimeoutError, OSError, ET.ParseError) as exc:
+        raise EvidenceError("Public RSS entry unavailable: " + type(exc).__name__) from exc
+    return {
+        "source_id": hashlib.sha256(url.encode("utf-8")).hexdigest()[:24],
+        "publisher": lead["publisher"],
+        "title": lead["title"],
+        "source_url": url,
+        "observed_final_url": feed,
+        "observed_at_utc": clock.astimezone(UTC).isoformat(),
+        "http_status": 200,
+        "response_content_type": mime,
+        "body_bytes_hashed": len(body),
+        "response_sha256": hashlib.sha256(body).hexdigest(),
+        "feed_entry_sha256": hashlib.sha256(ET.tostring(selected, encoding="utf-8")).hexdigest(),
+        "status": "RSS_ENTRY_ONLY_ARTICLE_NOT_FETCHED",
+        "source_article_fetched": False,
+        "claim_level_evidence_extracted": False,
+        "independent_corroboration_confirmed": False,
+        "facts_verified": False,
+        "rights_verified": False,
+        "source_text_or_image_stored": False,
+        "youtube_release_authorized": False,
+    }
+
+
 def probe_report(scout_report: object, *, clock: dt.datetime | None = None,
                  max_sources: int = MAX_SOURCES, opener=None) -> dict:
     """Errors are counted without exposing page bodies or URL query credentials."""
@@ -155,19 +220,26 @@ def probe_report(scout_report: object, *, clock: dt.datetime | None = None,
     for lead in selected:
         try:
             successes.append(probe_source(lead, clock=clock, opener=opener))
-        except EvidenceError as exc:
-            failures.append({
-                "publisher": lead["publisher"],
-                "source_id": hashlib.sha256(lead["url"].encode()).hexdigest()[:24],
-                "error_type": "SOURCE_FETCH_FAILED",
-                "error_class": "STRUCTURAL_OR_REMOTE_ERROR",
-            })
+        except EvidenceError:
+            # The original publisher's RSS entry is useful provenance when
+            # a page blocks bots. This is NOT independent factual support.
+            try:
+                successes.append(probe_feed_entry(lead, clock=clock, opener=opener))
+            except EvidenceError:
+                failures.append({
+                    "publisher": lead["publisher"],
+                    "source_id": hashlib.sha256(lead["url"].encode()).hexdigest()[:24],
+                    "error_type": "SOURCE_AND_FEED_UNAVAILABLE",
+                    "error_class": "STRUCTURAL_OR_REMOTE_ERROR",
+                })
     return {
         "schema_version": 1,
         "generated_at_utc": clock.astimezone(UTC).isoformat(),
         "status": PROBE_STATUS,
         "source_probes_attempted": len(selected),
-        "sources_fetched": len(successes),
+        "sources_fetched": sum(x["status"] == "SOURCE_FETCHED_NOT_FACT_CHECKED" for x in successes),
+        "feed_entries_observed_only": sum(x["status"] == "RSS_ENTRY_ONLY_ARTICLE_NOT_FETCHED" for x in successes),
+        "sources_observed_total": len(successes),
         "sources_failed": len(failures),
         "distinct_publishers_fetched": len({s["publisher"] for s in successes}),
         "sources": successes,
@@ -202,7 +274,8 @@ def main() -> None:
     print(json.dumps({
         "status": result["status"],
         "attempted": result["source_probes_attempted"],
-        "fetched": result["sources_fetched"],
+        "direct_page_fetched": result["sources_fetched"],
+        "feed_only_observed": result["feed_entries_observed_only"],
         "failed": result["sources_failed"],
         "publish_authorized": False,
         "factual_claims_verified": 0,
