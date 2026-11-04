@@ -178,7 +178,7 @@ def original_frame(plan: dict, index: int, out: Path) -> str:
     palettes = (
         ((20, 91, 122), (48, 145, 179)),
         ((103, 61, 100), (178, 102, 160)),
-        ((35, 106, 81), (96, 187, 137)),
+        ((122, 139, 63), (229, 189, 71)),
     )
     surface, accent = palettes[index % 3]
     draw.rounded_rectangle((76,panel_top,width-76,panel_bottom),22,fill=surface)
