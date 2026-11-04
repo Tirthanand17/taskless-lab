@@ -1,0 +1,396 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "NOT DEPLOYED: manual owner-approved private FlowMinute UNAPPROVED media escrow. COMPLIANCE lock retention may incur irreversible storage costs. Never deploy from pull_request or without independent owner/billing/reviewer authorization.",
+  "Parameters": {
+    "DeploymentSuffix": {
+      "Type": "String",
+      "Description": "Owner-selected lower-case unique 4-12 character suffix; NO default; used for bucket naming.",
+      "AllowedPattern": "^[a-z0-9]{4,12}$",
+      "MinLength": 4,
+      "MaxLength": 12
+    },
+    "WriterRoleArn": {
+      "Type": "String",
+      "Description": "Owner-provisioned separate S3 media writer role ARN in THIS AWS account (not assumed by public GitHub workflows).",
+      "AllowedPattern": "^arn:aws:iam::[0-9]{12}:role/[A-Za-z0-9+=,.@_/-]{1,128}$"
+    },
+    "AuditorRoleArn": {
+      "Type": "String",
+      "Description": "Separate owner-provisioned read-only evidence and media review role ARN in THIS account; MUST be distinct from writer.",
+      "AllowedPattern": "^arn:aws:iam::[0-9]{12}:role/[A-Za-z0-9+=,.@_/-]{1,128}$"
+    },
+    "RetentionDays": {
+      "Type": "Number",
+      "Description": "Owner-approved legal COMPLIANCE retention for all new versions; cannot shorten during lock and storage is billable.",
+      "MinValue": 1,
+      "MaxValue": 30
+    },
+    "OwnerApprovalReference": {
+      "Type": "String",
+      "Description": "Owner-provided out-of-band verified change request ticket. Format alone does NOT prove consent.",
+      "AllowedPattern": "^OWNER-[A-Z0-9-]{8,64}$"
+    }
+  },
+  "Rules": {
+    "DifferentStorageRoles": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Equals": [
+                  {
+                    "Ref": "WriterRoleArn"
+                  },
+                  {
+                    "Ref": "AuditorRoleArn"
+                  }
+                ]
+              }
+            ]
+          },
+          "AssertDescription": "Writer and independent auditor must be different real owner-provisioned IAM roles."
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "PrivateMediaKey": {
+      "Type": "AWS::KMS::Key",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "Description": "FlowMinute owner-approved customer KMS key for UNAPPROVED versioned private video escrow",
+        "EnableKeyRotation": true,
+        "PendingWindowInDays": 30,
+        "KeyPolicy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "OwnerAccountAdministratorsRetainKeyControl",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:root"
+                }
+              },
+              "Action": "kms:*",
+              "Resource": "*"
+            },
+            {
+              "Sid": "MediaWriterKmsForS3Only",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Ref": "WriterRoleArn"
+                }
+              },
+              "Action": [
+                "kms:GenerateDataKey",
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:DescribeKey"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "kms:ViaService": {
+                    "Fn::Sub": "s3.${AWS::Region}.amazonaws.com"
+                  },
+                  "kms:CallerAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            },
+            {
+              "Sid": "IndependentAuditorOnlyDecryptForS3",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Ref": "AuditorRoleArn"
+                }
+              },
+              "Action": [
+                "kms:Decrypt",
+                "kms:DescribeKey"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "kms:ViaService": {
+                    "Fn::Sub": "s3.${AWS::Region}.amazonaws.com"
+                  },
+                  "kms:CallerAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "FlowMinute",
+            "Value": "unapproved-media-escrow"
+          },
+          {
+            "Key": "ReviewStatus",
+            "Value": "never-owner-authorized-by-cloud-deploy-alone"
+          }
+        ]
+      }
+    },
+    "PrivateMediaBucket": {
+      "Type": "AWS::S3::Bucket",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "flowminute-private-${AWS::AccountId}-${AWS::Region}-${DeploymentSuffix}"
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "ObjectLockEnabled": true,
+        "ObjectLockConfiguration": {
+          "ObjectLockEnabled": "Enabled",
+          "Rule": {
+            "DefaultRetention": {
+              "Mode": "COMPLIANCE",
+              "Days": {
+                "Ref": "RetentionDays"
+              }
+            }
+          }
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerEnforced"
+            }
+          ]
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "aws:kms",
+                "KMSMasterKeyID": {
+                  "Fn::GetAtt": [
+                    "PrivateMediaKey",
+                    "Arn"
+                  ]
+                }
+              },
+              "BucketKeyEnabled": true
+            }
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "FlowMinute",
+            "Value": "unapproved-media-escrow"
+          },
+          {
+            "Key": "ReviewStatus",
+            "Value": "no-authorized-publish"
+          },
+          {
+            "Key": "RetentionReference",
+            "Value": {
+              "Ref": "OwnerApprovalReference"
+            }
+          }
+        ]
+      }
+    },
+    "PrivateMediaBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "PrivateMediaBucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "ExplicitDenyInsecureTransport",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:*",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PrivateMediaBucket",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Sub": "${PrivateMediaBucket.Arn}/*"
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              }
+            },
+            {
+              "Sid": "ExplicitDenyNonKmsUploadHeader",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:PutObject",
+              "Resource": {
+                "Fn::Sub": "${PrivateMediaBucket.Arn}/flowminute/unapproved-media-v1/*"
+              },
+              "Condition": {
+                "StringNotEqualsIfExists": {
+                  "s3:x-amz-server-side-encryption": "aws:kms"
+                }
+              }
+            },
+            {
+              "Sid": "ExplicitDenyWrongCustomerKmsKey",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:PutObject",
+              "Resource": {
+                "Fn::Sub": "${PrivateMediaBucket.Arn}/flowminute/unapproved-media-v1/*"
+              },
+              "Condition": {
+                "StringNotEqualsIfExists": {
+                  "s3:x-amz-server-side-encryption-aws-kms-key-id": {
+                    "Fn::GetAtt": [
+                      "PrivateMediaKey",
+                      "Arn"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Sid": "ExplicitDenyNonComplianceLockUpload",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:PutObject",
+              "Resource": {
+                "Fn::Sub": "${PrivateMediaBucket.Arn}/flowminute/unapproved-media-v1/*"
+              },
+              "Condition": {
+                "StringNotEqualsIfExists": {
+                  "s3:object-lock-mode": "COMPLIANCE"
+                }
+              }
+            },
+            {
+              "Sid": "WriterOnlyFullVersionedUnapprovedMediaPrefix",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Ref": "WriterRoleArn"
+                }
+              },
+              "Action": [
+                "s3:PutObject",
+                "s3:PutObjectRetention",
+                "s3:GetObjectVersion",
+                "s3:GetObjectRetention"
+              ],
+              "Resource": {
+                "Fn::Sub": "${PrivateMediaBucket.Arn}/flowminute/unapproved-media-v1/*"
+              }
+            },
+            {
+              "Sid": "AuditorOnlyReadSpecificVersions",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Ref": "AuditorRoleArn"
+                }
+              },
+              "Action": [
+                "s3:GetObjectVersion",
+                "s3:GetObjectRetention"
+              ],
+              "Resource": {
+                "Fn::Sub": "${PrivateMediaBucket.Arn}/flowminute/unapproved-media-v1/*"
+              }
+            },
+            {
+              "Sid": "ProhibitRuntimeIdentityDeletesOrRetentionBypass",
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": [
+                  {
+                    "Ref": "WriterRoleArn"
+                  },
+                  {
+                    "Ref": "AuditorRoleArn"
+                  }
+                ]
+              },
+              "Action": [
+                "s3:DeleteObject",
+                "s3:DeleteObjectVersion",
+                "s3:BypassGovernanceRetention",
+                "s3:PutBucketObjectLockConfiguration",
+                "s3:PutBucketVersioning"
+              ],
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PrivateMediaBucket",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Sub": "${PrivateMediaBucket.Arn}/*"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "PrivateMediaBucketName": {
+      "Description": "Private owner-controlled bucket only if manually deployed; does not authorize publishing.",
+      "Value": {
+        "Ref": "PrivateMediaBucket"
+      }
+    },
+    "PrivateMediaBucketArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateMediaBucket",
+          "Arn"
+        ]
+      }
+    },
+    "PrivateMediaCustomerKmsKeyArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PrivateMediaKey",
+          "Arn"
+        ]
+      }
+    },
+    "OwnerAcknowledgementReferenceUnverified": {
+      "Description": "Unverified operator-supplied reference; NOT identity or billing verification.",
+      "Value": {
+        "Ref": "OwnerApprovalReference"
+      }
+    },
+    "MandatoryHumanApprovalStatus": {
+      "Value": "UNAPPROVED_NO_PRODUCTION_MEDIA_PUBLISH"
+    }
+  }
+}
