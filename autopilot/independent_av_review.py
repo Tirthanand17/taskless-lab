@@ -152,6 +152,9 @@ def review_encoded_episode(folder:Path,episode, *,report_entry:dict)->dict:
                    "-i",str(mp4),"-map","0:a:0",
                    "-af","loudnorm=print_format=json","-f","null","-"],timeout_s=450)
     audio=parse_loudnorm(stderr)
+    if not audio["typical_online_video_target_diagnostic"]:
+        raise ReviewerError(
+            "Actual encoded narration outside -20 to -12 LUFS / <= -1.5 dBTP diagnostic band")
     _,silence=_run(["ffmpeg","-hide_banner","-nostdin","-nostats",
                    "-i",str(mp4),"-map","0:a:0",
                    "-af","silencedetect=noise=-45dB:duration=1.25",
