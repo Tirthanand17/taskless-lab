@@ -85,7 +85,7 @@ def _step(label: str, before_title: str, before: str,
         "label": label, "before_title": before_title, "before": before,
         "after_title": after_title, "after": after, "takeaway": takeaway,
     }
-    if any(not isinstance(v, str) or not 2 <= len(v) <= 150 for v in item.values()):
+    if any(not isinstance(v, str) or not 1 <= len(v) <= 150 for v in item.values()):
         raise ExecutedDemoError("An original visual step was malformed")
     return item
 
