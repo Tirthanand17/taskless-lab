@@ -12,6 +12,8 @@ on:
       - "autopilot/daily_cloud_plan.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
+      - "autopilot/script_draft_agent.py"
+      - "autopilot/test_script_draft_agent.py"
       - "autopilot/test_daily_cloud_plan.py"
       - "autopilot/agent_org.py"
       - ".github/workflows/flowminute-daily-cloud-foundation.yml"
@@ -20,6 +22,8 @@ on:
       - "autopilot/daily_cloud_plan.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
+      - "autopilot/script_draft_agent.py"
+      - "autopilot/test_script_draft_agent.py"
       - "autopilot/test_daily_cloud_plan.py"
       - ".github/workflows/flowminute-daily-cloud-foundation.yml"
 
@@ -56,7 +60,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_script_draft_agent
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
