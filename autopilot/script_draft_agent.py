@@ -46,14 +46,19 @@ class ModelGrant:
     def validate(self) -> None:
         if self.model not in ALLOWED_MODELS:
             raise ScriptDraftError("Unreviewed model name")
-        if not all((
-            self.owner_approved_external_inference,
-            self.owner_accepted_provider_data_use,
-            self.free_tier_project_verified,
-            self.approved_usage_lease,
-        )):
+        if not all(
+            type(flag) is bool and flag is True for flag in (
+                self.owner_approved_external_inference,
+                self.owner_accepted_provider_data_use,
+                self.free_tier_project_verified,
+                self.approved_usage_lease,
+            )
+        ):
             raise ScriptDraftError("External model permission or project tier not verified")
-        if not 1 <= self.request_budget <= 3 or self.incremental_paid_budget_usd != 0:
+        if (type(self.request_budget) is not int
+                or not 1 <= self.request_budget <= 3
+                or type(self.incremental_paid_budget_usd) not in (int, float)
+                or self.incremental_paid_budget_usd != 0):
             raise ScriptDraftError("Model requests not bounded to a zero-paid-use grant")
 
 
@@ -229,7 +234,18 @@ def propose_with_explicit_gemini_grant(
     api_key: str | None = None,
     transport=None,
 ) -> dict:
-    """No live call without all grants. A mock transport is supported in tests only."""
+    """Mock-only drafting until a private externally authenticated lease service exists.
+
+    Legacy self-asserted ModelGrant booleans must NOT unlock an actual HTTP
+    call: they do not establish owner consent, provider tier, a protected
+    credential or an atomic budget/request ledger. B3d4c2a owner signatures
+    are a separate preflight and also do NOT unlock this live adapter.
+    """
+    if transport is None:
+        raise ScriptDraftError(
+            "Live Gemini requests disabled: private owner identity, data-use consent, "
+            "account eligibility, secret vault and atomic budget ledger not deployed"
+        )
     grant = grant or ModelGrant()
     grant.validate()
     if not isinstance(api_key, str) or not 16 <= len(api_key) <= 512:
