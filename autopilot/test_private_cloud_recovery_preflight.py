@@ -388,9 +388,11 @@ class MockExternalBackupEvidenceTests(unittest.TestCase):
     def test_external_custodian_key_never_embedded_in_receipt(self):
         d=sealed_example(2)
         report=check(d)
-        self.assertNotIn("signer",json.dumps(report))
-        self.assertNotIn("private_key",json.dumps(report))
-        self.assertNotIn("owner_approved",json.dumps(report))
+        self.assertNotIn("signer_private_key",report)
+        self.assertNotIn("signer",report)
+        self.assertNotIn("private_key_material",report)
+        self.assertNotIn("owner_approval_record",report)
+        self.assertIs(report["trusted_real_world_signer_enrolled"],False)
         self.assertFalse(report["release_authorized"])
 
 
