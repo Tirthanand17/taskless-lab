@@ -1,0 +1,102 @@
+name: FlowMinute B3d4c2c2 Final Editorial and Rights Receipt Contracts (MOCK ONLY)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/mock_final_editorial_review.py"
+      - "autopilot/test_mock_final_editorial_review.py"
+      - ".github/workflows/flowminute-b3d4c2c2-editorial-receipts.yml"
+      - "docs/adr/0026-b3d4c2c2-mock-editorial-review-separation.md"
+      - "docs/status/branch2-completion-audit-2026-11-04.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2c2-untrusted-final-editorial-test
+  cancel-in-progress: true
+
+jobs:
+  mock_independent_editorial_receipt_contracts:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Checkout public PR read-only and do not store GitHub credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only public test Ed25519 verifier
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Rebuild source-bound media and independent mock final editorial receipts
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_mock_final_editorial_review \
+            autopilot.test_final_media_evidence_gate \
+            autopilot.test_independent_fact_review_gate \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_script_continuity_gate
+      - name: Require all seven signed mock roles but no owner/release authority
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+          from autopilot.test_mock_final_editorial_review import fixture,make_receipts
+          from autopilot.mock_final_editorial_review import (
+              make_unapproved_editorial_docket,verify_mock_final_editorial_receipts,
+              ROLES,STATUS_COMPLETE,
+          )
+          from autopilot.test_script_continuity_gate import NOW,EXCLUDED
+          with TemporaryDirectory(prefix="flowminute-mock-editorial-blocked-") as root:
+              media,facts,meta=fixture(Path(root))
+              docket=make_unapproved_editorial_docket(
+                  media_inputs=media,fact_review_inputs=facts,metadata=meta
+              )
+              _,reviewers,records=make_receipts(docket)
+              result=verify_mock_final_editorial_receipts(
+                  docket=docket,media_inputs=media,
+                  fact_review_inputs=facts,metadata=meta,
+                  records=records,registry=reviewers,
+                  excluded_creator_agent_and_publisher_ids=EXCLUDED,
+                  expected_externally_pinned_docket_sha256=docket["editorial_docket_sha256"],
+                  now=NOW,
+              )
+              assert result["status"]==STATUS_COMPLETE
+              assert len(result["mock_role_coverage"])==len(ROLES)==7
+              for flag in (
+                  "real_source_fact_accuracy_and_claim_completeness_verified",
+                  "real_human_full_watch_and_listen_verified",
+                  "live_voice_music_image_license_verified",
+                  "material_originality_against_real_channel_verified",
+                  "real_ai_disclosure_decision_verified",
+                  "owner_permission_and_signer_enrollment_authenticated",
+                  "private_immutable_review_ledger_connected",
+                  "youtube_upload_enabled",
+                  "release_authorized",
+              ):
+                  assert result[flag] is False,flag
+              print("B3D4C2C2_ALL_SEVEN_DISPOSABLE_SIGNER_STRUCTURES_CHECKED_NO_REAL_HUMAN_OWNER_OR_RELEASE")
+          PY
+      - name: No real inference, service account, editor impersonation or YouTube publishing
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          echo "B3D4C2C2_NO_OWNER_HUMAN_ASSERTION_NO_BILLING_NO_YOUTUBE"
