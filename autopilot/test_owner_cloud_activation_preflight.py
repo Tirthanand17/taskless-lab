@@ -48,8 +48,8 @@ def resolve(value):
     if len(value)==1 and "Ref" in value:
         ref=value["Ref"]
         mapping={
-            "WriterRoleArn":SCOPE.writer_role_arn,
-            "AuditorRoleArn":SCOPE.auditor_role_arn,
+            "WriterRoleName":SCOPE.writer_role_arn.rsplit("/",1)[-1],
+            "AuditorRoleName":SCOPE.auditor_role_arn.rsplit("/",1)[-1],
             "OwnerApprovalReference":SCOPE.owner_approval_reference,
             "RetentionDays":SCOPE.compliance_retention_days,
             "DeploymentSuffix":SCOPE.deployment_suffix,
@@ -70,6 +70,8 @@ def resolve(value):
             "AWS::AccountId":SCOPE.account_id,
             "AWS::Region":SCOPE.region,
             "DeploymentSuffix":SCOPE.deployment_suffix,
+            "WriterRoleName":SCOPE.writer_role_arn.rsplit("/",1)[-1],
+            "AuditorRoleName":SCOPE.auditor_role_arn.rsplit("/",1)[-1],
             "PrivateMediaBucket.Arn":"arn:aws:s3:::"+exact_bucket_name(SCOPE),
         }
         return re.sub(r"\$\{([^}]+)\}",
@@ -166,7 +168,7 @@ class OwnerCloudStackTemplateTests(unittest.TestCase):
         t=template()
         self.assertEqual(t["AWSTemplateFormatVersion"],"2010-09-09")
         self.assertEqual(set(t["Parameters"]),{
-            "DeploymentSuffix","WriterRoleArn","AuditorRoleArn",
+            "DeploymentSuffix","WriterRoleName","AuditorRoleName",
             "RetentionDays","OwnerApprovalReference",
         })
         self.assertFalse(any("Default" in x for x in t["Parameters"].values()))
