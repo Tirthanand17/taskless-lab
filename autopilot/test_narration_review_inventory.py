@@ -74,6 +74,14 @@ class NarrationInventoryTests(unittest.TestCase):
         self.assertEqual(len(spans), 2)
         self.assertEqual(spans[0][2], "Yes.")
 
+    def test_terminal_spaces_are_covered_not_dropped_or_empty(self):
+        spoken = "First claim. Second claim.   \n  "
+        spans = sentence_spans(spoken)
+        self.assertEqual(len(spans), 2)
+        self.assertEqual("".join(spoken[start:end] for start, end, _ in spans), spoken)
+        self.assertEqual(spans[-1][1], len(spoken))
+        self.assertTrue(spans[-1][2].endswith("claim."))
+
     def test_abbreviations_remain_visible_for_manual_review(self):
         text = "For example, U.S. data could differ by context."
         spans = sentence_spans(text)
