@@ -224,6 +224,26 @@ class OwnerCloudStackTemplateTests(unittest.TestCase):
         self.assertEqual(len(ids),1)
         self.assertIn("Fn::Not",ids[0]["Assert"])
 
+    def test_auditor_has_all_nine_explicit_read_only_config_apis_and_no_writer_or_list_access(self):
+        t=template()
+        bucket=resolve(
+            t["Resources"]["PrivateMediaBucketPolicy"]["Properties"]["PolicyDocument"]
+        )
+        auditor=next(x for x in bucket["Statement"]
+                     if x["Sid"]=="AuditorOnlyReadBucketConfiguration")
+        expected={
+            "s3:GetBucketVersioning","s3:GetBucketLocation",
+            "s3:GetBucketObjectLockConfiguration","s3:GetBucketPublicAccessBlock",
+            "s3:GetEncryptionConfiguration","s3:GetBucketOwnershipControls",
+            "s3:GetBucketPolicyStatus","s3:GetBucketPolicy","s3:GetBucketTagging",
+        }
+        self.assertEqual(set(auditor["Action"]),expected)
+        self.assertEqual(auditor["Effect"],"Allow")
+        self.assertEqual(auditor["Principal"],{"AWS":SCOPE.auditor_role_arn})
+        self.assertEqual(auditor["Resource"],"arn:aws:s3:::"+exact_bucket_name(SCOPE))
+        self.assertFalse(any("Put" in action or "Delete" in action
+                             or "List" in action for action in auditor["Action"]))
+
     def test_account_arn_region_role_trust_and_retention_invalids_fail_closed(self):
         changes=[
             {"account_id":"12345"},
@@ -350,6 +370,10 @@ class OwnerSelectedReadOnlyServiceTests(unittest.TestCase):
         cases=[
             ("ExplicitDenyInsecureTransport","Condition",{"Bool":{"aws:SecureTransport":"true"}}),
             ("AuditorOnlyReadSpecificVersions","Action",["s3:GetObjectVersion","s3:PutObject"]),
+            ("AuditorOnlyReadBucketConfiguration","Action",["s3:GetBucketPolicyStatus","s3:PutBucketPolicy"]),
+            ("AuditorOnlyReadBucketConfiguration","Action",["s3:GetBucketVersioning"]),
+            ("AuditorOnlyReadBucketConfiguration","Resource","*"),
+            ("AuditorOnlyReadBucketConfiguration","Principal",{"AWS":SCOPE.writer_role_arn}),
             ("WriterOnlyFullVersionedUnapprovedMediaPrefix","Resource","*"),
             ("ExplicitDenyWrongCustomerKmsKey","Condition",{"StringNotEqualsIfExists":{
                 "s3:x-amz-server-side-encryption-aws-kms-key-id":"arn:aws:kms:us-east-1:000000000000:key/other",
