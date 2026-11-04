@@ -200,6 +200,20 @@ def _topic_thumbnail(story: dict,output: Path) -> str:
     return sha256(output.read_bytes()).hexdigest()
 
 
+def visible_topic_motion_pulse(story: dict, tick: int) -> tuple[int,int]:
+    """Five guaranteed distinct original motion positions ABOVE caption panel.
+
+    Some long 20-scene source SVG progress elements sit behind caption-safe
+    overlay; a visible topic-tinted moving signal/packet/energy indicator
+    ensures no underlying source animation is silently obscured or repeated.
+    """
+    require_exact_draft(story)
+    if type(tick) is not int or not 0<=tick<=120:
+        raise TopicRenderError("Moving original visual tick outside bounds")
+    w,h=(1080,1920) if story["format"]=="short" else (1920,1080)
+    return round(90+(w-180)*tick/120),round(h*(.66 if story["format"]=="short" else .62))
+
+
 def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
     import cairosvg
     from PIL import Image,ImageDraw
@@ -215,6 +229,19 @@ def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
     # A fixed dark, consistently safe caption strip in each source frame.
     # Burned captions are added later by FFmpeg and checked independently.
     d=ImageDraw.Draw(rgb)
+    x,y=visible_topic_motion_pulse(story,tick)
+    accent={
+        "lunar_signal":(80,200,238),
+        "file_transfer":(111,222,188),
+        "quake_energy":(248,158,99),
+    }[story["theme"]]
+    # Original moving signal/packet/energy node lives in the main visible
+    # field, never under the opaque subtitle panel at the bottom.
+    w,h=rgb.size
+    d.line((90,y,w-90,y),fill=accent,width=5)
+    d.ellipse((x-20,y-20,x+20,y+20),fill=(246,248,254),
+              outline=accent,width=7)
+    d.ellipse((x-8,y-8,x+8,y+8),fill=accent)
     bottom=380 if story["format"]=="short" else 265
     d.rounded_rectangle((56,expected[1]-bottom,
                          expected[0]-56,expected[1]-46),
