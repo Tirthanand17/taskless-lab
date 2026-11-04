@@ -1,0 +1,100 @@
+name: FlowMinute B3d4c2a Externally Signed Model Owner Lease (NO INFERENCE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/owner_provider_lease_gate.py"
+      - "autopilot/test_owner_provider_lease_gate.py"
+      - "autopilot/script_draft_agent.py"
+      - "autopilot/test_script_draft_agent.py"
+      - ".github/workflows/flowminute-b3d4c2a-owner-lease.yml"
+      - "docs/adr/0019-b3d4c2a-owner-inference-lease.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2a-readonly-owner-lease
+  cancel-in-progress: true
+
+jobs:
+  signed_owner_lease_preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+    steps:
+      - name: Checkout untrusted PR code with no persisted token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up public GitHub-hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only public Ed25519 verifier for fake test signatures
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Regress script drafting and entire signed source and owner preflight path
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_script_draft_agent \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_narration_review_inventory \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_independent_fact_review_gate \
+            autopilot.test_script_to_preview_bridge \
+            autopilot.test_signed_narrated_cloud_pack \
+            autopilot.test_computed_demo_storyboards \
+            autopilot.test_owner_provider_lease_gate
+      - name: Verify signed owner scope does not authorize model, video or upload
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_owner_provider_lease_gate import make, verify_fixture
+          from autopilot.owner_provider_lease_gate import verify_three_daily_owner_lease_packets
+          from autopilot.script_draft_agent import (
+              ModelGrant, ScriptDraftError, propose_with_explicit_gemini_grant,
+              build_draft_input,
+          )
+          packets=[verify_fixture(make(index)) for index in range(3)]
+          bundle=verify_three_daily_owner_lease_packets(packets)
+          assert bundle["signed_lease_count"] == 3
+          assert bundle["provider_inference_executed"] is False
+          for packet in packets:
+              assert packet["provider_owner_key_signature_valid"] is True
+              assert packet["signed_scope_limit_requests"] == 1
+              assert packet["signed_max_incremental_paid_budget_cents"] == 0
+              assert packet["actual_provider_project_and_zero_spend_verified"] is False
+              assert packet["private_immutable_request_ledger_connected"] is False
+              assert packet["private_key_vault_connected"] is False
+              assert packet["provider_live_call_enabled"] is False
+              assert packet["youtube_upload_enabled"] is False
+              assert packet["release_authorized"] is False
+          first=make()
+          inp=build_draft_input(first["slot"],first["observations"])
+          fake=ModelGrant(
+              owner_approved_external_inference=True,
+              owner_accepted_provider_data_use=True,
+              free_tier_project_verified=True,
+              approved_usage_lease=True,request_budget=1,
+          )
+          try:
+              propose_with_explicit_gemini_grant(
+                  inp,grant=fake,api_key="test_not_a_real_secret_"+"x"*25,
+              )
+              raise AssertionError("Live Gemini call unexpectedly permitted")
+          except ScriptDraftError:
+              pass
+          print("B3D4C2A_SIGNED_PROVIDER_INTENT_ONLY_NO_REAL_ENTITLEMENT_NO_LIVE_CALL_NO_PUBLISH")
+          PY
