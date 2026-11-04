@@ -6,6 +6,10 @@ are NOT actual source-supported or rights-licensed YouTube content.
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import asdict, replace
+import base64
+from hashlib import sha256
+import json
 import unittest
 
 from autopilot.test_script_continuity_gate import NOW, EXCLUDED, signed_fixture
@@ -13,7 +17,9 @@ from autopilot.script_draft_agent import validate_proposal, build_draft_input
 from autopilot.narration_review_inventory import (
     STATUS, NarrationInventoryError, sentence_spans, prepare_sentence_review_docket
 )
-from autopilot.script_continuity_gate import ScriptContinuityError
+from autopilot.script_continuity_gate import (
+    ScriptContinuityError, DetachedScriptSeal, freeze_script_manifest
+)
 
 
 def prepare(item):
@@ -90,21 +96,29 @@ class NarrationInventoryTests(unittest.TestCase):
         with self.assertRaises(NarrationInventoryError):
             sentence_spans("Short word. " * 161)
 
-    def test_valid_draft_with_zero_model_candidate_claims_still_fully_inventoried(self):
-        # A model may omit every claim. This is not permission to exempt text.
+    def test_zero_candidate_claims_still_require_every_sentence_to_be_reviewed(self):
+        # Recreate a NEW signed, anchored test fixture with zero candidate claims.
+        # Even with a valid independent-looking seal, no fact is approved.
         item = list(signed_fixture(0))
         proposal, slot, sources = item[:3]
         raw = {key: deepcopy(proposal[key]) for key in (
             "title", "hook", "viewer_benefit", "example_walkthrough",
             "narration", "visual_beats", "claim_candidates")}
         raw["claim_candidates"] = []
-        draft = validate_proposal(raw, build_draft_input(slot, sources))
-        # External detached signature must be changed too: without independently
-        # anchored content, this candidate MUST fail before inventory construction.
-        item[0] = draft
-        with self.assertRaises(ScriptContinuityError):
-            prepare(item)
-        # A syntactic-only script alone therefore cannot bypass the trust step.
+        item[0] = validate_proposal(raw, build_draft_input(slot, sources))
+        manifest = freeze_script_manifest(item[0], slot, sources)
+        anchor = sha256(json.dumps(manifest, ensure_ascii=False, sort_keys=True,
+                                   separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+        new_claim = replace(item[5].claim, manifest_sha256=anchor)
+        sig = item[6].sign(json.dumps(asdict(new_claim), ensure_ascii=False, sort_keys=True,
+                                      separators=(",", ":"), allow_nan=False).encode())
+        item[5] = DetachedScriptSeal(new_claim, base64.b64encode(sig).decode())
+        item[3] = anchor
+        dossier = prepare(item)
+        self.assertEqual(dossier["model_reported_candidate_claim_count"], 0)
+        self.assertGreater(dossier["pending_independent_sentence_reviews"], 0)
+        self.assertFalse(dossier["all_claims_correct_or_complete"])
+        self.assertFalse(dossier["release_authorized"])
 
     def test_modified_narration_breaks_signed_boundary(self):
         item = list(signed_fixture(0))
