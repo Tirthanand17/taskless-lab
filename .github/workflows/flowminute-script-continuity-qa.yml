@@ -1,0 +1,68 @@
+name: FlowMinute B3d1 Signed Script Continuity (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/script_continuity_gate.py"
+      - "autopilot/test_script_continuity_gate.py"
+      - "autopilot/claim_review_dossier.py"
+      - "autopilot/test_claim_review_dossier.py"
+      - ".github/workflows/flowminute-script-continuity-qa.yml"
+      - "docs/adr/0012-b3d1-script-continuity-trust-boundary.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d1-no-publish
+  cancel-in-progress: true
+
+jobs:
+  detached_script_signatures_and_provenance:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+    steps:
+      - name: Checkout untrusted pull request WITHOUT persistent token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up GitHub-hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public key signature verification library only
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Run continuity, editorial and prior media review verifier tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_signed_review_gate
+      - name: Assert test signed handoff never approves real creative or publishing
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_script_continuity_gate import signed_fixture, validate
+          for index in range(3):
+              result = validate(signed_fixture(index))
+              assert result["immutable_content_binding_checked"] is True
+              assert result["external_append_only_ledger_deployed"] is False
+              assert result["claim_level_independent_fact_review_complete"] is False
+              assert result["media_render_enabled"] is False
+              assert result["release_authorized"] is False
+              assert result["youtube_upload_enabled"] is False
+              assert result["youtube_schedule_enabled"] is False
+          print("B3D1_SCRIPT_CONTINUITY_SIGNATURE_TESTS_PASSED_NO_FACT_APPROVAL_NO_PUBLISH")
+          PY
