@@ -72,6 +72,26 @@ SLOT_REFERENCE_IDS = {
     "long": ("nist_binary", "nist_si"),
     "short_pm": ("usgs_magnitude", "usgs_energy"),
 }
+
+# The exact thumbnail source words are shared by both the PHYSICAL Pillow
+# thumbnail renderer and the independent evidence/claim-surface docket.
+# SHA256 hashes alone do not prove correct thumbnail semantics or rights.
+THUMB_CONTENT = {
+    "lunar_signal": {
+        "lines": ("MOON SIGNAL DELAY", "1.28 SECONDS ONE WAY"),
+        "claim_ids": ("moon_distance", "light_speed", "moon_delay"),
+    },
+    "file_transfer": {
+        "lines": ("MEGABITS ≠ MEGABYTES", "40 s versus 41.94 s"),
+        "claim_ids": ("bit_byte", "mega_decimal", "binary_prefix",
+                      "megabit_definition", "file_sample",
+                      "ideal_transfer", "binary_transfer"),
+    },
+    "quake_energy": {
+        "lines": ("EARTHQUAKE ENERGY", "+1 MAGNITUDE ≈ 32×"),
+        "claim_ids": ("quake_amplitude", "quake_energy"),
+    },
+}
 DISALLOWED_CLAIMS = (
     "real_human_fact_approval", "real_source_live_recheck",
     "real_video_produced", "real_rights_and_license_approval",
