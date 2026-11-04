@@ -157,12 +157,28 @@ def script_surface_docket(
         })
     if len({r["surface_id"] for r in surfaces}) != len(surfaces):
         raise SourceClaimError("Duplicate source surface identities")
+    observed_sources = []
+    for row in observations.get("sources", []):
+        if (not isinstance(row, dict) or row.get("status") not in (
+            "SOURCE_FETCHED_NOT_FACT_CHECKED", "RSS_ENTRY_ONLY_ARTICLE_NOT_FETCHED")
+                or not isinstance(row.get("source_id"), str)
+                or not isinstance(row.get("response_sha256"), str)
+                or not HEX64.fullmatch(row["response_sha256"])):
+            raise SourceClaimError("Malformed signed public-source observation")
+        observed_sources.append({
+            "source_id": row["source_id"],
+            "response_sha256": row["response_sha256"],
+            "status": row["status"],
+        })
+    if len({r["source_id"] for r in observed_sources}) != len(observed_sources):
+        raise SourceClaimError("Repeated observed source identity")
     return {
         "schema_version": 1,
         "status": STATUS,
         "episode_id": narration["episode_id"],
         "manifest_sha256": narration["externally_anchored_script_manifest_sha256"],
         "surface_rows": surfaces,
+        "signed_source_response_index": observed_sources,
         "defined_script_surface_count": len(surfaces),
         "all_defined_script_surfaces_present": True,
         "all_defined_surfaces_reviewed": False,
@@ -204,6 +220,13 @@ def atomic_claim_docket(
                 if isinstance(r, dict) and isinstance(r.get("surface_id"), str)}
     if len(surfaces) != len(all_surfaces):
         raise SourceClaimError("Invalid or repeated surface identities")
+    index = surface_docket.get("signed_source_response_index")
+    if not isinstance(index, list):
+        raise SourceClaimError("No authenticated source response index")
+    observed = {x["source_id"]: x for x in index
+                if isinstance(x, dict) and isinstance(x.get("source_id"), str)}
+    if len(observed) != len(index):
+        raise SourceClaimError("Repeated or malformed signed source identities")
     excerpts = {}
     for rec in excerpt_records:
         if (not isinstance(rec, dict)
@@ -216,6 +239,11 @@ def atomic_claim_docket(
                 or not isinstance(rec.get("source_id"), str)
                 or not re.fullmatch(r"[0-9a-f]{24}", rec["source_id"])):
             raise SourceClaimError("Forged source excerpt approval or identity")
+        source = observed.get(rec["source_id"])
+        if (source is None
+                or source.get("status") != "SOURCE_FETCHED_NOT_FACT_CHECKED"
+                or source.get("response_sha256") != rec.get("original_complete_response_sha256")):
+            raise SourceClaimError("Excerpt is not from the exact signed source response")
         key = (rec["source_id"], rec["excerpt_sha256"])
         if key in excerpts:
             raise SourceClaimError("Duplicated source/excerpt to inflate support")
