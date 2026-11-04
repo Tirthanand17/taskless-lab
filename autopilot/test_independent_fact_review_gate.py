@@ -25,7 +25,11 @@ from autopilot.independent_fact_review_gate import (
 )
 
 
-def fixture(index=0, *, has_claim=True):
+def fixture(index=0, *, has_claim=None):
+    # Only slot 0 has a synthetic primary-source excerpt in this fixture.
+    # Other release slots intentionally test fully covered no-claim packets.
+    if has_claim is None:
+        has_claim = index == 0
     item = source_bound_fixture(index)
     proposal, slot, observations, anchor, script_registry, seal, _ = item
     surface = script_surface_docket(
