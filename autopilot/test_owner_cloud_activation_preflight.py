@@ -380,6 +380,10 @@ class OwnerSelectedReadOnlyServiceTests(unittest.TestCase):
             ("IndependentAuditorOnlyDecryptForS3","Action",["kms:*"]),
             ("MediaWriterKmsForS3Only","Action",["kms:GenerateDataKey","kms:ScheduleKeyDeletion"]),
             ("IndependentAuditorOnlyDecryptForS3","Condition",{}),
+            ("IndependentAuditorReadOnlyKmsConfigurationInspection","Action",
+                ["kms:DescribeKey","kms:PutKeyPolicy"]),
+            ("IndependentAuditorReadOnlyKmsConfigurationInspection","Condition",
+                {"StringEquals":{"kms:ViaService":"s3.us-east-1.amazonaws.com"}}),
             ("OwnerAccountAdministratorsRetainKeyControl","Principal",{"AWS":"*"}),
         ):
             s=synthetic_services()
