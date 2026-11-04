@@ -32,3 +32,14 @@ Forbidden until owner activation: selecting a paid cloud tenant on behalf of the
 ## Release proof required after activation
 
 The seven-day independent workflow requires 21 substantively different independently approved uploads, evidence for each 11:00 / 16:00 / 20:30 IST slot, provider cost/usage receipts and cryptographic immutable media provenance, with the laptop shut off. Reuse the existing human-assisted Branch 1 track only for previously authorized assisted uploads and schedules.
+
+
+## B3d4c2b3c1: protect production GitHub OIDC from public PRs (not activated)
+
+The next owner-approved deployment must independently establish the **real** protected GitHub environment's branch rules, repository/owner immutable numeric identifiers, the owner-approved workflow path, cloud account/project and account-side billing/data terms. Only a designated approved deployment workflow on refs/heads/main may request a short-lived identity. Never give `id-token: write` to an ordinary public pull_request or pull_request_target workflow.
+
+For AWS, verify the live IAM trust resource's exact OIDC issuer, audience, account and repository/environment subject, and independently audit the GitHub protected environment's branch restrictions because environment-subject alone does not bind the main branch. For GCP, verify the live WIF provider's stable repository/owner ID mappings and exact branch/workflow/event/environment attribute conditions, service account scopes, short-lived tokens and prevention of long-lived key creation. No arbitrary ambient PR claims or regex matching on repo display names should qualify.
+
+Require separate narrowly scoped secret-level service identities for inference API credentials, database gateway and YouTube publisher, each limited to its own specific secret and a separately audited access policy. For PostgreSQL use libpq sslmode=verify-full, live hostname certificate check, current trusted CA and least-privilege runtime role; do not accept an encrypted connection as proof of the expected server.
+
+**Proof still needed:** actual independently retrieved IAM readbacks, real signed JWT issuer/audience/expiry checks, owner-confirmed protected environment branch policy, real vault audit entries, account cost protections, actual Postgres verify-full TLS handshake and durable cross-job ledger. The offline B3d4c2b3c1 policy samples are no-credential design tests only, not deployment permission. Continue independent editorial/content approval engineering while external approvals are absent.
