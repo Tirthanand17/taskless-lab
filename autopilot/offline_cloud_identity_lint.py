@@ -108,6 +108,13 @@ def _basic(intent: ProductionIdentityIntent) -> None:
         or type(intent.real_environment_protection_verified) is not bool
         or type(intent.private_ledger_connected) is not bool
         or type(intent.actual_api_key_in_vault) is not bool
+        or any(value is not False for value in (
+            intent.project_spend_cap_verified_independently,
+            intent.owner_account_data_use_consent_verified_independently,
+            intent.real_environment_protection_verified,
+            intent.private_ledger_connected,
+            intent.actual_api_key_in_vault,
+        ))
     ):
         raise IdentityBoundaryError("Unsafe or foreign workload identity scope")
     if intent.provider == "aws_secrets_manager":
