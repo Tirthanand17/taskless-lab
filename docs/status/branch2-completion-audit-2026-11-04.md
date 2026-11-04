@@ -2,20 +2,20 @@
 
 **Target:** independently produce AND actually schedule/publish exactly **2 genuinely original Shorts + 1 substantively original long-form video every day**, without a laptop: 11:00, 16:00, 20:30 IST, researched claims, real source validation, review/rights/AI disclosure, approved media assets, protected real provider billing and tokens, remote YouTube processing verification, and seven consecutive days/21 real releases.
 
-**Estimate: roughly 31% implemented / 69% remaining**, relative to that *end-to-end goal*, using the declared rubric below. This is an approximate engineering management estimate rather than a statistically measured percentage or a claim of working unattended publishing. **Actual unattended production releases independently verified: 0 of 21 (0%).** Real cloud deployments/owner authorization also currently 0. Do not report fake tests as real releases. Branch 1 assisted upload/schedule is a separate workstream and is NOT included because its actual current YouTube remote status was not audited in this run.
+**Updated estimate after PR #30: roughly 33% implemented / 67% remaining**, relative to that *end-to-end goal*, using the declared rubric below. This is an approximate engineering management estimate rather than a statistically measured percentage or a claim of working unattended publishing. **Actual unattended production releases independently verified: 0 of 21 (0%).** Real cloud deployments/owner authorization also currently 0. Do not report fake tests as real releases. Branch 1 assisted upload/schedule is a separate workstream and is NOT included because its actual current YouTube remote status was not audited in this run.
 
 ## Weighted, reproducible qualitative rubric (total 100 points)
 
 | Goal component | Weight | Earned | Current independent evidence / missing step |
 |---|---:|---:|---|
 | System architecture, agent roles, GitHub CI and research/engineering prototypes | 15 | **14** | Signed script/data/media technical contracts, several merged green CI PRs; real deployed runtime orchestration remains unproven |
-| Authentic public research, topic pipeline and unique factual daily scripts | 15 | **3** | Metadata/sanitized news scouts, mock source excerpts and signed proposal transport; no approved live research-to-original-script provider run |
+| Authentic public research, topic pipeline and unique factual daily scripts | 15 | **5** | Six NASA/NIST/USGS primary links and three topic-distinct original scripted/calculated drafts (Moon latency, bit/byte transfer, quake energy), plus earlier scouts; **no live source readback in CI, external approved provider, signed real reviewer or daily automatic content** |
 | Source-faithful rendering, real voices, animations, video, captions, thumbnails and QA | 20 | **9** | Three actual Kokoro/FFmpeg full decoded demo videos and all 42 exact local asset hashes tested on GitHub; only invented CSV fixtures, insufficient real unique topic-directed assets, no permanent reviewed outputs |
 | Independent factual, originality, rights, AI-disclosure, final full-watch and owner approval | 15 | **2** | Signed synthetic source/claim and seven-role final media editorial evidence structural tests only; NO authenticated real humans or valid real content licenses/approvals |
 | Owner-approved production cloud deployment, private vault, audited DB, consent, billing/account spend and live model | 15 | **3** | Test-only SQLite/Postgres one-use concurrency, least-privilege CI roles, logical restore and offline AWS/GCP IAM contracts; NO actual real accounts, persistent DB, private vault, verified owner permission or billable-provider safety |
 | YouTube OAuth, protected single writer, actual uploads, captions/thumb readback and verified scheduling | 15 | **0** | Branch 2 does not connect real YouTube OAuth and has performed zero actual uploads/schedules |
 | Laptop-off stable 7-day cadence with 21 independently confirmed real remote releases | 5 | **0** | No real unattended production deployment or seven-day observed run |
-| **Total** | **100** | **31** | **Approx. 31% achieved, 69% remaining** |
+| **Total** | **100** | **33** | **Approx. 33% achieved, 67% remaining** |
 
 This evaluation is a deliberately conservative approximation: prototype/test software counts as a fraction of the corresponding production capability, not as completed deployment. Individual weights reflect user value and operational dependencies, not test/commit counts. Scores are reassessed only after real external proof; a few more synthetic unit tests should not artificially inflate the %.
 
@@ -24,7 +24,8 @@ This evaluation is a deliberately conservative approximation: prototype/test sof
 - PR #8–#21: role organization, public scout, mock scripts, source/claim/detached signatures, fully narrated/decoded original simulated educational data videos, thumbnail and all-scene QA.
 - PR #22–#27: externally pinned fake owner leases, atomic SQLite/PostgreSQL mock-only request burn/no-retry, split CI database roles, ephemeral pg_dump/pg_restore, offline vault/credential/identity contracts.
 - PR #28: rehash exact MP4/SRT/WAV/PNG thumbnails and every source image from actual three real rendered test videos (42 total physical files), recheck every cue and block manipulated media.
-- PR #29 (B3d4c2c2; current): signed seven-role **MOCK ONLY** final editorial/source/rights/owner/AI-disclosure/full-watch structural verification. Strictly preserves no real humans and release_authorized=false. New role tests do not meaningfully increase the production % on their own.
+- PR #29 (B3d4c2c2; merged): signed seven-role **MOCK ONLY** final editorial/source/rights/owner/AI-disclosure/full-watch structural verification. Strictly preserves no real humans and release_authorized=false. New role tests do not meaningfully increase the production % on their own.
+- PR #30 (B3d4c2c3a; current): six official NASA/NIST/USGS public references curated Nov 4; three different original Moon/earthquake/file-transfer scripts (6/6/20 scenes), exact calculations, distinct animated SVG. Real GitHub-hosted *silent 4-second* preview tests are not full real narrated releases; 2 research maturity points earned, not any YouTube/real original approved delivery.
 
 ## Major remaining dependencies, in priority order
 
