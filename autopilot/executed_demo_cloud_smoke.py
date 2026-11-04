@@ -82,10 +82,6 @@ def run_pack(model: Path, voices: Path) -> dict:
                     demo_recipe=recipe,
                 )
                 folder=out/episode.episode_id
-                independent=review_encoded_episode(
-                    folder,episode,
-                    report_entry={"episode":report["episode"],"seconds":report["seconds"]},
-                )
                 thumbnail=folder/"UNAPPROVED_THUMBNAIL_TEST.png"
                 check_image(thumbnail,width=1280,height=720)
                 thumb_sha,_=sha256_stream(thumbnail,max_bytes=18_000_000)
@@ -120,6 +116,14 @@ def run_pack(model: Path, voices: Path) -> dict:
                 ):
                     raise AssertionError("Final exact-media inventory impersonates an editorial approval")
                 final_evidence_inventories.append(inventory)
+                # The independent FFmpeg reviewer creates two temporary
+                # encoded-frame diagnostic snapshots in this directory.
+                # Hash the producer's exact original assets BEFORE that
+                # reviewer adds its non-shipping diagnostic files.
+                independent=review_encoded_episode(
+                    folder,episode,
+                    report_entry={"episode":report["episode"],"seconds":report["seconds"]},
+                )
                 if (
                     report["computed_test_example_executed"] is not True
                     or report["computed_example_evidence_sha256"]!=executed["evidence_packet_sha256"]
