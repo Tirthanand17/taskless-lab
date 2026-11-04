@@ -15,7 +15,7 @@ import urllib.error
 import urllib.request
 
 from autopilot.daily_cloud_plan import PlanError
-from autopilot.evidence_probe import verify_public_source_url, EvidenceError
+from autopilot.evidence_probe import verify_public_source_url, EvidenceError, RejectRedirect
 
 ALLOWED_MODELS = frozenset({"gemini-2.5-flash", "gemini-3.8-flash"})
 ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/"
@@ -260,7 +260,8 @@ def propose_with_explicit_gemini_grant(
         headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
         method="POST",
     )
-    sender = transport or urllib.request.urlopen
+    # Never let a provider redirect carry x-goog-api-key onto an unintended host.
+    sender = transport or urllib.request.build_opener(RejectRedirect()).open
     try:
         with sender(req, timeout=45) as response:
             if response.status != 200:
