@@ -46,7 +46,7 @@ EPISODE = re.compile(r"fm_[0-9]{8}_(?:short_am|long|short_pm)\Z")
 BUCKET = re.compile(r"[a-z0-9][a-z0-9.-]{3,62}\Z")
 PREFIX = re.compile(r"[a-z0-9][a-z0-9_-]*(?:/[a-z0-9][a-z0-9_-]*)*\Z")
 REGION = re.compile(r"[a-z]{2}-[a-z]+-[1-9][0-9]?\Z")
-VERSION = re.compile(r"[A-Za-z0-9_.+~=-]{1,128}\Z")
+VERSION = re.compile(r"[A-Za-z0-9._+/~=-]{1,128}\Z")
 ACCOUNT = re.compile(r"[0-9]{12}\Z")
 MAX_BODY = 300_000_000
 MAX_MANIFEST = 150_000
@@ -228,6 +228,8 @@ def _check_plan(plan:dict)->None:
             or b.get("youtube_upload_enabled") is not False
             or b.get("real_human_fact_rights_disclosure_and_full_watch_approvals") is not False
             or b.get("independently_authenticated_real_owner_and_workload") is not False
+            or b.get("production_bucket_iam_versioning_and_lock_verified") is not False
+            or b.get("actual_public_source_full_body_privately_archived") is not False
             or not isinstance(b.get("objects"),list)
             or b.get("object_count")!=len(b["objects"])
             or not b["objects"]):
@@ -342,6 +344,11 @@ def escrow_once_and_readback(*,s3,plan:dict,
     story=build_story(slot,_episode_day({"episode_id":episode}))
     if story["draft_sha256"]!=plan["source_draft_sha256"]:
         raise EscrowError("Original narrative changed since escrow preflight")
+    source_check=make_unapproved_claim_surface_docket(slot,_episode_day(story))
+    if source_check["unapproved_claim_surface_docket_sha256"]!=source:
+        raise EscrowError("Original complete factual/visible narrative source docket changed")
+    if plan["object_count"]!=7+story["scene_count"]*6:
+        raise EscrowError("No complete source-aligned media file set before private escrow")
     expected_prefix=config.prefix+"/"+episode+"/"
     all_files={p.name for p in Path(folder).iterdir()}
     if all_files!={x["name"] for x in plan["objects"]}:
