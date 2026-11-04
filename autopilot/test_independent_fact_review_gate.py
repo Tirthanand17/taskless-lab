@@ -97,7 +97,7 @@ def fixture(index=0, *, has_claim=None):
     }
 
 
-def test_verify(data, *, exclusions=EXCLUDED, now=NOW):
+def verify_fixture(data, *, exclusions=EXCLUDED, now=NOW):
     p, slot, obs, anchor, script_registry, seal, _ = data["item"]
     return verify_independent_fact_records(
         p, slot, obs,
@@ -125,7 +125,7 @@ class IndependentFactReviewTests(unittest.TestCase):
         self.data = fixture()
 
     def test_full_signed_records_only_prove_record_coverage_not_truth_or_release(self):
-        r = test_verify(self.data)
+        r = verify_fixture(self.data)
         self.assertEqual(r["status"], STATUS_PENDING)
         self.assertEqual(r["problems"], [])
         self.assertEqual(r["signed_review_records_valid_count"],
@@ -148,14 +148,14 @@ class IndependentFactReviewTests(unittest.TestCase):
     def test_three_distinct_video_slots_remain_nonpublishing(self):
         seen=set()
         for index in range(3):
-            r=test_verify(fixture(index))
+            r=verify_fixture(fixture(index))
             self.assertEqual(r["status"], STATUS_PENDING)
             self.assertFalse(r["release_authorized"])
             seen.add(r["script_manifest_sha256"])
         self.assertEqual(len(seen), 3)
 
     def test_zero_claims_with_signed_nonfactual_surfaces_never_grants_fact_truth(self):
-        r=test_verify(fixture(has_claim=False))
+        r=verify_fixture(fixture(has_claim=False))
         self.assertEqual(r["status"], STATUS_PENDING)
         self.assertEqual(r["expected_atomic_claim_count"], 0)
         self.assertFalse(r["independent_atomic_claim_completeness_proven"])
@@ -163,25 +163,25 @@ class IndependentFactReviewTests(unittest.TestCase):
 
     def test_missing_surface_review_blocks(self):
         self.data["signed_reviews"].pop(0)
-        r=test_verify(self.data)
+        r=verify_fixture(self.data)
         self.assertEqual(r["status"], STATUS_BLOCKED)
         self.assertIn("REQUIRED_SCRIPT_SURFACE_OR_CLAIM_REVIEW_MISSING", r["problems"])
 
     def test_missing_claim_review_blocks(self):
         self.data["signed_reviews"].pop()
-        r=test_verify(self.data)
+        r=verify_fixture(self.data)
         self.assertEqual(r["status"], STATUS_BLOCKED)
         self.assertIn("REQUIRED_SCRIPT_SURFACE_OR_CLAIM_REVIEW_MISSING",r["problems"])
 
     def test_replayed_receipt_or_duplicate_scope_denied(self):
         self.data["signed_reviews"].append(self.data["signed_reviews"][0])
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_missing_independent_trust_registry_rejected(self):
         self.data["reviewers"]={}
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_replaced_verification_key_denies_valid_old_signature(self):
         item=self.data["reviewers"]["coverage_reviewer"]
@@ -190,46 +190,46 @@ class IndependentFactReviewTests(unittest.TestCase):
         self.data["reviewers"]["coverage_reviewer"]=replace(
             item, public_key_ed25519_b64=base64.b64encode(new).decode())
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_revoked_reviewer_denied(self):
         x=self.data["reviewers"]["coverage_reviewer"]
         self.data["reviewers"]["coverage_reviewer"]=replace(x, active=False)
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_creator_or_publisher_cannot_review(self):
         with self.assertRaises(FactReviewError):
-            test_verify(self.data, exclusions=frozenset((*EXCLUDED,"coverage_reviewer")))
+            verify_fixture(self.data, exclusions=frozenset((*EXCLUDED,"coverage_reviewer")))
 
     def test_missing_creator_publisher_exclusion_denied(self):
         with self.assertRaises(FactReviewError):
-            test_verify(self.data, exclusions=frozenset())
+            verify_fixture(self.data, exclusions=frozenset())
 
     def test_changed_source_hash_after_signing_rejected(self):
         self.data["item"][2]["sources"][0]["response_sha256"]="f"*64
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_changed_script_title_after_signing_rejected(self):
         self.data["item"][0]["title"]="Tampered title even though review records exist"
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_claim_text_altered_without_rereview_fails(self):
         self.data["claims_raw"][0]["claim_text"]="Forged unreviewed quote"
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_claim_to_source_mismatch_fails(self):
         self.data["claims_raw"][0]["excerpt_keys"]=[["f"*24,"e"*64]]
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_changed_excerpt_packet_without_new_review_fails(self):
         self.data["excerpts"][0]["adjacent_context_sha256"]="e"*64
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_invalid_signature_bitflip_rejected(self):
         r=self.data["signed_reviews"][0]
@@ -238,7 +238,7 @@ class IndependentFactReviewTests(unittest.TestCase):
         self.data["signed_reviews"][0]=replace(
             r, signature_ed25519_b64=base64.b64encode(sig).decode())
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_changed_signed_channel_rejected_even_resigned(self):
         r=self.data["signed_reviews"][0]
@@ -246,7 +246,7 @@ class IndependentFactReviewTests(unittest.TestCase):
             r, self.data["reviewer_keys"]["coverage_reviewer"],
             channel_id="foreign_youtube_channel")
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_wrong_slot_episode_signature_replayed_denied(self):
         r=self.data["signed_reviews"][0]
@@ -254,7 +254,7 @@ class IndependentFactReviewTests(unittest.TestCase):
             r, self.data["reviewer_keys"]["coverage_reviewer"],
             episode_id="fm_20261106_short_pm")
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_tampered_docket_sha_even_if_resigned_denied(self):
         r=self.data["signed_reviews"][0]
@@ -262,7 +262,7 @@ class IndependentFactReviewTests(unittest.TestCase):
             r, self.data["reviewer_keys"]["coverage_reviewer"],
             review_docket_sha256="f"*64)
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_wrong_scope_type_or_unknown_id_denied(self):
         for field, value in (("scope_kind", "upload"), ("scope_id", "thumbnail:0")):
@@ -271,7 +271,7 @@ class IndependentFactReviewTests(unittest.TestCase):
                 r=d["signed_reviews"][0]
                 d["signed_reviews"][0]=resign(r,d["reviewer_keys"]["coverage_reviewer"],**{field:value})
                 with self.assertRaises(FactReviewError):
-                    test_verify(d)
+                    verify_fixture(d)
 
     def test_wrong_role_not_permitted_to_sign_claim(self):
         r=self.data["signed_reviews"][-1]
@@ -279,7 +279,7 @@ class IndependentFactReviewTests(unittest.TestCase):
             r,self.data["reviewer_keys"]["coverage_reviewer"],
             reviewer_id="coverage_reviewer",key_id="coverage_key")
         with self.assertRaises(FactReviewError):
-            test_verify(self.data)
+            verify_fixture(self.data)
 
     def test_same_identity_cannot_review_coverage_and_claim(self):
         d=fixture()
@@ -289,28 +289,28 @@ class IndependentFactReviewTests(unittest.TestCase):
         d["signed_reviews"][-1]=resign(
             r,d["reviewer_keys"]["coverage_reviewer"],
             reviewer_id="coverage_reviewer",key_id="coverage_key")
-        result=test_verify(d)
+        result=verify_fixture(d)
         self.assertEqual(result["status"],STATUS_BLOCKED)
         self.assertIn("FACT_REVIEWER_NOT_SEPARATED_FROM_SCOPE_REVIEWER",result["problems"])
 
     def test_expired_fact_review_denied(self):
         with self.assertRaises(FactReviewError):
-            test_verify(self.data,now=NOW+timedelta(hours=5))
+            verify_fixture(self.data,now=NOW+timedelta(hours=5))
 
     def test_future_review_denied(self):
         with self.assertRaises(FactReviewError):
-            test_verify(self.data,now=NOW-timedelta(hours=1))
+            verify_fixture(self.data,now=NOW-timedelta(hours=1))
 
     def test_naive_clock_denied(self):
         with self.assertRaises(FactReviewError):
-            test_verify(self.data,now=NOW.replace(tzinfo=None))
+            verify_fixture(self.data,now=NOW.replace(tzinfo=None))
 
     def test_signed_rejection_blocks_entire_episode(self):
         d=fixture()
         r=d["signed_reviews"][-1]
         d["signed_reviews"][-1]=resign(
             r,d["reviewer_keys"]["accuracy_reviewer"],decision="REJECT")
-        out=test_verify(d)
+        out=verify_fixture(d)
         self.assertEqual(out["status"],STATUS_BLOCKED)
         self.assertIn("SIGNED_REVIEW_REJECTED",out["problems"])
         self.assertFalse(out["release_authorized"])
@@ -320,7 +320,7 @@ class IndependentFactReviewTests(unittest.TestCase):
         r=d["signed_reviews"][-1]
         d["signed_reviews"][-1]=resign(
             r,d["reviewer_keys"]["accuracy_reviewer"],decision="UNRESOLVED")
-        out=test_verify(d)
+        out=verify_fixture(d)
         self.assertEqual(out["status"],STATUS_BLOCKED)
         self.assertIn("FACTUAL_REVIEW_UNRESOLVED",out["problems"])
 
@@ -332,7 +332,7 @@ class IndependentFactReviewTests(unittest.TestCase):
         d["signed_reviews"][title_i]=resign(
             r,d["reviewer_keys"]["coverage_reviewer"],decision="NO_FACTUAL_ASSERTION")
         with self.assertRaises(FactReviewError):
-            test_verify(d)
+            verify_fixture(d)
 
     def test_false_mapped_surface_without_claim_denied(self):
         d=fixture(has_claim=False)
@@ -340,7 +340,7 @@ class IndependentFactReviewTests(unittest.TestCase):
         d["signed_reviews"][0]=resign(
             r,d["reviewer_keys"]["coverage_reviewer"],decision="CLAIMS_MAPPED")
         with self.assertRaises(FactReviewError):
-            test_verify(d)
+            verify_fixture(d)
 
     def test_claim_support_requires_all_exact_known_excerpt_refs(self):
         d=fixture()
@@ -348,7 +348,7 @@ class IndependentFactReviewTests(unittest.TestCase):
         d["signed_reviews"][-1]=resign(
             r,d["reviewer_keys"]["accuracy_reviewer"],evidence_refs=())
         with self.assertRaises(FactReviewError):
-            test_verify(d)
+            verify_fixture(d)
 
     def test_unsupported_extra_source_excerpt_rejected(self):
         d=fixture()
@@ -356,13 +356,13 @@ class IndependentFactReviewTests(unittest.TestCase):
         d["signed_reviews"][-1]=resign(
             r,d["reviewer_keys"]["accuracy_reviewer"],evidence_refs=("a"*24+":"+"b"*64,))
         with self.assertRaises(FactReviewError):
-            test_verify(d)
+            verify_fixture(d)
 
     def test_forged_unsigned_positive_fields_in_source_packet_fail(self):
         d=fixture()
         d["excerpts"][0]["semantic_support_for_claim_verified"]=True
         with self.assertRaises(FactReviewError):
-            test_verify(d)
+            verify_fixture(d)
 
     def test_reviewer_notes_missing_denied(self):
         d=fixture()
@@ -370,14 +370,14 @@ class IndependentFactReviewTests(unittest.TestCase):
         d["signed_reviews"][0]=resign(
             r,d["reviewer_keys"]["coverage_reviewer"],reviewer_notes="ok")
         with self.assertRaises(FactReviewError):
-            test_verify(d)
+            verify_fixture(d)
 
     def test_production_revocation_and_custodian_expiry_still_required(self):
         d=fixture()
         d["item"][4]["trusted_custodian"]=replace(
             d["item"][4]["trusted_custodian"], active=False)
         with self.assertRaises(FactReviewError):
-            test_verify(d)
+            verify_fixture(d)
 
 
 if __name__=="__main__":
