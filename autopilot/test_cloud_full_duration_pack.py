@@ -121,6 +121,12 @@ class CloudFullPackContractTests(unittest.TestCase):
         self.assertNotEqual(STATUS,"QA_APPROVED")
         self.assertFalse(hasattr(SHORT_AM,"youtube_video_id"))
 
+    def test_final_audio_encoder_has_bounded_peaks_and_no_makeup_gain(self):
+        from autopilot import cloud_full_duration_pack as module
+        source=Path(module.__file__).read_text(encoding="utf8")
+        self.assertIn("loudnorm=I=-16:LRA=9:TP=-2,alimiter=limit=0.50:level=0",source)
+        self.assertIn('"-c:a","aac"',source)
+
     def test_full_pack_workflow_does_not_import_remote_upload_or_laptop_files(self):
         from autopilot import cloud_full_duration_pack as mod
         source=Path(mod.__file__).read_text(encoding="utf8")
