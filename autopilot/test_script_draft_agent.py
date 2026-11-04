@@ -278,6 +278,29 @@ class ScriptDraftAgentTests(unittest.TestCase):
         self.assertNotIn("thinkingConfig",config)
         self.assertIn("gemini-2.5-flash:generateContent",req.full_url)
 
+    def test_legacy_self_reported_boolean_grant_cannot_perform_real_http_call(self):
+        # A boolean can be supplied by any model/orchestrator: not an owner
+        # signature, billing receipt, secured key vault or one-use lease.
+        with self.assertRaisesRegex(ScriptDraftError,"Live Gemini requests disabled"):
+            propose_with_explicit_gemini_grant(
+                self.draft_input, grant=model_grant(), api_key="fakeonly_"+"x"*32,
+            )
+
+    def test_forged_truthy_owner_or_noninteger_request_budget_rejected(self):
+        variants=(
+            {"owner_approved_external_inference":1},
+            {"owner_accepted_provider_data_use":"yes"},
+            {"free_tier_project_verified":1},
+            {"approved_usage_lease":1},
+            {"request_budget":True},
+            {"request_budget":1.0},
+            {"incremental_paid_budget_usd":False},
+            {"incremental_paid_budget_usd":0j},
+        )
+        for update in variants:
+            with self.subTest(update=update),self.assertRaises(ScriptDraftError):
+                ModelGrant(**{**vars(model_grant()),**update}).validate()
+
     def test_model_finish_reason_other_than_stop_rejected(self):
         fake = FakeTransport({"candidates":[{"finishReason":"MAX_TOKENS","content":{"parts":[{"text":json.dumps(short_proposal())}]}}]})
         with self.assertRaises(ScriptDraftError):
