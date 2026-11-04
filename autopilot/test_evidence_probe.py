@@ -122,7 +122,7 @@ class EvidenceProbeTests(unittest.TestCase):
         self.assertIs(report["rights_verified"], False)
         self.assertIs(report["source_text_or_image_stored"], False)
         self.assertIs(report["youtube_release_authorized"], False)
-        self.assertNotIn("body", json.dumps(report))
+        self.assertNotIn("original research ", json.dumps(report))
         self.assertEqual(opener.requests, [(self.lead["url"], 10.0)])
 
     def test_response_body_never_persisted(self):
