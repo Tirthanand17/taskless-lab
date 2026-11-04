@@ -40,16 +40,23 @@ def sentence_spans(narration: str) -> tuple[tuple[int, int, str], ...]:
             or len(narration) > MAX_NARRATION_CHARS):
         raise NarrationInventoryError("Missing or unbounded exact spoken narration")
     chunks = list(SEGMENT.finditer(narration))
+    # A final punctuation mark followed only by whitespace must not create an
+    # artificial empty sentence. Fold that exact whitespace into the previous
+    # original raw segment, preserving byte-for-byte narration reconstruction.
+    trailing_space = (len(chunks) > 1 and not chunks[-1].group(0).strip())
+    if trailing_space:
+        chunks = chunks[:-1]
     if not 1 <= len(chunks) <= MAX_SENTENCES:
         raise NarrationInventoryError("No sentences or too many narration fragments")
     spans = []
-    for chunk in chunks:
-        raw = chunk.group(0)
+    for index, chunk in enumerate(chunks):
+        end = len(narration) if trailing_space and index == len(chunks)-1 else chunk.end()
+        raw = narration[chunk.start():end]
         sentence = raw.strip()
         if (not sentence or not re.search(r"\w", sentence, flags=re.UNICODE)
                 or len(sentence) > 1250):
             raise NarrationInventoryError("Empty, punctuation-only or excessive sentence")
-        spans.append((chunk.start(), chunk.end(), sentence))
+        spans.append((chunk.start(), end, sentence))
     if "".join(narration[start:end] for start, end, _ in spans) != narration:
         raise NarrationInventoryError("Some narration characters were omitted")
     if spans[0][0] != 0 or spans[-1][1] != len(narration):
