@@ -1,0 +1,105 @@
+name: FlowMinute B3d4c2c3a Original Public-Source Educational Storyboards (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/primary_sourced_storyboards.py"
+      - "autopilot/test_primary_sourced_storyboards.py"
+      - "autopilot/primary_vector_cloud_smoke.py"
+      - ".github/workflows/flowminute-b3d4c2c3a-original-stories.yml"
+      - "docs/adr/0027-b3d4c2c3a-primary-sourced-original-stories.md"
+      - "docs/status/branch2-completion-audit-2026-11-04.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2c3a-original-unreviewed-no-provider
+  cancel-in-progress: true
+
+jobs:
+  primary_source_stories_math_and_claim_integrity:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Checkout public PR read-only with no persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up ephemeral Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify fresh Moon/Earthquake/MB source-linked drafts and exact scientific computations
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v autopilot.test_primary_sourced_storyboards
+      - name: Require three independent original draft sources and no actual publishing authority
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.primary_sourced_storyboards import evaluate_three_draft_stories,build_story
+          r=evaluate_three_draft_stories("2026-11-12")
+          assert r["research_topics"]==["lunar_signal","file_transfer","quake_energy"]
+          assert r["primary_reference_id_count"]==6
+          assert r["estimated_duration_seconds"][1]>=310
+          assert r["primary_sources_fetched_and_human_claim_reviewed"] is False
+          assert r["actual_audio_video_encoded"] is False
+          assert r["actual_youtube_upload_or_schedule"] is False
+          for s in ("short_am","long","short_pm"):
+              item=build_story(s)
+              assert item["real_primary_source_live_rechecked_by_runner"] is False
+              assert item["actual_video_rendered_for_this_story"] is False
+              assert item["release_authorized"] is False
+          print("B3D4C2C3A_THREE_ORIGINAL_PRIMARY_REFERENCED_DRAFTS_NO_FACT_CLEARANCE")
+          PY
+
+  real_original_vector_raster_and_h264_previews:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 23
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Checkout no saved repository write token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public original SVG raster and H264 decoder dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install --disable-pip-version-check \
+            'cairosvg>=2.7,<3' 'pillow>=10,<12'
+          ffmpeg -version | head -1
+          ffprobe -version | head -1
+      - name: Actually render 36 distinct frames and decode three silent H264 previews
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.primary_vector_cloud_smoke
+      - name: No voices or final release, no model API, no YouTube mutation
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_MODEL_SPEND_USD" = 0
+          echo "B3D4C2C3A_EPHEMERAL_ORIGINAL_VECTOR_TEST_MP4_DELETED_NO_USER_MEDIA_OR_CLOUD_BILLING"
