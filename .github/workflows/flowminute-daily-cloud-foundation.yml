@@ -10,12 +10,16 @@ on:
     branches: [main, feature/flowminute-cloud-autopilot-v1]
     paths:
       - "autopilot/daily_cloud_plan.py"
+      - "autopilot/evidence_probe.py"
+      - "autopilot/test_evidence_probe.py"
       - "autopilot/test_daily_cloud_plan.py"
       - "autopilot/agent_org.py"
       - ".github/workflows/flowminute-daily-cloud-foundation.yml"
   pull_request:
     paths:
       - "autopilot/daily_cloud_plan.py"
+      - "autopilot/evidence_probe.py"
+      - "autopilot/test_evidence_probe.py"
       - "autopilot/test_daily_cloud_plan.py"
       - ".github/workflows/flowminute-daily-cloud-foundation.yml"
 
@@ -52,13 +56,37 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           python -m autopilot.scout --output out/flowminute-scout-unverified.json
+
+      - name: Observe bounded official/public source bytes (NOT fact validation)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -m autopilot.evidence_probe \
+            --scout-report out/flowminute-scout-unverified.json \
+            --max-sources 3 \
+            --output out/flowminute-evidence-unverified.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          evidence=json.loads(Path("out/flowminute-evidence-unverified.json").read_text(encoding="utf8"))
+          assert evidence["status"] == "PUBLIC_SOURCE_METADATA_ONLY_NOT_FACT_VERIFIED"
+          assert evidence["source_probes_attempted"] <= 3
+          assert evidence["claims_verified"] == 0
+          assert evidence["scripts_generated"] == 0
+          assert evidence["youtube_upload_enabled"] is False
+          assert evidence["youtube_schedule_enabled"] is False
+          assert evidence["source_body_persisted"] is False
+          assert evidence["billed_provider_calls"] == 0
+          print("SOURCE_OBSERVATION_ONLY: observed", evidence["sources_fetched"],
+                "failed", evidence["sources_failed"], "never claimed facts or upload")
+          PY
 
       - name: Plan three distinct tomorrow slots without producing any media
         if: github.event_name != 'pull_request'
