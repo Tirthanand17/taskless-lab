@@ -14,7 +14,7 @@ import unittest
 from autopilot.full_topic_narrated_pack import (
     FRAMES_PER_SCENE,STATUS,TopicRenderError,
     episode_from_research_story,variable_frame_concat_lines,
-    prepare_story_timing,
+    prepare_story_timing,visible_topic_motion_pulse,
 )
 from autopilot.primary_sourced_storyboards import (
     SLOTS,build_story,require_exact_draft,StoryboardError,
@@ -98,6 +98,22 @@ class TopicFullNarrationPreflightTests(unittest.TestCase):
             t[i]=bad
             with self.subTest(idx=i,bad=bad),self.assertRaises(TopicRenderError):
                 variable_frame_concat_lines(story,t,groups,scene_index_dir=root)
+
+    def test_every_original_topic_has_five_distinct_motion_positions_above_captions(self):
+        for slot in SLOTS:
+            story=build_story(slot)
+            positions=[visible_topic_motion_pulse(story,j*24)
+                       for j in range(FRAMES_PER_SCENE)]
+            self.assertEqual(len(set(positions)),FRAMES_PER_SCENE)
+            width,height=(1080,1920) if slot!="long" else (1920,1080)
+            caption_panel_top=height-(380 if slot!="long" else 265)
+            for x,y in positions:
+                self.assertGreater(x,65)
+                self.assertLess(x,width-65)
+                self.assertLess(y+30,caption_panel_top)
+        for bad in (-1,121,True,False,1.5):
+            with self.subTest(tick=bad),self.assertRaises(TopicRenderError):
+                visible_topic_motion_pulse(build_story("long"),bad)
 
     def test_mismatched_scene_frame_count_or_duplicated_asset_path_rejected(self):
         story,root,groups,times=fixture_timeline("short_pm")
