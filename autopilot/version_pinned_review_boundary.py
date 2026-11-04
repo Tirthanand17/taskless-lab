@@ -185,6 +185,8 @@ def reconstruct_version_bound_review_context(
     _validate_config(config)
     _check_plan(plan)
     if (not isinstance(escrow_receipt,dict)
+            or escrow_receipt.get("status")!="STAGED_VERSIONED_PRIVATE_OBJECTS_AND_FINAL_UNAPPROVED_MANIFEST"
+            or escrow_receipt.get("episode_id")!=plan["episode_id"]
             or escrow_receipt.get("release_authorized") is not False
             or escrow_receipt.get("youtube_upload_enabled") is not False
             or escrow_receipt.get("real_cloud_account_identity_and_bucket_iam_verified") is not False
