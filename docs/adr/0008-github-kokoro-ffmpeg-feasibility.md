@@ -55,3 +55,12 @@ Required dimensions and voice mappings:
 
 ## Reuse previous working pieces
 `autopilot/agent_org.py` (48 roles), `autopilot/daily_cloud_plan.py` (three release plans), `autopilot/evidence_probe.py` (unverified source evidence), `autopilot/script_draft_agent.py` (owner-gated optional model proposals), existing no-publish Remotion smoke and exact-file release policy. A professional independent media/rights reviewer remains necessary even when technical decode passes.
+
+
+## Actual GitHub-run outcome — 2026-11-04
+- Real [GitHub Actions run 41773057781](https://github.com/Tirthanand17/taskless-lab/actions/runs/41773057781) succeeded, with **10/10** fast negative/unit tests and all four PR checks green.
+- Upstream tagged int8 model and voices both returned exact expected SHA-256 digests. No cached laptop files were present or accessed.
+- Real onnx CPU synthesis: `af_heart` 6.43s, `am_michael` 8.21s, `bf_emma` 6.95s; **three separate utterances**, not reused pre-recorded audio or synthetic tones.
+- Three original technical clips, 4s each: vertical H.264/AAC, horizontal H.264/AAC, vertical H.264/AAC; all `ffprobe` stream checks and full error-on-decode passed. Total TTS + video render + QA time was **27.21s** excluding tool installation, model downloads and runner setup. Model, wav and MP4 bytes were removed from disposable runner.
+- Result classification: `REAL_CLOUD_KOKORO_TTS_AND_FFMPEG_TECHNICAL_SMOKE_ONLY`. No copyright/rights or genuine human voice listening review performed. **No full-duration Shorts or long, citations, synced subtitles, originality review, or release permissions**. Do not extrapolate 27.21s to a full daily batch.
+- Merged to `main` through [PR #11](https://github.com/Tirthanand17/taskless-lab/pull/11), commit `ba9d770bedcdfd32f62f343a47d9222086a80928`; the benchmark runs by PR/opt-in only, not as an automatic publication stage.
