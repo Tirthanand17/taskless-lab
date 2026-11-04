@@ -132,7 +132,7 @@ def inspect_private_cloud_requirements(plan: PrivateCloudRequirements) -> dict:
         or not _hash(plan.isolated_owner_project_sha256)
         or plan.cloud_backend not in ("aws_secrets_manager","gcp_secret_manager")
         or not isinstance(plan.region_id,str)
-        or not re.fullmatch(r"[a-z]{2}(?:-[a-z]+){1,2}-[0-9]",plan.region_id)
+        or not re.fullmatch(r"(?:[a-z]{2}-[a-z]+-[0-9]|[a-z]+-[a-z]+[0-9])",plan.region_id)
         or plan.database_tls_minimum!="TLS1.3"
         or plan.database_owner_no_login is not True
         or plan.deny_runtime_db_superuser is not True
