@@ -216,7 +216,9 @@ def encode(episode, folder: Path, images: list[Path], timings: list[dict],
     dotfile=folder/"moving_progress.png"
     dot.save(dotfile)
     fontsize=23 if episode.kind=="short" else 21
-    margin=150 if episode.kind=="short" else 106
+    # ASS PlayRes scaling: ~24/31 style units positions captions inside
+    # the bottom caption-safe panel, not halfway up the screen.
+    margin=24 if episode.kind=="short" else 31
     subfilter=(f"subtitles={captions.as_posix()}:force_style='FontName=DejaVu Sans,"
                "PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
                f"Outline=2,FontSize={fontsize},Alignment=2,MarginV={margin}'")
@@ -231,7 +233,9 @@ def encode(episode, folder: Path, images: list[Path], timings: list[dict],
       "-loop","1","-framerate",str(FPS),"-i",str(dotfile),
       "-filter_complex",filt,"-map","[v]","-map","1:a:0",
       "-c:v","libx264","-preset","ultrafast","-crf","30",
-      "-pix_fmt","yuv420p","-threads","2","-c:a","aac","-b:a","128k",
+      "-pix_fmt","yuv420p","-threads","2",
+      "-af","loudnorm=I=-16:LRA=9:TP=-2,alimiter=limit=0.50:level=0",
+      "-c:a","aac","-b:a","128k",
       "-t",f"{total:.4f}","-movflags","+faststart","-y",str(out)
     ],timeout=1500)
     return out
