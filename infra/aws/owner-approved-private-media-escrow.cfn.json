@@ -112,8 +112,7 @@
                 }
               },
               "Action": [
-                "kms:Decrypt",
-                "kms:DescribeKey"
+                "kms:Decrypt"
               ],
               "Resource": "*",
               "Condition": {
@@ -121,6 +120,28 @@
                   "kms:ViaService": {
                     "Fn::Sub": "s3.${AWS::Region}.amazonaws.com"
                   },
+                  "kms:CallerAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            },
+            {
+              "Sid": "IndependentAuditorReadOnlyKmsConfigurationInspection",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${AuditorRoleName}"
+                }
+              },
+              "Action": [
+                "kms:DescribeKey",
+                "kms:GetKeyRotationStatus",
+                "kms:GetKeyPolicy"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
                   "kms:CallerAccount": {
                     "Ref": "AWS::AccountId"
                   }
