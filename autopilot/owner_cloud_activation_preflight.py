@@ -48,6 +48,7 @@ KMS_SIDS = frozenset({
     "OwnerAccountAdministratorsRetainKeyControl",
     "MediaWriterKmsForS3Only",
     "IndependentAuditorOnlyDecryptForS3",
+    "IndependentAuditorReadOnlyKmsConfigurationInspection",
 })
 
 
@@ -193,7 +194,7 @@ def _expected_kms_policy(scope:OwnerSelectedStorageScope,policy:dict)->None:
             "kms:GenerateDataKey","kms:Encrypt","kms:Decrypt","kms:DescribeKey",
         }),
         ("IndependentAuditorOnlyDecryptForS3",scope.auditor_role_arn,{
-            "kms:Decrypt","kms:DescribeKey",
+            "kms:Decrypt",
         }),
     ):
         r=rows[sid]
@@ -205,6 +206,17 @@ def _expected_kms_policy(scope:OwnerSelectedStorageScope,policy:dict)->None:
                     "kms:CallerAccount":scope.account_id
                 }}):
             raise ActivationBoundaryError("Incorrect owner-selected independent KMS crypto permissions")
+    inspector=rows["IndependentAuditorReadOnlyKmsConfigurationInspection"]
+    if (inspector.get("Effect")!="Allow"
+            or inspector.get("Principal")!={"AWS":scope.auditor_role_arn}
+            or _set_actions(inspector.get("Action"))!=frozenset({
+                "kms:DescribeKey","kms:GetKeyRotationStatus","kms:GetKeyPolicy",
+            })
+            or inspector.get("Resource")!="*"
+            or inspector.get("Condition")!={"StringEquals":{
+                "kms:CallerAccount":scope.account_id,
+            }}):
+        raise ActivationBoundaryError("Auditor must have read-only direct KMS policy/rotation inspection without ViaService, no modification privileges")
 
 
 def inspect_owner_selected_storage_readonly(*,sts,s3,kms,
