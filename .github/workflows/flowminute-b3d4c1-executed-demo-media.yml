@@ -1,0 +1,143 @@
+name: FlowMinute B3d4c1 Computed Original Demo Videos and Thumbnails (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/computed_demo_storyboards.py"
+      - "autopilot/test_computed_demo_storyboards.py"
+      - "autopilot/executed_demo_cloud_smoke.py"
+      - "autopilot/signed_narrated_cloud_pack.py"
+      - ".github/workflows/flowminute-b3d4c1-executed-demo-media.yml"
+      - "docs/adr/0018-b3d4c1-executed-educational-demonstrations.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c1-executed-demo-nopublish
+  cancel-in-progress: true
+
+jobs:
+  executed_demo_and_signed_storyboard_contracts:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+    steps:
+      - name: Checkout GitHub PR without retained credential
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Standard GitHub Python runner
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install independent Ed25519 verification package only
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Run all source and signed-script plus executed demonstration regressions
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_script_draft_agent \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_narration_review_inventory \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_independent_fact_review_gate \
+            autopilot.test_script_to_preview_bridge \
+            autopilot.test_signed_narrated_cloud_pack \
+            autopilot.test_computed_demo_storyboards
+      - name: Assert source/article reviews and provider not activated by computation
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_computed_demo_storyboards import packet_for
+          for index in range(3):
+              plan,proposal,recipe,packet=packet_for(index)
+              assert packet["computation_reproduced_from_fixed_test_fixture"] is True
+              assert packet["source_article_fact_checked"] is False
+              assert packet["independent_reviewer_checked_semantic_fit"] is False
+              assert packet["rights_and_voice_license_approved"] is False
+              assert packet["generative_model_created_script"] is False
+              assert packet["thumbnail_editorial_review_complete"] is False
+              assert packet["youtube_upload_enabled"] is False
+              assert packet["release_authorized"] is False
+          print("B3D4C1_REAL_EXECUTED_SYNTHETIC_DEMOS_PENDING_ALL_EDITORIAL_RIGHTS_REVIEWS_NO_UPLOAD")
+          PY
+
+  actually_render_three_narrated_computed_demo_videos:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - name: Checkout public GitHub PR without saved tokens
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted CPU Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only free and public open-source voice and media dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng libsndfile1 fonts-dejavu-core
+          python -m pip install --disable-pip-version-check \
+            'cryptography>=46,<48' 'kokoro-onnx==0.6.1' \
+            'soundfile>=0.12,<1' 'Pillow>=11,<13' 'numpy>=1.26,<3'
+          python - <<'PY'
+          from subprocess import check_output
+          assert "subtitles" in check_output(["ffmpeg","-hide_banner","-filters"],text=True)
+          print("B3D4C1_FREE_ORIGINAL_MEDIA_TOOLCHAIN_AVAILABLE")
+          PY
+      - name: Fetch only previously SHA256-pinned upstream public model weights
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b3d4c1-public-model
+          cd /tmp/flowminute-b3d4c1-public-model
+          root="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 240 \
+            --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$root/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+          echo "B3D4C1_VOICE_WEIGHTS_EXACT_SHA256_MATCH"
+      - name: Execute original data examples, encode voiced MP4s and check computed PNGs/thumbnails/AV
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.executed_demo_cloud_smoke \
+            --model /tmp/flowminute-b3d4c1-public-model/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b3d4c1-public-model/voices-v1.0.bin
+      - name: No real model or publishing privileges in any workflow
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_MODEL_SPEND_USD" = 0
+          echo "B3D4C1_NO_PRIVATE_PROVIDER_NO_API_KEY_NO_YOUTUBE_NO_PERSISTENT_TEST_MEDIA"
+      - name: Always destroy downloaded public voice weights even on failure
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b3d4c1-public-model
+          echo "B3D4C1_EPHEMERAL_WEIGHTS_CLEANED"
