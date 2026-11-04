@@ -1,0 +1,87 @@
+name: FlowMinute B3d4c2b3c1 Offline AWS GCP Identity & TLS Lint (NO ACTIVATE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/offline_cloud_identity_lint.py"
+      - "autopilot/test_offline_cloud_identity_lint.py"
+      - ".github/workflows/flowminute-b3d4c2b3c1-identity-lint.yml"
+      - "docs/adr/0024-b3d4c2b3c1-workload-identity-no-activation.md"
+      - "docs/runbooks/branch2-private-cloud-owner-activation.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2b3c1-no-provider-readonly
+  cancel-in-progress: true
+
+jobs:
+  static_oidc_policy_tls_and_no_privilege_regression:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_MOCK_ONLY: "true"
+    steps:
+      - name: Checkout GitHub PR read-only with no saved credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public cryptographic testing package only
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Exercise AWS GCP strict identity, hostile fork and vault/TLS controls
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_offline_cloud_identity_lint \
+            autopilot.test_private_cloud_recovery_preflight \
+            autopilot.test_owner_provider_lease_gate \
+            autopilot.test_atomic_mock_inference_fence
+      - name: Assert hypothetical passes cannot produce production authorizations
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_offline_cloud_identity_lint import intent,checked
+          for backend in ("aws_secrets_manager","gcp_secret_manager"):
+              report=checked(intent(backend))
+              assert report["hypothetical_policy_and_claim_shape_checked"] is True
+              assert report["three_separate_secret_scopes_linted"] is True
+              assert report["postgres_client_tls_verify_full_required"] is True
+              for key in (
+                  "independently_authenticated_oidc_claims",
+                  "actual_github_protected_environment_rules_verified",
+                  "real_cloud_iam_policy_readback_verified",
+                  "actual_cloud_vault_credentials_accessed",
+                  "owner_consent_or_project_entitlement_verified",
+                  "account_actual_zero_charge_guaranteed",
+                  "production_database_connected",
+                  "real_generative_provider_called",
+                  "youtube_upload_enabled",
+                  "cloud_deployment_authorized",
+                  "release_authorized",
+              ):
+                  assert report[key] is False,key
+          print("B3D4C2B3C1_OFFLINE_AWS_GCP_AND_PG_TLS_SCOPES_PASS_NO_ID_TOKEN_NO_PROVIDER_NO_PUBLISH")
+          PY
+      - name: No OIDC token permissions, cloud role or secrets in public PR job
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          echo "B3D4C2B3C1_NO_CLOUD_ACCOUNT_NO_OIDC_EXCHANGE_NO_ACTUAL_SECRETS_NO_YOUTUBE"
