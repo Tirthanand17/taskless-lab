@@ -83,7 +83,7 @@ class TopicFullNarrationPreflightTests(unittest.TestCase):
             self.assertTrue(scene.startswith("ffconcat version 1.0\n"))
             self.assertTrue(animated.startswith("ffconcat version 1.0\n"))
             self.assertEqual(animated.count("moving_"),
-                             len(groups)*FRAMES_PER_SCENE*2+1)
+                             len(groups)*FRAMES_PER_SCENE+1)
 
     def test_wrong_timing_overlap_gap_nonfinite_and_truncated_rejected(self):
         story,root,groups,times=fixture_timeline("short_am")
