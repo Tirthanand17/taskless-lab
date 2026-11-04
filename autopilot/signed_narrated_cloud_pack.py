@@ -274,6 +274,7 @@ def produce_signed_narrated_demo(
     registry: Mapping[str, TrustedScriptCustodian],
     excluded_creator_and_publisher_ids: frozenset[str],
     now: datetime | None = None,
+    demo_recipe: str | None = None,
 ) -> tuple[dict, ExampleEpisode]:
     """Render only after REVALIDATING external script signature and all fields.
 
@@ -302,6 +303,16 @@ def produce_signed_narrated_demo(
         raise NarratedPackError("Unserializable signed script plan") from exc
     if serialized != authorized_copy or len(serialized) > 150_000:
         raise NarratedPackError("Rendered plan disagrees with fresh signed script/source review")
+    # Optional data-backed educational demonstration is an explicit allowlisted
+    # test recipe. Never execute arbitrary model-authored code or silently map
+    # unrelated news/claims to this synthetic CSV fixture.
+    demo_packet = None
+    if demo_recipe is not None:
+        from autopilot.computed_demo_storyboards import (
+            build_executed_demo, require_exact_demo,
+        )
+        demo_packet = build_executed_demo(plan, proposal, demo_recipe)
+        require_exact_demo(plan, proposal, demo_recipe, demo_packet)
     root = Path(root)
     if root.is_symlink() or not root.is_dir() or any(root.iterdir()):
         raise NarratedPackError("Require empty real ephemeral directory")
@@ -314,10 +325,27 @@ def produce_signed_narrated_demo(
     frames=[]
     for i in range(len(plan["scene_plan"])):
         out=folder/f"scene_{i+1:02d}.png"
-        original_frame(plan,i,out)
+        if demo_packet is None:
+            original_frame(plan,i,out)
+        else:
+            from autopilot.computed_demo_storyboards import render_demo_frame
+            render_demo_frame(plan,demo_packet,i,out)
         frames.append(out)
+    thumbnail_sha = None
+    if demo_packet is not None:
+        from autopilot.computed_demo_storyboards import render_demo_thumbnail
+        thumbnail_sha = render_demo_thumbnail(
+            plan,demo_packet,folder/"UNAPPROVED_THUMBNAIL_TEST.png",
+        )
     encode(episode,folder,frames,timings,voice,srt,seconds)
     report=inspect_dynamic_media(folder,episode,prepared.scene_ids,seconds,cues,frames)
+    report["computed_test_example_executed"] = demo_packet is not None
+    report["computed_example_evidence_sha256"] = (
+        demo_packet["evidence_packet_sha256"] if demo_packet is not None else None
+    )
+    report["original_unreviewed_thumbnail_sha256"] = thumbnail_sha
+    report["synthetic_data_not_external_factual_support"] = True
+    report["human_approved_demo_visual_semantics"] = False
     report["script_manifest_sha256"]=prepared.script_manifest_sha256
     report["full_original_narration_sha256"]=prepared.original_script_sha256
     report["voice_generation_elapsed_seconds"]=tts_seconds
