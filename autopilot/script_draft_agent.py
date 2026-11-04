@@ -7,6 +7,7 @@ a budget lease. Scripts remain unverified and cannot unlock a YouTube upload.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 import hashlib
 import json
 import re
@@ -14,6 +15,7 @@ import urllib.error
 import urllib.request
 
 from autopilot.daily_cloud_plan import PlanError
+from autopilot.evidence_probe import verify_public_source_url, EvidenceError
 
 ALLOWED_MODELS = frozenset({"gemini-2.5-flash", "gemini-3.8-flash"})
 ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/"
@@ -102,12 +104,26 @@ def build_draft_input(slot: object, observations: object) -> dict:
         if not isinstance(item, dict) or item.get("status") not in SOURCE_KINDS:
             raise ScriptDraftError("Invalid source observation")
         source_id, publisher, title = (item.get("source_id"), item.get("publisher"), item.get("title"))
+        url = item.get("source_url")
+        try:
+            verify_public_source_url(url, publisher)
+            observed = datetime.fromisoformat(item.get("observed_at_utc", ""))
+        except (EvidenceError, ValueError, TypeError) as exc:
+            raise ScriptDraftError("Invalid observed source URL or timestamp") from exc
+        body_hash = item.get("response_sha256")
         if (not isinstance(source_id, str) or not re.fullmatch("[0-9a-f]{24}", source_id)
+            or source_id != hashlib.sha256(url.encode("utf-8")).hexdigest()[:24]
+            or not isinstance(body_hash, str) or not re.fullmatch("[0-9a-f]{64}", body_hash)
+            or observed.tzinfo is None or observed.utcoffset() is None
             or not isinstance(publisher, str) or len(publisher) > 40
             or not isinstance(title, str) or not 12 <= len(title) <= 200
             or item.get("facts_verified") is not False
             or item.get("youtube_release_authorized") is not False):
             raise ScriptDraftError("Untrusted source attributes")
+        if item["status"] == "RSS_ENTRY_ONLY_ARTICLE_NOT_FETCHED":
+            entry_hash = item.get("feed_entry_sha256")
+            if not isinstance(entry_hash, str) or not re.fullmatch("[0-9a-f]{64}", entry_hash):
+                raise ScriptDraftError("RSS-only evidence missing content fingerprint")
         selected.append({
             "source_id": source_id,
             "publisher": publisher,
