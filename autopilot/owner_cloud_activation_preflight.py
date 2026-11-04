@@ -92,7 +92,8 @@ def verify_owner_selected_scope(scope:OwnerSelectedStorageScope)->None:
             or auditor.group(1)!=scope.account_id
             or kms.group(1)!=scope.region or kms.group(2)!=scope.account_id
             or scope.writer_role_arn==scope.auditor_role_arn
-            or writer.group(2).split("/")[-1]==auditor.group(2).split("/")[-1]):
+            or "/" in writer.group(2) or "/" in auditor.group(2)
+            or writer.group(2)==auditor.group(2)):
         raise ActivationBoundaryError("Owner writer/auditor/KMS must be distinct scoped same-account roles")
 
 
