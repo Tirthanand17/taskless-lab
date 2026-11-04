@@ -28,7 +28,7 @@ def digest(name):
 
 
 def intent(backend="aws_secrets_manager"):
-    project = "000000000000" if backend=="aws_secrets_manager" else "flowminute-fixture-001"
+    project = "000000000000" if backend=="aws_secrets_manager" else "111122223333"
     aud = AWS_AUDIENCE if backend=="aws_secrets_manager" else (
         f"//iam.googleapis.com/projects/{project}/"
         "locations/global/workloadIdentityPools/flowminute-production/providers/github"
