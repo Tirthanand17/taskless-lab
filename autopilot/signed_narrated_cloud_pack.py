@@ -76,11 +76,8 @@ def validate_plan(plan: object) -> PreparedNarration:
     kind = plan.get("format")
     if (not isinstance(episode_id, str)
             or not re.fullmatch(r"fm_[0-9]{8}_(short_am|short_pm|long)", episode_id)
-            or not isinstance(slot, str) or episode_id.split("_")[-2:] != (
-                ["short", "am"] if slot == "short_am" else
-                ["short", "pm"] if slot == "short_pm" else
-                ["long"]
-            ) or slot not in VOICE_FOR_SLOT
+            or not isinstance(slot, str) or slot not in VOICE_FOR_SLOT
+            or not episode_id.endswith("_" + slot)
             or kind != ("long" if slot == "long" else "short")):
         raise NarratedPackError("Wrong format, episode or one-of-three daily release slots")
     scenes = plan.get("scene_plan")
