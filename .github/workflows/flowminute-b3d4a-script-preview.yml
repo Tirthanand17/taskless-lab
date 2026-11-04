@@ -1,0 +1,112 @@
+name: FlowMinute B3d4a Signed Script to Cloud MP4 Preview (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/script_to_preview_bridge.py"
+      - "autopilot/preview_bridge_cloud_smoke.py"
+      - "autopilot/test_script_to_preview_bridge.py"
+      - "autopilot/script_draft_agent.py"
+      - "autopilot/test_script_draft_agent.py"
+      - ".github/workflows/flowminute-b3d4a-script-preview.yml"
+      - "docs/adr/0016-b3d4a-provider-readiness-script-preview.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4a-ephemeral-previews
+  cancel-in-progress: true
+
+jobs:
+  pure_signed_bridge_and_provider_contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only detached public key verification library
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Run every signed-source and new provider/scene mapping safety regression
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_script_draft_agent \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_narration_review_inventory \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_independent_fact_review_gate \
+            autopilot.test_script_to_preview_bridge
+      - name: Prove no real inference has been configured
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_script_to_preview_bridge import staged_plan
+          from autopilot.script_draft_agent import ModelGrant, ScriptDraftError
+          for index in range(3):
+              p = staged_plan(index)
+              assert p["all_original_script_characters_preserved"] is True
+              assert p["model_provider_live_inference_used"] is False
+              assert p["full_length_final_narration_or_video_exists"] is False
+              assert p["youtube_upload_enabled"] is False
+              assert p["release_authorized"] is False
+          try:
+              ModelGrant().validate()
+              raise AssertionError("Default grant unexpectedly permits provider inference")
+          except ScriptDraftError:
+              pass
+          print("B3D4A_SIGNED_STORYBOARD_AND_LIVE_MODEL_DEFAULT_DENIAL_PASS_NO_PUBLISH")
+          PY
+
+  actual_temporary_three_video_preview_encode:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 17
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public original-frame and Ed25519 verification packages
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48' 'Pillow>=11,<13'
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null || ! test -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          fi
+          ffmpeg -hide_banner -version | head -1
+      - name: Produce and fully decode 3 original generated storyboard previews (never publish)
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.preview_bridge_cloud_smoke
+      - name: Explicit no-media-retention and no-secret assertion
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_MODEL_SPEND_USD" = 0
+          echo "B3D4A_TEMPORARY_PREVIEWS_DISCARDED_NO_TTS_NO_SECRETS_NO_PROVIDER_NO_UPLOAD"
