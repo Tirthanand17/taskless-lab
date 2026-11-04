@@ -1,0 +1,143 @@
+name: FlowMinute B3d4b Signed Script Narration and Encoded AV QA (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/signed_narrated_cloud_pack.py"
+      - "autopilot/signed_narrated_cloud_smoke.py"
+      - "autopilot/test_signed_narrated_cloud_pack.py"
+      - "autopilot/script_to_preview_bridge.py"
+      - "autopilot/cloud_full_duration_pack.py"
+      - "autopilot/independent_av_review.py"
+      - ".github/workflows/flowminute-b3d4b-signed-narration.yml"
+      - "docs/adr/0017-b3d4b-signed-script-tts-and-av-qa.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4b-narration-no-publish
+  cancel-in-progress: true
+
+jobs:
+  signed_script_voice_contracts:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_CLOUD_INFERENCE_PAID_BUDGET_USD: "0"
+    steps:
+      - name: Checkout PR without persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public key signature verification library only
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Test signed script and all prior source reviewer boundaries
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_narration_review_inventory \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_independent_fact_review_gate \
+            autopilot.test_script_to_preview_bridge \
+            autopilot.test_signed_narrated_cloud_pack
+      - name: Assert no privilege or real inference can be inferred from tests
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_script_to_preview_bridge import staged_plan
+          from autopilot.signed_narrated_cloud_pack import validate_plan
+          for i in range(3):
+              plan=staged_plan(i)
+              validated=validate_plan(plan)
+              assert validated.original_script_sha256 == plan["full_spoken_narration_sha256"]
+              assert plan["rights_approved"] is False
+              assert plan["youtube_upload_enabled"] is False
+              assert plan["model_provider_live_inference_used"] is False
+              assert plan["release_authorized"] is False
+          print("B3D4B_SIGNED_VOICE_PIPELINE_CONTRACTS_PASS_NO_REAL_FACT_APPROVAL_NO_UPLOAD")
+          PY
+
+  github_hosted_real_kokoro_narration_and_av_checks:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_CLOUD_INFERENCE_PAID_BUDGET_USD: "0"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - name: Checkout public PR with no saved token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.11 CPU on hosted runner
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned open source real TTS and original media toolchain
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng libsndfile1 fonts-dejavu-core
+          python -m pip install --disable-pip-version-check \
+            'cryptography>=46,<48' 'kokoro-onnx==0.6.1' \
+            'soundfile>=0.12,<1' 'Pillow>=11,<13' 'numpy>=1.26,<3'
+          python - <<'PY'
+          from subprocess import check_output
+          import importlib.metadata
+          assert "subtitles" in check_output(["ffmpeg","-hide_banner","-filters"],text=True)
+          print("B3D4B_KOKORO_PACKAGE_VERSION",importlib.metadata.version("kokoro-onnx"))
+          PY
+      - name: Download release-pinned voice model and verify bytes before loading
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b3d4b-public-model
+          cd /tmp/flowminute-b3d4b-public-model
+          root="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 240 \
+            --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$root/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+          echo "B3D4B_VERIFIED_PINNED_PUBLIC_TTS_WEIGHTS"
+      - name: Actually synthesize and encode three full narrated unapproved test episodes
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.signed_narrated_cloud_smoke \
+            --model /tmp/flowminute-b3d4b-public-model/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b3d4b-public-model/voices-v1.0.bin
+      - name: Assert all private and publishing controls remain OFF
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_CLOUD_INFERENCE_PAID_BUDGET_USD" = 0
+          echo "B3D4B_NO_OAUTH_NO_REAL_AI_MODEL_NO_HUMAN_APPROVAL_NO_UPLOAD"
+      - name: Remove public weights and any temporary output on success/failure
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b3d4b-public-model
+          echo "B3D4B_PUBLIC_TTS_WEIGHTS_DELETED_AND_EPHEMERAL_MEDIA_DESTROYED"
