@@ -1,0 +1,111 @@
+name: FlowMinute B3d4c2b1 Atomic Owner Model Lease Fence (MOCK ONLY)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/atomic_mock_inference_fence.py"
+      - "autopilot/test_atomic_mock_inference_fence.py"
+      - "autopilot/owner_provider_lease_gate.py"
+      - "autopilot/script_draft_agent.py"
+      - ".github/workflows/flowminute-b3d4c2b1-atomic-fence.yml"
+      - "docs/adr/0020-b3d4c2b1-atomic-inference-fence.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2b1-atomic-fence-no-inference
+  cancel-in-progress: true
+
+jobs:
+  atomic_fence_crash_replay_and_signed_owner_contracts:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+      FLOWMINUTE_MOCK_LEDGER_ONLY: "1"
+    steps:
+      - name: Checkout read-only PR without persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public Ed25519 verification dependency
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Test mock-only transaction fence, source continuity and owner signature
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_script_draft_agent \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_narration_review_inventory \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_independent_fact_review_gate \
+            autopilot.test_script_to_preview_bridge \
+            autopilot.test_signed_narrated_cloud_pack \
+            autopilot.test_computed_demo_storyboards \
+            autopilot.test_owner_provider_lease_gate \
+            autopilot.test_atomic_mock_inference_fence
+      - name: Prove one-use crash safety across three daily scheduled slots
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+          from autopilot.test_owner_provider_lease_gate import make
+          from autopilot.test_atomic_mock_inference_fence import kwargs_for
+          from autopilot.atomic_mock_inference_fence import (
+              EphemeralOneUseLedger, InferenceFenceError, RESERVED,
+              evaluate_one_synthetic_mock_script,
+          )
+          from autopilot.test_script_draft_agent import short_proposal
+          with TemporaryDirectory(prefix="flowminute-only-test-") as tmp:
+              db=Path(tmp)/"ledger.sqlite3"
+              ledger=EphemeralOneUseLedger(db)
+              entries=[make(i) for i in range(3)]
+              first=evaluate_one_synthetic_mock_script(
+                  ledger,**kwargs_for(entries[0]),
+                  raw_synthetic_proposal=short_proposal(),
+              )
+              assert first["actual_generative_model_output_created"] is False
+              assert first["real_provider_inference_enabled"] is False
+              assert first["release_authorized"] is False
+              for item in entries[1:]:
+                  ledger.reserve_synthetic_owner_lease(**kwargs_for(item))
+              reopened=EphemeralOneUseLedger(db)
+              assert reopened.inspect(entries[1]["terms"].lease_id)["state"]==RESERVED
+              try:
+                  reopened.reserve_synthetic_owner_lease(**kwargs_for(entries[1]))
+                  raise AssertionError("Ambiguous previous request was improperly retried")
+              except InferenceFenceError:
+                  pass
+              for item in entries:
+                  state=reopened.inspect(item["terms"].lease_id)
+                  assert state["provider_live_call_enabled"] is False
+                  assert state["safely_retryable"] is False
+                  assert state["youtube_upload_enabled"] is False
+                  assert state["release_authorized"] is False
+          print("B3D4C2B1_THREE_SIGNED_MOCK_REQUEST_SLOTS_ATOMICALLY_BURNED_NO_RETRY_NO_NETWORK_NO_PUBLISH")
+          PY
+      - name: Confirm no live provider endpoint or media release was enabled
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_DAILY_SPEND_CAP_USD" = 0
+          test "$FLOWMINUTE_MOCK_LEDGER_ONLY" = 1
+          echo "B3D4C2B1_GITHUB_EPHEMERAL_SQLITE_ONLY_NO_DURABLE_PRIVATE_DEPLOYMENT_NO_PROVIDER_OR_YOUTUBE"
