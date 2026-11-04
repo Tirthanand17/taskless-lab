@@ -216,7 +216,9 @@ def encode(episode, folder: Path, images: list[Path], timings: list[dict],
     dotfile=folder/"moving_progress.png"
     dot.save(dotfile)
     fontsize=23 if episode.kind=="short" else 21
-    # ASS PlayRes scaling: ~24/31 style units positions captions inside\n    # the bottom caption-safe panel, not halfway up the screen.\n    margin=24 if episode.kind=="short" else 31
+    # ASS PlayRes scaling: ~24/31 style units positions captions inside
+    # the bottom caption-safe panel, not halfway up the screen.
+    margin=24 if episode.kind=="short" else 31
     subfilter=(f"subtitles={captions.as_posix()}:force_style='FontName=DejaVu Sans,"
                "PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
                f"Outline=2,FontSize={fontsize},Alignment=2,MarginV={margin}'")
