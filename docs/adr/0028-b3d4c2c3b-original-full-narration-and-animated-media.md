@@ -1,0 +1,33 @@
+# ADR-0028 — B3d4c2c3b: complete animated narrated topic videos, still unapproved
+
+**Date:** 2026-11-04 IST. **Track:** Branch 2 GitHub-only. **Status:** original source-linked three-topic full media render and independent actual FFmpeg technical QA; no content/rights/owner approval, production storage or YouTube publication.
+
+## Prior work and exact remaining bridge
+
+PR #30 established three substantially different original NASA/NIST/USGS educational scripts (6+20+6 scenes) and 4-second SILENT moving SVG previews. PR #28 proved full Kokoro speech, time-synced captions and actual FFmpeg full MP4s, but for the obsolete invented CSV test stories. This milestone connects the *new* source-linked, topic-specific scripts/graphics to the full, measured original speech and encoded H.264/AAC pipeline.
+
+## Primary technical and policy research
+
+- [FFmpeg concat demuxer](https://ffmpeg.org/ffmpeg-formats.html#concat-1): each still-image segment may specify a duration and a repeated terminal still provides the final interval. Use actual measured PCM scene lengths, not storyboard estimated timings.
+- [FFmpeg subtitles filter](https://ffmpeg.org/ffmpeg-filters.html#subtitles-1): burn original SRT with libass, then independently inspect the actual final encoded frame caption region, entire file decoding, A/V codec, measured duration and loudness.
+- [Kokoro ONNX on PyPI](https://pypi.org/project/kokoro-onnx/) reports MIT library and Apache-2.0 model. [Kokoro ONNX Community model card](https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX) lists voices and model Apache-2.0. These model-card declarations are not an actual separately approved rights record for each pinned model/voice generated speech, transitive assets or copyright notice obligations. Human owner approval remains required.
+- [YouTube synthetic/altered AI disclosure](https://support.google.com/youtube/answer/14328491): realistic generated content has nuanced disclosure requirements; an AI voice and simple instructional diagrams are not enough for automated blanket YES/NO.
+- [YouTube originality and inauthentic content](https://support.google.com/youtube/answer/1311392): content must provide original educational substance beyond identical mass-produced visual templates. Different topic-specific SVGs and script hashes are useful but do not independently prove originality against the real channel.
+- [ADR-0027 source research](0027-b3d4c2c3a-primary-sourced-original-stories.md): NASA Moon facts, NIST exact light speed and decimal/binary prefixes, USGS earthquake energy. These citations are still static CI metadata, not owner-signed independently human reviewed factual claims.
+
+## Decision and engineering design
+
+1. **Rebuild exact original source story** from the previous PR #30 immutable repository narrative before invoking the pinned public Kokoro model. Reject changed claim, scene, title, narration, release slot, unapproved release flag or reference index. The story is a deterministic authored research draft, NOT an Ed25519 human-approved production script.
+2. **Reuse proven measured PCM narration/captions** from the prior codec pipeline: each narration sentence produces original Kokoro PCM at a fixed voice choice per slot (af_heart, am_michael, bf_emma), with SRT phrase times from *actual PCM sample counts*, original tiny transition effects and a gentle formula-generated low-level nonmelodic ambient bed. No licensed music recordings or stock images are imported.
+3. **Use actual moving story art** rather than static fake CSV tables. For 6 + 20 + 6 beats, produce five moving frames per scene from three wholly separate Earth/Moon orbit beam, binary network comparison and earthquake magnitude column SVG grammars, plus a separate first-scene PNG for independent QA and an original 1280x720 topic-specific thumbnail. All pixels are generated on the GitHub runner.
+4. **Exact scene motion from actual speech**: create a per-scene FFconcat for independent first/last scene timestamp checks and a per-moving-frame FFconcat for the final encoder. Each frame is held for one-fifth of the actual measured scene speech duration; progress accent moves smoothly as elapsed time advances. Burn original SRT with libass; output single H264/yuv420p + AAC MP4 for each portrait Short and landscape long.
+5. **Independent actual video verification:** FFprobe requires expected codecs/dimensions/duration; FFmpeg fully decodes every audio/video frame; a separate AV reviewer checks actual audible loudness/true peak/silence, visible subtitle differences in final pixel region, spoken text coverage, and visually distinct late scenes. Producer rehashes all MP4, original WAV, SRT, thumbnail, original scene proof PNG, moving SVG raster PNG and FFconcat assets with actual byte size, binds to the source/story SHA and creates an UNAPPROVED inventory before independent review's temporary diagnostic snapshots are written.
+6. **GitHub-only QA**: separate fast source/exact motion/timing and actual full Kokoro TTS/FFmpeg hosted runner tests. The pinned public v1.0 int8 ONNX and voice hashes and prior tested 0.6.1 library remain unchanged. All outputs in TemporaryDirectory and model weights deleted at job end. Workflow has contents:read only, no id-token write or cloud secrets.
+
+## Unresolved and never-authorized
+
+These videos are authentic *technical render tests*, not owner-reviewed footage. Real primary source fact-completeness and current page readback, visual semantic truth, title/thumbnail/description review, material originality relative to real previous releases, voice/model/music/image rights, synthetic content disclosure selection, actual full human watch/listen, reviewer/owner identity, protected private cloud storage and YouTube OAuth/publishing are absent. Every release flag remains FALSE. The 20-scene long episode is NOT a full voiced video until its actual hosted real-render CI passes. An estimated scene duration is not a measured TTS output.
+
+**Next B3d4c2c3c:** independently cite and check atomic fact claims including all on-screen/title/source assertions, owner-enrolled real human review/signatures over exact final assets and public-source archive, rights and actual full watch. **B3d4c2d:** separately authorized real cloud storage/IAM/vault/consent and production identities. **B4/B5:** owner-authorized YouTube OAuth private upload, processing/caption/thumb readback, exact future IST schedules, real seven-day 21-video laptop-off proof.
+
+No user laptop, real Gemini, charged provider, cloud provisioning or YouTube changes in this milestone. Branch 1 assisted releases remain separate.
