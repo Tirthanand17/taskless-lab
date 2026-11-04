@@ -57,10 +57,10 @@ jobs:
         run: |
           set -euo pipefail
           python -B - <<'PY'
-          from autopilot.test_independent_fact_review_gate import fixture, test_verify
+          from autopilot.test_independent_fact_review_gate import fixture, verify_fixture
           from autopilot.independent_fact_review_gate import STATUS_PENDING
           for i in range(3):
-              result = test_verify(fixture(i))
+              result = verify_fixture(fixture(i))
               assert result["status"] == STATUS_PENDING
               assert result["signed_review_record_coverage_satisfied"] is True
               for key in (
