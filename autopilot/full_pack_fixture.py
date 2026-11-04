@@ -45,7 +45,8 @@ def inspect_example_csv(source: str = CSV_SAMPLE) -> dict:
     if tuple(reader.fieldnames or ()) != EXPECTED_COLUMNS:
         raise ValueError("Unexpected CSV header")
     rows = list(reader)
-    if len(rows) != 4 or any(set(x) != set(EXPECTED_COLUMNS) for x in rows):
+    if (len(rows) != 4 or any(set(x) != set(EXPECTED_COLUMNS) for x in rows)
+        or any(not isinstance(v, str) or not v for row in rows for v in row.values())):
         raise ValueError("Benchmark fixture must contain exactly four consistent rows")
     seen = {}
     duplicates, invalid_dates = [], []
