@@ -1,0 +1,104 @@
+name: FlowMinute B3d4c2b3a PostgreSQL Least-Privilege Mock Gateway (NO DEPLOYMENT)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/sql/002_ci_least_privilege_ledger.sql"
+      - "autopilot/ci_protected_pg_boundary.py"
+      - "autopilot/test_ci_protected_pg_boundary.py"
+      - ".github/workflows/flowminute-b3d4c2b3a-pg-roles.yml"
+      - "docs/adr/0022-b3d4c2b3a-private-roles-and-vault-boundary.md"
+      - "docs/runbooks/branch2-private-cloud-owner-activation.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2b3a-unprivileged-db-roles
+  cancel-in-progress: true
+
+jobs:
+  isolated_postgres_runtime_roles_and_no_release:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_B3D4C2B3A_ADMIN_DSN: "postgresql://flowminute_test:disposable_ci_service_only@127.0.0.1:5432/flowminute_fence_ci"
+      FLOWMINUTE_B3D4C2B3A_GATEWAY_TEST_PASSWORD: "only_fake_ci_gateway_pwd_01"
+      FLOWMINUTE_B3D4C2B3A_WORKER_TEST_PASSWORD: "only_fake_ci_worker_pwd_01"
+      FLOWMINUTE_B3D4C2B3A_AUDITOR_TEST_PASSWORD: "only_fake_ci_auditor_pwd_01"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: flowminute_fence_ci
+          POSTGRES_USER: flowminute_test
+          POSTGRES_PASSWORD: disposable_ci_service_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U flowminute_test -d flowminute_fence_ci"
+          --health-interval 5s
+          --health-timeout 4s
+          --health-retries 12
+    steps:
+      - name: Checkout public PR without saving GitHub credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only public PostgreSQL/Ed25519 test dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check \
+            'cryptography>=46,<48' 'psycopg[binary]>=3.2,<4'
+      - name: Apply test-only migration and actually test three different login roles
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_ci_protected_pg_boundary \
+            autopilot.test_owner_provider_lease_gate \
+            autopilot.test_atomic_mock_inference_fence \
+            2>&1 | tee /tmp/flowminute_b3d4c2b3a_tests.txt
+          if grep -Ei '^.*(skipped|FAILED|ERROR).*$' /tmp/flowminute_b3d4c2b3a_tests.txt; then
+            echo "A required PostgreSQL security/owner test skipped or failed"
+            exit 1
+          fi
+      - name: Verify CI runtime accounts have no table mutation privilege
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_ci_protected_pg_boundary import (
+              connect_admin, connect_gateway, connect_worker, connect_auditor,
+          )
+          with connect_admin() as db:
+              with db.cursor() as cur:
+                  for role in ("fm_ci_gateway","fm_ci_worker","fm_ci_auditor"):
+                      for verb in ("SELECT","UPDATE","INSERT","DELETE","TRUNCATE"):
+                          cur.execute(
+                              "SELECT has_table_privilege(%s,'fm_private_ci.burns',%s)",
+                              (role,verb),
+                          )
+                          assert cur.fetchone()[0] is False, (role,verb)
+                  cur.execute("SELECT COUNT(*) FROM fm_private_ci.audit_events")
+                  assert cur.fetchone()[0] >= 1
+          print("B3D4C2B3A_ACTUAL_POSTGRES_ROLES_GATEWAY_WORKER_AUDITOR_ENFORCED")
+          print("B3D4C2B3A_NO_DIRECT_TABLE_WRITE_NO_LIVE_PROVIDER_NO_UPLOAD")
+          PY
+      - name: Verify no private vault, owner or account deployment was claimed
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          echo "B3D4C2B3A_TEST_DB_AND_SYNTHETIC_ROLE_PASSWORDS_ONLY_CONTAINER_WILL_BE_DESTROYED"
