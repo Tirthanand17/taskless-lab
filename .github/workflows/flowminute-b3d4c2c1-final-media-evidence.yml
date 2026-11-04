@@ -1,0 +1,93 @@
+name: FlowMinute B3d4c2c1 Exact Final Media Provenance (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/final_media_evidence_gate.py"
+      - "autopilot/test_final_media_evidence_gate.py"
+      - "autopilot/executed_demo_cloud_smoke.py"
+      - ".github/workflows/flowminute-b3d4c2c1-final-media-evidence.yml"
+      - "docs/adr/0025-b3d4c2c1-final-media-byte-lineage.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2c1-final-media-technical-no-publish
+  cancel-in-progress: true
+
+jobs:
+  exact_signed_script_and_asset_evidence_contract:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+    steps:
+      - name: Read-only untrusted PR checkout with no persistent token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Setup GitHub-hosted Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public Ed25519 cryptographic verifier only
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Rebuild source-bound script, exact demo and every fake media byte inventory
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_script_draft_agent \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_narration_review_inventory \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_independent_fact_review_gate \
+            autopilot.test_script_to_preview_bridge \
+            autopilot.test_signed_narrated_cloud_pack \
+            autopilot.test_computed_demo_storyboards \
+            autopilot.test_final_media_evidence_gate
+      - name: Assert all successful bytes/checks still fail closed for publishing
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+          from autopilot.test_final_media_evidence_gate import make_fake_unreviewed_inventory
+          from autopilot.final_media_evidence_gate import (
+              inspect_three_different_unapproved_media,
+              require_exact_unapproved_inventory,
+          )
+          with TemporaryDirectory(prefix="b3d4c2c1-no-real-media-") as root:
+              packets=[]
+              for slot in range(3):
+                  args,inventory=make_fake_unreviewed_inventory(slot,Path(root))
+                  require_exact_unapproved_inventory(inventory,**args)
+                  assert inventory["release_authorized"] is False
+                  assert inventory["real_source_claim_review_completed"] is False
+                  assert inventory["full_human_watch_listen_completed"] is False
+                  assert inventory["sound_voice_music_license_rights_checked"] is False
+                  packets.append(inventory)
+              cross=inspect_three_different_unapproved_media(packets)
+              assert cross["semantic_originality_approved"] is False
+              assert cross["human_fact_and_rights_reviews_complete"] is False
+              assert cross["youtube_upload_enabled"] is False
+          print("B3D4C2C1_SIGNED_SCRIPT_THREE_EXACT_FAKE_BYTE_INVENTORIES_NO_PUBLISH")
+          PY
+      - name: No model key, uploader, video persistence or external reviewer approval
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_MODEL_SPEND_USD" = 0
+          echo "B3D4C2C1_NO_OWNER_FACT_RIGHTS_APPROVAL_NO_EXTERNAL_MODEL_OR_YOUTUBE"
