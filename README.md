@@ -1,5 +1,17 @@
 # FlowMinute Lab
 
+## FlowMinute two-track automation plan (2026-11-04)
+
+Two separate Git branches and scopes keep existing YouTube releases safe while building an independent cloud pipeline:
+
+- **Assisted releases:** [`track/assisted-youtube-releases`](https://github.com/Tirthanand17/taskless-lab/tree/track/assisted-youtube-releases) preserves the existing ChatGPT-assisted, SHA-pinned, owner-approved YouTube operations and recovery logic.
+- **Independent cloud AI agents:** [`feature/flowminute-cloud-autopilot-v1`](https://github.com/Tirthanand17/taskless-lab/tree/feature/flowminute-cloud-autopilot-v1) is the separately developed cloud-only architecture; [research and deployment gates](docs/FLOWMINUTE_CLOUD_AUTOPILOT_2026-11-04.md).
+
+**Currently deployed:** [daily GitHub-hosted research-and-planning workflow](.github/workflows/flowminute-daily-cloud-foundation.yml), scheduled 13:17 UTC (18:47 IST) for the following day's 11:00 Short, 16:00 long, and 20:30 Short; it uses the existing 48-role/8-department orchestration and **does not generate finished videos or publish to YouTube**. [Verified no-publish GitHub run](https://github.com/Tirthanand17/taskless-lab/actions/runs/41766540297).
+
+**Not yet deployed:** independently executing LLM agents, real cloud voice/video rendering, private durable media storage, safe renewable YouTube OAuth, canonical D1 release writer, live Analytics learning and seven-day laptop-off 21-video acceptance. Do not turn on broad publishing flags or claim full autonomy from successful planner tests alone. The private owner control repository stores the detailed roadmap and tracked acceptance issues. **Nirala is neither used nor required by this cloud-planning stage.**
+
+
 A faceless, original micro-content brand about practical automation, data cleanup, and workflow efficiency.
 
 **Local Windows workspace:** Keep all non-secret video assets, render outputs, QA media and Git worktrees inside the existing `C:\\Users\\Dell\\Desktop\\youtube con\\` folder. OAuth tokens and private upload receipts stay in the original restricted user-private folder. See [Local Workspace Policy](docs/LOCAL_WORKSPACE_POLICY.md).\n\n## Mission
