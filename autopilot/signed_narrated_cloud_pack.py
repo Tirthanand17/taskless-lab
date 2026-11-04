@@ -13,6 +13,8 @@ from hashlib import sha256
 import json
 import math
 from pathlib import Path
+from typing import Mapping
+from datetime import datetime
 import re
 import textwrap
 
@@ -23,6 +25,10 @@ from autopilot.cloud_full_duration_pack import (
 from autopilot.full_pack_fixture import ExampleEpisode, Scene
 from autopilot.script_to_preview_bridge import (
     STATUS as SCRIPT_PLAN_STATUS, _font, _safe_text, _sha,
+    build_signed_preview_plan,
+)
+from autopilot.script_continuity_gate import (
+    DetachedScriptSeal, TrustedScriptCustodian,
 )
 
 STATUS = "REAL_KOKORO_SIGNED_SCRIPT_TECHNICAL_DEMO_UNREVIEWED_NO_PUBLISH"
@@ -265,13 +271,40 @@ def inspect_dynamic_media(
 
 def produce_signed_narrated_demo(
     plan: dict, voice_engine, root: Path,
+    *, proposal: dict, slot: dict, observations: dict,
+    seal: DetachedScriptSeal,
+    anchor_manifest_sha256: str,
+    registry: Mapping[str, TrustedScriptCustodian],
+    excluded_creator_and_publisher_ids: frozenset[str],
+    now: datetime | None = None,
 ) -> tuple[dict, ExampleEpisode]:
-    """Generate a genuine full technical MP4 from exactly the signed test script.
+    """Render only after REVALIDATING external script signature and all fields.
 
-    Call this only in disposable hosted CI; the function writes no production
-    approval receipts and cannot use a publisher or external model.
+    A standalone plan with locally consistent SHA hashes is NOT a trust root.
+    Rebuild its full B3d1/B3d2/B3d3a derivation at the final TTS/encoder edge,
+    then compare every field to eliminate forged title, hook or scene changes.
     """
     prepared = validate_plan(plan)
+    expected = build_signed_preview_plan(
+        proposal,slot,observations,seal=seal,
+        anchor_manifest_sha256=anchor_manifest_sha256,
+        registry=registry,
+        excluded_creator_and_publisher_ids=excluded_creator_and_publisher_ids,
+        now=now,
+    )
+    try:
+        serialized = json.dumps(
+            plan,sort_keys=True,ensure_ascii=False,separators=(",",":"),
+            allow_nan=False,
+        )
+        authorized_copy = json.dumps(
+            expected,sort_keys=True,ensure_ascii=False,separators=(",",":"),
+            allow_nan=False,
+        )
+    except (TypeError,ValueError,OverflowError,RecursionError) as exc:
+        raise NarratedPackError("Unserializable signed script plan") from exc
+    if serialized != authorized_copy or len(serialized) > 150_000:
+        raise NarratedPackError("Rendered plan disagrees with fresh signed script/source review")
     root = Path(root)
     if root.is_symlink() or not root.is_dir() or any(root.iterdir()):
         raise NarratedPackError("Require empty real ephemeral directory")
