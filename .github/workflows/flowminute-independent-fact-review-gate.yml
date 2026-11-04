@@ -1,0 +1,81 @@
+name: FlowMinute B3d3b Signed Independent Fact Review Records (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/independent_fact_review_gate.py"
+      - "autopilot/test_independent_fact_review_gate.py"
+      - "autopilot/source_claim_preflight.py"
+      - "autopilot/script_continuity_gate.py"
+      - ".github/workflows/flowminute-independent-fact-review-gate.yml"
+      - "docs/adr/0015-b3d3b-independent-signed-fact-review-records.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d3b-signature-no-publish
+  cancel-in-progress: true
+
+jobs:
+  independent_fact_record_signatures:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+    steps:
+      - name: Checkout untrusted PR without retained token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Setup GitHub hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public Ed25519 verifier only
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Regress all upstream evidence and signed claim reviewers
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_narration_review_inventory \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_independent_fact_review_gate \
+            autopilot.test_signed_review_gate
+      - name: Strict no publish even with all dummy signatures matching
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_independent_fact_review_gate import fixture, verify_fixture
+          from autopilot.independent_fact_review_gate import STATUS_PENDING
+          for i in range(3):
+              result = verify_fixture(fixture(i))
+              assert result["status"] == STATUS_PENDING
+              assert result["signed_review_record_coverage_satisfied"] is True
+              for key in (
+                  "reviewers_real_identity_authenticated_by_software",
+                  "independent_fact_truth_verified_by_software",
+                  "independent_atomic_claim_completeness_proven",
+                  "external_private_review_ledger_deployed",
+                  "external_owner_review_and_release_grant_present",
+                  "full_final_render_or_thumbnail_reviewed",
+                  "originality_or_rights_approved",
+                  "media_render_enabled",
+                  "youtube_upload_enabled",
+                  "youtube_schedule_enabled",
+                  "release_authorized",
+              ):
+                  assert result[key] is False, key
+          print("B3D3B_SYNTHETIC_INDEPENDENT_REVIEW_RECORDS_VERIFIED_NO_FACT_OR_PUBLISHING_AUTHORITY")
+          PY
