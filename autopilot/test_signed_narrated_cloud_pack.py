@@ -119,16 +119,48 @@ class SignedNarratedCloudPackTests(unittest.TestCase):
             with self.subTest(field=field),self.assertRaises(NarratedPackError):
                 validate_plan(plan)
 
+    def _producer_kwargs(self, index=0):
+        from autopilot.test_script_continuity_gate import NOW, EXCLUDED
+        proposal,slot,obs,anchor,registry,seal,_=signed_fixture(index)
+        return {
+            "proposal":proposal,"slot":slot,"observations":obs,"seal":seal,
+            "anchor_manifest_sha256":anchor,"registry":registry,
+            "excluded_creator_and_publisher_ids":EXCLUDED,"now":NOW,
+        }
+
     def test_production_requires_empty_ephemeral_directory_before_media(self):
         from pathlib import Path
         from tempfile import TemporaryDirectory
-        plan=staged_plan(0)
+        fixture=self._producer_kwargs()
+        plan=build_signed_preview_plan(
+            fixture["proposal"],fixture["slot"],fixture["observations"],
+            seal=fixture["seal"],anchor_manifest_sha256=fixture["anchor_manifest_sha256"],
+            registry=fixture["registry"],
+            excluded_creator_and_publisher_ids=fixture["excluded_creator_and_publisher_ids"],
+            now=fixture["now"],
+        )
         with TemporaryDirectory() as tmp:
             folder=Path(tmp)
             (folder/"preexisting.mp4").write_bytes(b"do not overwrite")
             with self.assertRaises(NarratedPackError):
-                produce_signed_narrated_demo(plan,object(),folder)
+                produce_signed_narrated_demo(plan,object(),folder,**fixture)
             self.assertEqual((folder/"preexisting.mp4").read_bytes(),b"do not overwrite")
+
+    def test_consistent_plan_hashes_cannot_override_externally_signed_title(self):
+        from pathlib import Path
+        from tempfile import TemporaryDirectory
+        fixture=self._producer_kwargs()
+        plan=build_signed_preview_plan(
+            fixture["proposal"],fixture["slot"],fixture["observations"],
+            seal=fixture["seal"],anchor_manifest_sha256=fixture["anchor_manifest_sha256"],
+            registry=fixture["registry"],
+            excluded_creator_and_publisher_ids=fixture["excluded_creator_and_publisher_ids"],
+            now=fixture["now"],
+        )
+        plan["title_unverified"]="A fake alternative title claiming verified results"
+        with TemporaryDirectory() as tmp:
+            with self.assertRaises(NarratedPackError):
+                produce_signed_narrated_demo(plan,object(),Path(tmp),**fixture)
 
     def test_real_script_must_be_externally_signed_before_previews(self):
         item=list(signed_fixture(0))
