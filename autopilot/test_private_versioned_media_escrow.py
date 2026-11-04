@@ -82,6 +82,7 @@ class FakeS3:
             raise IOError("Synthetic transient timeout; could have stored object")
         key=kwargs["Key"]
         assert kwargs["IfNoneMatch"]=="*"
+        assert kwargs["ChecksumAlgorithm"]=="SHA256"
         assert kwargs["ServerSideEncryption"]=="aws:kms"
         assert kwargs["ObjectLockMode"]=="COMPLIANCE"
         if key in self.objects:
