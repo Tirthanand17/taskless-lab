@@ -10,12 +10,16 @@ on:
     branches: [main, feature/flowminute-cloud-autopilot-v1]
     paths:
       - "autopilot/daily_cloud_plan.py"
+      - "autopilot/evidence_probe.py"
+      - "autopilot/test_evidence_probe.py"
       - "autopilot/test_daily_cloud_plan.py"
       - "autopilot/agent_org.py"
       - ".github/workflows/flowminute-daily-cloud-foundation.yml"
   pull_request:
     paths:
       - "autopilot/daily_cloud_plan.py"
+      - "autopilot/evidence_probe.py"
+      - "autopilot/test_evidence_probe.py"
       - "autopilot/test_daily_cloud_plan.py"
       - ".github/workflows/flowminute-daily-cloud-foundation.yml"
 
@@ -52,13 +56,39 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           python -m autopilot.scout --output out/flowminute-scout-unverified.json
+
+      - name: Observe bounded official/public source bytes (NOT fact validation)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -m autopilot.evidence_probe \
+            --scout-report out/flowminute-scout-unverified.json \
+            --max-sources 3 \
+            --output out/flowminute-evidence-unverified.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          evidence=json.loads(Path("out/flowminute-evidence-unverified.json").read_text(encoding="utf8"))
+          assert evidence["status"] == "PUBLIC_SOURCE_METADATA_ONLY_NOT_FACT_VERIFIED"
+          assert evidence["source_probes_attempted"] <= 3
+          assert evidence["source_probes_attempted"] == (evidence["sources_fetched"] + evidence["feed_entries_observed_only"] + evidence["sources_failed"])
+          assert evidence["claims_verified"] == 0
+          assert evidence["scripts_generated"] == 0
+          assert evidence["youtube_upload_enabled"] is False
+          assert evidence["youtube_schedule_enabled"] is False
+          assert evidence["source_body_persisted"] is False
+          assert evidence["billed_provider_calls"] == 0
+          print("SOURCE_OBSERVATION_ONLY: direct_pages", evidence["sources_fetched"],
+                "publisher_RSS_entries_only", evidence["feed_entries_observed_only"],
+                "failed", evidence["sources_failed"], "zero fact claims or uploads")
+          PY
 
       - name: Plan three distinct tomorrow slots without producing any media
         if: github.event_name != 'pull_request'
@@ -81,11 +111,14 @@ jobs:
           assert [x["format"] for x in plan["slots"]] == ["short","long","short"]
           assert [x["local_ist"] for x in plan["slots"]] == ["11:00","16:00","20:30"]
           assert all(not x["release_authorized"] and not x["real_media_exists"] for x in plan["slots"])
+          evidence=json.loads(Path("out/flowminute-evidence-unverified.json").read_text(encoding="utf8"))
           lines=["# FlowMinute Cloud Autopilot — research-only draft",
                  "", "Target date (IST): "+plan["plan_date_ist"], "",
                  "3 video concepts planned: 2 Shorts + 1 long at 11:00 / 16:00 / 20:30 IST.",
                  "", "48 specialist roles and 54 source/evidence handoff contracts allocated.",
                  "", "Research leads: "+str(plan["research_lead_count"])+" (UNVERIFIED).",
+                 "", "Evidence observations: "+str(evidence["sources_fetched"])+" direct pages, "+
+                      str(evidence["feed_entries_observed_only"])+" RSS entries only; zero claims fact-verified.",
                  "", "**No scripts, voices, media, rights approval, OAuth, upload or schedule were created.**",
                  "", "All release gates remain disabled; plan is not ready to publish."]
           with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
