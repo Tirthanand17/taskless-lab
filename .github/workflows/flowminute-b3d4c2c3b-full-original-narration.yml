@@ -1,0 +1,134 @@
+name: FlowMinute B3d4c2c3b Three Full Topic Narrated Videos (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/full_topic_narrated_pack.py"
+      - "autopilot/test_full_topic_narrated_pack.py"
+      - "autopilot/primary_sourced_storyboards.py"
+      - ".github/workflows/flowminute-b3d4c2c3b-full-original-narration.yml"
+      - "docs/adr/0028-b3d4c2c3b-original-full-narration-and-animated-media.md"
+      - "docs/status/branch2-completion-audit-2026-11-04.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2c3b-no-secrets-no-publish
+  cancel-in-progress: true
+
+jobs:
+  topic_provenance_voice_and_animation_timing_contracts:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Checkout untrusted PR without saved GitHub authorization
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify exact unreviewed NASA NIST USGS script and moving-sample ordering
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_primary_sourced_storyboards \
+            autopilot.test_full_topic_narrated_pack
+      - name: No actual voice, model, owner or YouTube authorization from unit tests
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.full_topic_narrated_pack import prepare_story_timing
+          from autopilot.primary_sourced_storyboards import build_story
+          for slot in ("short_am","long","short_pm"):
+              r=prepare_story_timing(build_story(slot))
+              assert r["all_text_exactly_from_source_recomputed_draft"] is True
+              assert r["source_human_fact_review_verified"] is False
+              assert r["tts_output_or_video_generated"] is False
+              assert r["release_authorized"] is False
+          print("B3D4C2C3B_THREE_SCIENCE_STORIES_AND_ANIMATION_PCM_TIMELINE_CONTRACTS_NO_UPLOAD")
+          PY
+
+  three_actual_complete_topic_specific_kokoro_mp4s:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 58
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PUBLISH_ENABLED: "false"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - name: Checkout public PR read-only and do not persist credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Temporary GitHub-hosted CPU Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned open-source TTS and original SVG FFmpeg renderer
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng libsndfile1 fonts-dejavu-core
+          python -m pip install --disable-pip-version-check \
+            'kokoro-onnx==0.6.1' 'soundfile>=0.12,<1' \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' 'cairosvg>=2.7,<3' \
+            'cryptography>=46,<48'
+          python - <<'PY'
+          from subprocess import check_output
+          assert "subtitles" in check_output(
+              ["ffmpeg","-hide_banner","-filters"],text=True
+          )
+          print("B3D4C2C3B_ALL_EXTERNAL_CLOUD_PUBLISHERS_DISABLED_LOCAL_OPEN_SOURCE_CPU_MEDIA_ONLY")
+          PY
+      - name: Download only the previously SHA256-pinned public Kokoro voices and model
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b3d4c2c3b-pinned-public-kokoro
+          cd /tmp/flowminute-b3d4c2c3b-pinned-public-kokoro
+          root="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 240 \
+            --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$root/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+          echo "B3D4C2C3B_BOTH_VOICE_ASSET_DIGESTS_MATCH_PINNED_PUBLIC_FILES"
+      - name: Generate 3 COMPLETE narrated topic-specific originals with animated SVG, real PCM, SRT, thumbnail and independent FFmpeg full playback QA
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.full_topic_narrated_pack \
+            --model /tmp/flowminute-b3d4c2c3b-pinned-public-kokoro/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b3d4c2c3b-pinned-public-kokoro/voices-v1.0.bin
+      - name: Assert no release or external cloud publishing authority
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          test "$PUBLISH_ENABLED" = false
+          echo "B3D4C2C3B_ALL_THREE_REAL_FULL_DRAFT_AV_FILES_TEMPORARY_NOT_LICENSED_NOT_PUBLISHED"
+      - name: Always delete downloaded pinned public model and voices
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b3d4c2c3b-pinned-public-kokoro
+          echo "B3D4C2C3B_ALL_KOKORO_MODEL_WEIGHTS_CLEANED_FROM_HOSTED_RUNNER"
