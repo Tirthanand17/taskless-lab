@@ -52,7 +52,7 @@ class TopicFullNarrationPreflightTests(unittest.TestCase):
             self.assertEqual(tuple(x.narration for x in episode.scenes),
                              tuple(x["narration"] for x in story["scenes"]))
             self.assertEqual(episode.episode_id,story["episode_id"])
-            self.assertIn("topic",STATUS.lower())
+            self.assertIn("source_linked",STATUS.lower())
             self.assertNotIn("member_id", " ".join(s.narration for s in episode.scenes))
             seen.add(episode.theme)
         self.assertEqual(len(seen),3)
