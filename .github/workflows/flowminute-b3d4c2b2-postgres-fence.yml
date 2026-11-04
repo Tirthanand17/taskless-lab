@@ -1,0 +1,96 @@
+name: FlowMinute B3d4c2b2 PostgreSQL Cross-Worker Mock Inference Fence (NO PROVIDER)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/postgres_mock_inference_fence.py"
+      - "autopilot/test_postgres_mock_inference_fence.py"
+      - "autopilot/sql/001_postgres_ci_inference_fence.sql"
+      - ".github/workflows/flowminute-b3d4c2b2-postgres-fence.yml"
+      - "docs/adr/0021-b3d4c2b2-multiworker-postgres-fence.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2b2-postgres-only-test
+  cancel-in-progress: true
+
+jobs:
+  real_postgres_service_cross_worker_mock_fence:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_TEST_PG_DSN: "postgresql://flowminute_test:ci_disposable_only@127.0.0.1:5432/flowminute_fence_ci"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: flowminute_fence_ci
+          POSTGRES_USER: flowminute_test
+          POSTGRES_PASSWORD: ci_disposable_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U flowminute_test -d flowminute_fence_ci"
+          --health-interval 5s
+          --health-timeout 4s
+          --health-retries 12
+    steps:
+      - name: Checkout unprivileged PR without persisted GitHub token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python on a separate GitHub-hosted runner than the database container
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public Ed25519 verification and PostgreSQL client
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check \
+            'cryptography>=46,<48' 'psycopg[binary]>=3.2,<4'
+      - name: Execute cross-process PostgreSQL transactions and adversarial tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_postgres_mock_inference_fence \
+            autopilot.test_owner_provider_lease_gate \
+            autopilot.test_atomic_mock_inference_fence
+      - name: Require real service test cases were executed rather than skipped
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import os
+          from autopilot.test_postgres_mock_inference_fence import _connect
+          from autopilot.postgres_mock_inference_fence import (
+              CI_DB, CI_DB_USER, PostgresMockInferenceFence,
+          )
+          assert os.environ["FLOWMINUTE_ENABLE_GEMINI"] == "0"
+          assert os.environ["FLOWMINUTE_ENABLE_PUBLISH"] == "0"
+          assert os.environ["FLOWMINUTE_MODEL_PAID_SPEND_USD"] == "0"
+          f = PostgresMockInferenceFence(_connect)
+          with _connect() as db:
+              with db.cursor() as cur:
+                  cur.execute("SELECT current_database(), current_user")
+                  assert tuple(cur.fetchone()) == (CI_DB, CI_DB_USER)
+                  cur.execute("SELECT COUNT(*) FROM fm_owner_inference_burns")
+                  count = cur.fetchone()[0]
+                  assert count >= 1
+          print("B3D4C2B2_REAL_POSTGRES_DB_TESTS_EXECUTED_COUNT",count)
+          print("B3D4C2B2_INDEPENDENT_PROCESS_REQUESTS_FENCED_NO_REAL_PROVIDER_NO_UPLOAD")
+          PY
+      - name: Never publish or save synthetic lease artifacts
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          echo "B3D4C2B2_CONTAINER_DISPOSED_AFTER_JOB_NOT_PRIVATE_DURABLE_CLOUD_DEPLOYMENT"
