@@ -116,13 +116,14 @@ def verify_srt_against_script(path:Path, episode, video_seconds:float)->dict:
 
 def changed_pixels(source:Path,encoded:Path,region:tuple[int,int,int,int],threshold:int=76)->int:
     from PIL import Image,ImageChops
+    import numpy as np
     try:
         with Image.open(source) as a,Image.open(encoded) as b:
             if a.size!=b.size:
                 raise ReviewerError("Encoded video snapshot dimensions changed")
             diff=ImageChops.difference(a.convert("RGB").crop(region),
                                        b.convert("RGB").crop(region))
-            count=sum(1 for pixel in diff.getdata() if max(pixel)>threshold)
+            count=int((np.asarray(diff).max(axis=2)>threshold).sum())
     except (OSError,ValueError) as exc:
         raise ReviewerError("Unable to decode actual screenshot pixel data") from exc
     return count
@@ -166,7 +167,15 @@ def review_encoded_episode(folder:Path,episode, *,report_entry:dict)->dict:
     crop=(185,height-385,width-185,height-125) if episode.kind=="short" else (225,height-265,width-225,height-75)
     changed=changed_pixels(first,startshot,crop)
     if changed<350:
-        raise ReviewerError("Burned subtitles not visibly confirmed in encoded pixels")
+        # Numeric-only vertical scan diagnoses a caption positioned in the
+        # wrong ASS region. Never export screenshot bytes or weaken approval.
+        bands=[]
+        for i in range(8):
+            y0=height*i//8
+            y1=height*(i+1)//8
+            bands.append(changed_pixels(first,startshot,(185,y0,width-185,y1),threshold=90))
+        raise ReviewerError(
+            f"Burned subtitles not in bottom caption panel: pixels={changed}, screen_bands={bands}")
     # Check a late scene frame differs substantively from the early scene,
     # beyond the caption strip or the moving progress accent.
     ffconcat=folder/"scene_order.ffconcat"
