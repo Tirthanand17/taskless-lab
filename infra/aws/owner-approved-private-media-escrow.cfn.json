@@ -9,16 +9,6 @@
       "MinLength": 4,
       "MaxLength": 12
     },
-    "WriterRoleArn": {
-      "Type": "String",
-      "Description": "Owner-provisioned separate S3 media writer role ARN in THIS AWS account (not assumed by public GitHub workflows).",
-      "AllowedPattern": "^arn:aws:iam::[0-9]{12}:role/[A-Za-z0-9+=,.@_/-]{1,128}$"
-    },
-    "AuditorRoleArn": {
-      "Type": "String",
-      "Description": "Separate owner-provisioned read-only evidence and media review role ARN in THIS account; MUST be distinct from writer.",
-      "AllowedPattern": "^arn:aws:iam::[0-9]{12}:role/[A-Za-z0-9+=,.@_/-]{1,128}$"
-    },
     "RetentionDays": {
       "Type": "Number",
       "Description": "Owner-approved legal COMPLIANCE retention for all new versions; cannot shorten during lock and storage is billable.",
@@ -29,6 +19,16 @@
       "Type": "String",
       "Description": "Owner-provided out-of-band verified change request ticket. Format alone does NOT prove consent.",
       "AllowedPattern": "^OWNER-[A-Z0-9-]{8,64}$"
+    },
+    "WriterRoleName": {
+      "Type": "String",
+      "Description": "Existing owner-provisioned S3 escrow writer IAM ROLE NAME in THIS AWS account. Do not use GitHub PR workload role.",
+      "AllowedPattern": "^[A-Za-z0-9+=,.@_-]{3,64}$"
+    },
+    "AuditorRoleName": {
+      "Type": "String",
+      "Description": "Distinct existing owner-provisioned read-only auditor IAM ROLE NAME in THIS AWS account.",
+      "AllowedPattern": "^[A-Za-z0-9+=,.@_-]{3,64}$"
     }
   },
   "Rules": {
@@ -40,10 +40,10 @@
               {
                 "Fn::Equals": [
                   {
-                    "Ref": "WriterRoleArn"
+                    "Ref": "WriterRoleName"
                   },
                   {
-                    "Ref": "AuditorRoleArn"
+                    "Ref": "AuditorRoleName"
                   }
                 ]
               }
@@ -82,7 +82,7 @@
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Ref": "WriterRoleArn"
+                  "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${WriterRoleName}"
                 }
               },
               "Action": [
@@ -108,7 +108,7 @@
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Ref": "AuditorRoleArn"
+                  "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${AuditorRoleName}"
                 }
               },
               "Action": [
@@ -294,7 +294,7 @@
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Ref": "WriterRoleArn"
+                  "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${WriterRoleName}"
                 }
               },
               "Action": [
@@ -312,7 +312,7 @@
               "Effect": "Allow",
               "Principal": {
                 "AWS": {
-                  "Ref": "AuditorRoleArn"
+                  "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${AuditorRoleName}"
                 }
               },
               "Action": [
@@ -329,10 +329,10 @@
               "Principal": {
                 "AWS": [
                   {
-                    "Ref": "WriterRoleArn"
+                    "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${WriterRoleName}"
                   },
                   {
-                    "Ref": "AuditorRoleArn"
+                    "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${AuditorRoleName}"
                   }
                 ]
               },
