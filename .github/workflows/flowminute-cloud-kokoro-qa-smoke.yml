@@ -1,0 +1,116 @@
+name: FlowMinute B3b Real Cloud Voice and Video Smoke (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/cloud_av_probe.py"
+      - "autopilot/test_cloud_av_probe.py"
+      - ".github/workflows/flowminute-cloud-kokoro-qa-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-kokoro-no-publish-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  real_cloud_tts_and_media_smoke:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 24
+    env:
+      CI: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_CLOUD_INFERENCE_PAID_BUDGET_USD: "0"
+      PYTHONUNBUFFERED: "1"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+
+    steps:
+      - name: Checkout GitHub source without persistent token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Python CPU-only runner
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run no-model, no-network safety regression tests
+        run: |
+          set -euo pipefail
+          python -m unittest -v autopilot.test_cloud_av_probe
+
+      - name: Install public open-source CPU-only media dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng libsndfile1
+          python -m pip install --disable-pip-version-check 'kokoro-onnx==0.6.1' 'soundfile>=0.12,<1'
+          ffmpeg -version | head -1
+          python - <<'PY'
+          import importlib.metadata
+          print("KOKORO_ONNX_VERSION",importlib.metadata.version("kokoro-onnx"))
+          PY
+
+      - name: Fetch exact upstream weights into disposable /tmp and verify official GitHub release digests
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b3b-model /tmp/flowminute-b3b-smoke
+          cd /tmp/flowminute-b3b-model
+          root="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 240 \
+            --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$root/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+          echo "PINNED_PUBLIC_KOKORO_WEIGHTS_VERIFIED"
+
+      - name: Synthesize actual English voice and render 3 SHORT nonpublishing technical samples
+        run: |
+          set -euo pipefail
+          python -m autopilot.cloud_av_probe \
+            --model /tmp/flowminute-b3b-model/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b3b-model/voices-v1.0.bin \
+            --output-dir /tmp/flowminute-b3b-smoke
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path("/tmp/flowminute-b3b-smoke/technical_probe_report.json")
+          d=json.loads(p.read_text())
+          assert d["asset_integrity_passed"] is True
+          assert len(d["test_slots"])==3
+          assert [x["kind"] for x in d["test_slots"]] == ["short","long","short"]
+          assert all(x["full_decode_passed"] and x["speech_generated"] for x in d["test_slots"])
+          assert all(x["video_ready_to_publish"] is False for x in d["test_slots"])
+          assert d["youtube_upload_enabled"] is False and d["youtube_schedule_enabled"] is False
+          assert d["publication_authorized"] is False
+          assert d["billed_model_calls"]==0
+          lines=[
+            "## FlowMinute B3b real cloud technical smoke — no publishing",
+            "",
+            "**3 short diagnostic clips** with genuine Kokoro speech, original technical frames and H.264/AAC full decode.",
+            "",
+            "| Slot | Size | Voice | TTS seconds | Total seconds | Clip bytes |",
+            "|---|---|---|---:|---:|---:|",
+          ]
+          for x in d["test_slots"]:
+              lines.append(f'| {x["slot"]} | {x["width"]}×{x["height"]} | {x["voice"]} | {x["tts_elapsed_seconds"]} | {x["total_elapsed_seconds"]} | {x["bytes"]} |')
+          lines+=["",f'**Total probe runtime:** {d["total_probe_elapsed_seconds"]} seconds',
+                  "", "**Not** three full videos. No verified facts, complete scripts, rights/human listening review, durable media storage, OAuth, or YouTube upload.",
+                  "", "Original media and Kokoro model bytes are destroyed at the end of this run. No files uploaded as workflow artifacts."]
+          Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf8").write("\n".join(lines)+"\n")
+          print("B3B_REAL_3_CLIP_CLOUD_TECHNICAL_SMOKE_SUCCESS_NOT_PRODUCTION")
+          PY
+
+      - name: Delete model/voice files and every test clip even on failure
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b3b-smoke /tmp/flowminute-b3b-model
+          echo "DISCARDED_EPHEMERAL_PUBLIC_MODEL_AND_UNREVIEWED_MEDIA"
