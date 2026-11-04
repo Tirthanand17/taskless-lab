@@ -27,7 +27,9 @@ This evaluation is a deliberately conservative approximation: prototype/test sof
 - PR #29 (B3d4c2c2; merged): signed seven-role **MOCK ONLY** final editorial/source/rights/owner/AI-disclosure/full-watch structural verification. Strictly preserves no real humans and release_authorized=false. New role tests do not meaningfully increase the production % on their own.
 - PR #30 (B3d4c2c3a; merged): six official NASA/NIST/USGS public references curated Nov 4; three different original Moon/earthquake/file-transfer scripts (6/6/20 scenes), exact calculations, distinct animated SVG. Hosted 4-second silent technical preview demonstrated original graphic languages.
 - PR #31 (B3d4c2c3b; merged): all three ORIGINAL-topic voiced H264/AAC videos physically rendered/independently decoded and deleted on hosted GitHub runner. Moon 61.80s; data-transfer long 219.12s; quake 59.92s; 160 moving original SVG PNGs, 70 exact spoken SRT cues and 213 exact SHA-bound producer output files. No production video persistence or human fact/rights/voice approval.
-- PR #32 (B3d4c2c3c; current): exact 70 spoken sentence, 32 scene visible/animated SVG, 3 thumbnail and proposed title/description claim docket; 14 curated primary/derived/illustrative/limitation claim IDs; separately tested hosted six official NASA/NIST/USGS direct HTTPS evidence-marker readbacks and HTML SHA256. Not an independent human semantic truth review, external source archive, or real release.
+- PR #32 (B3d4c2c3c; merged): exact 70 spoken sentence, 32 scene visible/animated SVG, 3 thumbnail and proposed title/description claim docket; 14 curated primary/derived/illustrative/limitation claim IDs; separately tested hosted six official NASA/NIST/USGS direct HTTPS evidence-marker readbacks and HTML SHA256. Not an independent human semantic truth review, external source archive, or real release.
+- PR #33 (B3d4c2d1; merged): validated actual boto3 calls into an independent, **localhost-only Moto S3 emulator** for 213 invented nonplayable media-shaped files and 3 final unapproved manifest versions. SHA256, S3 object VersionId, object-lock/KMS request/readback and no-retry manifest-last contract tested; **not a real owner-controlled persistent AWS bucket, real media upload or genuine legal retention**.
+- PR #34 (B3d4c2d2; current): independently re-GET every original escrowed fake asset by exact S3 VersionId; cryptographically bind 7 separate **synthetic** Ed25519 reviewer roles to ALL original S3 object versions, MP4/WAV/SRT/thumb names, full original source claim dossier and 3 episode contexts. Real source/rights/AI-disclosure/full-watch/owner approvals **NOT** enrolled, no production media persisted; technical progress estimate held unchanged at 38%.
 
 ## Major remaining dependencies, in priority order
 
@@ -39,11 +41,11 @@ This evaluation is a deliberately conservative approximation: prototype/test sof
 
 ## Not to conflate
 
-- **Three simulated CPU-rendered videos ≠ 3 uploaded/published videos.** They are all made from one invented CSV demonstration input; SHA differences do NOT prove substantive channel originality.
+- **Three completed hosted test video renders ≠ three published YouTube videos.** Current prototypes are original NASA/NIST/USGS-topic full narrated videos and physical H264/AAC files were decoded then **deleted** on the hosted runner. Originality against the existing real channel and human approval remain unverified. Separate later Moto cloud drills use deliberately NONPLAYABLE fake bytes, not those rendered videos.
 - **Seven mock Ed25519 review keys ≠ seven actual verified humans or an authenticated owner.**
 - **PostgreSQL on an ephemeral GitHub-hosted CI service ≠ a persistent private deployed cloud database.**
 - **AWS/GCP IAM JSON lint ≠ actual credential custody or verified provider identity.**
 - **Branch 1 assisted scheduling ≠ independent Branch 2 laptop-off automation.** Branch 1's current real upload statuses must be checked separately via actual authorized YouTube readback.
 - Only a real owner-approved live system and remote YouTube readback can earn scores in the large remaining production categories.
 
-**Handoff:** B3d4c2c3 genuine content generation and external owner/provider authorization prerequisites next. Keep all GitHub PR CI no-secrets/no-publishing defaults until requirements are met. Do not activate real services or incur charges without explicit permission.
+**Handoff:** B3d4c2d3 real owner/reviewer enrollment and independently authorized persistent cloud + external trust roots/ledger are the next blockers. Prototype cloud/media contracts cannot earn the missing production percentages without actual real account, human and remote YouTube evidence. Keep all GitHub PR CI no-secrets/no-publishing defaults until requirements are met. Do not activate real services or incur charges without explicit permission.
