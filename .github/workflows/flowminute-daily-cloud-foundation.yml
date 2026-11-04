@@ -1,0 +1,97 @@
+name: FlowMinute Daily Cloud Autopilot Foundation (NO PUBLISH)
+
+on:
+  # GitHub only triggers scheduled workflows from the DEFAULT branch.
+  # 13:17 UTC = 18:47 IST. Make TOMORROW's unverified 3-slot plan.
+  schedule:
+    - cron: "17 13 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main, feature/flowminute-cloud-autopilot-v1]
+    paths:
+      - "autopilot/daily_cloud_plan.py"
+      - "autopilot/test_daily_cloud_plan.py"
+      - "autopilot/agent_org.py"
+      - ".github/workflows/flowminute-daily-cloud-foundation.yml"
+  pull_request:
+    paths:
+      - "autopilot/daily_cloud_plan.py"
+      - "autopilot/test_daily_cloud_plan.py"
+      - ".github/workflows/flowminute-daily-cloud-foundation.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-daily-draft-only-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  unprivileged_draft:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      CI: "true"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout unprivileged public source only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up free standard Python runner
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify 48-agent orchestration and strict no-publication gates
+        run: |
+          set -euo pipefail
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan
+
+      - name: Collect publicly available unverified headlines (not on PRs)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -m autopilot.scout --output out/flowminute-scout-unverified.json
+
+      - name: Plan three distinct tomorrow slots without producing any media
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -m autopilot.daily_cloud_plan \
+            --scout-report out/flowminute-scout-unverified.json \
+            --output out/flowminute-tomorrow-draft.json
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          plan=json.loads(Path("out/flowminute-tomorrow-draft.json").read_text(encoding="utf8"))
+          assert plan["plan_kind"] == "UNPRIVILEGED_RESEARCH_DRAFT_ONLY"
+          assert plan["specialist_roles"] == 48
+          assert plan["task_contracts"] == 54
+          assert not plan["youtube_upload_enabled"] and not plan["youtube_schedule_enabled"]
+          assert not plan["cloud_publisher_connected"]
+          assert not plan["any_content_verified"]
+          assert not plan["new_billable_resources_enabled"]
+          assert [x["format"] for x in plan["slots"]] == ["short","long","short"]
+          assert [x["local_ist"] for x in plan["slots"]] == ["11:00","16:00","20:30"]
+          assert all(not x["release_authorized"] and not x["real_media_exists"] for x in plan["slots"])
+          lines=["# FlowMinute Cloud Autopilot — research-only draft",
+                 "", "Target date (IST): "+plan["plan_date_ist"], "",
+                 "3 video concepts planned: 2 Shorts + 1 long at 11:00 / 16:00 / 20:30 IST.",
+                 "", "48 specialist roles and 54 source/evidence handoff contracts allocated.",
+                 "", "Research leads: "+str(plan["research_lead_count"])+" (UNVERIFIED).",
+                 "", "**No scripts, voices, media, rights approval, OAuth, upload or schedule were created.**",
+                 "", "All release gates remain disabled; plan is not ready to publish."]
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("\n".join(lines)+"\n")
+          print("GITHUB_ONLY_DAILY_DRAFT_SUCCESS_NO_UPLOAD_NO_SECRET_NO_LAPTOP")
+          PY
+      - name: Discard ephemeral unverified draft files
+        if: always()
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-tomorrow-draft.json
