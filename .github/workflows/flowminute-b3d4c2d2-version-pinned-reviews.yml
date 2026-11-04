@@ -1,0 +1,161 @@
+name: FlowMinute B3d4c2d2 Version-Exact Synthetic Independent Review (NO RELEASE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/version_pinned_review_boundary.py"
+      - "autopilot/test_version_pinned_review_boundary.py"
+      - "autopilot/ci_local_versioned_review_drill.py"
+      - ".github/workflows/flowminute-b3d4c2d2-version-pinned-reviews.yml"
+      - "docs/adr/0031-b3d4c2d2-version-pinned-independent-review.md"
+      - "docs/runbooks/branch2-private-cloud-owner-activation.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2d2-only-fake-reviewers-local-moto
+  cancel-in-progress: true
+
+jobs:
+  seven_separate_signatures_and_all_version_fencing_adversarial:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - name: Checkout read-only with no saved repository credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Temporary hosted Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public Ed25519 verifier, never a real owner signer
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: All read-only S3 exact-version and mock reviewer cryptography adversarial tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_version_pinned_review_boundary \
+            autopilot.test_private_versioned_media_escrow \
+            autopilot.test_primary_claim_surface_docket \
+            autopilot.test_primary_sourced_storyboards
+      - name: Hard fail if synthetic evidence is misconstrued as owner-approved release
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from tempfile import TemporaryDirectory
+          from pathlib import Path
+          from datetime import datetime,timezone
+          from autopilot.test_private_versioned_media_escrow import fixture,CONFIG,FakeS3
+          from autopilot.private_versioned_media_escrow import prepare_exact_private_escrow,escrow_once_and_readback
+          from autopilot.version_pinned_review_boundary import reconstruct_version_bound_review_context
+          with TemporaryDirectory() as d:
+              story,folder,report=fixture(Path(d))
+              plan=prepare_exact_private_escrow(
+                  story=story,folder=folder,producer_report=report,config=CONFIG
+              )
+              now=datetime.now(timezone.utc)
+              s3=FakeS3()
+              staged=escrow_once_and_readback(
+                  s3=s3,plan=plan,folder=folder,config=CONFIG,now=now
+              )
+              ctx=reconstruct_version_bound_review_context(
+                  s3=s3,plan=plan,escrow_receipt=staged,config=CONFIG,
+                  runtime_seconds=61.79,now=now
+              )
+              assert ctx["object_count"]==43
+              assert len(ctx["critical_media_version_pins"])==4
+              for flag in (
+                  "actual_public_cloud_identity_or_kms_verified",
+                  "all_source_claims_independently_human_reviewed",
+                  "actual_full_playback_by_real_human_verified",
+                  "voice_image_music_rights_approved",
+                  "real_channel_owner_release_authorized",
+                  "youtube_upload_enabled","release_authorized",
+              ):
+                  assert ctx[flag] is False
+              print("B3D4C2D2_EXACT_VERSION_S3_SYNTHETIC_SOURCE_NOT_HUMAN_CONTENT_APPROVAL")
+          PY
+
+  actual_local_moto_version_readback_with_21_fake_ed25519_signatures:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 24
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_DEFAULT_REGION: "us-east-1"
+      FLOWMINUTE_LOCAL_MOTO_ENDPOINT: "http://127.0.0.1:5000"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Read only PR checkout with no saved access token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public boto3 and local Moto service plus Ed25519 verifier
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check \
+            'boto3>=1.35,<2' 'moto[server]>=5.1,<6' 'cryptography>=46,<48'
+      - name: Start local ephemeral S3 emulator bound strictly to loopback
+        run: |
+          set -euo pipefail
+          moto_server -H 127.0.0.1 -p 5000 > /tmp/flowminute-version-review-moto.log 2>&1 &
+          echo $! > /tmp/flowminute-version-review-moto.pid
+          ready=false
+          for attempt in $(seq 1 45); do
+            if curl -fsS --connect-timeout 2 --max-time 2 \
+                http://127.0.0.1:5000/ > /dev/null; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = true || {
+            tail -n 20 /tmp/flowminute-version-review-moto.log
+            exit 1
+          }
+          echo "B3D4C2D2_MOTO_LOCAL_ONLY_NO_AWS_OR_YOUTUBE"
+      - name: Real boto3 HTTP 213 version-specific GET and 21 synthetic reviewer Ed25519 checks
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.ci_local_versioned_review_drill
+      - name: Verify synthetic-only, no real storage or owner release
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          test "$FLOWMINUTE_LOCAL_MOTO_ENDPOINT" = http://127.0.0.1:5000
+          echo "B3D4C2D2_MOCK_SIGNERS_CANNOT_APPROVE_REAL_REVIEW_OR_ACTIVATE_YOUTUBE"
+      - name: Remove temporary fake S3 process and dummy media only
+        if: always()
+        run: |
+          if test -f /tmp/flowminute-version-review-moto.pid; then
+            kill "$(cat /tmp/flowminute-version-review-moto.pid)" || true
+          fi
+          rm -f /tmp/flowminute-version-review-moto.pid \
+                /tmp/flowminute-version-review-moto.log
+          echo "B3D4C2D2_NO_REAL_PRIVATE_VIDEO_BYTES_OR_CLOUD_TOKENS_PERSISTED"
