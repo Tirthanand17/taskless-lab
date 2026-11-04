@@ -100,3 +100,7 @@ Any ambiguous remote request stays `UNRESOLVED`: **read YouTube before retry**. 
 
 ## Current deploy and completion semantics
 The proposed GitHub Actions code on this feature branch is a *safe nonpublishing cloud foundation*. Mark `tested` only after real GitHub CI results; mark `deployed` only after merging its scheduled workflow to the default branch and verifying an actual successful scheduled execution. Do not call the daily autonomous YouTube publisher deployed until all B3–B5 gates are accepted.
+
+
+### 2026 provider deprecation finding — do NOT use GitHub Models as the LLM backend
+GitHub announced that **GitHub Models inference API, playground, catalog and BYOK endpoints were fully retired on July 30, 2026**: https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/ . Old 2025 tutorials about using `GITHUB_TOKEN` and `models: read` for GitHub Models are obsolete. `actions/ai-inference` now documents Copilot CLI with separately configured `COPILOT_GITHUB_TOKEN`; this is **not** a no-cost, approval-free daily script/video solution: https://github.com/actions/ai-inference . Do not silently install/pay for Copilot, Microsoft Foundry or another provider. B3 must evaluate a currently available, explicitly owner-approved inference route, or test a self-hosted open-weight CPU model on GitHub public-runner limitations, including accuracy and rights. Research and deterministic planning may operate without an LLM; **writing/media do not become real** just because the coordinator has role names.
