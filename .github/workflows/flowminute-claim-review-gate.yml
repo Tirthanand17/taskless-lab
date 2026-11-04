@@ -1,0 +1,67 @@
+name: FlowMinute B3c Source and Originality Gate (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/claim_review_dossier.py"
+      - "autopilot/test_claim_review_dossier.py"
+      - "autopilot/script_draft_agent.py"
+      - "autopilot/test_script_draft_agent.py"
+      - "autopilot/evidence_probe.py"
+      - "autopilot/test_evidence_probe.py"
+      - ".github/workflows/flowminute-claim-review-gate.yml"
+      - "docs/adr/0011-claim-provenance-originality-and-2026-youtube-policy.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3c-no-publish
+  cancel-in-progress: true
+
+jobs:
+  independent_draft_provenance_and_novelty_review:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      CI: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Fetch unprivileged GitHub source without token persistence
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Use hosted Python stdlib only
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test source provenance, forged approvals, novel topics, and no YouTube writes
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_evidence_probe \
+            autopilot.test_script_draft_agent \
+            autopilot.test_claim_review_dossier
+      - name: Verify no release authority or external paid calls
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_claim_review_dossier import fixture
+          from autopilot.claim_review_dossier import review_three_episode_candidates
+          pack = review_three_episode_candidates([fixture(i) for i in range(3)])
+          assert pack["episode_count"] == 3
+          assert pack["syntactic_cross_episode_duplicate_screen_passed"]
+          assert not pack["semantic_novelty_or_youtube_policy_compliance_proven"]
+          assert not pack["every_fact_and_right_verified"]
+          assert not pack["youtube_upload_enabled"]
+          assert not pack["youtube_schedule_enabled"]
+          assert not pack["release_authorized"]
+          assert all(not d["all_claims_verified"] for d in pack["dossiers"])
+          print("B3C_CLAIM_AND_ORIGINALITY_DOSSIERS_PENDING_NO_PUBLISH")
+          PY
