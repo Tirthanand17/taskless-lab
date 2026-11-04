@@ -1,0 +1,72 @@
+name: FlowMinute B3d2 Full Narration Review Coverage (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/narration_review_inventory.py"
+      - "autopilot/test_narration_review_inventory.py"
+      - "autopilot/script_continuity_gate.py"
+      - "autopilot/test_script_continuity_gate.py"
+      - ".github/workflows/flowminute-narration-review-coverage.yml"
+      - "docs/adr/0013-b3d2-narration-review-completeness.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d2-no-publish
+  cancel-in-progress: true
+
+jobs:
+  signed_narration_sentence_coverage:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+    steps:
+      - name: Checkout public unprivileged PR without persisted token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Ed25519 verification only
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Run B3c/B3d1/B3d2 offline evidence, provenance and completeness tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_narration_review_inventory
+      - name: Verify every spoken sentence remains pending and no privilege activated
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.test_narration_review_inventory import prepare
+          from autopilot.test_script_continuity_gate import signed_fixture
+          for index in range(3):
+              report = prepare(signed_fixture(index))
+              assert report["full_narration_characters_accounted_for"] is True
+              assert report["pending_independent_sentence_reviews"] == report["number_of_sentence_review_rows"]
+              assert report["pending_independent_sentence_reviews"] > 0
+              assert not report["model_candidate_claim_inventory_complete"]
+              assert not report["all_claims_correct_or_complete"]
+              assert not report["human_fact_review_complete"]
+              assert not report["copyright_and_originality_approved"]
+              assert not report["media_render_enabled"]
+              assert not report["youtube_upload_enabled"]
+              assert not report["release_authorized"]
+          print("B3D2_COMPLETE_NARRATION_DOCKET_NO_INDEPENDENT_FACT_APPROVAL_NO_PUBLISH")
+          PY
