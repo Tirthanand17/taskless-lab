@@ -329,6 +329,14 @@ def escrow_once_and_readback(*,s3,plan:dict,
     """
     _validate_config(config)
     _check_plan(plan)
+    # Botocore can RETRY PUT on its own after an ambiguous socket error.
+    # A real boto3 client MUST explicitly disable all SDK automatic retries;
+    # test-only in-memory fakes have no botocore config to inspect.
+    sdk_config=getattr(getattr(s3,"meta",None),"config",None)
+    if sdk_config is not None:
+        retry_policy=getattr(sdk_config,"retries",{}) or {}
+        if retry_policy.get("total_max_attempts")!=1:
+            raise EscrowError("SDK PutObject automatic retries must be disabled")
     at=_utc(now)
     if (plan["bucket"]!=config.bucket or plan["region"]!=config.region
             or plan["customer_kms_key_arn"]!=config.kms_key_arn
