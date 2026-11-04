@@ -78,3 +78,8 @@ flowchart TD
 - Release remains off until separate owner-backed approvals for model provider and prompts, storage spend, OAuth, D1 schema and publishing.
 
 **Current status:** B0 research/architecture refined; B1/B2 previous code operational; B3a HTTP metadata evidence implementation in progress; B3b/B4/B5 **not proven**, no customer/user charges authorized.
+
+## YouTube quality and originality: 3/day is a ceiling, not a spam target
+Official YouTube policies explicitly identify AI-assisted mass-production of interchangeable videos, templated image slideshows and superficial variants as inauthentic or repetitive content. Therefore a daily three-slot plan must be allowed to **skip a release** if no truthful, substantively differentiated tutorial passes factual, visual and rights checks. Two Shorts may share a broad theme only when each teaches a different use case or demonstrates an independent outcome; the long video must have a real step-by-step demonstration, not an expanded slideshow. Never trigger a new upload merely to satisfy cadence. Official sources:
+- https://support.google.com/youtube/answer/1311392
+- https://support.google.com/youtube/answer/2801973
