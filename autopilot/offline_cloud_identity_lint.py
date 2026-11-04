@@ -32,7 +32,7 @@ AWS_ROLE_SUBJECT = f"repo:{REPO}:environment:{ENVIRONMENT}"
 BACKENDS = frozenset({"aws_secrets_manager", "gcp_secret_manager"})
 HEX = re.compile(r"[0-9a-f]{64}\Z")
 AWS_ACCOUNT = re.compile(r"[0-9]{12}\Z")
-GCP_PROJECT = re.compile(r"[a-z][a-z0-9-]{4,28}[a-z0-9]\Z")
+GCP_PROJECT = re.compile(r"[0-9]{6,15}\Z")
 DB_HOST = re.compile(r"[a-z][a-z0-9.-]{2,180}\Z")
 ROLE_NAMES = ("inference_gateway", "ledger_gateway", "youtube_publisher")
 STATUS = "OFFLINE_CLOUD_IDENTITY_LINT_ONLY_NO_ACTIVATION"
@@ -129,7 +129,7 @@ def _basic(intent: ProductionIdentityIntent) -> None:
                 "providers/github"
             )
         ):
-            raise IdentityBoundaryError("GCP WIF audience/project scope must be exact")
+            raise IdentityBoundaryError("GCP WIF audience/project number scope must be exact")
 
 
 def lint_aws_oidc_trust(intent: ProductionIdentityIntent, policy: Mapping) -> None:
