@@ -6,6 +6,8 @@ on:
       - "autopilot/full_pack_fixture.py"
       - "autopilot/cloud_full_duration_pack.py"
       - "autopilot/test_cloud_full_duration_pack.py"
+      - "autopilot/independent_av_review.py"
+      - "autopilot/test_independent_av_review.py"
       - ".github/workflows/flowminute-full-duration-narration-qa.yml"
   workflow_dispatch:
 
@@ -45,7 +47,7 @@ jobs:
       - name: Validate synthetic demonstration and caption contracts
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_cloud_full_duration_pack
+          python -m unittest -v autopilot.test_cloud_full_duration_pack autopilot.test_independent_av_review
 
       - name: Install only public CPU-only dependencies
         run: |
@@ -115,6 +117,35 @@ jobs:
                     "", "No cloud credentials, publishing, private storage or Nirala access. Files destroyed after each job."]
           Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf8").write("\n".join(lines)+"\n")
           print("B3B_REAL_FULL_DURATION_3_VIDEO_PACK_TECHNICAL_QA_PASSED_NOT_PUBLISHABLE")
+          PY
+
+      - name: Independent audio LUFS, true peak, subtitle visibility and encoded scene audit
+        run: |
+          set -euo pipefail
+          python -m autopilot.independent_av_review --pack-dir /tmp/flowminute-full-pack
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.loads(Path("/tmp/flowminute-full-pack/independent_technical_qa.json").read_text(encoding="utf8"))
+          assert r["status"]=="MEASURED_TECHNICAL_QA_ONLY_NOT_EDITORIAL_APPROVAL"
+          assert r["machine_checked_count"]==3
+          assert r["release_authorized"] is False
+          assert r["human_editorial_approval"] is False
+          assert r["youtube_upload_enabled"] is False
+          assert all(v["burned_caption_independently_observed"] for v in r["episodes"])
+          assert all(v["distinct_encoded_scenes_observed"] for v in r["episodes"])
+          assert all(v["every_caption_matches_original_spoken_text"] for v in r["episodes"])
+          assert all(v["human_complete_watch_or_listen_complete"] is False for v in r["episodes"])
+          lines=["","## Independent encoded-file measurements (NOT HUMAN REVIEW)","","| Episode | LUFS | True peak dBTP | Silence intervals >1.25s | Burned caption pixel differences | Scene changes |",
+                 "|---|---:|---:|---:|---:|---:|"]
+          for v in r["episodes"]:
+              a=v["ffmpeg_actual_encoded_audio"]
+              p=v["ffmpeg_long_silence_diagnostics"]
+              lines.append(f'| {v["episode"]} | {a["integrated_lufs"]} | {a["true_peak_dbtp"]} | {p["long_silence_count"]} | {v["caption_visible_changed_pixels"]:,} | {v["first_to_later_scene_changed_pixels"]:,} |')
+          lines+=["","This test is independent of the original renderer's declared QA flags; frames and audio were decoded from actual new MP4s.","",
+                  "**Not a human fact, rights, voice-listening or final visual review. No YouTube access or publishing authorization.**"]
+          Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf8").write("\n".join(lines)+"\n")
+          print("B3B_INDEPENDENT_ACTUAL_VIDEO_AUDIO_AND_BURNED_CAPTION_QA_PASSED_NO_PUBLISH")
           PY
 
       - name: Remove model, narrated MP4s and all original outputs, even on failure
