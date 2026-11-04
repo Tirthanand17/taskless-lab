@@ -1,0 +1,150 @@
+name: FlowMinute B3d4c2b3b Vault Requirements and Real PostgreSQL Recovery Drill (NO DEPLOY)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/private_cloud_recovery_preflight.py"
+      - "autopilot/test_private_cloud_recovery_preflight.py"
+      - "autopilot/ci_postgres_backup_restore_drill.py"
+      - ".github/workflows/flowminute-b3d4c2b3b-vault-recovery.yml"
+      - "docs/adr/0023-b3d4c2b3b-vault-and-restore-readiness.md"
+      - "docs/runbooks/branch2-private-cloud-owner-activation.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2b3b-vault-recovery-mock-only
+  cancel-in-progress: true
+
+jobs:
+  strict_secret_handle_and_signed_backup_contracts:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+    steps:
+      - name: Checkout read-only GitHub PR without saved credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.11 hosted
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public Ed25519 verifier only
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - name: Run signed source/owner, SQLite/PG contracts and vault backup integrity regressions
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_script_draft_agent \
+            autopilot.test_claim_review_dossier \
+            autopilot.test_script_continuity_gate \
+            autopilot.test_narration_review_inventory \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_independent_fact_review_gate \
+            autopilot.test_script_to_preview_bridge \
+            autopilot.test_signed_narrated_cloud_pack \
+            autopilot.test_computed_demo_storyboards \
+            autopilot.test_owner_provider_lease_gate \
+            autopilot.test_atomic_mock_inference_fence \
+            autopilot.test_private_cloud_recovery_preflight
+      - name: Prove all static contract passes are blocked from actual cloud activation
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from autopilot.private_cloud_recovery_preflight import inspect_private_cloud_requirements
+          from autopilot.test_private_cloud_recovery_preflight import plan, sealed_example, check
+          for backend,region in (("aws_secrets_manager","us-east-1"),
+                                 ("gcp_secret_manager","asia-south1")):
+              state=inspect_private_cloud_requirements(plan(backend,region))
+              assert state["requirements_schema_valid"] is True
+              assert state["cloud_secret_actually_exists"] is False
+              assert state["cloud_iam_permissions_independently_verified"] is False
+              assert state["actual_workload_identity_authenticated"] is False
+              assert state["owner_provider_account_and_terms_approved"] is False
+              assert state["live_generative_inference_enabled"] is False
+              assert state["youtube_upload_enabled"] is False
+          for generation in (1,2):
+              state=check(sealed_example(generation))
+              assert state["backup_generation"] == generation
+              assert state["real_external_anchor_independently_deployed"] is False
+              assert state["provider_live_call_enabled"] is False
+              assert state["release_authorized"] is False
+          print("B3D4C2B3B_BOTH_PROVIDER_DESCRIPTOR_CONTRACTS_AND_SIGNED_BACKUP_HISTORY_PASS_NO_REAL_ENTITLEMENT")
+          PY
+
+  real_postgres_dump_restore_into_independent_ci_database:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_B3D4C2B3A_ADMIN_DSN: "postgresql://flowminute_test:disposable_ci_service_only@127.0.0.1:5432/flowminute_fence_ci"
+      FLOWMINUTE_B3D4C2B3A_GATEWAY_TEST_PASSWORD: "only_fake_ci_gateway_pwd_01"
+      FLOWMINUTE_B3D4C2B3A_WORKER_TEST_PASSWORD: "only_fake_ci_worker_pwd_01"
+      FLOWMINUTE_B3D4C2B3A_AUDITOR_TEST_PASSWORD: "only_fake_ci_auditor_pwd_01"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: flowminute_fence_ci
+          POSTGRES_USER: flowminute_test
+          POSTGRES_PASSWORD: disposable_ci_service_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U flowminute_test -d flowminute_fence_ci"
+          --health-interval 5s
+          --health-timeout 4s
+          --health-retries 12
+    steps:
+      - name: GitHub-only checkout without persistence
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.11 on hosted runner
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install open-source PostgreSQL dump/restore and cryptographic verifier
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-16
+          python -m pip install --disable-pip-version-check \
+            'cryptography>=46,<48' 'psycopg[binary]>=3.2,<4'
+          pg_dump --version
+          pg_restore --version
+      - name: Bootstrap isolated roles and verify denial of destructive SQL
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_ci_protected_pg_boundary
+      - name: Actually export original mock ledger and restore into independent test database
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.ci_postgres_backup_restore_drill
+      - name: Confirm real external services and publisher stay disconnected
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          echo "B3D4C2B3B_REAL_PGDUMP_RESTORE_TEST_ONLY_TEMP_CI_DATABASES_DESTROYED_AT_JOB_END_NO_PUBLISH"
