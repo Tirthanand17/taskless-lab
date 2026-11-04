@@ -80,6 +80,7 @@ class EphemeralOneUseLedger:
             or self.path.suffix != ".sqlite3"
             or not self.path.parent.is_dir()
             or self.path.parent.is_symlink()
+            or stat.S_IMODE(self.path.parent.stat().st_mode) & 0o077
             or self.path.is_symlink()
             or (self.path.exists() and not self.path.is_file())
         ):
