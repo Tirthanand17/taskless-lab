@@ -148,7 +148,7 @@ def _safe_text(s: str, limit: int = 220) -> str:
     """Make untrusted script text renderable while preserving original in plan."""
     if not isinstance(s, str) or len(s) > 1500:
         raise PreviewBridgeError("Unbounded preview display text")
-    return " ".join(c if ord(c) >= 32 else " " for c in s)[:limit]
+    return "".join(c if ord(c) >= 32 else " " for c in s)[:limit]
 
 
 def render_ephemeral_preview(plan: dict, dest: Path) -> dict:
@@ -174,6 +174,34 @@ def render_ephemeral_preview(plan: dict, dest: Path) -> dict:
     kind = plan.get("format")
     if kind not in ("short", "long"):
         raise PreviewBridgeError("Unknown video preview kind")
+    # Content continuity is checked again at the final producer edge. This
+    # detects in-memory or serialized scene edits after signed plan creation.
+    cursor = 0
+    rebuilt = []
+    seen = set()
+    for index, scene in enumerate(plan["scene_plan"]):
+        if (not isinstance(scene, dict) or scene.get("scene_index") != index
+                or type(scene.get("narration_start_char")) is not int
+                or type(scene.get("narration_end_char")) is not int
+                or scene["narration_start_char"] != cursor
+                or not isinstance(scene.get("raw_narration"), str)
+                or scene["narration_end_char"] != cursor + len(scene["raw_narration"])
+                or scene.get("narration_sha256") != _sha(scene["raw_narration"])
+                or not isinstance(scene.get("visual_direction_unverified"), str)
+                or scene.get("visual_direction_sha256") != _sha(scene["visual_direction_unverified"])
+                or scene.get("scene_id") != _sha(
+                    plan["script_manifest_sha256"] + "\n" + str(index) + "\n" +
+                    scene["visual_direction_unverified"]
+                )[:24]
+                or scene.get("source_assertions_fact_checked") is not False):
+            raise PreviewBridgeError("Preview scenes changed after script planning")
+        if scene["scene_id"] in seen:
+            raise PreviewBridgeError("Repeated scene after script planning")
+        seen.add(scene["scene_id"])
+        rebuilt.append(scene["raw_narration"])
+        cursor = scene["narration_end_char"]
+    if _sha("".join(rebuilt)) != plan.get("full_spoken_narration_sha256"):
+        raise PreviewBridgeError("Full authored script narration changed after planning")
     # Deliberately half-resolution, to make a technical demo visibly distinct
     # from a production-ready 1080p mastered/approved video.
     w, h = (540, 960) if kind == "short" else (960, 540)
