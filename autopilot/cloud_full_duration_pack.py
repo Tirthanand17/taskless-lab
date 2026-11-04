@@ -233,7 +233,9 @@ def encode(episode, folder: Path, images: list[Path], timings: list[dict],
       "-loop","1","-framerate",str(FPS),"-i",str(dotfile),
       "-filter_complex",filt,"-map","[v]","-map","1:a:0",
       "-c:v","libx264","-preset","ultrafast","-crf","30",
-      "-pix_fmt","yuv420p","-threads","2","-c:a","aac","-b:a","128k",
+      "-pix_fmt","yuv420p","-threads","2",
+      "-af","loudnorm=I=-16:LRA=9:TP=-2",
+      "-c:a","aac","-b:a","128k",
       "-t",f"{total:.4f}","-movflags","+faststart","-y",str(out)
     ],timeout=1500)
     return out
