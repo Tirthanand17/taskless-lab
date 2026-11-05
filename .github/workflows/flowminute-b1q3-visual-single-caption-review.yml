@@ -1,0 +1,88 @@
+name: FlowMinute B1q3 Single Verbatim Subtitle + Enlarged Subject Art Proof (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_no_spinner_storyboard.py"
+      - "autopilot/branch1_three_narrated_no_spinner_v2.py"
+      - "autopilot/branch1_quality_v3_gallery.py"
+      - "autopilot/test_branch1_quality_single_caption_v3.py"
+      - ".github/workflows/flowminute-b1q3-visual-single-caption-review.yml"
+      - "docs/adr/0051-b1q3-one-caption-bigger-hero-visual-audit.md"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b1q3-original-no-caption-dup-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  actual_31_beats_and_nine_original_native_frame_review:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ONLY native source font/portrait pixel dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core libsndfile1
+          python -m pip install --disable-pip-version-check 'Pillow>=11,<13' 'numpy>=1.26,<3' 'soundfile>=0.12,<1' 'cryptography>=46,<48'
+      - name: 31 actual original scene beats: source narration never duplicated in top headline
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_branch1_quality_single_caption_v3 \
+            autopilot.test_branch1_narrated_no_spinner_v2 \
+            2>&1 | tee /tmp/fm-b1q3-nondup-qa.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/fm-b1q3-nondup-qa.log; then exit 1; fi
+          echo "B1Q3_SINGLE_VERBATIM_TIMED_ASS_SUBTITLE_AND_ENLARGED_HERO_31_SOURCE_BEATS_PASS"
+      - name: Draw nine actual original source shots, distinct titles and heroes
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_quality_v3_gallery \
+            --repo . --output /tmp/flowminute-b1q3-source-visuals
+          python -B - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          r=Path("/tmp/flowminute-b1q3-source-visuals")
+          m=json.loads((r/"UNAPPROVED_B1Q3_ORIGINAL_QUALITY_MANIFEST.json").read_text())
+          assert m["original_scene_count"]==9
+          assert m["new_video_encoded"] is False
+          assert m["previous_youtube_uploaded_binary_mutated"] is False
+          assert m["owner_fact_visual_voice_rights_approved"] is False
+          for item in m["scenes"]:
+              p=r/item["file"]
+              assert p.is_file() and not p.is_symlink()
+              assert p.stat().st_size==item["bytes"]
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==item["sha256"]
+          assert (r/m["contact_sheet"]).stat().st_size>30_000
+          print("B1Q3_NINE_REAL_NATIVE_ORIGINAL_SCENES_WITH_UNDUPLICATED_CAPTIONS_READY")
+          PY
+      - name: Retain human-comparable actual original nine full native PNG and gallery
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b1q3-actual-9-source-shot-no-duplicate-art-gallery-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b1q3-source-visuals/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+      - name: Drop original gallery from disposable hosted runner
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b1q3-source-visuals
+          echo "B1Q3_REVIEW_ART_ONLY_NO_OAUTH_OR_YOUTUBE_UPLOAD"
