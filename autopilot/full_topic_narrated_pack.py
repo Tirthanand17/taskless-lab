@@ -303,7 +303,12 @@ def _encode_moving_topic(
         "-map","[v]","-map","1:a:0",
         "-c:v","libx264","-preset","ultrafast","-crf","30",
         "-pix_fmt","yuv420p","-threads","2",
-        "-af","loudnorm=I=-16:LRA=9:TP=-2,alimiter=limit=0.50:level=0",
+        # FFmpeg loudnorm already implements a true-peak limiter at -2 dBTP.
+        # The old EXTRA 0.50FS alimiter was dropping quieter voice output
+        # below the independent -20 LUFS lower bound on a genuine third Short.
+        # Keep speech loud and intelligible without weakening the independent
+        # audible-content range (-20 to -12 LUFS / <= -1.5 dBTP).
+        "-af","loudnorm=I=-16:LRA=9:TP=-2",
         "-c:a","aac","-b:a","128k",
         "-t",f"{total:.4f}","-movflags","+faststart",
         "-y",str(out),
