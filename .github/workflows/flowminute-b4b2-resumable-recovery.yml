@@ -1,0 +1,93 @@
+name: FlowMinute B4b2 No-Network YouTube Same-Session Recovery (NO UPLOAD)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/youtube_resumable_recovery_contract.py"
+      - "autopilot/test_youtube_resumable_recovery_contract.py"
+      - "autopilot/youtube_private_first_contract.py"
+      - ".github/workflows/flowminute-b4b2-resumable-recovery.yml"
+      - "docs/adr/0035-b4b2-same-session-youtube-resumable-recovery.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4b2-offline-same-session-no-oauth
+  cancel-in-progress: true
+
+jobs:
+  strict_mock_only_308_range_protocol_and_no_second_insert:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - name: Read-only PR checkout without persistent GitHub auth
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Hosted Python without real Google or AWS account
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile and test all no-network 308/5xx/404/replay/privacy safety contracts
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/youtube_resumable_recovery_contract.py \
+            autopilot/test_youtube_resumable_recovery_contract.py
+          python -B -m unittest -v autopilot.test_youtube_resumable_recovery_contract \
+            2>&1 | tee /tmp/b4b2_fake_protocol_tests.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/b4b2_fake_protocol_tests.log; then
+            echo "Required mock-only resumable regression did not pass"
+            exit 1
+          fi
+      - name: Explicit static guard against real upload and credentials
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          path = Path("autopilot/youtube_resumable_recovery_contract.py")
+          src = path.read_text(encoding="utf-8")
+          root = ast.parse(src)
+          forbidden_imports = ("socket","requests","urllib","http",
+                               "google","googleapiclient","boto3","os",
+                               "subprocess","pathlib","aiohttp")
+          for node in ast.walk(root):
+              if isinstance(node, ast.Import):
+                  for entry in node.names:
+                      assert not entry.name.startswith(forbidden_imports), entry.name
+              if isinstance(node, ast.ImportFrom):
+                  assert not (node.module or "").startswith(forbidden_imports), node.module
+          for forbidden in ("YOUTUBE_TOKEN_JSON", "AWS_SECRET_ACCESS_KEY",
+                            "PUBLISH_ENABLED", "requests.post"):
+              assert forbidden not in src, forbidden
+          from autopilot.test_youtube_resumable_recovery_contract import session
+          from autopilot.youtube_resumable_recovery_contract import make_status_probe
+          request = make_status_probe(session())
+          assert request.action == "QUERY_EXISTING_SESSION_ONLY"
+          assert request.headers["Content-Range"] == "bytes */3000000"
+          assert request.actual_http_executed is False
+          assert request.release_authorized is False
+          print("B4B2_FAKE_STATUS_ONLY_NO_NETWORK_OR_ACTUAL_UPLOAD")
+          PY
+      - name: Verify all publisher toggles remain disabled
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+          echo "B4B2_NO_YOUTUBE_OAUTH_NO_PAID_CLOUD_NO_PUBLISH"
