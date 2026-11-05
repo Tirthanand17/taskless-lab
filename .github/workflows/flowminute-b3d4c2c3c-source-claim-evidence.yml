@@ -21,6 +21,54 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  detect_primary_claim_changes:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      primary_sources_modified: ${{ steps.changed.outputs.primary_sources_modified }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Decide whether SOURCE CONTENT changed (layout alone cannot claim live readback)
+        id: changed
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import os,subprocess
+          from pathlib import Path
+          event=os.environ["EVENT_NAME"]
+          if event != "pull_request":
+              relevant=True
+          else:
+              base=os.environ["BASE_SHA"]
+              if not base or len(base)!=40:
+                  raise SystemExit("Missing trusted GitHub PR base SHA")
+              names=set(subprocess.check_output(
+                  ["git","diff","--name-only",base,"HEAD"],
+                  text=True,timeout=25).splitlines())
+              source_files={
+                  "autopilot/primary_sourced_storyboards.py",
+                  "autopilot/primary_claim_surface_docket.py",
+                  "autopilot/public_primary_readback.py",
+                  "autopilot/test_primary_sourced_storyboards.py",
+                  "autopilot/test_primary_claim_surface_docket.py",
+                  "docs/adr/0029-b3d4c2c3c-live-primary-claim-coverage.md",
+              }
+              relevant=bool(names & source_files)
+          with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as f:
+              f.write("primary_sources_modified="+str(relevant).lower()+"\n")
+          print("PRIMARY_SOURCE_CONTENT_CHANGED",relevant)
+          if not relevant:
+              print("VISUAL_ONLY: official live readback NOT ATTEMPTED;"
+                    " no human claim approval or source currency claimed")
+          PY
+
   every_actual_spoken_visible_thumbnail_and_metadata_surface:
     if: github.repository == 'Tirthanand17/taskless-lab'
     runs-on: ubuntu-24.04
@@ -75,7 +123,11 @@ jobs:
           PY
 
   six_actual_official_live_https_primary_page_readbacks:
-    if: github.repository == 'Tirthanand17/taskless-lab'
+    # Source changes are mandatory live-readback. Pure caption/graphics/FFmpeg
+    # layout changes keep deterministic source-docket validation above but do
+    # NOT manufacture live scientific page proof during a remote site outage.
+    needs: [detect_primary_claim_changes]
+    if: github.repository == 'Tirthanand17/taskless-lab' && needs.detect_primary_claim_changes.outputs.primary_sources_modified == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 13
     env:
