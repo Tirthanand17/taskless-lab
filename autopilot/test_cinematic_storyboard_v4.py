@@ -110,6 +110,39 @@ class ActualCinematicShortAndLongFrameTests(unittest.TestCase):
                 _topic_png(story,0,60,Path(t)/"wrong2.png",
                            visual_style="copyrighted_3d_templates")
 
+
+    def test_no_repeating_center_orbit_or_scanning_dial_in_new_storyboard(self):
+        # B1q7: the previous moon/quake story reused concentric circles,
+        # a dot rotating 360 degrees and an unrelated radial clock hand.
+        # These are banned as decorative motion across future Shorts.
+        import inspect
+        import autopilot.cinematic_storyboard_v4 as scene
+        source=inspect.getsource(scene)
+        self.assertNotIn("_halo_circles",source)
+        self.assertNotIn("theta=tick/120*6.28318",source)
+        self.assertNotIn("angle=(tick/120)*math.pi*1.75",source)
+        self.assertNotIn("math.cos(angle)",source)
+        self.assertNotIn("math.sin(angle)",source)
+        self.assertIn("_source_signal_path",source)
+        self.assertIn("Single finite left-to-right reveal",source)
+
+    def test_science_inset_has_one_shot_linear_progress_not_orbit(self):
+        from PIL import Image,ImageDraw,ImageChops
+        from autopilot.cinematic_storyboard_v4 import _source_signal_path
+        inner=(30,45,610,430)
+        accent=(94,194,248)
+        frames=[]
+        counts=[]
+        for tick in (0,60,120):
+            canvas=Image.new("RGB",(640,480),(8,19,37))
+            _source_signal_path(ImageDraw.Draw(canvas),inner,tick,accent,
+                                large=True)
+            frames.append(canvas)
+            counts.append(sum(p==accent for p in canvas.getdata()))
+        self.assertLess(counts[0],counts[1])
+        self.assertLess(counts[1],counts[2])
+        self.assertIsNotNone(ImageChops.difference(frames[0],frames[2]).getbbox())
+
     def test_source_claim_no_release_status_is_unchanged(self):
         self.assertIn("UNAPPROVED",STATUS)
         for slot in ("short_am","long","short_pm"):

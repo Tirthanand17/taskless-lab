@@ -55,19 +55,33 @@ def _shade_region(draw,inner,palette):
         fill=(*palette["bg"],255) if draw.mode=="RGBA" else palette["bg"])
 
 
-def _halo_circles(draw,inner,tick,accent,large=False):
+def _source_signal_path(draw,inner,tick,accent,large=False):
+    """Three finite, horizontal information paths; NO rotating circles/orbit.
+
+    Each phase reveals at most one source-bound progress pass from 0 to 120.
+    There is no 360-degree modulo, ring stroke, orbital dot or periodic
+    animation that can repeat across different spoken scenes.
+    """
     x0,y0,x1,y1=inner
-    cx=(x0+x1)//2
-    cy=(y0+y1)//2
-    radius=round(min(x1-x0,y1-y0)*(.30 if large else .24))
-    for i in range(4):
-        r=radius-i*round(radius*.12)
-        fill=tuple(min(255,int(x*(.34+.13*i))) for x in accent)
-        draw.ellipse((cx-r,cy-r,cx+r,cy+r),outline=fill,width=4)
-    theta=tick/120*6.28318
-    px=round(cx+radius*.87*__import__("math").cos(theta))
-    py=round(cy+radius*.87*__import__("math").sin(theta))
-    draw.ellipse((px-12,py-12,px+12,py+12),fill=accent)
+    width,height=x1-x0,y1-y0
+    left=x0+round(width*.14)
+    right=x1-round(width*.12)
+    span=right-left
+    for index,ratio in enumerate((.30,.50,.70) if large else (.33,.50,.67)):
+        mid=y0+round(height*ratio)
+        shadow=tuple(max(0,int(v*.31)) for v in accent)
+        draw.rounded_rectangle((left,mid-12,right,mid+12),
+                               radius=9,fill=shadow)
+        # Single finite left-to-right reveal, not a continuously cycling UI.
+        amount=max(0,min(1,(tick/120-index*.14)/(1-index*.14)))
+        fill_end=left+round(span*amount)
+        if fill_end>left:
+            draw.rounded_rectangle((left,mid-7,fill_end,mid+7),
+                                   radius=6,fill=accent)
+        # Rectangular endpoint communicates a measurable stop, not a loader.
+        cursor=max(left,min(right,fill_end))
+        draw.rounded_rectangle((cursor-5,mid-21,cursor+5,mid+21),
+                               radius=3,fill=accent)
 
 
 def _data_variant(draw,inner,variant,tick,pal):
@@ -140,7 +154,7 @@ def _moon_variant(draw,inner,variant,tick,pal):
     accent=pal["accent"]
     secondary=pal["secondary"]
     if variant in (1,2,4):
-        _halo_circles(draw,inner,tick,accent,large=True)
+        _source_signal_path(draw,inner,tick,accent,large=True)
         x0,y0,x1,y1=inner
         if variant==1:
             _source_label(draw,(x0+37,y0+28),"EARTH — MOON",
@@ -152,24 +166,25 @@ def _moon_variant(draw,inner,variant,tick,pal):
             _source_label(draw,(x0+37,y0+28),"RETURN TRIP",
                           x1-30,y0+67,secondary,29)
     elif variant in (3,5):
+        # Former radial hand was an unrelated scanner-like moving dial.
+        # Replace with an explicit, non-looping four-stage linear journey.
         x0,y0,x1,y1=inner
-        cx=(x0+x1)//2;cy=(y0+y1)//2
-        radius=round(min(x1-x0,y1-y0)*.28)
-        draw.ellipse((cx-radius,cy-radius,cx+radius,cy+radius),
-                     fill=(14,42,68),outline=accent,width=8)
-        for t in range(12):
-            import math
-            ang=t*math.pi/6
-            a=(round(cx+radius*.78*math.cos(ang)),
-               round(cy+radius*.78*math.sin(ang)))
-            b=(round(cx+radius*.90*math.cos(ang)),
-               round(cy+radius*.90*math.sin(ang)))
-            draw.line((*a,*b),fill=secondary,width=3)
-        import math
-        angle=(tick/120)*math.pi*1.75
-        draw.line((cx,cy,cx+round(radius*.6*math.cos(angle)),
-                   cy+round(radius*.6*math.sin(angle))),fill=accent,width=8)
-        draw.ellipse((cx-10,cy-10,cx+10,cy+10),fill=(243,251,255))
+        width,height=x1-x0,y1-y0
+        left=x0+round(width*.12)
+        right=x1-round(width*.12)
+        cy=y0+round(height*.51)
+        n=4
+        cell=round((right-left)/(n*1.18))
+        for i in range(n):
+            x=left+round((right-left-cell)*i/(n-1))
+            seen=tick >= (i+1)*24
+            draw.rounded_rectangle((x+6,cy-42,x+cell+6,cy+48),
+                                   radius=13,fill=(6,23,37))
+            draw.rounded_rectangle((x,cy-51,x+cell,cy+35),
+                                   radius=13,fill=(25,73,89) if not seen else (35,112,119),
+                                   outline=accent if seen else secondary,width=4)
+            draw.rounded_rectangle((x+17,cy-8,x+cell-17,cy+3),
+                                   radius=4,fill=accent if seen else secondary)
 
 
 def _quake_variant(draw,inner,variant,tick,pal):
@@ -191,7 +206,7 @@ def _quake_variant(draw,inner,variant,tick,pal):
         cursor=round(x0+(x1-x0)*tick/120)
         draw.line((cursor,y0+24,cursor,y1-35),fill=accent,width=3)
     elif variant in (2,4):
-        _halo_circles(draw,inner,tick,accent)
+        _source_signal_path(draw,inner,tick,accent)
 
 
 def paint_source_story_scene(image,*,story:dict,scene_index:int,tick:int)->dict:
