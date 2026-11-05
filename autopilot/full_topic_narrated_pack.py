@@ -331,14 +331,41 @@ def _repair_if_encoded_audio_out_of_band(mp4: Path) -> dict:
         revised=Path(tmp)/"voice_fixed.aac_muxed.mp4"
         # Mild deterministic dynamic-range control only if first *actual
         # encoded* AAC failed technical loudness. No external music or SFX.
+        # The old correction left resampling implicit after loudnorm's
+        # internally upsampled true-peak stage, producing +1.64 dBTP in a
+        # REAL encoded GitHub Short. Match the ACTUAL AAC output rate first,
+        # and put a last fixed-rate limiter before the lossy AAC encoder.
         run([
             "ffmpeg","-nostdin","-hide_banner","-loglevel","error",
             "-i",str(mp4),"-map","0:v:0","-map","0:a:0",
-            "-c:v","copy","-c:a","aac","-b:a","128k",
+            "-c:v","copy","-c:a","aac","-b:a","128k","-ar","48000",
             "-af","acompressor=threshold=0.08:ratio=2.5:attack=12:release=200:makeup=1,"
-                  "loudnorm=I=-16:LRA=9:TP=-3.8",
+                  "loudnorm=I=-16:LRA=9:TP=-4.5,"
+                  "aresample=48000,alimiter=limit=0.55:level=0",
             "-movflags","+faststart","-y",str(revised),
         ],timeout=500)
+        # First use a non-approving observation, because AAC may produce a
+        # remaining high true-peak. ONE more gain-only correction is allowed
+        # only if the resulting integrated loudness can remain in band.
+        trial=_encoded_audio_loudness(revised)
+        if not trial["typical_online_video_target_diagnostic"]:
+            required_drop=max(0.0,trial["true_peak_dbtp"]+3.4)
+            if (not 0.0<required_drop<=5.5
+                or trial["integrated_lufs"]-required_drop< -19.6
+                or trial["integrated_lufs"]-required_drop> -12):
+                raise TopicRenderError("Final-rate limiter failed to meet safe AAC peak/loudness: "
+                                       +json.dumps({"original":first,"after":trial},sort_keys=True))
+            final_candidate=Path(tmp)/"gain_fixed_output.mp4"
+            run([
+                "ffmpeg","-nostdin","-hide_banner","-loglevel","error",
+                "-i",str(revised),"-map","0:v:0","-map","0:a:0",
+                "-c:v","copy","-c:a","aac","-b:a","128k","-ar","48000",
+                "-af",f"volume=-{required_drop:.2f}dB,aresample=48000",
+                "-movflags","+faststart","-y",str(final_candidate),
+            ],timeout=500)
+            final_candidate.replace(revised)
+        # NO exception is caught here. The independent threshold and a
+        # second full independent audio reviewer still reject any bad MP4.
         after=_encoded_audio_loudness(revised,strict=True)
         if not after["typical_online_video_target_diagnostic"]:
             raise TopicRenderError(
