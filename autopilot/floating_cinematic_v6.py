@@ -34,7 +34,13 @@ def _stage_background(image,stage,theme,scene_index,tick):
     accent=PALETTE[theme]["accent"]
     secondary=PALETTE[theme]["secondary"]
     d=ImageDraw.Draw(image)
-    d.rectangle(stage,fill=color)
+    # The legacy SVG's Earth circle begins at native x70, *four pixels
+    # outside* the new x74 hero pane. Without a full-width SOURCE wipe,
+    # a bright cyan crescent survives at the left edge even though the
+    # new object itself is clipped perfectly. Clean the entire hero-only
+    # horizontal ribbon before drawing original depth art. This never
+    # affects source heading above y0 or true native ASS below y1.
+    d.rectangle((0,y0,image.width,y1),fill=color)
     width=x1-x0; height=y1-y0
     # Radial ambient light lives *only* within the measured hero rectangle;
     # unlike the old panel it has NO hard border or new rounded-rectangle.
@@ -142,16 +148,14 @@ def paint_floating_original_beat(image,*,story:dict,scene_index:int,tick:int)->d
         image.crop((0,y1,image.width,image.height))
     ).getbbox():
         raise CinematicSceneRejected("Unboxed hero crossed bottom/native ASS")
-    if ImageChops.difference(
-        before.crop((0,y0,x0,y1)),
-        image.crop((0,y0,x0,y1))
-    ).getbbox():
-        raise CinematicSceneRejected("Hero changed left-side margin")
-    if ImageChops.difference(
-        before.crop((x1,y0,image.width,y1)),
-        image.crop((x1,y0,image.width,y1))
-    ).getbbox():
-        raise CinematicSceneRejected("Hero changed right-side margin")
+    # Unlike the old scene this deliberately wipes stale flat SVG art on
+    # both sides of the new hero, so blue partial circles never leak into
+    # an otherwise floating composition. Both outer margins must be EXACT
+    # theme background with no foreign glyph or frame-line.
+    for margin in ((0,y0,x0,y1),(x1,y0,image.width,y1)):
+        tile=image.crop(margin)
+        if tile.getextrema()!=tuple((v,v) for v in STYLE[theme]["bg"]):
+            raise CinematicSceneRejected("Legacy source fragment escaped cleaned hero margin")
     return {
         "status":STATUS,
         "source_story_draft_sha256":story["draft_sha256"],
