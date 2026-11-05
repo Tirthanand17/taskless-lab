@@ -7,6 +7,7 @@ purport to measure subjective human narration performance or licensed assets.
 from __future__ import annotations
 
 from copy import deepcopy
+import importlib.util
 import math
 from pathlib import Path
 import tempfile
@@ -27,6 +28,9 @@ def _mock_voice(path,scene_count,rate=24000):
     return [{"start":i*7.0,"duration":7.0} for i in range(scene_count)],x
 
 
+@unittest.skipUnless(importlib.util.find_spec('numpy') is not None and
+                     importlib.util.find_spec('soundfile') is not None,
+                     'Physical waveform QA runs in dedicated B4e1 job with NumPy and soundfile installed')
 class ProceduralSoundQA(unittest.TestCase):
     def test_each_scene_effect_is_synthetic_bounded_without_external_music(self):
         import numpy as np
