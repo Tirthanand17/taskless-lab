@@ -151,7 +151,10 @@ def build_retained_draft_receipt(plan: dict,evidence: dict) -> dict:
             or entry.get("episode_id")!=f"fm_{target.strftime('%Y%m%d')}_{slot}"
             or entry.get("episode_label")!=label
             or entry.get("agent_handoffs_completed")!=0
-            or len(entry.get("required_handoffs",[]))!=18
+            or type(entry.get("required_handoffs")) is not list
+            or len(entry["required_handoffs"])!=18
+            or any(not isinstance(x,str) or not x.startswith(entry["episode_id"]+":")
+                   for x in entry["required_handoffs"])
             or entry.get("editorial_state") not in (
                 "UNVERIFIED_LEAD_ONLY","RESEARCH_REQUIRED")
             or entry.get("status")!="BLOCKED_PENDING_RESEARCH_FACT_CHECK_AND_REAL_MEDIA"):
