@@ -5,6 +5,7 @@ on:
     paths:
       - "autopilot/owner_youtube_readonly_preflight.py"
       - "autopilot/test_owner_youtube_readonly_preflight.py"
+      - "infra/aws/owner-youtube-readonly-role-policy.example.json"
       - "docs/adr/0037-b4c1-owner-oauth-real-client-readonly-boundary.md"
       - ".github/workflows/flowminute-b4c1-owner-readonly-preflight.yml"
   workflow_dispatch:
