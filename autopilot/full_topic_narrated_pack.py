@@ -15,6 +15,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from hashlib import sha256
 from pathlib import Path
+from tempfile import TemporaryDirectory
 import json
 import math
 import re
@@ -28,6 +29,8 @@ from autopilot.cloud_full_duration_pack import (
 )
 from autopilot.full_pack_fixture import ExampleEpisode, Scene
 from autopilot.independent_av_review import review_encoded_episode
+from autopilot.polished_caption_v2 import compose_ass, CONFIG as CAPTION_CONFIG
+from autopilot.polished_sound_design_v2 import enrich_original_wav
 from autopilot.primary_sourced_storyboards import (
     build_story, canonical, render_original_svg, require_exact_draft,
     evaluate_three_draft_stories, THUMB_CONTENT, StoryboardError,
@@ -169,30 +172,9 @@ def original_ambient_tone(wav: Path, theme: str) -> str:
 
 
 def _topic_thumbnail(story: dict,output: Path) -> str:
-    from PIL import Image, ImageDraw, ImageFont
-    palette={
-        "lunar_signal":((10,24,50),(68,196,241)),
-        "file_transfer":((10,31,42),(99,224,182)),
-        "quake_energy":((50,24,28),(255,162,98)),
-    }
-    bg,accent=palette[story["theme"]]
-    im=Image.new("RGB",(1280,720),bg)
-    d=ImageDraw.Draw(im)
-    try:
-        main=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",61)
-        detail=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",37)
-    except OSError as exc:
-        raise TopicRenderError("Hosted DejaVu fonts are required for original title artwork") from exc
-    d.rounded_rectangle((36,32,1244,688),radius=28,outline=accent,width=7)
-    d.text((78,89),"FLOWMINUTE • ORIGINAL EDUCATION DRAFT",font=detail,fill=accent)
-    main_lines=THUMB_CONTENT[story["theme"]]["lines"]
-    for i,line in enumerate(main_lines):
-        d.text((78,211+i*115),line,font=main,fill=(240,245,252) if i==0 else accent)
-    d.text((78,568),"UNAPPROVED · HUMAN FACT / RIGHTS REVIEW PENDING",
-           font=detail,fill=(225,229,237))
-    d.line((76,655,1205,655),fill=accent,width=5)
-    im.save(output,format="PNG")
-    return sha256(output.read_bytes()).hexdigest()
+    """B4e1: right-subject editorial art with measured left headline grid."""
+    from autopilot.polished_thumbnail_v2 import render_editorial_thumbnail
+    return render_editorial_thumbnail(story,output)
 
 
 def visible_topic_motion_pulse(story: dict, tick: int) -> tuple[int,int]:
@@ -206,7 +188,7 @@ def visible_topic_motion_pulse(story: dict, tick: int) -> tuple[int,int]:
     if type(tick) is not int or not 0<=tick<=120:
         raise TopicRenderError("Moving original visual tick outside bounds")
     w,h=(1080,1920) if story["format"]=="short" else (1920,1080)
-    return round(90+(w-180)*tick/120),round(h*(.66 if story["format"]=="short" else .62))
+    return round(90+(w-180)*tick/120),round(h*(.645 if story["format"]=="short" else .62))
 
 
 def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
@@ -237,10 +219,16 @@ def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
     d.ellipse((x-20,y-20,x+20,y+20),fill=(246,248,254),
               outline=accent,width=7)
     d.ellipse((x-8,y-8,x+8,y+8),fill=accent)
-    bottom=380 if story["format"]=="short" else 265
-    d.rounded_rectangle((56,expected[1]-bottom,
-                         expected[0]-56,expected[1]-46),
-                        radius=18,fill=(10,18,30),outline=(80,117,145),width=3)
+    # B4e1: do not show any central art behind subtitle cards; the prior
+    # bottom-right rounded panel was below SRT's actual huge rendered glyphs.
+    # This genuine reserved band matches explicitly scaled ASS PlayRes pixels.
+    caption_area=CAPTION_CONFIG[story["format"]]
+    safe_top,safe_bottom=caption_area["safe_top"],caption_area["safe_bottom"]
+    if y+28>=safe_top:
+        raise TopicRenderError("Animated source dot intrudes into caption-safe band")
+    d.rectangle((0,safe_top,w,safe_bottom),fill=(7,12,23))
+    d.line((66,safe_top,w-66,safe_top),fill=accent,width=3)
+    # Bottom is intentionally visually quiet, unlike old large empty boxes.
     rgb.save(output,format="PNG")
     digest,size=sha256_stream(output,max_bytes=MAX_PNG_BYTES)
     if size<1500:
@@ -250,7 +238,7 @@ def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
 
 def _encode_moving_topic(
     episode: ExampleEpisode,folder: Path,timings: list[dict],
-    wav: Path,srt: Path,total: float,
+    wav: Path,srt: Path,total: float,cues: list[dict],
 ) -> Path:
     from PIL import Image,ImageDraw
     if not 24<=total<=360 or not timings:
@@ -259,14 +247,15 @@ def _encode_moving_topic(
     ImageDraw.Draw(dot).rounded_rectangle((0,0,81,13),radius=6,fill=(90,220,175,255))
     dot_path=folder/"moving_progress.png"
     dot.save(dot_path)
-    margin=24 if episode.kind=="short" else 31
-    fontsize=23 if episode.kind=="short" else 21
-    subtitle=(
-        f"subtitles={srt.as_posix()}:"
-        "force_style='FontName=DejaVu Sans,PrimaryColour=&H00FFFFFF,"
-        "OutlineColour=&H00000000,"
-        f"Outline=2,FontSize={fontsize},Alignment=2,MarginV={margin}'"
-    )
+    caption_ass,cards=compose_ass(cues,episode.kind,episode.theme)
+    if len(cards)<len(cues) or any(len(c.lines)>2 for c in cards):
+        raise TopicRenderError("Caption quality gate did not create readable microcards")
+    # Create on the ephemeral runner only: the immutable physical asset
+    # inventory must not acquire an unknown or persistent review file.
+    caption_tmp=TemporaryDirectory(prefix="fm-b4e1-native-ass-")
+    subtitle_path=Path(caption_tmp.name)/"native_resolution_captions.ass"
+    subtitle_path.write_text(caption_ass,encoding="utf-8")
+    subtitle=f"ass={subtitle_path.as_posix()}"
     filters=(
         f"[0:v]fps={FPS},{subtitle},format=yuv420p[base];"
         f"[base][2:v]overlay=x='max(0,min(W-w,(W-w)*t/{total:.4f}))':"
@@ -288,6 +277,7 @@ def _encode_moving_topic(
         "-t",f"{total:.4f}","-movflags","+faststart",
         "-y",str(out),
     ],timeout=1600)
+    caption_tmp.cleanup()
     return out
 
 
@@ -403,6 +393,10 @@ def render_full_topic_video(
     if not (28<=total<=110 if episode.kind=="short" else 90<=total<=320):
         raise TopicRenderError("Real generated speech outside intended Short/long bounds")
     original_tone_sha=original_ambient_tone(wav,story["theme"])
+    sfx_report=enrich_original_wav(wav,story["theme"],timings)
+    if (sfx_report["release_authorized"] is not False
+        or sfx_report["external_sound_effects_or_music_imported"] is not False):
+        raise TopicRenderError("No external audio or publishing permission from sound design")
     frame_groups=[]
     frames=[]
     all_motion_hashes=[]
@@ -427,7 +421,7 @@ def render_full_topic_video(
     (folder/"scene_order.ffconcat").write_text(scene_timeline,encoding="utf-8")
     (folder/"animated_frames.ffconcat").write_text(actual_motion,encoding="utf-8")
     thumbnail_sha=_topic_thumbnail(story,folder/"UNAPPROVED_THUMBNAIL_TEST.png")
-    output=_encode_moving_topic(episode,folder,timings,wav,srt,total)
+    output=_encode_moving_topic(episode,folder,timings,wav,srt,total,cues)
     report=inspect_dynamic_media(
         folder,episode,tuple(x["scene_id"] for x in story["scenes"]),
         total,cues,frames,
@@ -444,6 +438,9 @@ def render_full_topic_video(
         "original_animated_svg_frame_count":len(all_motion_hashes),
         "original_svg_frames_really_animated":True,
         "original_programmatic_low_level_ambient_sha256":original_tone_sha,
+        "original_ui_sound_effects_count":sfx_report["original_programmatic_effects"],
+        "original_ui_sound_effect_recipe_sha256":sfx_report["sound_design_recipe_sha256"],
+        "original_ui_sounds_not_external_recordings":True,
         "external_music_tracks_used":False,
         "original_unreviewed_thumbnail_sha256":thumbnail_sha,
         "live_primary_sources_human_claim_reviewed":False,
@@ -467,7 +464,11 @@ def render_full_topic_video(
     # finished MP4, real burned captions, voice loudness and later scenes.
     observed=review_encoded_episode(
         folder,episode,
-        report_entry={"episode":episode.episode_id,"seconds":report["seconds"]},
+        report_entry={
+            "episode":episode.episode_id,
+            "seconds":report["seconds"],
+            "caption_layout_version":"B4E1_NATIVE_ASS_MICROCARDS",
+        },
     )
     if (
         observed["burned_caption_independently_observed"] is not True
@@ -480,6 +481,7 @@ def render_full_topic_video(
         "exact_original_media_inventory_sha256":inventory["draft_asset_inventory_sha256"],
         "exact_original_asset_count":inventory["asset_count"],
         "actual_ffmpeg_caption_changed_pixels":observed["caption_visible_changed_pixels"],
+        "b4e1_native_ass_safe_band_independently_verified":observed["native_caption_safe_band_independently_checked"],
         "actual_ffmpeg_scene_changed_pixels":observed["first_to_later_scene_changed_pixels"],
         "actual_audio_lufs":observed["ffmpeg_actual_encoded_audio"]["integrated_lufs"],
         "actual_audio_peak_dbtp":observed["ffmpeg_actual_encoded_audio"]["true_peak_dbtp"],
