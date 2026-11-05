@@ -1,0 +1,138 @@
+name: FlowMinute B4c2 Manual Owner Fargate TaskDefinition CI (NO DEPLOY)
+
+on:
+  pull_request:
+    paths:
+      - "infra/aws/owner-readonly-fargate-taskdef.cfn.json"
+      - "autopilot/b4c2_runtime_boot_guard.py"
+      - "autopilot/owner_fargate_taskdef_lint.py"
+      - "autopilot/test_owner_fargate_taskdef_lint.py"
+      - ".github/workflows/flowminute-b4c2-inert-fargate-taskdef.yml"
+      - "docs/adr/0038-b4c2-owner-inert-fargate-task-definition.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4c2-fargate-taskdef-source-only
+  cancel-in-progress: true
+
+jobs:
+  adversarial_offline_task_security_and_inert_entrypoint:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      FLOWMINUTE_RUNTIME_MODE: "OWNER_READ_ONLY_BOOT_GUARD"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_RUNTIME_NETWORK_AUTHORIZED: "0"
+      FLOWMINUTE_OWNER_RELEASE_AUTHORIZED: "0"
+    steps:
+      - name: Checkout PR sources only and do not persist GitHub credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Hosted Python 3.11 without AWS or Google SDK
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run offline adversarial Fargate source/entrypoint security tests
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/b4c2_runtime_boot_guard.py \
+            autopilot/owner_fargate_taskdef_lint.py \
+            autopilot/test_owner_fargate_taskdef_lint.py
+          python -B -m unittest -v autopilot.test_owner_fargate_taskdef_lint \
+            2>&1 | tee /tmp/b4c2_owner_task_tests.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/b4c2_owner_task_tests.log; then
+            echo 'Source security tests missing, failing, or skipped'
+            exit 1
+          fi
+      - name: Run actual inert Python task entrypoint in hosted no-secret environment
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.b4c2_runtime_boot_guard \
+            | tee /tmp/b4c2_runtime_inert_status.json
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("/tmp/b4c2_runtime_inert_status.json").read_text())
+          assert d["release_authorized"] is False
+          assert d["network_client_or_provider_call_permitted"] is False
+          assert d["actual_youtube_insert_performed"] is False
+          assert d["billable_service_deployed_by_this_module"] is False
+          print("B4C2_GUARD_EXECUTED_ONLY_AS_HOSTED_INERT_PYTHON_NO_FARGATE")
+          PY
+      - name: Static check of zero-cloud deployment/source imports and exact template resource
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          import json
+          from pathlib import Path
+          from autopilot.owner_fargate_taskdef_lint import lint_repo_template
+          for source in ("autopilot/b4c2_runtime_boot_guard.py",
+                         "autopilot/owner_fargate_taskdef_lint.py"):
+              root=ast.parse(Path(source).read_text())
+              invalid=("boto3","botocore","google","requests","urllib",
+                       "socket","http","subprocess","aiohttp","paramiko")
+              for item in ast.walk(root):
+                  if isinstance(item,ast.Import):
+                      for x in item.names:
+                          assert not x.name.startswith(invalid),(source,x.name)
+                  if isinstance(item,ast.ImportFrom):
+                      assert not (item.module or "").startswith(invalid),(source,item.module)
+          report=lint_repo_template()
+          assert report["task_definition_only"] is True
+          assert report["release_authorized"] is False
+          assert report["real_ecs_task_run"] is False
+          t=json.loads(Path("infra/aws/owner-readonly-fargate-taskdef.cfn.json").read_text())
+          assert {x["Type"] for x in t["Resources"].values()} == {"AWS::ECS::TaskDefinition"}
+          assert "AWS::ECS::Service" not in str(t)
+          assert "AWS::Scheduler::Schedule" not in str(t)
+          assert "AWS::Events::Rule" not in str(t)
+          print("B4C2_NO_DEPLOY_NO_TASK_LAUNCH_NO_SERVICE_NO_SCHEDULE_NO_OAUTH")
+          PY
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+          test "$FLOWMINUTE_RUNTIME_NETWORK_AUTHORIZED" = 0
+          test "$FLOWMINUTE_OWNER_RELEASE_AUTHORIZED" = 0
+
+  official_aws_cloudformation_resource_schema_lint_only:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+    steps:
+      - name: Checkout no-secret pull request only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install local AWS CloudFormation schema linter, NOT AWS SDK
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cfn-lint>=1.34,<2'
+      - name: Validate actual Fargate CloudFormation resource schema with no AWS account
+        run: |
+          set -euo pipefail
+          cfn-lint --template infra/aws/owner-readonly-fargate-taskdef.cfn.json
+          echo 'B4C2_FARGATE_OFFICIAL_CFN_LINT_PASSED_ONLY_SOURCE_NO_DEPLOYMENT'

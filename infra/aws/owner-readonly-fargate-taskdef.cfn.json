@@ -1,0 +1,205 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "OWNER-ONLY SOURCE TEMPLATE: inert Flowminute read-only boot guard task definition. Does not deploy/run any task, schedule, service, VPC, secrets, DB or YouTube publisher. Deployment requires separate written owner budget/network/IAM approval.",
+  "Parameters": {
+    "DeploymentSuffix": {
+      "Type": "String",
+      "Description": "Owner-chosen unique lower-case task family suffix; no default.",
+      "AllowedPattern": "^[a-z0-9]{4,12}$",
+      "MinLength": 4,
+      "MaxLength": 12
+    },
+    "OwnerApprovalReference": {
+      "Type": "String",
+      "Description": "Owner supplied change reference is NOT authentic owner consent; no default.",
+      "AllowedPattern": "^OWNER-[A-Z0-9-]{8,64}$"
+    },
+    "ExecutionRoleName": {
+      "Type": "String",
+      "Description": "Existing same-account ECS task execution role; image-pull/cloud log only; no task secret permissions.",
+      "AllowedPattern": "^[A-Za-z0-9+=,.@_-]{3,64}$"
+    },
+    "ReadOnlyTaskRoleName": {
+      "Type": "String",
+      "Description": "Distinct existing same-account container task role for future read-only preflight; effective policies independently reviewed.",
+      "AllowedPattern": "^[A-Za-z0-9+=,.@_-]{3,64}$"
+    },
+    "EcrRepositoryName": {
+      "Type": "String",
+      "Description": "Owner-controlled same-account regional ECR image; digest pinned, no public image or mutable latest.",
+      "AllowedPattern": "^[a-z0-9][a-z0-9._/-]{1,159}$",
+      "MinLength": 2,
+      "MaxLength": 160
+    },
+    "ImageDigest": {
+      "Type": "String",
+      "Description": "Owner separately verified signed/scanned SHA256 digest of OCI image containing autopilot.b4c2_runtime_boot_guard; no tag.",
+      "AllowedPattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "ExistingLogGroupName": {
+      "Type": "String",
+      "Description": "Existing encrypted owner-controlled CloudWatch log group; this template never creates one.",
+      "AllowedPattern": "^/flowminute/owner-private/[a-zA-Z0-9/_-]{3,80}$"
+    }
+  },
+  "Rules": {
+    "SeparateExecutionAndTaskRoles": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Equals": [
+                  {
+                    "Ref": "ExecutionRoleName"
+                  },
+                  {
+                    "Ref": "ReadOnlyTaskRoleName"
+                  }
+                ]
+              }
+            ]
+          },
+          "AssertDescription": "Execution and task role names must be different existing owner-authorized IAM roles."
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "OwnerReadOnlyTaskDefinition": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "Family": {
+          "Fn::Sub": "flowminute-owner-readonly-${DeploymentSuffix}"
+        },
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "NetworkMode": "awsvpc",
+        "Cpu": "512",
+        "Memory": "1024",
+        "RuntimePlatform": {
+          "OperatingSystemFamily": "LINUX",
+          "CpuArchitecture": "X86_64"
+        },
+        "ExecutionRoleArn": {
+          "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${ExecutionRoleName}"
+        },
+        "TaskRoleArn": {
+          "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${ReadOnlyTaskRoleName}"
+        },
+        "ContainerDefinitions": [
+          {
+            "Name": "flowminute-owner-readonly-guard",
+            "Image": {
+              "Fn::Sub": "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${EcrRepositoryName}@${ImageDigest}"
+            },
+            "Essential": true,
+            "User": "65532",
+            "ReadonlyRootFilesystem": true,
+            "WorkingDirectory": "/app",
+            "EntryPoint": [
+              "python",
+              "-B",
+              "-m",
+              "autopilot.b4c2_runtime_boot_guard"
+            ],
+            "StopTimeout": 30,
+            "LinuxParameters": {
+              "InitProcessEnabled": true
+            },
+            "Environment": [
+              {
+                "Name": "FLOWMINUTE_RUNTIME_MODE",
+                "Value": "OWNER_READ_ONLY_BOOT_GUARD"
+              },
+              {
+                "Name": "FLOWMINUTE_ENABLE_PUBLISH",
+                "Value": "0"
+              },
+              {
+                "Name": "PUBLISH_ENABLED",
+                "Value": "false"
+              },
+              {
+                "Name": "FLOWMINUTE_ALLOW_LAPTOP",
+                "Value": "0"
+              },
+              {
+                "Name": "FLOWMINUTE_ENABLE_GEMINI",
+                "Value": "0"
+              },
+              {
+                "Name": "FLOWMINUTE_MODEL_PAID_SPEND_USD",
+                "Value": "0"
+              },
+              {
+                "Name": "FLOWMINUTE_RUNTIME_NETWORK_AUTHORIZED",
+                "Value": "0"
+              },
+              {
+                "Name": "FLOWMINUTE_OWNER_RELEASE_AUTHORIZED",
+                "Value": "0"
+              },
+              {
+                "Name": "PYTHONDONTWRITEBYTECODE",
+                "Value": "1"
+              }
+            ],
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "ExistingLogGroupName"
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": "flowminute-readonly-guard"
+              }
+            },
+            "DockerLabels": {
+              "flowminute.release_authorized": "false",
+              "flowminute.runtime": "owner-readonly-inert-source"
+            }
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "FlowMinute",
+            "Value": "owner-readonly-no-publisher"
+          },
+          {
+            "Key": "ReleaseStatus",
+            "Value": "blocked-no-oauth-or-upload"
+          },
+          {
+            "Key": "OwnerChangeReference",
+            "Value": {
+              "Ref": "OwnerApprovalReference"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "ManualOnlyInertTaskDefinitionArn": {
+      "Description": "An ECS task definition identifier only. NO actual task, service, scheduler, DB, OAuth or upload is provisioned.",
+      "Value": {
+        "Ref": "OwnerReadOnlyTaskDefinition"
+      }
+    },
+    "DoesNotCreateServiceOrSchedule": {
+      "Value": "SOURCE_ONLY_TASK_DEFINITION_NO_SERVICE_NO_SCHEDULE_NO_RUN_TASK"
+    },
+    "RealYouTubePublishingAuthorized": {
+      "Value": "false"
+    },
+    "OwnerChangeReferenceNotConsent": {
+      "Value": {
+        "Ref": "OwnerApprovalReference"
+      }
+    }
+  }
+}
