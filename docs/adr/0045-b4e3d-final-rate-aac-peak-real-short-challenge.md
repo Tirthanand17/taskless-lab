@@ -1,0 +1,19 @@
+# ADR-0045 — B4e3d final-rate AAC limiter and real single-Short acceptance
+
+**Date:** November 5, 2026 IST. **Track:** Branch 2, no OAuth, no publication, no owner copyright/facts/voice approval, no laptop.
+
+## Second actual failing full-video proof
+
+Following B4e3c PR #49 (all 7 exact-head checks passed, 43 unit/pixel tests) on main SHA d9990c7d404ab0146988e6f7d4a4637f834bdaf2, real new cinematic main render [41993093557](https://github.com/Tirthanand17/taskless-lab/actions/runs/41993093557) stopped again in job #127130082238 before creating a public media artifact. It successfully reached the raw AAC repair step, but **the first corrected output still measured +1.64 dBTP** and the strict independent parse correctly refused that result. The old correction used acompressor then loudnorm TP=-3.8, leaving the subsequent output resampling before AAC implicit. The earlier B4e3c raw input was +0.17 dBTP. No Short or long cinematic review package was generated; do NOT make a success claim for either failure.
+
+## Narrow audio engineering correction
+
+Per [FFmpeg's official documentation](https://ffmpeg.org/ffmpeg-filters.html), EBU R128 loudnorm can dynamically upsample to 192 kHz to observe true peaks and recommends explicitly selecting output rate. The new filter does speech compression, loudnorm with headroom TP=-4.5, **explicit 48 kHz resampling**, then a final bounded 0.55-full-scale alimiter before 48 kHz AAC encoding. Actual final compressed AAC is checked via ffmpeg loudnorm; it does NOT assume the requested parameters survived lossy codec. The source video H264 is copied rather than regenerated for any audio repair.
+
+If that first output is still above -1.5 dBTP, at most ONE further gain-only audio pass is permitted, and ONLY if observed integrated LUFS shows sufficient headroom to stay >= -19.6 LUFS when attenuated. If too quiet or still unsafe after bounded correction, the existing independent strict test fails and no media is retained. No human speech naturalness or sample license approval is inferred. Full original source rights and reference audio remain untouched.
+
+The new B4e3d PR includes an **actual real physically rendered one-Short challenge on the PR**, not only mocked frame or audio tests. It downloads only checksum-pinned public Kokoro model weights to an ephemeral GitHub runner, generates a complete original source-linked 1080x1920 cinematic-v3 Moon Short, executes the unchanged strict external FFmpeg/SRT/scene reviewer, enforces -20..-12 LUFS and <= -1.5 dBTP on final AAC, checks full H264/AAC and original native ASS, and archives ONLY the public unapproved real MP4/SRT/original thumb and a technical review manifest for 7 days. It deletes model and voice weights and never invokes Google OAuth/YouTube upload. No owner's uploaded third-party reference media is copied.
+
+Existing seven prior-source recovery tests are amended to check the final-rate and optional second bounded pass flow. An additional unit test verifies the second path and mandatory strict recheck. Full B3 original three-voice regression still runs on the PR. The final B4e3 cinematic three-video workflow will rerun on protected main only after the PR is safely merged and must generate real two-Shorts-plus-long media and comparison files before any success claim.
+
+**Operational truth:** Owner visually rated earlier originals 0/10 and has NOT reviewed the new physical cinematic outputs, so creative approval FALSE. Engineering production rubric stays 40/100; real unattended YouTube 0/21. No paid cloud/owner credentials or laptop local files used; Branch 1 untouched.
