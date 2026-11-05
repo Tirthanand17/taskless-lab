@@ -143,16 +143,49 @@ def _draw_subject(d,topic:str,mode:str,amount:float,colors:dict,
         d.text((x,y),text,font=_font(n),fill=col or sec)
 
     if topic=="voice" and stage==0:
-        # Hook: stand-alone symbolic audio bars, NOT actual person audio.
-        values=(.14,.39,.25,.66,.44,.78,.31,.94,.63,.38,.82,.29,.58,.34,.16)
-        for i,v in enumerate(values):
-            height=round(360*v*(.73+.27*amount))
-            x=160+i*51;mid=858+round((i%2)*7)
-            d.rounded_rectangle((x,mid-height//2,x+24,mid+height//2),
-                                radius=8,fill=ac if i<=round(14*amount) else colors["hero"])
-        label(197,1112,"SYNTHETIC VOICE EXAMPLE",24)
-        d.rectangle((195,1178,195+round(678*amount),1190),fill=ac)
-        variant="VOICE_WAVEFORM_HOOK"
+        # B1q4: a recognizable incoming-call *illustration*, not a generic
+        # audio visualizer or an actual caller UI. Finite slide/reveal only.
+        # All art stays in the existing clipped focal hero region y495..1325;
+        # no loading ring, repeat loop, real contact, or copied app screen.
+        offset=round(36*(1-amount))
+        # Offset lowlights create dimensional phone edges without circles.
+        d.rounded_rectangle((186+offset,539,760+offset,1212),radius=47,
+                            fill=(35,27,49))
+        d.rounded_rectangle((199+offset,518,747+offset,1194),radius=44,
+                            fill=(77,50,77),outline=sec,width=5)
+        d.rounded_rectangle((215+offset,541,731+offset,1168),radius=32,
+                            fill=(20,31,51))
+        d.rounded_rectangle((245+offset,575,698+offset,660),radius=15,
+                            fill=(65,39,72))
+        label(268+offset,599,"INCOMING VOICE CALL",27)
+        label(265+offset,708,"RECOGNIZE THE VOICE?",30,col=sec)
+        # Original waveform is now visibly ON the phone, not a floating
+        # animation repeating through unrelated lessons.
+        bars=(.18,.48,.29,.69,.43,.81,.35,.91,.51,.73,.27)
+        for i,v in enumerate(bars):
+            x=269+offset+i*36
+            height=round((38+155*v)*(.55+.45*amount))
+            y=866
+            d.rounded_rectangle((x,y-height//2,x+17,y+height//2),
+                                radius=6,fill=ac if i<=round(10*amount)
+                                else colors["hero"])
+        label(268+offset,1013,"VOICE IS NOT IDENTITY",24,col=ac)
+        d.rounded_rectangle((267+offset,1072,678+offset,1105),
+                            radius=9,fill=(70,42,67))
+        d.rounded_rectangle((267+offset,1072,
+                             267+offset+round(411*amount),1105),
+                            radius=9,fill=ac)
+        # A separate non-branded safety annotation emerges once. The UI is
+        # explicitly fictional and never claims an AI detector found fraud.
+        panel_x=658+round(24*(1-amount))
+        d.rounded_rectangle((panel_x,760,panel_x+297,1024),radius=22,
+                            fill=(40,41,65),outline=ac,width=3)
+        label(panel_x+20,798,"IDENTITY",25,col=sec)
+        label(panel_x+20,843,"UNVERIFIED",27,col=ac)
+        d.rectangle((panel_x+20,926,panel_x+20+round(250*amount),936),
+                    fill=sec)
+        label(panel_x+20,964,"CALL BACK FIRST",20,col=sec)
+        variant="VOICE_PHONE_CALL_IDENTITY_HOOK"
     elif topic=="voice" and stage==1:
         # Middle: no visualized impersonation. Show the verification
         # decision as a different clearly bounded pair of action cards.
