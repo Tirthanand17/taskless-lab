@@ -41,7 +41,9 @@ def strict_load(source: str) -> dict:
             result[k]=v
         return result
     try:
-        value=json.loads(source,object_pairs_hook=unique)
+        value=json.loads(source,object_pairs_hook=unique,
+                         parse_constant=lambda _: (_ for _ in ()).throw(
+                             UnsafeCloudRuntimeTemplate("Nonfinite JSON literal")))
     except UnsafeCloudRuntimeTemplate:
         raise
     except Exception:
