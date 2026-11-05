@@ -279,3 +279,63 @@ def paint_original_premium_scene(
         "human_visual_review_completed":False,
         "release_authorized":False,
     }
+
+
+def render_real_source_scene_preview_set(output_dir:Path)->dict:
+    """Actually draw 3 distinct source-linked 1080p/landscape preview PNGs.
+
+    No video/TTS runner cost and no unreviewed content/rights approval. This
+    reads the SAME fixed authored NASA/NIST/USGS storyboards already in repo,
+    preserving their semantic title and value. Meant for PR visual critique.
+    """
+    import io
+    from hashlib import sha256
+    import cairosvg
+    from PIL import Image
+    from autopilot.primary_sourced_storyboards import build_story,render_original_svg
+
+    folder=Path(output_dir)
+    if not folder.is_absolute() or folder.exists() or folder.is_symlink():
+        raise CinematicSceneRejected("Use NEW absolute original storyboard preview folder")
+    records=[]
+    folder.mkdir(parents=True,mode=0o700)
+    for slot in ("short_am","long","short_pm"):
+        story=build_story(slot)
+        svg=render_original_svg(story,0,60)
+        im=Image.open(io.BytesIO(cairosvg.svg2png(bytestring=svg.encode("utf8"))))
+        im=im.convert("RGB")
+        proof=paint_original_premium_scene(im,theme=story["theme"],
+            kind=story["format"],scene_index=0,
+            scene_count=story["scene_count"],tick=60)
+        if proof["reference_clip_assets_copied"] or proof["release_authorized"]:
+            raise CinematicSceneRejected("Review art cannot import reference or authorize release")
+        filename=f"{slot}_UNAPPROVED_ORIGINAL_CINEMATIC_SCENE.png"
+        target=folder/filename
+        im.save(target,format="PNG",optimize=True)
+        data=target.read_bytes()
+        if len(data)<40000:
+            raise CinematicSceneRejected("Blank or undersized original illustrated scene")
+        records.append({
+            "slot":slot,"format":story["format"],
+            "source_story_draft_sha256":story["draft_sha256"],
+            "theme":story["theme"],"file":filename,
+            "bytes":len(data),"sha256":sha256(data).hexdigest(),
+            "actual_human_approved":False,"youtube_upload_enabled":False,
+        })
+    return {
+        "status":STATUS,
+        "prototypes":records,
+        "public_repository_fixtures_only":True,
+        "actual_3d_modeling_claimed":False,
+        "owner_human_watch_listen_fact_rights_approved":False,
+        "youtube_upload_enabled":False,
+        "release_authorized":False,
+    }
+
+
+if __name__=="__main__":
+    import argparse,json
+    parser=argparse.ArgumentParser(description="Original 2.5D scene previews, no video upload")
+    parser.add_argument("--out",required=True,type=Path)
+    a=parser.parse_args()
+    print(json.dumps(render_real_source_scene_preview_set(a.out),sort_keys=True))
