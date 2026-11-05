@@ -15,6 +15,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from hashlib import sha256
 from pathlib import Path
+from tempfile import TemporaryDirectory
 import json
 import math
 import re
@@ -28,6 +29,7 @@ from autopilot.cloud_full_duration_pack import (
 )
 from autopilot.full_pack_fixture import ExampleEpisode, Scene
 from autopilot.independent_av_review import review_encoded_episode
+from autopilot.polished_caption_v2 import compose_ass, CONFIG as CAPTION_CONFIG
 from autopilot.primary_sourced_storyboards import (
     build_story, canonical, render_original_svg, require_exact_draft,
     evaluate_three_draft_stories, THUMB_CONTENT, StoryboardError,
@@ -206,7 +208,7 @@ def visible_topic_motion_pulse(story: dict, tick: int) -> tuple[int,int]:
     if type(tick) is not int or not 0<=tick<=120:
         raise TopicRenderError("Moving original visual tick outside bounds")
     w,h=(1080,1920) if story["format"]=="short" else (1920,1080)
-    return round(90+(w-180)*tick/120),round(h*(.66 if story["format"]=="short" else .62))
+    return round(90+(w-180)*tick/120),round(h*(.645 if story["format"]=="short" else .62))
 
 
 def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
@@ -237,10 +239,16 @@ def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
     d.ellipse((x-20,y-20,x+20,y+20),fill=(246,248,254),
               outline=accent,width=7)
     d.ellipse((x-8,y-8,x+8,y+8),fill=accent)
-    bottom=380 if story["format"]=="short" else 265
-    d.rounded_rectangle((56,expected[1]-bottom,
-                         expected[0]-56,expected[1]-46),
-                        radius=18,fill=(10,18,30),outline=(80,117,145),width=3)
+    # B4e1: do not show any central art behind subtitle cards; the prior
+    # bottom-right rounded panel was below SRT's actual huge rendered glyphs.
+    # This genuine reserved band matches explicitly scaled ASS PlayRes pixels.
+    caption_area=CAPTION_CONFIG[story["format"]]
+    safe_top,safe_bottom=caption_area["safe_top"],caption_area["safe_bottom"]
+    if y+28>=safe_top:
+        raise TopicRenderError("Animated source dot intrudes into caption-safe band")
+    d.rectangle((0,safe_top,w,safe_bottom),fill=(7,12,23))
+    d.line((66,safe_top,w-66,safe_top),fill=accent,width=3)
+    # Bottom is intentionally visually quiet, unlike old large empty boxes.
     rgb.save(output,format="PNG")
     digest,size=sha256_stream(output,max_bytes=MAX_PNG_BYTES)
     if size<1500:
@@ -250,7 +258,7 @@ def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
 
 def _encode_moving_topic(
     episode: ExampleEpisode,folder: Path,timings: list[dict],
-    wav: Path,srt: Path,total: float,
+    wav: Path,srt: Path,total: float,cues: list[dict],
 ) -> Path:
     from PIL import Image,ImageDraw
     if not 24<=total<=360 or not timings:
@@ -259,14 +267,15 @@ def _encode_moving_topic(
     ImageDraw.Draw(dot).rounded_rectangle((0,0,81,13),radius=6,fill=(90,220,175,255))
     dot_path=folder/"moving_progress.png"
     dot.save(dot_path)
-    margin=24 if episode.kind=="short" else 31
-    fontsize=23 if episode.kind=="short" else 21
-    subtitle=(
-        f"subtitles={srt.as_posix()}:"
-        "force_style='FontName=DejaVu Sans,PrimaryColour=&H00FFFFFF,"
-        "OutlineColour=&H00000000,"
-        f"Outline=2,FontSize={fontsize},Alignment=2,MarginV={margin}'"
-    )
+    caption_ass,cards=compose_ass(cues,episode.kind,episode.theme)
+    if len(cards)<len(cues) or any(len(c.lines)>2 for c in cards):
+        raise TopicRenderError("Caption quality gate did not create readable microcards")
+    # Create on the ephemeral runner only: the immutable physical asset
+    # inventory must not acquire an unknown or persistent review file.
+    caption_tmp=TemporaryDirectory(prefix="fm-b4e1-native-ass-")
+    subtitle_path=Path(caption_tmp.name)/"native_resolution_captions.ass"
+    subtitle_path.write_text(caption_ass,encoding="utf-8")
+    subtitle=f"ass={subtitle_path.as_posix()}"
     filters=(
         f"[0:v]fps={FPS},{subtitle},format=yuv420p[base];"
         f"[base][2:v]overlay=x='max(0,min(W-w,(W-w)*t/{total:.4f}))':"
@@ -288,6 +297,7 @@ def _encode_moving_topic(
         "-t",f"{total:.4f}","-movflags","+faststart",
         "-y",str(out),
     ],timeout=1600)
+    caption_tmp.cleanup()
     return out
 
 
@@ -427,7 +437,7 @@ def render_full_topic_video(
     (folder/"scene_order.ffconcat").write_text(scene_timeline,encoding="utf-8")
     (folder/"animated_frames.ffconcat").write_text(actual_motion,encoding="utf-8")
     thumbnail_sha=_topic_thumbnail(story,folder/"UNAPPROVED_THUMBNAIL_TEST.png")
-    output=_encode_moving_topic(episode,folder,timings,wav,srt,total)
+    output=_encode_moving_topic(episode,folder,timings,wav,srt,total,cues)
     report=inspect_dynamic_media(
         folder,episode,tuple(x["scene_id"] for x in story["scenes"]),
         total,cues,frames,
