@@ -30,6 +30,14 @@ COLORS={
 }
 FONT_B="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONT_R="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+# Only the video-mode stage headline changes. Full original source sentence
+# is spoken and appears ONCE in the native-timed lower caption strip. These
+# three compact labels summarize source-locked verified scripted concepts.
+EDITORIAL_HERO_HEADLINE={
+    "voice":("FAMILIAR VOICE?", "STOP. CALL BACK.", "VERIFY THE CALLER"),
+    "photo":("PHOTOS CAN REVEAL DATA", "INSPECT PHOTO DETAILS", "CHECK BEFORE SHARING"),
+    "browser":("INCOGNITO IS NOT INVISIBLE", "SAVED ON YOUR DEVICE", "KNOW THE PRIVACY LIMITS"),
+}
 
 class NoSpinnerVisualRejected(ValueError):
     pass
@@ -299,7 +307,14 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float,
            font=_font(28),fill=sec)
     d.rectangle((82,135,998,138),fill=tuple(int(v*.44) for v in accent))
     d.text((82,222),colors["tag"],font=_font(31),fill=accent)
-    _text_lines(d,cues[beat]["source_text"],x=82,y=306,width=900,height=184,
+    # A spoken sentence is already displayed by the native ASS caption;
+    # don't ALSO reproduce the entire sentence as a giant headline.
+    # Three different fact-checked semantic title concepts align with the
+    # three genuinely different opening / proof / takeaway subjects.
+    scene_stage=min(2,(3*beat)//len(cues))
+    headline=(EDITORIAL_HERO_HEADLINE[topic][scene_stage]
+              if caption_layer=="timed_ass_overlay" else cues[beat]["source_text"])
+    _text_lines(d,headline,x=82,y=306,width=900,height=184,
                 font_size=51,max_lines=3,fill=(238,246,252))
     hero_variant=_draw_subject(d,topic,cues[beat]["motion_mode"],t,colors,
                               beat=beat,total=len(cues))
@@ -321,6 +336,9 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float,
         "caption_source_sha256":cues[beat]["source_text_sha256"],
         "phase":phase,"no_circle_spinner_drawn":True,
         "caption_layer":caption_layer,
+        "hero_editorial_headline":headline,
+        "hero_headline_repeats_full_spoken_sentence":
+            headline==cues[beat]["source_text"],
         "timed_ass_caption_overlay_required":caption_layer=="timed_ass_overlay",
         "original_recording_or_reference_reused":False,
         "full_video_encoded":False,
