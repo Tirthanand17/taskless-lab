@@ -72,14 +72,14 @@ def _world(area,ux,uy):
     return (round(x0+(x1-x0)*ux),round(y0+(y1-y0)*uy))
 
 
-def _glow(base,center,r,accent):
+def _glow(base,center,r,accent,clip):
     from PIL import Image,ImageDraw,ImageFilter
     a=Image.new("RGBA",base.size,(0,0,0,0))
     d=ImageDraw.Draw(a)
     x,y=center
     d.ellipse((x-r,y-r,x+r,y+r),fill=(*accent,83))
     a=a.filter(ImageFilter.GaussianBlur(max(18,round(r*.25))))
-    base.alpha_composite(a)
+    base.alpha_composite(a.crop(clip),dest=clip[:2])
 
 
 def _disc(d,x,y,r,primary,rim,phase):
@@ -233,7 +233,6 @@ def paint_original_premium_scene(
     # Original clean studio panel with deep glowing backing and raised surface.
     output=image.convert("RGBA")
     cx=(x0+x1)//2; cy=(y0+y1)//2
-    _glow(output,(cx,cy),round((x1-x0)*.42),accent)
     d=ImageDraw.Draw(output)
     d.rounded_rectangle((x0+17,y0+24,x1+17,y1+24),
                         radius=31,fill=(1,6,13,255))
@@ -243,11 +242,14 @@ def paint_original_premium_scene(
     # Top and bottom boundaries have physically constrained margin.
     d.line((x0+35,y0+79,x1-35,y0+79),fill=(*accent,70),width=2)
     d.line((x0+35,y1-82,x1-35,y1-82),fill=(*accent,65),width=2)
+    # Glow is clipped inside content pane: never alter source-title or caption
+    # pixels beyond the dedicated art window.
+    inner=(x0+45,y0+95,x1-43,y1-110)
+    _glow(output,(cx,cy),round((x1-x0)*.42),accent,inner)
     _place_text(d,(x0+40,y0+26),palette["label"],22,
                 (*accent,255),(x1-150,y0+73))
     _place_text(d,(x1-134,y0+26),f"{scene_index+1:02}/{scene_count:02}",
                 19,(205,215,228,255),(x1-20,y0+72))
-    inner=(x0+45,y0+95,x1-43,y1-110)
     layer=Image.new("RGBA",output.size,(0,0,0,0))
     if theme=="lunar_signal":
         art=_moon_scene(layer,inner,tick,accent,secondary,scene_index)
