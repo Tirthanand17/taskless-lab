@@ -1,0 +1,83 @@
+name: FlowMinute B4a Offline YouTube Private-First and No-Retry Contract (NO UPLOAD)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/youtube_private_first_contract.py"
+      - "autopilot/test_youtube_private_first_contract.py"
+      - "docs/adr/0033-b4a-simulated-youtube-private-first-no-retry.md"
+      - ".github/workflows/flowminute-b4a-private-first-contract.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4a-offline-no-oauth
+  cancel-in-progress: true
+
+jobs:
+  mock_only_private_first_no_blind_retry:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      CI: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PUBLISH_ENABLED: "false"
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - name: Read only PR and never retain repository token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Hosted Python 3.11, not owner's laptop
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile and adversarially test all simulated owner and no-retry cases
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/youtube_private_first_contract.py \
+            autopilot/test_youtube_private_first_contract.py
+          python -B -m unittest -v \
+            autopilot.test_youtube_private_first_contract
+      - name: Static enforce no network or credential imports in the B4a contract
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          src = Path("autopilot/youtube_private_first_contract.py").read_text()
+          tree = ast.parse(src)
+          forbidden = ("google", "requests", "boto", "urllib", "http", "socket",
+                       "subprocess", "os", "pathlib")
+          for node in ast.walk(tree):
+              if isinstance(node, ast.Import):
+                  for entry in node.names:
+                      assert not entry.name.startswith(forbidden), entry.name
+              if isinstance(node, ast.ImportFrom):
+                  assert not (node.module or "").startswith(forbidden), node.module
+          for prohibited in ("YOUTUBE_TOKEN_JSON", "googleapiclient", "videos().insert",
+                             "PUBLISH_ENABLED", "requests.post", "urllib.request"):
+              assert prohibited not in src, prohibited
+          from autopilot.test_youtube_private_first_contract import (
+              fixture, fake_youtube, VIDEO
+          )
+          from autopilot.youtube_private_first_contract import (
+              propose_first_attempt, note_returned_id,
+              inspect_injected_video_readback
+          )
+          intent = fixture()
+          fence = note_returned_id(propose_first_attempt(intent, None), VIDEO)
+          video, captions = fake_youtube()
+          evidence = inspect_injected_video_readback(intent, fence, video, captions)
+          assert evidence["synthetic_api_response_contract_matches"]
+          assert all(value is False for key,value in evidence.items()
+                     if key != "synthetic_api_response_contract_matches")
+          print("B4A_ALL_FAKE_TESTS_NO_REAL_OAUTH_OR_PUBLISH_AUTHORITY")
+          PY
