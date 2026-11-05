@@ -1,0 +1,145 @@
+name: FlowMinute Branch1 B1q1 Nov5-11 No-Spinner Source & Honest Schedule Audit (NO UPLOAD)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_nov_repair_inventory.py"
+      - "autopilot/branch1_no_spinner_storyboard.py"
+      - "autopilot/creative_iteration_evidence_loop.py"
+      - "autopilot/test_branch1_nov_short_repair.py"
+      - ".github/workflows/flowminute-b1q1-nov-no-spinner-review.yml"
+      - "docs/adr/0049-b1q1-honest-replacement-schedule-and-feedback-loop.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/branch1_nov_repair_inventory.py"
+      - "autopilot/branch1_no_spinner_storyboard.py"
+      - "autopilot/creative_iteration_evidence_loop.py"
+      - ".github/workflows/flowminute-b1q1-nov-no-spinner-review.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b1q1-nov5-11-no-spinner-review-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  signed_github_schedule_audit_and_real_circular_motion_free_preview:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only public original 1080p PIL fonts, no models or provider clients
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python -m pip install --disable-pip-version-check 'Pillow>=11,<13'
+      - name: Compile and independently test fixed November schedule and no-loop motion policy
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/branch1_nov_repair_inventory.py \
+            autopilot/branch1_no_spinner_storyboard.py \
+            autopilot/creative_iteration_evidence_loop.py \
+            autopilot/test_branch1_nov_short_repair.py
+          python -B -m unittest -v autopilot.test_branch1_nov_short_repair \
+            2>&1 | tee /tmp/b1q1_nov_no_spinner_qa.txt
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/b1q1_nov_no_spinner_qa.txt; then exit 1; fi
+          echo "B1Q1_ORIGINAL_21_SLOT_AUDIT_AND_3_SHORT_NO_SPINNER_PROOFS_PASS"
+      - name: Actual 7-day GitHub-only schedule gaps, never assert live YouTube readback
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b1q1-Nov05-11-evidence
+          python -B -m autopilot.branch1_nov_repair_inventory \
+            --repository . \
+            --out /tmp/flowminute-b1q1-Nov05-11-evidence/BRANCH1_21_SLOTS_HISTORICAL_GITHUB_ONLY.json
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          r=Path("/tmp/flowminute-b1q1-Nov05-11-evidence")
+          p=json.loads((r/"BRANCH1_21_SLOTS_HISTORICAL_GITHUB_ONLY.json").read_text())
+          assert p["expected_three_slots"]==21
+          assert p["historical_repo_receipt_count"]==4
+          assert p["no_repo_evidence_slot_count"]==17
+          assert p["real_youtube_current_readback_performed"] is False
+          assert p["never_delete_or_unpublish_original_automatically"] is True
+          assert p["original_video_bytes_in_repo_or_replacement_ready"] is False
+          print("B1Q1_4_HISTORICAL_ONLY_GITHUB_RELEASES_NOT_21_YOUTUBE_CONFIRMATIONS")
+          PY
+      - name: Physically create 18 source-based visual keyframe PNG proofs without circle animations
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_no_spinner_storyboard \
+            --repository . \
+            --output /tmp/flowminute-b1q1-Nov05-11-evidence/scene-previews
+          python -B - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path("/tmp/flowminute-b1q1-Nov05-11-evidence/scene-previews")
+          report=json.loads((root/"UNAPPROVED_NO_SPINNER_SCENE_MANIFEST.json").read_text())
+          assert len(report["items"])==18
+          assert report["video_or_audio_replacement_encoded"] is False
+          assert report["youtube_upload_enabled"] is False
+          assert report["owner_full_watch_listen_and_rights_approved"] is False
+          for item in report["items"]:
+              p=root/item["file"]
+              assert p.is_file() and not p.is_symlink()
+              assert p.stat().st_size==item["bytes"]
+              with p.open("rb") as h:
+                  assert hashlib.file_digest(h,"sha256").hexdigest()==item["sha256"]
+              assert item["no_circle_spinner_drawn"] is True
+          print("B1Q1_18_TRUE_ORIGINAL_CIRCLE_FREE_SCENE_KEYFRAMES_READY_NOT_YOUTUBE_UPLOADED")
+          PY
+      - name: Code imports remain local, no channel calls or outsourced copyrighted media
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          for path in ("autopilot/branch1_nov_repair_inventory.py",
+                       "autopilot/branch1_no_spinner_storyboard.py",
+                       "autopilot/creative_iteration_evidence_loop.py"):
+              tree=ast.parse(Path(path).read_text())
+              forbidden=("requests","urllib","http","aiohttp",
+                         "socket","google","boto3","botocore")
+              for node in ast.walk(tree):
+                  m=([x.name for x in node.names] if isinstance(node,ast.Import)
+                     else [node.module or ""] if isinstance(node,ast.ImportFrom) else [])
+                  for name in m:
+                      assert not name.startswith(forbidden),name
+          print("B1Q1_NO_YOUTUBE_CLIENT_OR_LAPTOP_NETWORK_PROVIDER_OR_AUTO_REPLACEMENT")
+          PY
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+      - name: Retain public unapproved 21-slot audit and 18 original story keyframes for 7 days
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b1q1-Nov05-11-source-no-circle-review-only-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b1q1-Nov05-11-evidence/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+      - name: Delete ephemeral preview keyframes
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b1q1-Nov05-11-evidence
+          echo "B1Q1_GITHUB_ONLY_NO_YOUTUBE_MUTATION_OR_DESKTOP_STORAGE"
