@@ -25,7 +25,7 @@ from autopilot.full_topic_narrated_pack import (
     STATUS, TopicRenderError, render_full_topic_video,
 )
 from autopilot.primary_sourced_storyboards import build_story
-from autopilot.signed_narrated_cloud_pack import verify_pinned_assets
+from autopilot.cloud_av_probe import verify_pinned_assets
 
 SLOTS = ("short_am","long","short_pm")
 SOURCE_MEDIA = {
