@@ -267,6 +267,56 @@ def _topic_png(
     return digest
 
 
+def _encoded_audio_loudness(mp4: Path) -> dict:
+    """Observe *encoded AAC*, not pre-export WAV. No human speech approval."""
+    import subprocess
+    from autopilot.independent_av_review import parse_loudnorm
+    try:
+        completed=subprocess.run([
+            "ffmpeg","-hide_banner","-nostdin","-nostats",
+            "-i",str(mp4),"-map","0:a:0",
+            "-af","loudnorm=print_format=json","-f","null","-",
+        ],capture_output=True,text=True,timeout=420,check=True)
+    except (OSError,subprocess.SubprocessError) as exc:
+        raise TopicRenderError("Could not independently inspect real AAC loudness") from exc
+    return parse_loudnorm(completed.stderr)
+
+
+def _repair_if_encoded_audio_out_of_band(mp4: Path) -> dict:
+    """One bounded REAL AAC correction, keeping the complete H264 bitstream.
+
+    Single-pass loudnorm may miss strict true-peak bounds after AAC encoding,
+    and different Kokoro voices have different original crest factors.
+    Never disable the independent -20..-12 LUFS / <= -1.5 dBTP gate.
+    """
+    first=_encoded_audio_loudness(mp4)
+    if first["typical_online_video_target_diagnostic"]:
+        return {"aac_normalized_after_encode":True,
+                "aac_loudness_repair_passes":0,**first}
+    with TemporaryDirectory(prefix="fm-b4e3-encoded-audio-repair-") as tmp:
+        revised=Path(tmp)/"voice_fixed.aac_muxed.mp4"
+        # Mild deterministic dynamic-range control only if first *actual
+        # encoded* AAC failed technical loudness. No external music or SFX.
+        run([
+            "ffmpeg","-nostdin","-hide_banner","-loglevel","error",
+            "-i",str(mp4),"-map","0:v:0","-map","0:a:0",
+            "-c:v","copy","-c:a","aac","-b:a","128k",
+            "-af","acompressor=threshold=0.08:ratio=2.5:attack=12:release=200:makeup=1,"
+                  "loudnorm=I=-16:LRA=9:TP=-3.8",
+            "-movflags","+faststart","-y",str(revised),
+        ],timeout=500)
+        after=_encoded_audio_loudness(revised)
+        if not after["typical_online_video_target_diagnostic"]:
+            raise TopicRenderError(
+                "Real final AAC loudness repair failed strict independent gate: "
+                +json.dumps({"original":first,"after":after},sort_keys=True))
+        if revised.stat().st_size<40000 or mp4.stat().st_size<40000:
+            raise TopicRenderError("Audio repaired MP4 became truncated")
+        revised.replace(mp4)
+    return {"aac_normalized_after_encode":True,
+            "aac_loudness_repair_passes":1,**after}
+
+
 def _encode_moving_topic(
     episode: ExampleEpisode,folder: Path,timings: list[dict],
     wav: Path,srt: Path,total: float,cues: list[dict],
@@ -308,12 +358,15 @@ def _encode_moving_topic(
         # below the independent -20 LUFS lower bound on a genuine third Short.
         # Keep speech loud and intelligible without weakening the independent
         # audible-content range (-20 to -12 LUFS / <= -1.5 dBTP).
-        "-af","loudnorm=I=-16:LRA=9:TP=-2",
+        "-af","loudnorm=I=-16:LRA=9:TP=-3.5",
         "-c:a","aac","-b:a","128k",
         "-t",f"{total:.4f}","-movflags","+faststart",
         "-y",str(out),
     ],timeout=1600)
     caption_tmp.cleanup()
+    # Do not ship a voiced artifact solely on the assumption that FFmpeg's
+    # loudnorm request survived lossy AAC; observe and repair AAC if needed.
+    _repair_if_encoded_audio_out_of_band(out)
     return out
 
 
