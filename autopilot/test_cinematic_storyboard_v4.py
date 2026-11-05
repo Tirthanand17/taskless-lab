@@ -78,6 +78,26 @@ class ActualCinematicShortAndLongFrameTests(unittest.TestCase):
                 self.assertTrue(all(ImageChops.difference(x,y).getbbox()
                     for x,y in zip(versions,versions[1:])))
 
+    def test_all_32_source_beats_fit_image_panels_and_preserve_caption_area(self):
+        from PIL import Image,ImageChops
+        for slot in ("short_am","long","short_pm"):
+            story=build_story(slot)
+            top=1295 if story["format"]=="short" else 756
+            with self.subTest(slot=slot),tempfile.TemporaryDirectory() as t:
+                for idx in range(story["scene_count"]):
+                    before=Path(t)/f"source_{idx}.png"
+                    after=Path(t)/f"cinema_{idx}.png"
+                    _topic_png(story,idx,60,before,visual_style="classic_v2")
+                    _topic_png(story,idx,60,after,visual_style="cinematic_v3")
+                    with Image.open(before) as old,Image.open(after) as new:
+                        self.assertIsNone(ImageChops.difference(
+                            old.convert("RGB").crop((0,top,old.width,old.height)),
+                            new.convert("RGB").crop((0,top,new.width,new.height)),
+                        ).getbbox(),f"Caption zone intrusion on {slot} beat {idx+1}")
+                        self.assertIsNotNone(ImageChops.difference(
+                            old.convert("RGB"),new.convert("RGB")
+                        ).getbbox(),f"No new illustration on {slot} beat {idx+1}")
+
     def test_user_reference_assets_and_fake_visual_modes_are_refused(self):
         with tempfile.TemporaryDirectory() as t:
             story=build_story("short_am")
