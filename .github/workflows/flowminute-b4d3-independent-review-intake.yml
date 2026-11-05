@@ -1,0 +1,167 @@
+name: FlowMinute B4d3 Independent Actual Media Review Intake (NO UPLOAD)
+on:
+  pull_request:
+    paths:
+      - "autopilot/independent_public_review_intake.py"
+      - "autopilot/test_independent_public_review_intake.py"
+      - "docs/adr/0040-b4d3-independent-physical-media-review-handoff.md"
+      - ".github/workflows/flowminute-b4d3-independent-review-intake.yml"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/independent_public_review_intake.py"
+      - ".github/workflows/flowminute-b4d3-independent-review-intake.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: flowminute-b4d3-independent-review-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline_rehash_and_anti_approval_regressions:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run independent manifest, SHA, PNG, SRT, FFprobe and unsigned reviewer adversarial unit tests
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/independent_public_review_intake.py \
+            autopilot/test_independent_public_review_intake.py
+          python -B -m unittest -v autopilot.test_independent_public_review_intake \
+            2>&1 | tee /tmp/b4d3_tests.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/b4d3_tests.log; then exit 1; fi
+      - name: Refuse any direct Google OAuth or cloud SDK invocation from preview verifier
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          root=ast.parse(Path("autopilot/independent_public_review_intake.py").read_text())
+          denied=("google","googleapiclient","boto3","botocore",
+                  "requests","urllib","http","socket","aiohttp")
+          for x in ast.walk(root):
+              if isinstance(x,ast.Import):
+                  for y in x.names:
+                      assert not y.name.startswith(denied),y.name
+              if isinstance(x,ast.ImportFrom):
+                  assert not (x.module or "").startswith(denied),x.module
+          print("B4D3_INDEPENDENT_QA_ONLY_NO_CREDENTIAL_YOUTUBE_UPLOAD")
+          PY
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+
+  physical_previous_main_artifact_owner_review_handoff:
+    # Main only; public PR artifacts never downloaded and no approval simulated.
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [offline_rehash_and_anti_approval_regressions]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      GH_TOKEN: ${{ github.token }}
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Require local ffprobe, GitHub CLI and no publisher permissions
+        run: |
+          set -euo pipefail
+          command -v ffprobe
+          command -v gh
+      - name: Independently confirm exact old main artifact and video SHA provenance
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/13389693311" \
+            --jq '{id,name,expired,size_in_bytes,head_sha:.workflow_run.head_sha,head_branch:.workflow_run.head_branch}' \
+            > /tmp/b4d3-artifact-identity.json
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("/tmp/b4d3-artifact-identity.json").read_text())
+          assert d["id"]==13389693311
+          assert d["name"]=="flowminute-unapproved-three-real-demo-videos-41970364138-1"
+          assert d["expired"] is False
+          assert d["size_in_bytes"] >= 1000000
+          assert d["head_sha"]=="0e230a842790b05616ffa007dea2f43f9cfaf4c3"
+          assert d["head_branch"]=="main"
+          print("B4D3_REAL_PREVIOUS_GITHUB_ARTIFACT_ATTESTED")
+          PY
+      - name: Retrieve exact 3 full unapproved videos only from existing same repo GitHub run
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b4d3-downloaded-public-demo
+          gh run download 41970364138 \
+            --repo "$GITHUB_REPOSITORY" \
+            --name flowminute-unapproved-three-real-demo-videos-41970364138-1 \
+            --dir /tmp/flowminute-b4d3-downloaded-public-demo
+          echo "B4D3_DOWNLOADED_ONLY_PUBLIC_UNAPPROVED_MEDIA_NO_YOUTUBE"
+      - name: Rehash actual 10 files and inspect all three FFprobe streams captions and original thumbnails
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.independent_public_review_intake \
+            --input /tmp/flowminute-b4d3-downloaded-public-demo \
+            --output /tmp/flowminute-b4d3-unsigned-review-intake
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("/tmp/flowminute-b4d3-unsigned-review-intake/UNAPPROVED_INDEPENDENT_REVIEW_INTAKE.json").read_text())
+          assert d["status"]=="REAL_RETAINED_3_VIDEO_REVIEW_INTAKE_OWNER_REVIEW_PENDING_NO_RELEASE"
+          assert [x["format"] for x in d["episodes"]]==["short","long","short"]
+          assert d["files_physically_rehashed_again_in_independent_runner"] is True
+          assert d["actual_ffprobe_and_caption_time_and_png_header_checked"] is True
+          assert d["actual_human_full_watch_listen_completed"] is False
+          assert d["all_atomic_claims_independently_reviewed_by_human"] is False
+          assert d["original_voice_model_and_graphic_rights_cleared"] is False
+          assert d["owner_oauth_connected"] is False
+          assert d["real_youtube_upload_or_schedule"] is False
+          assert d["release_authorized"] is False
+          for x in d["episodes"]:
+              assert x["actual_ffprobe"]["codec"]=="H264_AAC"
+              assert x["actual_srt"]["caption_cue_count"]>=8
+              assert x["actual_png"]["png_size"]=="1280x720"
+              assert x["real_human_approval"] is False
+          print("B4D3_INDEPENDENT_REAL_3_VIDEO_HASH_FFPROBE_SRT_PNG_READBACK_NO_HUMAN_OR_UPLOAD")
+          PY
+      - name: Keep tiny UNSIGNED reviewer intake, never re-upload source video media
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b4d3-unsigned-real-physical-review-intake-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4d3-unsigned-review-intake/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 9
+      - name: Always delete temporary downloaded MP4 files and unsigned intake
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4d3-downloaded-public-demo \
+            /tmp/flowminute-b4d3-unsigned-review-intake
+          echo "B4D3_EPHEMERAL_COPIES_CLEANED_NO_SECRET_HUMAN_APPROVAL_OR_UPLOAD"
