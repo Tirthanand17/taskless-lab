@@ -1,0 +1,92 @@
+name: FlowMinute B4c1 Owner OAuth Read-Only Preflight (NO REAL CREDENTIALS)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/owner_youtube_readonly_preflight.py"
+      - "autopilot/test_owner_youtube_readonly_preflight.py"
+      - "infra/aws/owner-youtube-readonly-role-policy.example.json"
+      - "docs/adr/0037-b4c1-owner-oauth-real-client-readonly-boundary.md"
+      - ".github/workflows/flowminute-b4c1-owner-readonly-preflight.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4c1-no-actual-owner-credentials-readonly
+  cancel-in-progress: true
+
+jobs:
+  fake_clients_only_real_interface_readonly:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PUBLISH_ENABLED: "false"
+    steps:
+      - name: Checkout without credential persistence
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Hosted Python without AWS or Google SDK/auth installed
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test real-client-capable AWS OAuth and YouTube read-only verifier against ONLY synthetic clients
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/owner_youtube_readonly_preflight.py \
+            autopilot/test_owner_youtube_readonly_preflight.py
+          python -B -m unittest -v autopilot.test_owner_youtube_readonly_preflight \
+            2>&1 | tee /tmp/b4c1_read_only_regression.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/b4c1_read_only_regression.log; then
+            echo 'Required synthetic client security test failed or skipped'
+            exit 1
+          fi
+      - name: Prove source only calls read/describe and never imports AWS or Google network SDK
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          file=Path("autopilot/owner_youtube_readonly_preflight.py")
+          root=ast.parse(file.read_text(encoding="utf-8"))
+          imports=("boto3","botocore","google","googleapiclient","requests",
+                   "urllib","http","socket","subprocess","os","aiohttp")
+          unauthorized_calls=("put_secret_value","update_secret",
+              "create_secret","delete_secret","create_key",
+              "videos","insert","update","publish","schedule",
+              "revoke","put_resource_policy","put_object")
+          for node in ast.walk(root):
+              if isinstance(node,ast.Import):
+                  for item in node.names:
+                      assert not item.name.startswith(imports),item.name
+              if isinstance(node,ast.ImportFrom):
+                  assert not (node.module or "").startswith(imports),node.module
+              if isinstance(node,ast.Attribute):
+                  assert node.attr not in unauthorized_calls, node.attr
+          from autopilot.test_owner_youtube_readonly_preflight import FakeOwnerClients
+          status=FakeOwnerClients().verify()
+          assert status["release_authorized"] is False
+          assert status["actual_youtube_video_insert_performed"] is False
+          assert status["production_credentials_connected_in_this_public_ci"] is False
+          print("B4C1_NO_REAL_OAUTH_NO_NETWORK_ONLY_OWNER_CLIENT_READ_ONLY_INTERFACE")
+          PY
+      - name: Fail if production/cloud activation env switches are enabled
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+          echo "B4C1_RESEARCH_ONLY_NO_OWNER_DEPLOYMENT_NO_BILLABLE_PROVIDER_NO_UPLOAD"
