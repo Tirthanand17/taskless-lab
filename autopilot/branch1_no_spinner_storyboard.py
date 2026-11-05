@@ -214,41 +214,106 @@ def _draw_subject(d,topic:str,mode:str,amount:float,colors:dict,
             label(284,y+9,name,25)
         variant="VERIFIED_CALLER_CHECKLIST"
     elif topic=="photo" and stage==0:
-        # Hook: photo illustration with distinct polygon landscape,
-        # purely synthetic, no actual private photograph or GPS fields.
-        shift=round(42*(1-amount))
-        d.rounded_rectangle((158+shift,500,740+shift,1130),radius=24,
-                            fill=(31,68,76),outline=ac,width=4)
-        d.polygon(((188+shift,1018),(365+shift,732),(524+shift,889),
-                   (625+shift,760),(705+shift,1000)),fill=(64,146,136))
-        d.rectangle((188+shift,1030,704+shift,1050),fill=sec)
-        d.rounded_rectangle((600,840,930,1100),radius=16,
-                            fill=(11,44,55),outline=sec,width=4)
-        for j,w in enumerate((242,195,267)):
-            d.rectangle((625,894+j*53,625+round(w*amount),906+j*53),
-                        fill=ac if j==1 else sec)
+        # B1q5: an ORIGINAL recognisable photo viewer, not the old abstract
+        # green mountain rectangle. Dimensional non-branded phone + a
+        # separate location-information clue: conditional, never fake GPS.
+        # The hero stays within the pre-existing y495..1325 crop and
+        # never uses circular progress/loader shapes.
+        offset=round(25*(1-amount))
+        d.rounded_rectangle((155+offset,537,773+offset,1220),radius=47,
+                            fill=(12,39,48))
+        d.rounded_rectangle((163+offset,521,760+offset,1198),radius=46,
+                            fill=(36,85,89),outline=sec,width=5)
+        d.rounded_rectangle((184+offset,544,738+offset,1168),radius=30,
+                            fill=(13,39,51))
+        d.rounded_rectangle((210+offset,579,716+offset,643),radius=14,
+                            fill=(29,83,89))
+        label(232+offset,597,"PHOTO PREVIEW",31)
+        # A completely authored visual photo: layered sky, hills,
+        # landmark-like roofline and foreground, no real person's GPS.
+        d.rounded_rectangle((210+offset,674,714+offset,1047),
+                            radius=14,fill=(40,110,118))
+        d.rectangle((219+offset,683,704+offset,810),fill=(77,147,155))
+        d.polygon(((220+offset,1018),(220+offset,928),
+                   (346+offset,787),(475+offset,936),
+                   (586+offset,831),(704+offset,967),
+                   (704+offset,1041)),fill=(40,117,105))
+        d.polygon(((220+offset,1037),(345+offset,902),
+                   (487+offset,1035),(704+offset,935),
+                   (704+offset,1041)),fill=(24,88,87))
+        # A visible architectural clue reinforces that the image
+        # itself, even without EXIF, can disclose a recognizable place.
+        d.rectangle((505+offset,809,574+offset,970),fill=(17,57,70))
+        d.polygon(((495+offset,812),(539+offset,775),
+                   (585+offset,812)),fill=sec)
+        for xx in (516,541,566):
+            d.rectangle((xx+offset,850,xx+offset+11,891),
+                        fill=(82,170,155))
+        label(236+offset,1090,"ORIGINAL IMAGE FILE",23)
+        # The information annotation has a clear one-shot reveal; the
+        # unknown nature of GPS is explicitly worded as MAY.
+        sheet_x=627+round(30*(1-amount))
+        d.rounded_rectangle((sheet_x,806,sheet_x+320,1118),radius=20,
+                            fill=(12,48,56),outline=ac,width=3)
+        label(sheet_x+22,839,"PHOTO DETAILS",26,col=sec)
+        d.rectangle((sheet_x+22,901,sheet_x+290,907),
+                    fill=(58,111,108))
+        label(sheet_x+22,929,"LOCATION",29,col=ac)
+        label(sheet_x+22,981,"MAY BE SAVED",22,col=sec)
+        d.rectangle((sheet_x+22,1059,
+                     sheet_x+22+round(267*amount),1072),fill=ac)
         variant="PHOTO_METADATA_DISCOVERY"
     elif topic=="photo" and stage==1:
-        # Proof: info pane instead of the same photo frame; illustrates
-        # the owner's original spoken "inspect information" step.
-        d.rounded_rectangle((268,495,830,1228),radius=27,
-                            fill=(22,60,74),outline=sec,width=4)
-        d.rounded_rectangle((300,545,798,631),radius=12,fill=(30,94,100))
-        label(328,570,"PHOTO INFO",29)
-        for i,(word,w) in enumerate((("DATE",345),("DETAILS",290),("LOCATION",350))):
-            yy=695+i*130
-            label(320,yy,word,26,col=ac)
-            d.rectangle((321,yy+55,321+round(w*amount),yy+70),fill=sec)
+        # Inspect a fictional, legible EXIF information DRAWER, rather
+        # than a fieldless blank card. A picture visibly connects to
+        # metadata; the location flag remains conditional.
+        offset=round(22*(1-amount))
+        d.rounded_rectangle((155,533,927,1220),radius=33,
+                            fill=(18,56,68),outline=sec,width=4)
+        d.rounded_rectangle((182,562,900,643),radius=16,
+                            fill=(34,100,102))
+        label(215,583,"PHOTO INFORMATION",32)
+        # Distinct synthetic thumbnail, NOT anyone's personal photo.
+        d.rounded_rectangle((191,689,468,1030),radius=17,
+                            fill=(52,118,119))
+        d.polygon(((199,1014),(199,937),(275,827),(357,933),
+                   (460,856),(460,1022)),fill=(39,91,89))
+        d.rectangle((207,1015,452,1025),fill=sec)
+        d.rectangle((503+offset,697,872,737),fill=(29,79,88))
+        label(516+offset,700,"DETAILS",28)
+        label(515+offset,767,"DATE / CAMERA",28)
+        d.rectangle((515+offset,816,842,829),fill=(92,153,156))
+        label(515+offset,868,"LOCATION",30,col=ac)
+        d.rounded_rectangle((503+offset,923,879,1004),
+                            radius=12,fill=(39,94,93))
+        label(520+offset,946,"MAY BE INCLUDED",23,col=sec)
+        label(199,1083,"INSPECT DETAILS BEFORE SHARING",27,col=ac)
+        d.rectangle((199,1148,199+round(686*amount),1160),fill=sec)
         variant="PHOTO_INFO_INSPECTOR"
     elif topic=="photo":
-        # Takeaway: two separate share routes, no map-pin orbit.
-        label(165,538,"BEFORE SHARING",34,col=ac)
-        for i,text in enumerate(("CHECK DETAILS","CHECK SHARING")):
-            yy=657+i*224
-            d.rounded_rectangle((150,yy,930,yy+156),radius=20,
-                                fill=(31,75,80),outline=sec,width=3)
-            label(202,yy+41,text,32)
-            d.rectangle((198,yy+116,198+round(657*amount),yy+126),fill=ac)
+        # The closing beat is now one recognizable original share
+        # preview with two practical decisions, not two generic bars.
+        # Not every Android/iPhone sharing surface has the same toggle.
+        offset=round(23*(1-amount))
+        d.rounded_rectangle((147,524,930,1219),radius=34,
+                            fill=(20,57,68),outline=sec,width=4)
+        d.rounded_rectangle((176,553,902,634),radius=15,
+                            fill=(34,95,96))
+        label(210,573,"BEFORE YOU SEND",32)
+        d.rounded_rectangle((187+offset,678,414+offset,928),radius=13,
+                            fill=(46,119,119))
+        d.polygon(((200+offset,908),(281+offset,775),
+                   (356+offset,876),(408+offset,805),
+                   (408+offset,919)),fill=(34,86,87))
+        label(468,684,"PHOTO FILE",27)
+        label(467,750,"CHECK PHOTO INFO",26,col=ac)
+        d.rectangle((468,806,855,818),fill=(68,136,135))
+        label(467,850,"CHECK SHARE OPTIONS",25,col=sec)
+        d.rectangle((468,909,468+round(387*amount),922),fill=ac)
+        d.rounded_rectangle((184,1001,888,1140),radius=17,
+                            fill=(37,86,89),outline=ac,width=3)
+        label(218,1026,"REVIEW LOCATION DATA",30,col=sec)
+        label(218,1086,"THEN CHOOSE HOW TO SEND",22,col=ac)
         variant="PHOTO_SHARE_SAFETY_ACTIONS"
     elif topic=="browser" and stage==0:
         # Browser hook: simple fictional window, not a brand's actual UI.
