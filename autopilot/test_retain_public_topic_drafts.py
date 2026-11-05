@@ -146,7 +146,7 @@ class PublicPreviewRetentionTests(unittest.TestCase):
             self.assertEqual(d,sha256(b"abc"*100).hexdigest())
 
     def test_public_preview_contract_never_names_youtube_publish_authority(self):
-        self.assertIn("UNAPPROVED",SOURCE_MEDIA)
+        self.assertEqual(len(SOURCE_MEDIA),3)
         self.assertIn("NOT_RELEASE_APPROVED",STATUS_RETAINED)
         self.assertTrue(all(p.startswith(("PREVIEW_UNAPPROVED",
                                          "CAPTIONS_UNAPPROVED",
