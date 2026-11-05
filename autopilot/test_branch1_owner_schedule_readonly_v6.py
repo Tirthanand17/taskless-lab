@@ -47,11 +47,11 @@ class FakeOwnerYoutube:
         self.channel=CHANNEL
         self.inventory=build_nov_repair_inventory(ROOT)
         self.uploads_id="UU"+"E"*22
-        self.videos={}
+        self.records={}
         for slot in self.inventory["slots"]:
             if slot["historical"]:
                 video_id=slot["historical"]["original_youtube_video_id"]
-                self.videos[video_id]={
+                self.records[video_id]={
                     "id":video_id,
                     "snippet":{"channelId":CHANNEL,
                                "title":"SECRET UNRELEASED TEST TITLE"},
@@ -76,11 +76,11 @@ class FakeOwnerYoutube:
                 return {"items":[],"nextPageToken":"SAME"}
             assert kwargs["playlistId"]==self.uploads_id
             return {"items":[{"contentDetails":{"videoId":i}}
-                             for i in sorted(self.videos)]}
+                             for i in sorted(self.records)]}
         ids=kwargs["id"].split(",")
         return {"items":[v for i in ids
                          if i!=self.omit_video
-                         if (v:=self.videos.get(i)) is not None]}
+                         if (v:=self.records.get(i)) is not None]}
 
 
 class OwnerOnlyReadonlyReconciliation(unittest.TestCase):
@@ -103,13 +103,13 @@ class OwnerOnlyReadonlyReconciliation(unittest.TestCase):
         serialized=json.dumps(outcome)
         self.assertNotIn("SECRET UNRELEASED TEST TITLE",serialized)
         self.assertNotIn(CHANNEL,serialized)
-        for original in yt.videos:
+        for original in yt.records:
             self.assertNotIn(original,serialized)
         self.assertEqual(len(outcome["slots"]),21)
 
     def test_same_slot_two_privates_is_conflict_not_automatic_replacement(self):
         yt=FakeOwnerYoutube()
-        yt.videos["Z"*11]={
+        yt.records["Z"*11]={
             "id":"Z"*11,
             "snippet":{"channelId":CHANNEL,"title":"Secret second future Short"},
             "status":{"privacyStatus":"private","publishAt":"2026-11-06T05:30:00Z"},
@@ -125,9 +125,9 @@ class OwnerOnlyReadonlyReconciliation(unittest.TestCase):
 
     def test_published_original_is_not_misreported_as_pending_schedule(self):
         yt=FakeOwnerYoutube()
-        old=next(k for k,v in yt.videos.items()
+        old=next(k for k,v in yt.records.items()
                  if v["status"]["publishAt"]=="2026-11-05T15:00:00Z")
-        yt.videos[old]["status"]={"privacyStatus":"public"}
+        yt.records[old]["status"]={"privacyStatus":"public"}
         result=read_owner_nov_schedule(yt,root=ROOT,
                                        checked_at_utc=datetime(2026,11,6,12,
                                                                tzinfo=timezone.utc))
@@ -145,14 +145,14 @@ class OwnerOnlyReadonlyReconciliation(unittest.TestCase):
 
     def test_remote_owner_mismatch_in_video_fails_closed(self):
         yt=FakeOwnerYoutube()
-        first=next(iter(yt.videos.values()))
+        first=next(iter(yt.records.values()))
         first["snippet"]["channelId"]="UC"+"X"*22
         with self.assertRaises(ReadonlyScheduleRejected):
             read_owner_nov_schedule(yt,root=ROOT,checked_at_utc=OBSERVED)
 
     def test_missing_video_in_complete_upload_scan_is_indeterminate(self):
         yt=FakeOwnerYoutube()
-        yt.omit_video=next(iter(yt.videos))
+        yt.omit_video=next(iter(yt.records))
         with self.assertRaises(ReadonlyScheduleRejected):
             read_owner_nov_schedule(yt,root=ROOT,checked_at_utc=OBSERVED)
 
@@ -163,7 +163,7 @@ class OwnerOnlyReadonlyReconciliation(unittest.TestCase):
 
     def test_private_publish_at_must_be_timezone_aware(self):
         yt=FakeOwnerYoutube()
-        next(iter(yt.videos.values()))["status"]["publishAt"]="2026-11-05T15:00:00"
+        next(iter(yt.records.values()))["status"]["publishAt"]="2026-11-05T15:00:00"
         with self.assertRaises(ReadonlyScheduleRejected):
             read_owner_nov_schedule(yt,root=ROOT,checked_at_utc=OBSERVED)
 
