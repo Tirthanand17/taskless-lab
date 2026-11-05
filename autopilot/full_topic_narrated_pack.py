@@ -30,6 +30,7 @@ from autopilot.cloud_full_duration_pack import (
 from autopilot.full_pack_fixture import ExampleEpisode, Scene
 from autopilot.independent_av_review import review_encoded_episode
 from autopilot.polished_caption_v2 import compose_ass, CONFIG as CAPTION_CONFIG
+from autopilot.polished_sound_design_v2 import enrich_original_wav
 from autopilot.primary_sourced_storyboards import (
     build_story, canonical, render_original_svg, require_exact_draft,
     evaluate_three_draft_stories, THUMB_CONTENT, StoryboardError,
@@ -392,6 +393,10 @@ def render_full_topic_video(
     if not (28<=total<=110 if episode.kind=="short" else 90<=total<=320):
         raise TopicRenderError("Real generated speech outside intended Short/long bounds")
     original_tone_sha=original_ambient_tone(wav,story["theme"])
+    sfx_report=enrich_original_wav(wav,story["theme"],timings)
+    if (sfx_report["release_authorized"] is not False
+        or sfx_report["external_sound_effects_or_music_imported"] is not False):
+        raise TopicRenderError("No external audio or publishing permission from sound design")
     frame_groups=[]
     frames=[]
     all_motion_hashes=[]
@@ -433,6 +438,9 @@ def render_full_topic_video(
         "original_animated_svg_frame_count":len(all_motion_hashes),
         "original_svg_frames_really_animated":True,
         "original_programmatic_low_level_ambient_sha256":original_tone_sha,
+        "original_ui_sound_effects_count":sfx_report["original_programmatic_effects"],
+        "original_ui_sound_effect_recipe_sha256":sfx_report["sound_design_recipe_sha256"],
+        "original_ui_sounds_not_external_recordings":True,
         "external_music_tracks_used":False,
         "original_unreviewed_thumbnail_sha256":thumbnail_sha,
         "live_primary_sources_human_claim_reviewed":False,
