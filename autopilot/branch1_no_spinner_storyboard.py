@@ -275,8 +275,16 @@ def storyboard_cues(episode:dict)->list[dict]:
     return plan
 
 
-def draw_source_keyframe(episode:dict,beat:int,phase:float):
+def draw_source_keyframe(episode:dict,beat:int,phase:float,
+                         *,caption_layer:str="original_source_proof"):
+    """One visual beat, separate original static-preview vs burned-ASS modes.
+
+    In an actual MP4, the original captions must be displayed by timed native
+    ASS, NOT twice: never write static words in the same lower caption panel.
+    """
     from PIL import Image,ImageDraw
+    if caption_layer not in ("original_source_proof","timed_ass_overlay"):
+        raise NoSpinnerVisualRejected("Only verified native caption rendering modes")
     cues=storyboard_cues(episode)
     if type(beat) is not int or not 0<=beat<len(cues):
         raise NoSpinnerVisualRejected("Unrecognized original beat")
@@ -297,8 +305,11 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float):
                               beat=beat,total=len(cues))
     # Genuine caption safe band, no art or overlays bleed into subtitles.
     d.rounded_rectangle((82,1410,998,1650),radius=16,fill=(7,14,27))
-    _text_lines(d,cues[beat]["source_text"],x=118,y=1460,width=847,
-                height=160,font_size=38,max_lines=4,fill=(246,249,253))
+    if caption_layer=="original_source_proof":
+        _text_lines(d,cues[beat]["source_text"],x=118,y=1460,width=847,
+                    height=160,font_size=38,max_lines=4,fill=(246,249,253))
+    # timed_ass_overlay mode reserves the SAME clean region for timed
+    # captions burned into the actual encoded video, no double text.
     d.rectangle((82,1711,82+round(916*(beat+t)/len(cues)),1718),fill=accent)
     d.text((82,1785),"ORIGINAL ILLUSTRATION  •  NOT A LIVE SOFTWARE DEMO",
            font=_font(19,False),fill=sec)
@@ -309,6 +320,8 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float):
         "distinct_original_visual_subject":hero_variant,
         "caption_source_sha256":cues[beat]["source_text_sha256"],
         "phase":phase,"no_circle_spinner_drawn":True,
+        "caption_layer":caption_layer,
+        "timed_ass_caption_overlay_required":caption_layer=="timed_ass_overlay",
         "original_recording_or_reference_reused":False,
         "full_video_encoded":False,
         "human_approved":False,"youtube_uploaded":False,
