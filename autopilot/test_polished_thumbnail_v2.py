@@ -6,6 +6,7 @@ bitmap artwork on the hosted runner and inspect physical PNG bytes.
 from __future__ import annotations
 
 from copy import deepcopy
+import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
@@ -16,6 +17,8 @@ from autopilot.polished_thumbnail_v2 import (
 from autopilot.primary_sourced_storyboards import build_story
 
 
+@unittest.skipUnless(importlib.util.find_spec('PIL') is not None,
+                     'Physical PIL thumbnail QA runs in dedicated B4e1 job with Pillow installed')
 class OriginalEditorialThumbnailTests(unittest.TestCase):
     def test_three_real_editorial_thumbnails_have_distinct_original_art(self):
         from PIL import Image
