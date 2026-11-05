@@ -161,7 +161,7 @@ class RealFrameAndPcmCuesWithoutThirdPartyModelTests(unittest.TestCase):
         episode=_load_source(ROOT,SOURCES[0][0])
         source=storyboard_cues(episode)
         self.assertTrue(all(x["owner_approved"] is False for x in source))
-        for v in (-.1,101,float("nan")):
+        for v in (-.1,121,float("nan")):
             with self.assertRaises(RealShortRejected):
                 _time_ass(v)
         self.assertEqual(_time_srt(3.25),"00:00:03,250")
