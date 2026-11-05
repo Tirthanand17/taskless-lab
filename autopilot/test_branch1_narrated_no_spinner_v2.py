@@ -35,6 +35,8 @@ class SourceBoundNoSpinnerFullVideoCodeTests(unittest.TestCase):
         with self.assertRaises(RealShortRejected):
             _load_source(ROOT,"fm_20261111_fake_short")
 
+    @unittest.skipUnless(importlib.util.find_spec("PIL") is not None,
+                         "Native glyph/1080p safe zone tested by dedicated B1q2 Pillow CI")
     def test_all_3_source_caption_overlays_are_original_and_native_fit(self):
         for eid,_ in SOURCES:
             source=_load_source(ROOT,eid)
@@ -45,6 +47,8 @@ class SourceBoundNoSpinnerFullVideoCodeTests(unittest.TestCase):
                     self.assertLessEqual(len(lines),4)
                     self.assertEqual(" ".join(lines),c["text"])
 
+    @unittest.skipUnless(importlib.util.find_spec("PIL") is not None,
+                         "Native glyph/1080p safe zone tested by dedicated B1q2 Pillow CI")
     def test_exact_source_illustrations_reserve_clean_timed_ass_band(self):
         from PIL import ImageChops
         for eid,_ in SOURCES:
