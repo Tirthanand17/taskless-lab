@@ -5,6 +5,7 @@ on:
     paths:
       - "autopilot/branch1_owner_schedule_readonly_v6.py"
       - "autopilot/test_branch1_owner_schedule_readonly_v6.py"
+      - "autopilot/test_branch1_owner_workflow_expression_v6.py"
       - "scripts/branch1_owner_schedule_readonly_v6.py"
       - ".github/workflows/flowminute-b1-owner-youtube-readonly-nov.yml"
       - "docs/adr/0055-b1q6-protected-schedule-inventory.md"
@@ -47,9 +48,11 @@ jobs:
           python -B -m py_compile \
             autopilot/branch1_owner_schedule_readonly_v6.py \
             autopilot/test_branch1_owner_schedule_readonly_v6.py \
+            autopilot/test_branch1_owner_workflow_expression_v6.py \
             scripts/branch1_owner_schedule_readonly_v6.py
           python -B -m unittest -v \
             autopilot.test_branch1_owner_schedule_readonly_v6 \
+            autopilot.test_branch1_owner_workflow_expression_v6 \
             2>&1 | tee /tmp/fm-owner-youtube-readonly-offline.log
           if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/fm-owner-youtube-readonly-offline.log; then exit 1; fi
           echo "B1Q6_OFFLINE_SYNTHETIC_21_SLOTS_NEVER_REMOTE_ATTESTATION"
