@@ -1,0 +1,66 @@
+name: FlowMinute B1q8 Confirmed Arc Source Guard — NO YOUTUBE UPLOAD
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_legacy_arc_remediation_v7.py"
+      - "autopilot/test_branch1_legacy_arc_remediation_v7.py"
+      - ".github/workflows/flowminute-b1q8-confirmed-arc-guard.yml"
+      - "docs/adr/0056-b1q8-verified-nov-calendar-and-spinner-fix.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/branch1_legacy_arc_remediation_v7.py"
+      - "autopilot/test_branch1_legacy_arc_remediation_v7.py"
+      - ".github/workflows/flowminute-b1q8-confirmed-arc-guard.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b1q8-source-only-no-youtube-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  exact_matched_source_and_sha_receipt_guards:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Exact 11-slot source arc fix, master-vs-recorded-upload hash gates and no unapproved mutation
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/branch1_legacy_arc_remediation_v7.py \
+            autopilot/test_branch1_legacy_arc_remediation_v7.py
+          python -B -m unittest -v \
+            autopilot.test_branch1_legacy_arc_remediation_v7 \
+            2>&1 | tee /tmp/fm-b1q8-no-youtube-source.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/fm-b1q8-no-youtube-source.log; then exit 1; fi
+          python -B - <<'PY'
+          from pathlib import Path
+          import ast
+          root=ast.parse(Path("autopilot/branch1_legacy_arc_remediation_v7.py").read_text())
+          disallowed={"insert","update","delete","upload","request","post",
+                      "replace_video","reschedule","remove_schedule"}
+          for node in ast.walk(root):
+              if isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute):
+                  assert node.func.attr not in disallowed, node.func.attr
+          print("B1Q8_NO_NETWORK_OR_YOUTUBE_SIDE_EFFECTS")
+          PY
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+          echo "B1Q8_EXACT_CENTER_ARC_SOURCE_ONLY_PASS_REMOTE_VIDEOS_UNCHANGED"
