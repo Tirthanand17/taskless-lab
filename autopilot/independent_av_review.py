@@ -167,7 +167,23 @@ def review_encoded_episode(folder:Path,episode, *,report_entry:dict)->dict:
     startshot=folder/"encoded_caption_snapshot.png"
     _snapshot(mp4,cue_time,startshot)
     width,height=((1080,1920) if episode.kind=="short" else (1920,1080))
-    crop=(185,height-385,width-185,height-125) if episode.kind=="short" else (225,height-265,width-225,height-75)
+    # B4e1 native ASS microcards live in an explicit panel ABOVE the native
+    # app chrome. The legacy SRT panel used an entirely different lower band.
+    # Never accept the new location unless the producer explicitly reports
+    # its new native canvas mode. Existing old-source technical tests preserve
+    # the historical crop when this marker is missing.
+    native_v2=report_entry.get("caption_layout_version")=="B4E1_NATIVE_ASS_MICROCARDS"
+    if native_v2:
+        from autopilot.polished_caption_v2 import CONFIG as native_caption_layout
+        spec=native_caption_layout[episode.kind]
+        crop=(185 if episode.kind=="short" else 225,
+              spec["safe_top"],
+              width-(185 if episode.kind=="short" else 225),
+              spec["safe_bottom"])
+    else:
+        if report_entry.get("caption_layout_version") not in (None,"B3_LEGACY_SRT"):
+            raise ReviewerError("Unknown unverified burn-in caption format")
+        crop=(185,height-385,width-185,height-125) if episode.kind=="short" else (225,height-265,width-225,height-75)
     changed=changed_pixels(first,startshot,crop)
     if changed<350:
         # Numeric-only vertical scan diagnoses a caption positioned in the
@@ -201,6 +217,7 @@ def review_encoded_episode(folder:Path,episode, *,report_entry:dict)->dict:
        "ffmpeg_long_silence_diagnostics":pauses,
        **srts,
        "caption_visible_changed_pixels":changed,
+       "native_caption_safe_band_independently_checked":native_v2,
        "first_to_later_scene_changed_pixels":scene_change,
        "burned_caption_independently_observed":True,
        "distinct_encoded_scenes_observed":True,
