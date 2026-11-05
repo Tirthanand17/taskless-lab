@@ -47,7 +47,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-dejavu-core libcairo2
           python -m pip install --disable-pip-version-check \
-            'Pillow>=11,<13' 'cairosvg>=2.7,<3'
+            'Pillow>=11,<13' 'cairosvg>=2.7,<3' 'cryptography>=46,<48'
       - name: Physically validate ALL 32 immutable source titles, values and both true caption bands
         run: |
           set -euo pipefail
