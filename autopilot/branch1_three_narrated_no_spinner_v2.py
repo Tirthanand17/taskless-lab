@@ -239,6 +239,10 @@ def original_animated_keyframe_timeline(episode:dict,cues:list[dict],folder:Path
                 raise RealShortRejected("Original image illegally wrote static subtitle")
             if receipt["caption_source_sha256"]!=c["source_caption_sha256"]:
                 raise RealShortRejected("Source picture has different spoken words")
+            if (receipt["headline_is_verbatim_audio_caption"] is not False
+                or receipt["visual_hero_enlarged_in_native_canvas"] is not True
+                or receipt["editorial_headline"]==c["text"]):
+                raise RealShortRejected("Spoken text duplicated as headline or hero not enlarged")
             if receipt["no_circle_spinner_drawn"] is not True:
                 raise RealShortRejected("Unexpected looping circle in video frame")
             frame=folder/f"motion_{idx:02}_{j:02}.png"
@@ -269,6 +273,8 @@ def original_animated_keyframe_timeline(episode:dict,cues:list[dict],folder:Path
     return ffcat,n,{
         "native_original_keyframes_drawn":n,
         "three_distinct_original_semantic_hero_subjects":True,
+        "original_editorial_headline_not_duplicate_of_full_caption":True,
+        "original_subject_hero_enlarged_on_native_video":True,
         "original_motion_shot_types":len(set(x["original_visual_motion"] for x in cues)),
         "perpetual_spinning_ring_absent":True,
         "interpolation_is_discrete_art_updates_not_fully_continuous_3d":True,
