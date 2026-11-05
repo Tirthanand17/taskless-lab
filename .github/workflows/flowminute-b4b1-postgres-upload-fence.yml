@@ -1,0 +1,103 @@
+name: FlowMinute B4b1 Real Postgres CI-Only YouTube Attempt Fence (NO UPLOAD)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/sql/003_ci_youtube_mock_attempt_fence.sql"
+      - "autopilot/ci_youtube_attempt_fence.py"
+      - "autopilot/test_ci_youtube_attempt_fence.py"
+      - "autopilot/youtube_private_first_contract.py"
+      - ".github/workflows/flowminute-b4b1-postgres-upload-fence.yml"
+      - "docs/adr/0034-b4b1-durable-one-attempt-transaction-boundary.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4b1-synthetic-youtube-pg-only
+  cancel-in-progress: true
+
+jobs:
+  actual_postgres_only_mock_channel_slot_uniqueness:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_B3D4C2B3A_ADMIN_DSN: "postgresql://flowminute_test:disposable_ci_service_only@127.0.0.1:5432/flowminute_fence_ci"
+      FLOWMINUTE_B3D4C2B3A_GATEWAY_TEST_PASSWORD: "only_fake_ci_gateway_pwd_01"
+      FLOWMINUTE_B3D4C2B3A_WORKER_TEST_PASSWORD: "only_fake_ci_worker_pwd_01"
+      FLOWMINUTE_B3D4C2B3A_AUDITOR_TEST_PASSWORD: "only_fake_ci_auditor_pwd_01"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: flowminute_fence_ci
+          POSTGRES_USER: flowminute_test
+          POSTGRES_PASSWORD: disposable_ci_service_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U flowminute_test -d flowminute_fence_ci"
+          --health-interval 5s
+          --health-timeout 4s
+          --health-retries 12
+    steps:
+      - name: Read only PR without persistent repo credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Hosted disposable Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only real Postgres 16 client and synthetic crypto verifier
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check \
+            'psycopg[binary]>=3.2,<4' 'cryptography>=46,<48'
+      - name: Initialise existing disposable PG role isolation and prove privilege refusals
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v autopilot.test_ci_protected_pg_boundary \
+            2>&1 | tee /tmp/b4b1_role_bootstrap.log
+          if grep -Ei '(skipped|FAILED|ERROR)' /tmp/b4b1_role_bootstrap.log; then
+            echo "Required real PostgreSQL role bootstrap did not pass"
+            exit 1
+          fi
+      - name: Test real PG16 transactional mock attempt CAS, concurrent workers, restart, read-only auditor
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v autopilot.test_ci_youtube_attempt_fence \
+            2>&1 | tee /tmp/b4b1_pg_youtube_tests.log
+          if grep -Ei '(skipped|FAILED|ERROR)' /tmp/b4b1_pg_youtube_tests.log; then
+            echo "Required real PostgreSQL attempt fence test skipped or failed"
+            exit 1
+          fi
+      - name: Prove no live YouTube credential, cloud usage or upload authority
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+          test "$PUBLISH_ENABLED" = false
+          python -B - <<'PY'
+          from pathlib import Path
+          for name in ("autopilot/ci_youtube_attempt_fence.py",
+                       "autopilot/sql/003_ci_youtube_mock_attempt_fence.sql"):
+              text = Path(name).read_text()
+              for disallowed in ("YOUTUBE_TOKEN_JSON", "googleapiclient", "boto3",
+                                 "videos().insert", "requests.post"):
+                  assert disallowed not in text, (name,disallowed)
+          print("B4B1_POSTGRES_16_ONLY_0_REAL_YOUTUBE_CALLS_ALL_RELEASE_FLAGS_FALSE")
+          PY
