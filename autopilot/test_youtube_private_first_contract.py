@@ -219,7 +219,7 @@ class RemoteEvidenceTests(unittest.TestCase):
         v, c = fake_youtube()
         for fake in ({}, {"snippet": {}}, None, [], "hello"):
             with self.subTest(fake=fake):
-                if fake is None:
+                if not isinstance(fake, dict):
                     with self.assertRaises(ReleaseContractError):
                         inspect_injected_video_readback(self.intent, self.fence, fake, c)
                 else:
