@@ -267,10 +267,19 @@ def _topic_png(
     return digest
 
 
-def _encoded_audio_loudness(mp4: Path) -> dict:
-    """Observe *encoded AAC*, not pre-export WAV. No human speech approval."""
+def _encoded_audio_loudness(mp4: Path, *,strict: bool=False) -> dict:
+    """Measure REAL AAC, even if unsafe, but never approve an unsafe master.
+
+    An over-ceiling raw AAC frame must be diagnosable so the repair can run.
+    The independent strict parse remains mandatory for the repaired output
+    and again in independent_av_review before the preview is retained.
+    """
+    import math
+    import re
     import subprocess
     from autopilot.independent_av_review import parse_loudnorm
+    if type(strict) is not bool or not mp4.is_file() or mp4.is_symlink():
+        raise TopicRenderError("Missing encoded AAC or invalid strict measurement")
     try:
         completed=subprocess.run([
             "ffmpeg","-hide_banner","-nostdin","-nostats",
@@ -278,8 +287,33 @@ def _encoded_audio_loudness(mp4: Path) -> dict:
             "-af","loudnorm=print_format=json","-f","null","-",
         ],capture_output=True,text=True,timeout=420,check=True)
     except (OSError,subprocess.SubprocessError) as exc:
-        raise TopicRenderError("Could not independently inspect real AAC loudness") from exc
-    return parse_loudnorm(completed.stderr)
+        raise TopicRenderError("Could not measure original encoded AAC loudness") from exc
+    if strict:
+        # This unchanged independent function FAILS if true peak > 0 dBTP,
+        # invalid/silent audio, or other untrusted FFmpeg JSON. It also reports
+        # <= -1.5 dBTP and target LUFS diagnostic. Caller MUST insist on True.
+        return parse_loudnorm(completed.stderr)
+    chunks=re.findall(r'\{\s*"input_i"\s*:\s*"[^"]+"[\s\S]*?\}',completed.stderr)
+    if len(chunks)!=1:
+        raise TopicRenderError("One real FFmpeg AAC observation JSON is required")
+    try:
+        measured=json.loads(chunks[0])
+        loud=float(measured["input_i"])
+        peak=float(measured["input_tp"])
+        lra=float(measured["input_lra"])
+    except (ValueError,KeyError,TypeError) as exc:
+        raise TopicRenderError("Invalid raw real encoded AAC observation") from exc
+    if (not all(math.isfinite(v) for v in (loud,peak,lra))
+        or not -31<loud<-7 or not -90<peak<=6 or not 0<=lra<80):
+        raise TopicRenderError("Grossly unsafe, silent or malformed raw encoded AAC")
+    return {
+        "integrated_lufs":round(loud,2),
+        "true_peak_dbtp":round(peak,2),
+        "loudness_range_lu":round(lra,2),
+        "typical_online_video_target_diagnostic":(-20<=loud<=-12 and peak<=-1.5),
+        "independent_human_listening_completed":False,
+        "raw_over_ceiling_only_for_repair":peak>0,
+    }
 
 
 def _repair_if_encoded_audio_out_of_band(mp4: Path) -> dict:
@@ -305,7 +339,7 @@ def _repair_if_encoded_audio_out_of_band(mp4: Path) -> dict:
                   "loudnorm=I=-16:LRA=9:TP=-3.8",
             "-movflags","+faststart","-y",str(revised),
         ],timeout=500)
-        after=_encoded_audio_loudness(revised)
+        after=_encoded_audio_loudness(revised,strict=True)
         if not after["typical_online_video_target_diagnostic"]:
             raise TopicRenderError(
                 "Real final AAC loudness repair failed strict independent gate: "

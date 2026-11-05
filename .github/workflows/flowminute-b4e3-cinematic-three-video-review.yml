@@ -6,12 +6,15 @@ on:
       - "autopilot/full_topic_narrated_pack.py"
       - "autopilot/cinematic_storyboard_v4.py"
       - "autopilot/test_cinematic_storyboard_v4.py"
+      - "autopilot/test_b4e3c_aac_recovery.py"
       - "autopilot/retain_cinematic_three_v3.py"
       - ".github/workflows/flowminute-b4e3-cinematic-three-video-review.yml"
       - "docs/adr/0043-b4e3-actual-three-encoded-cinematic-compare.md"
   push:
     branches: [main]
     paths:
+      - "autopilot/full_topic_narrated_pack.py"
+      - "autopilot/test_b4e3c_aac_recovery.py"
       - "autopilot/cinematic_storyboard_v4.py"
       - "autopilot/retain_cinematic_three_v3.py"
       - ".github/workflows/flowminute-b4e3-cinematic-three-video-review.yml"
@@ -58,11 +61,13 @@ jobs:
           set -euo pipefail
           python -B -m py_compile \
             autopilot/cinematic_storyboard_v4.py \
+            autopilot/test_b4e3c_aac_recovery.py \
             autopilot/test_cinematic_storyboard_v4.py \
             autopilot/retain_cinematic_three_v3.py \
             autopilot/full_topic_narrated_pack.py
           python -B -m unittest -v \
             autopilot.test_cinematic_storyboard_v4 \
+            autopilot.test_b4e3c_aac_recovery \
             autopilot.test_cinematic_scene_v3 \
             autopilot.test_polished_caption_v2 \
             autopilot.test_full_topic_narrated_pack \
