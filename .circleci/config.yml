@@ -1,0 +1,266 @@
+# Branch 2: hosted CI migration. Nothing here can deploy AWS or publish YouTube.
+# Requires the owner to connect Tirthanand17/taskless-lab to CircleCI first.
+# Full-video rendering is opt-in to avoid burning limited CircleCI Free credits.
+version: 2.1
+
+parameters:
+  full_media_regression:
+    type: boolean
+    default: false
+
+executors:
+  python_offline:
+    docker:
+      - image: cimg/python:3.11
+    resource_class: small
+    environment:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_MODEL_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PUBLISH_ENABLED: "false"
+
+jobs:
+  owner_cloud_stack_security:
+    executor: python_offline
+    steps:
+      - checkout
+      - run:
+          name: Official CloudFormation schema lint, NO DEPLOY
+          command: |
+            set -euo pipefail
+            python -m pip install --disable-pip-version-check 'cfn-lint>=1.34,<2'
+            cfn-lint --template infra/aws/owner-approved-private-media-escrow.cfn.json
+            echo "CIRCLECI_CFN_SCHEMA_VALID_NO_AWS_DEPLOY"
+      - run:
+          name: All offline owner account S3 KMS policy and read-only tests
+          command: |
+            set -euo pipefail
+            python -B -m unittest -v autopilot.test_owner_cloud_activation_preflight
+            python -B - <<'PY'
+            import json
+            from pathlib import Path
+            template=json.loads(Path("infra/aws/owner-approved-private-media-escrow.cfn.json").read_text())
+            assert len(template["Resources"]) == 3
+            assert all("Default" not in v for v in template["Parameters"].values())
+            assert template["Resources"]["PrivateMediaBucket"]["DeletionPolicy"] == "Retain"
+            assert template["Resources"]["PrivateMediaKey"]["DeletionPolicy"] == "Retain"
+            print("CIRCLECI_OWNER_DEPLOYMENT_REQUIRES_SEPARATE_REAL_CONSENT")
+            PY
+
+  repository_quality:
+    executor: python_offline
+    steps:
+      - checkout
+      - run:
+          name: Install public quality tools and ffmpeg only
+          command: |
+            set -euo pipefail
+            python -m pip install --disable-pip-version-check pytest 'cryptography>=46,<48'
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+      - run:
+          name: Complete Python repository quality and editorial-only checks
+          no_output_timeout: 15m
+          command: |
+            set -euo pipefail
+            python -m pytest -q
+            shopt -s nullglob
+            for f in content/episodes/*.json; do
+              python scripts/validate_release.py "$f" --editorial-only
+            done
+            echo "CIRCLECI_CONTENT_QUALITY_NO_YOUTUBE_WRITE"
+
+  source_and_review_contracts:
+    executor: python_offline
+    steps:
+      - checkout
+      - run:
+          name: Install public detached Ed25519 verifier
+          command: |
+            set -euo pipefail
+            python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
+      - run:
+          name: Original source visual claim and mock editorial integrity
+          command: |
+            set -euo pipefail
+            python -B -m unittest -v \
+              autopilot.test_primary_claim_surface_docket \
+              autopilot.test_primary_sourced_storyboards \
+              autopilot.test_version_pinned_review_boundary \
+              autopilot.test_private_versioned_media_escrow \
+              autopilot.test_mock_final_editorial_review \
+              autopilot.test_offline_cloud_identity_lint
+      - run:
+          name: Six actual official NASA NIST USGS public HTTPS source marker checks
+          command: |
+            set -euo pipefail
+            python -B -m autopilot.public_primary_readback
+            echo "CIRCLECI_SIX_SCIENTIFIC_PAGES_NOT_HUMAN_EDITORIAL_APPROVAL"
+
+  local_moto_versioned_s3:
+    executor: python_offline
+    steps:
+      - checkout
+      - run:
+          name: Install only boto3 and disposable localhost Moto
+          command: |
+            set -euo pipefail
+            python -m pip install --disable-pip-version-check \
+              'boto3>=1.35,<2' 'moto[server]>=5.1,<6' 'cryptography>=46,<48'
+      - run:
+          name: 213 synthetic media versions plus 21 fake review signatures over real localhost HTTP
+          no_output_timeout: 15m
+          command: |
+            set -euo pipefail
+            export FLOWMINUTE_LOCAL_MOTO_ENDPOINT=http://127.0.0.1:5000
+            moto_server -H 127.0.0.1 -p 5000 > /tmp/flowminute-circleci-moto.log 2>&1 &
+            server_pid=$!
+            trap 'kill "$server_pid" 2>/dev/null || true; rm -f /tmp/flowminute-circleci-moto.log' EXIT
+            ready=false
+            for attempt in $(seq 1 45); do
+              if curl -fsS --connect-timeout 2 --max-time 2 http://127.0.0.1:5000/ >/dev/null; then
+                ready=true
+                break
+              fi
+              sleep 1
+            done
+            test "$ready" = true || {
+              tail -n 20 /tmp/flowminute-circleci-moto.log
+              exit 1
+            }
+            python -B -m autopilot.ci_local_versioned_review_drill
+            echo "CIRCLECI_FAKE_S3_NO_REAL_AWS_KMS_MEDIA_OR_APPROVAL"
+
+  postgres_recovery:
+    docker:
+      - image: cimg/python:3.11
+        environment:
+          CI: "true"
+          PYTHONDONTWRITEBYTECODE: "1"
+          PYTHONUNBUFFERED: "1"
+          AWS_EC2_METADATA_DISABLED: "true"
+          FLOWMINUTE_ENABLE_GEMINI: "0"
+          FLOWMINUTE_ENABLE_PUBLISH: "0"
+          FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+          FLOWMINUTE_ALLOW_LAPTOP: "0"
+          FLOWMINUTE_B3D4C2B3A_ADMIN_DSN: "postgresql://flowminute_test:disposable_ci_service_only@127.0.0.1:5432/flowminute_fence_ci"
+          FLOWMINUTE_B3D4C2B3A_GATEWAY_TEST_PASSWORD: "only_fake_ci_gateway_pwd_01"
+          FLOWMINUTE_B3D4C2B3A_WORKER_TEST_PASSWORD: "only_fake_ci_worker_pwd_01"
+          FLOWMINUTE_B3D4C2B3A_AUDITOR_TEST_PASSWORD: "only_fake_ci_auditor_pwd_01"
+      - image: postgres:16
+        environment:
+          POSTGRES_DB: flowminute_fence_ci
+          POSTGRES_USER: flowminute_test
+          POSTGRES_PASSWORD: disposable_ci_service_only
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install actual PostgreSQL 16 backup client and psycopg
+          command: |
+            set -euo pipefail
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ca-certificates curl gnupg
+            curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+              | sudo gpg --dearmor -o /usr/share/keyrings/flowminute-pgdg.gpg
+            codename=$(. /etc/os-release; echo "$VERSION_CODENAME")
+            echo "deb [signed-by=/usr/share/keyrings/flowminute-pgdg.gpg] https://apt.postgresql.org/pub/repos/apt $codename-pgdg main" \
+              | sudo tee /etc/apt/sources.list.d/flowminute-pgdg.list >/dev/null
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq postgresql-client-16
+            python -m pip install --disable-pip-version-check \
+              'cryptography>=46,<48' 'psycopg[binary]>=3.2,<4'
+            pg_dump --version
+            pg_restore --version
+      - run:
+          name: Wait for local PostgreSQL 16 service
+          command: |
+            set -euo pipefail
+            for attempt in $(seq 1 60); do
+              if pg_isready -h 127.0.0.1 -p 5432 -U flowminute_test -d flowminute_fence_ci >/dev/null 2>&1; then
+                echo "CIRCLECI_POSTGRES_16_LOCAL_FIXTURE_READY"
+                exit 0
+              fi
+              sleep 2
+            done
+            exit 1
+      - run:
+          name: Actually test least privilege and pg_dump to independent restored test database
+          no_output_timeout: 15m
+          command: |
+            set -euo pipefail
+            python -B -m unittest -v autopilot.test_ci_protected_pg_boundary
+            python -B -m autopilot.ci_postgres_backup_restore_drill
+            echo "CIRCLECI_REAL_EPHEMERAL_POSTGRES_RESTORE_NO_PRODUCTION_DB"
+
+  optional_three_full_narrated_videos:
+    docker:
+      - image: cimg/python:3.11
+    resource_class: medium
+    environment:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PUBLISH_ENABLED: "false"
+      MODEL_SHA256: "ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c"
+      VOICES_SHA256: "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d"
+    steps:
+      - checkout
+      - run:
+          name: Install CPU Kokoro and FFmpeg original topic renderer
+          command: |
+            set -euo pipefail
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg espeak-ng libsndfile1 fonts-dejavu-core
+            python -m pip install --disable-pip-version-check \
+              'kokoro-onnx==0.6.1' 'soundfile>=0.12,<1' \
+              'Pillow>=11,<13' 'numpy>=1.26,<3' 'cairosvg>=2.7,<3' \
+              'cryptography>=46,<48'
+      - run:
+          name: Fetch original public Kokoro files with pinned SHA256
+          command: |
+            set -euo pipefail
+            mkdir -p /tmp/flowminute-circleci-kokoro
+            cd /tmp/flowminute-circleci-kokoro
+            root=https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1
+            curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 240 \
+              --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+            curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 180 \
+              --output voices-v1.0.bin "$root/voices-v1.0.bin"
+            printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+            printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+      - run:
+          name: Render and fully decode real 2 Shorts and 1 Long only upon opt-in
+          no_output_timeout: 30m
+          command: |
+            set -euo pipefail
+            trap 'rm -rf /tmp/flowminute-circleci-kokoro' EXIT
+            python -B -m autopilot.full_topic_narrated_pack \
+              --model /tmp/flowminute-circleci-kokoro/kokoro-v1.0.int8.onnx \
+              --voices /tmp/flowminute-circleci-kokoro/voices-v1.0.bin
+            test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+            echo "CIRCLECI_REAL_DRAFT_MEDIA_TEMPORARY_NEVER_PUBLISHED"
+
+workflows:
+  safe_branch_2_validation:
+    jobs:
+      - owner_cloud_stack_security
+      - repository_quality
+      - source_and_review_contracts
+      - local_moto_versioned_s3
+      - postgres_recovery
+
+  explicit_opt_in_expensive_media:
+    when: << pipeline.parameters.full_media_regression >>
+    jobs:
+      - optional_three_full_narrated_videos

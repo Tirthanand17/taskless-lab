@@ -1,0 +1,100 @@
+name: FlowMinute B3d4c2d3 Manual Owner Cloud Storage Stack Lint (NO DEPLOY)
+
+on:
+  pull_request:
+    paths:
+      - "infra/aws/owner-approved-private-media-escrow.cfn.json"
+      - "autopilot/owner_cloud_activation_preflight.py"
+      - "autopilot/test_owner_cloud_activation_preflight.py"
+      - ".github/workflows/flowminute-b3d4c2d3-owner-storage-preflight.yml"
+      - "docs/adr/0032-b3d4c2d3-owner-only-cloud-deployment-boundary.md"
+      - "docs/runbooks/branch2-private-cloud-owner-activation.md"
+      - "docs/status/branch2-completion-audit-2026-11-04.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b3d4c2d3-manual-template-validation-no-deploy
+  cancel-in-progress: true
+
+jobs:
+  strict_offline_owner_account_s3_kms_and_readonly_controls:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - name: Checkout untrusted pull request with no saved authorization
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: GitHub-hosted Python, not the owner's laptop
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate nested CloudFormation resource restrictions and fake STS/S3/KMS readbacks
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_owner_cloud_activation_preflight
+      - name: Enforce absence of deploy authority and actual owner/reviewer approval
+        run: |
+          set -euo pipefail
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          from autopilot.owner_cloud_activation_preflight import (
+              OwnerSelectedStorageScope,inspect_owner_selected_storage_readonly
+          )
+          t=json.loads(Path("infra/aws/owner-approved-private-media-escrow.cfn.json").read_text())
+          assert len(t["Resources"])==3
+          assert "OwnerApprovalReference" in t["Parameters"]
+          assert t["Resources"]["PrivateMediaBucket"]["DeletionPolicy"]=="Retain"
+          assert t["Resources"]["PrivateMediaKey"]["DeletionPolicy"]=="Retain"
+          assert not any("id-token" in str(t) for _ in (0,))
+          assert not hasattr(inspect_owner_selected_storage_readonly,"deploy")
+          print("B3D4C2D3_OWNER_ACCOUNT_RESOURCE_POLICY_LINT_ONLY_NO_AWS_CLIENT_OR_DEPLOY")
+          PY
+
+  official_cloudformation_schema_lint_only:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Checkout public PR, never use saved GitHub token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python on hosted runner
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install offline AWS CloudFormation template schema linter (never AWS SDK or credentials)
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cfn-lint>=1.34,<2'
+      - name: Real AWS resource schema validation, NO cloud network or CloudFormation deployment
+        run: |
+          set -euo pipefail
+          cfn-lint --template infra/aws/owner-approved-private-media-escrow.cfn.json
+          echo "B3D4C2D3_OFFICIAL_CLOUDFORMATION_VALIDATED_DEPLOY_NOT_CALLED"
