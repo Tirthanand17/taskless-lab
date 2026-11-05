@@ -177,7 +177,7 @@ def _draw_subject(d,topic:str,mode:str,amount:float,colors:dict,
                             radius=9,fill=ac)
         # A separate non-branded safety annotation emerges once. The UI is
         # explicitly fictional and never claims an AI detector found fraud.
-        panel_x=681+round(48*(1-amount))
+        panel_x=658+round(24*(1-amount))
         d.rounded_rectangle((panel_x,760,panel_x+297,1024),radius=22,
                             fill=(40,41,65),outline=ac,width=3)
         label(panel_x+20,798,"IDENTITY",25,col=sec)
