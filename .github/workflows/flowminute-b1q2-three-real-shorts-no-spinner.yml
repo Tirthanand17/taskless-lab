@@ -160,6 +160,9 @@ jobs:
               assert entry["physical_full_media"]["real_all_source_caption_text_in_srt_matches_pcm"] is True
               assert entry["visual_motion"]["perpetual_spinning_ring_absent"] is True
               assert entry["visual_motion"]["three_distinct_original_semantic_hero_subjects"] is True
+              assert entry["visual_motion"]["true_caption_and_hero_starts_bound_to_same_pcm"] is True
+              assert entry["visual_motion"]["actual_hero_pcm_max_start_drift_seconds"] <= 0.005
+              assert abs(entry["visual_motion"]["visual_ffconcat_total_with_silences_seconds"] - entry["visual_motion"]["actual_pcm_total_with_silences_seconds"]) <= 0.005
               assert entry["audio_actual_encoded_measurement"]["typical_online_video_target_diagnostic"] is True
               assert len(entry["files"])==7
               folder=root/entry["original_source_episode_id"]

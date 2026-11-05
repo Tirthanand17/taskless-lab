@@ -61,8 +61,15 @@ class SourceBoundNoSpinnerFullVideoCodeTests(unittest.TestCase):
                 self.assertTrue(altered["timed_ass_caption_overlay_required"])
                 self.assertFalse(receipt["timed_ass_caption_overlay_required"])
                 self.assertIsNone(ImageChops.difference(
-                    a.crop((0,0,1080,1410)),b.crop((0,0,1080,1410))).getbbox(),
-                    "Original science and heading must not change for native ASS")
+                    a.crop((0,0,1080,300)),b.crop((0,0,1080,300))).getbbox(),
+                    "Native intro and theme labels must remain identical")
+                self.assertIsNotNone(ImageChops.difference(
+                    a.crop((0,301,1080,495)),b.crop((0,301,1080,495))).getbbox(),
+                    "Native video must replace giant duplicated original sentence with short theme headline")
+                self.assertIsNone(ImageChops.difference(
+                    a.crop((0,495,1080,1410)),b.crop((0,495,1080,1410))).getbbox(),
+                    "Original source artwork above the ASS subtitle band must remain unchanged")
+                self.assertFalse(altered["hero_headline_repeats_full_spoken_sentence"])
                 self.assertIsNotNone(ImageChops.difference(
                     a.crop((80,1410,999,1650)),b.crop((80,1410,999,1650))).getbbox(),
                     "Timed overlay must remove static captions to prevent doubled words")
@@ -153,10 +160,15 @@ class RealFrameAndPcmCuesWithoutThirdPartyModelTests(unittest.TestCase):
             root=Path(tmp)
             wav,cues,total,rec=original_pcm_and_measured_cues(
                 self.FakeNoCredentialVoiceEngine(),episode,root,voice)
-            cat,drawn,visual=original_animated_keyframe_timeline(episode,cues,root)
+            cat,drawn,visual=original_animated_keyframe_timeline(
+                episode,cues,root,spoken_total=total)
             self.assertGreaterEqual(drawn,len(cues)*3)
             self.assertGreater(cat.stat().st_size,250)
             self.assertTrue(visual["perpetual_spinning_ring_absent"])
+            self.assertTrue(visual["true_caption_and_hero_starts_bound_to_same_pcm"])
+            self.assertEqual(visual["actual_hero_pcm_max_start_drift_seconds"],0)
+            self.assertAlmostEqual(
+                visual["visual_ffconcat_total_with_silences_seconds"],total,places=2)
             self.assertEqual(len({x["original_visual_motion"] for x in cues}),8)
             self.assertTrue(visual["three_distinct_original_semantic_hero_subjects"])
             self.assertEqual(len(list(root.glob("motion_*.png"))),drawn)
