@@ -116,6 +116,12 @@ class NoRepeatedSpinnerSourceCreativeTests(unittest.TestCase):
                 )
                 image_a,receipt=draw_source_keyframe(source,0,.2)
                 image_b,_=draw_source_keyframe(source,0,.82)
+                variants={
+                    draw_source_keyframe(source,index,.82)[1]["distinct_original_visual_subject"]
+                    for index in (0,len(cues)//2,len(cues)-1)
+                }
+                self.assertEqual(len(variants),3,
+                    "Three genuinely different hero compositions required per original Short")
                 self.assertEqual(image_a.size,(1080,1920))
                 self.assertEqual(receipt["status"],ART_STATUS)
                 self.assertFalse(receipt["youtube_uploaded"])
