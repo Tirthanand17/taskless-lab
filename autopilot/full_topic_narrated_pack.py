@@ -209,13 +209,25 @@ def _topic_png(
     # Opt-in B4e3 original dimensional story artwork, composited BEFORE
     # the existing native-resolution subtitle-safe mask. Historical CI/demo
     # jobs remain explicitly classic_v2 until actual owner quality review.
-    if visual_style=="cinematic_v3":
-        from autopilot.cinematic_storyboard_v4 import paint_source_story_scene
-        receipt=paint_source_story_scene(rgb,story=story,scene_index=idx,tick=tick)
-        if (receipt["release_authorized"] is not False
-            or receipt["original_reference_media_imported"] is not False
-            or receipt["visual_scene_source_story_sha256"]!=story["draft_sha256"]):
-            raise TopicRenderError("Cinematic illustration forged approval or story source")
+    if visual_style in ("cinematic_v3","floating_v6"):
+        if visual_style=="cinematic_v3":
+            from autopilot.cinematic_storyboard_v4 import paint_source_story_scene
+            receipt=paint_source_story_scene(rgb,story=story,scene_index=idx,tick=tick)
+            if (receipt["release_authorized"] is not False
+                or receipt["original_reference_media_imported"] is not False
+                or receipt["visual_scene_source_story_sha256"]!=story["draft_sha256"]):
+                raise TopicRenderError("Cinematic illustration forged approval or story source")
+        else:
+            # New original B4e4b SOURCE-only floating art, now a deliberate
+            # video opt-in after physical 32-scene full-native pixel proof.
+            from autopilot.floating_cinematic_v6 import paint_floating_original_beat
+            receipt=paint_floating_original_beat(
+                rgb,story=story,scene_index=idx,tick=tick)
+            if (receipt["release_authorized"] is not False
+                or receipt["reference_clip_media_reused"] is not False
+                or receipt["source_story_draft_sha256"]!=story["draft_sha256"]
+                or receipt["old_bordered_presentation_panel_removed"] is not True):
+                raise TopicRenderError("Unboxed scene forged owner approval, origin or source")
         # After composing the SAME original 2.5D art, remove only the
         # badly placed legacy SVG type and footer. Native ASS band and hero
         # remain bitwise unchanged; every source's real text is preserved.
@@ -244,7 +256,7 @@ def _topic_png(
     # A subtle progress rail is inside the measured natural gap between the
     # hero-object panel and the native ASS caption band, for BOTH formats.
     w,h=rgb.size
-    if visual_style=="cinematic_v3":
+    if visual_style in ("cinematic_v3","floating_v6"):
         from autopilot.cinematic_scene_v3 import SCENE_PANEL
         pane=SCENE_PANEL[story["format"]]
         safe_top=CAPTION_CONFIG[story["format"]]["safe_top"]
@@ -267,7 +279,7 @@ def _topic_png(
     # This genuine reserved band matches explicitly scaled ASS PlayRes pixels.
     caption_area=CAPTION_CONFIG[story["format"]]
     safe_top,safe_bottom=caption_area["safe_top"],caption_area["safe_bottom"]
-    if y+(10 if visual_style=="cinematic_v3" else 28)>=safe_top:
+    if y+(10 if visual_style in ("cinematic_v3","floating_v6") else 28)>=safe_top:
         raise TopicRenderError("Animated source indicator intrudes into caption-safe band")
     d.rectangle((0,safe_top,w,safe_bottom),fill=(7,12,23))
     d.line((66,safe_top,w-66,safe_top),fill=accent,width=3)
@@ -542,7 +554,7 @@ def render_full_topic_video(
     *,visual_style: str="classic_v2",
 ) -> tuple[dict,ExampleEpisode]:
     """Actual ephemeral full narration/animated render, no release authority."""
-    if visual_style not in ("classic_v2","cinematic_v3"):
+    if visual_style not in ("classic_v2","cinematic_v3","floating_v6"):
         raise TopicRenderError("Unknown visual mode; no implicit published video change")
     episode=episode_from_research_story(story)
     root=Path(root)
@@ -602,9 +614,12 @@ def render_full_topic_video(
         "original_source_ids":sorted(story["primary_sources"]),
         "original_animated_svg_frame_count":len(all_motion_hashes),
         "b4e3_visual_style":visual_style,
-        "b4e3_original_dimensional_scenes_encoded":visual_style=="cinematic_v3",
+        "b4e3_original_dimensional_scenes_encoded":
+            visual_style in ("cinematic_v3","floating_v6"),
         "b4e4_source_exact_nonoverlapping_editorial_grid":
-            visual_style=="cinematic_v3",
+            visual_style in ("cinematic_v3","floating_v6"),
+        "b4e4c_original_floating_unboxed_hero_in_actual_encoded_video":
+            visual_style=="floating_v6",
         "b4e3_real_modelled_3d_claimed":False,
         "b4e3_owner_creative_approval":False,
         "original_svg_frames_really_animated":True,
