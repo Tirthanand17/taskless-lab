@@ -191,7 +191,10 @@ def visible_topic_motion_pulse(story: dict, tick: int) -> tuple[int,int]:
     return round(90+(w-180)*tick/120),round(h*(.645 if story["format"]=="short" else .62))
 
 
-def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
+def _topic_png(
+    story: dict,idx: int,tick: int,output: Path,
+    *,visual_style: str="classic_v2",
+) -> str:
     import cairosvg
     from PIL import Image,ImageDraw
     svg=render_original_svg(story,idx,tick)
@@ -203,6 +206,18 @@ def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
         if im.size!=expected:
             raise TopicRenderError("Wrong original full-scene vector dimensions")
         rgb=im.convert("RGB")
+    # Opt-in B4e3 original dimensional story artwork, composited BEFORE
+    # the existing native-resolution subtitle-safe mask. Historical CI/demo
+    # jobs remain explicitly classic_v2 until actual owner quality review.
+    if visual_style=="cinematic_v3":
+        from autopilot.cinematic_storyboard_v4 import paint_source_story_scene
+        receipt=paint_source_story_scene(rgb,story=story,scene_index=idx,tick=tick)
+        if (receipt["release_authorized"] is not False
+            or receipt["original_reference_media_imported"] is not False
+            or receipt["visual_scene_source_story_sha256"]!=story["draft_sha256"]):
+            raise TopicRenderError("Cinematic illustration forged approval or story source")
+    elif visual_style!="classic_v2":
+        raise TopicRenderError("Unknown or unreviewed original video visual style")
     # A fixed dark, consistently safe caption strip in each source frame.
     # Burned captions are added later by FFmpeg and checked independently.
     d=ImageDraw.Draw(rgb)
@@ -212,20 +227,36 @@ def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
         "file_transfer":(111,222,188),
         "quake_energy":(248,158,99),
     }[story["theme"]]
-    # Original moving signal/packet/energy node lives in the main visible
-    # field, never under the opaque subtitle panel at the bottom.
+    # B4e3 removes the earlier heavy full-canvas progress rule from
+    # CINEMATIC videos: it cut straight through their 2.5D illustrations.
+    # A subtle progress rail is inside the measured natural gap between the
+    # hero-object panel and the native ASS caption band, for BOTH formats.
     w,h=rgb.size
-    d.line((90,y,w-90,y),fill=accent,width=5)
-    d.ellipse((x-20,y-20,x+20,y+20),fill=(246,248,254),
-              outline=accent,width=7)
-    d.ellipse((x-8,y-8,x+8,y+8),fill=accent)
+    if visual_style=="cinematic_v3":
+        from autopilot.cinematic_scene_v3 import SCENE_PANEL
+        pane=SCENE_PANEL[story["format"]]
+        safe_top=CAPTION_CONFIG[story["format"]]["safe_top"]
+        y=(pane[3]+safe_top)//2
+        start_x,end_x=pane[0]+85,pane[2]-85
+        x=round(start_x+(end_x-start_x)*tick/120)
+        restrained=tuple(max(0,round(c*.48)) for c in accent)
+        d.line((start_x,y,end_x,y),fill=restrained,width=2)
+        d.ellipse((x-7,y-7,x+7,y+7),fill=accent)
+        if y+10>=safe_top or y-10<=pane[3]:
+            raise TopicRenderError("Minimal film progress rail intruded into hero or captions")
+    else:
+        # Historical v2 default retained for direct old/new comparison.
+        d.line((90,y,w-90,y),fill=accent,width=5)
+        d.ellipse((x-20,y-20,x+20,y+20),fill=(246,248,254),
+                  outline=accent,width=7)
+        d.ellipse((x-8,y-8,x+8,y+8),fill=accent)
     # B4e1: do not show any central art behind subtitle cards; the prior
     # bottom-right rounded panel was below SRT's actual huge rendered glyphs.
     # This genuine reserved band matches explicitly scaled ASS PlayRes pixels.
     caption_area=CAPTION_CONFIG[story["format"]]
     safe_top,safe_bottom=caption_area["safe_top"],caption_area["safe_bottom"]
-    if y+28>=safe_top:
-        raise TopicRenderError("Animated source dot intrudes into caption-safe band")
+    if y+(10 if visual_style=="cinematic_v3" else 28)>=safe_top:
+        raise TopicRenderError("Animated source indicator intrudes into caption-safe band")
     d.rectangle((0,safe_top,w,safe_bottom),fill=(7,12,23))
     d.line((66,safe_top,w-66,safe_top),fill=accent,width=3)
     # Bottom is intentionally visually quiet, unlike old large empty boxes.
@@ -234,6 +265,56 @@ def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
     if size<1500:
         raise TopicRenderError("Blank or empty original SVG-produced frame")
     return digest
+
+
+def _encoded_audio_loudness(mp4: Path) -> dict:
+    """Observe *encoded AAC*, not pre-export WAV. No human speech approval."""
+    import subprocess
+    from autopilot.independent_av_review import parse_loudnorm
+    try:
+        completed=subprocess.run([
+            "ffmpeg","-hide_banner","-nostdin","-nostats",
+            "-i",str(mp4),"-map","0:a:0",
+            "-af","loudnorm=print_format=json","-f","null","-",
+        ],capture_output=True,text=True,timeout=420,check=True)
+    except (OSError,subprocess.SubprocessError) as exc:
+        raise TopicRenderError("Could not independently inspect real AAC loudness") from exc
+    return parse_loudnorm(completed.stderr)
+
+
+def _repair_if_encoded_audio_out_of_band(mp4: Path) -> dict:
+    """One bounded REAL AAC correction, keeping the complete H264 bitstream.
+
+    Single-pass loudnorm may miss strict true-peak bounds after AAC encoding,
+    and different Kokoro voices have different original crest factors.
+    Never disable the independent -20..-12 LUFS / <= -1.5 dBTP gate.
+    """
+    first=_encoded_audio_loudness(mp4)
+    if first["typical_online_video_target_diagnostic"]:
+        return {"aac_normalized_after_encode":True,
+                "aac_loudness_repair_passes":0,**first}
+    with TemporaryDirectory(prefix="fm-b4e3-encoded-audio-repair-") as tmp:
+        revised=Path(tmp)/"voice_fixed.aac_muxed.mp4"
+        # Mild deterministic dynamic-range control only if first *actual
+        # encoded* AAC failed technical loudness. No external music or SFX.
+        run([
+            "ffmpeg","-nostdin","-hide_banner","-loglevel","error",
+            "-i",str(mp4),"-map","0:v:0","-map","0:a:0",
+            "-c:v","copy","-c:a","aac","-b:a","128k",
+            "-af","acompressor=threshold=0.08:ratio=2.5:attack=12:release=200:makeup=1,"
+                  "loudnorm=I=-16:LRA=9:TP=-3.8",
+            "-movflags","+faststart","-y",str(revised),
+        ],timeout=500)
+        after=_encoded_audio_loudness(revised)
+        if not after["typical_online_video_target_diagnostic"]:
+            raise TopicRenderError(
+                "Real final AAC loudness repair failed strict independent gate: "
+                +json.dumps({"original":first,"after":after},sort_keys=True))
+        if revised.stat().st_size<40000 or mp4.stat().st_size<40000:
+            raise TopicRenderError("Audio repaired MP4 became truncated")
+        revised.replace(mp4)
+    return {"aac_normalized_after_encode":True,
+            "aac_loudness_repair_passes":1,**after}
 
 
 def _encode_moving_topic(
@@ -272,12 +353,20 @@ def _encode_moving_topic(
         "-map","[v]","-map","1:a:0",
         "-c:v","libx264","-preset","ultrafast","-crf","30",
         "-pix_fmt","yuv420p","-threads","2",
-        "-af","loudnorm=I=-16:LRA=9:TP=-2,alimiter=limit=0.50:level=0",
+        # FFmpeg loudnorm already implements a true-peak limiter at -2 dBTP.
+        # The old EXTRA 0.50FS alimiter was dropping quieter voice output
+        # below the independent -20 LUFS lower bound on a genuine third Short.
+        # Keep speech loud and intelligible without weakening the independent
+        # audible-content range (-20 to -12 LUFS / <= -1.5 dBTP).
+        "-af","loudnorm=I=-16:LRA=9:TP=-3.5",
         "-c:a","aac","-b:a","128k",
         "-t",f"{total:.4f}","-movflags","+faststart",
         "-y",str(out),
     ],timeout=1600)
     caption_tmp.cleanup()
+    # Do not ship a voiced artifact solely on the assumption that FFmpeg's
+    # loudnorm request survived lossy AAC; observe and repair AAC if needed.
+    _repair_if_encoded_audio_out_of_band(out)
     return out
 
 
@@ -377,8 +466,11 @@ def prepare_story_timing(story: dict) -> dict:
 
 def render_full_topic_video(
     story: dict, voice_engine, root: Path,
+    *,visual_style: str="classic_v2",
 ) -> tuple[dict,ExampleEpisode]:
     """Actual ephemeral full narration/animated render, no release authority."""
+    if visual_style not in ("classic_v2","cinematic_v3"):
+        raise TopicRenderError("Unknown visual mode; no implicit published video change")
     episode=episode_from_research_story(story)
     root=Path(root)
     if root.is_symlink() or not root.is_dir() or any(root.iterdir()):
@@ -404,7 +496,7 @@ def render_full_topic_video(
         group=[]
         for j in range(FRAMES_PER_SCENE):
             path=folder/f"moving_{i+1:02d}_{j:02d}.png"
-            digest=_topic_png(story,i,j*24,path)
+            digest=_topic_png(story,i,j*24,path,visual_style=visual_style)
             group.append(path)
             all_motion_hashes.append(digest)
         frame_groups.append(group)
@@ -436,6 +528,10 @@ def render_full_topic_video(
         "original_research_topics":story["theme"],
         "original_source_ids":sorted(story["primary_sources"]),
         "original_animated_svg_frame_count":len(all_motion_hashes),
+        "b4e3_visual_style":visual_style,
+        "b4e3_original_dimensional_scenes_encoded":visual_style=="cinematic_v3",
+        "b4e3_real_modelled_3d_claimed":False,
+        "b4e3_owner_creative_approval":False,
         "original_svg_frames_really_animated":True,
         "original_programmatic_low_level_ambient_sha256":original_tone_sha,
         "original_ui_sound_effects_count":sfx_report["original_programmatic_effects"],
