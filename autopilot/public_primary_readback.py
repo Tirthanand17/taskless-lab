@@ -14,7 +14,6 @@ from hashlib import sha256
 from html.parser import HTMLParser
 import re
 import ssl
-import time
 from typing import Callable, Mapping
 from urllib.parse import urlsplit
 from urllib.request import Request, build_opener, HTTPSHandler, HTTPRedirectHandler
@@ -98,26 +97,15 @@ def _live_fetch(url:str)->tuple[str,str,bytes]:
         "User-Agent":"FlowminuteLab-public-primary-source-research/1.0",
         "Accept":"text/html,application/xhtml+xml;q=0.9",
     },method="GET")
-    # Unreliable NASA/NIST/USGS upstream TLS response is NOT a failed fact
-    # claim. One bounded retry keeps the primary-page gate strict: both
-    # attempts must still honor same allowlist, TLS, redirect and body limits;
-    # if upstream stays down, DO NOT claim source readback or rights approval.
-    for attempt in range(2):
-        redirect.redirects=0
-        try:
-            with opener.open(req,timeout=28) as response:
-                final=response.geturl()
-                _require_https_authority(final)
-                content_type=response.headers.get("Content-Type","").split(";")[0].strip().lower()
-                body=response.read(MAX_HTML+1)
-                return final,content_type,body
-        except SourceReadbackError:
-            raise
-        except (TimeoutError,OSError) as exc:
-            if attempt:
-                raise SourceReadbackError("Official HTTPS page inaccessible after bounded retry") from exc
-            time.sleep(0.5)
-    raise SourceReadbackError("Official HTTPS source unavailable")
+    try:
+        with opener.open(req,timeout=28) as response:
+            final=response.geturl()
+            _require_https_authority(final)
+            content_type=response.headers.get("Content-Type","").split(";")[0].strip().lower()
+            body=response.read(MAX_HTML+1)
+    except (TimeoutError,OSError,ValueError) as exc:
+        raise SourceReadbackError("Official HTTPS page inaccessible") from exc
+    return final,content_type,body
 
 
 def parse_official_page(*,source_id:str,url:str,final_url:str,
