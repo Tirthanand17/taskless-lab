@@ -11,7 +11,6 @@ NASA/NIST/USGS authored draft; no fresh claim generation or network.
 from __future__ import annotations
 
 from hashlib import sha256
-from PIL import Image,ImageDraw,ImageFont,ImageChops
 from autopilot.cinematic_scene_v3 import (
     paint_original_premium_scene,PALETTE,SCENE_PANEL,CinematicSceneRejected,
 )
@@ -20,6 +19,7 @@ from autopilot.primary_sourced_storyboards import require_exact_draft
 STATUS="B4E3_THREE_STORY_FORMATS_ORIGINAL_SOURCE_OBJECT_SHOTS_UNAPPROVED"
 
 def _font(size):
+    from PIL import ImageFont
     if type(size) is not int or not 14<=size<=48:
         raise CinematicSceneRejected("Caption/source UI font outside measured bounds")
     try:
@@ -201,6 +201,7 @@ def paint_source_story_scene(image,*,story:dict,scene_index:int,tick:int)->dict:
         or not 0<=scene_index<story["scene_count"] or not 0<=tick<=120):
         raise CinematicSceneRejected("Invalid beat index or motion phase")
     kind=story["format"]; theme=story["theme"]
+    from PIL import ImageDraw,ImageChops
     before=image.copy()
     receipt=paint_original_premium_scene(
         image,theme=theme,kind=kind,scene_index=scene_index,
