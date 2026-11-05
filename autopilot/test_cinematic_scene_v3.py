@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import importlib.util
 from hashlib import sha256
 from pathlib import Path
 import tempfile
@@ -13,6 +14,9 @@ from autopilot.cinematic_scene_v3 import (
 )
 
 
+@unittest.skipUnless(importlib.util.find_spec('PIL') is not None and
+                     importlib.util.find_spec('cairosvg') is not None,
+                     'Physical storyboard QA is mandatory in dedicated hosted B4e2 job with Pillow+CairoSVG')
 class OriginalCinematicSceneTests(unittest.TestCase):
     def test_all_three_original_topics_have_real_distinct_pixel_art(self):
         from PIL import Image,ImageChops
