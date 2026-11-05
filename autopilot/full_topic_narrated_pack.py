@@ -464,7 +464,11 @@ def render_full_topic_video(
     # finished MP4, real burned captions, voice loudness and later scenes.
     observed=review_encoded_episode(
         folder,episode,
-        report_entry={"episode":episode.episode_id,"seconds":report["seconds"]},
+        report_entry={
+            "episode":episode.episode_id,
+            "seconds":report["seconds"],
+            "caption_layout_version":"B4E1_NATIVE_ASS_MICROCARDS",
+        },
     )
     if (
         observed["burned_caption_independently_observed"] is not True
@@ -477,6 +481,7 @@ def render_full_topic_video(
         "exact_original_media_inventory_sha256":inventory["draft_asset_inventory_sha256"],
         "exact_original_asset_count":inventory["asset_count"],
         "actual_ffmpeg_caption_changed_pixels":observed["caption_visible_changed_pixels"],
+        "b4e1_native_ass_safe_band_independently_verified":observed["native_caption_safe_band_independently_checked"],
         "actual_ffmpeg_scene_changed_pixels":observed["first_to_later_scene_changed_pixels"],
         "actual_audio_lufs":observed["ffmpeg_actual_encoded_audio"]["integrated_lufs"],
         "actual_audio_peak_dbtp":observed["ffmpeg_actual_encoded_audio"]["true_peak_dbtp"],
