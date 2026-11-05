@@ -92,11 +92,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Require local ffprobe, GitHub CLI and no publisher permissions
+      - name: Install system FFprobe for independent real-video metadata readback
         run: |
           set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
           command -v ffprobe
           command -v gh
+          ffprobe -version | head -n 1
       - name: Independently confirm exact old main artifact and video SHA provenance
         run: |
           set -euo pipefail
