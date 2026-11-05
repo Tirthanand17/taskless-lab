@@ -91,8 +91,8 @@ def _video_states(youtube, ids: set[str], *, uploads: set[str]) -> dict:
     for first in range(0, len(ordered), BATCH):
         subset = ordered[first:first+BATCH]
         response = _external(lambda: youtube.videos().list(
-            part="id,snippet,status", id=",".join(subset),
-            maxResults=BATCH).execute(), "Owner videos.list status read unavailable")
+            part="id,snippet,status", id=",".join(subset)
+            ).execute(), "Owner videos.list status read unavailable")
         items = response.get("items")
         if type(items) is not list or len(items) > BATCH:
             raise ReadonlyScheduleRejected("Owner video statuses malformed or incomplete")
