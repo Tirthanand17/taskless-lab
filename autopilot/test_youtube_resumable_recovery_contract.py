@@ -157,6 +157,15 @@ class ProbeInterpretationTests(unittest.TestCase):
                 with self.assertRaises(RecoveryRefused):
                     make_status_probe(nxt)
 
+    def test_308_valid_retry_after_is_explicitly_carried_into_resume_plan(self):
+        nxt,p=interpret_fake_status_reply(
+            session(size=1000),status_code=308,
+            response_headers={"Range":"bytes=0-499","Retry-After":"15"})
+        self.assertEqual(p.action,"RESUME_EXISTING_SESSION_BYTES_ONLY")
+        self.assertEqual(p.min_delay_seconds,15)
+        self.assertEqual(p.headers["Content-Range"],"bytes 500-999/1000")
+        self.assertEqual(nxt.acknowledged_end,499)
+
     def test_308_completion_body_is_protocol_violation(self):
         s,d=interpret_fake_status_reply(session(),status_code=308,
                     response_headers={"Range":"bytes=0-12"},
@@ -173,6 +182,7 @@ class ProbeInterpretationTests(unittest.TestCase):
                 self.assertTrue(p.same_session_only)
                 self.assertIn("7 seconds",p.reason)
                 self.assertEqual(nxt.transient_responses,1)
+                self.assertEqual(p.min_delay_seconds,7)
                 self.assertEqual(nxt.state,"PROBE_REQUIRED")
 
     def test_failure_budget_stops_not_creates_fresh_session(self):
