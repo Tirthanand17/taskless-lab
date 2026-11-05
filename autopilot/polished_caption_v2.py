@@ -65,23 +65,6 @@ def _pack_two_lines(words:list[str],kind:str)->list[tuple[str,...]]:
     max_chars,max_words=cfg["line_chars"],cfg["words"]
     if any(len(w)>max_chars for w in words):
         raise CaptionQualityRejected("Overlong word needs editorial shortening")
-    cards=[]
-    current=[]
-    line=""
-    for word in words:
-        would_be=f"{line} {word}".strip()
-        if len(would_be)<=max_chars and len(current)<max_words:
-            line=would_be
-            current.append(word)
-            continue
-        # One current line full: allow a second line only if card word
-        # budget remains; do not add a third line or carry giant paragraphs.
-        if not current:
-            raise CaptionQualityRejected("Cannot lay out original cue")
-        if not cards or cards[-1] is not None:
-            pass
-        # Use a current line list maintained separately in the final pass.
-        break
     # Deterministic first-fit each card, maximum TWO lines and MAX words.
     cards=[]
     k=0
