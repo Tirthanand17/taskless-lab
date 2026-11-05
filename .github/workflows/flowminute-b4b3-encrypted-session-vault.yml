@@ -1,0 +1,125 @@
+name: FlowMinute B4b3 Real PG AES-256-GCM CI-Only Session Vault (NO UPLOAD)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/sql/004_ci_youtube_encrypted_session.sql"
+      - "autopilot/ci_youtube_encrypted_session_vault.py"
+      - "autopilot/test_ci_youtube_encrypted_session_vault.py"
+      - "autopilot/ci_youtube_attempt_fence.py"
+      - "autopilot/sql/003_ci_youtube_mock_attempt_fence.sql"
+      - ".github/workflows/flowminute-b4b3-encrypted-session-vault.yml"
+      - "docs/adr/0036-b4b3-ci-encrypted-session-checkpoint.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4b3-disposable-pg16-encrypted-session-only
+  cancel-in-progress: true
+
+jobs:
+  postgres_aesgcm_session_recovery_isolated_only:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      CI: "true"
+      PYTHONUNBUFFERED: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_B3D4C2B3A_ADMIN_DSN: "postgresql://flowminute_test:disposable_ci_service_only@127.0.0.1:5432/flowminute_fence_ci"
+      FLOWMINUTE_B3D4C2B3A_GATEWAY_TEST_PASSWORD: "only_fake_ci_gateway_pwd_01"
+      FLOWMINUTE_B3D4C2B3A_WORKER_TEST_PASSWORD: "only_fake_ci_worker_pwd_01"
+      FLOWMINUTE_B3D4C2B3A_AUDITOR_TEST_PASSWORD: "only_fake_ci_auditor_pwd_01"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: flowminute_fence_ci
+          POSTGRES_USER: flowminute_test
+          POSTGRES_PASSWORD: disposable_ci_service_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U flowminute_test -d flowminute_fence_ci"
+          --health-interval 5s
+          --health-timeout 4s
+          --health-retries 12
+    steps:
+      - name: Read only PR checkout with no persistent repo credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Hosted disposable Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install open-source PostgreSQL and cryptography test dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check \
+            'psycopg[binary]>=3.2,<4' 'cryptography>=46,<48'
+      - name: Real PG16 SQL 002 role bootstrap and existing privilege checks
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v autopilot.test_ci_protected_pg_boundary \
+            2>&1 | tee /tmp/b4b3_setup_002.log
+          if grep -Ei '(skipped|FAILED|ERROR)' /tmp/b4b3_setup_002.log; then
+            echo 'Required real Postgres 002 bootstrap failed or skipped'
+            exit 1
+          fi
+      - name: Real PG16 SQL 003 duplicate-upload attempt fence tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v autopilot.test_ci_youtube_attempt_fence \
+            2>&1 | tee /tmp/b4b3_setup_003.log
+          if grep -Ei '(skipped|FAILED|ERROR)' /tmp/b4b3_setup_003.log; then
+            echo 'Required real Postgres 003 one-shot attempt tests failed or skipped'
+            exit 1
+          fi
+      - name: Real PG16 SQL 004 encrypted-session and adversarial recovery tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v autopilot.test_ci_youtube_encrypted_session_vault \
+            2>&1 | tee /tmp/b4b3_pg_aes_gcm_tests.log
+          if grep -Ei '(skipped|FAILED|ERROR)' /tmp/b4b3_pg_aes_gcm_tests.log; then
+            echo 'Required real Postgres 004 encrypted-session tests failed or skipped'
+            exit 1
+          fi
+      - name: Enforce mock handle only, no real YouTube or cloud/secret APIs
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          p=Path("autopilot/ci_youtube_encrypted_session_vault.py")
+          source=p.read_text(encoding="utf-8")
+          bad=("googleapiclient","google.auth","boto3","requests","urllib",
+               "socket","subprocess","os","paramiko","httpx","aiohttp")
+          for node in ast.walk(ast.parse(source)):
+              if isinstance(node,ast.Import):
+                  for mod in node.names:
+                      assert not mod.name.startswith(bad),mod.name
+              elif isinstance(node,ast.ImportFrom):
+                  assert not (node.module or "").startswith(bad),node.module
+          for token in ("YOUTUBE_TOKEN_JSON","AWS_ACCESS_KEY_ID","https://www.googleapis.com/upload",
+                        "videos().insert","cloudkms.googleapis.com"):
+              assert token not in source,token
+          from autopilot.ci_youtube_encrypted_session_vault import FAKE_HANDLE
+          assert FAKE_HANDLE.fullmatch("fake-session:CI_Synthetic_Unique_001__")
+          assert FAKE_HANDLE.fullmatch("https://www.googleapis.com/") is None
+          print("B4B3_ONLY_SYNTHETIC_AES_GCM_AND_DISPOSABLE_POSTGRES")
+          PY
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+          test "$PUBLISH_ENABLED" = false
+          echo 'B4B3_0_REAL_OAUTH_UPLOAD_CLOUD_DEPLOYMENT_OR_RELEASE'
