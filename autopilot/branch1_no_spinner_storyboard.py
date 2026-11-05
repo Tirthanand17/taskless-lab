@@ -284,7 +284,8 @@ def storyboard_cues(episode:dict)->list[dict]:
 
 
 def draw_source_keyframe(episode:dict,beat:int,phase:float,
-                         *,caption_layer:str="original_source_proof"):
+                         *,caption_layer:str="original_source_proof",
+                         hero_zoom:str="expanded"):
     """One visual beat, separate original static-preview vs burned-ASS modes.
 
     In an actual MP4, the original captions must be displayed by timed native
@@ -293,6 +294,8 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float,
     from PIL import Image,ImageDraw
     if caption_layer not in ("original_source_proof","timed_ass_overlay"):
         raise NoSpinnerVisualRejected("Only verified native caption rendering modes")
+    if hero_zoom not in ("expanded","original"):
+        raise NoSpinnerVisualRejected("Only original source or bounded focal hero layout allowed")
     cues=storyboard_cues(episode)
     if type(beat) is not int or not 0<=beat<len(cues):
         raise NoSpinnerVisualRejected("Unrecognized original beat")
@@ -318,6 +321,17 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float,
                 font_size=51,max_lines=3,fill=(238,246,252))
     hero_variant=_draw_subject(d,topic,cues[beat]["motion_mode"],t,colors,
                               beat=beat,total=len(cues))
+    # B1q3 focal visual composition: the physically inspected MP4 frame
+    # leaves the main object too small. Only this bounded hero region is
+    # enlarged; owner-source heading y0..494, native ASS y1410..1650,
+    # quiet footer y1650..1919 and their text remain pixel-identical.
+    # B1q2b's PCM-derived scene timeline and timed subtitles are untouched.
+    if hero_zoom=="expanded":
+        from PIL import Image
+        original_hero=image.crop((88,495,992,1325))
+        focal=original_hero.resize((1016,880),Image.Resampling.LANCZOS)
+        d.rectangle((0,495,1079,1383),fill=colors["bg"])
+        image.paste(focal,(31,500))
     # Genuine caption safe band, no art or overlays bleed into subtitles.
     d.rounded_rectangle((82,1410,998,1650),radius=16,fill=(7,14,27))
     if caption_layer=="original_source_proof":
@@ -339,6 +353,8 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float,
         "hero_editorial_headline":headline,
         "hero_headline_repeats_full_spoken_sentence":
             headline==cues[beat]["source_text"],
+        "original_subject_focal_zoom":hero_zoom,
+        "original_subject_focal_zoom_bounded_to_y495_1383":hero_zoom=="expanded",
         "timed_ass_caption_overlay_required":caption_layer=="timed_ass_overlay",
         "original_recording_or_reference_reused":False,
         "full_video_encoded":False,
