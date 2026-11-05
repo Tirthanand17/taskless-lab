@@ -1,0 +1,189 @@
+name: FlowMinute B1q2 REAL Three Narrated Shorts No Repeating Spinner (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_no_spinner_storyboard.py"
+      - "autopilot/branch1_three_narrated_no_spinner_v2.py"
+      - "autopilot/test_branch1_narrated_no_spinner_v2.py"
+      - ".github/workflows/flowminute-b1q2-three-real-shorts-no-spinner.yml"
+      - "docs/adr/0050-b1q2-three-real-source-narrated-no-spinner-shorts.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/branch1_no_spinner_storyboard.py"
+      - "autopilot/branch1_three_narrated_no_spinner_v2.py"
+      - ".github/workflows/flowminute-b1q2-three-real-shorts-no-spinner.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b1q2-original-narrated-no-spinner-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  exact_github_source_visual_native_ass_and_pcm_narration_contracts:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only original local pixel, WAV and independent FFmpeg tools
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg libsndfile1 fonts-dejavu-core
+          python -m pip install --disable-pip-version-check \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' 'soundfile>=0.12,<1' \
+            'cryptography>=46,<48'
+          ffmpeg -hide_banner -filters 2>&1 | grep -F ass
+      - name: Exact original 3 source scripts, no-spinner native pixel and actual PCM-to-SRT physical tests
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/branch1_no_spinner_storyboard.py \
+            autopilot/branch1_three_narrated_no_spinner_v2.py \
+            autopilot/test_branch1_narrated_no_spinner_v2.py
+          python -B -m unittest -v \
+            autopilot.test_branch1_narrated_no_spinner_v2 \
+            autopilot.test_branch1_nov_short_repair \
+            autopilot.test_b4e3c_aac_recovery \
+            2>&1 | tee /tmp/flowminute-b1q2-real-source-pcm-qa.txt
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/flowminute-b1q2-real-source-pcm-qa.txt; then exit 1; fi
+          echo "B1Q2_REAL_NATIVE_1080P_SOURCE_PCM_ASS_AND_STORY_DIVERSITY_GATE_PASS"
+      - name: Never allow provider OAuth, external source video or automatic YouTube mutation
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          import ast
+          for path in ("autopilot/branch1_three_narrated_no_spinner_v2.py",
+                       "autopilot/branch1_no_spinner_storyboard.py"):
+              tree=ast.parse(Path(path).read_text())
+              deny=("google","googleapiclient","requests","urllib","http",
+                    "aiohttp","socket","boto3","botocore")
+              for node in ast.walk(tree):
+                  modules=([x.name for x in node.names] if isinstance(node,ast.Import)
+                           else [node.module or ""] if isinstance(node,ast.ImportFrom) else [])
+                  for mod in modules:
+                      assert not mod.startswith(deny),mod
+          print("B1Q2_NO_YOUTUBE_CREDENTIAL_OR_API_CLIENT_IMPORTED")
+          PY
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$PUBLISH_ENABLED" = false
+
+  actually_render_three_original_narrated_no_spinner_shorts:
+    # Public model weights + expensive TTS/encode only after protected MAIN.
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [exact_github_source_visual_native_ass_and_pcm_narration_contracts]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 58
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned public CPU Kokoro and original 24fps FFmpeg/ASS production tools
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng libsndfile1 fonts-dejavu-core
+          python -m pip install --disable-pip-version-check \
+            'kokoro-onnx==0.6.1' 'soundfile>=0.12,<1' \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' 'cryptography>=46,<48'
+          ffmpeg -hide_banner -filters 2>&1 | grep -F ass
+      - name: Download only SHA-pinned public CPU model into disposable runner
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b1q2-public-voice
+          cd /tmp/flowminute-b1q2-public-voice
+          base="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 240 \
+            --output kokoro-v1.0.int8.onnx "$base/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$base/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+      - name: Render THREE actual timed original complete spoken Shorts and verify all real MP4/AAC pixels
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_three_narrated_no_spinner_v2 \
+            --repo . \
+            --model /tmp/flowminute-b1q2-public-voice/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b1q2-public-voice/voices-v1.0.bin \
+            --output /tmp/flowminute-b1q2-real-three-original-shorts
+          python -B - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path("/tmp/flowminute-b1q2-real-three-original-shorts")
+          m=json.loads((root/"UNAPPROVED_B1Q2_THREE_NARRATED_REVIEW_MANIFEST.json").read_text())
+          assert m["status"]=="B1Q2_THREE_ACTUAL_NO_SPINNER_SOURCE_NARRATED_MP4S_UNAPPROVED"
+          assert m["actual_narrated_short_count"]==3
+          assert m["original_file_spinners_replaced_on_youtube"]==0
+          assert m["new_original_private_uploads"]==0
+          assert m["human_fact_rights_visual_and_voice_review"] is False
+          assert m["current_youtube_remote_readback_performed"] is False
+          assert m["no_automatic_deletion_reschedule_or_upload"] is True
+          assert m["third_party_reference_voice_music_or_video_reused"] is False
+          assert len(m["episodes"])==3
+          files_count=0;mp4_hashes=set()
+          for entry in m["episodes"]:
+              assert entry["new_youtube_video_id"] is None
+              assert entry["existing_remote_video_modified"] is False
+              assert entry["new_private_replacement_uploaded"] is False
+              assert entry["physical_full_media"]["actual_h264_aac_full_decode"] is True
+              assert entry["physical_full_media"]["real_all_source_caption_text_in_srt_matches_pcm"] is True
+              assert entry["visual_motion"]["perpetual_spinning_ring_absent"] is True
+              assert entry["visual_motion"]["three_distinct_original_semantic_hero_subjects"] is True
+              assert entry["audio_actual_encoded_measurement"]["typical_online_video_target_diagnostic"] is True
+              assert len(entry["files"])==7
+              folder=root/entry["original_source_episode_id"]
+              for file in entry["files"]:
+                  p=folder/file["filename"]
+                  assert p.is_file() and not p.is_symlink()
+                  assert p.stat().st_size==file["bytes"]
+                  with p.open("rb") as fh:
+                      assert hashlib.file_digest(fh,"sha256").hexdigest()==file["sha256"]
+                  files_count+=1
+              mp4_hashes.add(entry["files"][0]["sha256"])
+          assert files_count==21 and len(mp4_hashes)==3
+          print("B1Q2_THREE_REAL_1080X1920_ORIGINAL_SHORTS_21_SHA_FILES_AAC_ASS_FULL_DECODE")
+          PY
+      - name: Retain THREE ACTUAL review MP4s + SRTs + covers + nine real MP4 frame captures for 7 days
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b1q2-real-three-corrected-no-spinner-Shorts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b1q2-real-three-original-shorts/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 1
+      - name: Remove all temporary model weights and original render media
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b1q2-public-voice /tmp/flowminute-b1q2-real-three-original-shorts
+          echo "B1Q2_UNAPPROVED_THREE_SHORTS_REVIEW_NO_CHANNEL_UPLOAD_OR_REMOTE_SCHEDULE"
