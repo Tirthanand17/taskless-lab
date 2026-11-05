@@ -14,7 +14,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install test dependency
-        run: python -m pip install pytest 'cryptography>=44,<47'
+        run: python -m pip install pytest 'cryptography>=44,<47' 'pillow>=11,<13'
       - name: Install FFmpeg for actual media inspection tests
         run: |
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
@@ -23,8 +23,19 @@ jobs:
           fi
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
+      - name: Install Devanagari shaping fonts when absent
+        run: |
+          if [ ! -f /usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq fonts-noto-core
+          fi
+          test -f /usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf
       - name: Run tests
         run: python -m pytest -q
+      - name: Verify read-only Cloudflare Worker contract (no secrets)
+        run: node --test autopilot/test_phase5d_cloudflare_owner_readback.mjs
+      - name: Verify Cloudflare D1 read-only inventory candidate (no secrets)
+        run: node --test autopilot/test_phase5e_cloudflare_d1_readonly_inventory.mjs
       - name: Validate episode editorial metadata (not publish approval)
         shell: bash
         run: |

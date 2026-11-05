@@ -311,20 +311,71 @@ class Workflow:
                       for t in obj["contracts"]])
         if set(obj["runs"])!=set(workflow.contracts):
             raise WorkflowError("Checkpoint task IDs mismatch")
+        stable_states={State.BLOCKED,State.READY,State.RUNNING,
+                       State.COMPLETE,State.QUARANTINED}
         for tid,saved in obj["runs"].items():
             run=workflow.runs[tid]
             run.status=State(saved["status"])
             run.retries=saved["retries"]
             run.last_failure=saved["last_failure"]
+            contract=workflow.contracts[tid]
+            if (run.status not in stable_states
+                    or type(run.retries) is not int
+                    or not 0<=run.retries<=contract.max_retries+1
+                    or (run.last_failure is not None and (
+                        not isinstance(run.last_failure,str)
+                        or re.fullmatch(r"[A-Z_]{3,64}",run.last_failure) is None))
+                    or (run.retries>0 and run.last_failure is None)
+                    or (run.retries==0 and run.last_failure is not None)
+                    or (run.status==State.QUARANTINED
+                        and run.retries!=contract.max_retries+1)
+                    or (run.status!=State.QUARANTINED
+                        and run.retries>contract.max_retries)):
+                raise WorkflowError("Inconsistent bounded staging task retry/state")
             if saved["artifact"] is not None:
                 h=saved["artifact"]
                 run.artifact=Handoff(**{**h,"evidence_refs":tuple(h["evidence_refs"])})
-                run.artifact.validate(workflow.contracts[tid],workflow.contracts[tid].owner)
+                run.artifact.validate(contract,contract.owner)
             if run.status==State.COMPLETE and run.artifact is None:
                 raise WorkflowError("Completed task missing artifact")
             if run.status!=State.COMPLETE and run.artifact is not None:
                 raise WorkflowError("Noncompleted task has artifact")
+        # A digest is not an authenticated signature. Even for the test-only
+        # checkpoint, reject impossible task graph states before attempting
+        # local recovery. Do not accept "completed" children with pending
+        # parent approvals or a ready task with missing prerequisites.
+        for tid in workflow.order:
+            contract=workflow.contracts[tid]
+            state=workflow.runs[tid].status
+            deps_complete=all(
+                workflow.runs[dep].status==State.COMPLETE
+                for dep in contract.requires
+            )
+            if (state==State.BLOCKED and deps_complete) or (
+                state!=State.BLOCKED and not deps_complete
+            ):
+                raise WorkflowError("Checkpoint violates staging dependency graph")
+        if not isinstance(obj.get("events"),list):
+            raise WorkflowError("Invalid staging event history")
         workflow.events=obj["events"]
+        # A process crash leaves no worker attached to RUNNING tasks. Restore
+        # only safe, side-effect-free draft tasks: charge ONE bounded retry,
+        # or quarantine after exhaustion. The owner must persist the newly
+        # recovered checkpoint before attempting the next specialist action.
+        # This is NOT a durable cloud lease or permission to publish.
+        for tid in workflow.order:
+            run=workflow.runs[tid]
+            if run.status==State.RUNNING:
+                run.retries+=1
+                run.last_failure="INTERRUPTED_STAGING_RUN"
+                run.status=(State.READY
+                            if run.retries<=workflow.contracts[tid].max_retries
+                            else State.QUARANTINED)
+                workflow._event(
+                    tid,"recovered_retry" if run.status==State.READY
+                    else "recovered_quarantined",
+                    workflow.contracts[tid].owner
+                )
         return workflow
 
     def summary(self)->dict:

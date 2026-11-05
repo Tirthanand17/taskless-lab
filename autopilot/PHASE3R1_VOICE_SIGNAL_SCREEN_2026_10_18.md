@@ -1,0 +1,13 @@
+# Phase 3R1 — Actual PCM sound placeholder screen (not a speech model)
+
+**18 October 2026.** The previous short/full-duration HD real H264/AAC test established only *synthetic sine tone* technical codecs/decoding. It must NOT be presented as voice narration. The latest cloud smoke run \`39099629790\` for source SHA \`72f7094c1d3b\` successfully completed both 42s Shorts and 432s full-HD Hindi long with sine tones, **temporary file deletion, no release rights**.
+
+New \`autopilot/phase3_voice_signal_screen.py\`: 5 fixed, bounded 4096-sample windows per complete externally supplied original WAV. Checks actual audio file hash, PCM16 WAV properties, episode runtime, energy, then uses standard-library 4096-point FFT with a Hann window to reject obvious sustained high-purity single-frequency tones (a clean sine wave) and excessive near silence. No TTS, ASR, other model, network, no external libraries or media generation. Output never authenticates speech, correct Hindi/English, speaker identity, naturalness, cloned voice consent, commercial licensing, pronunciation, copyright, or SRT timing.
+
+The authoritative all-three-source handoff \`phase3_three_video_handoff.py\` now invokes this separate sound placeholder screen on each actual WAV before accepting the source bundle for quarantine. It fails closed if a claimed signal receipt upgrades its own permissions; all flags remain \`publishing_authorized=false\` and \`ready_for_mux_or_upload=false\`. Previously unchanged \`review_complete_narration_takes\` stays the *basic* PCM integrity intake, not production acceptance.
+
+Tests \`test_phase3_voice_signal_screen.py\` create actual WAV inputs for all-sine, alternating pure sine, long silence, multi-frequency harmonic (deliberately **not claimed to be human speech**), checksum mismatch, symlink and sample duration. \`test_phase3_three_video_handoff.py\` now mocks just the new signal check in *mocked* handoff unit regressions, adding denied forged approval and rejected tone checks.
+
+**Limitations:** This is a cheap, conservative signal **placeholder filter**, not an assurance of natural human voice. Sophisticated noise/music/multi-tone/artificial content can pass, and narrowband real speech may occasionally fail. Final media, commercial usage and independent native-language listening remain blocked until authentic, legally reviewed supplied voice is obtained.
+
+No new provider, TTS download/model connection, laptop access, charge, cloud service/D1/OAuth, YouTube upload/scheduling/publishing. ₹0/month recurring infra; draft PR #5 unmerged; draft release-controller PR #4 unmerged. **21 production acceptance subphases remain** until genuine source/voice and publication gates are proven.

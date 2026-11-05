@@ -1,0 +1,11 @@
+# FlowMinute Lab — Linux synthetic process-group kill and supervisor-crash proof
+
+**19 Oct 2026 | DRAFT PR #5 only | no deployment, no external execution**
+
+The earlier local synthetic worker supervisor killed and reaped only its immediate child after a lease was revoked. A child with a subprocess descendant could leave the descendant running, and a killed supervisor might not run its cleanup. This was an unproven risk for the future multi-agent cloud architecture.
+
+The Linux-only offline supervisor now launches the **fixed in-repo Python probe** in a new process session, using no shell and no caller-defined executable. Its cleanup sends `SIGKILL` to that specific private process group while the original leader PID is still owned/unreaped, then reaps the leader. The fixed probe has an optional `tree` *test* mode which launches only the same in-repo stdlib probe as its grandchild, in the same process group, without creating files, network access, media or secrets. It deliberately hangs until cancelled; no general external command execution exists.
+
+The known synthetic probe and its grandchild also install Linux `prctl(PR_SET_PDEATHSIG, SIGKILL)`, then verify their expected immediate parent PID after installation. If the supervisor **process** exits unexpectedly, Linux terminates the probe; a dedicated fixed crash fixture uses `os._exit(0)` after confirming the probe is ready, without ordinary cleanup, to verify that death-signal behavior. CI tests additionally verify cancelling the task terminates both the leader and its synthetic descendant. Both checks run in a disposable Linux GitHub runner and do not use Nirala/user machines.
+
+**Limits:** this is not arbitrary hostile process-tree control; processes could escape the group or Linux parent-death contract, and the code has no cgroup/container or per-OS-user isolation, remotely hosted worker control, trusted cloud time, restart daemon, or production lease service. It is a narrowly defined OS behavior demonstration using fixed benign synthetic code, not an operational zero-cost cloud agent fleet or completed published YouTube videos. No media asset, account, new provider, upload/schedule/publish action or recurring charge. Both PRs remain DRAFT/unmerged; ₹0 recurring infrastructure budget and **21 outstanding production subphases** unchanged.

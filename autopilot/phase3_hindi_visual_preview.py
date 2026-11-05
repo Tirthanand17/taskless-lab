@@ -1,0 +1,599 @@
+"""FlowMinute Phase 3R2: ORIGINAL Hindi Short and Hindi long-form visual proofs.
+
+Parses only the fixed authored CSV draft and matching script-derived SRT.
+Generates bounded silent MP4 previews without voices, third-party pictures,
+external accounts, browser/network access, new service connections or uploads.
+Hindi uses installed Noto Devanagari fonts with RAQM shaping; fails closed if
+these prerequisites do not exist, rather than publishing tofu/missing glyphs.
+"""
+from __future__ import annotations
+
+import argparse
+from functools import lru_cache
+from hashlib import sha256
+import json
+import math
+from pathlib import Path
+import re
+import shutil
+import subprocess
+
+from PIL import Image, ImageDraw, ImageFont, features
+
+from .agent_org import WorkflowError
+from .phase2r3_authored_pack_audit import _sections, _seconds, SOURCE, TIME
+from .phase3_voice_subtitle_handoff import build_subtitles_from_authored_csv
+from .examples.flowminute_csv_demo import (
+    COLUMNS as DEMO_HEADERS, ROWS as DEMO_ROWS, demonstrate_csv_total,
+)
+
+PROFILES = {
+    "csv_tutorial_short_hi": ("short", 42, 4),
+    "csv_tutorial_long_hi": ("long", 432, 24),
+}
+# Rendered example data is *derived* from the actual runnable, network-free
+# CSV teaching demonstration, not separately edited fictional visual values.
+# Refuse to display inaccurate results even if a future draft changes the demo.
+_DEMO_PROOF = demonstrate_csv_total()
+if (tuple(DEMO_HEADERS) != ("product", "units", "price")
+        or tuple(row["product"] for row in DEMO_ROWS)
+        != ("Pen", "Notebook", "Eraser")
+        or _DEMO_PROOF.get("total") != 58
+        or _DEMO_PROOF.get("dataset_is_fictional") is not True
+        or _DEMO_PROOF.get("purchased_anything") is not False
+        or _DEMO_PROOF.get("youtube_uploaded") is not False
+        or _DEMO_PROOF.get("publishing_authorized") is not False):
+    raise WorkflowError("Executable fictional CSV lesson and graphics disagree")
+COLUMNS = (tuple(DEMO_HEADERS), *(
+    tuple(row[key] for key in DEMO_HEADERS) for row in DEMO_ROWS
+))
+_SAMPLE_LINE_TOTALS = tuple(row["line_total"] for row in _DEMO_PROOF["rows"])
+if (_SAMPLE_LINE_TOTALS != (20, 30, 8)
+        or any(type(value) is not int for value in _SAMPLE_LINE_TOTALS)):
+    raise WorkflowError("Fictional source row math has drifted from video")
+_SAMPLE_TOTAL = sum(_SAMPLE_LINE_TOTALS)
+
+# Only the original Hindi Short uses these four exact authored beats.
+# The Hindi long-form has an independent 24-scene concept storyboard.
+SHORT_SCENE_STORYBOARD = (
+    (0, "CSV के 3 कॉलम"),
+    (1, "तीन नकली चीज़ें"),
+    (2, "DictReader कैसे पढ़े"),
+    (3, "कुल 58 उदाहरण"),
+)
+SHORT_ITEM_NAMES = {
+    "Pen": "पेन",
+    "Notebook": "नोटबुक",
+    "Eraser": "इरेज़र",
+}
+SHORT_CODE_SNIPPETS = (
+    "csv_text = output.getvalue()",
+    "source = StringIO(csv_text)",
+    "reader = csv.DictReader(source)",
+    "row['product']  ->  'Pen'",
+)
+if (set(SHORT_ITEM_NAMES) != {row["product"] for row in DEMO_ROWS}
+        or len(SHORT_CODE_SNIPPETS) != 4):
+    raise WorkflowError("Hindi Short fictional products or educational code changed")
+
+
+# Each LONG video scene maps to its *actual authored* lesson concept. The old
+# renderer simply looped 4 generic scenes six times (position % 4), so
+# narration about privacy, CSV validation, quoted cells or newline rules
+# could be paired with an unrelated 58-total graphic.
+#
+# Art modes: 0 CSV rows, 1 row math, 2 illustrative code,
+#            3 fictional total, 4 privacy, 5 workflow/recap,
+#            6 final three-pillar educational recap.
+# Titles are short enough for the existing Hindi/Latin font-safe header.
+LONG_SCENE_STORYBOARD = (
+    (0, "CSV से शुरुआत"),
+    (4, "निजी डेटा नहीं"),
+    (0, "CSV के नाम वाले कॉलम"),
+    (0, "तीन नकली रिकॉर्ड"),
+    (4, "सिर्फ़ उदाहरण"),
+    (2, "Python में csv"),
+    (2, "मेमोरी में CSV"),
+    (2, "DictWriter चरण"),
+    (2, "DictReader चरण"),
+    (2, "टेक्स्ट से संख्या"),
+    (5, "डेटा वैलिडेशन"),
+    (1, "पेन की गणना"),
+    (1, "नोटबुक की गणना"),
+    (1, "इरेज़र की गणना"),
+    (3, "उदाहरण कुल 58"),
+    (5, "डेटा प्रकार जाँचें"),
+    (2, "कॉमा वाला CSV मान"),
+    (2, "newline नियम"),
+    (4, "सुरक्षित निजी डेटा"),
+    (5, "चार आसान चरण"),
+    (5, "आगे ऑटोमेशन"),
+    (2, "कोड का अभ्यास"),
+    (5, "अगले सवाल"),
+    (6, "तीन ज़रूरी बातें"),
+)
+LONG_CODE_SNIPPETS = {
+    5: ("import csv", "# Python standard library",
+        "# No external AI service", "# Fictional teaching sample"),
+    6: ("from io import StringIO", 'out = StringIO(newline="")',
+        "# No external files opened", "# Local in-memory illustration"),
+    7: ("w = csv.DictWriter(out, fieldnames=COLUMNS)",
+        "w.writeheader()", "w.writerows(ROWS)",
+        "# Use the three fictional records"),
+    8: ("csv_text = out.getvalue()",
+        "source = StringIO(csv_text)", "reader = csv.DictReader(source)",
+        "# DictReader uses column names"),
+    9: ('units = int(row["units"])',
+        'price = int(row["price"])', "total += units * price",
+        "# Sample units are integers"),
+    16: ('name = "Pen, blue"', "# The comma is inside quotes",
+         "csv.writer(out).writerow([name])", "# CSV escapes the field"),
+    17: ('out = StringIO(newline="")',
+         "# newline='' applies to CSV file IO too",
+         "# Our demo only uses memory", "# No actual file is opened"),
+    21: ("result = demonstrate_csv_total()",
+         'print(result["total"])  # 58',
+         "# Reproducible fictional example", "# No account or purchase"),
+}
+LONG_ROW_CALLOUTS = {
+    11: f"{DEMO_ROWS[0]['units']} x {DEMO_ROWS[0]['price']}"
+        f" = {_SAMPLE_LINE_TOTALS[0]}  |  FICTIONAL",
+    12: f"{_SAMPLE_LINE_TOTALS[0]} + {_SAMPLE_LINE_TOTALS[1]}"
+        f" = {sum(_SAMPLE_LINE_TOTALS[:2])}  |  FICTIONAL",
+    13: f"{sum(_SAMPLE_LINE_TOTALS[:2])} + {_SAMPLE_LINE_TOTALS[2]}"
+        f" = {_SAMPLE_TOTAL}  |  FICTIONAL",
+}
+
+LONG_WORKFLOW_STEPS = {
+    10: ("RAW", "CHECK", "CLEAN", "USE"),
+    15: ("CSV TEXT", "PARSE", "CAST", "VERIFY"),
+    19: ("CREATE", "READ", "CHECK", "TOTAL"),
+    20: ("FORMAT", "RIGHTS", "VALIDATE", "SCALE"),
+    22: ("CSV", "DictReader", "QUESTION", "NEXT"),
+}
+LONG_WORKFLOW_FOOTERS = {
+    10: "CHECK MISSING / INVALID EXAMPLE ROWS",
+    15: "CSV TEXT  →  int()  →  CHECK",
+    19: "CREATE  →  READ  →  VALIDATE  →  TOTAL",
+    20: "FUTURE CONCEPT  /  NOT REAL DATA",
+    22: "COMMENT: CSV, DictReader OR int()?",
+}
+
+FONT_CANDIDATES = (
+    "/usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf",
+    "/usr/share/fonts/truetype/noto/NotoSansDevanagariUI-Regular.ttf",
+    "/usr/share/fonts/truetype/noto/NotoSansDevanagariUI-Bold.ttf",
+    "/usr/share/fonts/truetype/noto/NotoSansDevanagari-Medium.ttf",
+)
+LATIN_FONTS = (
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf",
+)
+MAX_FRAMES = 540
+MAX_HIRES_FRAMES = 36  # <= 1.5 seconds at 24 fps per preview, no full-sized batch
+
+
+def _font(size: int, *, devanagari: bool = False) -> ImageFont.FreeTypeFont:
+    if devanagari and not features.check("raqm"):
+        raise WorkflowError("HarfBuzz/RAQM shaping required for meaningful Hindi glyph rendering")
+    candidates = FONT_CANDIDATES if devanagari else LATIN_FONTS
+    for name in candidates:
+        if Path(name).is_file():
+            return ImageFont.truetype(name,size,layout_engine=ImageFont.Layout.RAQM)
+    raise WorkflowError("Required installed language font unavailable; never silently use wrong glyphs")
+
+
+def _timestamp(value: str) -> int:
+    if not re.fullmatch(r"\d{2}:\d{2}:\d{2},\d{3}", value):
+        raise WorkflowError("Invalid strict SRT timestamp")
+    hour,minute,remainder=value.split(":")
+    second,millis=remainder.split(",")
+    if int(minute)>59 or int(second)>59:
+        raise WorkflowError("Invalid SRT clock")
+    return (int(hour)*3600+int(minute)*60+int(second))*1000+int(millis)
+
+
+@lru_cache(maxsize=2)
+def _authored_profile(episode_id: str):
+    if episode_id not in PROFILES:
+        raise WorkflowError("Only fixed Hindi CSV script episodes are supported")
+    sections=_sections(SOURCE.read_text(encoding="utf-8"))
+    scene=sections[0] if episode_id=="csv_tutorial_short_hi" else sections[2]
+    rows=TIME.findall(scene)
+    kind,seconds,expected=PROFILES[episode_id]
+    if len(rows)!=expected:
+        raise WorkflowError("Original authored voice scene count differs")
+    beats=[]
+    for a,b,c,d,spoken,visual in rows:
+        beats.append((_seconds(a,b)*1000,_seconds(c,d)*1000,spoken,visual))
+    if not beats or beats[0][0]!=0 or beats[-1][1]!=seconds*1000 or any(
+        beats[i-1][1]!=beats[i][0] for i in range(1,len(beats))
+    ):
+        raise WorkflowError("Original authored voice scene timing altered")
+    if kind=="short" and (
+        len(SHORT_SCENE_STORYBOARD)!=len(beats)
+        or tuple(mode for mode,_ in SHORT_SCENE_STORYBOARD)!=(0,1,2,3)
+    ):
+        raise WorkflowError("Hindi Short visual/storyboard inventory drift")
+    if kind=="long" and (
+        len(LONG_SCENE_STORYBOARD)!=len(beats)
+        or any(mode not in range(7) or not title or len(title)>38
+               for mode,title in LONG_SCENE_STORYBOARD)
+        or set(LONG_CODE_SNIPPETS)!={i for i,(mode,_) in
+                                    enumerate(LONG_SCENE_STORYBOARD) if mode==2}
+        or set(LONG_WORKFLOW_STEPS)!={i for i,(mode,_) in
+                                    enumerate(LONG_SCENE_STORYBOARD) if mode==5}
+        or set(LONG_WORKFLOW_FOOTERS)!=set(LONG_WORKFLOW_STEPS)
+    ):
+        raise WorkflowError("Full long-form storyboard requires one semantic scene per beat")
+    script_srt=build_subtitles_from_authored_csv()[episode_id]["srt"]
+    subtitles=[]
+    for block in script_srt.strip().split("\n\n"):
+        lines=block.splitlines()
+        if len(lines)!=3 or not lines[0].isdigit() or " --> " not in lines[1]:
+            raise WorkflowError("Malformed generated SRT")
+        first,last=lines[1].split(" --> ")
+        subtitles.append((_timestamp(first),_timestamp(last),lines[2]))
+    if not subtitles or subtitles[0][0]!=0 or subtitles[-1][1]!=seconds*1000 or any(
+        subtitles[i-1][1]!=subtitles[i][0] for i in range(1,len(subtitles))
+    ):
+        raise WorkflowError("Caption timeline does not cover authored script")
+    return kind,seconds,tuple(beats),tuple(subtitles)
+
+
+def _shown_cue(profile, time_ms: int) -> str:
+    for start,end,text in profile[3]:
+        if start <= time_ms < end:
+            return text
+    raise WorkflowError("No authored Hindi cue at video instant")
+
+
+def _wrap(draw: ImageDraw.ImageDraw, text: str, font, width: float,
+          *, max_lines: int=4) -> list[str]:
+    lines=[]
+    buffer=""
+    for word in text.split():
+        trial=(buffer+" "+word).strip()
+        if draw.textlength(trial,font=font)<=width:
+            buffer=trial
+        else:
+            if not buffer:
+                raise WorkflowError("Single word too wide for caption")
+            lines.append(buffer)
+            buffer=word
+    if buffer:
+        lines.append(buffer)
+    if len(lines)>max_lines:
+        raise WorkflowError("Caption exceeds portrait/landscape safe area")
+    return lines
+
+
+def render_hindi_frame(
+    episode_id: str,time_seconds: float, *, width: int
+) -> Image.Image:
+    """Draw one real original animated SVG-like data scene in Pillow.
+
+    No real app screen is depicted; all work is an illustrative *simulation*.
+    """
+    kind,seconds,beats,cues=_authored_profile(episode_id)
+    valid_widths=(360,540,720,1080) if kind=="short" else (640,960,1280,1920)
+    if width not in valid_widths or not 0 <= time_seconds < seconds:
+        raise WorkflowError("Unsupported script, bounded dimensions or video timestamp")
+    ratio=16/9 if kind=="short" else 9/16
+    height=round(width*ratio)
+    scale=width/(540 if kind=="short" else 960)
+    r=lambda n:max(1,round(n*scale))
+    x=lambda n:round(n*scale)
+    millis=round(time_seconds*1000)
+    position=next(i for i,b in enumerate(beats) if b[0]<=millis<b[1])
+    caption=_shown_cue((kind,seconds,beats,cues),millis)
+    image=Image.new("RGB",(width,height))
+    drawer=ImageDraw.Draw(image)
+    for y in range(height):
+        t=y/height
+        drawer.line((0,y,width,y),fill=(6,round(16+7*t),round(32+20*t)))
+    d=ImageDraw.Draw(image,"RGBA")
+    phase=math.sin(time_seconds*1.3)
+    for k in range(14):
+        yy=x(68+k*68+(time_seconds*6)%68)
+        d.line((0,yy,width,yy),fill=(47,149,183,32),width=r(1))
+    for k in range(15):
+        px=x((36+77*k+7*math.sin(time_seconds/2+k))%(500 if kind=="short" else 900))
+        py=x((104+59*k+9*math.cos(time_seconds/3+k))%(900 if kind=="short" else 490))
+        d.ellipse((px-r(2),py-r(2),px+r(2),py+r(2)),fill=(92,225,215,130))
+
+    canvas_w=540 if kind=="short" else 960
+    canvas_h=960 if kind=="short" else 540
+    d.rounded_rectangle((x(22),x(55),x(canvas_w-22),x(117)),radius=r(18),
+                        fill=(6,49,70,240),outline=(68,218,219,190),width=r(2))
+    title_font=_font(r(23 if kind=="short" else 28))
+    d.text((x(42),x(72)),"FM  /  FLOWMINUTE LAB",font=title_font,fill=(230,250,251))
+    d.text((x(43),x(133)),"HINDI DATA LESSON  |  VISUAL ONLY",
+           font=_font(r(16)),fill=(112,218,220))
+
+    left=34 if kind=="short" else 44
+    right=canvas_w-left
+    top=235 if kind=="short" else 184
+    bottom=704 if kind=="short" else 425
+    bob=round(6*math.sin(time_seconds*1.1))
+    d.rounded_rectangle((x(left+4),x(top+bob+8),x(right+4),x(bottom+bob+8)),
+                        radius=r(24),fill=(4,126,145,94))
+    d.rounded_rectangle((x(left),x(top+bob),x(right),x(bottom+bob)),
+                        radius=r(24),fill=(7,44,71,240),
+                        outline=(57,212,225,205),width=r(2))
+
+    # Each scene is explicitly mapped to its *original* script lesson:
+    # four Hindi Short visual beats, twenty-four long-form visual beats.
+    if kind=="long":
+        mode,label=LONG_SCENE_STORYBOARD[position]
+    else:
+        mode,label=SHORT_SCENE_STORYBOARD[position]
+    devanagari=_font(r(22 if kind=="short" else 26),devanagari=True)
+    d.text((x(left+25),x(top+25+bob)),label,font=devanagari,fill=(239,250,249))
+    if mode==0:
+        header=tuple(name.upper() for name in COLUMNS[0])
+        data=COLUMNS[1:]
+        x0=[left+30,left+140,left+257] if kind=="short" else [left+70,left+300,left+525]
+        font_small=_font(r(15 if kind=="short" else 22))
+        # Animated row scanner draws attention to actual fictional data.
+        focus=int(time_seconds/2)%len(data)
+        for i,col in enumerate(header):
+            d.text((x(x0[i]),x(top+98+bob)),col,font=font_small,fill=(100,231,216))
+        for row_index, row in enumerate(data):
+            cy=top+148+row_index*(79 if kind=="short" else 55)
+            highlight=row_index==focus
+            d.rounded_rectangle((x(left+24),x(cy+bob),x(right-24),x(cy+57+bob if kind=="short" else cy+43+bob)),
+                                radius=r(10),
+                                fill=((25,162,168,230) if highlight else (30,91,118,170)),
+                                outline=((132,253,229,205) if highlight else (55,153,173,90)),
+                                width=r(1))
+            for i,value in enumerate(row):
+                d.text((x(x0[i]),x(cy+15+bob)),value,font=font_small,
+                       fill=(245,247,248))
+        d.text((x(left+26),x(bottom-51+bob)),"FICTIONAL SAMPLE DATA",
+               font=_font(r(14)),fill=(119,236,209))
+    elif kind=="short" and mode==1:
+        # Source-matched Hindi items in the original 10–20s authored beat:
+        # quantity × example price, not unrelated contribution-only bars.
+        # Short captions below are still script-time estimates, not audio ASR.
+        for row_index,(row,line_total) in enumerate(zip(DEMO_ROWS,_SAMPLE_LINE_TOTALS)):
+            yy=top+98+row_index*102+bob
+            d.rounded_rectangle(
+                (x(left+23),x(yy),x(right-23),x(yy+83)),
+                radius=r(13),fill=(18,90,116,222),
+                outline=(73,215,211,195),width=r(2),
+            )
+            item=SHORT_ITEM_NAMES[row["product"]]
+            d.text((x(left+43),x(yy+10)),item,
+                   font=_font(r(24),devanagari=True),fill=(239,250,249))
+            equation=f"{row['units']} × {row['price']} = {line_total}"
+            d.text((x(left+43),x(yy+47)),equation,
+                   font=_font(r(21)),fill=(248,229,174))
+        d.text((x(left+32),x(bottom-39+bob)),
+               "FICTIONAL EXAMPLE  /  NO PURCHASE",
+               font=_font(r(13)),fill=(146,244,217))
+    elif mode==1:
+        # Real explanatory contrast: fictional row contributions, not
+        # the previous static table or a fabricated live app screenshot.
+        contributions=tuple(
+            (row["product"], value)
+            for row,value in zip(DEMO_ROWS,_SAMPLE_LINE_TOTALS)
+        )
+        label_font=_font(r(15 if kind=="short" else 21))
+        bar_left=left+(133 if kind=="short" else 225)
+        bar_right=right-38
+        length=bar_right-bar_left
+        origin=top+(115 if kind=="short" else 95)
+        interval=79 if kind=="short" else 54
+        progress=min(1,max(0.2,(time_seconds-beats[position][0]/1000)/2))
+        focus_row={11:0,12:1,13:2}.get(position) if kind=="long" else None
+        for row_index,(item,units) in enumerate(contributions):
+            cy=origin+row_index*interval+bob
+            d.text((x(left+29),x(cy+2)),item,font=label_font,fill=(229,242,247))
+            d.rounded_rectangle((x(bar_left),x(cy),x(bar_right),x(cy+25)),
+                                radius=r(8),fill=(22,84,114,215))
+            span=max(12,round(length*(units/30)*progress))
+            colors=((57,216,205,240),(248,195,100,240),(81,158,247,240))
+            fill=colors[row_index]
+            if focus_row is not None and row_index!=focus_row:
+                fill=(65,109,127,132)
+            d.rounded_rectangle((x(bar_left),x(cy),x(bar_left+span),x(cy+25)),
+                                radius=r(8),fill=fill)
+            d.text((x(bar_right-53),x(cy-26 if kind=="long" else cy+28)),
+                   str(units),font=label_font,fill=(252,250,215))
+        d.text((x(left+30),x(bottom-50+bob)),
+               LONG_ROW_CALLOUTS.get(position,"20 + 30 + 8 = 58  |  FICTIONAL")
+               if kind=="long" else "20 + 30 + 8 = 58  |  FICTIONAL",
+               font=_font(r(14 if kind=="short" else 17)),
+               fill=(158,239,215))
+    elif mode==2:
+        snippets=(LONG_CODE_SNIPPETS[position] if kind=="long"
+                  else SHORT_CODE_SNIPPETS)
+        # On the landscape panel, the previous 4-line code block used
+        # top+113+i*46 and could draw past the card and over its proof
+        # label. Keep all 4 lines AND the simulation footer inside it.
+        line_start=63 if kind=="long" else 113
+        line_step=36 if kind=="long" else 68
+        line_size=22 if kind=="long" else 20
+        for i,code in enumerate(snippets):
+            d.text((x(left+43),x(top+line_start+i*line_step+bob)),
+                   code,font=_font(r(line_size)),fill=(128,238,220))
+        footer_bottom=26 if kind=="long" else 51
+        d.text((x(left+33),x(bottom-footer_bottom+bob)),"ILLUSTRATIVE SIMULATION",
+               font=_font(r(13)),fill=(251,208,139))
+    elif mode==4:
+        # An explicit, illustrative privacy/data-rights visual—not a
+        # screenshot or assertion that real client accounts were accessed.
+        mid=x(canvas_w/2)
+        cy=x(top+171+bob if kind=="long" else top+218+bob)
+        rad=r(63 if kind=="long" else 76)
+        d.ellipse((mid-rad,cy-rad,mid+rad,cy+rad),
+                  fill=(9,89,109,180),outline=(93,232,213,220),width=r(4))
+        d.rounded_rectangle((mid-r(22),cy-r(5),mid+r(22),cy+r(30)),
+                            radius=r(8),fill=(112,226,204,220))
+        d.arc((mid-r(17),cy-r(29),mid+r(17),cy+r(15)),
+              180,360,fill=(230,250,247,250),width=r(5))
+        message="FICTIONAL DATA  /  NO REAL RECORDS"
+        font=_font(r(14 if kind=="short" else 18))
+        d.text((x(left+25),x(bottom-51+bob)),message,
+               font=font,fill=(170,238,221))
+    elif mode==5:
+        # Four-step educational diagram, not a fabricated live app UI.
+        labels=(LONG_WORKFLOW_STEPS[position] if kind=="long"
+                else ("CSV","READ","VALIDATE","CHECK"))
+        line_y=top+143+bob if kind=="short" else top+127+bob
+        pad=(right-left-62)/4
+        for i,step in enumerate(labels):
+            xx=left+31+i*pad
+            d.rounded_rectangle((x(xx),x(line_y),x(xx+pad-9),x(line_y+54)),
+                                radius=r(9),fill=(15,93,111,226),
+                                outline=(83,218,216,212),width=r(2))
+            step_font=_font(r(13 if kind=="short" else 18))
+            tw=d.textlength(step,font=step_font)
+            d.text((x(xx+(pad-9)/2)-tw/2,x(line_y+15)),step,
+                   font=step_font,fill=(238,253,246))
+            if i<3:
+                d.line((x(xx+pad-7),x(line_y+27),x(xx+pad+5),x(line_y+27)),
+                       fill=(120,225,223,240),width=r(2))
+        caption=(LONG_WORKFLOW_FOOTERS[position] if kind=="long"
+                 else "SOURCE  →  COLS  →  VALIDATE  →  EXAMPLE")
+        d.text((x(left+28),x(bottom-50+bob)),caption,
+               font=_font(r(15 if kind=="short" else 18)),
+               fill=(167,240,215))
+    elif mode==6:
+        # Unlike the calculation-result scene, the final 18-second narration
+        # summarizes *three actions*. Show those three distinct outcomes.
+        pillars=(("SOURCE","CLEAN"),("FIELDS","NAMED"),
+                 ("TOTAL",f"CHECK {_SAMPLE_TOTAL}"))
+        available=(right-left-50)/3
+        for col,(heading,result) in enumerate(pillars):
+            xx=left+23+available*col
+            yy=top+95+bob
+            d.rounded_rectangle((x(xx),x(yy),x(xx+available-13),x(yy+99)),
+                                radius=r(13),fill=(22,107,126,235),
+                                outline=(102,229,219,207),width=r(2))
+            textfont=_font(r(16 if kind=="long" else 14))
+            d.text((x(xx+17),x(yy+16)),heading,font=textfont,
+                   fill=(137,252,224))
+            d.text((x(xx+17),x(yy+53)),result,font=textfont,
+                   fill=(251,247,221))
+        d.text((x(left+23),x(bottom-28+bob)),"FICTIONAL CSV LESSON / RECAP",
+               font=_font(r(15)),fill=(159,239,215))
+    else:
+        center=(x(canvas_w/2),x(top+246+bob if kind=="short" else top+147+bob))
+        rad=r(82 if kind=="short" else 96)
+        d.ellipse((center[0]-rad,center[1]-rad,center[0]+rad,center[1]+rad),
+                  fill=(9,145,169,192),outline=(96,245,211,235),width=r(4))
+        ff=_font(r(68 if kind=="short" else 90))
+        w=d.textlength("58",font=ff)
+        d.text((center[0]-w/2,center[1]-r(48)), str(_SAMPLE_TOTAL),font=ff,
+               fill=(253,246,201))
+        d.text((x(left+55),x(bottom-51+bob)),
+               f"{_SAMPLE_LINE_TOTALS[0]} + {_SAMPLE_LINE_TOTALS[1]}"
+               f" + {_SAMPLE_LINE_TOTALS[2]} = {_SAMPLE_TOTAL} EXAMPLE UNITS",
+               font=_font(r(16)),fill=(142,231,223))
+
+    caption_box=(735,899) if kind=="short" else (449,505)
+    caption_top,caption_bottom=caption_box
+    d.rounded_rectangle((x(28),x(caption_top),x(canvas_w-28),x(caption_bottom)),
+                        radius=r(18),fill=(4,14,28,248),
+                        outline=(53,178,195,210),width=r(2))
+    cap_font=_font(r(19 if kind=="short" else 19),devanagari=True)
+    max_lines=4 if kind=="short" else 2
+    lines=_wrap(d,caption,cap_font,x(canvas_w-105),max_lines=max_lines)
+    line_height=37 if kind=="short" else 26
+    y0=caption_top+17 if kind=="short" else caption_top+7
+    for line in lines:
+        w=d.textlength(line,font=cap_font)
+        d.text(((width-w)/2,x(y0)),line,font=cap_font,fill=(246,247,253))
+        y0+=line_height
+    d.text((x(36),x(919 if kind=="short" else 515)),
+           "NO NARRATION  /  NOT FOR PUBLICATION",
+           font=_font(r(13 if kind=="short" else 15)),fill=(169,206,211))
+    return image
+
+
+def render_hindi_visual_preview(
+    episode_id: str,output: Path, *,
+    duration_s: float=2, fps: int=8,width: int|None=None,start_s:float=0
+) -> dict:
+    kind,seconds,_,_=_authored_profile(episode_id)
+    width=width or (360 if kind=="short" else 640)
+    # Full-size video frames are much heavier than the existing 360/640px
+    # previews. Prove the aspect/glyph/encoder contract with <=36 high-res
+    # frames only, without silently authorizing a full production-length job.
+    high_resolution = width in (1080,1920)
+    max_frames = MAX_HIRES_FRAMES if high_resolution else MAX_FRAMES
+    if (not 0.5 <= duration_s <= seconds or fps not in (8,12,24)
+            or not 0 <= start_s < seconds or start_s+duration_s > seconds
+            or round(duration_s*fps)>max_frames):
+        raise WorkflowError("Preview exceeds bounded rendering limits")
+    output=Path(output)
+    if output.suffix.lower()!=".mp4" or output.is_symlink() or output.exists():
+        raise WorkflowError("Fresh MP4 preview output required")
+    if not output.parent.is_dir():
+        raise WorkflowError("Preview output folder must already exist")
+    if shutil.which("ffmpeg") is None:
+        raise WorkflowError("System FFmpeg required; no installing or service access")
+    # Assert relevant glyph font/shaping availability before launching encoder.
+    _font(20,devanagari=True)
+    first=render_hindi_frame(episode_id,start_s,width=width)
+    size=f"{first.width}x{first.height}"
+    cmd=["ffmpeg","-nostdin","-v","error","-y",
+         "-f","rawvideo","-pixel_format","rgb24","-video_size",size,
+         "-framerate",str(fps),"-i","pipe:0","-an","-c:v","libx264",
+         "-preset","veryfast","-pix_fmt","yuv420p","-crf","28",
+         "-movflags","+faststart",str(output)]
+    proc=subprocess.Popen(cmd,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+    try:
+        for i in range(round(duration_s*fps)):
+            img=first if i==0 else render_hindi_frame(
+                episode_id,start_s+i/fps,width=width)
+            proc.stdin.write(img.tobytes())
+        proc.stdin.close()
+        stderr=proc.stderr.read()
+        proc.wait(timeout=180)
+        if proc.returncode:
+            raise WorkflowError("Original video-only encoding failed")
+        if not output.is_file() or output.stat().st_size < 2048:
+            raise WorkflowError("Original visual-only MP4 missing or too small")
+    except Exception:
+        proc.kill()
+        proc.wait()
+        output.unlink(missing_ok=True)
+        raise
+    sha=sha256(output.read_bytes()).hexdigest()
+    return {
+        "status":"REAL_HINDI_MP4_VISUAL_ONLY_NOT_PUBLISHABLE",
+        "episode_id":episode_id,"format":kind,
+        "width":first.width,"height":first.height,
+        "rendered_duration_seconds":duration_s,
+        "preview_offset_seconds":start_s,
+        "fps":fps,"sha256":sha,
+        "actual_video_pixels_encoded":True,
+        "audio_track_present":False,
+        "voice_rights_verified":False,
+        "spoken_subtitle_alignment_verified":False,
+        "script_editorial_facts_verified":False,
+        "publishing_authorized":False,
+    }
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description="Phase 3 Hindi visual-only proof")
+    parser.add_argument("--episode",choices=sorted(PROFILES),required=True)
+    parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--duration",type=float,default=2)
+    parser.add_argument("--fps",type=int,default=8)
+    parser.add_argument("--width",type=int)
+    parser.add_argument("--start",type=float,default=0)
+    args=parser.parse_args(argv)
+    result=render_hindi_visual_preview(
+        args.episode,args.output,duration_s=args.duration,
+        fps=args.fps,width=args.width,start_s=args.start)
+    print(json.dumps(result,sort_keys=True,separators=(",",":")))
+    return 0
+
+
+if __name__=="__main__":
+    raise SystemExit(main())
