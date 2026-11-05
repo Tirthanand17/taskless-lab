@@ -227,20 +227,36 @@ def _topic_png(
         "file_transfer":(111,222,188),
         "quake_energy":(248,158,99),
     }[story["theme"]]
-    # Original moving signal/packet/energy node lives in the main visible
-    # field, never under the opaque subtitle panel at the bottom.
+    # B4e3 removes the earlier heavy full-canvas progress rule from
+    # CINEMATIC videos: it cut straight through their 2.5D illustrations.
+    # A subtle progress rail is inside the measured natural gap between the
+    # hero-object panel and the native ASS caption band, for BOTH formats.
     w,h=rgb.size
-    d.line((90,y,w-90,y),fill=accent,width=5)
-    d.ellipse((x-20,y-20,x+20,y+20),fill=(246,248,254),
-              outline=accent,width=7)
-    d.ellipse((x-8,y-8,x+8,y+8),fill=accent)
+    if visual_style=="cinematic_v3":
+        from autopilot.cinematic_scene_v3 import SCENE_PANEL
+        pane=SCENE_PANEL[story["format"]]
+        safe_top=CAPTION_CONFIG[story["format"]]["safe_top"]
+        y=(pane[3]+safe_top)//2
+        start_x,end_x=pane[0]+85,pane[2]-85
+        x=round(start_x+(end_x-start_x)*tick/120)
+        restrained=tuple(max(0,round(c*.48)) for c in accent)
+        d.line((start_x,y,end_x,y),fill=restrained,width=2)
+        d.ellipse((x-7,y-7,x+7,y+7),fill=accent)
+        if y+10>=safe_top or y-10<=pane[3]:
+            raise TopicRenderError("Minimal film progress rail intruded into hero or captions")
+    else:
+        # Historical v2 default retained for direct old/new comparison.
+        d.line((90,y,w-90,y),fill=accent,width=5)
+        d.ellipse((x-20,y-20,x+20,y+20),fill=(246,248,254),
+                  outline=accent,width=7)
+        d.ellipse((x-8,y-8,x+8,y+8),fill=accent)
     # B4e1: do not show any central art behind subtitle cards; the prior
     # bottom-right rounded panel was below SRT's actual huge rendered glyphs.
     # This genuine reserved band matches explicitly scaled ASS PlayRes pixels.
     caption_area=CAPTION_CONFIG[story["format"]]
     safe_top,safe_bottom=caption_area["safe_top"],caption_area["safe_bottom"]
-    if y+28>=safe_top:
-        raise TopicRenderError("Animated source dot intrudes into caption-safe band")
+    if y+(10 if visual_style=="cinematic_v3" else 28)>=safe_top:
+        raise TopicRenderError("Animated source indicator intrudes into caption-safe band")
     d.rectangle((0,safe_top,w,safe_bottom),fill=(7,12,23))
     d.line((66,safe_top,w-66,safe_top),fill=accent,width=3)
     # Bottom is intentionally visually quiet, unlike old large empty boxes.
