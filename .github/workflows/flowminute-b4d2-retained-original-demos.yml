@@ -1,0 +1,176 @@
+name: FlowMinute B4d2 Three Original Playable Review Media (NO UPLOAD)
+on:
+  pull_request:
+    paths:
+      - "autopilot/retain_public_topic_drafts.py"
+      - "autopilot/test_retain_public_topic_drafts.py"
+      - ".github/workflows/flowminute-b4d2-retained-original-demos.yml"
+      - "docs/adr/0039-b4d2-retained-real-encoded-public-review-previews.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/retain_public_topic_drafts.py"
+      - ".github/workflows/flowminute-b4d2-retained-original-demos.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4d2-public-three-demo-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original_source_and_byte_integrity_preflight:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Adversarial original review media validation with no provider
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/retain_public_topic_drafts.py \
+            autopilot/test_retain_public_topic_drafts.py
+          python -B -m unittest -v \
+            autopilot.test_full_topic_narrated_pack \
+            autopilot.test_retain_public_topic_drafts \
+            2>&1 | tee /tmp/b4d2_tests.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/b4d2_tests.log; then exit 1; fi
+      - name: Forbid source imports that could upload or access provider network
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          source=Path("autopilot/retain_public_topic_drafts.py").read_text()
+          denied=("google","googleapiclient","boto3","requests","urllib",
+                  "socket","http","subprocess","paramiko","aiohttp")
+          for node in ast.walk(ast.parse(source)):
+              if isinstance(node,ast.Import):
+                  for item in node.names:
+                      assert not item.name.startswith(denied)
+              if isinstance(node,ast.ImportFrom):
+                  assert not (node.module or "").startswith(denied)
+          print("B4D2_NO_NETWORK_UPLOADER_IMPORTED")
+          PY
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+
+  real_three_mp4s_for_public_demo_review:
+    # CPU-heavy job only for protected default-branch push or explicit dispatch.
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [original_source_and_byte_integrity_preflight]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 58
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - name: Public script checkout without persisted GitHub credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public Kokoro CPU and licensed-free-asset graphic tools
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng libsndfile1 fonts-dejavu-core
+          python -m pip install --disable-pip-version-check \
+            'kokoro-onnx==0.6.1' 'soundfile>=0.12,<1' \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' 'cairosvg>=2.7,<3' \
+            'cryptography>=46,<48'
+          ffmpeg -hide_banner -filters 2>&1 | grep -F subtitles
+      - name: Fetch and SHA-check official pinned public Kokoro model and voice files
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b4d2-public-model
+          cd /tmp/flowminute-b4d2-public-model
+          root="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 240 \
+            --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$root/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+      - name: Render/decode 2 full Shorts and 1 long, persist only unapproved MP4 SRT and thumbs
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.retain_public_topic_drafts \
+            --model /tmp/flowminute-b4d2-public-model/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b4d2-public-model/voices-v1.0.bin \
+            --output /tmp/flowminute-b4d2-public-original-media-review
+          python -B - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          base=Path("/tmp/flowminute-b4d2-public-original-media-review")
+          m=json.loads((base/"UNAPPROVED_PUBLIC_REVIEW_MANIFEST.json").read_text())
+          assert m["status"]=="PUBLIC_REVIEW_DRAFT_MEDIA_RETAINED_NOT_RELEASE_APPROVED"
+          assert m["source"]=="THREE_FIXED_20261104_ORIGINAL_TOPIC_DEMOS_NOT_DAILY_FRESH_EPISODES"
+          assert [x["format"] for x in m["episodes"]]==["short","long","short"]
+          assert m["release_authorized"] is False
+          assert m["real_rights_or_editorial_approval"] is False
+          assert m["actual_live_youtube_uploads"]==0
+          assert m["original_voice_model_file_weights_archived"] is False
+          files=[x for x in base.rglob("*") if x.is_file()]
+          assert len(files)==10
+          for ep in m["episodes"]:
+              assert len(ep["files"])==3
+              assert ep["technical_full_video_decode_passed"] is True
+              assert ep["release_authorized"] is False
+              for item in ep["files"]:
+                  f=base/ep["episode_id"]/item["filename"]
+                  assert f.is_file() and not f.is_symlink()
+                  assert f.stat().st_size==item["bytes"]
+                  with f.open("rb") as stream:
+                      assert hashlib.file_digest(stream,"sha256").hexdigest()==item["sha256"]
+          print("B4D2_THREE_REAL_H264_AAC_SRT_AND_THUMB_FILES_INTEGRITY_CHECKED")
+          PY
+      - name: Keep original publicly authored unapproved playable technical drafts for seven days
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-unapproved-three-real-demo-videos-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4d2-public-original-media-review/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 1
+      - name: Verify YouTube publication and billable model flags remain disabled
+        run: |
+          set -euo pipefail
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+          test "$FLOWMINUTE_MODEL_PAID_SPEND_USD" = 0
+          echo "B4D2_REAL_PUBLIC_REVIEW_VIDEO_BYTES_RETAINED_NO_LIVE_OAUTH_OR_UPLOAD"
+      - name: Remove ephemeral media and public model weights from runner
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4d2-public-model \
+            /tmp/flowminute-b4d2-public-original-media-review
+          echo "B4D2_LOCAL_EPHEMERAL_FILES_CLEANED"
