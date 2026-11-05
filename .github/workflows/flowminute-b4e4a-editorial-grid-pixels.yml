@@ -1,0 +1,129 @@
+name: FlowMinute B4e4a Original Source Editorial Title/Footer No-Overlap Pixel Proof (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/cinematic_editorial_grid_v5.py"
+      - "autopilot/test_cinematic_editorial_grid_v5.py"
+      - "autopilot/full_topic_narrated_pack.py"
+      - ".github/workflows/flowminute-b4e4a-editorial-grid-pixels.yml"
+      - "docs/adr/0046-b4e4a-real-long-title-footer-layout-review.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/cinematic_editorial_grid_v5.py"
+      - "autopilot/test_cinematic_editorial_grid_v5.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4e4a-source-editorial-pixels-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  physical_all_32_source_titles_and_native_ass_no_collision:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only local Pillow/SVG visual proof dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core libcairo2
+          python -m pip install --disable-pip-version-check \
+            'Pillow>=11,<13' 'cairosvg>=2.7,<3'
+      - name: Physically validate ALL 32 immutable source titles, values and both true caption bands
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/cinematic_editorial_grid_v5.py \
+            autopilot/test_cinematic_editorial_grid_v5.py \
+            autopilot/full_topic_narrated_pack.py
+          python -B -m unittest -v \
+            autopilot.test_cinematic_editorial_grid_v5 \
+            autopilot.test_cinematic_storyboard_v4 \
+            autopilot.test_cinematic_scene_v3 \
+            2>&1 | tee /tmp/b4e4a_editorial_qa.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/b4e4a_editorial_qa.log; then exit 1; fi
+          echo "B4E4A_ALL_32_ORIGINAL_TITLE_BRAND_FOOTER_AND_ASS_SAFE_REGIONS_NO_OVERLAP"
+      - name: Render REAL 3-theme before/after source storyboard image comparisons
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageDraw,ImageFont
+          from autopilot.primary_sourced_storyboards import build_story
+          from autopilot.full_topic_narrated_pack import _topic_png
+          root=Path("/tmp/flowminute-b4e4a-layout-stills")
+          root.mkdir(mode=0o700)
+          font=ImageFont.truetype(
+              "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",20)
+          for slot,idx in (("short_am",0),("long",0),("long",10),("short_pm",0)):
+              story=build_story(slot)
+              before=root/f"{slot}_{idx:02d}_BEFORE_UNAPPROVED.png"
+              after=root/f"{slot}_{idx:02d}_AFTER_UNAPPROVED.png"
+              _topic_png(story,idx,60,before,visual_style="classic_v2")
+              _topic_png(story,idx,60,after,visual_style="cinematic_v3")
+              with Image.open(before) as old,Image.open(after) as new:
+                  assert old.size==new.size
+                  old=old.convert("RGB");new=new.convert("RGB")
+                  target=(350,640) if story["format"]=="short" else (590,332)
+                  old.thumbnail(target);new.thumbnail(target)
+                  pair=Image.new("RGB",(old.width+new.width+28,
+                                        max(old.height,new.height)+52),(13,20,32))
+                  d=ImageDraw.Draw(pair)
+                  d.text((9,12),"BEFORE",font=font,fill="white")
+                  d.text((old.width+18,12),"AFTER B4e4a",font=font,
+                         fill=(112,221,187))
+                  pair.paste(old,(8,43))
+                  pair.paste(new,(old.width+20,43))
+                  pair.save(root/f"{slot}_{idx:02d}_ACTUAL_SOURCE_COMPARISON_UNAPPROVED.png")
+          print("B4E4A_4_TRUE_BEFORE_AFTER_REAL_SOURCE_PNG_COMPARISONS_READY")
+          PY
+      - name: Reconfirm only original source, no public upload, OAuth or external reference audio
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          root=ast.parse(Path("autopilot/cinematic_editorial_grid_v5.py").read_text())
+          for node in ast.walk(root):
+              names=([x.name for x in node.names] if isinstance(node,ast.Import)
+                     else [node.module or ""] if isinstance(node,ast.ImportFrom) else [])
+              for n in names:
+                  assert not n.startswith(("requests","urllib","boto3",
+                                           "google","socket","http","aiohttp")),n
+          print("B4E4A_NO_PROVIDER_OR_REFERENCE_MEDIA")
+          PY
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+      - name: Retain public unapproved real 4-scene full-resolution source and before-after PNGs
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b4e4a-real-editorial-four-scenes-unapproved-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4e4a-layout-stills/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+      - name: Delete temporary hosted original scene images
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4e4a-layout-stills
+          echo "B4E4A_SOURCE_IMAGES_ONLY_NO_YOUTUBE_OR_LOCAL_LAPTOP"
