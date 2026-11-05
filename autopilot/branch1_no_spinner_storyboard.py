@@ -120,63 +120,139 @@ def _ease(value:float)->float:
     return value*value*(3-2*value)
 
 
-def _draw_subject(d,scene:str,mode:str,amount:float,colors:dict):
-    """Only original rectangular evidence/illustration assets, never circles."""
-    ac=colors["accent"];sec=colors["secondary"];bg=colors["bg"]
-    # Free-standing objects, not a recurring giant outer presentation box.
-    if scene=="voice":
-        # Synthetic audio waveform: variable HEIGHT bars with moving focus,
-        # not a voice fingerprint, biometric signature or real call recording.
-        n=15
+def _draw_subject(d,topic:str,mode:str,amount:float,colors:dict,
+                  *,beat:int,total:int)->str:
+    """Three DIFFERENT original hero compositions per topic; no orbit.
+
+    The opening, proof and closing scenes have materially distinct object
+    silhouettes. Changes are driven by caption index, not random effects.
+    """
+    if type(beat) is not int or type(total) is not int or not 0<=beat<total:
+        raise NoSpinnerVisualRejected("Authored visual beat index required")
+    stage=min(2,(3*beat)//total)
+    ac=colors["accent"];sec=colors["secondary"]
+    def label(x,y,text,n=28,col=None):
+        d.text((x,y),text,font=_font(n),fill=col or sec)
+
+    if topic=="voice" and stage==0:
+        # Hook: stand-alone symbolic audio bars, NOT actual person audio.
         values=(.14,.39,.25,.66,.44,.78,.31,.94,.63,.38,.82,.29,.58,.34,.16)
         for i,v in enumerate(values):
-            height=round(330*v*(.73+.27*amount))
-            x=160+i*51
-            mid=855+round((i%2)*7)
+            height=round(360*v*(.73+.27*amount))
+            x=160+i*51;mid=858+round((i%2)*7)
             d.rounded_rectangle((x,mid-height//2,x+24,mid+height//2),
                                 radius=8,fill=ac if i<=round(14*amount) else colors["hero"])
-        d.rounded_rectangle((190,1130,890,1210),radius=19,
-                            fill=(31,51,67),outline=sec,width=3)
-        d.rectangle((225,1163,225+round(600*amount),1177),fill=ac)
-    elif scene=="photo":
-        # Source-neutral photo card + rectangular metadata fields, no GPS
-        # coordinates invented or real location/photograph copied.
+        label(197,1112,"SYNTHETIC VOICE EXAMPLE",24)
+        d.rectangle((195,1178,195+round(678*amount),1190),fill=ac)
+        variant="VOICE_WAVEFORM_HOOK"
+    elif topic=="voice" and stage==1:
+        # Middle: no visualized impersonation. Show the verification
+        # decision as a different clearly bounded pair of action cards.
+        left=round(120+40*(1-amount))
+        d.rounded_rectangle((left,590,left+350,1110),radius=22,
+                            fill=(69,38,60),outline=ac,width=4)
+        d.rounded_rectangle((575,590,960,1110),radius=22,
+                            fill=(24,58,66),outline=sec,width=4)
+        label(left+36,642,"STOP",49,col=ac)
+        label(left+36,737,"HANG UP",29)
+        label(606,643,"VERIFY",46,col=sec)
+        label(606,737,"CALL BACK",28)
+        for j in range(3):
+            d.rectangle((left+42,894+j*51,left+42+round(248*amount),908+j*51),fill=ac)
+            d.rectangle((607,894+j*51,607+round(288*amount),908+j*51),fill=sec)
+        variant="TWO_STEP_CALL_VERIFICATION"
+    elif topic=="voice":
+        # Final beat: confident original call-back checklist, no circle.
+        d.rounded_rectangle((150,594,930,1113),radius=24,
+                            fill=(31,55,72),outline=sec,width=3)
+        label(197,641,"VERIFY THE CALLER",40,col=sec)
+        for idx,name in enumerate(("PAUSE","USE A KNOWN NUMBER","CONFIRM DIRECTLY")):
+            y=759+idx*108
+            d.rounded_rectangle((190,y,252,y+58),radius=8,fill=ac)
+            label(206,y+11,str(idx+1),31,col=(17,23,39))
+            label(284,y+9,name,25)
+        variant="VERIFIED_CALLER_CHECKLIST"
+    elif topic=="photo" and stage==0:
+        # Hook: photo illustration with distinct polygon landscape,
+        # purely synthetic, no actual private photograph or GPS fields.
         shift=round(42*(1-amount))
-        d.rounded_rectangle((158+shift,500,720+shift,1130),radius=24,
+        d.rounded_rectangle((158+shift,500,740+shift,1130),radius=24,
                             fill=(31,68,76),outline=ac,width=4)
         d.polygon(((188+shift,1018),(365+shift,732),(524+shift,889),
-                   (625+shift,760),(684+shift,1000)),fill=(64,146,136))
-        d.rectangle((188+shift,1030,686+shift,1050),fill=sec)
-        d.rounded_rectangle((568,838,916,1095),radius=16,
+                   (625+shift,760),(705+shift,1000)),fill=(64,146,136))
+        d.rectangle((188+shift,1030,704+shift,1050),fill=sec)
+        d.rounded_rectangle((600,840,930,1100),radius=16,
                             fill=(11,44,55),outline=sec,width=4)
-        for i,w in enumerate((250,200,280)):
-            d.rounded_rectangle((590,891+i*53,590+round(w*amount),905+i*53),
-                                radius=4,fill=ac if i==1 else sec)
-    else:
-        # Educational original *fictional* browser tabs and privacy layers.
-        # Rectangular track and switching panels signal device vs network.
-        d.rounded_rectangle((115,515,965,1150),radius=30,
+        for j,w in enumerate((242,195,267)):
+            d.rectangle((625,894+j*53,625+round(w*amount),906+j*53),
+                        fill=ac if j==1 else sec)
+        variant="PHOTO_METADATA_DISCOVERY"
+    elif topic=="photo" and stage==1:
+        # Proof: info pane instead of the same photo frame; illustrates
+        # the owner's original spoken "inspect information" step.
+        d.rounded_rectangle((268,495,830,1228),radius=27,
+                            fill=(22,60,74),outline=sec,width=4)
+        d.rounded_rectangle((300,545,798,631),radius=12,fill=(30,94,100))
+        label(328,570,"PHOTO INFO",29)
+        for i,(word,w) in enumerate((("DATE",345),("DETAILS",290),("LOCATION",350))):
+            yy=695+i*130
+            label(320,yy,word,26,col=ac)
+            d.rectangle((321,yy+55,321+round(w*amount),yy+70),fill=sec)
+        variant="PHOTO_INFO_INSPECTOR"
+    elif topic=="photo":
+        # Takeaway: two separate share routes, no map-pin orbit.
+        label(165,538,"BEFORE SHARING",34,col=ac)
+        for i,text in enumerate(("CHECK DETAILS","CHECK SHARING")):
+            yy=657+i*224
+            d.rounded_rectangle((150,yy,930,yy+156),radius=20,
+                                fill=(31,75,80),outline=sec,width=3)
+            label(202,yy+41,text,32)
+            d.rectangle((198,yy+116,198+round(657*amount),yy+126),fill=ac)
+        variant="PHOTO_SHARE_SAFETY_ACTIONS"
+    elif topic=="browser" and stage==0:
+        # Browser hook: simple fictional window, not a brand's actual UI.
+        d.rounded_rectangle((130,500,950,1135),radius=26,
                             fill=(18,44,72),outline=sec,width=3)
-        d.rounded_rectangle((136,538,944,618),radius=15,
-                            fill=(34,76,107))
-        d.rectangle((165,575,390,585),fill=sec)
-        d.rectangle((165,676,435,950),fill=(42,91,125))
-        d.rectangle((521,676,894,950),fill=(27,70,100))
-        d.rectangle((175,987,175+round(705*amount),1005),fill=ac)
-        for i in range(3):
-            d.rounded_rectangle((551,718+i*67,553+round((255-i*45)*amount),739+i*67),
-                                radius=6,fill=sec)
-    # A single restrained highlight varies by shot type. It is bounded,
-    # does not circle anything and cannot run beyond the scene.
+        d.rounded_rectangle((152,523,928,611),radius=13,fill=(34,76,107))
+        d.rectangle((180,559,405,570),fill=sec)
+        d.rectangle((188,670,455,955),fill=(42,91,125))
+        d.rectangle((530,670,877,955),fill=(27,70,100))
+        d.rectangle((194,1002,194+round(681*amount),1017),fill=ac)
+        variant="PRIVATE_BROWSER_TAB_HOOK"
+    elif topic=="browser" and stage==1:
+        # Middle: downloaded files and bookmarks on device persist.
+        label(180,543,"SAVED ON DEVICE",35,col=ac)
+        for j,(word,w) in enumerate((("DOWNLOADS",540),("BOOKMARKS",460))):
+            yy=669+j*225
+            d.rounded_rectangle((160,yy,921,yy+157),radius=22,
+                                fill=(23,61,91),outline=sec,width=3)
+            label(207,yy+47,word,35)
+            d.rectangle((205,yy+109,205+round(w*amount),yy+121),fill=ac)
+        variant="DEVICE_SAVED_INFORMATION"
+    else:
+        # Final: explain a distinction with a split visual, not fake
+        # anonymity or "invisible" protection guarantee.
+        label(168,550,"WHAT PRIVATE MEANS",32,col=ac)
+        for j,(head,detail) in enumerate((("ON DEVICE","LOCAL SESSION"),
+                                          ("ON INTERNET","NOT INVISIBLE"))):
+            xx=132+j*429
+            d.rounded_rectangle((xx,674,xx+391,1105),radius=23,
+                                fill=(24,62,95),outline=sec,width=3)
+            label(xx+24,723,head,28)
+            label(xx+24,825,detail,21,col=ac)
+            d.rectangle((xx+30,937,xx+30+round(308*amount),956),fill=ac)
+        variant="BROWSER_PRIVACY_DIFFERENCE"
+    # A restrained one-shot "look here" movement ends after this source beat.
+    # No continuous rotation, arc, orbit, bouncing dot or indefinitely
+    # looping visual, and no animation crosses the original SRT band.
     if mode in ("cursor_focus","step_highlight","source_zoom"):
         x=180+round(660*amount)
-        d.line((x,1260,x+56,1260),fill=ac,width=7)
+        d.line((x,1275,x+44,1275),fill=ac,width=6)
     elif mode in ("split_compare","card_reveal","evidence_wipe"):
-        d.rectangle((185,1251,185+round(700*amount),1262),fill=ac)
-    elif mode in ("row_scan","brief_callout"):
-        d.rounded_rectangle((210,1254,210+round(540*amount),1267),
-                            radius=6,fill=ac)
-
+        d.rectangle((185,1265,185+round(700*amount),1276),fill=ac)
+    else:
+        d.rectangle((214,1268,214+round(535*amount),1279),fill=ac)
+    return variant
 
 def storyboard_cues(episode:dict)->list[dict]:
     cues=_verify_caption_source(episode)
@@ -217,7 +293,8 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float):
     d.text((82,222),colors["tag"],font=_font(31),fill=accent)
     _text_lines(d,cues[beat]["source_text"],x=82,y=306,width=900,height=184,
                 font_size=51,max_lines=3,fill=(238,246,252))
-    _draw_subject(d,topic,cues[beat]["motion_mode"],t,colors)
+    hero_variant=_draw_subject(d,topic,cues[beat]["motion_mode"],t,colors,
+                              beat=beat,total=len(cues))
     # Genuine caption safe band, no art or overlays bleed into subtitles.
     d.rounded_rectangle((82,1410,998,1650),radius=16,fill=(7,14,27))
     _text_lines(d,cues[beat]["source_text"],x=118,y=1460,width=847,
@@ -229,6 +306,7 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float):
     return image,{
         "status":STATUS,"episode_id":episode["id"],"beat":beat+1,
         "motion_mode":cues[beat]["motion_mode"],
+        "distinct_original_visual_subject":hero_variant,
         "caption_source_sha256":cues[beat]["source_text_sha256"],
         "phase":phase,"no_circle_spinner_drawn":True,
         "original_recording_or_reference_reused":False,
