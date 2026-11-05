@@ -98,9 +98,15 @@ def _wrap(draw,text,*,max_width,max_lines,max_font,min_font=26):
 
 
 def _text_lines(draw,text,*,x,y,width,height,font_size,max_lines,fill):
-    lines,font,fs=_wrap(draw,text,max_width=width,max_lines=max_lines,max_font=font_size)
-    stride=int(fs*1.26)
-    if len(lines)*stride>height:
+    # Fit BOTH actual glyph width and the reserved physical video height;
+    # never truncate source caption words or let text cross the hero boundary.
+    for requested in range(font_size,25,-2):
+        lines,font,fs=_wrap(draw,text,max_width=width,max_lines=max_lines,
+                            max_font=requested)
+        stride=int(fs*1.26)
+        if len(lines)*stride<=height:
+            break
+    else:
         raise NoSpinnerVisualRejected("Source words would overlap other video regions")
     for j,line in enumerate(lines):
         draw.text((x,y+stride*j),line,font=font,fill=fill)
