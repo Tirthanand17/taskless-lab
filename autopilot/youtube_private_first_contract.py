@@ -135,8 +135,11 @@ def propose_first_attempt(intent: DryRunUploadIntent, existing: MockAttemptFence
 
 
 def note_returned_id(fence: MockAttemptFence, video_id: str) -> MockAttemptFence:
-    if fence.state != "POSSIBLY_SENT_NO_RETRY" or fence.remote_video_id is not None:
-        raise ReleaseContractError("Illegal duplicate or reversed transition")
+    if (type(fence) is not MockAttemptFence or fence.state != "POSSIBLY_SENT_NO_RETRY"
+            or fence.remote_video_id is not None or fence.simulated_only is not True
+            or fence.remote_upload_proven is not False
+            or fence.release_authorized is not False):
+        raise ReleaseContractError("Illegal duplicate, forged or reversed transition")
     if not isinstance(video_id, str) or not VIDEO.fullmatch(video_id):
         raise ReleaseContractError("No trustworthy remote video identifier")
     return replace(fence, state="REMOTE_ID_REPORTED_UNVERIFIED", remote_video_id=video_id)
@@ -152,8 +155,13 @@ def inspect_injected_video_readback(
     + captions independently, verify uploaded media identity and other assets,
     and re-read the final remote schedule. A fake fixture is not such proof.
     """
-    if fence.context_sha256 != intent.context_sha256 or fence.state != "REMOTE_ID_REPORTED_UNVERIFIED":
-        raise ReleaseContractError("Mismatched or incomplete attempted upload")
+    if (type(intent) is not DryRunUploadIntent or intent.simulation_only is not True
+            or type(fence) is not MockAttemptFence
+            or fence.context_sha256 != intent.context_sha256
+            or fence.state != "REMOTE_ID_REPORTED_UNVERIFIED"
+            or fence.simulated_only is not True or fence.remote_upload_proven is not False
+            or fence.release_authorized is not False):
+        raise ReleaseContractError("Mismatched, forged or incomplete attempted upload")
     if not isinstance(video, dict) or not isinstance(captions, dict):
         raise ReleaseContractError("Missing independent owner readback fields")
     snippet = video.get("snippet")
