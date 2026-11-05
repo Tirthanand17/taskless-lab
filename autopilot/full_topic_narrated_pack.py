@@ -216,6 +216,18 @@ def _topic_png(
             or receipt["original_reference_media_imported"] is not False
             or receipt["visual_scene_source_story_sha256"]!=story["draft_sha256"]):
             raise TopicRenderError("Cinematic illustration forged approval or story source")
+        # After composing the SAME original 2.5D art, remove only the
+        # badly placed legacy SVG type and footer. Native ASS band and hero
+        # remain bitwise unchanged; every source's real text is preserved.
+        from autopilot.cinematic_editorial_grid_v5 import apply_source_cinematic_editorial_grid
+        editorial=apply_source_cinematic_editorial_grid(
+            rgb,story=story,scene_index=idx)
+        if (editorial["release_authorized"] is not False
+            or editorial["source_title_exact_text_sha256"]!=
+                sha256(story["scenes"][idx]["display_title"].encode()).hexdigest()
+            or editorial["original_source_story_draft_sha256"]!=story["draft_sha256"]
+            or editorial["native_ass_caption_zone_untouched"] is not True):
+            raise TopicRenderError("Original source title or native subtitle rectangle changed")
     elif visual_style!="classic_v2":
         raise TopicRenderError("Unknown or unreviewed original video visual style")
     # A fixed dark, consistently safe caption strip in each source frame.
@@ -591,6 +603,8 @@ def render_full_topic_video(
         "original_animated_svg_frame_count":len(all_motion_hashes),
         "b4e3_visual_style":visual_style,
         "b4e3_original_dimensional_scenes_encoded":visual_style=="cinematic_v3",
+        "b4e4_source_exact_nonoverlapping_editorial_grid":
+            visual_style=="cinematic_v3",
         "b4e3_real_modelled_3d_claimed":False,
         "b4e3_owner_creative_approval":False,
         "original_svg_frames_really_animated":True,

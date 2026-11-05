@@ -38,9 +38,10 @@ class ActualCinematicShortAndLongFrameTests(unittest.TestCase):
                     self.assertEqual(
                         a.size,(1080,1920) if story["format"]=="short" else (1920,1080))
                     top=1295 if story["format"]=="short" else 756
+                    bottom=1570 if story["format"]=="short" else 935
                     self.assertIsNone(ImageChops.difference(
-                        a.crop((0,top,a.width,a.height)),
-                        b.crop((0,top,b.width,b.height))
+                        a.crop((0,top,a.width,bottom)),
+                        b.crop((0,top,b.width,bottom))
                     ).getbbox(), "cinematic images must NOT alter ASS caption-safe area")
                     # Requires materially different central ORIGINAL science art;
                     # a renamed or recolored unchanged panel is not accepted.
@@ -83,6 +84,7 @@ class ActualCinematicShortAndLongFrameTests(unittest.TestCase):
         for slot in ("short_am","long","short_pm"):
             story=build_story(slot)
             top=1295 if story["format"]=="short" else 756
+            bottom=1570 if story["format"]=="short" else 935
             with self.subTest(slot=slot),tempfile.TemporaryDirectory() as t:
                 for idx in range(story["scene_count"]):
                     before=Path(t)/f"source_{idx}.png"
@@ -91,8 +93,8 @@ class ActualCinematicShortAndLongFrameTests(unittest.TestCase):
                     _topic_png(story,idx,60,after,visual_style="cinematic_v3")
                     with Image.open(before) as old,Image.open(after) as new:
                         self.assertIsNone(ImageChops.difference(
-                            old.convert("RGB").crop((0,top,old.width,old.height)),
-                            new.convert("RGB").crop((0,top,new.width,new.height)),
+                            old.convert("RGB").crop((0,top,old.width,bottom)),
+                            new.convert("RGB").crop((0,top,new.width,bottom)),
                         ).getbbox(),f"Caption zone intrusion on {slot} beat {idx+1}")
                         self.assertIsNotNone(ImageChops.difference(
                             old.convert("RGB"),new.convert("RGB")
