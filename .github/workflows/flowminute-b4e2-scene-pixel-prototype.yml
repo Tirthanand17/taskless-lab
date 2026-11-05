@@ -1,0 +1,91 @@
+name: FlowMinute B4e2 Original Cinematic Scene Prototype Pixels (NO UPLOAD)
+on:
+  pull_request:
+    paths:
+      - "autopilot/cinematic_scene_v3.py"
+      - "autopilot/test_cinematic_scene_v3.py"
+      - ".github/workflows/flowminute-b4e2-scene-pixel-prototype.yml"
+      - "docs/adr/0042-b4e2-original-dimensional-scene-prototype.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4e2-original-cinematic-scene-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  physical_story_scene_preview_and_safety:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 13
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ONLY public 2D vector/Pillow original scene artist dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core libcairo2
+          python -m pip install --disable-pip-version-check \
+            'Pillow>=11,<13' 'cairosvg>=2.7,<3'
+      - name: Actually render and compare original dimensional frame pixels and motion
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/cinematic_scene_v3.py \
+            autopilot/test_cinematic_scene_v3.py
+          python -B -m unittest -v \
+            autopilot.test_cinematic_scene_v3 \
+            2>&1 | tee /tmp/b4e2_art_security.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/b4e2_art_security.log; then exit 1; fi
+          python -B -m autopilot.cinematic_scene_v3 \
+            --out /tmp/flowminute-b4e2-scene-preview
+          test -f /tmp/flowminute-b4e2-scene-preview/short_am_UNAPPROVED_ORIGINAL_CINEMATIC_SCENE.png
+          test -f /tmp/flowminute-b4e2-scene-preview/long_UNAPPROVED_ORIGINAL_CINEMATIC_SCENE.png
+          test -f /tmp/flowminute-b4e2-scene-preview/short_pm_UNAPPROVED_ORIGINAL_CINEMATIC_SCENE.png
+          echo "B4E2_REAL_SOURCE_LINKED_ORIGINAL_2POINT5D_3_SCENE_PIXELS_READY_UNAPPROVED"
+      - name: Static no OAuth / uploader / network / reference-clip imports
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          tree=ast.parse(Path("autopilot/cinematic_scene_v3.py").read_text())
+          for node in ast.walk(tree):
+              if isinstance(node,(ast.Import,ast.ImportFrom)):
+                  names=[x.name for x in node.names] if isinstance(node,ast.Import) else [node.module or ""]
+                  for n in names:
+                      assert not n.startswith(("boto3","botocore","google",
+                                               "requests","urllib","socket",
+                                               "http","aiohttp"))
+          print("B4E2_ONLY_ORIGINAL_RENDER_CODE_PUBLIC_PR_NO_PROVIDER")
+          PY
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+      - name: Retain three source-linked original art BEFORE human visual approval
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b4e2-original-3-cinematic-storyboards-unapproved-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4e2-scene-preview/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+      - name: Clean ephemeral generated PNGs on all outcomes
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4e2-scene-preview
+          echo "B4E2_NO_REAL_VIDEO_OR_CREDENTIAL_OR_UPLOAD"
