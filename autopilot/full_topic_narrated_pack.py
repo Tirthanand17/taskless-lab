@@ -191,7 +191,10 @@ def visible_topic_motion_pulse(story: dict, tick: int) -> tuple[int,int]:
     return round(90+(w-180)*tick/120),round(h*(.645 if story["format"]=="short" else .62))
 
 
-def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
+def _topic_png(
+    story: dict,idx: int,tick: int,output: Path,
+    *,visual_style: str="classic_v2",
+) -> str:
     import cairosvg
     from PIL import Image,ImageDraw
     svg=render_original_svg(story,idx,tick)
@@ -203,6 +206,18 @@ def _topic_png(story: dict,idx: int,tick: int,output: Path) -> str:
         if im.size!=expected:
             raise TopicRenderError("Wrong original full-scene vector dimensions")
         rgb=im.convert("RGB")
+    # Opt-in B4e3 original dimensional story artwork, composited BEFORE
+    # the existing native-resolution subtitle-safe mask. Historical CI/demo
+    # jobs remain explicitly classic_v2 until actual owner quality review.
+    if visual_style=="cinematic_v3":
+        from autopilot.cinematic_storyboard_v4 import paint_source_story_scene
+        receipt=paint_source_story_scene(rgb,story=story,scene_index=idx,tick=tick)
+        if (receipt["release_authorized"] is not False
+            or receipt["original_reference_media_imported"] is not False
+            or receipt["visual_scene_source_story_sha256"]!=story["draft_sha256"]):
+            raise TopicRenderError("Cinematic illustration forged approval or story source")
+    elif visual_style!="classic_v2":
+        raise TopicRenderError("Unknown or unreviewed original video visual style")
     # A fixed dark, consistently safe caption strip in each source frame.
     # Burned captions are added later by FFmpeg and checked independently.
     d=ImageDraw.Draw(rgb)
@@ -377,8 +392,11 @@ def prepare_story_timing(story: dict) -> dict:
 
 def render_full_topic_video(
     story: dict, voice_engine, root: Path,
+    *,visual_style: str="classic_v2",
 ) -> tuple[dict,ExampleEpisode]:
     """Actual ephemeral full narration/animated render, no release authority."""
+    if visual_style not in ("classic_v2","cinematic_v3"):
+        raise TopicRenderError("Unknown visual mode; no implicit published video change")
     episode=episode_from_research_story(story)
     root=Path(root)
     if root.is_symlink() or not root.is_dir() or any(root.iterdir()):
@@ -404,7 +422,7 @@ def render_full_topic_video(
         group=[]
         for j in range(FRAMES_PER_SCENE):
             path=folder/f"moving_{i+1:02d}_{j:02d}.png"
-            digest=_topic_png(story,i,j*24,path)
+            digest=_topic_png(story,i,j*24,path,visual_style=visual_style)
             group.append(path)
             all_motion_hashes.append(digest)
         frame_groups.append(group)
@@ -436,6 +454,10 @@ def render_full_topic_video(
         "original_research_topics":story["theme"],
         "original_source_ids":sorted(story["primary_sources"]),
         "original_animated_svg_frame_count":len(all_motion_hashes),
+        "b4e3_visual_style":visual_style,
+        "b4e3_original_dimensional_scenes_encoded":visual_style=="cinematic_v3",
+        "b4e3_real_modelled_3d_claimed":False,
+        "b4e3_owner_creative_approval":False,
         "original_svg_frames_really_animated":True,
         "original_programmatic_low_level_ambient_sha256":original_tone_sha,
         "original_ui_sound_effects_count":sfx_report["original_programmatic_effects"],
