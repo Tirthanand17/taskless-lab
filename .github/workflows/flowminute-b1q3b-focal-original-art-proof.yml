@@ -6,6 +6,7 @@ on:
       - "autopilot/branch1_no_spinner_storyboard.py"
       - "autopilot/test_branch1_focal_hero_v3.py"
       - "autopilot/test_branch1_voice_call_hero_v4.py"
+      - "autopilot/test_branch1_photo_visual_story_v5.py"
       - ".github/workflows/flowminute-b1q3b-focal-original-art-proof.yml"
       - "docs/adr/0052-b1q3b-safe-focal-subject-original-art-improvement.md"
 
@@ -43,6 +44,7 @@ jobs:
           python -B -m unittest -v \
             autopilot.test_branch1_focal_hero_v3 \
             autopilot.test_branch1_voice_call_hero_v4 \
+            autopilot.test_branch1_photo_visual_story_v5 \
             autopilot.test_branch1_narrated_no_spinner_v2 \
             autopilot.test_branch1_nov_short_repair \
             2>&1 | tee /tmp/b1q3b_native_qa.log
