@@ -40,7 +40,7 @@ def _stage_background(image,stage,theme,scene_index,tick):
     # new object itself is clipped perfectly. Clean the entire hero-only
     # horizontal ribbon before drawing original depth art. This never
     # affects source heading above y0 or true native ASS below y1.
-    d.rectangle((0,y0,image.width,y1),fill=color)
+    d.rectangle((0,y0,image.width-1,y1-1),fill=color)
     width=x1-x0; height=y1-y0
     # Radial ambient light lives *only* within the measured hero rectangle;
     # unlike the old panel it has NO hard border or new rounded-rectangle.
