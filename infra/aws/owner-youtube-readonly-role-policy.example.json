@@ -1,0 +1,37 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "OnlyOwnerApprovedOAuthSecretMetadataAndValue",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": "arn:aws:secretsmanager:${AWS_REGION}:${AWS_ACCOUNT_ID}:secret:flowminute/owner-youtube-oauth/${OWNER_SECRET_NAME}-${AWS_SECRET_SUFFIX}"
+    },
+    {
+      "Sid": "OnlyOwnerOAuthKmsKeyMetadata",
+      "Effect": "Allow",
+      "Action": "kms:DescribeKey",
+      "Resource": "arn:aws:kms:${AWS_REGION}:${AWS_ACCOUNT_ID}:key/${OWNER_OAUTH_KMS_KEY_UUID}",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "${AWS_ACCOUNT_ID}"
+        }
+      }
+    },
+    {
+      "Sid": "DecryptOwnerOAuthOnlyThroughSecretsManager",
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:kms:${AWS_REGION}:${AWS_ACCOUNT_ID}:key/${OWNER_OAUTH_KMS_KEY_UUID}",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "secretsmanager.${AWS_REGION}.amazonaws.com",
+          "kms:CallerAccount": "${AWS_ACCOUNT_ID}"
+        }
+      }
+    }
+  ]
+}
