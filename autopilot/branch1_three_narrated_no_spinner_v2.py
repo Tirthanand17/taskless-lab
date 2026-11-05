@@ -210,7 +210,8 @@ def original_pcm_and_measured_cues(engine,episode:dict,folder:Path,voice:str)->t
 
 
 def original_animated_keyframe_timeline(episode:dict,cues:list[dict],folder:Path,
-                                       *,max_fps_updates:int=4)->tuple[Path,int,dict]:
+                                       *,spoken_total:float,
+                                       max_fps_updates:int=4)->tuple[Path,int,dict]:
     """Actually draw many native 1080x1920 frames over full measured speech.
 
     24fps output is encoded by FFmpeg; the authored source art updates
@@ -219,16 +220,35 @@ def original_animated_keyframe_timeline(episode:dict,cues:list[dict],folder:Path
     """
     if max_fps_updates!=4:
         raise RealShortRejected("Only measured 4-frame-per-second max original art treatment")
+    if (not isinstance(spoken_total,(int,float)) or not math.isfinite(spoken_total)
+        or not cues or not 22<=spoken_total<=100
+        or not 0<=spoken_total-cues[-1]["end"]<=.50
+        or abs(cues[0]["start"])>.005):
+        raise RealShortRejected("Need exact real PCM total including all measured inter-cue silence")
     ffcat=folder/"original_source_motion.ffconcat"
     lines=["ffconcat version 1.0"]
     n=0
     keys=set()
     prev_end=0.0
-    first_last=None
+    visual_cursor=0.0
+    final_pose=None
+    verified_starts=[]
     for idx,c in enumerate(cues):
         if idx>=30 or c["start"]<prev_end-.01 or c["end"]<=c["start"]:
             raise RealShortRejected("Discontinuous source voice times for physical art")
-        scene_seconds=c["end"]-c["start"]
+        if abs(c["start"]-visual_cursor)>.005:
+            raise RealShortRejected("Visual story beat has drifted from the spoken PCM")
+        # B1q2 actual frame inspection found the visual slide show advanced
+        # by 0.13s PER narration cue because old FFconcat excluded pause.
+        # Keep the scene image frozen over the PCM's short inter-cue pause,
+        # so following hero art starts at exactly the NEXT spoken cue.
+        scene_end=(cues[idx+1]["start"] if idx+1<len(cues)
+                   else spoken_total)
+        if scene_end<c["end"] or scene_end-c["start"]>15.5:
+            raise RealShortRejected("Visual scene must include bounded trailing PCM silence")
+        scene_seconds=scene_end-c["start"]
+        verified_starts.append({"scene":idx,"pcm_start_seconds":c["start"],
+                                "video_hero_start_seconds":visual_cursor})
         frames=max(3,min(60,math.ceil(scene_seconds*4)))
         each=scene_seconds/frames
         for j in range(frames):
@@ -241,20 +261,20 @@ def original_animated_keyframe_timeline(episode:dict,cues:list[dict],folder:Path
                 raise RealShortRejected("Source picture has different spoken words")
             if receipt["no_circle_spinner_drawn"] is not True:
                 raise RealShortRejected("Unexpected looping circle in video frame")
+            if receipt["hero_headline_repeats_full_spoken_sentence"] is not False:
+                raise RealShortRejected("Double on-screen full-sentence subtitles reintroduced")
             frame=folder/f"motion_{idx:02}_{j:02}.png"
             im.save(frame,optimize=False,compress_level=1)
-            if first_last is None:
-                first_last=frame
+            final_pose=frame
             lines += [f"file '{frame.as_posix()}'",f"duration {each:.6f}"]
             n+=1
         prev_end=c["end"]
-    # Last pose hold for trailing voice silence; avoids a blank final frame.
-    if not first_last:
-        raise RealShortRejected("No original source image frames")
-    ending=folder/f"motion_{len(cues)-1:02}_{max(3,min(60,math.ceil((cues[-1]['end']-cues[-1]['start'])*4)))-1:02}.png"
-    if not ending.is_file():
-        raise RealShortRejected("Final pose disappeared")
-    lines.append(f"file '{ending.as_posix()}'")
+        visual_cursor=scene_end
+    if not final_pose or not final_pose.is_file():
+        raise RealShortRejected("Final source scene pose disappeared")
+    if abs(visual_cursor-spoken_total)>.005:
+        raise RealShortRejected("Entire video hero timeline not aligned to PCM total")
+    lines.append(f"file '{final_pose.as_posix()}'")
     ffcat.write_text("\n".join(lines)+"\n",encoding="utf8")
     # Attest three different source-authored concept silhouettes, never
     # claim every caption beat uses a unique hero with this prototype.
@@ -268,6 +288,12 @@ def original_animated_keyframe_timeline(episode:dict,cues:list[dict],folder:Path
         raise RealShortRejected("No opening/proof/takeaway composition differentiation")
     return ffcat,n,{
         "native_original_keyframes_drawn":n,
+        "actual_pcm_total_with_silences_seconds":round(spoken_total,3),
+        "visual_ffconcat_total_with_silences_seconds":round(visual_cursor,3),
+        "actual_hero_pcm_max_start_drift_seconds":
+            round(max(abs(x["video_hero_start_seconds"]-x["pcm_start_seconds"])
+                      for x in verified_starts),4),
+        "true_caption_and_hero_starts_bound_to_same_pcm":True,
         "three_distinct_original_semantic_hero_subjects":True,
         "original_motion_shot_types":len(set(x["original_visual_motion"] for x in cues)),
         "perpetual_spinning_ring_absent":True,
@@ -373,7 +399,8 @@ def render_three_actual_review_shorts(*,repository:Path,model:Path,voices:Path,
                 wav,cues,total,speech=original_pcm_and_measured_cues(
                     engine,story,work,voice)
                 srt,ass=_render_caption_files(cues,work)
-                cat,drawn,scene_info=original_animated_keyframe_timeline(story,cues,work)
+                cat,drawn,scene_info=original_animated_keyframe_timeline(
+                    story,cues,work,spoken_total=total)
                 mp4=folder/"UNAPPROVED_NO_SPINNER_NARRATED_SHORT.mp4"
                 _exec([
                     "ffmpeg","-nostdin","-hide_banner","-loglevel","error",
