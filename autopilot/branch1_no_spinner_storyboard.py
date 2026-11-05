@@ -31,6 +31,29 @@ COLORS={
 FONT_B="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONT_R="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 
+# B1q3 editorial beat-headlines, scoped to three existing exact GitHub story
+# topics. They summarize the original researched script and must never be
+# confused with a verbatim transcript, which lives solely in native ASS.
+# Never paint the entire spoken caption in both the headline and subtitle.
+EDITORIAL_HEADLINES={
+    "voice": (
+        "A FAMILIAR VOICE IS NOT PROOF",
+        "STOP. VERIFY INDEPENDENTLY.",
+        "CALL BACK USING A KNOWN NUMBER",
+    ),
+    "photo": (
+        "YOUR PHOTO MAY REVEAL A LOCATION",
+        "CHECK THE PHOTO INFORMATION",
+        "REVIEW THE SHARING OPTIONS",
+    ),
+    "browser": (
+        "INCOGNITO IS NOT INVISIBLE",
+        "CHECK WHAT STAYS ON DEVICE",
+        "PRIVATE DOES NOT MEAN ANONYMOUS",
+    ),
+}
+EDITORIAL_STAGE=("THE PROBLEM","THE EXPLANATION","THE TAKEAWAY")
+
 class NoSpinnerVisualRejected(ValueError):
     pass
 
@@ -298,11 +321,30 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float,
     d.text((82,74),"FLOWMINUTE  /  ORIGINAL EXPLAINER",
            font=_font(28),fill=sec)
     d.rectangle((82,135,998,138),fill=tuple(int(v*.44) for v in accent))
-    d.text((82,222),colors["tag"],font=_font(31),fill=accent)
-    _text_lines(d,cues[beat]["source_text"],x=82,y=306,width=900,height=184,
-                font_size=51,max_lines=3,fill=(238,246,252))
+    stage=min(2,(3*beat)//len(cues))
+    # Use an original-topic editorial hook up top, and ONE verbatim spoken
+    # caption only in the true lower timed subtitle. This physically fixes
+    # the inspected B1q2 MP4 screenshot where identical whole sentences
+    # appeared twice at different font sizes.
+    headline=EDITORIAL_HEADLINES[topic][stage]
+    if headline==cues[beat]["source_text"]:
+        raise NoSpinnerVisualRejected("Repeated narration as both title and caption")
+    d.text((82,222),colors["tag"]+"  /  "+EDITORIAL_STAGE[stage],
+           font=_font(26),fill=accent)
+    headline_area=_text_lines(
+        d,headline,x=82,y=298,width=914,height=185,
+        font_size=55,max_lines=3,fill=(238,246,252))
+    # Beat illustrations occupy much more native vertical space, with
+    # intentionally few borders: enlarge the original subject ribbon
+    # AFTER composing the exact original conceptual object, before ASS.
     hero_variant=_draw_subject(d,topic,cues[beat]["motion_mode"],t,colors,
                               beat=beat,total=len(cues))
+    from PIL import Image
+    hero_region=(88,490,992,1330)
+    original=image.crop(hero_region)
+    bigger=original.resize((982,901),Image.Resampling.LANCZOS)
+    d.rectangle((48,480,1028,1381),fill=colors["bg"])
+    image.paste(bigger,(49,480))
     # Genuine caption safe band, no art or overlays bleed into subtitles.
     d.rounded_rectangle((82,1410,998,1650),radius=16,fill=(7,14,27))
     if caption_layer=="original_source_proof":
@@ -318,6 +360,11 @@ def draw_source_keyframe(episode:dict,beat:int,phase:float,
         "status":STATUS,"episode_id":episode["id"],"beat":beat+1,
         "motion_mode":cues[beat]["motion_mode"],
         "distinct_original_visual_subject":hero_variant,
+        "editorial_headline":headline,
+        "editorial_headline_sha256":sha256(headline.encode()).hexdigest(),
+        "headline_is_verbatim_audio_caption":False,
+        "source_episode_title_sha256":sha256(episode["title"].encode()).hexdigest(),
+        "visual_hero_enlarged_in_native_canvas":True,
         "caption_source_sha256":cues[beat]["source_text_sha256"],
         "phase":phase,"no_circle_spinner_drawn":True,
         "caption_layer":caption_layer,
