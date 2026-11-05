@@ -44,3 +44,12 @@ The next material production steps are **not additional mock review signatures**
 **Public CI is not authorized to publish real videos or incur new paid cloud costs.** Code lives on GitHub; no owner's laptop was accessed.
 
 Sources: [GitHub Actions artifact retention and storage](https://docs.github.com/en/actions/tutorials/store-and-share-data); [GitHub scheduled workflow delay/drop caveats](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows).
+
+
+## Verified post-merge proof — B4d1 completed, 39/100 now earned (2026-11-05 IST)
+
+The prior conditional threshold HAS BEEN MET. [Actual main-branch GitHub Actions run 41967636238](https://github.com/Tirthanand17/taskless-lab/actions/runs/41967636238) on merged main SHA efda5698d9df25efcdc84c57b19430fdc1c81b80 completed SUCCESS and executed all real (non-PR) source scout, bounded public observation, next-day 3-slot planning, receipt creation and actual upload-artifact steps. The GitHub workflow-run-artifacts API independently returned nonexpired artifact **13388555928**, name **flowminute-unapproved-research-receipt-41967636238-1**, size **1,050 bytes**, created Nov 5, expires Nov 19, sha256 **32ae62b5a5570c56a06c2fd6adf4f04f52f12e845f6ef09663f8e03c966d1141**. This is real laptop-off metadata evidence, NOT video or fact validation.
+
+Production capability research-pipeline category increases **6→7 of 15** for real retained source-observation/draft evidence. Revised full rubric: architecture 14/15, research 7/15, source-faithful rendering 13/20, real human facts/rights/review 2/15, real deployed cloud/billing 3/15, YouTube OAuth and uploads 0/15, 7-day actual daily cadence 0/5 = **39/100**. Do NOT claim a higher score because a PR is merged; B4d2 offers an additional +1 media evidence point ONLY after an actual main-branch GitHub workflow uploads the three playable MP4/SRT/thumbsets and we independently list the artifact.
+
+**Actual independent YouTube unattended releases: 0/21, not 39% of uploads.** Reminder: fetch_commit_workflow_runs filters PR-triggered runs and incorrectly returns empty for push runs; use supported GitHub GET actions/runs?event=push and workflow run artifacts for main-branch evidence.
