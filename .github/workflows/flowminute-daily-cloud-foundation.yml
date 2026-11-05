@@ -15,6 +15,8 @@ on:
       - "autopilot/script_draft_agent.py"
       - "autopilot/test_script_draft_agent.py"
       - "autopilot/test_daily_cloud_plan.py"
+      - "autopilot/daily_evidence_bundle.py"
+      - "autopilot/test_daily_evidence_bundle.py"
       - "autopilot/agent_org.py"
       - ".github/workflows/flowminute-daily-cloud-foundation.yml"
   pull_request:
@@ -25,6 +27,8 @@ on:
       - "autopilot/script_draft_agent.py"
       - "autopilot/test_script_draft_agent.py"
       - "autopilot/test_daily_cloud_plan.py"
+      - "autopilot/daily_evidence_bundle.py"
+      - "autopilot/test_daily_evidence_bundle.py"
       - ".github/workflows/flowminute-daily-cloud-foundation.yml"
 
 permissions:
@@ -60,7 +64,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_script_draft_agent
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -129,6 +133,50 @@ jobs:
               f.write("\n".join(lines)+"\n")
           print("GITHUB_ONLY_DAILY_DRAFT_SUCCESS_NO_UPLOAD_NO_SECRET_NO_LAPTOP")
           PY
+      - name: Prepare safe retained public research-only evidence receipt
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.daily_evidence_bundle \
+            --plan out/flowminute-tomorrow-draft.json \
+            --evidence out/flowminute-evidence-unverified.json \
+            --output out/flowminute-public-research-draft-receipt.json
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          path=Path("out/flowminute-public-research-draft-receipt.json")
+          assert 200 <= path.stat().st_size <= 12000
+          r=json.loads(path.read_text(encoding="utf8"))
+          assert r["schema_version"] == 1
+          assert len(r["slots"]) == 3
+          assert r["status"] == "GITHUB_RETAINED_RESEARCH_DRAFT_EVIDENCE_ONLY"
+          assert r["raw_source_headlines_urls_and_bodies_retained"] is False
+          assert r["real_fact_or_rights_review_performed"] is False
+          assert r["real_media_or_credentials_retained"] is False
+          assert r["youtube_publishing_enabled"] is False
+          assert r["independently_verified_unattended_youtube_releases"] == 0
+          assert r["release_authorized"] is False
+          lines=["", "## GitHub-only retained public research receipt",
+                 "Next IST planning day: "+r["plan_day_ist"],
+                 "Retained receipt SHA256: "+r["receipt_sha256"],
+                 "No articles, source bodies, headlines, URLs, token values, media or approvals are retained.",
+                 "21-live-video production proof: 0/21; no authenticated YouTube upload.",
+                 "Artifact retention: up to 14 days under repository retention settings; this is not private permanent media escrow."]
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as stream:
+              stream.write("\n".join(lines)+"\n")
+          print("B4D1_SANITIZED_PUBLIC_DAILY_DRAFT_READY_NEVER_UPLOAD_TO_YOUTUBE")
+          PY
+
+      - name: Retain tiny sanitized future-day plan metadata in GitHub Actions
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-unapproved-research-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: out/flowminute-public-research-draft-receipt.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 9
+
       - name: Discard ephemeral unverified draft files
         if: always()
-        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-tomorrow-draft.json
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json
