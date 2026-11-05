@@ -37,7 +37,7 @@ class InertCloudRuntimeBootGuardTests(unittest.TestCase):
     def test_safe_inert_guard_never_claims_live_identity_or_release(self):
         info=inspect_inert_boot(good_env())
         self.assertEqual(info["status"],"INERT_OWNER_PREFLIGHT_BOOT_ONLY_NO_PROVIDER_CALL")
-        self.assertEqual(len(info),13)
+        self.assertEqual(len(info),14)
         for key,flag in info.items():
             if key.startswith("next_step") or key=="status":
                 continue
