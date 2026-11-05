@@ -1,0 +1,116 @@
+name: FlowMinute B1q3b Real Original Hero Scale Before-After Source QA (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_no_spinner_storyboard.py"
+      - "autopilot/test_branch1_focal_hero_v3.py"
+      - ".github/workflows/flowminute-b1q3b-focal-original-art-proof.yml"
+      - "docs/adr/0052-b1q3b-safe-focal-subject-original-art-improvement.md"
+
+permissions:
+  contents: read
+
+jobs:
+  physical_31_beats_and_actual_nine_source_before_after_pngs:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 19
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only native original source pixel fonts and WAV/PCM test dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core libsndfile1
+          python -m pip install --disable-pip-version-check \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' 'soundfile>=0.12,<1' 'cryptography>=46,<48'
+      - name: Preserve latest B1q2b PCM source-to-hero no-drift and 31-scene art safe regions
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_branch1_focal_hero_v3 \
+            autopilot.test_branch1_narrated_no_spinner_v2 \
+            autopilot.test_branch1_nov_short_repair \
+            2>&1 | tee /tmp/b1q3b_native_qa.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/b1q3b_native_qa.log; then exit 1; fi
+          echo "B1Q3B_31_SOURCE_BEATS_AND_EXISTING_PCM_NO_DRIFT_ASS_GATE_PASSED"
+      - name: Render nine TRUE original source 1080x1920 old/new visual comparisons
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          from PIL import Image,ImageDraw,ImageFont
+          from autopilot.branch1_no_spinner_storyboard import draw_source_keyframe,storyboard_cues
+          from autopilot.branch1_three_narrated_no_spinner_v2 import _load_source,SOURCES
+          root=Path("/tmp/flowminute-b1q3b-actual-before-after-source")
+          root.mkdir(mode=0o700)
+          items=[]
+          collage=Image.new("RGB",(1034,1820),(8,17,26))
+          d=ImageDraw.Draw(collage)
+          font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",19)
+          count=0
+          for episode_id,_ in SOURCES:
+              story=_load_source(Path("."),episode_id)
+              cues=storyboard_cues(story)
+              for index in (0,len(cues)//2,len(cues)-1):
+                  old,r1=draw_source_keyframe(story,index,.72,caption_layer="timed_ass_overlay",hero_zoom="original")
+                  new,r2=draw_source_keyframe(story,index,.72,caption_layer="timed_ass_overlay",hero_zoom="expanded")
+                  filename=f"{episode_id}_beat_{index+1:02d}_"
+                  entries=[]
+                  for label,img in (("BEFORE",old),("AFTER",new)):
+                      path=root/(filename+label+"_UNAPPROVED_SOURCE.png")
+                      img.save(path,optimize=True)
+                      entries.append({"file":path.name,"bytes":path.stat().st_size,
+                                      "sha256":hashlib.sha256(path.read_bytes()).hexdigest()})
+                  # Contact-sheet BEFORE/AFTER stacks as one pair, 3 rows × 3 topics.
+                  left=old.copy();right=new.copy()
+                  left.thumbnail((164,291));right.thumbnail((164,291))
+                  x=10+(count%3)*340;y=14+(count//3)*600
+                  collage.paste(left,(x,y+48));collage.paste(right,(x+170,y+48))
+                  d.text((x,y+8),"BEFORE  |  AFTER",font=font,fill=(223,241,252))
+                  d.text((x,y+350),r2["distinct_original_visual_subject"][:26],
+                         font=font,fill=(125,203,218))
+                  assert r1["hero_editorial_headline"]==r2["hero_editorial_headline"]
+                  assert r1["caption_source_sha256"]==r2["caption_source_sha256"]
+                  items.append({"episode":episode_id,"beat":index+1,"files":entries,
+                                "native_original_rgb_size":[1080,1920],
+                                "real_audio_encodes_completed":False})
+                  count+=1
+          assert count==9
+          visual=root/"NINE_B1Q3B_ORIGINAL_FOCAL_HERO_COMPARISONS_UNAPPROVED.jpg"
+          collage.save(visual,quality=87)
+          manifest={"status":"B1Q3B_ORIGINAL_SOURCE_FOCAL_HERO_IMAGE_PROOF_NOT_VIDEO",
+                    "comparisons":count,"original_native_frame_files":18,"items":items,
+                    "actual_full_videos_encoded":False,
+                    "existing_youtube_video_ids_mutated":False,
+                    "human_watch_listen_facts_approval":False}
+          (root/"UNAPPROVED_B1Q3B_FOCAL_VISUAL_MANIFEST.json").write_text(
+              json.dumps(manifest,indent=2,sort_keys=True)+"\n",encoding="utf8")
+          print("B1Q3B_NINE_PHYSICAL_ORIGINAL_BEFORE_AFTER_1080X1920_SOURCE_SHOTS_PASS")
+          PY
+      - name: Retain original side-by-side images for human creative comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b1q3b-9-native-original-focal-hero-before-after-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b1q3b-actual-before-after-source/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+      - name: Delete disposable original scene source samples
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b1q3b-actual-before-after-source
+          echo "B1Q3B_SOURCE_ONLY_NO_YOUTUBE_LAPTOP_OR_EXTERNAL_MEDIA"
