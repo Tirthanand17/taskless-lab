@@ -56,6 +56,7 @@ class RecoveryInstruction:
     remaining_bytes: int | None = None
     returned_video_id_unverified: str | None = None
     reason: str | None = None
+    min_delay_seconds: int = 0
     same_session_only: bool = True
     actual_http_executed: bool = False
     actual_video_uploaded: bool = False
@@ -218,14 +219,15 @@ def interpret_fake_status_reply(
                 action="STOP_NO_NEW_INSERT",reason=str(exc))
         return replace(session,transient_responses=n), RecoveryInstruction(
             action="REQUERY_EXISTING_SESSION_ONLY",
-            reason="Backoff at least "+str(delay)+" seconds; never initiate a new upload")
+            reason="Backoff at least "+str(delay)+" seconds; never initiate a new upload",
+            min_delay_seconds=delay)
 
     if status_code==308:
         if response_video is not None:
             return replace(session,state="HALTED_RECONCILIATION"), RecoveryInstruction(
                 action="STOP_NO_NEW_INSERT",reason="Incomplete response carries video body")
         try:
-            _retry_after_seconds(headers)
+            delay=_retry_after_seconds(headers)
             field=headers.get("range")
             if field is None:
                 last=-1
@@ -253,6 +255,7 @@ def interpret_fake_status_reply(
                 "Content-Range":f"bytes {first}-{session.total_bytes-1}/{session.total_bytes}",
             },
             next_offset=first,remaining_bytes=remaining,
+            min_delay_seconds=delay,
         )
 
     if status_code in (200,201):
