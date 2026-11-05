@@ -1,0 +1,129 @@
+name: FlowMinute B4e3d One REAL Cinematic Short AAC Repair Challenge (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/full_topic_narrated_pack.py"
+      - "autopilot/test_b4e3c_aac_recovery.py"
+      - ".github/workflows/flowminute-b4e3d-one-real-aac-challenge.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4e3d-actual-short-aac-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  actual_cinematic_short_mp4_true_peak_limit_and_artifact:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 24
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      CI: "true"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install original local rendering tools on ephemeral GitHub runner only
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng libsndfile1 fonts-dejavu-core
+          python -m pip install --disable-pip-version-check \
+            'kokoro-onnx==0.6.1' 'soundfile>=0.12,<1' \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' \
+            'cairosvg>=2.7,<3' 'cryptography>=46,<48'
+          python -B -m unittest -v autopilot.test_b4e3c_aac_recovery
+      - name: Download ONLY SHA-pinned original public voice model weights in disposable /tmp
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b4e3d-original-public-voice
+          cd /tmp/flowminute-b4e3d-original-public-voice
+          root="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 240 \
+            --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 2 --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$root/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+      - name: Produce ONE REAL 1080x1920 cinematic MP4 and independently check final AAC
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json,tempfile
+          from pathlib import Path
+          from kokoro_onnx import Kokoro
+          from autopilot.full_topic_narrated_pack import render_full_topic_video,STATUS
+          from autopilot.primary_sourced_storyboards import build_story
+          from autopilot.retain_public_topic_drafts import _retain_one
+          from autopilot.cloud_av_probe import verify_pinned_assets
+          folder=Path("/tmp/flowminute-b4e3d-original-public-voice")
+          model=folder/"kokoro-v1.0.int8.onnx"
+          voices=folder/"voices-v1.0.bin"
+          verify_pinned_assets(model,voices)
+          engine=Kokoro(str(model),str(voices))
+          out=Path("/tmp/flowminute-b4e3d-actual-short-review")
+          out.mkdir(mode=0o700)
+          with tempfile.TemporaryDirectory(prefix="fm-b4e3d-real-short-") as d:
+              root=Path(d)
+              story=build_story("short_am")
+              report,ep=render_full_topic_video(story,engine,root,
+                                                  visual_style="cinematic_v3")
+              assert report["status"]==STATUS
+              assert ep.kind=="short"
+              assert report["b4e3_original_dimensional_scenes_encoded"] is True
+              assert report["b4e1_native_ass_safe_band_independently_verified"] is True
+              assert -20<=report["actual_audio_lufs"]<=-12
+              assert report["actual_audio_peak_dbtp"]<=-1.5
+              assert report["actual_full_encoded_h264_aac_with_captions_and_animation"] is True
+              assert report["human_complete_watch_listen"] is False
+              assert report["release_authorized"] is False
+              assert report["youtube_upload_enabled"] is False
+              entry=_retain_one(story,report,root/ep.episode_id,out/ep.episode_id)
+              entry["technical_aac_lufs"]=report["actual_audio_lufs"]
+              entry["technical_aac_true_peak_dbtp"]=report["actual_audio_peak_dbtp"]
+              entry["new_cinematic_mode"]=True
+              (out/"UNAPPROVED_ONE_REAL_CINEMATIC_AUDIO_CHALLENGE.json").write_text(
+                json.dumps({
+                  "status":"B4E3D_REAL_ONE_SHORT_POST_AAC_REPAIR_NOT_PUBLISHABLE",
+                  "real_original_video":entry,
+                  "reference_clip_audio_or_video_imported":False,
+                  "real_human_fact_rights_visual_voice_approved":False,
+                  "youtube_upload_enabled":False,
+                  "release_authorized":False,
+                },indent=2)+"\n",encoding="utf-8")
+              print("B4E3D_REAL_CINEMATIC_ONE_SHORT_STRICT_FINAL_AAC_VALIDATED",
+                    json.dumps({
+                      "actual_audio_lufs":report["actual_audio_lufs"],
+                      "actual_audio_peak_dbtp":report["actual_audio_peak_dbtp"],
+                      "video_sha256":report["video_sha256"],
+                      "owner_approved":False,"youtube_uploaded":False,
+                    }),flush=True)
+          PY
+      - name: Retain exactly one PUBLIC unapproved genuine Short for owner listening
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b4e3d-one-real-cinematic-strict-aac-short-unapproved-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4e3d-actual-short-review/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 1
+      - name: Delete downloaded voice weights and temporary Shorts
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4e3d-original-public-voice \
+            /tmp/flowminute-b4e3d-actual-short-review
+          echo "B4E3D_GITHUB_EPHEMERAL_NO_REAL_YOUTUBE_UPLOAD_OR_REFERENCE_COPY"

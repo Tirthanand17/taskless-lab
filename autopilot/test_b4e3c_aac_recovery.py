@@ -104,15 +104,16 @@ class RealEncodedAudioPreflightAsymmetricGateTests(unittest.TestCase):
                 self.assertIn("-map",cmd)
                 shutil.copyfile(original,Path(cmd[-1]))
             with patch("autopilot.full_topic_narrated_pack._encoded_audio_loudness",
-                       side_effect=[unsafe,safe]) as measure,patch(
+                       side_effect=[unsafe,safe,safe]) as measure,patch(
                        "autopilot.full_topic_narrated_pack.run",side_effect=fake_ffmpeg
                        ) as render:
                 result=_repair_if_encoded_audio_out_of_band(original)
                 self.assertTrue(result["aac_normalized_after_encode"])
                 self.assertEqual(result["aac_loudness_repair_passes"],1)
                 self.assertEqual(original.read_bytes(),data)
-                self.assertEqual(measure.call_count,2)
-                self.assertEqual(measure.call_args_list[1].kwargs,{"strict":True})
+                self.assertEqual(measure.call_count,3)
+                self.assertEqual(measure.call_args_list[1].kwargs,{})
+                self.assertEqual(measure.call_args_list[2].kwargs,{"strict":True})
                 self.assertEqual(render.call_count,1)
 
     def test_unsafe_repair_result_does_not_overwrite_original(self):
@@ -133,7 +134,33 @@ class RealEncodedAudioPreflightAsymmetricGateTests(unittest.TestCase):
                 with self.assertRaises(TopicRenderError):
                     _repair_if_encoded_audio_out_of_band(original)
                 self.assertEqual(original.read_bytes(),first)
-                self.assertEqual(observer.call_args_list[1].kwargs,{"strict":True})
+                self.assertEqual(observer.call_args_list[1].kwargs,{})
+
+    def test_at_most_two_real_audio_only_corrections_before_strict_gate(self):
+        with tempfile.TemporaryDirectory() as root:
+            original=self._file(root)
+            first=original.read_bytes()
+            raw={"integrated_lufs":-16.0,"true_peak_dbtp":0.17,
+                 "typical_online_video_target_diagnostic":False}
+            still_hot={"integrated_lufs":-15.7,"true_peak_dbtp":-0.7,
+                       "typical_online_video_target_diagnostic":False}
+            good={"integrated_lufs":-18.5,"true_peak_dbtp":-3.5,
+                  "typical_online_video_target_diagnostic":True}
+            def fake_ffmpeg(cmd,*,timeout):
+                self.assertIn("-c:v",cmd)
+                self.assertEqual(cmd[cmd.index("-c:v")+1],"copy")
+                Path(cmd[-1]).write_bytes(b"safe generated AAC proxy"*3600)
+            with patch("autopilot.full_topic_narrated_pack._encoded_audio_loudness",
+                       side_effect=[raw,still_hot,good]) as observe,patch(
+                       "autopilot.full_topic_narrated_pack.run",
+                       side_effect=fake_ffmpeg) as ffmpeg:
+                result=_repair_if_encoded_audio_out_of_band(original)
+                self.assertEqual(result["aac_loudness_repair_passes"],1)
+                self.assertEqual(ffmpeg.call_count,2)
+                self.assertEqual(observe.call_count,3)
+                self.assertEqual(observe.call_args_list[-1].kwargs,{"strict":True})
+                self.assertNotEqual(original.read_bytes(),first)
+                self.assertTrue(original.read_bytes().startswith(b"safe generated AAC proxy"))
 
     def test_already_safe_aac_never_reencoded(self):
         with tempfile.TemporaryDirectory() as root:
