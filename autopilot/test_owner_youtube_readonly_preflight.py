@@ -376,6 +376,39 @@ class OwnerReadOnlyGateTests(unittest.TestCase):
                 self.assertNotIn(SECRET,str(cm.exception))
                 self.assertIsNone(cm.exception.__cause__)
 
+    def test_owner_role_policy_template_has_no_write_or_wildcard_resources(self):
+        from pathlib import Path
+        path=Path(__file__).parent.parent/"infra"/"aws"/"owner-youtube-readonly-role-policy.example.json"
+        policy=json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(policy["Version"],"2012-10-17")
+        stmts=policy["Statement"]
+        self.assertEqual(len(stmts),3)
+        grants={s["Sid"]:s for s in stmts}
+        self.assertEqual(set(grants),{
+            "OnlyOwnerApprovedOAuthSecretMetadataAndValue",
+            "OnlyOwnerOAuthKmsKeyMetadata",
+            "DecryptOwnerOAuthOnlyThroughSecretsManager",
+        })
+        actions=set()
+        for st in stmts:
+            self.assertEqual(st["Effect"],"Allow")
+            self.assertNotEqual(st["Resource"],"*")
+            self.assertIn("${AWS_REGION}",st["Resource"])
+            self.assertIn("${AWS_ACCOUNT_ID}",st["Resource"])
+            a=st["Action"]
+            actions.update(a if isinstance(a,list) else [a])
+            self.assertNotIn("Principal",st)
+        self.assertEqual(actions,{
+            "secretsmanager:DescribeSecret","secretsmanager:GetSecretValue",
+            "kms:DescribeKey","kms:Decrypt",
+        })
+        self.assertEqual(grants["DecryptOwnerOAuthOnlyThroughSecretsManager"]["Condition"],{
+            "StringEquals":{
+                "kms:ViaService":"secretsmanager.${AWS_REGION}.amazonaws.com",
+                "kms:CallerAccount":"${AWS_ACCOUNT_ID}",
+            }
+        })
+
     def test_no_untrusted_google_client_factory(self):
         f=FakeOwnerClients()
         with self.assertRaises(OwnerChannelBoundaryError):
