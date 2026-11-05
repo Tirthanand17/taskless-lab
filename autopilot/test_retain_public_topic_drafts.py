@@ -59,6 +59,7 @@ class PublicPreviewRetentionTests(unittest.TestCase):
             for name,blob in data.items():
                 (source/name).write_bytes(blob)
             destination=root/"public-artifact"/story["episode_id"]
+            destination.parent.mkdir()
             record=_retain_one(story,report,source,destination)
             self.assertEqual(record["episode_id"],story["episode_id"])
             self.assertFalse(record["release_authorized"])
