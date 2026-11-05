@@ -37,7 +37,7 @@ class _Api:
         elif self.kind=="playlistItems":
             assert kwargs["part"]=="contentDetails" and kwargs["maxResults"]==50
         elif self.kind=="videos":
-            assert kwargs["part"]=="id,snippet,status" and kwargs["maxResults"]==50
+            assert kwargs["part"]=="id,snippet,status" and "maxResults" not in kwargs
         return _Call(lambda:self.owner.response(self.kind,kwargs))
 
 
