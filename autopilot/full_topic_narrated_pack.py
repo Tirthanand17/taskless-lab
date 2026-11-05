@@ -171,30 +171,9 @@ def original_ambient_tone(wav: Path, theme: str) -> str:
 
 
 def _topic_thumbnail(story: dict,output: Path) -> str:
-    from PIL import Image, ImageDraw, ImageFont
-    palette={
-        "lunar_signal":((10,24,50),(68,196,241)),
-        "file_transfer":((10,31,42),(99,224,182)),
-        "quake_energy":((50,24,28),(255,162,98)),
-    }
-    bg,accent=palette[story["theme"]]
-    im=Image.new("RGB",(1280,720),bg)
-    d=ImageDraw.Draw(im)
-    try:
-        main=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",61)
-        detail=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",37)
-    except OSError as exc:
-        raise TopicRenderError("Hosted DejaVu fonts are required for original title artwork") from exc
-    d.rounded_rectangle((36,32,1244,688),radius=28,outline=accent,width=7)
-    d.text((78,89),"FLOWMINUTE • ORIGINAL EDUCATION DRAFT",font=detail,fill=accent)
-    main_lines=THUMB_CONTENT[story["theme"]]["lines"]
-    for i,line in enumerate(main_lines):
-        d.text((78,211+i*115),line,font=main,fill=(240,245,252) if i==0 else accent)
-    d.text((78,568),"UNAPPROVED · HUMAN FACT / RIGHTS REVIEW PENDING",
-           font=detail,fill=(225,229,237))
-    d.line((76,655,1205,655),fill=accent,width=5)
-    im.save(output,format="PNG")
-    return sha256(output.read_bytes()).hexdigest()
+    """B4e1: right-subject editorial art with measured left headline grid."""
+    from autopilot.polished_thumbnail_v2 import render_editorial_thumbnail
+    return render_editorial_thumbnail(story,output)
 
 
 def visible_topic_motion_pulse(story: dict, tick: int) -> tuple[int,int]:
