@@ -40,6 +40,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install pinned open-source source-signature verification dependency
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
       - name: Adversarial original review media validation with no provider
         run: |
           set -euo pipefail
