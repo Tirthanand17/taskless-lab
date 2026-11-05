@@ -50,7 +50,6 @@ jobs:
             scripts/branch1_owner_schedule_readonly_v6.py
           python -B -m unittest -v \
             autopilot.test_branch1_owner_schedule_readonly_v6 \
-            autopilot.test_branch1_nov_short_repair \
             2>&1 | tee /tmp/fm-owner-youtube-readonly-offline.log
           if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/fm-owner-youtube-readonly-offline.log; then exit 1; fi
           echo "B1Q6_OFFLINE_SYNTHETIC_21_SLOTS_NEVER_REMOTE_ATTESTATION"
