@@ -1,0 +1,103 @@
+name: FlowMinute B4e4b Non-boxed Floating Source Scene Visual Proof (NO PUBLISH)
+on:
+  pull_request:
+    paths:
+      - "autopilot/floating_cinematic_v6.py"
+      - "autopilot/test_floating_cinematic_v6.py"
+      - ".github/workflows/flowminute-b4e4b-floating-original-visuals.yml"
+      - "docs/adr/0047-b4e4b-floating-non-boxed-original-scene-visual-proof.md"
+permissions:
+  contents: read
+concurrency:
+  group: flowminute-b4e4b-unboxed-original-scene-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  physical_all_32_unboxed_scenes_and_seven_original_comparisons:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install local-only original 2.5D pixel source dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core libcairo2
+          python -m pip install --disable-pip-version-check \
+            'Pillow>=11,<13' 'cairosvg>=2.7,<3' 'cryptography>=46,<48'
+      - name: Real 32-scene no-box artifact/pixel and voice beat motion proof
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/floating_cinematic_v6.py \
+            autopilot/test_floating_cinematic_v6.py
+          python -B -m unittest -v \
+            autopilot.test_floating_cinematic_v6 \
+            2>&1 | tee /tmp/flowminute_b4e4b_real_visual_tests.log
+          if grep -E '^(FAILED|ERROR|.*skipped.*)$' /tmp/flowminute_b4e4b_real_visual_tests.log; then exit 1; fi
+          echo "B4E4B_ALL_32_REAL_UNBOXED_SOURCE_SHOTS_AND_MOTION_PASSED"
+      - name: Render 7 actual source frame pairs and original before-after visual comparisons
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.floating_cinematic_v6 \
+            --out /tmp/flowminute-b4e4b-unboxed-before-after
+          test -f /tmp/flowminute-b4e4b-unboxed-before-after/long_10_REAL_VISUAL_COMPARE_UNAPPROVED.png
+          test -f /tmp/flowminute-b4e4b-unboxed-before-after/short_am_00_REAL_VISUAL_COMPARE_UNAPPROVED.png
+          test -f /tmp/flowminute-b4e4b-unboxed-before-after/short_pm_03_REAL_VISUAL_COMPARE_UNAPPROVED.png
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          r=Path("/tmp/flowminute-b4e4b-unboxed-before-after")
+          o=json.loads((r/"UNAPPROVED_FLOATING_STORYBOARD_MANIFEST.json").read_text())
+          assert len(o["source_only_real_visual_previews"])==7
+          assert len(list(r.glob("*.png")))==21
+          assert o["owner_visual_approved"] is False
+          assert o["full_movie_video_encoded"] is False
+          assert o["youtube_upload_enabled"] is False
+          assert o["reference_video_assets_imported"] is False
+          print("B4E4B_21_REAL_UNBOXED_SOURCE_ART_PNGS_UNAPPROVED")
+          PY
+      - name: No proprietary reference image, network account, secret or YouTube provider imported
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          tree=ast.parse(Path("autopilot/floating_cinematic_v6.py").read_text())
+          banned=("boto3","botocore","google","requests","urllib",
+                  "socket","aiohttp","http")
+          for node in ast.walk(tree):
+              modules=([n.name for n in node.names] if isinstance(node,ast.Import)
+                       else [node.module or ""] if isinstance(node,ast.ImportFrom) else [])
+              for mod in modules:
+                  assert not mod.startswith(banned),mod
+          print("B4E4B_PUBLIC_ORIGINAL_PIXEL_ART_ONLY")
+          PY
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$FLOWMINUTE_ENABLE_GEMINI" = 0
+      - name: Retain 7 non-boxed art comparisons to judge actual improvement
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b4e4b-real-7-source-storyboard-unboxed-proofs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4e4b-unboxed-before-after/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+      - name: Clean disposable public original source images
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4e4b-unboxed-before-after
+          echo "B4E4B_NO_YOUTUBE_UPLOAD_OR_COPIED_REFERENCE_MEDIA"
