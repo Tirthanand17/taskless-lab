@@ -11,9 +11,11 @@ import tempfile
 import unittest
 
 from autopilot.primary_sourced_storyboards import build_story, require_exact_draft
+from autopilot.full_topic_narrated_pack import STATUS as FULL_MEDIA_STATUS
 from autopilot.retain_science_v7_three_v8 import (
-    STATUS_V8, SLOT_SEQUENCE, _verified_file, _render_art_compare,
-    render_three_science_v7_previews,
+    STATUS_V8, SLOT_SEQUENCE, _REQUIRED_TRUE_FIELDS, _REQUIRED_FALSE_FIELDS,
+    _verified_file, _render_art_compare,
+    require_science_v7_media_report, render_three_science_v7_previews,
 )
 from autopilot.retain_public_topic_drafts import PreviewRefused
 
@@ -43,13 +45,50 @@ class ScienceV7SourceContractTests(unittest.TestCase):
         self.assertIn('visual_style="science_v7"',root)
         self.assertIn('"b4e6_source_action_art_in_actual_encoded_video"',root)
         self.assertIn('"science_v7"',renderer)
-        self.assertIn('"youtube_upload_enabled") is not False',root)
-        self.assertIn('"human_complete_watch_listen") is not False',root)
-        self.assertIn('"release_authorized") is not False',root)
+        self.assertIn("require_science_v7_media_report(report)",root)
+        for field in ("youtube_upload_enabled","youtube_schedule_enabled",
+                      "human_complete_watch_listen","release_authorized"):
+            self.assertIn(field,root)
         self.assertIn("THREE_PREVIOUSLY_AUTHORED",root)
         self.assertNotIn("googleapiclient",root)
         self.assertNotIn("boto3",root)
         self.assertNotIn("videos().insert(",root)
+
+    def test_science_v7_technical_report_verifier_has_complete_explicit_gates(self):
+        record={
+            "status":FULL_MEDIA_STATUS,
+            "b4e3_visual_style":"science_v7",
+            **{name:True for name in _REQUIRED_TRUE_FIELDS},
+            **{name:False for name in _REQUIRED_FALSE_FIELDS},
+        }
+        self.assertIn("b4e4_source_exact_nonoverlapping_editorial_grid", _REQUIRED_TRUE_FIELDS)
+        self.assertIn("youtube_schedule_enabled", _REQUIRED_FALSE_FIELDS)
+        self.assertIsNone(require_science_v7_media_report(record))
+        for name in _REQUIRED_TRUE_FIELDS:
+            with self.subTest(missing_truthy=name),self.assertRaises(PreviewRefused):
+                require_science_v7_media_report({**record,name:False})
+            with self.subTest(boolean_forgery=name),self.assertRaises(PreviewRefused):
+                require_science_v7_media_report({**record,name:1})
+        for name in _REQUIRED_FALSE_FIELDS:
+            with self.subTest(enabled_flag=name),self.assertRaises(PreviewRefused):
+                require_science_v7_media_report({**record,name:True})
+            with self.subTest(boolean_forgery=name),self.assertRaises(PreviewRefused):
+                require_science_v7_media_report({**record,name:0})
+        for tampered in (
+            {**record,"status":"FAKE_MEDIA_STATUS"},
+            {**record,"b4e3_visual_style":"floating_v6"},
+            {k:v for k,v in record.items() if k!="release_authorized"},
+        ):
+            with self.assertRaises(PreviewRefused):
+                require_science_v7_media_report(tampered)
+
+    def test_actual_report_source_declares_science_v7_editorial_grid_present(self):
+        source=Path("autopilot/full_topic_narrated_pack.py").read_text()
+        self.assertIn(
+            '"b4e4_source_exact_nonoverlapping_editorial_grid":\n'
+            '            visual_style in ("cinematic_v3","floating_v6","science_v7"),',
+            source,
+        )
 
     def test_file_receipts_reject_symlink_missing_tiny_and_suspicious_output(self):
         with tempfile.TemporaryDirectory() as p:
