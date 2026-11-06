@@ -454,14 +454,18 @@ jobs:
           python -m pip install --disable-pip-version-check --only-binary=:all: \
             'imageio-ffmpeg==0.6.0' 'kokoro-onnx==0.6.1' \
             'soundfile>=0.12,<1' 'Pillow>=11,<13' 'numpy>=1.26,<3'
-          # Kokoro's local phonemizer needs a small binary dictionary;
-          # avoid the historically hanging apt-get update operation.
-          if ! command -v espeak-ng >/dev/null 2>&1; then
-            sudo timeout 110 apt-get install -y -qq --no-install-recommends espeak-ng
-          fi
+          # Kokoro 0.6.1 installs espeakng-loader 0.2.4 wheel as a
+          # dependency: it already embeds both the phonemizer library and
+          # its language data. Real main run 42242580566 proved apt-get
+          # hung until exit 124; never invoke sudo/apt on this path again.
           python -B - <<'PY'
           from pathlib import Path
-          import imageio_ffmpeg,subprocess
+          import ctypes,imageio_ffmpeg,subprocess,espeakng_loader
+          lib=Path(espeakng_loader.get_library_path())
+          data=Path(espeakng_loader.get_data_path())
+          assert lib.is_file() and data.is_dir()
+          ctypes.CDLL(str(lib))
+          print("B4E0B_BUNDLED_PUBLIC_ESPEAK_LOADED_WITHOUT_APT")
           ffmpeg=imageio_ffmpeg.get_ffmpeg_exe()
           assert Path(ffmpeg).is_file()
           enc=subprocess.run([ffmpeg,"-hide_banner","-encoders"],
