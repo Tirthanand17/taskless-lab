@@ -12,6 +12,8 @@ on:
       - "autopilot/daily_cloud_plan.py"
       - "autopilot/daily_editorial_board.py"
       - "autopilot/reconcile_daily_editorial_plan.py"
+      - "autopilot/source_locked_script_briefs.py"
+      - "autopilot/test_source_locked_script_briefs.py"
       - "autopilot/test_reconcile_daily_editorial_plan.py"
       - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
@@ -30,6 +32,8 @@ on:
       - "autopilot/daily_cloud_plan.py"
       - "autopilot/daily_editorial_board.py"
       - "autopilot/reconcile_daily_editorial_plan.py"
+      - "autopilot/source_locked_script_briefs.py"
+      - "autopilot/test_source_locked_script_briefs.py"
       - "autopilot/test_reconcile_daily_editorial_plan.py"
       - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
@@ -76,7 +80,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -253,6 +257,49 @@ jobs:
           print("B4D5_CANONICAL_THREE_EDITORIAL_RESEARCH_TOPICS_ONLY_NO_RELEASE")
           PY
 
+      - name: Build three original source-LOCKED research storyboard outlines (NO NARRATION)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.source_locked_script_briefs \
+            --raw-plan out/flowminute-tomorrow-draft.json \
+            --aligned-plan out/flowminute-reconciled-tomorrow-draft.json \
+            --board out/flowminute-ephemeral-editorial-board.json \
+            --scout out/flowminute-scout-unverified.json \
+            --evidence out/flowminute-evidence-unverified.json \
+            --output out/flowminute-ephemeral-source-locked-outlines.json
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          x=json.loads(Path("out/flowminute-ephemeral-source-locked-outlines.json").read_text())
+          b=json.loads(Path("out/flowminute-ephemeral-editorial-board.json").read_text())
+          assert x["status"]=="B4D6_EPISODE_LOCKED_CREATIVE_RESEARCH_OUTLINE_NO_FACT_APPROVAL"
+          assert x["daily_slots"]==3
+          assert x["direct_article_episode_briefs"]==b["article_bytes_observed_selected"]
+          assert x["direct_article_episode_briefs"]+x["rss_only_episode_briefs"]+x["unobserved_episode_briefs"]==3
+          assert x["eligible_for_external_model_calls"]==0
+          assert x["actual_factual_scripts_generated"]==0
+          assert x["actual_media_generated"]==0 and x["youtube_uploads"]==0
+          assert x["paid_requests"]==0 and x["release_authorized"] is False
+          for original in x["episodes"]:
+              assert original["factual_script_drafted"] is False
+              assert original["model_calls_made"]==0
+              assert original["source_rights_approved"] is False
+              assert original["owner_final_watch_approved"] is False
+              assert original["youtube_uploaded"] is False
+              assert original["youtube_scheduled"] is False
+              assert original["release_authorized"] is False
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as w:
+              w.write("\n## Source-locked original research/storyboard outlines (UNVERIFIED)\n")
+              w.write("Original three-episode research outline structures produced: 3/3\n")
+              w.write("Episode-scoped direct article-only model-context candidates: "+
+                      str(x["direct_article_episode_briefs"])+"/3\n")
+              w.write("RSS-only outlines: "+str(x["rss_only_episode_briefs"])+
+                      "; headline-only: "+str(x["unobserved_episode_briefs"])+"\n")
+              w.write("Zero provider model calls, zero factual scripts, zero media, zero uploads.\n")
+          print("B4D6_SOURCE_LOCKED_ORIGINAL_RESEARCH_OUTLINES_CREATED_NO_MODEL_NO_UPLOAD")
+          PY
+
       - name: Prepare safe retained public research-only evidence receipt
         if: github.event_name != 'pull_request'
         run: |
@@ -307,4 +354,4 @@ jobs:
 
       - name: Discard ephemeral unverified draft files
         if: always()
-        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json
