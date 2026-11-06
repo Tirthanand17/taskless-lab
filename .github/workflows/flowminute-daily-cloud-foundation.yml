@@ -13,6 +13,8 @@ on:
       - "autopilot/daily_editorial_board.py"
       - "autopilot/reconcile_daily_editorial_plan.py"
       - "autopilot/source_locked_script_briefs.py"
+      - "autopilot/nonfactual_narration_rehearsal.py"
+      - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
       - "autopilot/recent_research_history.py"
       - "autopilot/test_recent_research_history_b4d8.py"
       - "autopilot/public_article_passages.py"
@@ -38,6 +40,8 @@ on:
       - "autopilot/daily_editorial_board.py"
       - "autopilot/reconcile_daily_editorial_plan.py"
       - "autopilot/source_locked_script_briefs.py"
+      - "autopilot/nonfactual_narration_rehearsal.py"
+      - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
       - "autopilot/recent_research_history.py"
       - "autopilot/test_recent_research_history_b4d8.py"
       - "autopilot/public_article_passages.py"
@@ -91,7 +95,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -393,6 +397,51 @@ jobs:
           print("B4D7_EPHEMERAL_CLAIM_INVESTIGATION_READY_ZERO_APPROVED_CLAIMS")
           PY
 
+      - name: Write 2 Shorts plus 1 long original non-factual VO rehearsal scenes (NO MEDIA)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.nonfactual_narration_rehearsal \
+            --original-plan out/flowminute-tomorrow-draft.json \
+            --aligned-plan out/flowminute-reconciled-tomorrow-draft.json \
+            --board out/flowminute-ephemeral-editorial-board.json \
+            --scout out/flowminute-ephemeral-current-scout.json \
+            --evidence out/flowminute-evidence-unverified.json \
+            --briefs out/flowminute-ephemeral-source-locked-outlines.json \
+            --passages out/flowminute-ephemeral-source-passages.json \
+            --docket out/flowminute-ephemeral-claim-review.json \
+            --output out/flowminute-ephemeral-nonfactual-rehearsals.json
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads(Path("out/flowminute-ephemeral-nonfactual-rehearsals.json").read_text())
+          assert r["status"]=="B4D9_EPISODE_LOCKED_ORIGINAL_NONFACTUAL_NARRATION_REHEARSAL_NO_RELEASE"
+          assert r["planned_video_count"]==3
+          assert r["original_nonfactual_voiceover_rehearsals_written"]==3
+          assert r["shorts_rehearsals_written"]==2 and r["long_rehearsals_written"]==1
+          assert r["original_scene_count"]==17
+          assert r["factual_news_scripts_completed"]==0
+          assert r["fact_checks_completed"]==0 and r["source_rights_approvals"]==0
+          assert r["actual_voice_files_created"]==0 and r["actual_video_files_created"]==0
+          assert r["provider_model_calls"]==0
+          assert r["youtube_uploads"]==0 and r["youtube_scheduled"]==0
+          assert r["release_authorized"] is False
+          assert [x["duration_target_seconds"] for x in r["three_episodes"]]==[58,240,58]
+          assert [x["scene_count"] for x in r["three_episodes"]]==[4,9,4]
+          assert all(x["voiceover_text_written_for_rehearsal"] is True
+                     and x["factual_news_narration_written"] is False
+                     and x["actual_recorded_voice_exists"] is False
+                     and x["actual_video_rendered"] is False
+                     and x["release_authorized"] is False for x in r["three_episodes"])
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as f:
+              f.write("\n## B4d9 original educational voiceover REHEARSAL text only\n")
+              f.write("Written nonfactual rehearsal narratives: 2 Shorts and 1 long (17 scenes).\n")
+              f.write("Durations are storyboard targets: 58/240/58 seconds; audio NOT recorded.\n")
+              f.write("0 approved factual news scripts, 0 voices, 0 videos, 0 external models, 0 uploads.\n")
+              f.write("Source text and original rehearsal scripts are runner-local and purged, not public artifacts.\n")
+          print("B4D9_3_ORIGINAL_NONFACTUAL_REHEARSAL_VO_SCRIPTS_17_SCENES_NO_MEDIA")
+          PY
+
       - name: Prepare safe retained public research-only evidence receipt
         if: github.event_name != 'pull_request'
         run: |
@@ -450,4 +499,4 @@ jobs:
 
       - name: Discard ephemeral unverified draft files
         if: always()
-        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json out/flowminute-ephemeral-source-passages.json out/flowminute-ephemeral-claim-review.json out/flowminute-ephemeral-research-history.json out/flowminute-ephemeral-current-scout.json
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json out/flowminute-ephemeral-source-passages.json out/flowminute-ephemeral-claim-review.json out/flowminute-ephemeral-research-history.json out/flowminute-ephemeral-current-scout.json out/flowminute-ephemeral-nonfactual-rehearsals.json
