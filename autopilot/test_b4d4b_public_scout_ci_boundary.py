@@ -42,6 +42,8 @@ class PublicScoutCostAndPrivacyBoundary(unittest.TestCase):
     def test_still_run_original_github_only_scheduled_research_with_no_write_permissions(self):
         self.assertIn('cron: "15 13 * * *"',self.source)
         self.assertIn("permissions:\n  contents: read",self.source)
+        self.assertIn("flowminute-public-scout-${{ github.event_name }}-${{ github.ref }}",self.source)
+        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}",self.source)
         self.assertIn("persist-credentials: false",self.source)
         self.assertIn("if: github.event_name != 'pull_request'",self.source)
         self.assertNotIn("secrets.",self.source)
