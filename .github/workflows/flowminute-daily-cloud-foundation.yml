@@ -274,7 +274,7 @@ jobs:
             --board out/flowminute-ephemeral-editorial-board.json \
             --scout out/flowminute-scout-unverified.json \
             --evidence out/flowminute-evidence-unverified.json \
-            --output out/flowminute-ephemeral-source-locked-outlines.json out/flowminute-ephemeral-source-passages.json out/flowminute-ephemeral-claim-review.json
+            --output out/flowminute-ephemeral-source-locked-outlines.json
           python -B - <<'PY'
           import json,os
           from pathlib import Path
@@ -406,4 +406,4 @@ jobs:
 
       - name: Discard ephemeral unverified draft files
         if: always()
-        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json out/flowminute-ephemeral-source-passages.json out/flowminute-ephemeral-claim-review.json
