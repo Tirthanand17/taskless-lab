@@ -21,13 +21,14 @@ jobs:
           set -euo pipefail
           export DEBIAN_FRONTEND=noninteractive
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
-            timeout --signal=TERM --kill-after=10s 120s sudo apt-get \
-              -o Acquire::Retries=0 -o Acquire::http::Timeout=20 \
-              -o Acquire::https::Timeout=20 update -qq
-            timeout --signal=TERM --kill-after=10s 120s sudo apt-get \
-              -o DPkg::Lock::Timeout=20 -o Acquire::Retries=0 \
-              -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 \
-              install -y -qq ffmpeg
+            # The hosted runner's apt update can stall on upstream mirrors.
+            # Use its bundled package metadata, without a network index refresh.
+            apt-cache policy ffmpeg | head -n 12
+            timeout --signal=TERM --kill-after=10s 90s sudo apt-get \
+              -o DPkg::Lock::Timeout=15 -o Acquire::ForceIPv4=true \
+              -o Acquire::Retries=0 -o Acquire::http::Timeout=10 \
+              -o Acquire::https::Timeout=10 \
+              install -y -qq --no-install-recommends ffmpeg
           fi
           command -v ffmpeg
           command -v ffprobe
