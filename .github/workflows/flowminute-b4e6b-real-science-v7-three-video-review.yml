@@ -1,0 +1,187 @@
+name: FlowMinute B4e6b REAL Science V7 2 Shorts + Long Review (NO UPLOAD)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/retain_science_v7_three_v8.py"
+      - "autopilot/test_retain_science_v7_three_v8.py"
+      - ".github/workflows/flowminute-b4e6b-real-science-v7-three-video-review.yml"
+      - "docs/adr/0062-b4e6b-real-science-v7-narrated-video-review.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/retain_science_v7_three_v8.py"
+      - ".github/workflows/flowminute-b4e6b-real-science-v7-three-video-review.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4e6b-existing-science-demos-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  safe_source_and_original_scene_diff:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Only local original source image dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check \
+            'Pillow>=11,<13' 'cairosvg>=2.7,<3' 'cryptography>=44,<47'
+      - name: Check exact frozen source and three physical source art comparisons
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_retain_science_v7_three_v8 \
+            autopilot.test_action_specific_floating_v7
+      - name: Reject accidental provider or upload logic in preview adapter
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          import ast
+          s=Path("autopilot/retain_science_v7_three_v8.py").read_text()
+          root=ast.parse(s)
+          forbidden=("boto3","botocore","google","googleapiclient",
+                     "requests","urllib","socket","aiohttp","httpx")
+          for node in ast.walk(root):
+              if isinstance(node,ast.Import):
+                  for v in node.names:
+                      assert not v.name.startswith(forbidden)
+              if isinstance(node,ast.ImportFrom):
+                  assert not (node.module or "").startswith(forbidden)
+          assert 'visual_style="science_v7"' in s
+          assert '"release_authorized":False' in s
+          assert '"real_youtube_published_videos":0' in s
+          print("B4E6B_FROZEN_SOURCE_ONLY_NO_PUBLISHER_NO_OAUTH_NO_PAID_PROVIDER")
+          PY
+
+  physically_encode_three_existing_science_demos:
+    # Never download full TTS model / render full videos from a PR branch.
+    if: >-
+      github.repository == 'Tirthanand17/taskless-lab' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name != 'pull_request'
+    needs: [safe_source_and_original_scene_diff]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 58
+    env:
+      CI: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install locally rendered FFmpeg and open-source Kokoro dependencies (bounded)
+        timeout-minutes: 6
+        run: |
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
+          # Mirror refresh sometimes stalls for minutes; use the bundled index.
+          timeout --signal=TERM --kill-after=10s 180s sudo apt-get \
+            -o DPkg::Lock::Timeout=20 -o Acquire::Retries=0 \
+            -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 \
+            install -y -qq --no-install-recommends \
+            ffmpeg espeak-ng libsndfile1 fonts-dejavu-core
+          python -m pip install --disable-pip-version-check \
+            'kokoro-onnx==0.6.1' 'soundfile>=0.12,<1' \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' \
+            'cairosvg>=2.7,<3' 'cryptography>=44,<47'
+          ffmpeg -hide_banner -filters 2>&1 | grep -E 'ass|subtitles'
+      - name: Fetch only the checksum-pinned public voice model and voice tensors
+        timeout-minutes: 9
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b4e6b-pinned-public-voice
+          cd /tmp/flowminute-b4e6b-pinned-public-voice
+          root="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 2 \
+            --connect-timeout 20 --max-time 240 \
+            --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 2 \
+            --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$root/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+      - name: Render three complete voiced, captioned, subject-specific H264 AAC previews
+        timeout-minutes: 42
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.retain_science_v7_three_v8 \
+            --model /tmp/flowminute-b4e6b-pinned-public-voice/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b4e6b-pinned-public-voice/voices-v1.0.bin \
+            --output /tmp/flowminute-b4e6b-unapproved-science-v7-video-review
+          python -B - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path("/tmp/flowminute-b4e6b-unapproved-science-v7-video-review")
+          manifest=json.loads((root/"UNAPPROVED_SCIENCE_V7_THREE_MANIFEST.json").read_text())
+          assert manifest["status"]=="B4E6B_REAL_SCIENCE_V7_TWO_SHORTS_LONG_MEDIA_UNAPPROVED"
+          assert manifest["source_action_19_science_visual_motifs"] is True
+          assert manifest["two_shorts_and_one_long_h264_aac"] is True
+          assert [x["format"] for x in manifest["episodes"]]==["short","long","short"]
+          assert manifest["real_human_watch_listen_or_facts_reviewed"] is False
+          assert manifest["voice_music_visual_license_reviewed"] is False
+          assert manifest["real_youtube_published_videos"]==0
+          assert manifest["release_authorized"] is False
+          hashes=set()
+          for x in manifest["episodes"]:
+              assert x["source_action_19_physical_original_compositions"] is True
+              assert x["actual_source_action_2point5d_in_full_mp4"] is True
+              assert x["native_ass_captions_independently_verified"] is True
+              assert x["owner_creative_approval"] is False
+              assert x["real_modelled_3d_used"] is False
+              assert len(x["actual_mp4_review_frames"])>=3
+              for file in x["files"]+x["actual_mp4_review_frames"]+[x["same_source_before_after_art_proof"]]:
+                  p=root/x["episode_id"]/file["filename"]
+                  assert p.is_file() and not p.is_symlink()
+                  assert p.stat().st_size==file["bytes"]
+                  with p.open("rb") as stream:
+                      assert hashlib.file_digest(stream,"sha256").hexdigest()==file["sha256"]
+              hashes.add(x["files"][0]["sha256"])
+          assert len(hashes)==3
+          print("B4E6B_REAL_THREE_SCIENCE_V7_H264_AAC_UNAPPROVED_MEDIA_VERIFIED_NO_YOUTUBE")
+          PY
+      - name: Retain 3 real unapproved MP4s, synced captions, thumbs and old-new scene proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b4e6b-3-science-action-v7-real-narrated-videos-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4e6b-unapproved-science-v7-video-review/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 1
+      - name: Remove downloaded open model and unapproved media from temporary runner
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4e6b-pinned-public-voice \
+            /tmp/flowminute-b4e6b-unapproved-science-v7-video-review
+          echo "B4E6B_NO_PRODUCTION_CLOUD_OR_YOUTUBE_UPLOAD_OR_APPROVAL"

@@ -26,12 +26,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Install free open-source media dependencies
+      - name: Install free open-source media dependencies (bounded)
+        timeout-minutes: 6
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
+          # Hosted Ubuntu images already have package indexes. Refreshing
+          # apt can hang on mirrors and burn CI hours without running tests.
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            timeout --signal=TERM --kill-after=10s 150s sudo apt-get \
+              -o DPkg::Lock::Timeout=15 -o Acquire::Retries=0 \
+              -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 \
+              install -y -qq --no-install-recommends ffmpeg
+          fi
+          ffmpeg -hide_banner -version | head -n 1
           cd motion-v2
-          npm install --no-audit --no-fund
+          npm install --no-audit --no-fund --fetch-retries=1 --fetch-timeout=45000
       - name: Cloud Remotion screenshot smoke (original template)
         working-directory: motion-v2
         run: |
