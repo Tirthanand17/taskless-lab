@@ -13,6 +13,9 @@ on:
       - "autopilot/daily_editorial_board.py"
       - "autopilot/reconcile_daily_editorial_plan.py"
       - "autopilot/source_locked_script_briefs.py"
+      - "autopilot/public_article_passages.py"
+      - "autopilot/ephemeral_claim_review_docket.py"
+      - "autopilot/test_ephemeral_claim_review_docket_b4d7.py"
       - "autopilot/test_source_locked_script_briefs.py"
       - "autopilot/test_reconcile_daily_editorial_plan.py"
       - "autopilot/test_daily_editorial_board.py"
@@ -33,6 +36,9 @@ on:
       - "autopilot/daily_editorial_board.py"
       - "autopilot/reconcile_daily_editorial_plan.py"
       - "autopilot/source_locked_script_briefs.py"
+      - "autopilot/public_article_passages.py"
+      - "autopilot/ephemeral_claim_review_docket.py"
+      - "autopilot/test_ephemeral_claim_review_docket_b4d7.py"
       - "autopilot/test_source_locked_script_briefs.py"
       - "autopilot/test_reconcile_daily_editorial_plan.py"
       - "autopilot/test_daily_editorial_board.py"
@@ -80,7 +86,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -99,6 +105,7 @@ jobs:
           python -m autopilot.evidence_probe \
             --scout-report out/flowminute-scout-unverified.json \
             --max-sources 3 \
+            --ephemeral-passages out/flowminute-ephemeral-source-passages.json \
             --output out/flowminute-evidence-unverified.json
           python - <<'PY'
           import json
@@ -300,6 +307,48 @@ jobs:
           print("B4D6_SOURCE_LOCKED_ORIGINAL_RESEARCH_OUTLINES_CREATED_NO_MODEL_NO_UPLOAD")
           PY
 
+      - name: Prepare exact-episode tiny passage claim investigation dockets (NO CLAIM APPROVAL)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.ephemeral_claim_review_docket \
+            --original-plan out/flowminute-tomorrow-draft.json \
+            --aligned-plan out/flowminute-reconciled-tomorrow-draft.json \
+            --board out/flowminute-ephemeral-editorial-board.json \
+            --scout out/flowminute-scout-unverified.json \
+            --evidence out/flowminute-evidence-unverified.json \
+            --briefs out/flowminute-ephemeral-source-locked-outlines.json \
+            --passages out/flowminute-ephemeral-source-passages.json \
+            --output out/flowminute-ephemeral-claim-review.json
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          docket=json.loads(Path("out/flowminute-ephemeral-claim-review.json").read_text())
+          report=json.loads(Path("out/flowminute-evidence-unverified.json").read_text())
+          assert docket["status"]=="EPHEMERAL_EPISODE_CLAIM_REVIEW_QUESTIONS_UNVERIFIED"
+          assert docket["three_video_episodes"]==3
+          assert docket["direct_article_episodes"]<=report["sources_fetched"]
+          assert docket["direct_article_episodes_with_short_literal_review_passages"]<=docket["direct_article_episodes"]
+          assert docket["short_literal_passage_review_questions"]<=6
+          assert docket["semantic_claims_verified"]==0
+          assert docket["independent_primary_corrobations"]==0
+          assert docket["factual_scripts_generated"]==0
+          assert docket["rights_approvals"]==0
+          assert docket["external_ai_calls"]==0
+          assert docket["youtube_uploads"]==0 and docket["release_authorized"] is False
+          assert all(x["release_authorized"] is False and
+                 x["factual_script_exists"] is False for x in docket["dockets"])
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as out:
+              out.write("\n## B4d7 tiny source passage investigation (not fact review)\n")
+              out.write("Direct article episodes: "+str(docket["direct_article_episodes"])+"/3\n")
+              out.write("Read article episodes with 1-2 short literal passages: "+
+                        str(docket["direct_article_episodes_with_short_literal_review_passages"])+"/3\n")
+              out.write("Unverified investigation questions: "+
+                        str(docket["short_literal_passage_review_questions"])+"\n")
+              out.write("Excerpts held ephemerally, never in public artifact; zero claims approved, scripts or uploads.\n")
+          print("B4D7_EPHEMERAL_CLAIM_INVESTIGATION_READY_ZERO_APPROVED_CLAIMS")
+          PY
+
       - name: Prepare safe retained public research-only evidence receipt
         if: github.event_name != 'pull_request'
         run: |
@@ -324,6 +373,9 @@ jobs:
           assert r["selected_distinct_research_topics"] == editorial["selected_distinct_topics"]
           assert all(x["release_authorized"] is False for x in editorial["slots"])
           assert r["raw_source_headlines_urls_and_bodies_retained"] is False
+          assert "literal_excerpt_unverified" not in path.read_text()
+          assert "literal_excerpt_unverified" not in Path(
+              "out/flowminute-public-editorial-receipt.json").read_text()
           assert r["real_fact_or_rights_review_performed"] is False
           assert r["real_media_or_credentials_retained"] is False
           assert r["youtube_publishing_enabled"] is False
@@ -354,4 +406,4 @@ jobs:
 
       - name: Discard ephemeral unverified draft files
         if: always()
-        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json out/flowminute-ephemeral-source-passages.json out/flowminute-ephemeral-claim-review.json
