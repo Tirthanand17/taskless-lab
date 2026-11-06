@@ -338,26 +338,41 @@ def build_editorial_board(
     candidates = _freshness_order(_scout_candidates(scout_report, observed, now))
     recent = _check_history(previous_subject_hashes)
     candidates = [c for c in candidates if c["subject_hash"] not in recent]
+    # Selection and slot assignment are separate: allocate the strongest
+    # source-observed, first-party candidate to the LONG explainer first,
+    # then distribute other distinct, preferably observed sources to Shorts.
+    # A first-party web page is NOT an independent factual endorsement.
+    primary_hosts = frozenset(("OpenAI", "Google DeepMind", "arXiv AI"))
+    ranks = {
+        "SOURCE_FETCHED_NOT_FACT_CHECKED": 0,
+        "RSS_ENTRY_ONLY_ARTICLE_NOT_FETCHED": 1,
+    }
     selected: list[dict] = []
-    board = []
-    for index, (slot,kind,local,_) in enumerate(PUBLISH_SLOTS):
-        # Prefer a new family AND a distinct independent publisher; fall
-        # back to different subject with same family only if necessary.
+    slot_picks = {}
+    for desired_slot in ("long", "short_am", "short_pm"):
         available = [x for x in candidates if x not in selected
                      and not any(_related(x,y) for y in selected)]
-        if available:
-            scored = sorted(enumerate(available), key=lambda item: (
-                item[1]["family"] in {v["family"] for v in selected},
-                item[1]["lead"]["publisher"] in {
-                    v["lead"]["publisher"] for v in selected},
-                # Long: prioritize actually fetched explainer/article metadata.
-                0 if item[1]["observation"] and
-                     item[1]["observation"]["status"] == "SOURCE_FETCHED_NOT_FACT_CHECKED"
-                   else 1,
-                item[0],
-            ))
-            pick = scored[0][1]
-            selected.append(pick)
+        if not available:
+            continue
+        scored = sorted(enumerate(available), key=lambda item: (
+            # NEVER trade a directly read article for headline-only novelty.
+            ranks.get((item[1]["observation"] or {}).get("status"), 2),
+            # The long piece gets a first-party source when one is readable.
+            (item[1]["lead"]["publisher"] not in primary_hosts)
+            if desired_slot == "long" else False,
+            item[1]["family"] in {v["family"] for v in selected},
+            item[1]["lead"]["publisher"] in {
+                v["lead"]["publisher"] for v in selected},
+            item[0],
+        ))
+        pick = scored[0][1]
+        selected.append(pick)
+        slot_picks[desired_slot] = pick
+
+    board = []
+    for index, (slot,kind,local,_) in enumerate(PUBLISH_SLOTS):
+        pick = slot_picks.get(slot)
+        if pick is not None:
             src = pick["observation"]
             evidence_level = (
                 "ARTICLE_BYTES_OBSERVED_NO_FACT_APPROVAL" if src and
@@ -419,6 +434,15 @@ def build_editorial_board(
         "distinct_publishers_selected": len({
             x["lead"]["publisher"] for x in selected}),
         "distinct_subject_hashes": len({x["subject_hash"] for x in selected}),
+        "source_observed_candidates": sum(
+            (x["observation"] or {}).get("status") ==
+            "SOURCE_FETCHED_NOT_FACT_CHECKED" for x in candidates),
+        "evidence_first_selection_performed": True,
+        "long_source_direct_article_observed": bool(
+            slot_picks.get("long") and
+            (slot_picks["long"]["observation"] or {}).get("status") ==
+            "SOURCE_FETCHED_NOT_FACT_CHECKED"),
+        "first_party_host_is_not_factual_corroboration": True,
         "direct_article_http_failure_counts": dict(bounded_http_diagnostics),
         "direct_articles_with_publisher_only_redirect": evidence_report[
             "source_articles_with_bounded_publisher_redirect"],
