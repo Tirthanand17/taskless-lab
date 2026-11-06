@@ -1,0 +1,94 @@
+name: FlowMinute B4c3 Private VPC ECR Signed Image Guard (NO DEPLOY)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/owner_private_network_image_preflight.py"
+      - "autopilot/test_owner_private_network_image_preflight.py"
+      - ".github/workflows/flowminute-b4c3-private-network-image-readonly.yml"
+      - "docs/adr/0055-b4c3-owner-private-network-image-provenance.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/owner_private_network_image_preflight.py"
+      - "autopilot/test_owner_private_network_image_preflight.py"
+      - ".github/workflows/flowminute-b4c3-private-network-image-readonly.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4c3-private-network-source-only-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  owner_network_and_attested_image_offline_security:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      AWS_EC2_METADATA_DISABLED: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_RUNTIME_NETWORK_AUTHORIZED: "0"
+      FLOWMINUTE_OWNER_RELEASE_AUTHORIZED: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+    steps:
+      - name: Public PR source only, no persisted checkout token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.11 isolated hosted runner
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Ed25519 signature verification only, not AWS/Google SDK
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --timeout 30 --retries 2 'cryptography>=44,<49'
+      - name: Execute real signed-fixture and adversarial networking source tests
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/owner_private_network_image_preflight.py \
+            autopilot/test_owner_private_network_image_preflight.py
+          python -B -m unittest -v autopilot.test_owner_private_network_image_preflight \
+            2>&1 | tee /tmp/flowminute_b4c3_source_security_tests.log
+          if grep -Eq '^(FAILED|ERROR|.*skipped.*)$' /tmp/flowminute_b4c3_source_security_tests.log; then
+            echo "No B4c3 source security test may fail or be skipped"
+            exit 1
+          fi
+      - name: Enforce no AWS write imports, no cloud clients, no actual task launch
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          import ast
+          file=Path("autopilot/owner_private_network_image_preflight.py")
+          source=file.read_text(encoding="utf8")
+          tree=ast.parse(source)
+          forbidden=("boto3","botocore","requests","urllib","socket",
+                     "subprocess","http","google","openai","paramiko")
+          for node in ast.walk(tree):
+              if isinstance(node,ast.Import):
+                  for name in node.names:
+                      assert not name.name.startswith(forbidden),name.name
+              if isinstance(node,ast.ImportFrom):
+                  assert not (node.module or "").startswith(forbidden),node.module
+          for name in ("run_task(","create_vpc(","create_vpc_endpoint(",
+                       "put_image(","start_image_scan(","publishAt",
+                       "videos().insert","delete_route(","update_service("):
+              assert name not in source,name
+          assert "release_authorized" in source
+          assert "actual_cloud_deployment" in source
+          assert "real_youtube_upload" in source
+          print("B4C3_SOURCE_ONLY_ZERO_AWS_WRITES_ZERO_YOUTUBE_NO_DEPLOY")
+          PY
+          test "$FLOWMINUTE_ENABLE_PUBLISH" = 0
+          test "$PUBLISH_ENABLED" = false
+          test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
+          test "$FLOWMINUTE_RUNTIME_NETWORK_AUTHORIZED" = 0
+          test "$FLOWMINUTE_OWNER_RELEASE_AUTHORIZED" = 0
