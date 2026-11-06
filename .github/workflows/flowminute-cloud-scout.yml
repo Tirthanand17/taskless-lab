@@ -11,12 +11,14 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: flowminute-public-scout
-  cancel-in-progress: false
+  # A stalled older scout must not block new pull-request checks. Cancel
+  # stale checks for the SAME PR; keep independent daily scheduled runs.
+  group: flowminute-public-scout-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   research_scout:
-    runs-on: ubuntu-latest
-    timeout-minutes: 14
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,58 +26,59 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install actual FFmpeg and signed-review test prerequisites
+      - name: Install only signed public-source review dependency (no apt/FFmpeg)
+        timeout-minutes: 3
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
           python -m pip install --disable-pip-version-check 'cryptography>=46,<48'
-          ffmpeg -hide_banner -version | head -n 1
-      - name: Unit tests and security boundaries
-        run: python -m unittest discover -s autopilot -p 'test_*.py' -v
+      - name: Verify RSS/source/claim/approval boundaries without invoking video tools
+        timeout-minutes: 4
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_agent_org \
+            autopilot.test_daily_cloud_plan \
+            autopilot.test_evidence_probe \
+            autopilot.test_source_fetch_diagnostics_b4d3 \
+            autopilot.test_arxiv_primary_feed_b4d4 \
+            autopilot.test_b4d4b_public_scout_ci_boundary \
+            autopilot.test_daily_editorial_board \
+            autopilot.test_daily_evidence_bundle \
+            autopilot.test_script_draft_agent \
+            autopilot.test_source_claim_preflight \
+            autopilot.test_independent_fact_review_gate
+          echo "B4D4B_PUBLIC_RESEARCH_SECURITY_TESTS_NO_VIDEO_DOWNLOAD"
       - name: Gather public unverified research leads
         if: github.event_name != 'pull_request'
         run: python -m autopilot.scout --output out/scout-report.json
-      - name: Print public topic leads without billable artifacts
+      - name: Print bounded publisher counts only (no article titles or URLs)
         if: github.event_name != 'pull_request'
         run: |
+          set -euo pipefail
           python - <<'PY'
-          import json
-          data=json.load(open("out/scout-report.json",encoding="utf-8"))
-          print("PUBLIC_RESEARCH_LEADS_ONLY",data["generated_at_utc"])
-          print("FEEDS_WITH_LEADS",data["independent_feeds_with_leads"])
-          for lead in data["leads"][:15]:
-              print(lead["publisher"], "|", lead["title"][:170], "|", lead["url"][:240])
-          print("FEED_ERRORS",json.dumps(data["errors"]))
-          print("NO_PUBLICATION_OR_MEDIA_GENERATION_AUTHORIZED")
+          import collections,json,os
+          from pathlib import Path
+          from autopilot.scout import FEEDS
+          report=json.loads(Path("out/scout-report.json").read_text(encoding="utf-8"))
+          allowed={name for name,_ in FEEDS}
+          counts=collections.Counter(x["publisher"] for x in report["leads"])
+          assert set(counts).issubset(allowed)
+          assert len(report["leads"])<=24
+          assert all(0<=n<=6 for n in counts.values())
+          assert report["status"]=="leads_only_no_publish_authorization"
+          lines=["## FlowMinute public research scout (UNVERIFIED)",
+                 "","Publisher counts only; no headlines, article URLs or content retained.",
+                 "","| Publisher | Unverified leads |","|---|---:|"]
+          for pub,n in sorted(counts.items()):
+              lines.append("| "+pub+" | "+str(n)+" |")
+          lines+=["","No claim review, model generation, media or YouTube publish.",
+                  "Raw scout response is transient on GitHub's hosted runner."]
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as output:
+              output.write("\n".join(lines)+"\n")
+          print("B4D4B_SCOUT_COUNTS_ONLY_NO_EXTERNAL_HEADLINES_OR_URLS",
+                json.dumps(dict(counts),sort_keys=True))
           PY
 
-      - name: Write research leads to the GitHub run summary (no secrets, no publication)
-        if: github.event_name != 'pull_request'
-        run: |
-          python - <<'PY'
-          import html, json, os
-          from pathlib import Path
-          report=json.loads(Path("out/scout-report.json").read_text(encoding="utf-8"))
-          lines=["## FlowMinute Lab — public research leads",
-                 "",
-                 "**Unverified leads only; do not auto-publish factual video claims.**",
-                 "",
-                 "Generated: "+html.escape(str(report.get("generated_at_utc","unknown"))),
-                 "",
-                 "| Publisher | Potential topic |",
-                 "|---|---|"]
-          for item in report.get("leads",[])[:15]:
-              publisher=html.escape(str(item.get("publisher",""))[:70])
-              title=html.escape(str(item.get("title",""))[:170]).replace("|","&#124;")
-              url=str(item.get("url",""))
-              if not url.startswith(("https://","http://")):
-                  url=""
-              # Avoid markdown links built from arbitrary feed data.
-              lines.append("| "+publisher+" | "+title+" |")
-              if url: lines.append("  - Source URL: "+html.escape(url[:350]))
-          lines += ["","Feeds with leads: "+str(report.get("independent_feeds_with_leads",0)),
-                    "","No media rendered; no account connected; no video uploaded."]
-          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as out:
-              out.write("\n".join(lines)+"\n")
-          PY
+      - name: Discard ephemeral feed headlines, URLs and topic metadata
+        if: always()
+        run: rm -f out/scout-report.json

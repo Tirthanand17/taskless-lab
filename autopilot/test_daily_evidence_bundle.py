@@ -104,6 +104,51 @@ class RealGitHubDraftEvidenceTests(unittest.TestCase):
         self.assertEqual(len(r["receipt_sha256"]),64)
         self.assertEqual(build_retained_draft_receipt(orig,obs),r)
 
+    def test_new_official_archive_lead_can_be_retained_without_paper_text(self):
+        from autopilot.daily_evidence_bundle import ALLOWED_PUBLISHERS
+        from autopilot.daily_cloud_plan import APPROVED_RESEARCH_ORIGINS
+        self.assertEqual(ALLOWED_PUBLISHERS,
+                         frozenset(APPROVED_RESEARCH_ORIGINS))
+        fake={
+            "status":"leads_only_no_publish_authorization",
+            "leads":[{
+                "publisher":"arXiv AI",
+                "title":"A research paper about models and automation",
+                "url":"https://arxiv.org/abs/2611.12345",
+                "status":"unverified_lead",
+            }],
+        }
+        p=build_plan(DAY,scout_report=fake,generated_at_utc=CLOCK)
+        result=build_retained_draft_receipt(p,observations())
+        self.assertEqual(result["slots"][0]["lead_publisher_public_only"],
+                         "arXiv AI")
+        self.assertTrue(result["slots"][0]["research_lead_present"])
+        self.assertFalse(result["real_fact_or_rights_review_performed"])
+        self.assertFalse(result["youtube_publishing_enabled"])
+        text=json.dumps(result)
+        self.assertNotIn("https://arxiv.org/abs",text)
+        self.assertNotIn("A research paper",text)
+
+    def test_forged_arxiv_pdf_or_nonpublisher_link_refused_by_retention(self):
+        fake={
+            "status":"leads_only_no_publish_authorization",
+            "leads":[{
+                "publisher":"arXiv AI",
+                "title":"A research paper about models and automation",
+                "url":"https://arxiv.org/abs/2611.12345",
+                "status":"unverified_lead",
+            }],
+        }
+        p=build_plan(DAY,scout_report=fake,generated_at_utc=CLOCK)
+        for url in ("https://arxiv.org/pdf/2611.12345",
+                    "https://rss.arxiv.org/rss/cs.AI",
+                    "https://evil.example/abs/2611.12345"):
+            with self.subTest(url=url):
+                x=deepcopy(p)
+                x["slots"][0]["research_lead"]["url"]=url
+                with self.assertRaises(DailyEvidenceRefused):
+                    build_retained_draft_receipt(x,observations())
+
     def test_empty_public_scout_and_no_eligible_web_still_generate_safe_receipt(self):
         p=build_plan(DAY,scout_report={
             "status":"leads_only_no_publish_authorization","leads":[]},
