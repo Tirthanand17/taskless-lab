@@ -15,6 +15,8 @@ on:
       - "autopilot/source_locked_script_briefs.py"
       - "autopilot/nonfactual_narration_rehearsal.py"
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
+      - "autopilot/full_original_rehearsal_media_b4e1.py"
+      - "autopilot/test_full_original_rehearsal_media_b4e1.py"
       - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
       - "autopilot/test_b4e0b_wheel_only_voice_runner.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
@@ -45,6 +47,8 @@ on:
       - "autopilot/source_locked_script_briefs.py"
       - "autopilot/nonfactual_narration_rehearsal.py"
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
+      - "autopilot/full_original_rehearsal_media_b4e1.py"
+      - "autopilot/test_full_original_rehearsal_media_b4e1.py"
       - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
       - "autopilot/test_b4e0b_wheel_only_voice_runner.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
@@ -79,7 +83,7 @@ jobs:
   unprivileged_draft:
     if: github.repository == 'Tirthanand17/taskless-lab'
     runs-on: ubuntu-24.04
-    timeout-minutes: 26
+    timeout-minutes: 38
     env:
       CI: "true"
       PUBLISH_ENABLED: "false"
@@ -101,7 +105,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -555,6 +559,64 @@ jobs:
               w.write("Full media bytes and voice weights are destroyed, never uploaded to public artifacts.\n")
           print("B4E0_REAL_THREE_VOICED_ORIGINAL_VIDEO_PREVIEWS_FULL_DECODE_NO_UPLOAD")
           PY
+
+      - name: Generate all 17 original narrated rehearsal scenes with actual PCM captions and full physical MP4 decode
+        if: github.event_name != 'pull_request'
+        timeout-minutes: 19
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.full_original_rehearsal_media_b4e1 \
+            --original-plan out/flowminute-tomorrow-draft.json \
+            --aligned-plan out/flowminute-reconciled-tomorrow-draft.json \
+            --board out/flowminute-ephemeral-editorial-board.json \
+            --scout out/flowminute-ephemeral-current-scout.json \
+            --evidence out/flowminute-evidence-unverified.json \
+            --briefs out/flowminute-ephemeral-source-locked-outlines.json \
+            --passages out/flowminute-ephemeral-source-passages.json \
+            --docket out/flowminute-ephemeral-claim-review.json \
+            --rehearsals out/flowminute-ephemeral-nonfactual-rehearsals.json \
+            --model /tmp/flowminute-b4e0-pinned-model/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b4e0-pinned-model/voices-v1.0.bin \
+            --output-dir /tmp/flowminute-b4e1-complete-rehearsals
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          path=Path("/tmp/flowminute-b4e1-complete-rehearsals/EPHEMERAL_FULL_VOICE_REHEARSAL_QA.json")
+          r=json.loads(path.read_text("utf8"))
+          assert r["status"]=="B4E1_FULL_THREE_ORIGINAL_NONFACTUAL_VOICED_REHEARSALS_PHYSICALLY_RENDERED_NOT_PUBLISHABLE"
+          assert r["full_daily_nonfactual_rehearsal_videos_encoded"]==3
+          assert r["actually_voiced_complete_original_scene_count"]==17
+          assert r["full_4_9_4_scene_voiceover_text_all_spoken"] is True
+          assert [x["original_full_scene_count"] for x in r["episodes"]]==[4,9,4]
+          assert r["all_three_real_h264_aac_ffmpeg_full_decodes_passed"] is True
+          assert r["rehearsal_only_not_factual_news_or_final_review"] is True
+          assert r["real_news_facts_approved"]==0
+          assert r["rights_approvals"]==0 and r["human_full_watches"]==0
+          assert r["paid_model_provider_calls"]==0
+          assert r["youtube_uploads"]==0 and r["release_authorized"] is False
+          assert len(r["full_episode_actual_pcm_duration_seconds"])==3
+          assert all(x["all_original_voiceover_paragraphs_physically_spoken"] is True
+                     and x["actual_full_ffmpeg_decode_passed"] is True
+                     and x["no_concentric_spinner_or_continuously_rotating_circle"] is True
+                     and x["release_authorized"] is False
+                     and x["fully_release_ready_for_youtube"] is False
+                     for x in r["episodes"])
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as summary:
+              summary.write("\n## B4e1 three actual FULL original nonfactual voiced media rehearsals\n")
+              summary.write("All 17 authored scenes, original Kokoro voice, PCM-timed sentence SRT and full H264/AAC decode: 3/3.\n")
+              summary.write("Actual physically measured durations by AM Short / long / PM Short: "+
+                            str(r["full_episode_actual_pcm_duration_seconds"])+" seconds.\n")
+              summary.write("Target 58/240/58 seconds met within 3s: "+
+                            str(r["exact_58_240_58_target_met_for_all"])+". Never pad with false silence.\n")
+              summary.write("No fact/rights/human final-watch approval or YouTube release; media discarded.\n")
+          print("B4E1_FULL_17_ORIGINAL_SCENE_KOKORO_NARRATED_AND_DECODED_NO_PUBLISH")
+          PY
+
+      - name: Destroy ALL full-length rehearsal audio/caption/image/media files even on failure
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4e1-complete-rehearsals
+          echo "B4E1_FULL_UNREVIEWED_MEDIA_PURGED_AFTER_RUN"
 
       - name: Destroy every generated media preview and pinned voice weight even on failure
         if: always()
