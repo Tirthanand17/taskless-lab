@@ -440,6 +440,18 @@ def sanitized_public_receipt(board: object) -> dict:
         or board.get("scripts_generated") != 0
         or type(board.get("slots")) is not list or len(board["slots"]) != 3):
         raise EditorialTriageRefused("Cannot make receipt from unsafe board")
+    # Public receipts must never reproduce untrusted remote exception text
+    # even if a caller supplies a forged detailed editorial board.
+    safe_counts = board.get("direct_article_http_failure_counts")
+    bounded_redirects = board.get("direct_articles_with_publisher_only_redirect")
+    if (type(safe_counts) is not dict or len(safe_counts) > len(SAFE_FETCH_FAILURES)
+        or any(type(k) is not str or k not in SAFE_FETCH_FAILURES
+               or type(v) is not int or not 1 <= v <= MAX_EVIDENCE_SOURCES
+               for k,v in safe_counts.items())
+        or type(bounded_redirects) is not int
+        or not 0 <= bounded_redirects <= MAX_EVIDENCE_SOURCES
+        or sum(safe_counts.values()) + bounded_redirects > MAX_EVIDENCE_SOURCES):
+        raise EditorialTriageRefused("Unsafe public HTTP diagnostic receipt")
     slots = []
     for item in board["slots"]:
         if (type(item) is not dict or item.get("release_authorized") is not False
@@ -461,9 +473,8 @@ def sanitized_public_receipt(board: object) -> dict:
         "plan_date_ist": board["plan_date_ist"],
         "selected_distinct_topics": board["distinct_topics_selected"],
         "direct_sources_observed": board["article_bytes_observed_selected"],
-        "direct_article_http_failure_counts": board["direct_article_http_failure_counts"],
-        "direct_articles_with_publisher_only_redirect": board[
-            "direct_articles_with_publisher_only_redirect"],
+        "direct_article_http_failure_counts": dict(safe_counts),
+        "direct_articles_with_publisher_only_redirect": bounded_redirects,
         "headlines_urls_source_bodies_and_scripts_included": False,
         "fresh_original_scripts_completed": 0,
         "real_youtube_uploads": 0, "release_authorized": False,
