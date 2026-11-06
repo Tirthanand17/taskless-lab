@@ -217,6 +217,7 @@ class OwnerPrivateNetworkReadOnlyTests(unittest.TestCase):
             {"DestinationCidrBlock":"10.0.0.0/8","TransitGatewayId":"tgw-abc"},
             {"DestinationCidrBlock":"10.40.0.0/16","VpcPeeringConnectionId":"pcx-abc"},
             {"DestinationCidrBlock":"0.0.0.0/0","GatewayId":"local","State":"blackhole"},
+            {"DestinationCidrBlock":"0.0.0.0/0","GatewayId":"local","State":"active"},
         ):
             d=make_ec2_data();d["routes"][0]["Routes"].append(route)
             with self.subTest(route=route),self.assertRaises(PreflightRefused):
