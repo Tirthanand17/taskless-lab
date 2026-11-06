@@ -39,6 +39,7 @@ jobs:
             autopilot.test_evidence_probe \
             autopilot.test_source_fetch_diagnostics_b4d3 \
             autopilot.test_arxiv_primary_feed_b4d4 \
+            autopilot.test_b4d4b_public_scout_ci_boundary \
             autopilot.test_daily_editorial_board \
             autopilot.test_daily_evidence_bundle \
             autopilot.test_script_draft_agent \
