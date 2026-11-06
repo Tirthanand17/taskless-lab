@@ -153,6 +153,11 @@ def _require_protected_context(
         or env.get("FLOWMINUTE_B4C7_PROTECTED_ENVIRONMENT") != ENVIRONMENT_NAME
         or env.get("FLOWMINUTE_B4C7_AUDIT_MODE") != "INERT_READ_ONLY_ONLY"
         or env.get("AWS_REGION") != scope.iam_scope.aws_region
+        or env.get("FLOWMINUTE_ENABLE_PUBLISH") != "0"
+        or env.get("PUBLISH_ENABLED") != "false"
+        or env.get("FLOWMINUTE_OWNER_RELEASE_AUTHORIZED") != "0"
+        or env.get("FLOWMINUTE_MODEL_PAID_SPEND_USD") != "0"
+        or env.get("FLOWMINUTE_ALLOW_LAPTOP") != "0"
         or env.get("FLOWMINUTE_B4C7_CHANGE_REFERENCE")
             != scope.iam_scope.owner_change_reference
         or re.fullmatch(r"[a-f0-9]{40}", env.get("GITHUB_SHA", "")) is None):
