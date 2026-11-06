@@ -11,8 +11,10 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: flowminute-public-scout
-  cancel-in-progress: false
+  # A stalled older scout must not block new pull-request checks. Cancel
+  # stale checks for the SAME PR; keep independent daily scheduled runs.
+  group: flowminute-public-scout-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   research_scout:
     runs-on: ubuntu-24.04
