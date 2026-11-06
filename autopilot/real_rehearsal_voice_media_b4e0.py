@@ -212,7 +212,7 @@ def original_preview_frame(episode: dict, scene: dict, target: Path) -> str:
     for ln in spoken:
         d.text((128,cursor),ln,font=_font(size),fill=(252,251,246))
         cursor+=55 if portrait else 48
-    if cursor>h-156:
+    if cursor-(55 if portrait else 48)+size > h-132:
         raise PhysicalPreviewRefused("Caption baseline falls outside safe bounds")
     d.text((100,h-97),"FICTIONAL EDUCATIONAL EXAMPLE  •  NOT FOR PUBLICATION",
            font=_font(20),fill=(185,205,223))
