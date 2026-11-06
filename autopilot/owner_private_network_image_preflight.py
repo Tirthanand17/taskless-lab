@@ -114,7 +114,7 @@ def _is_s3_prefix_egress(permission: dict, prefix_list: str) -> bool:
 
 
 def _validate_route_tables(rows: object, scope: OwnerInertNetworkScope,
-                           s3_gateway: dict) -> tuple[dict[str,dict], str]:
+                           s3_gateway: dict, vpc_cidr: str) -> tuple[dict[str,dict], str]:
     _require(type(rows) is list and bool(rows), "Missing owner VPC route tables")
     by_id={}
     associations={}
@@ -144,8 +144,13 @@ def _validate_route_tables(rows: object, scope: OwnerInertNetworkScope,
         for route in table.get("Routes",[]):
             _require(route.get("State","active")=="active","Blackholed route in task subnet")
             if route.get("GatewayId")=="local":
-                _require("DestinationCidrBlock" in route,
-                         "Local VPC route without CIDR")
+                _require(route.get("DestinationCidrBlock")==vpc_cidr
+                         and not route.get("DestinationIpv6CidrBlock")
+                         and not route.get("DestinationPrefixListId")
+                         and not any(route.get(x) for x in (
+                             "NatGatewayId","TransitGatewayId",
+                             "VpcPeeringConnectionId","EgressOnlyInternetGatewayId")),
+                         "Local route must cover ONLY the exact owner VPC CIDR")
                 continue
             if route.get("GatewayId")==gateway_id:
                 pl=route.get("DestinationPrefixListId")
@@ -218,7 +223,7 @@ def verify_private_network(scope: OwnerInertNetworkScope, ec2: object) -> dict:
              "S3 image-layer gateway endpoint unavailable")
     route_tables=ec2.describe_route_tables(
         Filters=[{"Name":"vpc-id","Values":[scope.vpc_id]}]).get("RouteTables",[])
-    associations,s3_prefix=_validate_route_tables(route_tables,scope,s3)
+    associations,s3_prefix=_validate_route_tables(route_tables,scope,s3,vpc["CidrBlock"])
     groups=ec2.describe_security_groups(
         GroupIds=[scope.task_security_group_id,
                   scope.endpoint_security_group_id]).get("SecurityGroups",[])
