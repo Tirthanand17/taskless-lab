@@ -19,12 +19,16 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from autopilot.core import CHANNEL_ID, slot_utc
-from autopilot.daily_cloud_plan import PLAN_VERSION, PUBLISH_SLOTS
-from autopilot.evidence_probe import PROBE_STATUS
+from autopilot.daily_cloud_plan import (
+    PLAN_VERSION, PUBLISH_SLOTS, APPROVED_RESEARCH_ORIGINS,
+)
+from autopilot.evidence_probe import PROBE_STATUS, verify_public_source_url, EvidenceError
 
 UTC=dt.timezone.utc
 IST=ZoneInfo("Asia/Kolkata")
-ALLOWED_PUBLISHERS=frozenset({"OpenAI","Google DeepMind","The Verge"})
+# Static public export allowlist intentionally mirrors the exact publisher
+# origin policy. If a new publisher is added, review this boundary explicitly.
+ALLOWED_PUBLISHERS=frozenset({"OpenAI","Google DeepMind","The Verge","arXiv AI"})
 STATUS="GITHUB_RETAINED_RESEARCH_DRAFT_EVIDENCE_ONLY"
 MAX_INPUT_BYTES=512_000
 MAX_OUTPUT_BYTES=12_000
@@ -115,6 +119,8 @@ def _validate_source_report(evidence: dict) -> None:
 def build_retained_draft_receipt(plan: dict,evidence: dict) -> dict:
     """Content-address public run status, never copy headlines URLs or sources."""
     _validate_source_report(evidence)
+    if ALLOWED_PUBLISHERS != frozenset(APPROVED_RESEARCH_ORIGINS):
+        raise DailyEvidenceRefused("Research source/export publisher allowlists drifted")
     if (type(plan) is not dict or plan.get("schema_version")!=PLAN_VERSION
         or plan.get("plan_kind")!="UNPRIVILEGED_RESEARCH_DRAFT_ONLY"
         or plan.get("delivery_track")!="cloud_autonomous_agents"
@@ -173,6 +179,10 @@ def build_retained_draft_receipt(plan: dict,evidence: dict) -> dict:
                 or lead.get("video_ready") is not False
                 or entry["editorial_state"]!="UNVERIFIED_LEAD_ONLY"):
                 raise DailyEvidenceRefused("Unexpected unverified research lead")
+            try:
+                verify_public_source_url(lead.get("url"), lead["publisher"])
+            except EvidenceError:
+                raise DailyEvidenceRefused("Unapproved public research lead URL") from None
         elif entry["editorial_state"]!="RESEARCH_REQUIRED":
             raise DailyEvidenceRefused("Research lead absent but status claims otherwise")
         output_slots.append({
