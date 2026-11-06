@@ -1,0 +1,94 @@
+name: FlowMinute B4e5 32 Actual Source Scenes Motion Review (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/visual_motion_review_v7.py"
+      - "autopilot/test_visual_motion_review_v7.py"
+      - ".github/workflows/flowminute-b4e5-32-scene-motion-review.yml"
+      - "docs/adr/0060-b4e5-original-scene-motion-review.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/visual_motion_review_v7.py"
+      - "autopilot/test_visual_motion_review_v7.py"
+      - ".github/workflows/flowminute-b4e5-32-scene-motion-review.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4e5-public-source-motion-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  review_32_physical_scene_frames:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_B4E5_PHYSICAL_REVIEW: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - name: Checkout public original science source only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Use GitHub-hosted Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public source visual-only libraries
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check \
+            'Pillow>=11,<13' 'cairosvg>=2.7,<3' 'cryptography>=44,<47'
+      - name: Test actual 96 native source frames and physical review contacts
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v autopilot.test_visual_motion_review_v7
+          echo "B4E5_REAL_SOURCE_BEAT_MOTION_TESTS_PASSED_NO_UPLOAD"
+      - name: Generate review images and bounded 32-scene motion evidence
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.visual_motion_review_v7 \
+            --out /tmp/flowminute-b4e5-32-visual-review
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("/tmp/flowminute-b4e5-32-visual-review")
+          r=json.loads((p/"UNAPPROVED_32_SCENE_MOTION_REPORT.json").read_text())
+          assert r["shots_checked"]==32
+          assert r["source_motion_frames_physically_rendered"]==96
+          assert [x["slot"] for x in r["episodes"]]==[
+              "short_am","long","short_pm"]
+          assert len(list(p.glob("*.png")))==3
+          assert r["automated_spinner_free_certification"] is False
+          assert r["human_creative_approval"] is False
+          assert r["daily_fresh_content_produced"] is False
+          assert r["real_youtube_uploads"]==0
+          assert r["release_authorized"] is False
+          for x in r["episodes"]:
+              assert x["human_final_review_complete"] is False
+              assert x["actual_encoded_mp4_playback_reviewed"] is False
+          print("B4E5_THREE_SOURCE_SCENE_CONTACT_SHEETS_UNAPPROVED_NO_YOUTUBE")
+          PY
+      - name: Retain ONLY three original scene contact sheets and safe manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b4e5-three-original-32-scene-contacts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4e5-32-visual-review/
+          retention-days: 7
+          if-no-files-found: error
+          compression-level: 6
+      - name: Clean ephemeral visual contact sheet source
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4e5-32-visual-review
+          echo "B4E5_NO_SECRETS_NO_HUMAN_APPROVAL_NO_PUBLISH"
