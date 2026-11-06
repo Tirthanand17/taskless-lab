@@ -13,6 +13,8 @@ on:
       - "autopilot/daily_editorial_board.py"
       - "autopilot/reconcile_daily_editorial_plan.py"
       - "autopilot/source_locked_script_briefs.py"
+      - "autopilot/recent_research_history.py"
+      - "autopilot/test_recent_research_history_b4d8.py"
       - "autopilot/public_article_passages.py"
       - "autopilot/ephemeral_claim_review_docket.py"
       - "autopilot/test_ephemeral_claim_review_docket_b4d7.py"
@@ -36,6 +38,8 @@ on:
       - "autopilot/daily_editorial_board.py"
       - "autopilot/reconcile_daily_editorial_plan.py"
       - "autopilot/source_locked_script_briefs.py"
+      - "autopilot/recent_research_history.py"
+      - "autopilot/test_recent_research_history_b4d8.py"
       - "autopilot/public_article_passages.py"
       - "autopilot/ephemeral_claim_review_docket.py"
       - "autopilot/test_ephemeral_claim_review_docket_b4d7.py"
@@ -55,6 +59,7 @@ on:
 
 permissions:
   contents: read
+  actions: read  # Existing sanitized GitHub Actions artifacts only; no writes
 
 concurrency:
   group: flowminute-daily-draft-only-${{ github.ref }}
@@ -86,13 +91,52 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           python -m autopilot.scout --output out/flowminute-scout-unverified.json
+
+      - name: Collect previous successful GitHub research receipt hashes and remove repeated topics
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.recent_research_history collect \
+            --output out/flowminute-ephemeral-research-history.json
+          python -B -m autopilot.recent_research_history filter \
+            --scout out/flowminute-scout-unverified.json \
+            --history out/flowminute-ephemeral-research-history.json \
+            --output out/flowminute-ephemeral-current-scout.json
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          before=json.loads(Path("out/flowminute-scout-unverified.json").read_text())
+          after=json.loads(Path("out/flowminute-ephemeral-current-scout.json").read_text())
+          hist=json.loads(Path("out/flowminute-ephemeral-research-history.json").read_text())
+          assert before["status"]==after["status"]=="leads_only_no_publish_authorization"
+          assert hist["status"]=="B4D8_PREVIOUS_SUCCESSFUL_GITHUB_RESEARCH_RECEIPTS_ONLY"
+          assert after["research_history_filter_status"]=="B4D8_PRIOR_TOPIC_AND_SOURCE_RESEARCH_REPETITION_FILTERED"
+          assert after["recent_research_leads_retained"]<=len(before["leads"])
+          assert after["recent_research_topic_or_exact_source_repeats_removed"]<=len(before["leads"])
+          assert len(after["leads"])+after["recent_research_topic_or_exact_source_repeats_removed"]<=len(before["leads"])
+          assert hist["not_a_youtube_publication_readback"] is True
+          assert hist["video_release_authorized"] is False
+          assert after["fresh_source_content_proven"] is False
+          assert after["prior_youtube_published_content_checked"] is False
+          assert after["youtube_upload_enabled"] is False
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as stream:
+              stream.write("\n## B4d8 previous *research*, not video, repetition guard\n")
+              stream.write("Verified prior research days: "+str(hist["verified_prior_research_days"])+"/7\n")
+              stream.write("Previously researched exact-source/subject repeats removed: "+
+                           str(after["recent_research_topic_or_exact_source_repeats_removed"])+"\n")
+              stream.write("Fresh unverified leads remaining: "+str(len(after["leads"]))+"\n")
+              stream.write("Incomplete history coverage is NOT proof of 7-day uniqueness.\n")
+          print("B4D8_PREVIOUS_RESEARCH_RECEIPT_HASHES_CHECKED_NO_PUBLISHING")
+          PY
 
       - name: Observe bounded official/public source bytes (NOT fact validation)
         if: github.event_name != 'pull_request'
@@ -103,7 +147,7 @@ jobs:
           # the entire run sequential, without concurrency or retry storms.
           sleep 3.2
           python -m autopilot.evidence_probe \
-            --scout-report out/flowminute-scout-unverified.json \
+            --scout-report out/flowminute-ephemeral-current-scout.json \
             --max-sources 3 \
             --ephemeral-passages out/flowminute-ephemeral-source-passages.json \
             --output out/flowminute-evidence-unverified.json
@@ -138,7 +182,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m autopilot.daily_cloud_plan \
-            --scout-report out/flowminute-scout-unverified.json \
+            --scout-report out/flowminute-ephemeral-current-scout.json \
             --output out/flowminute-tomorrow-draft.json
           python - <<'PY'
           import json,os
@@ -174,7 +218,7 @@ jobs:
           set -euo pipefail
           python -B -m autopilot.daily_editorial_board \
             --plan out/flowminute-tomorrow-draft.json \
-            --scout-report out/flowminute-scout-unverified.json \
+            --scout-report out/flowminute-ephemeral-current-scout.json \
             --evidence out/flowminute-evidence-unverified.json \
             --board-output out/flowminute-ephemeral-editorial-board.json \
             --public-receipt-output out/flowminute-public-editorial-receipt.json
@@ -231,7 +275,7 @@ jobs:
           python -B -m autopilot.reconcile_daily_editorial_plan \
             --plan out/flowminute-tomorrow-draft.json \
             --board out/flowminute-ephemeral-editorial-board.json \
-            --scout-report out/flowminute-scout-unverified.json \
+            --scout-report out/flowminute-ephemeral-current-scout.json \
             --source-observations out/flowminute-evidence-unverified.json \
             --output out/flowminute-reconciled-tomorrow-draft.json
           python -B - <<'PY'
@@ -272,7 +316,7 @@ jobs:
             --raw-plan out/flowminute-tomorrow-draft.json \
             --aligned-plan out/flowminute-reconciled-tomorrow-draft.json \
             --board out/flowminute-ephemeral-editorial-board.json \
-            --scout out/flowminute-scout-unverified.json \
+            --scout out/flowminute-ephemeral-current-scout.json \
             --evidence out/flowminute-evidence-unverified.json \
             --output out/flowminute-ephemeral-source-locked-outlines.json
           python -B - <<'PY'
@@ -315,7 +359,7 @@ jobs:
             --original-plan out/flowminute-tomorrow-draft.json \
             --aligned-plan out/flowminute-reconciled-tomorrow-draft.json \
             --board out/flowminute-ephemeral-editorial-board.json \
-            --scout out/flowminute-scout-unverified.json \
+            --scout out/flowminute-ephemeral-current-scout.json \
             --evidence out/flowminute-evidence-unverified.json \
             --briefs out/flowminute-ephemeral-source-locked-outlines.json \
             --passages out/flowminute-ephemeral-source-passages.json \
@@ -406,4 +450,4 @@ jobs:
 
       - name: Discard ephemeral unverified draft files
         if: always()
-        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json out/flowminute-ephemeral-source-passages.json out/flowminute-ephemeral-claim-review.json
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json out/flowminute-ephemeral-source-passages.json out/flowminute-ephemeral-claim-review.json out/flowminute-ephemeral-research-history.json out/flowminute-ephemeral-current-scout.json
