@@ -22,6 +22,8 @@ During PR #78's first set of checks, the **separate** source-only `flowminute-cl
 
 On the independent public scheduled scout job, raw unverified feed headlines and article URLs were previously printed directly into the public log and job summary. That was unnecessary: a separate daily foundation already retains sanitized SHA-only evidence. The scout now prints only **bounded per-publisher lead counts** (at most six each), tests permitted publisher names, deletes the temporary raw scout file and never archives external article URLs or titles. No scraped article content or full paper is stored; no privileged GitHub token or provider account is used.
 
+The old scout Actions `concurrency.group` was one global constant, so a prior stalled apt install could queue every newer PR and daily check behind the same unrelated job. The new group is keyed by event and ref, with `cancel-in-progress` true **only for stale PR checks**, not for daily scheduled research. This is intended to avoid unnecessary queue delays and duplicate GitHub minutes; real cost savings are not claimed until measured.
+
 Static CI tests guard the absence of `sudo apt-get`, private/paid endpoints, URL logging and source approvals. A passed source-only scout is not a licensed/peer-reviewed fact checker.
 
 ## Remaining research blockers
