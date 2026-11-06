@@ -29,6 +29,40 @@ from autopilot.retain_public_topic_drafts import _retain_one,PreviewRefused
 STATUS_V8="B4E6B_REAL_SCIENCE_V7_TWO_SHORTS_LONG_MEDIA_UNAPPROVED"
 SLOT_SEQUENCE=("short_am","long","short_pm")
 
+# Explicit flag schema makes unreviewed or mismatched media reports fail
+# deterministically without requiring a second expensive Kokoro render to
+# discover which known field is inconsistent. Never log report values.
+_REQUIRED_TRUE_FIELDS=(
+    "b4e6_source_action_art_in_actual_encoded_video",
+    "b4e4_source_exact_nonoverlapping_editorial_grid",
+    "b4e3_original_dimensional_scenes_encoded",
+    "b4e1_native_ass_safe_band_independently_verified",
+    "actual_narration_text_and_srt_matched",
+    "actual_full_encoded_h264_aac_with_captions_and_animation",
+)
+_REQUIRED_FALSE_FIELDS=(
+    "b4e3_owner_creative_approval",
+    "b4e3_real_modelled_3d_claimed",
+    "human_complete_watch_listen",
+    "youtube_upload_enabled",
+    "youtube_schedule_enabled",
+    "release_authorized",
+)
+
+
+def require_science_v7_media_report(report:object)->None:
+    """Fail closed on all video and approval fields, never reveal source text."""
+    if type(report) is not dict or report.get("status")!=STATUS:
+        raise PreviewRefused("Wrong physical science v7 media-report status")
+    if report.get("b4e3_visual_style")!="science_v7":
+        raise PreviewRefused("Wrong actual science v7 renderer style")
+    for name in _REQUIRED_TRUE_FIELDS:
+        if report.get(name) is not True:
+            raise PreviewRefused("Physical science v7 media evidence missing: "+name)
+    for name in _REQUIRED_FALSE_FIELDS:
+        if report.get(name) is not False:
+            raise PreviewRefused("Unapproved video or release gate changed: "+name)
+
 
 def _verified_file(path:Path,max_size:int=320_000_000)->dict:
     if path.is_symlink() or not path.is_file():
@@ -117,21 +151,7 @@ def render_three_science_v7_previews(*,model:Path,voices:Path,output:Path)->dict
                 source.mkdir(mode=0o700)
                 report,episode=render_full_topic_video(
                     story,engine,source,visual_style="science_v7")
-                if (report.get("status")!=STATUS
-                    or report.get("b4e3_visual_style")!="science_v7"
-                    or report.get("b4e6_source_action_art_in_actual_encoded_video") is not True
-                    or report.get("b4e4_source_exact_nonoverlapping_editorial_grid") is not True
-                    or report.get("b4e3_original_dimensional_scenes_encoded") is not True
-                    or report.get("b4e3_owner_creative_approval") is not False
-                    or report.get("b4e3_real_modelled_3d_claimed") is not False
-                    or report.get("b4e1_native_ass_safe_band_independently_verified") is not True
-                    or report.get("actual_narration_text_and_srt_matched") is not True
-                    or report.get("actual_full_encoded_h264_aac_with_captions_and_animation") is not True
-                    or report.get("human_complete_watch_listen") is not False
-                    or report.get("youtube_upload_enabled") is not False
-                    or report.get("youtube_schedule_enabled") is not False
-                    or report.get("release_authorized") is not False):
-                    raise PreviewRefused("Actually encoded action-specific scene/voice/media QA missing or forged")
+                require_science_v7_media_report(report)
                 if episode.episode_id!=story["episode_id"]:
                     raise PreviewRefused("Model changed story source/episode identity")
                 final=staging/episode.episode_id
