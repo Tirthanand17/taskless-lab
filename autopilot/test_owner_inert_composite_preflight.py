@@ -5,6 +5,7 @@ No real owner credential, paid AWS account or YouTube service is connected.
 """
 from __future__ import annotations
 
+import base64
 from copy import deepcopy
 from dataclasses import replace
 from pathlib import Path
@@ -218,7 +219,7 @@ class B4c6CompositeTests(unittest.TestCase):
         self.denied()
 
     def test_wrong_cryptographic_owner_signature_rejected(self):
-        self.signature="AA"+self.signature[2:]
+        self.signature=base64.b64encode(bytes(64)).decode("ascii")
         self.denied()
         self.assertEqual(self.ecr.methods,[])
 
