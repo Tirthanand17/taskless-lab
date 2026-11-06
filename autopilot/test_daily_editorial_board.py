@@ -281,6 +281,22 @@ class DailyEditorialBoardTests(unittest.TestCase):
         with self.assertRaises(EditorialTriageRefused):
             self.board()
 
+    def test_public_receipt_forged_private_http_error_cannot_leak(self):
+        report=self.board()
+        bad=deepcopy(report)
+        bad["direct_article_http_failure_counts"]={
+            "private.api.token.password=https://host.example":1}
+        with self.assertRaises(EditorialTriageRefused):
+            sanitized_public_receipt(bad)
+
+    def test_public_receipt_rejects_impossible_redirect_and_error_totals(self):
+        report=self.board()
+        bad=deepcopy(report)
+        bad["direct_article_http_failure_counts"]={"HTTP_ACCESS_DENIED":6}
+        bad["direct_articles_with_publisher_only_redirect"]=1
+        with self.assertRaises(EditorialTriageRefused):
+            sanitized_public_receipt(bad)
+
     def test_mismatched_observed_redirect_count_rejected(self):
         self.evidence["source_articles_with_bounded_publisher_redirect"]=1
         with self.assertRaises(EditorialTriageRefused):
