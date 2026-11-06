@@ -133,7 +133,7 @@ def _validate_route_tables(rows: object, scope: OwnerInertNetworkScope,
     _require(set(associations)==set(scope.subnet_ids),
              "Each task subnet must have explicit private route-table association")
     gateway_id=s3_gateway.get("VpcEndpointId")
-    _require(type(gateway_id) is str and ENDPOINT.fullmatch(gateway_id),
+    _require(type(gateway_id) is str and ENDPOINT.fullmatch(gateway_id) is not None,
              "S3 gateway endpoint identity invalid")
     _require(set(associations.values()).issubset(set(s3_gateway.get("RouteTableIds",[]))),
              "S3 gateway not attached to every task subnet route table")
@@ -149,7 +149,7 @@ def _validate_route_tables(rows: object, scope: OwnerInertNetworkScope,
                 continue
             if route.get("GatewayId")==gateway_id:
                 pl=route.get("DestinationPrefixListId")
-                _require(type(pl) is str and PL.fullmatch(pl),
+                _require(type(pl) is str and PL.fullmatch(pl) is not None,
                          "S3 gateway route missing exact AWS prefix list")
                 prefix_lists.add(pl)
                 s3_routes+=1
@@ -294,7 +294,7 @@ def verify_signed_owner_image(scope: OwnerInertNetworkScope, ecr: object,
              "Owner inspection clock must be timezone aware")
     _require(type(signature_b64) is str and type(trusted_owner_pubkey_b64) is str
              and type(trusted_owner_pubkey_sha256) is str
-             and re.fullmatch("[0-9a-f]{64}",trusted_owner_pubkey_sha256),
+             and re.fullmatch("[0-9a-f]{64}",trusted_owner_pubkey_sha256) is not None,
              "Owner's independently selected trust anchor is missing")
     try:
         key=base64.b64decode(trusted_owner_pubkey_b64,validate=True)
