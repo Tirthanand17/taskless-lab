@@ -24,7 +24,7 @@ from autopilot.daily_cloud_plan import (
     UNVERIFIED_SCOUT_STATUS,
 )
 from autopilot.evidence_probe import (
-    PROBE_STATUS, verify_public_source_url, EvidenceError,
+    PROBE_STATUS, verify_public_source_url, EvidenceError, SAFE_FETCH_FAILURES,
 )
 
 STATUS = "B4D2_SOURCE_LINKED_DIVERSE_RESEARCH_BRIEFS_NO_FACT_APPROVAL"
@@ -214,6 +214,36 @@ def _validate_observations(report: object, clock: datetime) -> dict[str, dict]:
         if sid in records:
             raise EditorialTriageRefused("Repeated source ID")
         records[sid] = item
+    # Diagnostic categories are allowed in public receipts because they
+    # contain neither article URLs/body bytes nor remote HTTP error strings.
+    # Strictly reconcile source-level categories to prevent forged successes.
+    counts = report.get("direct_article_fetch_failure_counts")
+    failures = report.get("failures")
+    if (type(counts) is not dict or len(counts) > len(SAFE_FETCH_FAILURES)
+        or any(type(k) is not str or k not in SAFE_FETCH_FAILURES
+               or type(v) is not int or not 1 <= v <= MAX_EVIDENCE_SOURCES
+               for k,v in counts.items())
+        or type(failures) is not list or len(failures) != report["sources_failed"]):
+        raise EditorialTriageRefused("Malformed bounded source-fetch diagnostics")
+    category_count = {}
+    for entry in report["sources"] + failures:
+        reason = entry.get("direct_article_failure_class")
+        if entry.get("status") == "SOURCE_FETCHED_NOT_FACT_CHECKED":
+            if reason is not None:
+                raise EditorialTriageRefused("Direct source oddly marked failed")
+            hops = entry.get("approved_same_publisher_redirect_hops")
+            if (type(hops) is not int or not 0 <= hops <= 2
+                or entry.get("approved_same_publisher_redirect") is not (hops > 0)):
+                raise EditorialTriageRefused("Invalid article redirect evidence")
+        else:
+            if reason not in SAFE_FETCH_FAILURES:
+                raise EditorialTriageRefused("Missing safe article failure classification")
+            category_count[reason] = category_count.get(reason, 0) + 1
+    if (category_count != counts or
+        report.get("source_articles_with_bounded_publisher_redirect") != sum(
+            item.get("approved_same_publisher_redirect") is True
+            for item in report["sources"])):
+        raise EditorialTriageRefused("Direct article HTTP failure counters forged")
     return records
 
 
@@ -304,6 +334,7 @@ def build_editorial_board(
     """
     day, now = _validate_plan(plan)
     observed = _validate_observations(evidence_report, now)
+    bounded_http_diagnostics = evidence_report["direct_article_fetch_failure_counts"]
     candidates = _freshness_order(_scout_candidates(scout_report, observed, now))
     recent = _check_history(previous_subject_hashes)
     candidates = [c for c in candidates if c["subject_hash"] not in recent]
@@ -388,6 +419,9 @@ def build_editorial_board(
         "distinct_publishers_selected": len({
             x["lead"]["publisher"] for x in selected}),
         "distinct_subject_hashes": len({x["subject_hash"] for x in selected}),
+        "direct_article_http_failure_counts": dict(bounded_http_diagnostics),
+        "direct_articles_with_publisher_only_redirect": evidence_report[
+            "source_articles_with_bounded_publisher_redirect"],
         "data_is_not_live_fact_corroboration": True,
         "scripts_generated": 0,
         "billable_api_calls": 0, "model_inference_performed": False,
@@ -406,6 +440,18 @@ def sanitized_public_receipt(board: object) -> dict:
         or board.get("scripts_generated") != 0
         or type(board.get("slots")) is not list or len(board["slots"]) != 3):
         raise EditorialTriageRefused("Cannot make receipt from unsafe board")
+    # Public receipts must never reproduce untrusted remote exception text
+    # even if a caller supplies a forged detailed editorial board.
+    safe_counts = board.get("direct_article_http_failure_counts")
+    bounded_redirects = board.get("direct_articles_with_publisher_only_redirect")
+    if (type(safe_counts) is not dict or len(safe_counts) > len(SAFE_FETCH_FAILURES)
+        or any(type(k) is not str or k not in SAFE_FETCH_FAILURES
+               or type(v) is not int or not 1 <= v <= MAX_EVIDENCE_SOURCES
+               for k,v in safe_counts.items())
+        or type(bounded_redirects) is not int
+        or not 0 <= bounded_redirects <= MAX_EVIDENCE_SOURCES
+        or sum(safe_counts.values()) + bounded_redirects > MAX_EVIDENCE_SOURCES):
+        raise EditorialTriageRefused("Unsafe public HTTP diagnostic receipt")
     slots = []
     for item in board["slots"]:
         if (type(item) is not dict or item.get("release_authorized") is not False
@@ -427,6 +473,8 @@ def sanitized_public_receipt(board: object) -> dict:
         "plan_date_ist": board["plan_date_ist"],
         "selected_distinct_topics": board["distinct_topics_selected"],
         "direct_sources_observed": board["article_bytes_observed_selected"],
+        "direct_article_http_failure_counts": dict(safe_counts),
+        "direct_articles_with_publisher_only_redirect": bounded_redirects,
         "headlines_urls_source_bodies_and_scripts_included": False,
         "fresh_original_scripts_completed": 0,
         "real_youtube_uploads": 0, "release_authorized": False,

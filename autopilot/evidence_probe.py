@@ -16,6 +16,7 @@ import json
 import xml.etree.ElementTree as ET
 import urllib.error
 import urllib.request
+from urllib.parse import urljoin
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -41,10 +42,66 @@ class EvidenceError(ValueError):
 
 
 class RejectRedirect(urllib.request.HTTPRedirectHandler):
-    """Do not follow any Location header from an untrusted external site."""
+    """Do not follow redirects from exact publisher RSS feed requests."""
 
     def redirect_request(self, request, fp, code, msg, headers, newurl):
-        raise EvidenceError("Redirects are not automatically trusted")
+        raise EvidenceError("RSS feed redirect not approved")
+
+
+MAX_ARTICLE_REDIRECTS = 2
+SAFE_FETCH_FAILURES = frozenset((
+    "HTTP_ACCESS_DENIED", "HTTP_RATE_LIMITED", "HTTP_NOT_FOUND",
+    "HTTP_UNAVAILABLE", "HTTP_OTHER", "TRANSPORT_UNAVAILABLE",
+    "REDIRECT_REJECTED", "UNEXPECTED_FINAL_URL",
+    "UNEXPECTED_HTTP_STATUS", "UNSUPPORTED_CONTENT_TYPE",
+    "EMPTY_OR_OVERSIZED_ARTICLE", "BOT_CHALLENGE_PAGE",
+    "SOURCE_STRUCTURAL_REJECTED",
+))
+
+
+class ArticleFetchRefused(EvidenceError):
+    """Only a constant, non-sensitive diagnostic category is ever retained."""
+
+    def __init__(self, category: str):
+        if category not in SAFE_FETCH_FAILURES:
+            raise ValueError("Unrecognized bounded public fetch error class")
+        self.category = category
+        super().__init__(category)
+
+
+class PublisherOnlyArticleRedirect(urllib.request.HTTPRedirectHandler):
+    """Allow at most two GET redirects to publisher's exact approved HTTPS hosts.
+
+    Never send a request to a redirect Location until the final URL is checked
+    against the same original publisher origin allowlist. No arbitrary hosts,
+    IP addresses, credentials, non-standard ports, scripts or loops.
+    """
+
+    def __init__(self, publisher: str, first_url: str):
+        self.publisher = publisher
+        self.first_url = verify_public_source_url(first_url, publisher)
+        self.targets: list[str] = []
+
+    def redirect_request(self, request, fp, code, msg, headers, newurl):
+        if request.get_method() != "GET" or code not in (301, 302, 303, 307, 308):
+            raise ArticleFetchRefused("REDIRECT_REJECTED")
+        try:
+            target = verify_public_source_url(urljoin(request.full_url, newurl), self.publisher)
+        except (EvidenceError, ValueError):
+            raise ArticleFetchRefused("REDIRECT_REJECTED") from None
+        if (len(self.targets) >= MAX_ARTICLE_REDIRECTS
+            or target in (self.first_url, *self.targets)):
+            raise ArticleFetchRefused("REDIRECT_REJECTED")
+        next_request = super().redirect_request(
+            request, fp, code, msg, headers, target)
+        if next_request is None:
+            raise ArticleFetchRefused("REDIRECT_REJECTED")
+        self.targets.append(target)
+        return next_request
+
+
+def _fetch_failure_category(exc: EvidenceError) -> str:
+    return exc.category if isinstance(exc, ArticleFetchRefused) else "SOURCE_STRUCTURAL_REJECTED"
 
 
 def verify_public_source_url(url: object, publisher: str) -> str:
@@ -106,33 +163,64 @@ def probe_source(
     clock = clock or dt.datetime.now(UTC)
     if clock.tzinfo is None or clock.utcoffset() is None:
         raise EvidenceError("Timezone-aware observation clock required")
-    agent = opener or urllib.request.build_opener(RejectRedirect())
+    safe_redirects = PublisherOnlyArticleRedirect(lead["publisher"], url)
+    # A fake opener in unit tests cannot claim it was allowed to redirect.
+    # Production opener uses ONLY the bounded exact-publisher redirect handler.
+    agent = opener if opener is not None else urllib.request.build_opener(safe_redirects)
     request = urllib.request.Request(
-        url, headers={"User-Agent": "FlowMinuteResearchMetadata/1.0", "Accept": "text/html,application/xhtml+xml,text/plain"}
+        url, headers={"User-Agent": "FlowMinuteResearchMetadata/1.0",
+                      "Accept": "text/html,application/xhtml+xml,text/plain"}
     )
     try:
         with agent.open(request, timeout=timeout_seconds) as response:
             final_url = response.geturl()
-            verify_public_source_url(final_url, lead["publisher"])
-            if final_url != url:
-                raise EvidenceError("Unexpected remote URL change")
+            try:
+                verify_public_source_url(final_url, lead["publisher"])
+            except EvidenceError:
+                raise ArticleFetchRefused("UNEXPECTED_FINAL_URL") from None
+            expected = safe_redirects.targets[-1] if safe_redirects.targets else url
+            if final_url != expected:
+                raise ArticleFetchRefused("UNEXPECTED_FINAL_URL")
             status = response.status
             if status != 200:
-                raise EvidenceError("Non-200 source page")
+                raise ArticleFetchRefused("UNEXPECTED_HTTP_STATUS")
             mime = response.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
             if mime not in ALLOWED_TYPES:
-                raise EvidenceError("Unexpected binary or unsupported content type")
+                raise ArticleFetchRefused("UNSUPPORTED_CONTENT_TYPE")
             body = response.read(MAX_BODY_BYTES + 1)
             if not isinstance(body, bytes) or not 96 <= len(body) <= MAX_BODY_BYTES:
-                raise EvidenceError("Source empty or exceeds bounded response limit")
-    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError) as exc:
-        raise EvidenceError("Remote fetch failed: " + type(exc).__name__) from exc
+                raise ArticleFetchRefused("EMPTY_OR_OVERSIZED_ARTICLE")
+            # A 200 OK Cloudflare/captcha interstitial is NOT a fetched article.
+            # Only inspect ephemeral original bytes; never retain page bodies.
+            if mime in ("text/html", "application/xhtml+xml"):
+                opening = body[:16_384].lower()
+                if (b"<title>just a moment" in opening
+                    or b"<title>attention required! | cloudflare" in opening
+                    or b"cf-challenge-running" in opening
+                    or b"verify you are human" in opening):
+                    raise ArticleFetchRefused("BOT_CHALLENGE_PAGE")
+    except urllib.error.HTTPError as exc:
+        if exc.code in (401, 403):
+            category = "HTTP_ACCESS_DENIED"
+        elif exc.code == 429:
+            category = "HTTP_RATE_LIMITED"
+        elif exc.code in (404, 410):
+            category = "HTTP_NOT_FOUND"
+        elif 500 <= exc.code <= 599:
+            category = "HTTP_UNAVAILABLE"
+        else:
+            category = "HTTP_OTHER"
+        raise ArticleFetchRefused(category) from None
+    except (urllib.error.URLError, TimeoutError, OSError):
+        raise ArticleFetchRefused("TRANSPORT_UNAVAILABLE") from None
     return {
         "source_id": hashlib.sha256(url.encode("utf-8")).hexdigest()[:24],
         "publisher": lead["publisher"],
         "title": lead["title"],
         "source_url": url,
         "observed_final_url": final_url,
+        "approved_same_publisher_redirect_hops": len(safe_redirects.targets),
+        "approved_same_publisher_redirect": bool(safe_redirects.targets),
         "observed_at_utc": clock.astimezone(UTC).isoformat(),
         "http_status": status,
         "response_content_type": mime,
@@ -217,17 +305,26 @@ def probe_report(scout_report: object, *, clock: dt.datetime | None = None,
     clock = clock or dt.datetime.now(UTC)
     selected = choose_independent_sources(scout_report, limit=max_sources)
     successes, failures = [], []
+    direct_failures = {}
     for lead in selected:
         try:
             successes.append(probe_source(lead, clock=clock, opener=opener))
-        except EvidenceError:
+        except EvidenceError as exc:
+            # B4d3 diagnosis is deliberately category-only. A publisher's
+            # server error body, token-bearing URL or article text is NEVER
+            # copied into logs or the final public research receipt.
+            category = _fetch_failure_category(exc)
+            direct_failures[category] = direct_failures.get(category, 0) + 1
             # The original publisher's RSS entry is useful provenance when
             # a page blocks bots. This is NOT independent factual support.
             try:
-                successes.append(probe_feed_entry(lead, clock=clock, opener=opener))
+                fallback = probe_feed_entry(lead, clock=clock, opener=opener)
+                fallback["direct_article_failure_class"] = category
+                successes.append(fallback)
             except EvidenceError:
                 failures.append({
                     "publisher": lead["publisher"],
+                    "direct_article_failure_class": category,
                     "source_id": hashlib.sha256(lead["url"].encode()).hexdigest()[:24],
                     "error_type": "SOURCE_AND_FEED_UNAVAILABLE",
                     "error_class": "STRUCTURAL_OR_REMOTE_ERROR",
@@ -242,6 +339,10 @@ def probe_report(scout_report: object, *, clock: dt.datetime | None = None,
         "sources_observed_total": len(successes),
         "sources_failed": len(failures),
         "distinct_publishers_fetched": len({s["publisher"] for s in successes}),
+        "direct_article_fetch_failure_counts": {
+            key: direct_failures[key] for key in sorted(direct_failures)},
+        "source_articles_with_bounded_publisher_redirect": sum(
+            x.get("approved_same_publisher_redirect") is True for x in successes),
         "sources": successes,
         "failures": failures,
         "claims_verified": 0,
@@ -276,6 +377,8 @@ def main() -> None:
         "attempted": result["source_probes_attempted"],
         "direct_page_fetched": result["sources_fetched"],
         "feed_only_observed": result["feed_entries_observed_only"],
+        "direct_fetch_failure_classes": result["direct_article_fetch_failure_counts"],
+        "same_publisher_redirects": result["source_articles_with_bounded_publisher_redirect"],
         "failed": result["sources_failed"],
         "publish_authorized": False,
         "factual_claims_verified": 0,

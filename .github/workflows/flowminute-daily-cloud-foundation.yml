@@ -14,6 +14,7 @@ on:
       - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
+      - "autopilot/test_source_fetch_diagnostics_b4d3.py"
       - "autopilot/script_draft_agent.py"
       - "autopilot/test_script_draft_agent.py"
       - "autopilot/test_daily_cloud_plan.py"
@@ -28,6 +29,7 @@ on:
       - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
+      - "autopilot/test_source_fetch_diagnostics_b4d3.py"
       - "autopilot/script_draft_agent.py"
       - "autopilot/test_script_draft_agent.py"
       - "autopilot/test_daily_cloud_plan.py"
@@ -68,7 +70,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -97,6 +99,14 @@ jobs:
           assert evidence["youtube_schedule_enabled"] is False
           assert evidence["source_body_persisted"] is False
           assert evidence["billed_provider_calls"] == 0
+          errors=evidence["direct_article_fetch_failure_counts"]
+          assert type(errors) is dict and sum(errors.values()) == (
+              evidence["feed_entries_observed_only"] + evidence["sources_failed"])
+          assert evidence["source_articles_with_bounded_publisher_redirect"] <= evidence["sources_fetched"]
+          # No article URLs, response text or server errors in these reason codes.
+          print("B4D3_DIRECT_ARTICLE_DIAGNOSTIC_COUNTS_ONLY", json.dumps(errors,sort_keys=True))
+          print("B4D3_PUBLISHER_ONLY_HTTPS_REDIRECT_ARTICLE_COUNT",
+                evidence["source_articles_with_bounded_publisher_redirect"])
           print("SOURCE_OBSERVATION_ONLY: direct_pages", evidence["sources_fetched"],
                 "publisher_RSS_entries_only", evidence["feed_entries_observed_only"],
                 "failed", evidence["sources_failed"], "zero fact claims or uploads")
@@ -164,6 +174,15 @@ jobs:
           assert receipt["real_youtube_uploads"]==0
           assert receipt["release_authorized"] is False
           assert receipt["headlines_urls_source_bodies_and_scripts_included"] is False
+          assert receipt["direct_article_http_failure_counts"] == full["direct_article_http_failure_counts"]
+          assert receipt["direct_articles_with_publisher_only_redirect"] == full["direct_articles_with_publisher_only_redirect"]
+          assert all(key in ("HTTP_ACCESS_DENIED","HTTP_RATE_LIMITED",
+                "HTTP_NOT_FOUND","HTTP_UNAVAILABLE","HTTP_OTHER",
+                "TRANSPORT_UNAVAILABLE","REDIRECT_REJECTED",
+                "UNEXPECTED_FINAL_URL","UNEXPECTED_HTTP_STATUS",
+                "UNSUPPORTED_CONTENT_TYPE","EMPTY_OR_OVERSIZED_ARTICLE",
+                "BOT_CHALLENGE_PAGE","SOURCE_STRUCTURAL_REJECTED")
+                for key in receipt["direct_article_http_failure_counts"])
           public=Path("out/flowminute-public-editorial-receipt.json").read_text()
           assert "https://" not in public and "unverified_title" not in public
           assert len(receipt["receipt_sha256"])==64
@@ -174,6 +193,11 @@ jobs:
               w.write("Distinct topics found: "+str(full["distinct_topics_selected"])+"/3\n")
               w.write("Direct article byte observations: "+
                       str(full["article_bytes_observed_selected"])+"/3\n")
+              w.write("Safe HTTP fetch failure types: "+
+                      json.dumps(receipt["direct_article_http_failure_counts"],
+                                 sort_keys=True)+"\n")
+              w.write("Bounded same-publisher HTTPS redirects: "+
+                      str(receipt["direct_articles_with_publisher_only_redirect"])+"\n")
               w.write("Question-only research angles; zero facts approved or releases.\n")
           print("B4D2_DISTINCT_RESEARCH_QUESTIONS_READY_ZERO_FACT_CLAIMS_ZERO_UPLOADS")
           PY
