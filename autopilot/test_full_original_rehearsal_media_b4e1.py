@@ -62,7 +62,7 @@ class FullOriginalNarrationSourceSafetyTests(unittest.TestCase):
             self.assertEqual(len(episode["scenes"]),episode["all_scene_count"])
             for j,scene in enumerate(episode["scenes"]):
                 self.assertEqual(scene["scene"],j)
-                ids.append(scene["scene_id"])
+                ids.append((episode["episode_id"],scene["scene_id"]))
                 self.assertFalse(scene["news_claim_fact_checked"])
                 self.assertFalse(scene["source_quote_display_allowed"])
                 self.assertTrue(scene["original_voiceover_text"])
