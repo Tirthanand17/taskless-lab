@@ -279,7 +279,7 @@ class SignedImageProvenanceReadOnlyTests(unittest.TestCase):
             (raw,sig,pub,"f"*64),
             (raw,sig[::-1],pub,fp),
             (raw+b" ",sig,pub,fp),
-            (raw,sig,pub[:-1]+"=",fp),
+            (raw,sig,pub[:-1]+"!",fp),
         ):
             e=FakeECR()
             with self.assertRaises(PreflightRefused):
