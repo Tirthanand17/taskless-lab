@@ -48,10 +48,17 @@ jobs:
           p=Path(".github/workflows/flowminute-b4c5-owner-iam-readonly.yml").read_text()
           assert "permissions:\n  contents: read" in p
           assert "persist-credentials: false" in p
+          # Split forbidden tokens so this self-check does not detect its own literals.
           for forbidden in (
-              "id-token: write", "pull_request_target", "aws-actions/configure-aws-credentials",
-              "secrets.", "secrets[", "aws ecs run-task", "aws cloudformation deploy",
-              "aws iam create", "youtube.googleapis.com", "videos().insert(",
+              "id-token" + ": write",
+              "pull_request" + "_target",
+              "aws-actions/" + "configure-aws-credentials",
+              "secrets" + ".", "secrets" + "[",
+              "aws ecs " + "run-task",
+              "aws cloudformation " + "deploy",
+              "aws iam " + "create",
+              "youtube.googleapis" + ".com",
+              "videos()" + ".insert(",
           ):
               assert forbidden not in p, forbidden
           print("B4C5_NO_AWS_CREDENTIAL_NO_DEPLOY_NO_YOUTUBE_BOUNDARY_PASSED")
