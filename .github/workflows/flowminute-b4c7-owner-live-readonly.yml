@@ -35,6 +35,7 @@ jobs:
       FLOWMINUTE_B4C7_PROTECTED_ENVIRONMENT: "flowminute-owner-cloud-readonly"
       FLOWMINUTE_B4C7_CHANGE_REFERENCE: ${{ inputs.owner_change_reference }}
       FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
       PUBLISH_ENABLED: "false"
       FLOWMINUTE_OWNER_RELEASE_AUTHORIZED: "0"
       FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
