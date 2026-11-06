@@ -124,7 +124,7 @@ def _paragraphs(slot: str, data: dict) -> list[str]:
             f"One picture can make an untested idea look convincing. Imagine {thing}. "
             "Could a neat animation trick us into thinking the example already proved something?",
             f"Set up {input_}. Write down what you expect first, and leave the actual result blank. "
-            "This is a synthetic demonstration, not evidence from today's headlines.",
+            "This is fictional, not evidence from today's headlines.",
             f"Now picture this mistake: {failure}. Instead of spinning a graphic forever, "
             f"show {comparison}, and pause on the exact point that needs checking.",
             f"The useful next move is {next_step}. Ask what would count as a fair test, "
