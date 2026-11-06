@@ -145,7 +145,8 @@ def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
             or run.get("status")!="completed"
             or run.get("event") not in ("push","schedule","workflow_dispatch")
             or run.get("path")!=f".github/workflows/{WORKFLOW}"
-            or (run.get("head_repository") or {}).get("full_name")!=REPOSITORY
+            or not isinstance(run.get("head_repository"),dict)
+            or run["head_repository"].get("full_name")!=REPOSITORY
             or date_created.date()>day
             or date_created.date()<day-timedelta(days=DAYS+2)):
             continue
@@ -165,8 +166,10 @@ def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
         # Same UTC run-date may contain several PR push receipts. Query at
         # most 2 per UTC date, and retain only one validated *plan day*.
         rday=created.date()
-        count=seen_run_days.count(rday) if isinstance(seen_run_days,list) else 0
-        if isinstance(seen_run_days,set) and rday in seen_run_days:
+        # Runs created today in UTC are research for the same upcoming
+        # IST planning day; never burn the network budget replaying today's
+        # multiple PR/merge receipts.
+        if rday >= day-timedelta(days=1) or rday in seen_run_days:
             continue
         downloads+=1
         expected=f"flowminute-unapproved-research-receipt-{run_id}-{attempt}"
