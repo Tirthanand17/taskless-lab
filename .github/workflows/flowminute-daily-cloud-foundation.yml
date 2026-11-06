@@ -14,6 +14,7 @@ on:
       - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
+      - "autopilot/test_arxiv_primary_feed_b4d4.py"
       - "autopilot/test_source_fetch_diagnostics_b4d3.py"
       - "autopilot/script_draft_agent.py"
       - "autopilot/test_script_draft_agent.py"
@@ -29,6 +30,7 @@ on:
       - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
+      - "autopilot/test_arxiv_primary_feed_b4d4.py"
       - "autopilot/test_source_fetch_diagnostics_b4d3.py"
       - "autopilot/script_draft_agent.py"
       - "autopilot/test_script_draft_agent.py"
@@ -70,7 +72,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -82,6 +84,10 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
+          # Official arXiv API policy: at most one request per three seconds.
+          # The previous scout step may have fetched rss.arxiv.org last; keep
+          # the entire run sequential, without concurrency or retry storms.
+          sleep 3.2
           python -m autopilot.evidence_probe \
             --scout-report out/flowminute-scout-unverified.json \
             --max-sources 3 \
@@ -180,7 +186,8 @@ jobs:
                 "HTTP_NOT_FOUND","HTTP_UNAVAILABLE","HTTP_OTHER",
                 "TRANSPORT_UNAVAILABLE","REDIRECT_REJECTED",
                 "UNEXPECTED_FINAL_URL","UNEXPECTED_HTTP_STATUS",
-                "UNSUPPORTED_CONTENT_TYPE","EMPTY_OR_OVERSIZED_ARTICLE",
+                "UNSUPPORTED_CONTENT_TYPE","ARTICLE_TOO_SMALL",
+                "ARTICLE_TOO_LARGE",
                 "BOT_CHALLENGE_PAGE","SOURCE_STRUCTURAL_REJECTED")
                 for key in receipt["direct_article_http_failure_counts"])
           public=Path("out/flowminute-public-editorial-receipt.json").read_text()

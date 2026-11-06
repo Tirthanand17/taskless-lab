@@ -139,7 +139,8 @@ class DailyCloudPlanTests(unittest.TestCase):
     def test_research_publisher_origins_are_explicit(self):
         self.assertIn("OpenAI", APPROVED_RESEARCH_ORIGINS)
         self.assertNotIn("Other AI", APPROVED_RESEARCH_ORIGINS)
-        self.assertEqual(len(APPROVED_RESEARCH_ORIGINS), 3)
+        self.assertEqual(len(APPROVED_RESEARCH_ORIGINS), 4)
+        self.assertEqual(APPROVED_RESEARCH_ORIGINS["arXiv AI"], {"arxiv.org"})
 
     def test_wrong_channel_is_rejected(self):
         with self.assertRaises(PlanError):

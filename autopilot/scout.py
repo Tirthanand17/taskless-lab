@@ -19,9 +19,14 @@ FEEDS = (
     ("OpenAI", "https://openai.com/news/rss.xml"),
     ("Google DeepMind", "https://deepmind.google/blog/rss.xml"),
     ("The Verge", "https://www.theverge.com/rss/index.xml"),
+    # Official daily preprint announcements: public descriptive metadata only.
+    # arXiv authors retain rights to the papers; no paper text is republished.
+    ("arXiv AI", "https://rss.arxiv.org/rss/cs.AI"),
 )
 KEYWORDS = (" ai ", "agent", "gemini", "openai", "chatgpt", "claude",
-            "data", "automation", "spreadsheet", "coding", "model")
+            "data", "automation", "spreadsheet", "coding", "model",
+            "llm", "machine learning", "deep learning", "neural",
+            "transformer", "reasoning", "dataset", "robotics", "vision")
 MIN_SOURCE_COUNT = 2
 UTC = dt.timezone.utc
 
@@ -105,13 +110,23 @@ def scout(now: dt.datetime | None = None, existing_titles: tuple[str,...] = ()) 
         except (OSError, ET.ParseError, UnicodeError, ValueError, TimeoutError) as ex:
             errors.append({"publisher": publisher, "error_type": type(ex).__name__})
     leads.sort(key=lambda x: -x.relevance)
+    # A busy daily science archive must not crowd every other publisher out
+    # of the bounded 24-lead research candidate list.
+    diverse, per_publisher = [], {}
+    for lead in leads:
+        if per_publisher.get(lead.publisher, 0) >= 6:
+            continue
+        per_publisher[lead.publisher] = per_publisher.get(lead.publisher, 0) + 1
+        diverse.append(lead)
+        if len(diverse) >= 24:
+            break
     return {
         "generated_at_utc": now.astimezone(UTC).isoformat(),
         "status": "leads_only_no_publish_authorization",
         "independent_feeds_checked": len(FEEDS),
-        "independent_feeds_with_leads": len({x.publisher for x in leads}),
+        "independent_feeds_with_leads": len({x.publisher for x in diverse}),
         "minimum_independent_publishers_for_fact_check": MIN_SOURCE_COUNT,
-        "leads": [asdict(x) for x in leads[:24]],
+        "leads": [asdict(x) for x in diverse],
         "errors": errors,
         "next_step": "Manually or with an approved researcher verify source claims; this report alone never authorizes scripts, rendering, or upload."
     }

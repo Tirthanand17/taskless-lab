@@ -162,7 +162,7 @@ class PublisherBlockDiagnosticsTests(unittest.TestCase):
             with self.subTest(value=value):
                 with self.assertRaises(ValueError):
                     ArticleFetchRefused(value)
-        self.assertEqual(len(SAFE_FETCH_FAILURES),13)
+        self.assertEqual(len(SAFE_FETCH_FAILURES),14)
 
     def test_status_429_classifies_rate_limit_without_exposing_response(self):
         bad=urllib.error.HTTPError(
@@ -224,7 +224,7 @@ class PublisherBlockDiagnosticsTests(unittest.TestCase):
 
     def test_empty_body_and_binary_type_not_promoted_to_article(self):
         for f,reason in (
-            (FakeOpener(payload=b"small"),"EMPTY_OR_OVERSIZED_ARTICLE"),
+            (FakeOpener(payload=b"small"),"ARTICLE_TOO_SMALL"),
             (FakeOpener(mime="application/pdf"),"UNSUPPORTED_CONTENT_TYPE"),
         ):
             with self.subTest(reason=reason),self.assertRaises(ArticleFetchRefused) as cm:
