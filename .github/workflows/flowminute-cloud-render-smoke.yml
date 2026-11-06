@@ -26,19 +26,30 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Install free open-source media dependencies (bounded)
-        timeout-minutes: 6
+      - name: Install pinned wheel-supplied FFmpeg and existing Remotion dependencies
+        timeout-minutes: 7
         run: |
           set -euo pipefail
-          export DEBIAN_FRONTEND=noninteractive
-          # Hosted Ubuntu images already have package indexes. Refreshing
-          # apt can hang on mirrors and burn CI hours without running tests.
-          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
-            timeout --signal=TERM --kill-after=10s 150s sudo apt-get \
-              -o DPkg::Lock::Timeout=15 -o Acquire::Retries=0 \
-              -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 \
-              install -y -qq --no-install-recommends ffmpeg
-          fi
+          # The apt mirror stalled for 150 seconds in actual CI #42204252917.
+          # Python wheel includes its OWN GNU/Linux ffmpeg binary; no apt,
+          # sudo, local user device or privileged package index refresh.
+          python -m pip install --disable-pip-version-check --only-binary=:all: \
+            --no-deps 'imageio-ffmpeg==0.6.0'
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import imageio_ffmpeg
+          executable=Path(imageio_ffmpeg.get_ffmpeg_exe())
+          if not executable.is_file() or not executable.stat().st_size>100_000:
+              raise RuntimeError("Pinned FFmpeg wheel did not include usable binary")
+          dest=Path(os.environ["RUNNER_TEMP"])/"flowminute-ffmpeg-bin"
+          dest.mkdir(mode=0o700,exist_ok=True)
+          (dest/"ffmpeg").symlink_to(executable)
+          with open(os.environ["GITHUB_PATH"],"a",encoding="utf8") as f:
+              f.write(str(dest)+"\n")
+          print("B4D3_PINNED_FFMPEG_BINARY_PRESENT_NO_APT")
+          PY
+          export PATH="$RUNNER_TEMP/flowminute-ffmpeg-bin:$PATH"
           ffmpeg -hide_banner -version | head -n 1
           cd motion-v2
           npm install --no-audit --no-fund --fetch-retries=1 --fetch-timeout=45000
@@ -60,9 +71,27 @@ jobs:
           set -euo pipefail
           f=/tmp/flowminute-cloud-preview/short-smoke.mp4
           ffmpeg -hide_banner -loglevel error -xerror -i "$f" -f null -
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$f")" = "1080"
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$f")" = "1920"
-          test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$f")" = "aac"
+          # The pinned FFmpeg binary also prints independent demuxed stream
+          # metadata; test actual codec, dimensions and audio stream after full decode.
+          python - "$f" <<'PY'
+          import re,subprocess,sys
+          media=sys.argv[1]
+          check=subprocess.run(
+              ["ffmpeg","-hide_banner","-i",media],
+              capture_output=True,text=True,timeout=30)
+          info=check.stderr
+          tracks=info.splitlines()
+          video=[line for line in tracks if re.search(r"Stream #\d+:\d+",line)
+                 and "Video: h264" in line]
+          audio=[line for line in tracks if re.search(r"Stream #\d+:\d+",line)
+                 and "Audio: aac" in line]
+          if len(video)!=1 or not any(
+              re.search(r"(?<!\d)1080x1920(?!\d)",line) for line in video):
+              raise RuntimeError("Decoded smoke video is not 1080x1920 H.264")
+          if len(audio)!=1:
+              raise RuntimeError("Decoded smoke audio is not AAC")
+          print("B4D3_1080x1920_H264_AAC_METADATA_VERIFIED_WITH_PINNED_FFMPEG")
+          PY
           sha256sum "$f"
           echo "CLOUD_1080x1920_SHORT_SMOKE_QA_PASSED"
       - name: Discard video output; never store public/unreviewed drafts
