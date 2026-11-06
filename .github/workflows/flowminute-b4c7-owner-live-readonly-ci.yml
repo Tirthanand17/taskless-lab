@@ -1,0 +1,72 @@
+name: FlowMinute B4c7 SYNTHETIC Manual OIDC Audit Contract (NO AWS)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/owner_live_aws_readonly_audit.py"
+      - "autopilot/test_owner_live_aws_readonly_audit.py"
+      - ".github/workflows/flowminute-b4c7-owner-live-readonly.yml"
+      - ".github/workflows/flowminute-b4c7-owner-live-readonly-ci.yml"
+      - "docs/adr/0059-b4c7-manual-protected-owner-readback.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/owner_live_aws_readonly_audit.py"
+      - "autopilot/test_owner_live_aws_readonly_audit.py"
+      - ".github/workflows/flowminute-b4c7-owner-live-readonly.yml"
+      - ".github/workflows/flowminute-b4c7-owner-live-readonly-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4c7-synthetic-only-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  synthetic_owner_inputs_and_no_aws_api_calls:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      AWS_EC2_METADATA_DISABLED: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only synthetic Ed25519 test dependency
+        run: python -m pip install 'cryptography>=44,<47'
+      - name: Exercise protected adapter using only fabricated AWS session/client fixtures
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_owner_live_aws_readonly_audit \
+            autopilot.test_owner_inert_composite_preflight \
+            autopilot.test_owner_inert_iam_preflight \
+            autopilot.test_owner_private_network_image_preflight
+      - name: Enforce this PR workflow can NEVER use AWS OIDC or secrets
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          s=Path(".github/workflows/flowminute-b4c7-owner-live-readonly-ci.yml").read_text()
+          assert "permissions:\n  contents: read" in s
+          assert "persist-credentials: false" in s
+          for forbidden in (
+              "id-token" + ": write",
+              "secrets" + ".",
+              "configure-aws" + "-credentials",
+              "ecs " + "run-task",
+              "cloudformation " + "deploy",
+              "videos()" + ".insert(",
+          ):
+              assert forbidden not in s, forbidden
+          print("B4C7_SYNTHETIC_CI_NO_LIVE_AWS_NO_DEPLOY_NO_YOUTUBE")
+          PY
