@@ -265,7 +265,10 @@ def probe_source(
         "independent_corroboration_confirmed": False,
         "facts_verified": False,
         "rights_verified": False,
+        # Full publisher article bodies/images are never retained. The opt-in
+        # sink holds at most two tiny literal excerpts only on the runner.
         "source_text_or_image_stored": False,
+        "literal_short_excerpts_temporarily_held": ephemeral_passage_sink is not None,
         "youtube_release_authorized": False,
     }
 
