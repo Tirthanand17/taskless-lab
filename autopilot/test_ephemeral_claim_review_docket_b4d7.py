@@ -86,7 +86,7 @@ class LiteralSourcePassageTests(unittest.TestCase):
         result=extract_literal_passages(huge,"text/html")
         self.assertEqual(len(result),1)
         self.assertLessEqual(len(result[0]["literal_excerpt_unverified"]),140)
-        self.assertNotIn("A word on an original methodology. "*3,
+        self.assertNotIn("A word on an original methodology. "*5,
                          json.dumps(result))
 
     def test_secret_url_login_and_email_fragments_are_skipped(self):
