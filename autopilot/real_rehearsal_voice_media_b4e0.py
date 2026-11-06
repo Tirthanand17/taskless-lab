@@ -78,7 +78,14 @@ def prepare_preview_plan(original: object,aligned: object,board: object,
         previews=[]
         for i,scene in enumerate(episode["scenes"][:2]):
             spoken=scene["original_voiceover_rehearsal_text"]
-            piece=re.split(r"(?<=[.!?])\s+",spoken.strip(),maxsplit=1)[0].strip()
+            sentences=re.split(r"(?<=[.!?])\s+",spoken.strip())
+            piece=sentences[0].strip()
+            # A very short first sentence (e.g. "Begin by naming the
+            # question.") is not a useful standalone narrated illustration.
+            # Add exactly one next COMPLETE sentence rather than silently
+            # clipping/padding the audio or inventing words.
+            if (len(piece)<42 or len(piece.split())<8) and len(sentences)>1:
+                piece+=" "+sentences[1].strip()
             if (type(piece) is not str or not 42<=len(piece)<=235
                 or len(piece.split())<8
                 or piece not in spoken
@@ -88,6 +95,8 @@ def prepare_preview_plan(original: object,aligned: object,board: object,
             previews.append({
                 "scene":i,
                 "original_voiceover_text":piece,
+                "number_of_original_spoken_sentences":len(
+                    re.findall(r"[.!?](?:\s|$)",piece)),
                 "original_text_sha256":sha256(piece.encode("utf8")).hexdigest(),
                 "scene_id":scene["scene_id"],
                 "visual_direction":scene["original_visual_design"],
@@ -319,7 +328,9 @@ def inspect_physical_preview(ffmpeg: str,output: Path,episode: dict,
     return {
         "slot":episode["slot"],"kind":episode["kind"],
         "voice":episode["voice"],"episode_id":episode["episode_id"],
-        "spoken_sentences_actually_synthesized":2,
+        "spoken_segments_actually_synthesized":2,
+        "complete_source_independent_sentences_actually_synthesized":sum(
+            p["number_of_original_spoken_sentences"] for p in episode["scenes"]),
         "generated_pcm_duration_seconds":round(expected_audio_seconds,2),
         "real_original_captioned_png_scenes":2,
         "mp4_sha256":digest,"actual_bytes":size,
@@ -374,7 +385,7 @@ def render_three_previews(plan: dict,model: Path,voices: Path,outdir: Path) -> d
         print("B4E0_REAL_PRIVATE_PREVIEW_DECODE_OK",
               json.dumps({"slot":proof["slot"],"seconds":proof[
                   "generated_pcm_duration_seconds"],"mp4_bytes":proof[
-                  "actual_bytes"],"actual_spoken_sentences":2,
+                  "actual_bytes"],"actual_spoken_segments":2,
                   "approved_fact_claims":0,"youtube_uploads":0}),flush=True)
     if len({r["mp4_sha256"] for r in reports})!=3:
         raise PhysicalPreviewRefused("Duplicated encoded preview outputs")
@@ -383,7 +394,10 @@ def render_three_previews(plan: dict,model: Path,voices: Path,outdir: Path) -> d
         "real_long_format_voiced_previews":1,
         "actual_abridged_media_files":3,
         "real_original_pillow_scene_images":6,
-        "actual_spoken_tts_sentences":6,
+        "actual_spoken_tts_segments":6,
+        "actual_complete_spoken_sentences":sum(
+            r["complete_source_independent_sentences_actually_synthesized"]
+            for r in reports),
         "pinned_public_tts_model_validated":True,
         "full_h264_aac_decode_passed_all_three":True,
         "full_daily_video_assets_completed":0,
@@ -427,7 +441,8 @@ def main() -> None:
         "physical_voiced_media_previews":3,
         "synthetic_hypothetical_previews_only":True,
         "original_actual_illustration_scenes":6,
-        "real_spoken_sentences":6,
+        "real_spoken_segments":6,
+        "real_complete_spoken_sentences":report["actual_complete_spoken_sentences"],
         "three_h264_aac_fully_decoded":True,
         "full_narrated_58_240_58_second_videos":0,
         "fact_rights_approvals":0,
