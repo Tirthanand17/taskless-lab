@@ -519,7 +519,8 @@ jobs:
           assert report["actual_abridged_media_files"]==3
           assert report["real_short_voiced_previews"]==2
           assert report["real_long_format_voiced_previews"]==1
-          assert report["actual_spoken_tts_sentences"]==6
+          assert report["actual_spoken_tts_segments"]==6
+          assert report["actual_complete_spoken_sentences"]>=6
           assert report["real_original_pillow_scene_images"]==6
           assert report["pinned_public_tts_model_validated"] is True
           assert report["full_h264_aac_decode_passed_all_three"] is True
@@ -538,7 +539,9 @@ jobs:
                      for p in report["previews"])
           with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as w:
               w.write("\n## B4e0 3 real CPU-voiced H264/AAC source-locked excerpt previews\n")
-              w.write("3 actual spoken/pictured video previews, 6 original captioned scenes, 6 voiced sentences.\n")
+              w.write("3 actual spoken/pictured video previews, 6 original captioned scenes and 6 real TTS synthesis segments.\n")
+              w.write("Complete real spoken sentences: "+
+                      str(report["actual_complete_spoken_sentences"])+".\n")
               w.write("Real Kokoro voice/samples and full FFmpeg H264/AAC decode verified.\n")
               w.write("Excerpts only, NOT the complete 58/240/58-second videos.\n")
               w.write("0 approved news facts or video rights, 0 paid provider calls, 0 uploads.\n")
