@@ -162,7 +162,7 @@ class PublisherBlockDiagnosticsTests(unittest.TestCase):
             with self.subTest(value=value):
                 with self.assertRaises(ValueError):
                     ArticleFetchRefused(value)
-        self.assertEqual(len(SAFE_FETCH_FAILURES),13)
+        self.assertEqual(len(SAFE_FETCH_FAILURES),14)
 
     def test_status_429_classifies_rate_limit_without_exposing_response(self):
         bad=urllib.error.HTTPError(
