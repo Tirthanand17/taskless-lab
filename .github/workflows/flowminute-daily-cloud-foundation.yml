@@ -14,6 +14,8 @@ on:
       - "autopilot/reconcile_daily_editorial_plan.py"
       - "autopilot/source_locked_script_briefs.py"
       - "autopilot/nonfactual_narration_rehearsal.py"
+      - "autopilot/real_rehearsal_voice_media_b4e0.py"
+      - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
       - "autopilot/recent_research_history.py"
       - "autopilot/test_recent_research_history_b4d8.py"
@@ -41,6 +43,8 @@ on:
       - "autopilot/reconcile_daily_editorial_plan.py"
       - "autopilot/source_locked_script_briefs.py"
       - "autopilot/nonfactual_narration_rehearsal.py"
+      - "autopilot/real_rehearsal_voice_media_b4e0.py"
+      - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
       - "autopilot/recent_research_history.py"
       - "autopilot/test_recent_research_history_b4d8.py"
@@ -73,7 +77,7 @@ jobs:
   unprivileged_draft:
     if: github.repository == 'Tirthanand17/taskless-lab'
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 26
     env:
       CI: "true"
       PUBLISH_ENABLED: "false"
@@ -95,7 +99,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -441,6 +445,115 @@ jobs:
               f.write("Source text and original rehearsal scripts are runner-local and purged, not public artifacts.\n")
           print("B4D9_3_ORIGINAL_NONFACTUAL_REHEARSAL_VO_SCRIPTS_17_SCENES_NO_MEDIA")
           PY
+
+      - name: Install verified public CPU voice and FFmpeg dependencies (no paid inference)
+        if: github.event_name != 'pull_request'
+        timeout-minutes: 6
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: \
+            'imageio-ffmpeg==0.6.0' 'kokoro-onnx==0.6.1' \
+            'soundfile>=0.12,<1' 'Pillow>=11,<13' 'numpy>=1.26,<3'
+          # Kokoro's local phonemizer needs a small binary dictionary;
+          # avoid the historically hanging apt-get update operation.
+          if ! command -v espeak-ng >/dev/null 2>&1; then
+            sudo timeout 110 apt-get install -y -qq --no-install-recommends espeak-ng
+          fi
+          python -B - <<'PY'
+          from pathlib import Path
+          import imageio_ffmpeg,subprocess
+          ffmpeg=imageio_ffmpeg.get_ffmpeg_exe()
+          assert Path(ffmpeg).is_file()
+          enc=subprocess.run([ffmpeg,"-hide_banner","-encoders"],
+                             capture_output=True,text=True,timeout=25,check=True)
+          assert "libx264" in enc.stdout and "aac" in enc.stdout
+          assert Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf").is_file()
+          print("B4E0_FREE_PINNED_LOCAL_MEDIA_TOOLCHAIN_VERIFIED_NO_PROVIDER")
+          PY
+
+      - name: Download only pinned SHA256 public Kokoro speech weights (no credentials)
+        if: github.event_name != 'pull_request'
+        timeout-minutes: 7
+        env:
+          MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+          VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b4e0-pinned-model
+          cd /tmp/flowminute-b4e0-pinned-model
+          root="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 1 \
+            --connect-timeout 20 --max-time 220 \
+            --output kokoro-v1.0.int8.onnx "$root/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 1 \
+            --connect-timeout 20 --max-time 180 \
+            --output voices-v1.0.bin "$root/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+          echo "B4E0_PUBLIC_KOKORO_MODEL_AND_VOICE_HASHES_MATCH"
+
+      - name: Render and decode three REAL narrated original media PREVIEWS from today's source-locked rehearsals
+        if: github.event_name != 'pull_request'
+        timeout-minutes: 12
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.real_rehearsal_voice_media_b4e0 \
+            --original-plan out/flowminute-tomorrow-draft.json \
+            --aligned-plan out/flowminute-reconciled-tomorrow-draft.json \
+            --board out/flowminute-ephemeral-editorial-board.json \
+            --scout out/flowminute-ephemeral-current-scout.json \
+            --evidence out/flowminute-evidence-unverified.json \
+            --briefs out/flowminute-ephemeral-source-locked-outlines.json \
+            --passages out/flowminute-ephemeral-source-passages.json \
+            --docket out/flowminute-ephemeral-claim-review.json \
+            --rehearsals out/flowminute-ephemeral-nonfactual-rehearsals.json \
+            --model /tmp/flowminute-b4e0-pinned-model/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b4e0-pinned-model/voices-v1.0.bin \
+            --output-dir /tmp/flowminute-b4e0-rendered-previews
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          path=Path("/tmp/flowminute-b4e0-rendered-previews/EPHEMERAL_PHYSICAL_PREVIEW_PROOF.json")
+          report=json.loads(path.read_text("utf8"))
+          assert report["status"]=="B4E0_THREE_REAL_NONFACTUAL_KOKORO_VOICED_CAPTIONED_MEDIA_PREVIEWS_NO_PUBLISH"
+          assert report["actual_abridged_media_files"]==3
+          assert report["real_short_voiced_previews"]==2
+          assert report["real_long_format_voiced_previews"]==1
+          assert report["actual_spoken_tts_segments"]==6
+          assert report["actual_complete_spoken_sentences"]>=6
+          assert report["real_original_pillow_scene_images"]==6
+          assert report["pinned_public_tts_model_validated"] is True
+          assert report["full_h264_aac_decode_passed_all_three"] is True
+          assert report["full_daily_video_assets_completed"]==0
+          assert report["actual_58s_or_240s_full_renders"]==0
+          assert report["real_news_facts_verified"]==0
+          assert report["voice_and_media_rights_approved"] is False
+          assert report["human_review_complete"] is False
+          assert report["billed_provider_calls"]==0
+          assert report["youtube_uploads"]==0 and report["release_authorized"] is False
+          assert len(report["previews"])==3
+          assert all(p["real_audio_synthesized"] is True
+                     and p["physical_full_media_decode_passed"] is True
+                     and p["no_circular_spinners_drawn"] is True
+                     and p["youtube_upload_enabled"] is False
+                     for p in report["previews"])
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as w:
+              w.write("\n## B4e0 3 real CPU-voiced H264/AAC source-locked excerpt previews\n")
+              w.write("3 actual spoken/pictured video previews, 6 original captioned scenes and 6 real TTS synthesis segments.\n")
+              w.write("Complete real spoken sentences: "+
+                      str(report["actual_complete_spoken_sentences"])+".\n")
+              w.write("Real Kokoro voice/samples and full FFmpeg H264/AAC decode verified.\n")
+              w.write("Excerpts only, NOT the complete 58/240/58-second videos.\n")
+              w.write("0 approved news facts or video rights, 0 paid provider calls, 0 uploads.\n")
+              w.write("Full media bytes and voice weights are destroyed, never uploaded to public artifacts.\n")
+          print("B4E0_REAL_THREE_VOICED_ORIGINAL_VIDEO_PREVIEWS_FULL_DECODE_NO_UPLOAD")
+          PY
+
+      - name: Destroy every generated media preview and pinned voice weight even on failure
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4e0-rendered-previews /tmp/flowminute-b4e0-pinned-model
+          echo "B4E0_TEMPORARY_VOICE_MODEL_AND_MEDIA_DESTROYED"
 
       - name: Prepare safe retained public research-only evidence receipt
         if: github.event_name != 'pull_request'
