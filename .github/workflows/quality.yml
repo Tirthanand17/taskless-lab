@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -15,12 +15,22 @@ jobs:
           python-version: "3.12"
       - name: Install test dependency
         run: python -m pip install pytest 'cryptography>=44,<47'
-      - name: Install FFmpeg for actual media inspection tests
+      - name: Install FFmpeg for actual media inspection tests (bounded)
+        timeout-minutes: 5
         run: |
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
-            sudo apt-get update -qq
-            sudo apt-get install -y -qq ffmpeg
+            timeout --signal=TERM --kill-after=10s 120s sudo apt-get \
+              -o Acquire::Retries=0 -o Acquire::http::Timeout=20 \
+              -o Acquire::https::Timeout=20 update -qq
+            timeout --signal=TERM --kill-after=10s 120s sudo apt-get \
+              -o DPkg::Lock::Timeout=20 -o Acquire::Retries=0 \
+              -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 \
+              install -y -qq ffmpeg
           fi
+          command -v ffmpeg
+          command -v ffprobe
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
       - name: Run tests
