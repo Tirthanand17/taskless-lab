@@ -224,7 +224,7 @@ class PublisherBlockDiagnosticsTests(unittest.TestCase):
 
     def test_empty_body_and_binary_type_not_promoted_to_article(self):
         for f,reason in (
-            (FakeOpener(payload=b"small"),"EMPTY_OR_OVERSIZED_ARTICLE"),
+            (FakeOpener(payload=b"small"),"ARTICLE_TOO_SMALL"),
             (FakeOpener(mime="application/pdf"),"UNSUPPORTED_CONTENT_TYPE"),
         ):
             with self.subTest(reason=reason),self.assertRaises(ArticleFetchRefused) as cm:
