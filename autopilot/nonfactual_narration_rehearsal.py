@@ -110,7 +110,7 @@ def _paragraphs(slot: str, data: dict) -> list[str]:
         data[k] for k in ("thing","input","comparison","measure","failure","next"))
     if slot == "short_am":
         return [
-            f"Here is a challenge: could you spot the weakest step in {thing}? "
+            f"Can you spot the weakest step in {thing}? "
             "We will test the idea with a fictional example, not a claim about a real product.",
             f"Start with {input_}. Draw the expected steps before anything moves. "
             "That way, a surprising result has a clear starting point for comparison.",
@@ -128,7 +128,7 @@ def _paragraphs(slot: str, data: dict) -> list[str]:
             f"Now picture this mistake: {failure}. Instead of spinning a graphic forever, "
             f"show {comparison}, and pause on the exact point that needs checking.",
             f"The useful next move is {next_step}. Ask what would count as a fair test, "
-            f"including {measure}. A catchy claim is a question until someone verifies it independently.",
+            f"including {measure}. Treat catchy claims as unverified questions.",
         ]
     if slot == "long":
         return [
