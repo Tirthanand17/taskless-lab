@@ -24,7 +24,7 @@ class MediaSmokeDependenciesAreBounded(unittest.TestCase):
         self.assertIn('"Video: h264"',self.workflow)
         self.assertIn('"Audio: aac"',self.workflow)
         self.assertIn("1080x1920",self.workflow)
-        self.assertIn('python - "$f" <<\\'PY\\'',self.workflow)
+        self.assertIn("python - \"$f\" <<'PY'",self.workflow)
         self.assertIn("sha256sum",self.workflow)
 
     def test_no_upload_or_private_secret_in_cloud_smoke(self):
