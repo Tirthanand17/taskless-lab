@@ -129,6 +129,7 @@ def render_three_science_v7_previews(*,model:Path,voices:Path,output:Path)->dict
                     or report.get("actual_full_encoded_h264_aac_with_captions_and_animation") is not True
                     or report.get("human_complete_watch_listen") is not False
                     or report.get("youtube_upload_enabled") is not False
+                    or report.get("youtube_schedule_enabled") is not False
                     or report.get("release_authorized") is not False):
                     raise PreviewRefused("Actually encoded action-specific scene/voice/media QA missing or forged")
                 if episode.episode_id!=story["episode_id"]:
