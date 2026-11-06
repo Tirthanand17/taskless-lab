@@ -1,0 +1,89 @@
+name: FlowMinute B4e6 ORIGINAL Action-Specific 32-Scene Design Proof (NO UPLOAD)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/action_specific_floating_v7.py"
+      - "autopilot/retain_action_specific_three_v8.py"
+      - "autopilot/test_action_specific_floating_v7.py"
+      - "autopilot/full_topic_narrated_pack.py"
+      - ".github/workflows/flowminute-b4e6-action-art-video-review.yml"
+      - "docs/adr/0061-b4e6-original-action-specific-visual-polish.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/action_specific_floating_v7.py"
+      - "autopilot/retain_action_specific_three_v8.py"
+      - "autopilot/full_topic_narrated_pack.py"
+      - ".github/workflows/flowminute-b4e6-action-art-video-review.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4e6-no-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  real_32_source_story_action_research_art:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_B4E6_NATIVE_ART: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_GEMINI: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only original native Pillow and SVG source media libraries
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check \
+            'Pillow>=11,<13' 'cairosvg>=2.7,<3' 'cryptography>=44,<47'
+      - name: Test action-specific art and original full-video frame renderer
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v autopilot.test_action_specific_floating_v7
+      - name: Produce three new 32-scene visual contact sheets and eight comparisons
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.retain_action_specific_three_v8 \
+            --out /tmp/flowminute-b4e6-story-action-review
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("/tmp/flowminute-b4e6-story-action-review")
+          m=json.loads((p/"UNAPPROVED_STORY_ACTION_VISUAL_REPORT.json").read_text())
+          assert m["total_physical_original_beats"]==32
+          assert m["scene_hero_motifs_physically_changed"]==19
+          assert m["untouched_original_hero_motifs"]==13
+          assert len(m["before_after_original_source_art_pairs"])==8
+          assert len(list(p.glob("*.png")))==11
+          assert m["generic_spinner_freedom_human_confirmed"] is False
+          assert m["all_human_creative_watch_and_claim_reviewed"] is False
+          assert m["source_topics_are_new_daily_content"] is False
+          assert m["youtube_upload_or_schedule"] is False
+          assert m["release_authorized"] is False
+          print("B4E6_19_ORIGINAL_SOURCE_ACTION_SCENES_REDESIGNED_NO_PUBLISH")
+          PY
+      - name: Retain public unapproved original art for owner creative review
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b4e6-19-changed-scenes-action-review-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4e6-story-action-review/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+      - name: Remove public ephemeral original graphics
+        if: always()
+        run: rm -rf /tmp/flowminute-b4e6-story-action-review
