@@ -108,11 +108,13 @@ class LiteralSourcePassageTests(unittest.TestCase):
         self.assertNotIn("api_key",json.dumps(out))
 
     def test_dynamic_html_without_paragraphs_must_not_invent_quotes(self):
-        body=b"<html><script>Lots of apparent content but not HTML article.</script></html>"
+        body=(b"<html><script>Lots of apparent content but not HTML article.</script></html>"
+              ).ljust(96,b" ")
         self.assertEqual(extract_literal_passages(body,"text/html"),[])
 
     def test_xml_not_silently_assumed_to_be_claims(self):
-        xml=b"<document><abstract>Claim of a new scientific result and baseline.</abstract></document>"
+        xml=(b"<document><abstract>Claim of a new scientific result and baseline.</abstract></document>"
+             ).ljust(96,b" ")
         self.assertEqual(extract_literal_passages(xml,"application/xml"),[])
 
     def test_unsupported_binary_source_never_extracts_private_bytes(self):
