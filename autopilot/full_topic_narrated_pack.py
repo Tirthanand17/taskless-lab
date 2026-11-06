@@ -626,7 +626,7 @@ def render_full_topic_video(
         "b4e3_original_dimensional_scenes_encoded":
             visual_style in ("cinematic_v3","floating_v6","science_v7"),
         "b4e4_source_exact_nonoverlapping_editorial_grid":
-            visual_style in ("cinematic_v3","floating_v6"),
+            visual_style in ("cinematic_v3","floating_v6","science_v7"),
         "b4e4c_original_floating_unboxed_hero_in_actual_encoded_video":
             visual_style=="floating_v6",
         "b4e6_source_action_art_in_actual_encoded_video":
