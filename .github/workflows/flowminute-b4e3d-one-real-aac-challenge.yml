@@ -6,6 +6,7 @@ on:
       - "autopilot/full_topic_narrated_pack.py"
       - "autopilot/test_b4e3c_aac_recovery.py"
       - ".github/workflows/flowminute-b4e3d-one-real-aac-challenge.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
