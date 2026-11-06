@@ -118,6 +118,9 @@ class DailyEditorialBoardTests(unittest.TestCase):
         self.evidence.update({
             "source_probes_attempted":0,"sources_observed_total":0,
             "sources_fetched":0,"feed_entries_observed_only":0,"sources_failed":0,
+            "direct_article_fetch_failure_counts":{},
+            "source_articles_with_bounded_publisher_redirect":0,
+            "failures":[],
         })
         report=self.board()
         self.assertEqual(report["article_bytes_observed_selected"],0)
@@ -254,6 +257,47 @@ class DailyEditorialBoardTests(unittest.TestCase):
 
     def test_wrong_time_slot_and_channel_consistency_denied(self):
         self.plan["slots"][2]["local_ist"]="20:00"
+        with self.assertRaises(EditorialTriageRefused):
+            self.board()
+
+    def test_public_receipt_contains_source_block_categories_but_no_server_data(self):
+        report=self.board()
+        receipt=sanitized_public_receipt(report)
+        self.assertEqual(receipt["direct_article_http_failure_counts"],{})
+        self.assertEqual(receipt["direct_articles_with_publisher_only_redirect"],0)
+        serialized=json.dumps(receipt)
+        self.assertNotIn("https://",serialized)
+        self.assertNotIn("http_status",serialized)
+        self.assertFalse(receipt["release_authorized"])
+
+    def test_forged_article_fetch_failure_counts_rejected(self):
+        self.evidence["direct_article_fetch_failure_counts"]={"HTTP_ACCESS_DENIED":3}
+        with self.assertRaises(EditorialTriageRefused):
+            self.board()
+
+    def test_disallowed_url_leakage_in_error_class_rejected(self):
+        self.evidence["direct_article_fetch_failure_counts"]={
+            "https://private.example/auth?secret=abc":1}
+        with self.assertRaises(EditorialTriageRefused):
+            self.board()
+
+    def test_mismatched_observed_redirect_count_rejected(self):
+        self.evidence["source_articles_with_bounded_publisher_redirect"]=1
+        with self.assertRaises(EditorialTriageRefused):
+            self.board()
+
+    def test_article_redirect_must_have_structurally_consistent_proof(self):
+        self.evidence["sources"][0]["approved_same_publisher_redirect"]=True
+        with self.assertRaises(EditorialTriageRefused):
+            self.board()
+
+    def test_rss_entry_diagnostic_requires_actual_http_failure_class(self):
+        source=self.evidence["sources"][0]
+        source["status"]="RSS_ENTRY_ONLY_ARTICLE_NOT_FETCHED"
+        source["source_article_fetched"]=False
+        source["feed_entry_sha256"]="b"*64
+        self.evidence["sources_fetched"]-=1
+        self.evidence["feed_entries_observed_only"]+=1
         with self.assertRaises(EditorialTriageRefused):
             self.board()
 
