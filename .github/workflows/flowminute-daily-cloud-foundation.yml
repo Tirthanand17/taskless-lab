@@ -11,6 +11,8 @@ on:
     paths:
       - "autopilot/daily_cloud_plan.py"
       - "autopilot/daily_editorial_board.py"
+      - "autopilot/reconcile_daily_editorial_plan.py"
+      - "autopilot/test_reconcile_daily_editorial_plan.py"
       - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
@@ -27,6 +29,8 @@ on:
     paths:
       - "autopilot/daily_cloud_plan.py"
       - "autopilot/daily_editorial_board.py"
+      - "autopilot/reconcile_daily_editorial_plan.py"
+      - "autopilot/test_reconcile_daily_editorial_plan.py"
       - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
@@ -72,7 +76,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -209,13 +213,54 @@ jobs:
           print("B4D2_DISTINCT_RESEARCH_QUESTIONS_READY_ZERO_FACT_CLAIMS_ZERO_UPLOADS")
           PY
 
+      - name: Reconcile three research slots with the independently observed-source editorial board
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.reconcile_daily_editorial_plan \
+            --plan out/flowminute-tomorrow-draft.json \
+            --board out/flowminute-ephemeral-editorial-board.json \
+            --scout-report out/flowminute-scout-unverified.json \
+            --source-observations out/flowminute-evidence-unverified.json \
+            --output out/flowminute-reconciled-tomorrow-draft.json
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("out/flowminute-reconciled-tomorrow-draft.json").read_text())
+          b=json.loads(Path("out/flowminute-ephemeral-editorial-board.json").read_text())
+          assert p["editorial_reconciliation_status"] == (
+              "B4D5_EDITORIAL_PLAN_SOURCE_RECONCILED_NO_RELEASE")
+          assert p["editorial_selected_unverified_topics"] == b["distinct_topics_selected"]
+          assert p["editorial_selected_distinct_publishers"] == b["distinct_publishers_selected"]
+          for selected,original in zip(p["slots"],b["slots"]):
+              left=selected["research_lead"]
+              right=original["research_lead"]
+              assert (left["url"] if left else None) == (
+                  right["unverified_url"] if right else None)
+              assert (left["title"] if left else None) == (
+                  right["unverified_title"] if right else None)
+              assert selected["editorial_research_angle_id"]==original["angle_id"]
+              assert selected["research_assignment_reconciled_unverified"] is True
+              assert selected["real_script_exists"] is False
+              assert selected["real_narration_exists"] is False
+              assert selected["real_media_exists"] is False
+              assert selected["release_authorized"] is False
+              assert selected["youtube_uploaded"] is False
+              assert selected["youtube_scheduled"] is False
+          assert p["youtube_upload_enabled"] is False
+          assert p["youtube_schedule_enabled"] is False
+          assert p["maximum_incremental_spend_inr"]==0
+          print("B4D5_CANONICAL_THREE_EDITORIAL_RESEARCH_TOPICS_ONLY_NO_RELEASE")
+          PY
+
       - name: Prepare safe retained public research-only evidence receipt
         if: github.event_name != 'pull_request'
         run: |
           set -euo pipefail
           python -B -m autopilot.daily_evidence_bundle \
-            --plan out/flowminute-tomorrow-draft.json \
+            --plan out/flowminute-reconciled-tomorrow-draft.json \
             --evidence out/flowminute-evidence-unverified.json \
+            --editorial-receipt out/flowminute-public-editorial-receipt.json \
             --output out/flowminute-public-research-draft-receipt.json
           python -B - <<'PY'
           import json, os
@@ -226,6 +271,11 @@ jobs:
           assert r["schema_version"] == 1
           assert len(r["slots"]) == 3
           assert r["status"] == "GITHUB_RETAINED_RESEARCH_DRAFT_EVIDENCE_ONLY"
+          editorial=json.loads(Path("out/flowminute-public-editorial-receipt.json").read_text())
+          assert r["editorial_and_plan_reconciled"] is True
+          assert r["sanitized_editorial_receipt_sha256"] == editorial["receipt_sha256"]
+          assert r["selected_distinct_research_topics"] == editorial["selected_distinct_topics"]
+          assert all(x["release_authorized"] is False for x in editorial["slots"])
           assert r["raw_source_headlines_urls_and_bodies_retained"] is False
           assert r["real_fact_or_rights_review_performed"] is False
           assert r["real_media_or_credentials_retained"] is False
@@ -257,4 +307,4 @@ jobs:
 
       - name: Discard ephemeral unverified draft files
         if: always()
-        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json

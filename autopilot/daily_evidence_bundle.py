@@ -23,6 +23,8 @@ from autopilot.daily_cloud_plan import (
     PLAN_VERSION, PUBLISH_SLOTS, APPROVED_RESEARCH_ORIGINS,
 )
 from autopilot.evidence_probe import PROBE_STATUS, verify_public_source_url, EvidenceError
+from autopilot.daily_editorial_board import _subject_hash
+from autopilot.reconcile_daily_editorial_plan import RECONCILIATION_STATUS
 
 UTC=dt.timezone.utc
 IST=ZoneInfo("Asia/Kolkata")
@@ -116,7 +118,64 @@ def _validate_source_report(evidence: dict) -> None:
     _aware_timestamp(evidence.get("generated_at_utc"))
 
 
-def build_retained_draft_receipt(plan: dict,evidence: dict) -> dict:
+def _validate_sanitized_editorial_alignment(plan:dict, receipt:object)->str:
+    """Prevent mismatched old first-three RSS assignments from public export."""
+    if (type(receipt) is not dict
+        or receipt.get("status") != "B4D2_SANITIZED_DAILY_EDITORIAL_RECEIPT_NO_CONTENT"
+        or receipt.get("plan_date_ist") != plan.get("plan_date_ist")
+        or receipt.get("release_authorized") is not False
+        or receipt.get("real_youtube_uploads") != 0
+        or receipt.get("fresh_original_scripts_completed") != 0
+        or receipt.get("headlines_urls_source_bodies_and_scripts_included") is not False
+        or type(receipt.get("slots")) is not list
+        or len(receipt["slots"]) != 3
+        or plan.get("editorial_reconciliation_status") != RECONCILIATION_STATUS
+        or plan.get("editorial_research_origin_verified_not_claims") is not True
+        or plan.get("editorial_factual_script_count") != 0
+        or plan.get("editorial_media_count") != 0
+        or type(plan.get("editorial_board_sha256")) is not str
+        or len(plan["editorial_board_sha256"]) != 64):
+        raise DailyEvidenceRefused("Unaligned or promoted editorial research receipt")
+    expected_count=0
+    for original, item in zip(plan["slots"],receipt["slots"]):
+        if (type(item) is not dict
+            or original["episode_id"] != item.get("episode_id")
+            or item.get("release_authorized") is not False
+            or item.get("youtube_uploaded") is not False
+            or original.get("research_assignment_reconciled_unverified") is not True
+            or original.get("editorial_research_angle_id") != item.get("angle_id")):
+            raise DailyEvidenceRefused("Editorial slot and plan do not match")
+        lead=original.get("research_lead")
+        if lead is None:
+            if (item.get("subject_sha256") is not None
+                or item.get("source_id") is not None
+                or item.get("article_bytes_observed") is not False):
+                raise DailyEvidenceRefused("Unassigned research slot forged source")
+        else:
+            expected_count+=1
+            url=lead["url"]
+            if (item.get("subject_sha256") != _subject_hash(lead["title"])
+                or item.get("source_id") != sha256(url.encode("utf8")).hexdigest()[:24]
+                or item.get("research_status") not in (
+                    "EVIDENCE_OBSERVED_PENDING_FACT_AND_RIGHTS_REVIEW",
+                    "HEADLINE_ONLY_NEEDS_SOURCE_RESEARCH")):
+                raise DailyEvidenceRefused("Cross-receipt source identity mismatch")
+    if (expected_count != receipt.get("selected_distinct_topics")
+        or expected_count != plan.get("editorial_selected_unverified_topics")):
+        raise DailyEvidenceRefused("Research plan and editorial selected counts differ")
+    data=dict(receipt)
+    digest=data.pop("receipt_sha256",None)
+    expected_hash=sha256(json.dumps(
+        data,sort_keys=True,separators=(",",":"),ensure_ascii=False
+    ).encode("utf8")).hexdigest()
+    if digest != expected_hash:
+        raise DailyEvidenceRefused("Unverified public editorial receipt digest")
+    return expected_hash
+
+
+def build_retained_draft_receipt(
+    plan: dict,evidence: dict, *, editorial_receipt:object=None
+) -> dict:
     """Content-address public run status, never copy headlines URLs or sources."""
     _validate_source_report(evidence)
     if ALLOWED_PUBLISHERS != frozenset(APPROVED_RESEARCH_ORIGINS):
@@ -131,6 +190,8 @@ def build_retained_draft_receipt(plan: dict,evidence: dict) -> dict:
         or plan.get("task_contracts")!=54):
         raise DailyEvidenceRefused("Unexpected daily autonomous draft provenance")
     _disabled_plan(plan)
+    matched_editorial_sha = (_validate_sanitized_editorial_alignment(
+        plan, editorial_receipt) if editorial_receipt is not None else None)
     planned_at=_aware_timestamp(plan.get("generated_at_utc"))
     observed_at=_aware_timestamp(evidence["generated_at_utc"])
     if abs((planned_at-observed_at).total_seconds())>3600:
@@ -223,6 +284,11 @@ def build_retained_draft_receipt(plan: dict,evidence: dict) -> dict:
         "independently_verified_unattended_youtube_releases":0,
         "release_authorized":False,
         "sha256_is_content_integrity_only_not_owner_signature":True,
+        "editorial_and_plan_reconciled": matched_editorial_sha is not None,
+        "sanitized_editorial_receipt_sha256":matched_editorial_sha,
+        "selected_distinct_research_topics": (
+            plan["editorial_selected_unverified_topics"]
+            if matched_editorial_sha is not None else None),
     }
     result["receipt_sha256"]=sha256(_canonical(result)).hexdigest()
     if len(_canonical(result))>MAX_OUTPUT_BYTES:
@@ -249,12 +315,16 @@ def main():
     cli.add_argument("--plan",required=True)
     cli.add_argument("--evidence",required=True)
     cli.add_argument("--output",required=True)
+    cli.add_argument("--editorial-receipt",required=False)
     args=cli.parse_args()
     output=Path(args.output)
     if output.is_symlink() or output.exists():
         raise DailyEvidenceRefused("Refusing to overwrite a previous public receipt")
     result=build_retained_draft_receipt(
-        _read_bounded(Path(args.plan)),_read_bounded(Path(args.evidence)))
+        _read_bounded(Path(args.plan)),_read_bounded(Path(args.evidence)),
+        editorial_receipt=(
+            _read_bounded(Path(args.editorial_receipt))
+            if args.editorial_receipt else None))
     output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(result,indent=2,ensure_ascii=True)+"\n",encoding="utf8")
     print(json.dumps({
