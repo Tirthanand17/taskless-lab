@@ -1,0 +1,88 @@
+name: FlowMinute B4c7 OWNER MANUAL OIDC AWS READONLY AUDIT (NO DEPLOY)
+
+# Manual only. THIS MUST NOT be scheduled, pushed, or run from a PR.
+on:
+  workflow_dispatch:
+    inputs:
+      owner_change_reference:
+        description: "Non-secret exact owner change reference (not approval by itself)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: flowminute-b4c7-protected-owner-readonly
+  cancel-in-progress: false
+
+jobs:
+  protected_owner_readback:
+    if: >-
+      github.repository == 'Tirthanand17/taskless-lab' &&
+      github.ref == 'refs/heads/main' &&
+      github.actor == 'Tirthanand17' &&
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    environment: flowminute-owner-cloud-readonly
+    timeout-minutes: 9
+    env:
+      AWS_REGION: ${{ vars.FLOWMINUTE_B4C7_AWS_REGION }}
+      AWS_EC2_METADATA_DISABLED: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_B4C7_AUDIT_MODE: "INERT_READ_ONLY_ONLY"
+      FLOWMINUTE_B4C7_PROTECTED_ENVIRONMENT: "flowminute-owner-cloud-readonly"
+      FLOWMINUTE_B4C7_CHANGE_REFERENCE: ${{ inputs.owner_change_reference }}
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_OWNER_RELEASE_AUTHORIZED: "0"
+      FLOWMINUTE_MODEL_PAID_SPEND_USD: "0"
+    steps:
+      - name: Checkout exactly default branch without persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up ephemeral Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Inspect manual input and private scope shape BEFORE OIDC
+        env:
+          FLOWMINUTE_B4C7_SCOPE_JSON: ${{ secrets.FLOWMINUTE_B4C7_SCOPE_JSON }}
+          FLOWMINUTE_B4C7_SIGNED_IMAGE_B64: ${{ secrets.FLOWMINUTE_B4C7_SIGNED_IMAGE_B64 }}
+          FLOWMINUTE_B4C7_IMAGE_SIGNATURE_B64: ${{ secrets.FLOWMINUTE_B4C7_IMAGE_SIGNATURE_B64 }}
+          FLOWMINUTE_B4C7_SIGNER_PUBKEY_B64: ${{ secrets.FLOWMINUTE_B4C7_SIGNER_PUBKEY_B64 }}
+          FLOWMINUTE_B4C7_SIGNER_FINGERPRINT: ${{ secrets.FLOWMINUTE_B4C7_SIGNER_FINGERPRINT }}
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.owner_live_aws_readonly_audit --preflight-only
+      - name: Install version-bounded AWS and Ed25519 readback dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install 'boto3>=1.35,<2' 'cryptography>=44,<47'
+      - name: Obtain TEMPORARY owner READONLY auditor role via GitHub OIDC
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          aws-region: ${{ vars.FLOWMINUTE_B4C7_AWS_REGION }}
+          role-to-assume: ${{ secrets.FLOWMINUTE_B4C7_AUDITOR_ROLE_ARN }}
+          role-session-name: FlowminuteB4c7Readonly
+          allowed-account-ids: ${{ secrets.FLOWMINUTE_B4C7_AWS_ACCOUNT_ID }}
+          mask-aws-account-id: true
+          role-duration-seconds: 900
+          unset-current-credentials: true
+          disable-retry: true
+      - name: Read ONLY owner STS IAM EC2 ECR and pinned signed ECR metadata
+        env:
+          FLOWMINUTE_B4C7_SCOPE_JSON: ${{ secrets.FLOWMINUTE_B4C7_SCOPE_JSON }}
+          FLOWMINUTE_B4C7_SIGNED_IMAGE_B64: ${{ secrets.FLOWMINUTE_B4C7_SIGNED_IMAGE_B64 }}
+          FLOWMINUTE_B4C7_IMAGE_SIGNATURE_B64: ${{ secrets.FLOWMINUTE_B4C7_IMAGE_SIGNATURE_B64 }}
+          FLOWMINUTE_B4C7_SIGNER_PUBKEY_B64: ${{ secrets.FLOWMINUTE_B4C7_SIGNER_PUBKEY_B64 }}
+          FLOWMINUTE_B4C7_SIGNER_FINGERPRINT: ${{ secrets.FLOWMINUTE_B4C7_SIGNER_FINGERPRINT }}
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.owner_live_aws_readonly_audit --live-readonly
+      - name: Log explicit no-deployment exit marker
+        if: always()
+        run: |
+          echo "B4C7_NO_ECS_TASK_NO_CLOUD_STACK_NO_OAUTH_NO_PUBLISH"
