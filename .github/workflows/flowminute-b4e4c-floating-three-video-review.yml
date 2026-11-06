@@ -97,8 +97,9 @@ jobs:
           test "$FLOWMINUTE_ALLOW_LAPTOP" = 0
 
   actually_render_review_2_shorts_and_one_long:
-    # NEVER pay costly Kokoro/FFmpeg render for unreviewed PR source.
-    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    # B4e7: retired floating v6: keep PR/main source and caption QA,
+    # run the costly old full Kokoro/FFmpeg media only on manual owner dispatch.
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     needs: [native_before_after_visual_source_and_caption_integrity]
     runs-on: ubuntu-24.04
     timeout-minutes: 58
