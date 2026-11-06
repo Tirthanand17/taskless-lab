@@ -172,6 +172,21 @@ class B4c7ProtectedAuditTests(unittest.TestCase):
         self.deny()
         self.assertEqual(self.session.calls,[])
 
+    def test_any_release_spend_or_laptop_escalation_denied_before_client(self):
+        for key, bad in (
+            ("FLOWMINUTE_ENABLE_PUBLISH", "1"),
+            ("PUBLISH_ENABLED", "true"),
+            ("FLOWMINUTE_OWNER_RELEASE_AUTHORIZED", "1"),
+            ("FLOWMINUTE_MODEL_PAID_SPEND_USD", "0.01"),
+            ("FLOWMINUTE_ALLOW_LAPTOP", "1"),
+        ):
+            with self.subTest(key=key):
+                clean=self.env[key]
+                self.env[key]=bad
+                self.deny()
+                self.assertEqual(self.session.calls, [])
+                self.env[key]=clean
+
     def test_change_reference_not_matching_protected_scope_denied(self):
         self.env["FLOWMINUTE_B4C7_CHANGE_REFERENCE"]="OWNER-OTHER-CHANGE-0001"
         self.deny()
