@@ -79,30 +79,33 @@ def split_original_voice_to_cues(text: str) -> tuple[str,...]:
     # An overlong sentence may end in a short word such as "now.".
     # Never discard it or accept an inaudible tiny clip: rebalance a
     # complete preceding word into that final phrase, with no rewriting.
-    for pos in range(len(output)):
-        while len(output[pos])<8:
-            if (pos>0 and len(output[pos-1])+1+len(output[pos])
-                <=CAPTION_MAX_CHARS):
-                output[pos-1]+=" "+output.pop(pos)
-                break
-            if (pos+1<len(output)
-                and len(output[pos])+1+len(output[pos+1])
-                <=CAPTION_MAX_CHARS):
-                output[pos]+=" "+output.pop(pos+1)
+    pos=0
+    while pos<len(output):
+        if len(output[pos])>=8:
+            pos+=1
+            continue
+        if (pos>0 and len(output[pos-1])+1+len(output[pos])
+            <=CAPTION_MAX_CHARS):
+            output[pos-1]+=" "+output.pop(pos)
+            continue
+        if (pos+1<len(output)
+            and len(output[pos])+1+len(output[pos+1])
+            <=CAPTION_MAX_CHARS):
+            output[pos]+=" "+output.pop(pos+1)
+            continue
+        if pos>0 and " " in output[pos-1]:
+            earlier,borrow=output[pos-1].rsplit(" ",1)
+            if len(earlier)>=8 and len(borrow)+1+len(output[pos])<=CAPTION_MAX_CHARS:
+                output[pos-1]=earlier
+                output[pos]=borrow+" "+output[pos]
                 continue
-            if pos>0 and " " in output[pos-1]:
-                earlier,borrow=output[pos-1].rsplit(" ",1)
-                if len(earlier)>=8 and len(borrow)+1+len(output[pos])<=CAPTION_MAX_CHARS:
-                    output[pos-1]=earlier
-                    output[pos]=borrow+" "+output[pos]
-                    continue
-            if pos+1<len(output) and " " in output[pos+1]:
-                borrow,later=output[pos+1].split(" ",1)
-                if len(later)>=8 and len(borrow)+1+len(output[pos])<=CAPTION_MAX_CHARS:
-                    output[pos+1]=later
-                    output[pos]+=" "+borrow
-                    continue
-            raise FullRehearsalRefused("Cannot preserve tiny authored caption fragment safely")
+        if pos+1<len(output) and " " in output[pos+1]:
+            borrow,later=output[pos+1].split(" ",1)
+            if len(later)>=8 and len(borrow)+1+len(output[pos])<=CAPTION_MAX_CHARS:
+                output[pos+1]=later
+                output[pos]+=" "+borrow
+                continue
+        raise FullRehearsalRefused("Cannot preserve tiny authored caption fragment safely")
     if (not 1<=len(output)<=MAX_SPOKEN_CHUNKS_PER_SCENE
         or any(not 8<=len(x)<=CAPTION_MAX_CHARS for x in output)
         or _normalize_spaces(" ".join(output))!=text):
