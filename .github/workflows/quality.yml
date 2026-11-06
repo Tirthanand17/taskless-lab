@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -15,12 +15,23 @@ jobs:
           python-version: "3.12"
       - name: Install test dependency
         run: python -m pip install pytest 'cryptography>=44,<47'
-      - name: Install FFmpeg for actual media inspection tests
+      - name: Install FFmpeg for actual media inspection tests (bounded)
+        timeout-minutes: 5
         run: |
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
-            sudo apt-get update -qq
-            sudo apt-get install -y -qq ffmpeg
+            # The hosted runner's apt update can stall on upstream mirrors.
+            # Use its bundled package metadata, without a network index refresh.
+            apt-cache policy ffmpeg | head -n 12
+            timeout --signal=TERM --kill-after=10s 90s sudo apt-get \
+              -o DPkg::Lock::Timeout=15 -o Acquire::ForceIPv4=true \
+              -o Acquire::Retries=0 -o Acquire::http::Timeout=10 \
+              -o Acquire::https::Timeout=10 \
+              install -y -qq --no-install-recommends ffmpeg
           fi
+          command -v ffmpeg
+          command -v ffprobe
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
       - name: Run tests

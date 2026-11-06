@@ -1,0 +1,65 @@
+name: FlowMinute B4c5 Inert Owner IAM READ ONLY Synthetic Gate (NO AWS)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/owner_inert_iam_preflight.py"
+      - "autopilot/test_owner_inert_iam_preflight.py"
+      - ".github/workflows/flowminute-b4c5-owner-iam-readonly.yml"
+      - "docs/adr/0057-b4c5-inert-owner-iam-policy-boundary.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/owner_inert_iam_preflight.py"
+      - "autopilot/test_owner_inert_iam_preflight.py"
+      - ".github/workflows/flowminute-b4c5-owner-iam-readonly.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4c5-synthetic-iam-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  synthetic_role_policy_gate_only:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      AWS_EC2_METADATA_DISABLED: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run full fake-AWS B4c5 role-trust and policy boundary suite
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest -v autopilot.test_owner_inert_iam_preflight
+      - name: Verify workflow itself does not discover credentials or deploy
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PY'
+          from pathlib import Path
+          p=Path(".github/workflows/flowminute-b4c5-owner-iam-readonly.yml").read_text()
+          assert "permissions:\n  contents: read" in p
+          assert "persist-credentials: false" in p
+          # Split forbidden tokens so this self-check does not detect its own literals.
+          for forbidden in (
+              "id-token" + ": write",
+              "pull_request" + "_target",
+              "aws-actions/" + "configure-aws-credentials",
+              "secrets" + ".", "secrets" + "[",
+              "aws ecs " + "run-task",
+              "aws cloudformation " + "deploy",
+              "aws iam " + "create",
+              "youtube.googleapis" + ".com",
+              "videos()" + ".insert(",
+          ):
+              assert forbidden not in p, forbidden
+          print("B4C5_NO_AWS_CREDENTIAL_NO_DEPLOY_NO_YOUTUBE_BOUNDARY_PASSED")
+          PY
