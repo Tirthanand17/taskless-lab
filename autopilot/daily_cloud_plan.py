@@ -31,6 +31,9 @@ APPROVED_RESEARCH_ORIGINS = {
     "OpenAI": {"openai.com", "www.openai.com"},
     "Google DeepMind": {"deepmind.google", "www.deepmind.google"},
     "The Verge": {"theverge.com", "www.theverge.com"},
+    # Article identity is a direct /abs page; the independent RSS hostname
+    # is verified as a pinned feed URL, NOT allowed as an article target.
+    "arXiv AI": {"arxiv.org"},
 }
 UNVERIFIED_SCOUT_STATUS = "leads_only_no_publish_authorization"
 
@@ -75,6 +78,11 @@ def _review_lead(raw: object) -> dict | None:
             return None
         host = (parsed.hostname or "").lower()
         if host not in APPROVED_RESEARCH_ORIGINS[publisher]:
+            return None
+        if publisher == "arXiv AI" and (
+            re.fullmatch(r"/abs/[0-9]{4}\.[0-9]{4,5}(?:v[1-9][0-9]*)?",
+                         parsed.path) is None
+            or parsed.query or parsed.fragment):
             return None
         try:
             ipaddress.ip_address(host)
