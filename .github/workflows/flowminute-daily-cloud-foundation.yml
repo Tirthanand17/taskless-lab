@@ -16,6 +16,7 @@ on:
       - "autopilot/nonfactual_narration_rehearsal.py"
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
+      - "autopilot/test_b4e0b_wheel_only_voice_runner.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
       - "autopilot/recent_research_history.py"
       - "autopilot/test_recent_research_history_b4d8.py"
@@ -45,6 +46,7 @@ on:
       - "autopilot/nonfactual_narration_rehearsal.py"
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
+      - "autopilot/test_b4e0b_wheel_only_voice_runner.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
       - "autopilot/recent_research_history.py"
       - "autopilot/test_recent_research_history_b4d8.py"
@@ -99,7 +101,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -453,7 +455,8 @@ jobs:
           set -euo pipefail
           python -m pip install --disable-pip-version-check --only-binary=:all: \
             'imageio-ffmpeg==0.6.0' 'kokoro-onnx==0.6.1' \
-            'soundfile>=0.12,<1' 'Pillow>=11,<13' 'numpy>=1.26,<3'
+            'espeakng-loader==0.2.4' 'soundfile>=0.12,<1' \
+            'Pillow>=11,<13' 'numpy>=1.26,<3'
           # Kokoro 0.6.1 installs espeakng-loader 0.2.4 wheel as a
           # dependency: it already embeds both the phonemizer library and
           # its language data. Real main run 42242580566 proved apt-get
