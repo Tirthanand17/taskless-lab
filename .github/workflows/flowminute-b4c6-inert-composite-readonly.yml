@@ -1,0 +1,72 @@
+name: FlowMinute B4c6 Owner Inert Composite STS/IAM/VPC/ECR Gate (NO AWS)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/owner_inert_composite_preflight.py"
+      - "autopilot/test_owner_inert_composite_preflight.py"
+      - ".github/workflows/flowminute-b4c6-inert-composite-readonly.yml"
+      - "docs/adr/0058-b4c6-composed-owner-readonly-preflight.md"
+  push:
+    branches: [main]
+    paths:
+      - "autopilot/owner_inert_composite_preflight.py"
+      - "autopilot/test_owner_inert_composite_preflight.py"
+      - ".github/workflows/flowminute-b4c6-inert-composite-readonly.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4c6-no-aws-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fake_owner_sts_iam_ec2_ecr_crypto:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    env:
+      AWS_EC2_METADATA_DISABLED: "true"
+      PYTHONDONTWRITEBYTECODE: "1"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only Ed25519 signature verification dependency
+        run: python -m pip install 'cryptography>=44,<47'
+      - name: Run composite integration plus each source boundary regression
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            autopilot.test_owner_inert_composite_preflight \
+            autopilot.test_owner_inert_iam_preflight \
+            autopilot.test_owner_private_network_image_preflight \
+            autopilot.test_owner_fargate_taskdef_lint
+      - name: Inspect this workflow never grants write or paid provider access
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          s=Path(".github/workflows/flowminute-b4c6-inert-composite-readonly.yml").read_text()
+          assert "permissions:\n  contents: read" in s
+          assert "persist-credentials: false" in s
+          for bad in (
+            "id-token" + ": write",
+            "pull_request" + "_target",
+            "secrets" + ".",
+            "aws-actions/" + "configure-aws-credentials",
+            "aws cloudformation" + " deploy",
+            "aws ecs " + "run-task",
+            "aws iam " + "create-role",
+            "videos()" + ".insert(",
+          ):
+              assert bad not in s, bad
+          print("B4C6_SYNTHETIC_COMPOSED_READ_ONLY_NO_CREDENTIALS_NO_DEPLOY")
+          PY
