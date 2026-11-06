@@ -1,0 +1,29 @@
+# ADR-0074 — B4e0 first 3 real original voiced, captioned daily-script **excerpt previews**
+
+**2026-11-06 IST | Branch 2 | GitHub-only | Real media, NOT full videos or publishing.**
+
+## The gap after B4d9
+
+Trusted main PR #83 [run 42239069262](https://github.com/Tirthanand17/taskless-lab/actions/runs/42239069262) physically wrote 3 unique **nonfactual hypothetical** narration rehearsal TEXTS and 17 timed storyboard scene specifications (4/9/4 across 2 Shorts + 1 long) for the next IST planning date. **Zero new real voice WAV or encoded video files** from those rehearsals were created: a separate old media smoke rendered a previous video fixture. We must not misreport source-associated outline/storyboard text as playable fresh media.
+
+## Implemented physical CPU workflow
+
+1. New `autopilot/real_rehearsal_voice_media_b4e0.py` is invoked **on the same trusted main GitHub daily runner after B4d9** while the original source and dialogue still exist only on that runner. It recomputes the B4d5 editorial plan, B4d6 exact source episode, B4d7 quote-level provenance docket and B4d9 all 3 rehearsal scripts; it rejects swapped voices, overwritten script text, changed article hash, invented review permission and forged upload flags. The builder does **not copy any publisher news headline, article paragraph, screenshot, paper chart or real-world claim** into the voiced text.
+2. For **each of 2 Shorts plus 1 long**, it selects the **first complete original sentence from each of the first two authored rehearsal scenes**, creates a genuine waveform with already vetted `kokoro-onnx==0.6.1` using **two SHA256-pinned, public model voice assets** from the exact existing GitHub upstream release, at a controlled natural voice rate. The system keeps each spoken original sentence intact. This is **six genuinely synthesized spoken segments** across three real audio/video **excerpt previews**, not three full 58s/240s/58s narrations.
+3. Pillow draws six original typographic 1080×1920/1920×1080 diagrams containing actual voiced sentence text as readable burned-in captions (rather than an endless animated circle), three original path cards, separate high-contrast color families, safe caption margins and a clearly visible *fictional educational example / do not publish* disclaimer. No circular spinners, third-party imagery, licensed songs, or pseudo-statistics. A brief one-time original low-amplitude scene-entry sine cue is mixed in physical PCM, not borrowed music.
+4. The **pinned** portable `imageio-ffmpeg==0.6.0` supplies the actual FFmpeg encoder and decoder with no apt update; only `espeak-ng` phonemizer uses a bounded apt-install fallback if it is not already on the runner. Actual H.264 24-fps yuv420p + AAC audio is encoded and **fully decoded** for all 3 preview MP4s; check actual codecs, resolution, two different original scene-image SHA256s and non-silent finite TTS sample PCM.
+5. All WAV, MP4, PNG, measured QA reports and public speech model bytes exist **only under disposable GitHub runner `/tmp/flowminute-b4e0-*`**. Explicit `if: always()` cleanup deletes everything even after an error. The daily workflow continues to upload **only its already-approved two sanitized hash-only research receipts**. No TTS audio, article quotes, video bytes, model weights, YouTube secrets, private credentials, source text or finished scripts are publicly retained.
+6. A dedicated offline standard-library adversarial unit suite covers all three episode identities, original text SHA, altered/reordered script and source, fake fact/rights/release approval, absent/corrupt media refusal, missing quotes, full-vs-preview flags and optional actual Pillow PNG tests if Pillow is installed.
+
+## Budget and safety
+
+- This reuses the repository's existing free/open-source GitHub CPU/FFmpeg/Kokoro route with zero paid external model calls, no new cloud account/provider and no laptop storage. **GitHub Actions runner minutes** are still a finite resource; this job is bounded to 26 minutes, and substeps have tighter timeouts. No permission to exceed free GitHub Actions quota or start paid GitHub-hosted minutes is implied.
+- `espeak-ng` installation is bounded; if apt mirror stalls, **fail rather than bypass security or substitute an unapproved paid TTS**. Model weights must match two previously approved exact hashes or the job fails.
+- This does **not** automatically produce 3 complete independently verified videos. The user has requested 2 full Shorts + 1 long per day; B4e0 proves that real original media **can be created from live B4d9 research rehearsals** with audio and synchronized scene-level captions, a necessary precursor.
+- Scene-level captions are whole-sentence illustrated cards, not per-word forced-aligned karaoke and the spoken TTS duration is **measured from physical PCM** rather than falsely inferred from 58/240 targets.
+- The media is still unreviewed by a human; the voice/weight license notices need independent owner assessment before any public reuse; news facts, article rights, sound/music reuse, owner final-watch and YouTube OAuth still require future gated signoff.
+- No new published or scheduled YouTube video is created. **7-day independent live 21-video publication proof remains 0/21.**
+
+## Acceptance
+
+The exact-head pull request must pass Daily Cloud Foundation unit suite, entire Content Quality, public Cloud Scout, and independent Remotion H.264/AAC smoke. Then trusted merged `main` run must physically pass the new B4e0 step and report exactly **3 real voiced H.264/AAC excerpt previews, 6 original illustrated captioned scenes, 6 voiced sentences, all 3 full media decodes**, 0 full 58/240/58s clips, 0 verified news facts/owner reviews/model API calls/YouTube uploads, with **two tiny safe public receipt files only**. If the system cannot actually encode all three, accurately report the failure; no placeholder completion.
