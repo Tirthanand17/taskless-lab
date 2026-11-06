@@ -72,10 +72,12 @@ def _comparison(before,after,out:Path,action:str)->dict:
 
 
 def build_action_specific_visual_review(output:Path)->dict:
-    from PIL import ImageChops
     output=Path(output)
     if not output.is_absolute() or output.is_symlink() or output.exists():
         raise MotionReviewRefused("New absolute source-only output required")
+    # Public security/format validators work even when Pillow is not installed.
+    # Only real 32-scene visual generation requires the optional art package.
+    from PIL import ImageChops
     output.parent.mkdir(parents=True,exist_ok=True)
     output.mkdir(mode=0o700)
     episodes=[]
