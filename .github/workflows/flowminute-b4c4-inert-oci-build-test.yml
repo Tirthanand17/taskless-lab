@@ -1,0 +1,165 @@
+name: FlowMinute B4c4 Real Inert OCI Container Build/Boot (NO CLOUD DEPLOY)
+
+on:
+  pull_request:
+    paths:
+      - "infra/aws/B4C4.inert.Dockerfile"
+      - "autopilot/b4c2_runtime_boot_guard.py"
+      - "autopilot/test_b4c4_inert_image_build_contract.py"
+      - ".github/workflows/flowminute-b4c4-inert-oci-build-test.yml"
+      - "autopilot/owner_private_network_image_preflight.py"
+  push:
+    branches: [main]
+    paths:
+      - "infra/aws/B4C4.inert.Dockerfile"
+      - "autopilot/b4c2_runtime_boot_guard.py"
+      - "autopilot/test_b4c4_inert_image_build_contract.py"
+      - ".github/workflows/flowminute-b4c4-inert-oci-build-test.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4c4-hosted-image-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_and_actually_boot_inert_container_without_cloud:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_RUNTIME_NETWORK_AUTHORIZED: "0"
+      FLOWMINUTE_OWNER_RELEASE_AUTHORIZED: "0"
+    steps:
+      - name: Checkout public source without persisted GitHub token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Real hosted Python test of Dockerfile and no-deploy workflow boundary
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest -v autopilot.test_b4c4_inert_image_build_contract
+      - name: Resolve official Python base to exact immutable REGISTRY digest
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          command -v docker
+          docker pull docker.io/library/python:3.11-slim-bookworm
+          base="$(docker image inspect docker.io/library/python:3.11-slim-bookworm \
+            --format '{{index .RepoDigests 0}}')"
+          if ! [[ "$base" =~ @sha256:[a-f0-9]{64}$ ]]; then
+            echo "B4C4_BASE_NOT_REGISTRY_DIGEST"
+            exit 1
+          fi
+          printf 'BASE_PIN=%s\n' "$base" >> "$GITHUB_ENV"
+          echo "B4C4_PINNED_BASE_DIGEST_RESOLVED"
+      - name: Build real OCI image from immutable base using ONLY inert module
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          work="$RUNNER_TEMP/flowminute-b4c4-inert"
+          mkdir -p "$work/context/autopilot"
+          cp autopilot/b4c2_runtime_boot_guard.py "$work/context/autopilot/"
+          printf '%s\n' '"""Minimal inert owner guard container source."""' \
+            > "$work/context/autopilot/__init__.py"
+          docker build --network=none --pull=false --no-cache \
+            --build-arg BASE_IMAGE="$BASE_PIN" \
+            --iidfile "$work/image-id" \
+            --tag flowminute-inert-b4c4:source-test \
+            --file infra/aws/B4C4.inert.Dockerfile "$work/context"
+          test -s "$work/image-id"
+          image_id="$(cat "$work/image-id")"
+          if ! [[ "$image_id" =~ ^sha256:[a-f0-9]{64}$ ]]; then
+            echo "B4C4_IMAGE_CONFIG_ID_MALFORMED"
+            exit 1
+          fi
+          printf 'B4C4_IMAGE_CONFIG_ID=%s\n' "$image_id" >> "$GITHUB_ENV"
+          printf 'B4C4_BUILD_CONTEXT=%s\n' "$work" >> "$GITHUB_ENV"
+          echo "B4C4_REAL_IMAGE_BUILT_HOSTED_PINNED_BASE_NO_AWS_PUSH"
+      - name: Execute actual nonroot READONLY isolated image, no network namespace
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          docker run --rm --network=none --read-only \
+            --user=65532:65532 --cap-drop=ALL --pids-limit=64 \
+            --security-opt=no-new-privileges --memory=256m --cpus=0.5 \
+            flowminute-inert-b4c4:source-test \
+            | tee "$B4C4_BUILD_CONTEXT/safe-boot.json"
+          python3 -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          value=json.loads((Path(os.environ["B4C4_BUILD_CONTEXT"])/"safe-boot.json").read_text())
+          assert value["status"]=="INERT_OWNER_PREFLIGHT_BOOT_ONLY_NO_PROVIDER_CALL"
+          assert value["network_client_or_provider_call_permitted"] is False
+          assert value["release_authorized"] is False
+          assert value["actual_youtube_insert_performed"] is False
+          assert value["billable_service_deployed_by_this_module"] is False
+          assert value["real_youtube_channel_oauth_validated"] is False
+          print("B4C4_ACTUAL_CONTAINER_BOOTED_NO_NETWORK_NO_WRITE_NO_RELEASE")
+          PY
+      - name: Prove nonzero exit under injected publishing flag in real container
+        run: |
+          set -euo pipefail
+          set +e
+          docker run --rm --network=none --read-only \
+            --user=65532:65532 --cap-drop=ALL \
+            --security-opt=no-new-privileges --memory=256m \
+            --env FLOWMINUTE_ENABLE_PUBLISH=1 \
+            flowminute-inert-b4c4:source-test \
+            > "$B4C4_BUILD_CONTEXT/unsafe-boot.txt" 2>&1
+          rc="$?"
+          set -e
+          test "$rc" = 70
+          test "$(cat "$B4C4_BUILD_CONTEXT/unsafe-boot.txt")" = \
+            "B4C2_INERT_BOOT_GUARD_REFUSED"
+          echo "B4C4_REAL_CONTAINER_INJECTED_PUBLISH_ESCALATION_REFUSED"
+      - name: Retain public NONSIGNED image-config/source hash evidence only
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          base=Path(os.environ["B4C4_BUILD_CONTEXT"])
+          def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+          root=Path.cwd()
+          evidence={
+            "schema":"flowminute-b4c4-real-inert-container-test-v1",
+            "workflow_checkout_commit":os.environ["GITHUB_SHA"],
+            "resolved_base_registry_digest":os.environ["BASE_PIN"],
+            "actual_local_image_config_digest":os.environ["B4C4_IMAGE_CONFIG_ID"],
+            "dockerfile_sha256":digest(root/"infra/aws/B4C4.inert.Dockerfile"),
+            "inert_source_sha256":digest(root/"autopilot/b4c2_runtime_boot_guard.py"),
+            "actual_container_executed":True,
+            "runtime_network_mode":"none",
+            "runtime_nonroot_uid":65532,
+            "runtime_readonly_filesystem":True,
+            "unsafe_publish_flag_refused":True,
+            "owner_signed_attestation":False,
+            "ecr_image_pushed":False,
+            "aws_cloud_task_launched":False,
+            "youtube_upload_performed":False,
+            "release_authorized":False,
+          }
+          output=base/"UNSIGNED_TECHNICAL_IMAGE_BUILD_EVIDENCE.json"
+          output.write_text(json.dumps(evidence,indent=2,sort_keys=True)+"\n")
+          print("B4C4_PUBLIC_UNAPPROVED_UNSIGNED_REAL_CONTAINER_PROOF_READY")
+          PY
+      - name: Publish non-secret no-media, no-signature technical evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-b4c4-unsigned-inert-image-test
+          path: ${{ runner.temp }}/flowminute-b4c4-inert/UNSIGNED_TECHNICAL_IMAGE_BUILD_EVIDENCE.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Remove ephemeral test image and temporary metadata
+        if: always()
+        run: |
+          docker image rm --force flowminute-inert-b4c4:source-test || true
+          rm -rf "$RUNNER_TEMP/flowminute-b4c4-inert"
