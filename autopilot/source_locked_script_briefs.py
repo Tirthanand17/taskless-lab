@@ -168,7 +168,7 @@ def build_episode_locked_research(
         outline = (
             ("HOOK_QUESTION", "Show a clearly posed viewer question, not a proven headline"),
             ("SOURCE_SCOPE", "Mark the publisher and unverified research question"),
-            ("DEMONSTRATION", visual[0]),
+            ("DEMONSTRATION", visual[0] if slot == "short_am" else visual[2]),
             ("VERIFY_AND_LIMIT", "Keep result labels blank until independent fact review"),
         ) if kind == "short" else (
             ("HOOK_QUESTION", "Open with a falsifiable question, not an asserted result"),
