@@ -10,6 +10,8 @@ on:
     branches: [main, feature/flowminute-cloud-autopilot-v1]
     paths:
       - "autopilot/daily_cloud_plan.py"
+      - "autopilot/daily_editorial_board.py"
+      - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
       - "autopilot/script_draft_agent.py"
@@ -22,6 +24,8 @@ on:
   pull_request:
     paths:
       - "autopilot/daily_cloud_plan.py"
+      - "autopilot/daily_editorial_board.py"
+      - "autopilot/test_daily_editorial_board.py"
       - "autopilot/evidence_probe.py"
       - "autopilot/test_evidence_probe.py"
       - "autopilot/script_draft_agent.py"
@@ -64,7 +68,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -133,6 +137,47 @@ jobs:
               f.write("\n".join(lines)+"\n")
           print("GITHUB_ONLY_DAILY_DRAFT_SUCCESS_NO_UPLOAD_NO_SECRET_NO_LAPTOP")
           PY
+      - name: Produce evidence-linked, non-repetitive original research questions (NO SCRIPTS)
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.daily_editorial_board \
+            --plan out/flowminute-tomorrow-draft.json \
+            --scout-report out/flowminute-scout-unverified.json \
+            --evidence out/flowminute-evidence-unverified.json \
+            --board-output out/flowminute-ephemeral-editorial-board.json \
+            --public-receipt-output out/flowminute-public-editorial-receipt.json
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          full=json.loads(Path("out/flowminute-ephemeral-editorial-board.json").read_text())
+          receipt=json.loads(Path("out/flowminute-public-editorial-receipt.json").read_text())
+          assert full["status"]=="B4D2_SOURCE_LINKED_DIVERSE_RESEARCH_BRIEFS_NO_FACT_APPROVAL"
+          assert full["episode_count"]==3 and len(full["slots"])==3
+          assert full["distinct_topics_selected"]<=3
+          assert full["article_bytes_observed_selected"]<=3
+          assert full["scripts_generated"]==0 and full["billable_api_calls"]==0
+          assert full["release_authorized"] is False
+          assert full["youtube_upload_enabled"] is False
+          assert full["youtube_schedule_enabled"] is False
+          assert receipt["fresh_original_scripts_completed"]==0
+          assert receipt["real_youtube_uploads"]==0
+          assert receipt["release_authorized"] is False
+          assert receipt["headlines_urls_source_bodies_and_scripts_included"] is False
+          public=Path("out/flowminute-public-editorial-receipt.json").read_text()
+          assert "https://" not in public and "unverified_title" not in public
+          assert len(receipt["receipt_sha256"])==64
+          # Source topic briefs may contain unverified headlines; keep those
+          # ephemeral and NEVER ship their raw bytes as a public artifact.
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as w:
+              w.write("\n## Editorial research triage (UNVERIFIED, no scripts)\n")
+              w.write("Distinct topics found: "+str(full["distinct_topics_selected"])+"/3\n")
+              w.write("Direct article byte observations: "+
+                      str(full["article_bytes_observed_selected"])+"/3\n")
+              w.write("Question-only research angles; zero facts approved or releases.\n")
+          print("B4D2_DISTINCT_RESEARCH_QUESTIONS_READY_ZERO_FACT_CLAIMS_ZERO_UPLOADS")
+          PY
+
       - name: Prepare safe retained public research-only evidence receipt
         if: github.event_name != 'pull_request'
         run: |
@@ -172,11 +217,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flowminute-unapproved-research-receipt-${{ github.run_id }}-${{ github.run_attempt }}
-          path: out/flowminute-public-research-draft-receipt.json
+          path: |
+            out/flowminute-public-research-draft-receipt.json
+            out/flowminute-public-editorial-receipt.json
           if-no-files-found: error
           retention-days: 14
           compression-level: 9
 
       - name: Discard ephemeral unverified draft files
         if: always()
-        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json
