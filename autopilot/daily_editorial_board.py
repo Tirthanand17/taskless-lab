@@ -26,7 +26,6 @@ from autopilot.daily_cloud_plan import (
 from autopilot.evidence_probe import (
     PROBE_STATUS, verify_public_source_url, EvidenceError,
 )
-from autopilot.scout import _jaccard
 
 STATUS = "B4D2_SOURCE_LINKED_DIVERSE_RESEARCH_BRIEFS_NO_FACT_APPROVAL"
 OBSERVED = frozenset((
@@ -138,7 +137,10 @@ def _validate_plan(plan: object) -> tuple[str, datetime]:
             or entry.get("local_ist") != local
             or entry.get("release_authorized") is not False
             or entry.get("real_script_exists") is not False
+            or entry.get("real_narration_exists") is not False
             or entry.get("real_media_exists") is not False
+            or entry.get("real_media_qa_passed") is not False
+            or entry.get("agent_handoffs_completed") != 0
             or entry.get("rights_approved") is not False
             or entry.get("youtube_uploaded") is not False
             or entry.get("youtube_scheduled") is not False):
@@ -226,7 +228,11 @@ def _scout_candidates(scout: object, observed: dict, now: datetime) -> list[dict
     for raw in scout["leads"]:
         if type(raw) is not dict:
             continue
-        key = (raw.get("publisher"), raw.get("title"), raw.get("url"))
+        original_title = raw.get("title")
+        if type(original_title) is not str:
+            continue
+        safe_title = " ".join(original_title.split())[:200]
+        key = (raw.get("publisher"), safe_title, raw.get("url"))
         pub_dates[key] = raw.get("published_utc")
     result = []
     seen_urls = set()
