@@ -13,6 +13,8 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import re
+import time
 import xml.etree.ElementTree as ET
 import urllib.error
 import urllib.request
@@ -29,7 +31,7 @@ from autopilot.daily_cloud_plan import (
 
 UTC = dt.timezone.utc
 MAX_SOURCES = 6
-MAX_BODY_BYTES = 262_144
+MAX_BODY_BYTES = 1_048_576
 DEFAULT_TIMEOUT_SECONDS = 10.0
 ALLOWED_TYPES = frozenset({
     "text/html", "application/xhtml+xml", "text/plain", "application/xml", "text/xml",
@@ -54,7 +56,7 @@ SAFE_FETCH_FAILURES = frozenset((
     "HTTP_UNAVAILABLE", "HTTP_OTHER", "TRANSPORT_UNAVAILABLE",
     "REDIRECT_REJECTED", "UNEXPECTED_FINAL_URL",
     "UNEXPECTED_HTTP_STATUS", "UNSUPPORTED_CONTENT_TYPE",
-    "EMPTY_OR_OVERSIZED_ARTICLE", "BOT_CHALLENGE_PAGE",
+    "ARTICLE_TOO_SMALL", "ARTICLE_TOO_LARGE", "BOT_CHALLENGE_PAGE",
     "SOURCE_STRUCTURAL_REJECTED",
 ))
 
@@ -122,6 +124,12 @@ def verify_public_source_url(url: object, publisher: str) -> str:
         or p.fragment or any(ord(c) <= 32 for c in url)
         or not p.path.startswith("/")):
         raise EvidenceError("Only approved public HTTPS source origins are allowed")
+    # Never mistake an RSS feed, bulk PDF or arbitrary search query for a
+    # directly observed primary abstract/article page.
+    if publisher == "arXiv AI" and (
+        re.fullmatch(r"/abs/[0-9]{4}\.[0-9]{4,5}(?:v[1-9][0-9]*)?",
+                     p.path) is None or p.query):
+        raise EvidenceError("Only exact arXiv abstract article URLs allowed")
     return url
 
 
@@ -130,12 +138,17 @@ def choose_independent_sources(scout_report: object, *, limit: int = MAX_SOURCES
     if not 1 <= limit <= MAX_SOURCES:
         raise EvidenceError("Bounded one-to-six source requests only")
     leads = candidate_leads(scout_report, limit=24)
+    # Include at most one primary arXiv paper; never flood the archive with
+    # dozens of page requests because its daily RSS contains many papers.
+    # Prefer first-party preprint identity to an unverified news headline.
+    leads.sort(key=lambda x: x["publisher"] != "arXiv AI")
     picked, seen_url, seen_pub = [], set(), set()
     for fresh_publisher_only in (True, False):
         for lead in leads:
             if len(picked) == limit:
                 break
-            if fresh_publisher_only and lead["publisher"] in seen_pub:
+            if (lead["publisher"] == "arXiv AI" and lead["publisher"] in seen_pub
+                or fresh_publisher_only and lead["publisher"] in seen_pub):
                 continue
             try:
                 verify_public_source_url(lead["url"], lead["publisher"])
@@ -188,8 +201,10 @@ def probe_source(
             if mime not in ALLOWED_TYPES:
                 raise ArticleFetchRefused("UNSUPPORTED_CONTENT_TYPE")
             body = response.read(MAX_BODY_BYTES + 1)
-            if not isinstance(body, bytes) or not 96 <= len(body) <= MAX_BODY_BYTES:
-                raise ArticleFetchRefused("EMPTY_OR_OVERSIZED_ARTICLE")
+            if not isinstance(body, bytes) or len(body) < 96:
+                raise ArticleFetchRefused("ARTICLE_TOO_SMALL")
+            if len(body) > MAX_BODY_BYTES:
+                raise ArticleFetchRefused("ARTICLE_TOO_LARGE")
             # A 200 OK Cloudflare/captcha interstitial is NOT a fetched article.
             # Only inspect ephemeral original bytes; never retain page bodies.
             if mime in ("text/html", "application/xhtml+xml"):
@@ -237,15 +252,29 @@ def probe_source(
 
 
 
+def verified_pinned_feed_url(publisher: str) -> str:
+    """The feed is a fixed code-reviewed config URL, never an RSS lead URL."""
+    feed=dict(FEEDS).get(publisher)
+    if not feed:
+        raise EvidenceError("No official pinned RSS feed for publisher")
+    p=urlsplit(feed)
+    if (p.scheme != "https" or p.username is not None or p.password is not None
+        or p.port not in (None,443) or p.fragment or not p.path.startswith("/")
+        or not p.hostname):
+        raise EvidenceError("Malformed exact-source RSS feed configuration")
+    # Only article abstract origins qualify as article targets. Official arXiv
+    # RSS must remain on its separate rss.arxiv.org feed hostname.
+    if publisher == "arXiv AI" and feed != "https://rss.arxiv.org/rss/cs.AI":
+        raise EvidenceError("Unapproved archive feed")
+    return feed
+
+
 def probe_feed_entry(lead: dict, *, clock: dt.datetime | None = None,
                      timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
                      opener=None) -> dict:
     """Evidence fallback: observe an existing RSS headline, NOT article content or truth."""
     url = verify_public_source_url(lead.get("url"), lead.get("publisher"))
-    feed = dict(FEEDS).get(lead["publisher"])
-    if not feed:
-        raise EvidenceError("No pinned RSS feed for publisher")
-    verify_public_source_url(feed, lead["publisher"])
+    feed = verified_pinned_feed_url(lead["publisher"])
     if not 1 <= timeout_seconds <= 15:
         raise EvidenceError("Unsafe timeout")
     clock = clock or dt.datetime.now(UTC)
@@ -317,6 +346,10 @@ def probe_report(scout_report: object, *, clock: dt.datetime | None = None,
             direct_failures[category] = direct_failures.get(category, 0) + 1
             # The original publisher's RSS entry is useful provenance when
             # a page blocks bots. This is NOT independent factual support.
+            # Archive API policy: <=1 request / three seconds, single runner
+            # connection. No repeat/retry storm if a paper's abstract fails.
+            if lead["publisher"] == "arXiv AI" and opener is None:
+                time.sleep(3.2)
             try:
                 fallback = probe_feed_entry(lead, clock=clock, opener=opener)
                 fallback["direct_article_failure_class"] = category
