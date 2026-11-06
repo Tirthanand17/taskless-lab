@@ -61,7 +61,7 @@ ANGLE = {
              "How might this work? Require a reproducible example before writing narration.",
              "Source diagram, method, limitations, measured example, counterexample"),
     "short_pm": ("MYTH_VS_LIMITATION",
-                 "What common interpretation might be misleading? Verify the answer independently.",
+                 "What common interpretation might be misleading, and how could it be checked independently?",
                  "One precise before/after visual with a visible limitation"),
 }
 
