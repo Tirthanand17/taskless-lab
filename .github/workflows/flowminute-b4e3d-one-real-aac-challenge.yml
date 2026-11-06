@@ -6,6 +6,7 @@ on:
       - "autopilot/full_topic_narrated_pack.py"
       - "autopilot/test_b4e3c_aac_recovery.py"
       - ".github/workflows/flowminute-b4e3d-one-real-aac-challenge.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,7 +17,9 @@ concurrency:
 
 jobs:
   actual_cinematic_short_mp4_true_peak_limit_and_artifact:
-    if: github.repository == 'Tirthanand17/taskless-lab'
+    # B4e7: original v3 AAC long-running physical demo is opt-in, not a
+    # hidden model download on every unrelated common-renderer PR.
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     timeout-minutes: 24
     env:

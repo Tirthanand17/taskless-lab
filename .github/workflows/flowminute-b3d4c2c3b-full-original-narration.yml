@@ -65,7 +65,9 @@ jobs:
           PY
 
   three_actual_complete_topic_specific_kokoro_mp4s:
-    if: github.repository == 'Tirthanand17/taskless-lab'
+    # B4e7: historic original-topic encoder costly; normal PR executes
+    # source/provenance tests, not another independent 3-full-video render.
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     timeout-minutes: 58
     env:
