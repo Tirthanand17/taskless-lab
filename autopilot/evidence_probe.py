@@ -23,6 +23,9 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from autopilot.scout import FEEDS, _article_link, _find_text
+from autopilot.public_article_passages import (
+    PASSAGE_STATUS, extract_literal_passages,
+)
 from autopilot.daily_cloud_plan import (
     APPROVED_RESEARCH_ORIGINS,
     PlanError,
@@ -168,6 +171,7 @@ def probe_source(
     clock: dt.datetime | None = None,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
     opener=None,
+    ephemeral_passage_sink: dict | None = None,
 ) -> dict:
     """Create a content-addressed observation; never record a source fact claim."""
     url = verify_public_source_url(lead.get("url"), lead.get("publisher"))
@@ -228,8 +232,23 @@ def probe_source(
         raise ArticleFetchRefused(category) from None
     except (urllib.error.URLError, TimeoutError, OSError):
         raise ArticleFetchRefused("TRANSPORT_UNAVAILABLE") from None
+    source_id = hashlib.sha256(url.encode("utf-8")).hexdigest()[:24]
+    # Literal snippets are ONLY held inside an explicitly provided ephemeral
+    # research sink; they NEVER enter observation JSON, source receipts,
+    # workflow summaries or any public Actions artifact.
+    if ephemeral_passage_sink is not None:
+        if type(ephemeral_passage_sink) is not dict:
+            raise EvidenceError("Passage collector must be an ephemeral dict")
+        ephemeral_passage_sink[source_id] = {
+            "source_id": source_id,
+            "observed_article_sha256": hashlib.sha256(body).hexdigest(),
+            "status": PASSAGE_STATUS,
+            "passages": extract_literal_passages(body, mime),
+            "rights_approved": False,
+            "facts_verified": False,
+        }
     return {
-        "source_id": hashlib.sha256(url.encode("utf-8")).hexdigest()[:24],
+        "source_id": source_id,
         "publisher": lead["publisher"],
         "title": lead["title"],
         "source_url": url,
@@ -329,7 +348,8 @@ def probe_feed_entry(lead: dict, *, clock: dt.datetime | None = None,
 
 
 def probe_report(scout_report: object, *, clock: dt.datetime | None = None,
-                 max_sources: int = MAX_SOURCES, opener=None) -> dict:
+                 max_sources: int = MAX_SOURCES, opener=None,
+                 ephemeral_passage_sink: dict | None = None) -> dict:
     """Errors are counted without exposing page bodies or URL query credentials."""
     clock = clock or dt.datetime.now(UTC)
     selected = choose_independent_sources(scout_report, limit=max_sources)
@@ -337,7 +357,9 @@ def probe_report(scout_report: object, *, clock: dt.datetime | None = None,
     direct_failures = {}
     for lead in selected:
         try:
-            successes.append(probe_source(lead, clock=clock, opener=opener))
+            successes.append(probe_source(
+                lead, clock=clock, opener=opener,
+                ephemeral_passage_sink=ephemeral_passage_sink))
         except EvidenceError as exc:
             # B4d3 diagnosis is deliberately category-only. A publisher's
             # server error body, token-bearing URL or article text is NEVER
@@ -396,12 +418,39 @@ def main() -> None:
     p.add_argument("--scout-report", required=True)
     p.add_argument("--output", default="out/source-evidence-unverified.json")
     p.add_argument("--max-sources", type=int, default=3)
+    p.add_argument("--ephemeral-passages",default=None)
     args = p.parse_args()
     report_file = Path(args.scout_report)
     if report_file.stat().st_size > 512_000:
         raise PlanError("Unbounded scout input")
     report = json.loads(report_file.read_text(encoding="utf-8"))
-    result = probe_report(report, max_sources=args.max_sources)
+    passage_sink = {} if args.ephemeral_passages is not None else None
+    # Refuse to accidentally write copyrighted excerpts into an artifact
+    # name that a future workflow could confuse with public receipts.
+    private_output = Path(args.ephemeral_passages) if args.ephemeral_passages else None
+    if private_output is not None:
+        if (private_output.parent.name != "out"
+            or not private_output.name.startswith("flowminute-ephemeral-")
+            or private_output.suffix != ".json"
+            or private_output.is_symlink() or private_output.exists()):
+            raise EvidenceError("Only new, ephemeral out/ research files may hold excerpts")
+    result = probe_report(report, max_sources=args.max_sources,
+                          ephemeral_passage_sink=passage_sink)
+    if private_output is not None:
+        limited = {
+            "status": PASSAGE_STATUS,
+            "source_observation_generated_at_utc": result["generated_at_utc"],
+            "sources": list(passage_sink.values()),
+            "not_a_fact_check": True,
+            "not_a_rights_clearance": True,
+            "not_for_public_artifacts": True,
+        }
+        payload = json.dumps(limited,ensure_ascii=True,
+                             separators=(",",":"),allow_nan=False)
+        if len(payload.encode("utf8")) > 16000:
+            raise EvidenceError("Unbounded ephemeral passages")
+        private_output.parent.mkdir(parents=True, exist_ok=True)
+        private_output.write_text(payload+"\n",encoding="utf8")
     target = Path(args.output)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
