@@ -74,7 +74,8 @@ def _review_lead(raw: object) -> dict | None:
         return None
     try:
         parsed = urlsplit(link)
-        if parsed.scheme != "https" or parsed.username or parsed.password:
+        if (parsed.scheme != "https" or parsed.username or parsed.password
+            or parsed.port not in (None, 443) or parsed.fragment):
             return None
         host = (parsed.hostname or "").lower()
         if host not in APPROVED_RESEARCH_ORIGINS[publisher]:
