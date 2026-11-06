@@ -28,7 +28,7 @@ REPOSITORY = re.compile(r"[a-z0-9][a-z0-9._/-]{1,159}\Z")
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 PL = re.compile(r"pl-[a-f0-9]{8,17}\Z")
 ENDPOINT = re.compile(r"vpce-[a-f0-9]{8,17}\Z")
-WORKFLOW = ".github/workflows/flowminute-b4c2-inert-fargate-taskdef.yml"
+WORKFLOW = ".github/workflows/flowminute-b4c4-inert-oci-build-test.yml"
 REQUIRED_SUFFIXES = ("ecr.api", "ecr.dkr", "logs", "s3")
 SCHEMA = "flowminute-owner-image-source-attestation-v1"
 
