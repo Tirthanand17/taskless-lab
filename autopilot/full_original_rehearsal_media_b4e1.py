@@ -30,7 +30,10 @@ from autopilot.real_rehearsal_voice_media_b4e0 import (
 STATUS = "B4E1_FULL_THREE_ORIGINAL_NONFACTUAL_VOICED_REHEARSALS_PHYSICALLY_RENDERED_NOT_PUBLISHABLE"
 PLAN_STATUS = "B4E1_SOURCE_LOCKED_ALL_17_SCENES_NO_PUBLISH"
 FPS = 24
-CAPTION_MAX_CHARS = 152
+# Conservative cap: <=112 original characters keeps phrases within both
+# the portrait 4-line and landscape 2-line caption panels even with
+# natural word boundaries. No original narration is removed.
+CAPTION_MAX_CHARS = 112
 MAX_SPOKEN_CHUNKS_PER_SCENE = 9
 MAX_SPOKEN_CHUNKS_PER_EPISODE = 100
 MAX_EPISODE_SECONDS = {"short":85.0,"long":340.0}
