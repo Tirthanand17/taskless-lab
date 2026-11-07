@@ -93,6 +93,7 @@ jobs:
         env:
           YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
           PUBLISH_ENABLED: ${{ vars.PUBLISH_ENABLED }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           python scripts/publish_youtube.py \
             --episode "${{ inputs.episode }}" \
