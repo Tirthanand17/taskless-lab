@@ -173,6 +173,22 @@ class CaptionCheckpointTests(unittest.TestCase):
                     save_existing_caption_identity(p,video_id=video,caption_id=cap)
             self.assertNotIn("caption_track_id",json.loads(p.read_text()))
 
+    def test_recovery_workflow_no_writes_or_automatic_schedule(self):
+        wf=(Path(__file__).resolve().parents[1]/
+            ".github/workflows/flowminute-youtube-readonly-recovery-b4f3.yml").read_text()
+        self.assertIn("  workflow_dispatch:",wf)
+        self.assertNotIn("  schedule:",wf)
+        self.assertNotIn("  push:",wf)
+        self.assertNotIn("  pull_request:",wf)
+        self.assertIn("permissions:\n  contents: read",wf)
+        self.assertNotIn("contents: write",wf)
+        self.assertIn("environment: youtube-production",wf)
+        self.assertIn("vars.FLOWMINUTE_READONLY_RECOVERY_ENABLED == 'true'",wf)
+        self.assertIn("persist-credentials: false",wf)
+        self.assertNotIn("scripts/publish_youtube.py",wf)
+        self.assertIn("python -m scripts.reconcile_pending_youtube_b4f3",wf)
+        self.assertNotIn("git push",wf)
+
     def test_publisher_saves_track_after_insert_before_first_readback(self):
         source=(Path(__file__).parent/"publish_youtube.py").read_text()
         a=source.index("uploaded_caption=youtube.captions().insert(")
