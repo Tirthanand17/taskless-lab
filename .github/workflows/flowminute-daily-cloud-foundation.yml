@@ -549,6 +549,8 @@ jobs:
           from pathlib import Path
           doc=json.loads(Path("out/flowminute-ephemeral-narration-originality.json").read_text("utf8"))
           assert len(doc["script_fingerprints_sha256"])==3
+          assert len(doc["spoken_4gram_simhash64"])==3
+          assert doc["near_repeat_is_only_a_review_signal"] is True
           assert doc["unique_against_every_prior_day_proven"] is False
           assert doc["actual_human_factual_and_rights_approvals"]==0
           assert doc["youtube_release_authorized"] is False
@@ -556,6 +558,8 @@ jobs:
               f.write("\n## B4g8 repeated spoken narration audit (not fact or rights approval)\n")
               f.write("Historical script fingerprints: "+str(doc["previous_verified_receipt_days_with_script_hashes"])+"/7 days.\n")
               f.write("Exact reused narrations: "+str(sum(doc["exact_repeat_detected_per_slot"]))+"/3.\n")
+              f.write("Possible near-reused stories: "+str(sum(doc["suspected_near_repeat_per_slot"]))+"/3 (approximate 4-gram similarity only, not proof).\\n")
+              f.write("Prior similarity coverage: "+str(doc["previous_verified_receipt_days_with_simhash64"])+"/7 days.\\n")
               f.write("Different headline/date does not make recycled spoken text original. No YouTube writes.\n")
           PY
 
@@ -928,6 +932,8 @@ jobs:
           assert r["release_authorized"] is False
           script=r["unapproved_rehearsal_narration_originality"]
           assert len(script["script_fingerprints_sha256"])==3
+          assert len(script["spoken_4gram_simhash64"])==3
+          assert script["near_repeat_is_only_a_review_signal"] is True
           assert script["youtube_release_authorized"] is False
           assert script["unique_against_every_prior_day_proven"] is False
           lines=["", "## GitHub-only retained public research receipt",
