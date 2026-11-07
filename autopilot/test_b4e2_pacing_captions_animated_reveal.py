@@ -154,14 +154,25 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
             with patch(
                 "autopilot.full_original_rehearsal_media_b4e1._run",
                 return_value="") as encoder:
-                result=_encode_full("ffmpeg",ep,folder,images,durations,
-                                    wav,srt,sum(durations))
+                result=_encode_full(
+                    "ffmpeg",ep,folder,images,durations,wav,srt,sum(durations),
+                    cues=[{"start":0.0,"end":sum(durations),
+                           "text":"Original narration captions stay inside the screen panel."}])
             self.assertEqual(result.suffix,".mp4")
             text=(folder/"EPHEMERAL_ALL_SCENES_ONE_SHOT_REVEAL.ffconcat").read_text()
             self.assertEqual(text.count("\nfile '"),19)
             self.assertEqual(text.count("duration 0.360000"),9)
             self.assertEqual(text.count("duration 12.640000"),9)
-            self.assertIn("MarginV=148",str(encoder.call_args))
+            # The real owner MP4 exposed a clipped top-of-screen SRT bug.
+            # Only authored native-resolution ASS is now allowed for burn.
+            ass=(folder/"EPHEMERAL_NATIVE_PIXEL_VOICE_CAPTIONS.ass").read_text()
+            self.assertIn("PlayResX: 1920",ass)
+            self.assertIn("PlayResY: 1080",ass)
+            self.assertIn("Style: Caption,DejaVu Sans,36",ass)
+            self.assertIn(r"\pos(960,883)",ass)
+            self.assertIn("ass=",str(encoder.call_args))
+            self.assertNotIn("force_style=",str(encoder.call_args))
+            self.assertNotIn("subtitles=",str(encoder.call_args))
             self.assertIn("fps=24",str(encoder.call_args))
             self.assertIn("libx264",str(encoder.call_args))
             self.assertIn("aac",str(encoder.call_args))
@@ -176,13 +187,13 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
                   for _ in ep["scenes"]]
             with self.assertRaises(FullRehearsalRefused):
                 _encode_full("ffmpeg",ep,p,only,[12.0]*4,
-                             p/"not-present.wav",p/"missing.srt",48.)
+                             p/"not-present.wav",p/"missing.srt",48.,cues=[])
             for a,b in only:
                 a.write_bytes(b"a")
                 b.write_bytes(b"b")
             with self.assertRaises(FullRehearsalRefused):
                 _encode_full("ffmpeg",ep,p,only,[1.0]*4,
-                             p/"not-present.wav",p/"missing.srt",4.)
+                             p/"not-present.wav",p/"missing.srt",4.,cues=[])
 
     def test_physical_encoded_frame_change_is_checked_not_assumed_from_png(self):
         fake_frame=bytes([120])*(192*108)
