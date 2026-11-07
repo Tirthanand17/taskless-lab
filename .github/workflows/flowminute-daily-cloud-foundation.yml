@@ -160,13 +160,14 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install actual image decoder before physical storyboard tests (never skip)
+      - name: Install real original image and PCM waveform QA dependencies (never skip)
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check --only-binary=:all: 'Pillow>=11,<13'
+          python -m pip install --disable-pip-version-check --only-binary=:all: 'Pillow>=11,<13' 'numpy>=1.26,<3' 'soundfile>=0.12,<0.14'
           python - <<'PY'
           from PIL import Image
-          print("B4G0_PHYSICAL_PILLOW_VERSION="+str(Image.__version__))
+          import numpy, soundfile
+          print('B4G3_PHYSICAL_PILLOW_NUMPY_SOUNDFILE_READY',Image.__version__,numpy.__version__,soundfile.__version__)
           PY
 
       - name: Verify 48-agent orchestration and strict no-publication gates
