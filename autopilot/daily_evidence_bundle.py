@@ -300,6 +300,7 @@ def build_retained_draft_receipt(
         )
         report=originality_report
         h=report.get("script_fingerprints_sha256") if type(report) is dict else None
+        near=report.get("spoken_4gram_simhash64") if type(report) is dict else None
         if (type(report) is not dict
             or report.get("status")!=ORIGINALITY_STATUS
             or report.get("plan_day_ist")!=day
@@ -310,6 +311,11 @@ def build_retained_draft_receipt(
             or len(set(h))!=3
             or any(type(x) is not str or
                    re.fullmatch(r"[0-9a-f]{64}",x) is None for x in h)
+            or type(near) is not list or len(near)!=3
+            or any(type(x) is not str or
+                   re.fullmatch(r"[0-9a-f]{16}",x) is None for x in near)
+            or report.get("near_repeat_hamming_distance_threshold")!=8
+            or report.get("near_repeat_is_only_a_review_signal") is not True
             or report.get("unique_against_every_prior_day_proven") is not False
             or report.get("all_three_daily_videos_factually_original_or_rights_checked") is not False
             or report.get("actual_human_factual_and_rights_approvals")!=0
@@ -321,6 +327,8 @@ def build_retained_draft_receipt(
             "plan_day_ist":day,
             "episode_slots":["short_am","long","short_pm"],
             "script_fingerprints_sha256":h,
+            "spoken_4gram_simhash64":near,
+            "near_repeat_is_only_a_review_signal":True,
             "source_fingerprint_domain":
                 "NORMALIZED_SPOKEN_SCENES_NOT_EPISODE_ID",
             "unique_against_every_prior_day_proven":False,

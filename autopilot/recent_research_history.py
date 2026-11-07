@@ -140,6 +140,7 @@ def _receipt_from_archive(data: bytes, day: date) -> dict | None:
     # Old archival research-only receipts are accepted, but they are NOT
     # retroactively credited with a real narration originality check.
     hashes_of_voice=set()
+    simhashes_of_voice=set()
     scripted=plan.get("unapproved_rehearsal_narration_originality")
     if scripted is not None:
         if (type(scripted) is not dict
@@ -161,9 +162,21 @@ def _receipt_from_archive(data: bytes, day: date) -> dict | None:
             raise HistoryRefused(
                 "Invalid or authority-claiming unapproved narration hash receipt")
         hashes_of_voice=set(scripted["script_fingerprints_sha256"])
+        # Backward compatible with B4g8 research receipts (exact SHA only).
+        # Near-similarity coverage is NEVER invented for older artifacts.
+        signatures=scripted.get("spoken_4gram_simhash64")
+        if signatures is not None:
+            if (type(signatures) is not list or len(signatures)!=3
+                or any(type(x) is not str
+                       or re.fullmatch(r"[0-9a-f]{16}",x) is None
+                       for x in signatures)
+                or scripted.get("near_repeat_is_only_a_review_signal") is not True):
+                raise HistoryRefused("Invalid unapproved narration similarity receipt")
+            simhashes_of_voice=set(signatures)
     return {"plan_day_ist":pday.isoformat(),"subject_hashes":hashes,
             "source_ids":source_ids,
-            "historical_spoken_sha256":hashes_of_voice}
+            "historical_spoken_sha256":hashes_of_voice,
+            "historical_spoken_simhash64":simhashes_of_voice}
 
 
 def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
@@ -204,6 +217,8 @@ def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
     hashes=set()
     spoken_hashes=set()
     spoken_days=set()
+    simhashes=set()
+    simhash_days=set()
     downloads=0
     for created,run_id,attempt in relevant:
         if len(seen_days)>=DAYS or downloads>=MAX_DOWNLOADS:
@@ -235,6 +250,9 @@ def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
         spoken_hashes.update(entry["historical_spoken_sha256"])
         if entry["historical_spoken_sha256"]:
             spoken_days.add(planned)
+        simhashes.update(entry["historical_spoken_simhash64"])
+        if entry["historical_spoken_simhash64"]:
+            simhash_days.add(planned)
         seen_days.add(planned)
         seen_run_days.add(rday)
     return {
@@ -245,6 +263,8 @@ def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
         "historical_subject_sha256":sorted(hashes),
         "historical_script_sha256":sorted(spoken_hashes),
         "verified_prior_script_review_days":len(spoken_days),
+        "historical_script_simhash64":sorted(simhashes),
+        "verified_prior_script_simhash_days":len(simhash_days),
         "trusted_run_receipt_download_attempts":downloads,
         "not_a_youtube_publication_readback":True,
         "video_release_authorized":False,

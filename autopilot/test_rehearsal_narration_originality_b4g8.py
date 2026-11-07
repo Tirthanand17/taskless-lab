@@ -84,6 +84,36 @@ class UniqueSpokenNarrationSourceTests(unittest.TestCase):
         self.assertEqual(new["exact_repeat_detected_per_slot"],
                          [False,True,True])
 
+    def test_simhash_flags_tiny_wording_edit_without_claiming_fact_or_rights(self):
+        original=inspect_narration_originality(self.samples,self.history)
+        self.assertEqual(len(original["spoken_4gram_simhash64"]),3)
+        self.assertTrue(all(len(h)==16 for h in original["spoken_4gram_simhash64"]))
+        self.assertEqual(original["previous_verified_receipt_days_with_simhash64"],0)
+        self.assertFalse(original["suspected_near_repeat_in_previous_7_day_receipts"])
+        new=deepcopy(self.samples)
+        old_day=new["research_day_ist"]
+        new["research_day_ist"]="2026-11-08"
+        for ep in new["three_episodes"]:
+            ep["episode_id"]=ep["episode_id"].replace(
+                old_day.replace("-",""),"20261108")
+        new["three_episodes"][0]["scenes"][0][
+            "original_voiceover_rehearsal_text"]+=" One extra imaginary check."
+        self.history.update({
+            "verified_prior_research_days":1,
+            "verified_prior_script_review_days":1,
+            "verified_prior_script_simhash_days":1,
+            "historical_script_simhash64":original["spoken_4gram_simhash64"],
+        })
+        result=inspect_narration_originality(new,self.history)
+        self.assertFalse(result["exact_repeat_detected_in_previous_7_day_receipts"])
+        self.assertTrue(result["suspected_near_repeat_per_slot"][0])
+        self.assertTrue(result["near_repeat_is_only_a_review_signal"])
+        self.assertFalse(result["youtube_release_authorized"])
+        self.assertFalse(result["all_three_daily_videos_factually_original_or_rights_checked"])
+        self.history["historical_script_simhash64"]=["garbage"]
+        with self.assertRaises(NarrationOriginalityRefused):
+            inspect_narration_originality(new,self.history)
+
     def test_bogus_prior_hashes_approvals_or_source_identity_refused(self):
         for mutation in (
             lambda x:x["history"].update(
@@ -123,6 +153,9 @@ class UniqueSpokenNarrationSourceTests(unittest.TestCase):
         saved=receipt["unapproved_rehearsal_narration_originality"]
         self.assertEqual(saved["script_fingerprints_sha256"],
                          preview["script_fingerprints_sha256"])
+        self.assertEqual(saved["spoken_4gram_simhash64"],
+                         preview["spoken_4gram_simhash64"])
+        self.assertTrue(saved["near_repeat_is_only_a_review_signal"])
         self.assertFalse(saved["youtube_release_authorized"])
         self.assertFalse(receipt["release_authorized"])
         self.assertFalse(receipt["youtube_publishing_enabled"])
@@ -141,6 +174,7 @@ class UniqueSpokenNarrationSourceTests(unittest.TestCase):
             zip_receipts(editorial,research),
             __import__("datetime").date(2026,11,8))
         self.assertEqual(doc["historical_spoken_sha256"],set())
+        self.assertEqual(doc["historical_spoken_simhash64"],set())
 
     def test_prior_trusted_research_receipt_parses_only_exact_safe_script_hashes(self):
         from autopilot.test_recent_research_history_b4d8 import zip_receipts
@@ -164,6 +198,19 @@ class UniqueSpokenNarrationSourceTests(unittest.TestCase):
             zip_receipts(editorial,research),date(2026,11,8))
         self.assertEqual(doc["historical_spoken_sha256"],
                          set(preview["script_fingerprints_sha256"]))
+        self.assertEqual(doc["historical_spoken_simhash64"],set())
+        # New B4g9 receipts retain similarity signals, not spoken text.
+        enriched=deepcopy(research)
+        enriched["unapproved_rehearsal_narration_originality"].update({
+            "spoken_4gram_simhash64":preview["spoken_4gram_simhash64"],
+            "near_repeat_is_only_a_review_signal":True,
+        })
+        enriched.pop("receipt_sha256")
+        enriched["receipt_sha256"]=sha256(digest_canonical(enriched)).hexdigest()
+        with_sim=_receipt_from_archive(
+            zip_receipts(editorial,enriched),date(2026,11,8))
+        self.assertEqual(with_sim["historical_spoken_simhash64"],
+                         set(preview["spoken_4gram_simhash64"]))
         # Adding unapproved metadata without updating an authoritative
         # research-receipt root MUST be spotted by future source-gate tests.
         bad=deepcopy(research)
