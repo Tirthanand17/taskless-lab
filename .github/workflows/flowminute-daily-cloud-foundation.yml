@@ -40,6 +40,8 @@ on:
       - "autopilot/rehearsal_encoded_signal_review_b4f4.py"
       - "autopilot/encoded_aac_loudness_review_b4g4.py"
       - "autopilot/verified_aac_mastering_b4g5.py"
+      - "autopilot/ephemeral_final_aac_evidence_summary_b4h4.py"
+      - "autopilot/test_ephemeral_final_aac_evidence_summary_b4h4.py"
       - "autopilot/test_verified_aac_mastering_b4g5.py"
       - "autopilot/project_phase_acceptance_audit_b4g6.py"
       - "autopilot/test_project_phase_acceptance_audit_b4g6.py"
@@ -107,6 +109,8 @@ on:
       - "autopilot/rehearsal_encoded_signal_review_b4f4.py"
       - "autopilot/encoded_aac_loudness_review_b4g4.py"
       - "autopilot/verified_aac_mastering_b4g5.py"
+      - "autopilot/ephemeral_final_aac_evidence_summary_b4h4.py"
+      - "autopilot/test_ephemeral_final_aac_evidence_summary_b4h4.py"
       - "autopilot/test_verified_aac_mastering_b4g5.py"
       - "autopilot/project_phase_acceptance_audit_b4g6.py"
       - "autopilot/test_project_phase_acceptance_audit_b4g6.py"
@@ -744,6 +748,15 @@ jobs:
               summary.write("No fact/rights/human final-watch approval or YouTube release; media discarded.\n")
           print("B4E1_FULL_17_ORIGINAL_SCENE_KOKORO_NARRATED_AND_DECODED_NO_PUBLISH")
           PY
+
+      - name: Report already verified final AAC physical measurements from three ephemeral MP4s (NO PUBLISH)
+        if: github.event_name != 'pull_request'
+        timeout-minutes: 2
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.ephemeral_final_aac_evidence_summary_b4h4 \
+            --report /tmp/flowminute-b4e1-complete-rehearsals/EPHEMERAL_FULL_VOICE_REHEARSAL_QA.json
+          echo "B4H4_ONLY_NUMERIC_EXISTING_SHA_LOCKED_FINAL_AAC_EVIDENCE_NO_VIDEO_RETENTION"
 
       - name: Export three original videos for explicit one-day human review (manual only)
         if: github.event_name == 'workflow_dispatch' && inputs.retain_rehearsal_review_artifact == true && github.ref == 'refs/heads/main'
