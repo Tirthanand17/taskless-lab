@@ -252,9 +252,13 @@ def _draw_original_full_scene(ep:dict, scene:dict, path:Path,
         raise FullRehearsalRefused("Unrecognized original storyboard scene")
     try:
         canvas=render_editorial_frame(ep,scene,revealed=revealed)
-    except SceneDesignRefused:
+    except SceneDesignRefused as exc:
+        # B4g0: preauthored constant artwork labels only. A detailed bounded
+        # clip diagnostic is needed to prevent a falsely green CI that skipped
+        # image rendering. Never log the external research claim/script.
         raise FullRehearsalRefused(
-            "Original storyboard failed physical text/image safe-area checks"
+            "Original storyboard physical safe-area invalid for original beat "
+            +str(scene["scene_id"])+": "+str(exc)[:100]
         ) from None
     path.parent.mkdir(parents=True,exist_ok=True)
     canvas.save(path,"PNG",optimize=True)
