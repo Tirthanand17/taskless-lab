@@ -322,7 +322,7 @@ def _review_markdown(data: dict) -> str:
     for x in data["episodes"]:
         lines += [
             f"## {x['slot']} — {x['format']} — {x['episode_id']}",
-            f"SHA256 MP4: \`{x['files']['PREVIEW_UNAPPROVED.mp4']['sha256']}\`",
+            f"SHA256 MP4: `{x['files']['PREVIEW_UNAPPROVED.mp4']['sha256']}`",
             f"FFprobe: {x['actual_ffprobe']['resolution']}, {x['actual_ffprobe']['duration_seconds']} seconds",
             f"Captions: {x['actual_srt']['caption_cue_count']} checked SRT time ranges",
             "",
