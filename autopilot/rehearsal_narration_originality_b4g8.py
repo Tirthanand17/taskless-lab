@@ -22,7 +22,7 @@ HEX64=re.compile(r"[0-9a-f]{64}\Z")
 SLOTS=("short_am","long","short_pm")
 MAX_REHEARSAL=128_000
 MAX_HISTORY=512_000
-MIN_WORDS=45
+MIN_WORDS=15
 
 
 class NarrationOriginalityRefused(ValueError):
