@@ -110,6 +110,15 @@ class PostInsertProcessedReadbackTests(unittest.TestCase):
         service.captions.return_value.list.assert_called_once_with(
             part="snippet",videoId=VIDEO)
 
+    def test_api_offset_timestamp_represents_same_locked_utc_instant(self):
+        service=youtube_fake()
+        v=service.videos.return_value.list.return_value.execute.return_value["items"][0]
+        v["status"]["publishAt"]="2026-11-08T11:00:00+05:30"
+        self.assertTrue(check(service)["authenticated_video_and_caption_api_readback"])
+        v["status"]["publishAt"]="2026-11-08T11:01:00+05:30"
+        with self.assertRaises(OwnerYouTubeReadbackRefused):
+            check(service)
+
     def test_wrong_video_channel_and_future_slot_never_verify(self):
         for loc,bad in (
             ("id","AAAAAAAAAAA"),
