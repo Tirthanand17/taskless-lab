@@ -169,7 +169,7 @@ def inspect_review_directory(
     folder: Path, *, ffmpeg: str | None = None, runner=None,
 ) -> dict:
     """Inspect three exact exported MP4 hashes; never follow other paths."""
-    _need(type(folder) is Path and folder.is_dir() and not folder.is_symlink(),
+    _need(isinstance(folder, Path) and folder.is_dir() and not folder.is_symlink(),
           "Invalid owner-review artifact folder")
     manifest_path=folder/"REVIEW_ONLY_NO_PUBLISH.json"
     _need(manifest_path.is_file() and not manifest_path.is_symlink()
