@@ -236,7 +236,7 @@ def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool,
     identity=ep.get("episode_id")
     family=ep.get("synthetic_case_family")
     case_title=ep.get("synthetic_case_title")
-    m=re.fullmatch(r"fm_(\\d{8})_(short_am|long|short_pm)",identity) if type(identity) is str else None
+    m=re.fullmatch(r"fm_(\d{8})_(short_am|long|short_pm)",identity) if type(identity) is str else None
     _need(m is not None and m.group(2)==slot
           and type(family) is str and family in SCRIPT_THEMES
           and type(case_title) is str,
