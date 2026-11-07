@@ -110,6 +110,19 @@ def inspect(manifest: dict, worksheet: dict) -> dict:
         _require(type(video.get("scenes")) is list and
                  len(video["scenes"]) == scene_count,
                  "Incorrect canonical scene count")
+        # New artifacts carry exact original PCM-derived scene clocks. Keep
+        # older human worksheet artifacts parseable without inventing timings.
+        timeline=None
+        if "scene_timeline_from_original_pcm" in entry:
+            from autopilot.audio_scene_navigation_b4g1 import (
+                SceneTimecodeRefused, validate_audio_scene_timeline,
+            )
+            try:
+                timeline=validate_audio_scene_timeline(
+                    entry["scene_timeline_from_original_pcm"],seconds,scene_count)
+            except SceneTimecodeRefused:
+                raise ReviewValidationError(
+                    "Media timeline changed after original MP4 source lock") from None
         check_statuses = []
         for key in CHECKS:
             state = checks[key]
@@ -127,6 +140,18 @@ def inspect(manifest: dict, worksheet: dict) -> dict:
         for number, scene in enumerate(video["scenes"], start=1):
             _require(type(scene) is dict and scene.get("scene_number") == number,
                      "Missing, reordered or duplicated scene")
+            if timeline is not None:
+                start=scene.get("source_start_seconds")
+                end=scene.get("source_end_seconds")
+                expect=timeline[number-1]
+                _require(type(start) in (int,float) and
+                         type(end) in (int,float) and
+                         start==expect["start_seconds"] and
+                         end==expect["end_seconds"],
+                         "Private review note scene position changed from source MP4")
+            elif ("source_start_seconds" in scene or "source_end_seconds" in scene):
+                raise ReviewValidationError(
+                    "Orphaned video scene times without SHA-bound manifest")
             state = scene.get("review_status")
             timestamp = scene.get("timecode_mm_ss")
             defect = scene.get("defect_notes")
