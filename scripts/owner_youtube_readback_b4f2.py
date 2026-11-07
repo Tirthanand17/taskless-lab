@@ -6,6 +6,7 @@ This module has no OAuth, database or insert; tests use fake injected clients.
 """
 from __future__ import annotations
 import re
+from datetime import datetime, timezone
 
 CHANNEL_ID=re.compile(r"UC[A-Za-z0-9_-]{22}\Z")
 VIDEO_ID=re.compile(r"[A-Za-z0-9_-]{11}\Z")
@@ -18,6 +19,21 @@ class OwnerYouTubeReadbackRefused(ValueError):
 def _require(ok: bool, reason: str) -> None:
     if not ok:
         raise OwnerYouTubeReadbackRefused(reason)
+
+
+def _same_utc_instant(actual: object, pinned_utc: str) -> bool:
+    """Compare API RFC3339 offset/precision to strict owner-pinned UTC-Z."""
+    if type(actual) is not str or type(pinned_utc) is not str:
+        return False
+    try:
+        actual_time=datetime.fromisoformat(actual.replace("Z","+00:00"))
+        expected_time=datetime.fromisoformat(pinned_utc.replace("Z","+00:00"))
+    except ValueError:
+        return False
+    return (actual_time.tzinfo is not None and
+            expected_time.tzinfo is not None and
+            actual_time.astimezone(timezone.utc) ==
+            expected_time.astimezone(timezone.utc))
 
 
 def verify_authenticated_owner_channel(youtube: object, expected_channel_id: str) -> dict:
@@ -73,7 +89,7 @@ def verify_processed_private_schedule_and_caption(
              "Invalid intended channel ID")
     _require(type(expected_caption_id) is str and
              1 <= len(expected_caption_id) <= 128 and
-             re.fullmatch(r"[A-Za-z0-9_-]+",expected_caption_id) is not None,
+             re.fullmatch(r"[A-Za-z0-9_.-]+",expected_caption_id) is not None,
              "Missing uploaded caption-track identity")
     _require(expected_language in ("en","hi") and
              type(expected_synthetic_disclosure) is bool and
@@ -116,7 +132,7 @@ def verify_processed_private_schedule_and_caption(
         snippet.get("title")==expected_title and
         snippet.get("description")==expected_description and
         status.get("privacyStatus")=="private" and
-        status.get("publishAt")==expected_publish_at and
+        _same_utc_instant(status.get("publishAt"),expected_publish_at) and
         status.get("uploadStatus")=="processed" and
         processing.get("processingStatus")=="succeeded" and
         content.get("hasCustomThumbnail") is True and
