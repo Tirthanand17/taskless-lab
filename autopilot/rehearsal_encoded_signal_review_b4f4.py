@@ -30,13 +30,12 @@ MAX_SCAN_SECONDS = 360
 MAX_LOG_BYTES = 350_000
 HEX64 = re.compile(r"[0-9a-f]{64}\Z")
 BLACK = re.compile(r"black_start:([0-9]+(?:\.[0-9]+)?)\s+black_end:([0-9]+(?:\.[0-9]+)?)\s+black_duration:([0-9]+(?:\.[0-9]+)?)")
-FREEZE_START = re.compile(r"freeze_start:\s*([0-9]+(?:\.[0-9]+)?)")
 # Actual FFmpeg 7.x and imageio-ffmpeg write THREE separate log records:
 # lavfi.freezedetect.freeze_start: 3
 # lavfi.freezedetect.freeze_duration: 3
 # lavfi.freezedetect.freeze_end: 6
 # Never assume freeze_end and freeze_duration share one physical stderr line.
-FREEZE_EVENT = re.compile(r"(?:lavfi\\.freezedetect\\.)?freeze_(start|duration|end):\\s*([0-9]+(?:\\.[0-9]+)?)")
+FREEZE_EVENT = re.compile(r"(?:lavfi\.freezedetect\.)?freeze_(start|duration|end):\s*([0-9]+(?:\.[0-9]+)?)")
 SILENCE = re.compile(r"silence_end:\s*([0-9]+(?:\.[0-9]+)?)\s*\|\s*silence_duration:\s*([0-9]+(?:\.[0-9]+)?)")
 PEAK = re.compile(r"max_volume:\s*(-?(?:[0-9]+(?:\.[0-9]+)?|inf))\s*dB")
 MEAN = re.compile(r"mean_volume:\s*(-?(?:[0-9]+(?:\.[0-9]+)?|inf))\s*dB")
