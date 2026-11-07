@@ -641,6 +641,50 @@ jobs:
           print("B4E1_FULL_17_ORIGINAL_SCENE_KOKORO_NARRATED_AND_DECODED_NO_PUBLISH")
           PY
 
+      - name: Export three original videos for explicit one-day human review (manual only)
+        if: github.event_name == 'workflow_dispatch' && inputs.retain_rehearsal_review_artifact == true && github.ref == 'refs/heads/main'
+        env:
+          FLOWMINUTE_EXPLICIT_REVIEW_OPT_IN: "true"
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.manual_rehearsal_review_export_b4e3 \
+            --report /tmp/flowminute-b4e1-complete-rehearsals/EPHEMERAL_FULL_VOICE_REHEARSAL_QA.json \
+            --origin /tmp/flowminute-b4e1-complete-rehearsals \
+            --output-dir /tmp/flowminute-b4e3-unapproved-owner-review
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          folder=Path("/tmp/flowminute-b4e3-unapproved-owner-review")
+          r=json.loads((folder/"REVIEW_ONLY_NO_PUBLISH.json").read_text())
+          assert r["status"]=="B4E3_PUBLICLY_READABLE_ONE_DAY_HUMAN_REVIEW_ONLY_NO_PUBLISH"
+          assert r["original_synthetic_educational_video_files"]==3
+          assert r["artifact_retention_days"]==1 and r["publishing_authorized"] is False
+          assert r["source_news_and_publisher_article_passages_included"] is False
+          assert r["rights_and_owner_approvals"]==0 and r["youtube_releases"]==0
+          assert len(list(folder.glob("*.mp4")))==3
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as f:
+              f.write("\n## Manual human review artifact — UNAPPROVED educational videos\n")
+              f.write("3 original MP4s, 1-day retention, strictly no YouTube or factual release.\n")
+              f.write("These GitHub artifacts are accessible to anyone with repository read access.\n")
+          print("B4E3_EXPLICIT_REVIEW_OPTIN_THREE_MP4_PACKAGED_ZERO_PUBLISH")
+          PY
+
+      - name: Retain manually requested unapproved synthetic MP4s for just one day
+        if: github.event_name == 'workflow_dispatch' && inputs.retain_rehearsal_review_artifact == true && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-UNAPPROVED-owner-review-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/flowminute-b4e3-unapproved-owner-review/
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
+      - name: Remove all optional human review files, including after upload errors
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b4e3-unapproved-owner-review
+          echo "B4E3_LOCAL_REVIEW_MEDIA_CLEANED"
+
       - name: Destroy ALL full-length rehearsal audio/caption/image/media files even on failure
         if: always()
         run: |
