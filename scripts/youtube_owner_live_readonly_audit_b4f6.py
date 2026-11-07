@@ -39,6 +39,15 @@ SAFE_FAILURES = frozenset({
     "OAUTH_REQUIRED_CREDENTIAL_FIELDS_MISSING",
     "OAUTH_CLIENT_INITIALIZATION_FAILED",
     "OAUTH_CHANNEL_API_READBACK_UNAVAILABLE",
+    "OAUTH_REFRESH_FAILED",
+    "OAUTH_TRANSPORT_FAILED",
+    "YOUTUBE_CHANNEL_HTTP_400_INVALID_REQUEST",
+    "YOUTUBE_CHANNEL_HTTP_401_OAUTH_REJECTED",
+    "YOUTUBE_CHANNEL_HTTP_403_SCOPE_QUOTA_OR_FORBIDDEN",
+    "YOUTUBE_CHANNEL_HTTP_404_NOT_FOUND",
+    "YOUTUBE_CHANNEL_HTTP_408_TIMEOUT",
+    "YOUTUBE_CHANNEL_HTTP_429_THROTTLED",
+    "YOUTUBE_CHANNEL_HTTP_5XX_UPSTREAM",
     "OWNER_CHANNEL_MISMATCH_OR_AMBIGUOUS",
     "OWNER_OAUTH_CHANNEL_NOT_INDEPENDENTLY_VERIFIED",
 })
@@ -138,11 +147,31 @@ def audit_live_owner_readonly(youtube: object, *, root: Path,
     try:
         owner=verify_authenticated_owner_channel(owned,EXPECTED_CHANNEL)
     except Exception as exc:
-        # Only compare against a fixed, locally owned error string. Never
-        # expose arbitrary Google or provider messages in logs/artifacts.
-        code=("OWNER_CHANNEL_MISMATCH_OR_AMBIGUOUS"
-              if str(exc)=="OAuth channel is not exactly the intended owner channel"
-              else "OAUTH_CHANNEL_API_READBACK_UNAVAILABLE")
+        # The channel verifier removes raw Google exceptions and retains
+        # only bounded numeric HTTP status / exact trusted auth exception
+        # class. Every diagnostic string below is a locally defined enum.
+        # Never stringify/repr/log the Google SDK exception or response.
+        from scripts.owner_youtube_readback_b4f2 import OwnerYouTubeReadbackRefused
+        code="OAUTH_CHANNEL_API_READBACK_UNAVAILABLE"
+        if type(exc) is OwnerYouTubeReadbackRefused:
+            if str(exc)=="OAuth channel is not exactly the intended owner channel":
+                code="OWNER_CHANNEL_MISMATCH_OR_AMBIGUOUS"
+            elif exc.safe_auth_failure in ("OAUTH_REFRESH_FAILED",
+                                         "OAUTH_TRANSPORT_FAILED"):
+                code=exc.safe_auth_failure
+            else:
+                code={
+                    400:"YOUTUBE_CHANNEL_HTTP_400_INVALID_REQUEST",
+                    401:"YOUTUBE_CHANNEL_HTTP_401_OAUTH_REJECTED",
+                    403:"YOUTUBE_CHANNEL_HTTP_403_SCOPE_QUOTA_OR_FORBIDDEN",
+                    404:"YOUTUBE_CHANNEL_HTTP_404_NOT_FOUND",
+                    408:"YOUTUBE_CHANNEL_HTTP_408_TIMEOUT",
+                    429:"YOUTUBE_CHANNEL_HTTP_429_THROTTLED",
+                    500:"YOUTUBE_CHANNEL_HTTP_5XX_UPSTREAM",
+                    502:"YOUTUBE_CHANNEL_HTTP_5XX_UPSTREAM",
+                    503:"YOUTUBE_CHANNEL_HTTP_5XX_UPSTREAM",
+                    504:"YOUTUBE_CHANNEL_HTTP_5XX_UPSTREAM",
+                }.get(exc.safe_http_status,code)
         raise OwnerLiveAuditRefused(code) from None
     _need(owner.get("authenticated_channel_id")==EXPECTED_CHANNEL,
           "Owner identity mismatch, no release permission")

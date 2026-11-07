@@ -13,7 +13,19 @@ VIDEO_ID=re.compile(r"[A-Za-z0-9_-]{11}\Z")
 
 
 class OwnerYouTubeReadbackRefused(ValueError):
-    """Wrong or ambiguous owner channel, or incomplete readback."""
+    """Wrong or ambiguous owner channel, or incomplete readback.
+
+    Only numeric HTTP statuses and fixed known Google exception *types* can
+    be retained for owner diagnostics; never retain external error messages,
+    OAuth response bodies, request URLs, tokens, or raw HTTP objects.
+    """
+
+    def __init__(self, reason: str, *,
+                 safe_http_status: int | None = None,
+                 safe_auth_failure: str | None = None):
+        super().__init__(reason)
+        self.safe_http_status = safe_http_status
+        self.safe_auth_failure = safe_auth_failure
 
 
 def _require(ok: bool, reason: str) -> None:
@@ -43,9 +55,24 @@ def verify_authenticated_owner_channel(youtube: object, expected_channel_id: str
              "Malformed target channel ID: no upload")
     try:
         response=youtube.channels().list(part="id",mine=True,maxResults=2).execute()
-    except Exception:
+    except Exception as error:
+        # The existing manual publisher must still FAIL CLOSED. A numeric
+        # status or SDK class can help the separate no-write audit tell
+        # revoked OAuth apart from missing scope or transient quota issues.
+        # Never stringify/repr/chain a Google error: it may contain URLs or
+        # authentication material.
+        response_status=getattr(getattr(error,"resp",None),"status",None)
+        safe_status=(response_status if type(response_status) is int
+                     and response_status in (400,401,403,404,408,429,500,502,503,504)
+                     else None)
+        class_marker=(type(error).__module__,type(error).__name__)
+        safe_auth=("OAUTH_REFRESH_FAILED" if class_marker==(
+                   "google.auth.exceptions","RefreshError") else
+                   "OAUTH_TRANSPORT_FAILED" if class_marker==(
+                   "google.auth.exceptions","TransportError") else None)
         raise OwnerYouTubeReadbackRefused(
-            "Owner-authenticated channels.list unavailable; stop before insert"
+            "Owner-authenticated channels.list unavailable; stop before insert",
+            safe_http_status=safe_status,safe_auth_failure=safe_auth
         ) from None
     _require(type(response) is dict, "Malformed owner channel response")
     entries=response.get("items")
