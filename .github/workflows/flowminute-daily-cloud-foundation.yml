@@ -37,6 +37,8 @@ on:
       - "autopilot/test_full_original_caption_ass_b4f7.py"
       - "autopilot/manual_rehearsal_review_export_b4e3.py"
       - "autopilot/rehearsal_encoded_signal_review_b4f4.py"
+      - "autopilot/encoded_aac_loudness_review_b4g4.py"
+      - "autopilot/test_encoded_aac_loudness_review_b4g4.py"
       - "autopilot/owner_signal_timeline_b4f5.py"
       - "autopilot/test_owner_signal_timeline_b4f5.py"
       - "autopilot/test_rehearsal_encoded_signal_review_b4f4.py"
@@ -95,6 +97,8 @@ on:
       - "autopilot/test_full_original_caption_ass_b4f7.py"
       - "autopilot/manual_rehearsal_review_export_b4e3.py"
       - "autopilot/rehearsal_encoded_signal_review_b4f4.py"
+      - "autopilot/encoded_aac_loudness_review_b4g4.py"
+      - "autopilot/test_encoded_aac_loudness_review_b4g4.py"
       - "autopilot/owner_signal_timeline_b4f5.py"
       - "autopilot/test_owner_signal_timeline_b4f5.py"
       - "autopilot/test_rehearsal_encoded_signal_review_b4f4.py"
@@ -173,7 +177,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_audio_scene_navigation_b4g1 autopilot.test_cinematic_scene_board_b4f9 autopilot.test_one_way_storyboard_timing_b4g2 autopilot.test_original_pcm_sound_design_b4g3 autopilot.test_quick_storyboard_contact_sheet_b4g0 autopilot.test_full_original_caption_ass_b4f7 autopilot.test_manual_rehearsal_review_export_b4e3 autopilot.test_rehearsal_encoded_signal_review_b4f4 autopilot.test_owner_signal_timeline_b4f5 autopilot.test_review_worksheet_validator_b4e6 autopilot.test_offline_review_portal_b4e7 autopilot.test_youtube_private_resumable_contract_b4e8 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_audio_scene_navigation_b4g1 autopilot.test_cinematic_scene_board_b4f9 autopilot.test_one_way_storyboard_timing_b4g2 autopilot.test_original_pcm_sound_design_b4g3 autopilot.test_quick_storyboard_contact_sheet_b4g0 autopilot.test_full_original_caption_ass_b4f7 autopilot.test_manual_rehearsal_review_export_b4e3 autopilot.test_rehearsal_encoded_signal_review_b4f4 autopilot.test_encoded_aac_loudness_review_b4g4 autopilot.test_owner_signal_timeline_b4f5 autopilot.test_review_worksheet_validator_b4e6 autopilot.test_offline_review_portal_b4e7 autopilot.test_youtube_private_resumable_contract_b4e8 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -758,6 +762,40 @@ jobs:
               f.write("Detections are advisory; owner must watch all three MP4s; no publication approval.\n")
           PY
 
+      - name: Measure actual final AAC LUFS and true peak without audio modification
+        if: github.event_name == 'workflow_dispatch' && inputs.retain_rehearsal_review_artifact == true && github.ref == 'refs/heads/main'
+        timeout-minutes: 9
+        env:
+          FLOWMINUTE_EXPLICIT_REVIEW_OPT_IN: "true"
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.encoded_aac_loudness_review_b4g4 \
+            --review-dir /tmp/flowminute-b4e3-unapproved-owner-review
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          folder=Path("/tmp/flowminute-b4e3-unapproved-owner-review")
+          doc=json.loads((folder/"ENCODED_AAC_LOUDNESS_TRUE_PEAK_UNAPPROVED.json").read_text("utf8"))
+          assert doc["status"]=="B4G4_REAL_ENCODED_AAC_R128_AND_TRUE_PEAK_OWNER_REVIEW_ONLY"
+          assert doc["videos_measured_from_real_encoded_aac"]==3
+          assert doc["original_narrated_scenes_represented"]==17
+          assert doc["normalization_filter_output_was_discarded_not_reencoded"] is True
+          assert doc["human_audio_playback_reviews"]==0
+          assert doc["factual_and_media_rights_approvals"]==0
+          assert doc["youtube_writes_or_release_authority"]==0
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as stream:
+              stream.write("\n## Final encoded AAC integrated LUFS / true peak — unapproved owner review\n")
+              for v in doc["videos"]:
+                  stream.write("- "+v["slot"]+
+                      ": input integrated "+str(v["measured_encoded_integrated_lufs"])+" LUFS; "+
+                      "input oversampled true peak "+str(v["measured_encoded_true_peak_dbtp"])+" dBTP; "+
+                      "input loudness range "+str(v["measured_encoded_loudness_range_lu"])+" LU. "+
+                      "Warnings: "+", ".join(v["warnings"] or ["none measured"])+".\n")
+              stream.write("Cross-video integrated loudness difference: "+
+                  str(doc["three_video_integrated_lufs_spread"])+" LU.\n")
+              stream.write("Advisory numerical measurements of final AAC input only: no auto-mastering, human listening, fact/rights signoff or YouTube release.\n")
+          PY
+
       - name: Bind 3 video signal warnings to SHA-locked offline owner player (no autoplay, no approval)
         if: github.event_name == 'workflow_dispatch' && inputs.retain_rehearsal_review_artifact == true && github.ref == 'refs/heads/main'
         env:
@@ -787,6 +825,7 @@ jobs:
               "HUMAN_REVIEW_WORKSHEET_UNFILLED.json",
               "OPEN_LOCAL_REVIEW_DASHBOARD.html",
               "ENCODED_MP4_SIGNAL_WARNINGS_UNAPPROVED.json",
+              "ENCODED_AAC_LOUDNESS_TRUE_PEAK_UNAPPROVED.json",
           }
           print("B4F5_THREE_VIDEO_SHA_LOCKED_SEEKABLE_WARNING_PLAYER_ZERO_PUBLISH")
           PY
