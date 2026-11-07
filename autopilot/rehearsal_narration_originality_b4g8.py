@@ -67,6 +67,24 @@ def _lexical_terms(scenes:object)->set[str]:
     return out
 
 
+def _simhash64(scenes:object)->str:
+    """Approximate 4-word overlap, no spoken text retained in history.
+
+    A 64-bit SimHash is a *similarity hint*, NOT proof that two scripts
+    have been copied, checked for rights, or cleared for publication.
+    """
+    grams=_lexical_terms(scenes)
+    _need(bool(grams), "No spoken words for similarity diagnosis")
+    weights=[0]*64
+    for phrase in grams:
+        value=int.from_bytes(sha256(
+            b"FLOWMINUTE_B4G9_SPOKEN_4GRAM_V1\0"+phrase.encode("utf8")
+        ).digest()[:8],"big")
+        for bit in range(64):
+            weights[bit]+=1 if value & (1<<bit) else -1
+    return f"{sum((1<<bit) for bit,v in enumerate(weights) if v>0):016x}"
+
+
 def inspect_narration_originality(rehearsals:object,history:object)->dict:
     _need(type(rehearsals) is dict
           and rehearsals.get("status")==
@@ -97,10 +115,21 @@ def inspect_narration_originality(rehearsals:object,history:object)->dict:
     _need(len(prior)<=21 and len(set(prior))==len(prior)
           and all(type(x) is str and HEX64.fullmatch(x) for x in prior),
           "Unbounded or forged historical spoken-content fingerprints")
+    simprior=history.get("historical_script_simhash64",[])
+    simdays=history.get("verified_prior_script_simhash_days",0)
+    _need(type(simprior) is list and len(simprior)<=21
+          and len(set(simprior))==len(simprior)
+          and all(type(h) is str and re.fullmatch(r"[0-9a-f]{16}",h)
+                  for h in simprior)
+          and type(simdays) is int and 0<=simdays<=7
+          and simdays<=history["verified_prior_script_review_days"]
+          and (simdays>0 or not simprior),
+          "Unverified or unbounded near-repeat history")
     day=rehearsals.get("research_day_ist")
     _need(type(day) is str and re.fullmatch(r"\d{4}-\d{2}-\d{2}",day),
           "No correct source date for episode identity")
     fingerprints=[]
+    similarity_fingerprints=[]
     lexical=[]
     for ep,slot,scenes in zip(rehearsals["three_episodes"],SLOTS,(4,9,4)):
         _need(type(ep) is dict and ep.get("slot")==slot
@@ -115,6 +144,7 @@ def inspect_narration_originality(rehearsals:object,history:object)->dict:
         fingerprint=sha256(b"FLOWMINUTE_B4G8_SPOKEN_SCENES_V1\0"+payload).hexdigest()
         lexical.append(_lexical_terms(narration))
         fingerprints.append(fingerprint)
+        similarity_fingerprints.append(_simhash64(narration))
     _need(len(set(fingerprints))==3,
           "Identical whole narrated scripts inside one day")
     overlaps=[]
@@ -126,6 +156,14 @@ def inspect_narration_originality(rehearsals:object,history:object)->dict:
             overlaps.append({"left_slot":SLOTS[i],"right_slot":SLOTS[j],
                              "four_word_overlap_jaccard":ratio})
     repeats=[f in prior for f in fingerprints]
+    # Hamming <=8 is an intentionally conservative review *signal*.
+    # A hash mismatch does not prove novelty, nor does a near match
+    # prove copyright infringement. No speech is logged or persisted.
+    near_repeats=[
+        any((int(sig,16)^int(old,16)).bit_count()<=8
+            for old in simprior)
+        for sig in similarity_fingerprints
+    ]
     # Historical coverage 0 means 'UNKNOWN', never 'novel' or 'approved'.
     covered=history["verified_prior_script_review_days"]
     result={
@@ -133,6 +171,12 @@ def inspect_narration_originality(rehearsals:object,history:object)->dict:
         "plan_day_ist":day,
         "episode_slots":list(SLOTS),
         "script_fingerprints_sha256":fingerprints,
+        "spoken_4gram_simhash64":similarity_fingerprints,
+        "previous_verified_receipt_days_with_simhash64":simdays,
+        "suspected_near_repeat_per_slot":near_repeats,
+        "suspected_near_repeat_in_previous_7_day_receipts":any(near_repeats),
+        "near_repeat_hamming_distance_threshold":8,
+        "near_repeat_is_only_a_review_signal":True,
         "source_fingerprint_domain":"NORMALIZED_SPOKEN_SCENES_NOT_EPISODE_ID",
         "previous_verified_receipt_days_with_script_hashes":covered,
         "exact_repeat_detected_per_slot":repeats,
