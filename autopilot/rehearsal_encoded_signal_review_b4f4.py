@@ -30,8 +30,12 @@ MAX_SCAN_SECONDS = 360
 MAX_LOG_BYTES = 350_000
 HEX64 = re.compile(r"[0-9a-f]{64}\Z")
 BLACK = re.compile(r"black_start:([0-9]+(?:\.[0-9]+)?)\s+black_end:([0-9]+(?:\.[0-9]+)?)\s+black_duration:([0-9]+(?:\.[0-9]+)?)")
-FREEZE_START = re.compile(r"freeze_start:\s*([0-9]+(?:\.[0-9]+)?)")
-FREEZE_END = re.compile(r"freeze_end:\s*([0-9]+(?:\.[0-9]+)?)\s*\|\s*freeze_duration:\s*([0-9]+(?:\.[0-9]+)?)")
+# Actual FFmpeg 7.x and imageio-ffmpeg write THREE separate log records:
+# lavfi.freezedetect.freeze_start: 3
+# lavfi.freezedetect.freeze_duration: 3
+# lavfi.freezedetect.freeze_end: 6
+# Never assume freeze_end and freeze_duration share one physical stderr line.
+FREEZE_EVENT = re.compile(r"(?:lavfi\.freezedetect\.)?freeze_(start|duration|end):\s*([0-9]+(?:\.[0-9]+)?)")
 SILENCE = re.compile(r"silence_end:\s*([0-9]+(?:\.[0-9]+)?)\s*\|\s*silence_duration:\s*([0-9]+(?:\.[0-9]+)?)")
 PEAK = re.compile(r"max_volume:\s*(-?(?:[0-9]+(?:\.[0-9]+)?|inf))\s*dB")
 MEAN = re.compile(r"mean_volume:\s*(-?(?:[0-9]+(?:\.[0-9]+)?|inf))\s*dB")
@@ -91,46 +95,49 @@ def parse_ffmpeg_signals(stderr: str, *, duration: float) -> dict:
                              "duration_seconds":round(n,2)})
     _need(len(silences)<=80,"Unbounded speech silence observations")
 
-    starts=[_finite(x,MAX_SCAN_SECONDS+1) for x in FREEZE_START.findall(stderr)]
-    ends=[(_finite(b,MAX_SCAN_SECONDS+1),
-           _finite(n,MAX_SCAN_SECONDS+1))
-          for b,n in FREEZE_END.findall(stderr)]
-    # B4f4 live owner export run 42342965222 proved FFmpeg occasionally
-    # produces >1 freeze_start with no matching freeze_end in the complete
-    # decoded log. Positional pairing is NOT reliable. Each freeze_end
-    # itself reports the independently measured duration: use end-duration,
-    # not starts[i]. Unpaired starts remain advisory, never publish proof.
-    _need(len(starts) <= 80 and len(ends) <= 80,
-          "Unbounded freeze events")
+    # Parse FFmpeg's independent freeze_start / freeze_duration / freeze_end
+    # records in source order. The older same-line fake fixture could silently
+    # drop all real completed freezes, incorrectly claiming no static spans.
+    events=[(event, _finite(stamp,MAX_SCAN_SECONDS+1))
+            for event,stamp in FREEZE_EVENT.findall(stderr)]
+    _need(len(events)<=240,"Unbounded encoded-video freeze log events")
     freezes=[]
-    closed=[]
-    for b,n in ends:
-        a=b-n
-        _need(0 <= a < b <= duration+2 and n >= 0
-              and math.isfinite(a), "Impossible FFmpeg freeze end/duration")
-        closed.append((a,b))
-        if n >= 5:
-            freezes.append({"start_seconds":round(a,2),
-                            "end_seconds":round(b,2),
-                            "duration_seconds":round(n,2)})
-    unpaired=[a for a in starts
-              if not any(abs(a-first) <= 0.50 for first,_ in closed)]
-    # An unfinished FINAL freeze may legitimately have no freeze_end.
-    # Only infer such an interval when its start is after all completed
-    # freezes, to avoid inventing mid-video freeze durations. If several
-    # extra starts remain, use the latest as a conservative lower bound.
-    if unpaired:
-        last_end=max((b for _,b in closed),default=-1.0)
-        trailing=[a for a in unpaired if last_end <= a <= duration]
-        if trailing:
-            a=max(trailing)
-            if duration-a >= 5:
-                freezes.append({"start_seconds":round(a,2),
-                                "end_seconds":round(duration,2),
-                                "duration_seconds":round(duration-a,2),
-                                "unfinished_at_video_end":True})
-    freezes.sort(key=lambda item:(item["start_seconds"],item["end_seconds"]))
-    _need(len(freezes) <= 80, "Unbounded frozen-picture warning events")
+    active_start=None
+    active_duration=None
+    for event,value in events:
+        if event=="start":
+            _need(active_start is None,
+                  "New freeze start before prior segment ended")
+            active_start=value
+            active_duration=None
+        elif event=="duration":
+            _need(active_start is not None and active_duration is None,
+                  "Orphan or duplicated freeze duration")
+            active_duration=value
+        else:  # end
+            _need(active_start is not None and active_duration is not None,
+                  "Freeze end without a preceding start and duration")
+            _need(active_start < value <= duration+2
+                  and abs((value-active_start)-active_duration)<0.45,
+                  "Invalid FFmpeg freeze time interval")
+            if active_duration >= 5:
+                freezes.append({"start_seconds":round(active_start,2),
+                                "end_seconds":round(value,2),
+                                "duration_seconds":round(active_duration,2)})
+            active_start=None
+            active_duration=None
+    # A final frozen frame run may not emit a freeze_end event because the
+    # stream ends while frozen. Only then infer end from physical duration.
+    if active_start is not None:
+        _need(active_duration is None
+              and active_start <= duration+1,
+              "Incomplete freeze event sequence")
+        if duration-active_start>=5:
+            freezes.append({"start_seconds":round(active_start,2),
+                            "end_seconds":round(duration,2),
+                            "duration_seconds":round(duration-active_start,2),
+                            "unfinished_at_video_end":True})
+    _need(len(freezes)<=80,"Unbounded decoded frozen-picture warnings")
 
     peaks=PEAK.findall(stderr)
     means=MEAN.findall(stderr)
@@ -152,7 +159,7 @@ def parse_ffmpeg_signals(stderr: str, *, duration: float) -> dict:
     return {
         "black_intervals":blacks,
         "freeze_intervals":freezes,
-        "unpaired_freeze_start_event_count":len(unpaired),
+        "unpaired_freeze_start_event_count":(1 if active_start is not None else 0),
         "unpaired_freeze_events_are_advisory":True,
         "audio_silence_intervals":silences,
         "sample_peak_dbfs_not_true_peak":round(sample_peak,2),
