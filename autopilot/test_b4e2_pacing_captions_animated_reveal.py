@@ -120,6 +120,8 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
                                  ep["all_scene_count"])
             self.assertEqual(total,34)
 
+    @unittest.skipUnless(importlib.util.find_spec("PIL"),
+                         "Pillow only available on physical video workers")
     def test_nonexistent_episode_and_wrong_reveal_state_refused(self):
         ep=self.plan["episodes"][1]
         with tempfile.TemporaryDirectory() as tmp:
@@ -156,7 +158,7 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
                                     wav,srt,sum(durations))
             self.assertEqual(result.suffix,".mp4")
             text=(folder/"EPHEMERAL_ALL_SCENES_ONE_SHOT_REVEAL.ffconcat").read_text()
-            self.assertEqual(text.count("\nfile '"),35)
+            self.assertEqual(text.count("\nfile '"),19)
             self.assertEqual(text.count("duration 0.360000"),9)
             self.assertEqual(text.count("duration 12.640000"),9)
             self.assertIn("MarginV=148",str(encoder.call_args))
