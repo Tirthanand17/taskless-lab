@@ -111,6 +111,18 @@ class SignedOwnerReleaseTests(unittest.TestCase):
             with self.subTest(when=when),self.assertRaises(OwnerSignatureRejected):
                 verify_owner_release_signature(approval,**expected)
 
+    def test_signed_owner_review_cannot_extend_expiry_without_resigning(self):
+        approval,expected=fixture()
+        approval["signed_owner_release"]["payload"]["expires_at_utc"]="2026-11-12T03:30:00Z"
+        with self.assertRaises(OwnerSignatureRejected):
+            verify_owner_release_signature(approval,**expected)
+
+    def test_signed_envelope_rejects_unknown_authority_fields(self):
+        approval,expected=fixture()
+        approval["signed_owner_release"]["autonomous_uploads_allowed"]=True
+        with self.assertRaises(OwnerSignatureRejected):
+            verify_owner_release_signature(approval,**expected)
+
     def test_signed_payload_extra_fields_or_forged_pass_rejected(self):
         approval,expected=fixture()
         approval["signed_owner_release"]["payload"]["extra"]="ignored?"
