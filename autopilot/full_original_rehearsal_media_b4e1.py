@@ -461,7 +461,8 @@ def _verify_encoded_first_reveal(ffmpeg: str,media: Path) -> bool:
 
 def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
                   seconds: float,frame_hashes: list[str],
-                  reveal_pairs: list[tuple[str,str]] | None=None) -> dict:
+                  reveal_pairs: list[tuple[str,str]] | None=None,
+                  scene_durations: list[float] | None=None) -> dict:
     if not media.is_file() or media.is_symlink() or len(set(frame_hashes))!=ep[
         "all_scene_count"]:
         raise FullRehearsalRefused("Physical unique rendered scenes absent")
@@ -505,6 +506,15 @@ def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
     if size<300_000:
         raise FullRehearsalRefused("A complete voiced media file is unexpectedly tiny")
     physical_reveal=_verify_encoded_first_reveal(ffmpeg,media)
+    from autopilot.audio_scene_navigation_b4g1 import (
+        SceneTimecodeRefused,build_audio_scene_timeline,
+    )
+    try:
+        exact_scene_times=build_audio_scene_timeline(
+            scene_durations,seconds,ep["all_scene_count"])
+    except SceneTimecodeRefused:
+        raise FullRehearsalRefused(
+            "Original narrated PCM scene timeline absent or altered") from None
     return {
         "episode_id":ep["episode_id"],
         "slot":ep["slot"],"format":ep["kind"],"voice":ep["voice"],
@@ -513,6 +523,8 @@ def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
         "synthesized_original_tts_chunks":len(cues),
         "original_full_narration_sha256":ep["authored_full_narration_sha256"],
         "real_pcm_measured_seconds":round(seconds,3),
+        "pcm_derived_scene_timeline_seconds":exact_scene_times,
+        "scene_timeline_derived_from_actual_pcm":True,
         "storyboard_target_seconds":ep["target_seconds_not_audio_verified"],
         "storyboard_target_met_within_three_seconds":
             abs(seconds-ep["target_seconds_not_audio_verified"])<=3.,
@@ -588,7 +600,8 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
             hashes.append(last_sha)
             frames.append((intro,final))
         movie=_encode_full(ffmpeg,ep,folder,frames,durations,wav,srt,length,cues=cues)
-        qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes,reveal_pairs)
+        qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes,reveal_pairs,
+                         scene_durations=durations)
         actual.append(qa)
         print("B4E1_PHYSICAL_COMPLETE_VOICED_EPISODE_DECODED",
               json.dumps({
