@@ -113,6 +113,9 @@ class ThreeVideoOriginalRehearsalTests(unittest.TestCase):
             self.assertTrue(x["narration_rehearsal_nonfactual"])
             self.assertFalse(x["factual_news_narration_written"])
             self.assertFalse(x["release_authorized"])
+            self.assertTrue(x["original_working_title_not_news_headline"].startswith("Synthetic "))
+            self.assertLessEqual(len(x["original_working_title_not_news_headline"]),52,
+                                 "Portrait native title card must not overflow")
             self.assertFalse(x["actual_recorded_voice_exists"])
             self.assertFalse(x["actual_video_rendered"])
             self.assertFalse(x["real_factual_script_approved"])
