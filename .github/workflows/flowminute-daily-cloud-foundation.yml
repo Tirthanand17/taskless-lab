@@ -59,6 +59,8 @@ on:
       - "autopilot/test_b4e0b_wheel_only_voice_runner.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
       - "autopilot/recent_research_history.py"
+      - "autopilot/rehearsal_narration_originality_b4g8.py"
+      - "autopilot/test_rehearsal_narration_originality_b4g8.py"
       - "autopilot/test_recent_research_history_b4d8.py"
       - "autopilot/public_article_passages.py"
       - "autopilot/ephemeral_claim_review_docket.py"
@@ -123,6 +125,8 @@ on:
       - "autopilot/test_b4e0b_wheel_only_voice_runner.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
       - "autopilot/recent_research_history.py"
+      - "autopilot/rehearsal_narration_originality_b4g8.py"
+      - "autopilot/test_rehearsal_narration_originality_b4g8.py"
       - "autopilot/test_recent_research_history_b4d8.py"
       - "autopilot/public_article_passages.py"
       - "autopilot/ephemeral_claim_review_docket.py"
@@ -185,7 +189,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_audio_scene_navigation_b4g1 autopilot.test_cinematic_scene_board_b4f9 autopilot.test_one_way_storyboard_timing_b4g2 autopilot.test_original_pcm_sound_design_b4g3 autopilot.test_quick_storyboard_contact_sheet_b4g0 autopilot.test_full_original_caption_ass_b4f7 autopilot.test_manual_rehearsal_review_export_b4e3 autopilot.test_rehearsal_encoded_signal_review_b4f4 autopilot.test_encoded_aac_loudness_review_b4g4 autopilot.test_verified_aac_mastering_b4g5 autopilot.test_project_phase_acceptance_audit_b4g6 autopilot.test_owner_signal_timeline_b4f5 autopilot.test_review_worksheet_validator_b4e6 autopilot.test_offline_review_portal_b4e7 autopilot.test_youtube_private_resumable_contract_b4e8 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_rehearsal_narration_originality_b4g8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_audio_scene_navigation_b4g1 autopilot.test_cinematic_scene_board_b4f9 autopilot.test_one_way_storyboard_timing_b4g2 autopilot.test_original_pcm_sound_design_b4g3 autopilot.test_quick_storyboard_contact_sheet_b4g0 autopilot.test_full_original_caption_ass_b4f7 autopilot.test_manual_rehearsal_review_export_b4e3 autopilot.test_rehearsal_encoded_signal_review_b4f4 autopilot.test_encoded_aac_loudness_review_b4g4 autopilot.test_verified_aac_mastering_b4g5 autopilot.test_project_phase_acceptance_audit_b4g6 autopilot.test_owner_signal_timeline_b4f5 autopilot.test_review_worksheet_validator_b4e6 autopilot.test_offline_review_portal_b4e7 autopilot.test_youtube_private_resumable_contract_b4e8 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -532,6 +536,29 @@ jobs:
           print("B4D9_3_ORIGINAL_NONFACTUAL_REHEARSAL_VO_SCRIPTS_17_SCENES_NO_MEDIA")
           PY
 
+      - name: Audit repeated original spoken rehearsal narratives before CPU voice/video rendering
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.rehearsal_narration_originality_b4g8 \
+            --rehearsals out/flowminute-ephemeral-nonfactual-rehearsals.json \
+            --history out/flowminute-ephemeral-research-history.json \
+            --output out/flowminute-ephemeral-narration-originality.json
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          doc=json.loads(Path("out/flowminute-ephemeral-narration-originality.json").read_text("utf8"))
+          assert len(doc["script_fingerprints_sha256"])==3
+          assert doc["unique_against_every_prior_day_proven"] is False
+          assert doc["actual_human_factual_and_rights_approvals"]==0
+          assert doc["youtube_release_authorized"] is False
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as f:
+              f.write("\n## B4g8 repeated spoken narration audit (not fact or rights approval)\n")
+              f.write("Historical script fingerprints: "+str(doc["previous_verified_receipt_days_with_script_hashes"])+"/7 days.\n")
+              f.write("Exact reused narrations: "+str(sum(doc["exact_repeat_detected_per_slot"]))+"/3.\n")
+              f.write("Different headline/date does not make recycled spoken text original. No YouTube writes.\n")
+          PY
+
       - name: Install verified public CPU voice and FFmpeg dependencies (no paid inference)
         if: github.event_name != 'pull_request'
         timeout-minutes: 6
@@ -874,6 +901,7 @@ jobs:
             --plan out/flowminute-reconciled-tomorrow-draft.json \
             --evidence out/flowminute-evidence-unverified.json \
             --editorial-receipt out/flowminute-public-editorial-receipt.json \
+            --originality-report out/flowminute-ephemeral-narration-originality.json \
             --output out/flowminute-public-research-draft-receipt.json
           python -B - <<'PY'
           import json, os
@@ -898,6 +926,10 @@ jobs:
           assert r["youtube_publishing_enabled"] is False
           assert r["independently_verified_unattended_youtube_releases"] == 0
           assert r["release_authorized"] is False
+          script=r["unapproved_rehearsal_narration_originality"]
+          assert len(script["script_fingerprints_sha256"])==3
+          assert script["youtube_release_authorized"] is False
+          assert script["unique_against_every_prior_day_proven"] is False
           lines=["", "## GitHub-only retained public research receipt",
                  "Next IST planning day: "+r["plan_day_ist"],
                  "Retained receipt SHA256: "+r["receipt_sha256"],
@@ -923,4 +955,4 @@ jobs:
 
       - name: Discard ephemeral unverified draft files
         if: always()
-        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json out/flowminute-ephemeral-source-passages.json out/flowminute-ephemeral-claim-review.json out/flowminute-ephemeral-research-history.json out/flowminute-ephemeral-current-scout.json out/flowminute-ephemeral-nonfactual-rehearsals.json
+        run: rm -rf out/flowminute-scout-unverified.json out/flowminute-evidence-unverified.json out/flowminute-tomorrow-draft.json out/flowminute-public-research-draft-receipt.json out/flowminute-public-editorial-receipt.json out/flowminute-ephemeral-editorial-board.json out/flowminute-reconciled-tomorrow-draft.json out/flowminute-ephemeral-source-locked-outlines.json out/flowminute-ephemeral-source-passages.json out/flowminute-ephemeral-claim-review.json out/flowminute-ephemeral-research-history.json out/flowminute-ephemeral-current-scout.json out/flowminute-ephemeral-nonfactual-rehearsals.json out/flowminute-ephemeral-narration-originality.json
