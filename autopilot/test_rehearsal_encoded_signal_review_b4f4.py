@@ -22,8 +22,9 @@ LOG = """Input #0, mov,mp4,m4a,3gp,3g2,mj2, from fake:
   Stream #0:0: Video: h264
   Stream #0:1: Audio: aac
 [blackdetect] black_start:1 black_end:1.9 black_duration:0.9
-[freezedetect] freeze_start: 12.0
-[freezedetect] freeze_end: 18 | freeze_duration: 6
+[freezedetect] lavfi.freezedetect.freeze_start: 12.0
+[freezedetect] lavfi.freezedetect.freeze_duration: 6
+[freezedetect] lavfi.freezedetect.freeze_end: 18
 [silencedetect] silence_end: 23.0 | silence_duration: 2.2
 [Parsed_volumedetect] mean_volume: -18.9 dB
 [Parsed_volumedetect] max_volume: -0.2 dB
@@ -46,7 +47,8 @@ class FFmpegParserTests(unittest.TestCase):
 
     def test_unfinished_final_static_frame_is_advisory(self):
         data=LOG.replace(
-            "[freezedetect] freeze_end: 18 | freeze_duration: 6\n","")
+            "[freezedetect] lavfi.freezedetect.freeze_duration: 6\n","").replace(
+            "[freezedetect] lavfi.freezedetect.freeze_end: 18\n","")
         result=parse_ffmpeg_signals(data,duration=57.8)
         self.assertTrue(result["freeze_intervals"][0]["unfinished_at_video_end"])
         self.assertEqual(result["freeze_intervals"][0]["start_seconds"],12)
@@ -77,6 +79,42 @@ class FFmpegParserTests(unittest.TestCase):
             "[freezedetect] freeze_start: 20" for _ in range(81))
         with self.assertRaises(SignalReviewRefused):
             parse_ffmpeg_signals(sample,duration=57.8)
+
+    def test_multiple_completed_ffmpeg_separate_line_events_and_final_freeze(self):
+        second=("[freezedetect] lavfi.freezedetect.freeze_start: 30\n"
+                "[freezedetect] lavfi.freezedetect.freeze_duration: 6\n"
+                "[freezedetect] lavfi.freezedetect.freeze_end: 36\n"
+                "[freezedetect] lavfi.freezedetect.freeze_start: 45\n")
+        log=LOG.replace("[silencedetect]",second+"[silencedetect]")
+        report=parse_ffmpeg_signals(log,duration=57.8)
+        self.assertEqual(len(report["freeze_intervals"]),3)
+        self.assertEqual([v["start_seconds"] for v in report["freeze_intervals"]],
+                         [12,30,45])
+        self.assertEqual([v["end_seconds"] for v in report["freeze_intervals"]],
+                         [18,36,57.8])
+        self.assertTrue(report["freeze_intervals"][-1]["unfinished_at_video_end"])
+
+    def test_ffmpeg_orphan_reordered_or_fabricated_freeze_events_block(self):
+        variants=(
+            LOG.replace("lavfi.freezedetect.freeze_start: 12.0\n",""),
+            LOG.replace("lavfi.freezedetect.freeze_duration: 6\n",""),
+            LOG.replace("lavfi.freezedetect.freeze_end: 18\n",""),
+            LOG.replace("lavfi.freezedetect.freeze_end: 18\n",
+                        "lavfi.freezedetect.freeze_end: 46\n"),
+            LOG.replace("lavfi.freezedetect.freeze_duration: 6\n",
+                        "lavfi.freezedetect.freeze_duration: 6\n"
+                        "[freezedetect] lavfi.freezedetect.freeze_duration: 6\n"),
+            LOG.replace("lavfi.freezedetect.freeze_duration: 6\n",
+                        "lavfi.freezedetect.freeze_start: 13\n"
+                        "[freezedetect] lavfi.freezedetect.freeze_duration: 6\n"),
+        )
+        # Missing end alone is a valid unfinished final frame and is covered
+        # by a separate test; suppress it here.
+        for i, log in enumerate(variants):
+            if i == 2:
+                continue
+            with self.subTest(case=i), self.assertRaises(SignalReviewRefused):
+                parse_ffmpeg_signals(log,duration=57.8)
 
     def test_near_clipping_audio_is_marked_review_required(self):
         data=LOG.replace("max_volume: -0.2 dB","max_volume: 0.0 dB")
@@ -135,6 +173,41 @@ class ActualHostedFFmpegProbeTests(unittest.TestCase):
             self.assertIn("POTENTIALLY_STATIC_OR_FROZEN_VISUAL_REVIEW",
                           evidence["warning_codes"])
             self.assertFalse(evidence["human_full_audio_visual_watch_completed"])
+
+
+class RealCompletedFreezeIntervalsTests(unittest.TestCase):
+    @unittest.skipUnless(shutil.which("ffmpeg"),"FFmpeg not installed")
+    def test_real_ffmpeg_7_separately_logs_start_duration_end(self):
+        # Small, ephemeral, original 21-second synthetic signal; no channel,
+        # owner media or voice files. This reproduces the 2026-11-07
+        # real workflow failure #42342965222 without depending on its MP4s.
+        result=subprocess.run([
+            "ffmpeg","-hide_banner","-nostdin","-nostats",
+            "-f","lavfi","-i","testsrc2=s=96x96:r=6:d=7",
+            "-f","lavfi","-i","color=c=black:s=96x96:r=6:d=7",
+            "-f","lavfi","-i","testsrc2=s=96x96:r=6:d=7",
+            "-f","lavfi","-i","sine=frequency=440:sample_rate=16000:duration=21",
+            "-filter_complex",
+            "[0:v][1:v][2:v]concat=n=3:v=1:a=0,"
+            "blackdetect=d=0.8:pix_th=0.1:pic_th=0.99,"
+            "freezedetect=n=-60dB:d=5[v]",
+            "-map","[v]","-map","3:a:0",
+            "-af","silencedetect=noise=-48dB:d=1.6,volumedetect",
+            "-f","null","-",
+        ],capture_output=True,text=True,check=True,timeout=40)
+        self.assertIn("lavfi.freezedetect.freeze_start:",result.stderr)
+        self.assertIn("lavfi.freezedetect.freeze_duration:",result.stderr)
+        self.assertIn("lavfi.freezedetect.freeze_end:",result.stderr)
+        evidence=parse_ffmpeg_signals(result.stderr,duration=21)
+        self.assertIn("BLACK_SEGMENT_REVIEW",evidence["warning_codes"])
+        self.assertIn("POTENTIALLY_STATIC_OR_FROZEN_VISUAL_REVIEW",
+                      evidence["warning_codes"])
+        completed=[i for i in evidence["freeze_intervals"]
+                   if not i.get("unfinished_at_video_end")]
+        self.assertGreaterEqual(len(completed),1)
+        self.assertAlmostEqual(completed[0]["start_seconds"],7,delta=0.4)
+        self.assertAlmostEqual(completed[0]["end_seconds"],14,delta=0.4)
+        self.assertFalse(evidence["human_full_audio_visual_watch_completed"])
 
 
 class StrictManualArtifactTests(unittest.TestCase):
