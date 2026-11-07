@@ -219,7 +219,7 @@ def inspect_review_directory(
             )
         except (OSError,subprocess.TimeoutExpired):
             raise SignalReviewRefused("Actual MP4 decode/technical filters failed") from None
-        _need(process.returncode==0 and type(process.stderr) is str,
+        _need(process is not None and getattr(process,"returncode",None)==0 and type(getattr(process,"stderr",None)) is str,
               "FFmpeg full encoded MP4 decode failed")
         metrics=parse_ffmpeg_signals(
             process.stderr,duration=source["measured_audio_seconds"])
