@@ -14,7 +14,7 @@ import json
 RUBRIC = (
     ("Architecture, roles, CI and prototype", 15, 14),
     ("Observed public research and draft planning", 15, 8),
-    ("Physical media and technical quality", 20, 16),
+    ("Physical media and technical quality", 20, 17),
     ("Authenticated facts, rights and human review", 15, 2),
     ("Protected owner cloud deployment and persistence", 15, 4),
     ("Owner OAuth and verified real YouTube releases", 15, 0),
@@ -135,7 +135,7 @@ def inspect_source_acceptance(root: Path) -> dict:
 def rubric_snapshot() -> dict:
     _need(sum(weight for _,weight,_ in RUBRIC)==100 and
           sum(earned for _,weight,earned in RUBRIC
-              if 0<=earned<=weight)==44,
+              if 0<=earned<=weight)==45,
           "Published production-readiness score arithmetic changed")
     return {
         "status":"QUALITATIVE_EVIDENCE_WEIGHTED_ESTIMATE_NOT_UPLOAD_PERCENT",
@@ -143,8 +143,8 @@ def rubric_snapshot() -> dict:
             {"phase":phase,"weight":weight,"earned":earned,
              "remaining":weight-earned}
             for phase,weight,earned in RUBRIC],
-        "overall_production_readiness_estimate_percent":44,
-        "overall_remaining_estimate_percent":56,
+        "overall_production_readiness_estimate_percent":45,
+        "overall_remaining_estimate_percent":55,
         "engineering_progress_not_the_same_metric":True,
         "real_seven_day_unattended_release_target":21,
         "real_seven_day_unattended_releases_independently_verified":0,
