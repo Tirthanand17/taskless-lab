@@ -1,0 +1,11 @@
+# ADR-0078 — B4e2b fix a real post-encode caption QA NameError
+
+**Date:** 2026-11-07 IST. **Track:** Branch 2 safe full-media rehearsal; no publication.
+
+After PR #87 passed its four exact-head unit/media checks and merged to `main`, the first real trusted cloud [run 42325399219](https://github.com/Tirthanand17/taskless-lab/actions/runs/42325399219) physically downloaded the pinned model, created three actual original short audiovisual previews, and generated the first complete original full-scene MP4. However, while inspecting its actual decoded video and PCM subtitle safety, the run threw **`NameError: name 'width' is not defined`**. The inspector assigned `widths=CAPTION_WRAP_CHARS[...]` and read `width` inside `textwrap.wrap`. The always-delete cleanup worked correctly; **0 of the three full movies may be counted as fully accepted for run 42325399219**.
+
+**Fix:** Use a single properly bound `width=CAPTION_WRAP_CHARS[ep["kind"]]` before computing all physical cue wraps. Keep four-line vertical and two-line horizontal subtitle caps, 112-character original phrase split, 34 one-shot source diagrams, actual encoded first reveal checks and previously calibrated Kokoro speeds unchanged. Do not weaken any QA.
+
+**Regression test:** New test invokes the **actual** post-encode `_inspect_full` with a real bounded binary file, full authentic episode caption lines, a safe simulated FFmpeg metadata probe and mocked expensive decode/first-frame probes. It verifies real caption wrapping, source frame identities, voice speed, release flags and prevents undefined-variable paths. A separate adversarial test feeds an unchanged one-shot reveal source hash and asserts rejection, not approval. The first trusted-media error is reproduced and closed before future live runs.
+
+Require all four exact-head GitHub checks. Then rerun the real merged `main` 3-full-video producer, and accept B4e2 only if it physically reports the actual PCM lengths, 34 unique stage images, three decoded first-reveal MP4 frame pairs, source independent 17 fully spoken scenes, safe captions, three complete H264/AAC MP4 decodes, zero rights/news/watch approvals or YouTube writes. Two sanitized receipts only; raw video stays runner-local and is deleted. Future work must still establish authorized owner visual review without exposing unapproved third-party media.
