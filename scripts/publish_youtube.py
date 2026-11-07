@@ -77,6 +77,40 @@ def approval_allows_exact_video(approval: dict, approved_sha256: str) -> bool:
     return all(approval.get(key) is True for key in REQUIRED_APPROVALS)
 
 
+def reserve_local_pending_before_insert(path: Path, checkpoint: dict) -> None:
+    """Atomically reserve local receipt BEFORE remote upload; never auto-delete.
+
+    Runner disks are ephemeral. The independent GitHub tag fence is still
+    mandatory for cross-run protection. No success/publish approval claimed.
+    """
+    if (type(checkpoint) is not dict or
+        checkpoint.get("state") != "POSSIBLY_SENT_NO_AUTOMATIC_RETRY" or
+        checkpoint.get("youtube_schedule_verified") is not False):
+        raise ValueError("Invalid fail-closed pre-upload checkpoint")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.is_symlink():
+        raise ValueError("Pending receipt must never be a symlink")
+    try:
+        fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    except OSError as exc:
+        raise ValueError("Prior/ambiguous upload receipt: no new attempt") from exc
+    try:
+        with os.fdopen(fd,"w",encoding="utf8") as stream:
+            stream.write(json.dumps(checkpoint,sort_keys=True,indent=2)+"\\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        # Stronger local crash consistency on GitHub-hosted Linux runners.
+        if os.name=="posix":
+            directory=os.open(path.parent,os.O_RDONLY)
+            try:
+                os.fsync(directory)
+            finally:
+                os.close(directory)
+    except BaseException:
+        # A partially written checkpoint is still a STOP marker. Do not unlink.
+        raise ValueError("Checkpoint durability uncertain: stop and reconcile") from None
+
+
 def load_service():
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
@@ -130,6 +164,8 @@ def main():
 
     schedule = None
     digest = None
+    if not re.fullmatch(r"state/published/[A-Za-z0-9_.-]+\\.json",args.receipt):
+        raise SystemExit("Receipt path must be inside state/published with safe basename")
     receipt_path=root/args.receipt
     pending_path=receipt_path.with_suffix(receipt_path.suffix+".pending.json")
     if args.schedule_at_utc is not None:
@@ -160,6 +196,28 @@ def main():
     from googleapiclient.http import MediaFileUpload
     youtube=load_service()
 
+    if schedule:
+        # Both barriers are created BEFORE any remote videos.insert:
+        # a local O_EXCL crash marker plus persistent GitHub tag refs.
+        reserve_local_pending_before_insert(pending_path,{
+            "episode_id":meta.get("id"),
+            "state":"POSSIBLY_SENT_NO_AUTOMATIC_RETRY",
+            "youtube_schedule_verified":False,
+            "expected_publish_at_utc":schedule,
+            "source_mp4_sha256":digest,
+            "created_utc":datetime.datetime.now(
+                datetime.timezone.utc).isoformat(),
+        })
+        from scripts.github_youtube_attempt_fence_b4e9 import (
+            reserve_github_attempt_before_insert,
+        )
+        reserve_github_attempt_before_insert(
+            channel_id=args.expected_channel_id,
+            episode_id=meta.get("id"),
+            publish_at_utc=schedule,
+            approved_mp4_sha256=digest,
+        )
+
     body={
       "snippet":{
         "title":meta["title"],
@@ -189,6 +247,8 @@ def main():
     if schedule:
         # Persist the real remote video ID before optional subtitle/thumbnail operations.
         # The workflow must commit this checkpoint even if later validation fails.
+        # On abnormal response or crash, prior local+GitHub fences remain;
+        # no automatic second videos.insert is ever safe.
         pending_path.parent.mkdir(parents=True,exist_ok=True)
         checkpoint={"episode_id":meta.get("id"),"video_id":video_id,
             "state":"UPLOAD_EXISTS_SCHEDULE_NOT_YET_VERIFIED",
