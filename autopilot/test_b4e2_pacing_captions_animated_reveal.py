@@ -9,6 +9,8 @@ from hashlib import sha256
 import importlib.util
 from pathlib import Path
 import re
+import shutil
+import subprocess
 import tempfile
 import textwrap
 import unittest
@@ -17,6 +19,8 @@ from unittest.mock import patch
 from autopilot.full_original_rehearsal_media_b4e1 import (
     VOICE_SPEED_BY_SLOT,VOICE_SPEED_PREVIOUS,VOICE_SPEED_REFERENCE_SECONDS,
     CAPTION_MAX_LINES,CAPTION_WRAP_CHARS,CAPTION_MARGIN_BOTTOM_PX,
+    CAPTION_ASS_FONT_SIZE,CAPTION_ASS_SCRIPT_HEIGHT,
+    _safe_pixel_calibrated_srt_filter,
     SCENE_CARD_WORDS,REVEAL_SECONDS,FullRehearsalRefused,
     _draw_original_full_scene,_encode_full,_verify_encoded_first_reveal,
     prepare_full_rehearsal_plan,split_original_voice_to_cues,
@@ -82,6 +86,76 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
                         self.assertLessEqual(len(lines),CAPTION_MAX_LINES[kind])
                         self.assertTrue(all(len(line)<=CAPTION_WRAP_CHARS[kind]+2
                                             for line in lines))
+
+    def test_libass_srt_uses_virtual_not_output_pixel_units(self):
+        self.assertEqual(CAPTION_ASS_SCRIPT_HEIGHT,288)
+        self.assertEqual(CAPTION_ASS_FONT_SIZE,{"short":7,"long":9})
+        for ep in self.plan["episodes"]:
+            with tempfile.TemporaryDirectory() as tmp:
+                filt=_safe_pixel_calibrated_srt_filter(
+                    ep,Path(tmp)/"original-captions.srt")
+            expected_margin=25 if ep["kind"]=="short" else 39
+            font=CAPTION_ASS_FONT_SIZE[ep["kind"]]
+            self.assertIn(f"FontSize={font}",filt)
+            self.assertIn(f"MarginV={expected_margin}",filt)
+            self.assertNotIn("FontSize=27",filt)
+            self.assertNotIn("FontSize=24",filt)
+            self.assertNotIn("MarginV=168",filt)
+            self.assertNotIn("MarginV=148",filt)
+
+    @unittest.skipUnless(importlib.util.find_spec("PIL"),
+                         "Pillow required to inspect physically rendered subtitles")
+    def test_actual_ffmpeg_burned_subtitle_pixels_stay_inside_both_cards(self):
+        ffmpeg=shutil.which("ffmpeg")
+        if ffmpeg is None:
+            self.skipTest("Actual FFmpeg not installed")
+        from PIL import Image,ImageChops
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            cases=(
+                ("short",1080,1920,
+                 ("This is an original fictional lesson",
+                  "with made-up inputs and a fair test",
+                  "check all sources and labels first",
+                  "before trusting real-world claims."),390),
+                ("long",1920,1080,
+                 ("An independent reviewer should verify all factual claims",
+                  "before a creator can safely publish the video."),248),
+            )
+            for kind,w,h,lines,top_margin in cases:
+                with self.subTest(kind=kind):
+                    ep=next(e for e in self.plan["episodes"]
+                            if e["kind"]==kind)
+                    srt=root/f"{kind}-original.srt"
+                    srt.write_text(
+                        "1\\n00:00:00,000 --> 00:00:02,000\\n"+
+                        "\\n".join(lines)+"\\n",encoding="utf8")
+                    output={}
+                    for style in ("base","burned"):
+                        target=root/f"{kind}-{style}.png"
+                        vf=("fps=24,format=yuv420p" if style=="base"
+                            else _safe_pixel_calibrated_srt_filter(ep,srt))
+                        cmd=[
+                            ffmpeg,"-v","error","-nostdin","-y",
+                            "-f","lavfi","-i",
+                            f"color=c=0x142235:s={w}x{h}:r=24:d=2",
+                            "-ss","0.8","-vf",vf,
+                            "-frames:v","1",str(target),
+                        ]
+                        result=subprocess.run(
+                            cmd,capture_output=True,text=True,timeout=35)
+                        self.assertEqual(result.returncode,0,result.stderr[-1200:])
+                        output[style]=Image.open(target).convert("RGB")
+                    binary=ImageChops.difference(
+                        output["base"],output["burned"]).convert("L").point(
+                        lambda v:255 if v>25 else 0)
+                    bounds=binary.getbbox()
+                    self.assertIsNotNone(bounds,"FFmpeg emitted no burned subtitles")
+                    left,top,right,bottom=bounds
+                    self.assertGreaterEqual(left,82)
+                    self.assertLessEqual(right,w-82)
+                    self.assertGreaterEqual(top,h-top_margin+20)
+                    self.assertLessEqual(bottom,h-128-10)
 
     def test_one_time_reveal_is_not_a_continuously_running_animation(self):
         self.assertTrue(0.15<REVEAL_SECONDS<.5)
@@ -161,7 +235,9 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
             self.assertEqual(text.count("\nfile '"),19)
             self.assertEqual(text.count("duration 0.360000"),9)
             self.assertEqual(text.count("duration 12.640000"),9)
-            self.assertIn("MarginV=148",str(encoder.call_args))
+            self.assertIn("MarginV=39",str(encoder.call_args))
+            self.assertIn("FontSize=9",str(encoder.call_args))
+            self.assertNotIn("MarginV=148",str(encoder.call_args))
             self.assertIn("fps=24",str(encoder.call_args))
             self.assertIn("libx264",str(encoder.call_args))
             self.assertIn("aac",str(encoder.call_args))
