@@ -391,12 +391,12 @@ def _encode_full(ffmpeg: str,ep: dict,folder: Path,
     lines=["ffconcat version 1.0"]
     from autopilot.one_way_storyboard_timing_b4g2 import (
         OneWayStageRefused,active_focus_sequence,stage_hold_seconds,
+        grammar_for_original_scene,
     )
-    from autopilot.cinematic_scene_board_b4f9 import BEATS
     for stage_images,duration,original_scene in zip(
             images,scenes,ep["scenes"]):
         expected=len(active_focus_sequence(
-            BEATS[original_scene["scene_id"]][3]))
+            grammar_for_original_scene(original_scene["scene_id"])))
         if len(stage_images)!=expected:
             raise FullRehearsalRefused(
                 "Source-lock mismatched narration-paced visual phase count")
