@@ -17,6 +17,7 @@ on:
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/full_original_rehearsal_media_b4e1.py"
       - "autopilot/test_full_original_rehearsal_media_b4e1.py"
+      - "autopilot/test_b4e2_pacing_captions_animated_reveal.py"
       - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
       - "autopilot/test_b4e0b_wheel_only_voice_runner.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
@@ -49,6 +50,7 @@ on:
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/full_original_rehearsal_media_b4e1.py"
       - "autopilot/test_full_original_rehearsal_media_b4e1.py"
+      - "autopilot/test_b4e2_pacing_captions_animated_reveal.py"
       - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
       - "autopilot/test_b4e0b_wheel_only_voice_runner.py"
       - "autopilot/test_nonfactual_narration_rehearsal_b4d9.py"
@@ -105,7 +107,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -589,6 +591,18 @@ jobs:
           assert r["full_4_9_4_scene_voiceover_text_all_spoken"] is True
           assert [x["original_full_scene_count"] for x in r["episodes"]]==[4,9,4]
           assert r["all_three_real_h264_aac_ffmpeg_full_decodes_passed"] is True
+          assert r["all_17_scenes_with_verified_distinct_one_time_reveal_pngs"] is True
+          assert r["all_three_actual_mp4_first_one_shot_reveal_frames_verified"] is True
+          assert r["all_pcm_timed_subtitles_fit_caption_panels"] is True
+          assert r["all_caption_reading_rates_approved"] is False
+          assert sum(x["original_scene_base_and_one_shot_reveal_pngs"]
+                     for x in r["episodes"])==34
+          assert [x["caption_safe_area_max_lines"] for x in r["episodes"]]==[4,2,4]
+          assert [x["original_full_scene_count"] for x in r["episodes"]]==[4,9,4]
+          assert all(x["measured_actual_caption_max_visible_lines"]<=
+                     x["caption_safe_area_max_lines"] and
+                     x["first_real_encoded_one_shot_checkpoint_reveal_frame_verified"] is True
+                     for x in r["episodes"])
           assert r["rehearsal_only_not_factual_news_or_final_review"] is True
           assert r["real_news_facts_approved"]==0
           assert r["rights_approvals"]==0 and r["human_full_watches"]==0
@@ -608,6 +622,11 @@ jobs:
                             str(r["full_episode_actual_pcm_duration_seconds"])+" seconds.\n")
               summary.write("Target 58/240/58 seconds met within 3s: "+
                             str(r["exact_58_240_58_target_met_for_all"])+". Never pad with false silence.\n")
+              summary.write("34 original physical scene states and 17 one-shot checkpoint reveals: verified.\n")
+              summary.write("3 original MP4 first-reveal physical frame pairs decoded and compared.\n")
+              summary.write("PCM-timed captions fit 4/2/4-line safe panels; peak reading rates (chars/sec): "+
+                            str([x["caption_peak_physical_chars_per_second"] for x in r["episodes"]])+".\n")
+              summary.write("Reading rate, aesthetic polish and rights still need owner full-watch QA.\n")
               summary.write("No fact/rights/human final-watch approval or YouTube release; media discarded.\n")
           print("B4E1_FULL_17_ORIGINAL_SCENE_KOKORO_NARRATED_AND_DECODED_NO_PUBLISH")
           PY
