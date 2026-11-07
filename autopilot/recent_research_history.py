@@ -90,6 +90,23 @@ def _receipt_from_archive(data: bytes, day: date) -> dict | None:
         or board.get("real_youtube_uploads")!=0
         or board.get("fresh_original_scripts_completed")!=0):
         raise HistoryRefused("Receipt appears unsafe or inconsistent")
+    # B4g8: independently verify the RESEARCH manifest's own digest,
+    # not merely the already-verified editorial board digest. The new
+    # public script-fingerprint field must not be silently added to a
+    # previously trusted GitHub artifact after the fact.
+    receipt_digest=plan.get("receipt_sha256")
+    if type(receipt_digest) is not str or HEX64.fullmatch(receipt_digest) is None:
+        raise HistoryRefused("Research receipt has no integrity root")
+    plan_without_hash={key:value for key,value in plan.items()
+                       if key!="receipt_sha256"}
+    try:
+        validated=sha256(json.dumps(
+            plan_without_hash,sort_keys=True,separators=(",",":"),
+            ensure_ascii=True,allow_nan=False).encode("ascii")).hexdigest()
+    except (TypeError,ValueError,UnicodeError):
+        raise HistoryRefused("Invalid historical research receipt canonical bytes") from None
+    if validated!=receipt_digest:
+        raise HistoryRefused("Historical research receipt content changed")
     digest=board.pop("receipt_sha256")
     verified=sha256(_canonical(board)).hexdigest()
     board["receipt_sha256"]=digest
