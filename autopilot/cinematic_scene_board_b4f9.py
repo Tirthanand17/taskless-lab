@@ -163,7 +163,7 @@ def _diagram(draw, area: tuple, scene_id: str, *, revealed: bool,
                        size=F(66),fill=accent,box=(X(150),y,X(935),y+round(190*h/1000)))
             _safe_text(draw,(X(330),y+round(42*scale)),label,
                        size=F(47),fill=PALE,box=(X(300),y,X(939),y+round(190*h/1000)))
-            _safe_text(draw,(X(330),y+round(119*scale)),sub,
+            _safe_text(draw,(X(330),y+round(92*scale)),sub,
                        size=F(29),fill=MUTED,box=(X(300),y,X(939),y+round(190*h/1000)))
         _safe_text(draw,(X(190),Y(887)),"ONE STEP AT A TIME",size=F(29),
                    fill=accent,box=safe)

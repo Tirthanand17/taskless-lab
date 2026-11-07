@@ -1,0 +1,77 @@
+name: FlowMinute Editorial Storyboard Visual Review (NO VIDEO)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_original_visual_review_only:
+        description: "Render only 17 original scene stills to 3 contact sheets (one-day public artifact; NO VIDEO, NO UPLOAD)"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b4g0-visual-contact-only
+  cancel-in-progress: false
+
+jobs:
+  original_scene_contact_sheets:
+    if: ${{ github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && inputs.confirm_original_visual_review_only == true }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      FLOWMINUTE_VISUAL_QA_ONLY: "true"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install offline image-only renderer (no TTS, no Google, no credentials)
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: 'Pillow>=11,<13'
+      - name: Create source-locked 17-stage contact sheets without a single video upload
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.quick_storyboard_contact_sheet_b4g0 \
+            --output "${RUNNER_TEMP}/flowminute-b4g0-visual-only"
+      - name: Assert all original visual assets and no-video/no-release flags
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          import json
+          from hashlib import sha256
+          import os
+          folder=Path(os.environ["RUNNER_TEMP"])/"flowminute-b4g0-visual-only"
+          report=json.loads((folder/"CONTACT_SHEET_VISUAL_REVIEW_ONLY.json").read_text())
+          assert report["original_synthetic_scenes"]==17
+          assert report["publication_authorized"] is False
+          assert report["live_youtube_uploads_or_modifications"]==0
+          assert report["human_approved_videos"]==0
+          assert report["actual_queued_video_render_verified_here"] is False
+          assert len(report["storyboards"])==3
+          expected={"CONTACT_SHEET_VISUAL_REVIEW_ONLY.json"}
+          for row in report["storyboards"]:
+              name=row["contact_file"]
+              expected.add(name)
+              actual=sha256((folder/name).read_bytes()).hexdigest()
+              assert actual==row["contact_png_sha256"]
+              assert row["actual_original_full_mp4_generated"] is False
+          assert {p.name for p in folder.iterdir()}==expected
+          print("B4G0_CLOUD_ORIGINAL_SCENE_STILLS=17 ZERO_VIDEO_ZERO_PUBLICATION")
+          PY
+      - name: Retain 3 original visual contact sheets for 1 day
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-unapproved-editorial-contact-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/flowminute-b4g0-visual-only
+          if-no-files-found: error
+          retention-days: 1
+      - name: Remove runner temporary generated visual assets
+        if: always()
+        run: rm -rf "${RUNNER_TEMP}/flowminute-b4g0-visual-only"
