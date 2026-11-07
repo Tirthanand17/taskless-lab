@@ -236,7 +236,8 @@ def prepare_full_rehearsal_plan(*sources: object) -> dict:
 
 
 def _draw_original_full_scene(ep:dict, scene:dict, path:Path,
-                              *,revealed:bool=True)->str:
+                              *,revealed:bool=True,
+                              focus_index:int|None=None)->str:
     """Render a real full-size original editorial infographic; no loops.
 
     B4f9 replaces the old 17-slide template with eleven beat-specific
@@ -251,7 +252,8 @@ def _draw_original_full_scene(ep:dict, scene:dict, path:Path,
         scene.get("scene_id") not in SCENE_CARD_WORDS):
         raise FullRehearsalRefused("Unrecognized original storyboard scene")
     try:
-        canvas=render_editorial_frame(ep,scene,revealed=revealed)
+        canvas=render_editorial_frame(
+            ep,scene,revealed=revealed,focus_index=focus_index)
     except SceneDesignRefused as exc:
         # B4g0: preauthored constant artwork labels only. A detailed bounded
         # clip diagnostic is needed to prevent a falsely green CI that skipped
