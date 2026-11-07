@@ -11,6 +11,7 @@ The scripts exist only ephemerally on the Github runner and are deleted.
 from __future__ import annotations
 
 import argparse
+from datetime import date
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -102,6 +103,424 @@ THEMES = {
         "visual":"original illustrated experimental timeline",
     },
 }
+
+# B4h0: hand-authored fictional case studies, never untrusted source text.
+# A single family must NOT yield the identical narrated story every day.
+# These 7 distinct cases per family are combined with three editorial
+# openings; the finite repertoire is disclosed, not falsely sold as
+# limitless human originality or a verified real news explanation.
+CASEBOOK = {
+    "agents": [
+        [
+            "Wrong task owner",
+            "a pretend assistant routing a customer note between two imaginary teammates",
+            "a purple request card with a fake owner field",
+            "a direct human assignment versus an automatic assignment that might pick the wrong inbox",
+            "the invented assistant sends a request to the wrong sample inbox",
+            "a visible owner-confirmation card before the handoff"
+        ],
+        [
+            "Double booking",
+            "an imaginary scheduling helper placing two sample meetings",
+            "two handmade calendar cards sharing a fictional time slot",
+            "a calendar conflict warning versus a silent automatic booking",
+            "the imaginary helper books both sample meetings at once",
+            "a check for overlapping time slots before confirming"
+        ],
+        [
+            "Incomplete checklist",
+            "a mock helper preparing a pretend equipment checklist",
+            "three fictional checklist cards, including one blank field",
+            "a fast unchecked checklist versus a slower reviewed checklist",
+            "the fictional helper marks a missing item complete",
+            "a required-fields check and a final human signoff"
+        ],
+        [
+            "Ambiguous message",
+            "an invented assistant sorting a vague sample team message",
+            "a synthetic note that can mean either urgent or routine",
+            "one interpretation chosen instantly versus asking one clarifying question",
+            "the pretend assistant treats an uncertain note as a firm instruction",
+            "a clarification checkpoint for ambiguous sample messages"
+        ],
+        [
+            "Approval chain",
+            "a simulated assistant forwarding a made-up purchase request",
+            "a fake request card with an empty approval square",
+            "direct forwarding versus routing through a clearly marked human approval gate",
+            "the imaginary helper forwards a request with no signature",
+            "a stop-and-confirm gate before any pretend purchase"
+        ],
+        [
+            "Wrong language",
+            "a fictional helper matching invented messages to language labels",
+            "three sample cards using made-up language tags",
+            "auto-routing by a guessed tag versus asking the author to confirm",
+            "the helper files the deliberately mislabeled card in the wrong queue",
+            "a visible language-label confirmation before routing"
+        ],
+        [
+            "Late handoff",
+            "a pretend assistant passing a fictional task between two time slots",
+            "a paper timeline with two invented shift labels",
+            "a handoff with a receipt versus a handoff with no acknowledgment",
+            "the made-up helper loses a task between example shifts",
+            "a receipt card that the next pretend teammate must acknowledge"
+        ]
+    ],
+    "models": [
+        [
+            "Mixed-up sentiment",
+            "two imaginary text classifiers ranking three invented comments",
+            "three original comment cards with handwritten pretend labels",
+            "a keyword guess versus a labeled reference answer",
+            "the pretend classifier calls a complaint a compliment",
+            "a visible confusion table checked against the sample labels"
+        ],
+        [
+            "Missing training label",
+            "a fictional classifier predicting a tag for an invented message",
+            "a small made-up dataset with one deliberately blank tag",
+            "discarding uncertain rows versus assigning a guessed label",
+            "the hypothetical model treats an unlabeled sample as a proven example",
+            "a missing-label warning before any scoring"
+        ],
+        [
+            "Rare category",
+            "two pretend models sorting common and uncommon fake ticket types",
+            "four invented tickets, one from a tiny minority category",
+            "overall agreement versus separate checks for the rare category",
+            "a made-up model ignores the uncommon sample tag",
+            "a category-by-category error tally with no invented accuracy claims"
+        ],
+        [
+            "Conflicting instructions",
+            "a pretend text model following contradictory invented sorting rules",
+            "two fake instruction cards that disagree about the same message",
+            "the old rule versus the revised rule on one example",
+            "the fictional model silently follows the wrong rule",
+            "an explicit instruction-priority test using one fixed sample"
+        ],
+        [
+            "Overconfident answer",
+            "a hypothetical classifier giving a confident label on nonsense text",
+            "a made-up sentence with no meaningful category",
+            "a forced prediction versus an explicit cannot-decide option",
+            "the pretend model shows certainty about an unclassifiable sample",
+            "an abstain option and a reviewer for unclear examples"
+        ],
+        [
+            "Wrong evaluation split",
+            "two fictional models tested on copied sample rows",
+            "an invented table containing the same row twice",
+            "retesting repeated examples versus a separated toy holdout set",
+            "the example evaluation counts the same practice row twice",
+            "a visible duplicate-row check before the mock comparison"
+        ],
+        [
+            "Broken input format",
+            "an imaginary classifier reading handmade message fields",
+            "a synthetic message missing its subject line",
+            "a strict input check versus silently accepting an incomplete message",
+            "the model gives a pretend label without the required input",
+            "a simple input-schema checkpoint before any prediction"
+        ]
+    ],
+    "data": [
+        [
+            "Duplicate row",
+            "a pretend six-row spreadsheet with repeated identifiers",
+            "a small handmade table where one fictional row appears twice",
+            "counting all entries versus counting unique sample identifiers",
+            "a repeated sample row is mistaken for a new record",
+            "a duplicate-key inspection before updating the toy table"
+        ],
+        [
+            "Missing age",
+            "an invented worksheet with one missing age entry",
+            "five imaginary records, including an intentionally empty age cell",
+            "leaving the gap explicit versus filling it with a guess",
+            "an empty sample value is replaced with a plausible but invented number",
+            "a missing-value note and an audit trail instead of guessing"
+        ],
+        [
+            "Inconsistent units",
+            "a synthetic inventory table mixing counts and weights",
+            "three pretend rows with two deliberately different unit labels",
+            "combining unlike units versus converting only after checking definitions",
+            "the imaginary spreadsheet adds kilograms to item counts",
+            "a unit-validation column alongside the original sample values"
+        ],
+        [
+            "Date formatting",
+            "a mock attendance sheet containing ambiguous sample dates",
+            "four made-up dates written in two incompatible styles",
+            "parsing dates as written versus asking which calendar format applies",
+            "an ambiguous invented date shifts into the wrong month",
+            "an explicit date-format decision before sorting records"
+        ],
+        [
+            "Category typo",
+            "a fictional purchase log with nearly identical sample categories",
+            "a small table using blue-tag and blu-tag labels",
+            "merging by appearance versus checking the original label definitions",
+            "the toy cleanup merges two different categories by mistake",
+            "a reviewed lookup table for the permitted labels"
+        ],
+        [
+            "Outlier check",
+            "a hypothetical sensor worksheet containing an odd sample value",
+            "a synthetic five-reading table with one extreme entry",
+            "deleting the surprising row versus investigating the input rule",
+            "the fictional analyst removes the example outlier without recording why",
+            "a flag-for-review column and the unchanged source row"
+        ],
+        [
+            "Join mismatch",
+            "two made-up tables linked by synthetic customer IDs",
+            "a tiny pair of grids with a missing matching example ID",
+            "joining every row versus matching only validated pretend keys",
+            "a sample entry attaches to an unrelated invented customer",
+            "a key-matching inspection before combining the toy grids"
+        ]
+    ],
+    "security": [
+        [
+            "Guest document",
+            "a fictional file app deciding if a guest may open a toy report",
+            "two handmade guest request cards with different pretend permissions",
+            "showing a report immediately versus checking the sample access rule",
+            "the imaginary app opens the sample report for an unapproved guest",
+            "a visible allow-or-deny decision before displaying any data"
+        ],
+        [
+            "Expired session",
+            "a pretend app with a deliberately expired sample access pass",
+            "a paper login card and a fictional expiry clock",
+            "accepting an old session versus asking for a new simulated sign-in",
+            "the example app treats an expired session as still active",
+            "an expiry check before processing the fake request"
+        ],
+        [
+            "Wrong group",
+            "a mock workspace where two invented teams share a file list",
+            "illustrated request cards assigned to different pretend groups",
+            "matching a group label versus granting everyone the same access",
+            "the sample app exposes the team-one file to a team-two role",
+            "a group-scope check before showing the requested card"
+        ],
+        [
+            "Broad permission",
+            "a fictional permissions panel asking for more than it needs",
+            "a toy photo-reader form requesting unrelated fake contacts permission",
+            "granting every request versus accepting only the required sample scope",
+            "the imaginary app requests a pretend address book without reason",
+            "a least-privilege decision with each permission explained"
+        ],
+        [
+            "Public link",
+            "an invented document-share screen with a confusing link toggle",
+            "two illustrated sharing cards, private and anyone-with-link",
+            "displaying a warning versus silently enabling wide sharing",
+            "the pretend app turns a private sample link into a public one",
+            "a clear sharing-scope confirmation before saving"
+        ],
+        [
+            "Role inheritance",
+            "a sample team app assigning imaginary editor and reader roles",
+            "a diagram with two fictional accounts and inherited role arrows",
+            "checking effective roles versus trusting the visible label alone",
+            "the example reader unexpectedly inherits pretend edit rights",
+            "an effective-permissions preview for the example account"
+        ],
+        [
+            "Lost device",
+            "a made-up account panel with a simulated missing device",
+            "a paper device list showing one invented unknown session",
+            "leaving every session active versus reviewing which sessions belong",
+            "the fictional account keeps a pretend lost device signed in",
+            "a sign-out checkpoint for the unrecognized sample session"
+        ]
+    ],
+    "developer_tools": [
+        [
+            "Wrong sort order",
+            "a toy app sorting four invented color tags",
+            "four colored sample labels arranged in a deliberately mixed order",
+            "a predetermined expected order versus the button output",
+            "the fictional sorting button puts the orange tag before blue unexpectedly",
+            "a one-click regression test with a visible expected list"
+        ],
+        [
+            "Double-click bug",
+            "a pretend save button that receives two quick sample clicks",
+            "a drawn interface with a fake save counter",
+            "single-action expected behavior versus a duplicated test action",
+            "the invented button creates two example records from one intention",
+            "an idempotency check in the toy click test"
+        ],
+        [
+            "Empty form",
+            "an imaginary app submitting a blank sample field",
+            "a hand-drawn demo form with a required color label",
+            "validating the empty input versus accepting it silently",
+            "the fake submit action stores an example with no required label",
+            "a required-field warning before the pretend submit"
+        ],
+        [
+            "Undo failure",
+            "a pretend editor changing two fictional tags",
+            "two colored cards and an illustrated undo control",
+            "the expected reversible edit versus the irreversible sample behavior",
+            "the mock undo function restores only one of two modified cards",
+            "an explicit before-and-after undo regression test"
+        ],
+        [
+            "Wrong filter",
+            "a fictional dashboard filtering made-up task cards",
+            "a toy list with two labels that share a similar prefix",
+            "exact matching versus loose substring filtering",
+            "the sample filter hides a valid card with a neighboring label",
+            "a fixed test for inclusive and exclusive filter examples"
+        ],
+        [
+            "Slow state",
+            "a demo web button with an imaginary delayed response",
+            "an illustrated progress placeholder and a finished-state card",
+            "one-time loading feedback versus a control that appears permanently busy",
+            "the pretend button never exits its illustrated loading state",
+            "a bounded timeout and a clearly labeled retry state"
+        ],
+        [
+            "Stale cache",
+            "a fictional app showing a sample counter that was just changed",
+            "two handmade counter panels representing old and new values",
+            "showing a cached example versus the latest pretend state",
+            "the toy page displays the old counter after the update",
+            "a deterministic refresh test with both values visible"
+        ]
+    ],
+    "general": [
+        [
+            "Unfair comparison",
+            "two invented study routines evaluated on unequal pretend sessions",
+            "a toy timeline where one method gets twice as much practice",
+            "equal-time sample trials versus two mismatched examples",
+            "the imaginary comparison credits a method for extra practice time",
+            "a matched-duration baseline before comparing imaginary outcomes"
+        ],
+        [
+            "Changing two things",
+            "a hypothetical study test where lighting and timing both vary",
+            "two handmade session cards with different light and time settings",
+            "changing one variable versus changing both at once",
+            "the pretend trial cannot tell which of two changes mattered",
+            "a one-variable-at-a-time sample plan"
+        ],
+        [
+            "Missing baseline",
+            "a fictional reading challenge with no recorded starting point",
+            "a paper worksheet containing an empty before column",
+            "a result without baseline versus a properly labeled toy starting score",
+            "the invented evaluation claims an improvement with no starting value",
+            "a blank-but-required baseline slot before the example begins"
+        ],
+        [
+            "Small sample",
+            "a make-believe test drawing conclusions from one imagined attempt",
+            "a toy result card containing a single trial",
+            "one isolated observation versus several planned sample trials",
+            "the hypothetical tester calls one pretend result a universal rule",
+            "a repeatable trial plan with uncertainty noted"
+        ],
+        [
+            "Confounded order",
+            "a pretend memory task always done second in the sample sequence",
+            "two fake session cards presented in the same order",
+            "fixed order versus swapping the order between imagined trials",
+            "the example attributes a practice effect to the wrong activity",
+            "a balanced presentation order for the made-up comparison"
+        ],
+        [
+            "Unclear success",
+            "a mock experiment using an undefined success label",
+            "a fictional checklist with no rule for marking a pass",
+            "a vague success word versus a prewritten testable criterion",
+            "the invented reviewer changes the meaning of success after the trial",
+            "a clear pass-or-fail definition before any demonstration"
+        ],
+        [
+            "Hidden exception",
+            "an imaginary routine comparison ignoring a difficult sample case",
+            "a handmade result table with one flagged exception row",
+            "dropping inconvenient examples versus keeping a visible exception count",
+            "the make-believe test quietly hides the failed sample condition",
+            "an explicit exception log beside the invented results"
+        ]
+    ]
+}
+
+
+def _daily_case(family: str, slot: str, day: str) -> tuple[dict, int]:
+    if family not in THEMES or slot not in ("short_am","short_pm","long"):
+        raise RehearsalRefused("Unknown original creative scene identity")
+    try:
+        ordinal=date.fromisoformat(day).toordinal()
+    except (TypeError,ValueError):
+        raise RehearsalRefused("Missing valid daily fictional scene date") from None
+    if len(day)!=10 or day!=date.fromordinal(ordinal).isoformat():
+        raise RehearsalRefused("Noncanonical daily scene date")
+    rows=CASEBOOK[family]
+    if len(rows)!=7 or any(len(row)!=6 for row in rows):
+        raise RehearsalRefused("Incomplete handcrafted safe fictional casebook")
+    offset={"short_am":0,"long":2,"short_pm":4}[slot]
+    family_index=sorted(THEMES).index(family)
+    selection=(ordinal+offset+family_index)%len(rows)
+    opening=(ordinal//len(rows)+offset+family_index)%3
+    title,thing,input_,comparison,failure,next_step=rows[selection]
+    theme={**THEMES[family], "story_name":title, "thing":thing,
+           "input":input_, "comparison":comparison, "failure":failure,
+           "next":next_step}
+    return theme,opening
+
+
+def _fresh_opening(slot: str, data: dict, style:int) -> list[str]:
+    paragraphs=_paragraphs(slot,data)
+    if style==0:
+        return paragraphs
+    thing=data["thing"]
+    if style==1:
+        if slot=="short_am":
+            paragraphs[0]=(f"Before we trust {thing}, look for the invisible mistake. "
+                "This is a fictional demonstration, not a verified claim about a real system.")
+        elif slot=="short_pm":
+            paragraphs[0]=(f"What would change your mind about {thing}? "
+                "A fictional demonstration can be clear and still fail as evidence about the real world.")
+        else:
+            paragraphs[0]=(f"Here is an uncomfortable question: when does {thing} "
+                "appear to work while its own test is incomplete? In this fictional "
+                "lesson every object and result is imaginary. We will show the "
+                "mechanism, challenge its assumptions, and leave all real-news "
+                "claims unapproved.")
+    elif style==2:
+        if slot=="short_am":
+            paragraphs[0]=(f"Freeze the next decision in {thing}. "
+                "Can you identify the weak link before it happens? "
+                "Our scenario is fictional and no actual product has been tested.")
+        elif slot=="short_pm":
+            paragraphs[0]=(f"Imagine a convincing screenshot of {thing}. "
+                "Which part is merely drawn, and which part was ever measured? "
+                "This fictional lesson makes the distinction visible.")
+        else:
+            paragraphs[0]=(f"Start with a surprising failure in {thing}, then "
+                "work backward to the decision that allowed it. This is a "
+                "fictional controlled example with imaginary inputs, not a "
+                "verified story from a real company. We will compare paths, "
+                "examine missing evidence, and keep the conclusions conditional.")
+    else:
+        raise RehearsalRefused("Unknown original educational hook style")
+    return paragraphs
+
 
 # The narration is truly written, including 4 original sections per Short
 # and 9 per long. It deliberately cannot state a vendor's new factual news.
@@ -240,8 +659,8 @@ def build_nonfactual_rehearsals(
         if source is not None and source in sources:
             raise RehearsalRefused("Repeated source assigned to distinct videos")
         sources.append(source)
-        theme=THEMES[family]
-        paragraphs=_paragraphs(slot,theme)
+        theme,opening=_daily_case(family,slot,briefs["plan_day_ist"])
+        paragraphs=_fresh_opening(slot,theme,opening)
         is_short=brief["format"]=="short"
         total=SHORT_FRAMES if is_short else LONG_FRAMES
         if (len(paragraphs)!=(4 if is_short else 9)
@@ -281,7 +700,9 @@ def build_nonfactual_rehearsals(
             at+=frames
         if at!=total or len(scenes)!=(4 if is_short else 9):
             raise RehearsalRefused("Scene timing does not match target video length")
-        raw=theme["label"]+" — "+slot.replace("_"," ").title()+" synthetic test"
+        # Native portrait preview permits at most 3 wrapped 22-character lines.
+        # Keep the richer actual spoken scenario while using a compact title.
+        raw="Synthetic "+theme["story_name"]+" — "+slot.replace("_"," ").title()
         episodes.append({
             "episode_id":brief["episode_id"], "slot":slot,
             "format":brief["format"],"planned_local_ist":brief["time_ist"],
