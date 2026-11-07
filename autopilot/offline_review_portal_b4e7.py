@@ -15,7 +15,7 @@ from autopilot.review_worksheet_validator_b4e6 import inspect, ReviewValidationE
 PORTAL_FILE = "OPEN_LOCAL_REVIEW_DASHBOARD.html"
 
 
-def build_portal(manifest: dict, worksheet: dict) -> str:
+def build_portal(manifest: dict, worksheet: dict, *, diagnostics: dict | None = None) -> str:
     """Emit a self-contained local playback/checklist UI; never approve release."""
     evidence = inspect(manifest, worksheet)
     if (evidence["self_reported_reviewed_scenes"] != 0
@@ -25,6 +25,20 @@ def build_portal(manifest: dict, worksheet: dict) -> str:
             or any(x.get("overall_human_decision") != "NOT_REVIEWED"
                    for x in worksheet["videos"])):
         raise ReviewValidationError("Portal must start from a blank official worksheet")
+    # Validate actual FFmpeg-derived signal hints against exact original
+    # MP4 identities. UI never changes NOT_REVIEWED statuses automatically.
+    if diagnostics is not None:
+        from autopilot.owner_signal_timeline_b4f5 import validate_signal_timeline
+        signals = validate_signal_timeline(manifest, worksheet, diagnostics)
+        signal_json = json.dumps(signals, ensure_ascii=True, separators=(",", ":"))
+        signal_json = (signal_json.replace("&", "\\u0026")
+                       .replace("<", "\\u003c").replace(">", "\\u003e"))
+        signal_block = (
+            '<script type="application/json" id="signal-data">' +
+            signal_json + '</script>\n'
+        )
+    else:
+        signal_block = ""
     labels = ("Morning Short", "Long video", "Evening Short")
     players = "".join(
         '<section class="episode" data-index="' + str(i) + '">'
@@ -66,6 +80,14 @@ textarea{resize:vertical;min-height:55px}
 button{border:0;color:#fff;background:#2860c2;cursor:pointer}
 .scene{border-top:1px solid #38485e;margin-top:14px;padding-top:10px}
 .capture{margin-top:5px;background:#4b5e7f}
+.signal-panel{background:#101f36;border:1px solid #3d6284;border-radius:12px;padding:14px;margin:16px 0}
+.signal-panel h3{margin:0 0 5px;color:#dbedfc}
+.signal-panel .signal-list{margin:8px 0 0;padding:0;list-style:none}
+.signal-panel li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #30445c}
+.signal-panel li span{font-size:13px;line-height:1.45}
+.signal-panel .signal-seek{flex-shrink:0;background:#3b638b}
+.signal-panel .signal-seek:focus-visible{outline:3px solid #ffd36b;outline-offset:3px}
+.signal-panel small{display:block;margin-top:5px}
 #save{margin:24px 0;background:#19856f;font-weight:700}
 #status{font-size:1.1rem;font-weight:700}
 small{color:#b4bfce}
@@ -78,10 +100,80 @@ small{color:#b4bfce}
 <button type="button" id="save">Download my local review JSON</button>
 <p><small>Keep this JSON private and validate it with: python -m autopilot.review_worksheet_validator_b4e6 --manifest REVIEW_ONLY_NO_PUBLISH.json --worksheet YOUR_REVIEW.json. No upload or automated pass is performed.</small></p>
 <script type="application/json" id="review-data">""" + raw + """</script>
-<script>
+""" + signal_block + """<script>
 "use strict";
 const data=JSON.parse(document.getElementById("review-data").textContent);
+const signalElement=document.getElementById("signal-data");
+const signals=signalElement ? JSON.parse(signalElement.textContent) : null;
 const states=["NOT_REVIEWED","PASS","FAIL"];
+function formatSignalTime(seconds) {
+  const n=Math.max(0,Math.floor(seconds));
+  return String(Math.floor(n/60)).padStart(2,"0")+":"+
+    String(n%60).padStart(2,"0");
+}
+function addSignalReview(section,player,index) {
+  const panel=document.createElement("aside");panel.className="signal-panel";
+  const title=document.createElement("h3");title.textContent="Encoded MP4 signal review";
+  panel.appendChild(title);
+  const notice=document.createElement("small");
+  notice.textContent="Automated hints only. A static diagram or pause can be intentional. Click to seek; no review status changes automatically.";
+  panel.appendChild(notice);
+  if (!signals) {
+    const empty=document.createElement("p");
+    empty.className="muted";
+    empty.textContent="Technical warnings not yet attached. This is not a quality pass.";
+    panel.appendChild(empty);section.querySelector(".review-inputs").prepend(panel);
+    return;
+  }
+  const item=signals.videos[index];
+  const summary=document.createElement("p");summary.className="muted";
+  summary.textContent=item.seek_hints.length+
+    " timecoded checks; encoded sample peak "+item.sample_peak_dbfs_not_true_peak+
+    " dBFS (not true peak), mean "+item.sample_mean_dbfs_not_lufs+
+    " dBFS (not LUFS).";
+  panel.appendChild(summary);
+  const list=document.createElement("ul");list.className="signal-list";
+  for(const hint of item.seek_hints) {
+    const li=document.createElement("li");
+    const label=document.createElement("span");
+    label.textContent=hint.label+" · "+formatSignalTime(hint.start_seconds)+
+      "–"+formatSignalTime(hint.end_seconds)+
+      " ("+hint.duration_seconds+" s)";
+    li.appendChild(label);
+    const button=document.createElement("button");
+    button.type="button";button.className="signal-seek";
+    button.textContent="Seek "+formatSignalTime(hint.start_seconds);
+    button.setAttribute("aria-label","Seek "+hint.label+" at "+
+      formatSignalTime(hint.start_seconds));
+    button.addEventListener("click",()=>{
+      // Do not auto-play or mark PASS. Only the actual human may review.
+      const seek=()=>{
+        const playable=Number.isFinite(player.duration)
+          ? player.duration : item.duration_seconds;
+        player.currentTime=Math.max(0,Math.min(hint.start_seconds,playable-0.1));
+        player.pause();player.focus();
+      };
+      if(player.readyState>=1) seek();
+      else {
+        player.addEventListener("loadedmetadata",seek,{once:true});
+        player.load();
+      }
+    });
+    li.appendChild(button);list.appendChild(li);
+  }
+  if(item.seek_hints.length===0) {
+    const quiet=document.createElement("p");quiet.className="muted";
+    quiet.textContent="No timed signal detected. Still requires full human playback.";
+    panel.appendChild(quiet);
+  }
+  if(item.warning_codes.length) {
+    const codes=document.createElement("small");
+    codes.textContent="Technical warning codes: "+item.warning_codes.join(", ");
+    panel.appendChild(codes);
+  }
+  panel.appendChild(list);
+  section.querySelector(".review-inputs").prepend(panel);
+}
 function selectStatus(value,change) {
   const s=document.createElement("select");
   for (const name of states) {
@@ -107,6 +199,7 @@ function updateProgress() {
 for(const section of document.querySelectorAll("section.episode")) {
   const i=Number(section.dataset.index), video=data.videos[i];
   const player=section.querySelector("video"), target=section.querySelector(".review-inputs");
+  addSignalReview(section,player,i);
   const headline=document.createElement("h3"); headline.textContent="10 quality checks";target.appendChild(headline);
   for(const key of Object.keys(video.checks)) {
     rowLabel(key.replaceAll("_"," "),selectStatus(video.checks[key],x=>video.checks[key]=x),target);
