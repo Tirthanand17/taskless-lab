@@ -8,6 +8,24 @@ from __future__ import annotations
 import math
 
 
+# Original 11 scene IDs and their unique educational visual grammar.
+# Deliberately Pillow-independent so no-media, no-secrets CI can test the
+# FFconcat timing source without installing the full renderer.
+SOURCE_SCENE_GRAMMAR = {
+    "HOOK_QUESTION":"compare",
+    "SOURCE_SCOPE":"steps",
+    "DEMONSTRATION":"matrix",
+    "VERIFY_AND_LIMIT":"gate",
+    "MECHANISM":"steps",
+    "BASELINE":"compare",
+    "EXAMPLE_1":"matrix",
+    "EXAMPLE_2":"compare",
+    "COUNTEREXAMPLE":"gate",
+    "FACT_AND_RIGHTS_GATE":"gate",
+    "NEXT_VIEWER_ACTION":"steps",
+}
+
+
 class OneWayStageRefused(ValueError):
     """Unverified scene duration, timeline or stage cycle."""
 
@@ -46,3 +64,9 @@ def active_focus_sequence(visual_grammar: str) -> tuple[int|None,...]:
     if visual_grammar in ("matrix","steps"):
         return (None,0,1,2)
     raise OneWayStageRefused("No approved original diagram grammar")
+
+
+def grammar_for_original_scene(scene_id: str) -> str:
+    if type(scene_id) is not str or scene_id not in SOURCE_SCENE_GRAMMAR:
+        raise OneWayStageRefused("Unknown original educational scene category")
+    return SOURCE_SCENE_GRAMMAR[scene_id]
