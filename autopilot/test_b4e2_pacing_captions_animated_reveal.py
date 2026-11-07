@@ -128,8 +128,8 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
                             if e["kind"]==kind)
                     srt=root/f"{kind}-original.srt"
                     srt.write_text(
-                        "1\\n00:00:00,000 --> 00:00:02,000\\n"+
-                        "\\n".join(lines)+"\\n",encoding="utf8")
+                        "1\n00:00:00,000 --> 00:00:02,000\n"+
+                        "\n".join(lines)+"\n",encoding="utf8")
                     output={}
                     for style in ("base","burned"):
                         target=root/f"{kind}-{style}.png"
