@@ -253,6 +253,7 @@ def main():
             "youtube_schedule_verified":False,
             "expected_publish_at_utc":schedule,
             "source_mp4_sha256":digest,
+            "expected_channel_id":args.expected_channel_id,
             "created_utc":datetime.datetime.now(
                 datetime.timezone.utc).isoformat(),
         })
@@ -303,6 +304,7 @@ def main():
             "youtube_schedule_verified":False,
             "expected_publish_at_utc":schedule,
             "source_mp4_sha256":digest,
+            "expected_channel_id":args.expected_channel_id,
             "created_utc":datetime.datetime.now(datetime.timezone.utc).isoformat()}
         tmp=pending_path.with_suffix(pending_path.suffix+".tmp")
         tmp.write_text(json.dumps(checkpoint,indent=2)+"\n",encoding="utf-8")
@@ -327,8 +329,21 @@ def main():
           media_body=MediaFileUpload(str(caption_path),mimetype="application/octet-stream")
         ).execute()
         caption_id=uploaded_caption.get("id") if isinstance(uploaded_caption,dict) else None
-        if (not isinstance(caption_id,str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}",caption_id)):
+        if (not isinstance(caption_id,str) or not re.fullmatch(r"[A-Za-z0-9_.-]{1,128}",caption_id)):
             raise SystemExit("Caption insert ID unavailable; keep pending upload, no new insert")
+        if schedule:
+            # This exact caption ID is required for future read-only
+            # reconciliation if YouTube processes the MP4/SRT later.
+            from scripts.youtube_pending_checkpoint_b4f3 import (
+                PendingCheckpointRefused, save_existing_caption_identity,
+            )
+            try:
+                save_existing_caption_identity(
+                    pending_path,video_id=video_id,caption_id=caption_id)
+            except PendingCheckpointRefused:
+                raise SystemExit(
+                    "Caption was sent but checkpoint is uncertain; no new insert"
+                ) from None
         print(f"uploaded {CAPTION_LANGUAGES[language]} SRT captions")
 
     schedule_readback=None
