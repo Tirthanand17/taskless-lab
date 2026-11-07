@@ -3,6 +3,8 @@ from copy import deepcopy
 from hashlib import sha256
 import json
 from pathlib import Path
+import shutil
+import subprocess
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
@@ -76,6 +78,36 @@ class FFmpegParserTests(unittest.TestCase):
         report=parse_ffmpeg_signals(minimal,duration=57.8)
         self.assertEqual(report["warning_codes"],[])
         self.assertFalse(report["human_full_audio_visual_watch_completed"])
+
+
+class ActualHostedFFmpegProbeTests(unittest.TestCase):
+    @unittest.skipUnless(shutil.which("ffmpeg"), "FFmpeg not installed")
+    def test_actual_23_second_full_decoded_video_static_black_event(self):
+        # Original generated sound/image ONLY; 96px, no human likeness.
+        # This proves installed FFmpeg filters emit parseable real signals.
+        with TemporaryDirectory() as directory:
+            output=Path(directory)/"synthetic-test-only.mp4"
+            subprocess.run([
+                "ffmpeg","-hide_banner","-nostdin","-loglevel","error",
+                "-f","lavfi","-i","color=c=black:s=96x96:r=6:d=23",
+                "-f","lavfi","-i","sine=frequency=440:sample_rate=16000:duration=23",
+                "-c:v","mpeg4","-q:v","7","-c:a","aac",
+                "-shortest","-y",str(output),
+            ],capture_output=True,text=True,check=True,timeout=40)
+            probe=subprocess.run([
+                "ffmpeg","-hide_banner","-nostdin","-nostats",
+                "-i",str(output),
+                "-map","0:v:0","-map","0:a:0",
+                "-vf","blackdetect=d=0.8:pix_th=0.1:pic_th=0.99,"
+                      "freezedetect=n=-60dB:d=5",
+                "-af","silencedetect=noise=-48dB:d=1.6,volumedetect",
+                "-f","null","-",
+            ],capture_output=True,text=True,check=True,timeout=40)
+            evidence=parse_ffmpeg_signals(probe.stderr,duration=23)
+            self.assertIn("BLACK_SEGMENT_REVIEW",evidence["warning_codes"])
+            self.assertIn("POTENTIALLY_STATIC_OR_FROZEN_VISUAL_REVIEW",
+                          evidence["warning_codes"])
+            self.assertFalse(evidence["human_full_audio_visual_watch_completed"])
 
 
 class StrictManualArtifactTests(unittest.TestCase):
