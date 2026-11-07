@@ -141,12 +141,12 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
             folder=Path(tmp)
             images=[]
             durations=[13.0 for _ in ep["scenes"]]
-            from autopilot.cinematic_scene_board_b4f9 import BEATS
             from autopilot.one_way_storyboard_timing_b4g2 import (
-                active_focus_sequence,
+                active_focus_sequence,grammar_for_original_scene,
             )
             for i,scene in enumerate(ep["scenes"]):
-                n=len(active_focus_sequence(BEATS[scene["scene_id"]][3]))
+                n=len(active_focus_sequence(
+                    grammar_for_original_scene(scene["scene_id"])))
                 stages=[]
                 for phase in range(n):
                     image=folder/f"{i:02}_stage_{phase}.png"
