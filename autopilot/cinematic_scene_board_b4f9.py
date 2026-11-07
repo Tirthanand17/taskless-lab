@@ -11,13 +11,16 @@ No remote assets, image-model, public claim, rotating circle or YouTube write.
 """
 from __future__ import annotations
 
+from datetime import date
 from hashlib import sha256
 from pathlib import Path
+import re
 from typing import Callable
 
 from PIL import Image, ImageDraw
 
 from autopilot.real_rehearsal_voice_media_b4e0 import _font, SLOTS
+from autopilot.nonfactual_narration_rehearsal import _daily_case, THEMES as SCRIPT_THEMES, RehearsalRefused
 
 STATUS = "B4F9_ORIGINAL_EDITORIAL_STORYBOARDS_HUMAN_REVIEW_ONLY"
 PALE = (229,240,252)
@@ -227,6 +230,25 @@ def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool,
           and ep.get("all_scene_count")==expected
           and type(number) is int and 0<=number<expected,
           "Unverified scene/count/canvas or slot")
+    # Every case caption must be generated from a known, hand-authored
+    # lesson and the exact episode date/slot. No arbitrary RSS/headline text
+    # can be smuggled onto the video by supplying untrusted frame metadata.
+    identity=ep.get("episode_id")
+    family=ep.get("synthetic_case_family")
+    case_title=ep.get("synthetic_case_title")
+    m=re.fullmatch(r"fm_(\\d{8})_(short_am|long|short_pm)",identity) if type(identity) is str else None
+    _need(m is not None and m.group(2)==slot
+          and type(family) is str and family in SCRIPT_THEMES
+          and type(case_title) is str,
+          "Missing source-authored synthetic case identity")
+    try:
+        serial_day=date(int(m.group(1)[:4]),int(m.group(1)[4:6]),
+                        int(m.group(1)[6:])).isoformat()
+        expected_case,_=_daily_case(family,slot,serial_day)
+    except (ValueError,RehearsalRefused):
+        raise SceneDesignRefused("Malformed source-authored case date") from None
+    _need(case_title==expected_case["story_name"],
+          "Storyboard case title does not match source-authored story")
     beat=BEATS[scene_id]
     grammar=beat[3]
     choices=2 if grammar in ("compare","gate") else 3
@@ -272,6 +294,13 @@ def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool,
     _safe_text(draw,(88,desc_y),beat[2],size=32 if portrait else 33,
                fill=MUTED,box=(80,desc_y-4,w-78 if portrait else 870,
                                desc_y+75))
+    # Source-locked scenario context makes the educational screen explicitly
+    # about the narrated synthetic case, rather than a generic repeated
+    # PowerPoint beat. Stays clear of both the diagram and ASS subtitle box.
+    case_y=638 if portrait else 615
+    _safe_text(draw,(88,case_y),"CASE / "+case_title.upper(),
+               size=29 if portrait else 28,fill=accent,
+               box=(80,case_y-6,w-80 if portrait else 874,case_y+47))
     area=((75,690,1005,1395) if portrait else
           (932,184,1840,705))
     _diagram(draw,area,scene_id,revealed=revealed,
