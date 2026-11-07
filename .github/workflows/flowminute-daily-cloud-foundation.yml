@@ -23,6 +23,8 @@ on:
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/full_original_rehearsal_media_b4e1.py"
       - "autopilot/manual_rehearsal_review_export_b4e3.py"
+      - "autopilot/rehearsal_encoded_signal_review_b4f4.py"
+      - "autopilot/test_rehearsal_encoded_signal_review_b4f4.py"
       - "autopilot/review_worksheet_validator_b4e6.py"
       - "autopilot/offline_review_portal_b4e7.py"
       - "autopilot/youtube_private_resumable_contract_b4e8.py"
@@ -64,6 +66,8 @@ on:
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/full_original_rehearsal_media_b4e1.py"
       - "autopilot/manual_rehearsal_review_export_b4e3.py"
+      - "autopilot/rehearsal_encoded_signal_review_b4f4.py"
+      - "autopilot/test_rehearsal_encoded_signal_review_b4f4.py"
       - "autopilot/review_worksheet_validator_b4e6.py"
       - "autopilot/offline_review_portal_b4e7.py"
       - "autopilot/youtube_private_resumable_contract_b4e8.py"
@@ -129,7 +133,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_manual_rehearsal_review_export_b4e3 autopilot.test_review_worksheet_validator_b4e6 autopilot.test_offline_review_portal_b4e7 autopilot.test_youtube_private_resumable_contract_b4e8 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_manual_rehearsal_review_export_b4e3 autopilot.test_rehearsal_encoded_signal_review_b4f4 autopilot.test_review_worksheet_validator_b4e6 autopilot.test_offline_review_portal_b4e7 autopilot.test_youtube_private_resumable_contract_b4e8 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
@@ -679,6 +683,36 @@ jobs:
               f.write("3 original MP4s, 1-day retention, strictly no YouTube or factual release.\n")
               f.write("These GitHub artifacts are accessible to anyone with repository read access.\n")
           print("B4E3_EXPLICIT_REVIEW_OPTIN_THREE_MP4_PACKAGED_ZERO_PUBLISH")
+          PY
+
+      - name: Diagnose actual final encoded three MP4 signals for owner-only review
+        if: github.event_name == 'workflow_dispatch' && inputs.retain_rehearsal_review_artifact == true && github.ref == 'refs/heads/main'
+        timeout-minutes: 8
+        env:
+          FLOWMINUTE_EXPLICIT_REVIEW_OPT_IN: "true"
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.rehearsal_encoded_signal_review_b4f4 \
+            --review-dir /tmp/flowminute-b4e3-unapproved-owner-review
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path("/tmp/flowminute-b4e3-unapproved-owner-review/ENCODED_MP4_SIGNAL_WARNINGS_UNAPPROVED.json")
+          d=json.loads(p.read_text(encoding="utf8"))
+          assert d["status"]=="B4F4_FINAL_ENCODED_AV_SIGNAL_DIAGNOSTICS_OWNER_REVIEW_ONLY"
+          assert d["physical_original_encoded_mp4s_independently_decoded_for_signals"]==3
+          assert d["original_scenes_represented"]==17
+          assert d["human_full_video_reviews"]==0
+          assert d["factual_and_rights_approvals"]==0
+          assert d["youtube_uploads_or_release_authority"]==0
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as f:
+              f.write("\n## Final encoded MP4 technical signal warnings (owner review only)\n")
+              for v in d["videos"]:
+                  f.write("- "+v["slot"]+": black "+str(len(v["black_intervals"]))+
+                      ", static/frozen "+str(len(v["freeze_intervals"]))+
+                      ", long silence "+str(len(v["audio_silence_intervals"]))+
+                      ", peak sample dBFS "+str(v["sample_peak_dbfs_not_true_peak"])+".\n")
+              f.write("Detections are advisory; owner must watch all three MP4s; no publication approval.\n")
           PY
 
       - name: Retain manually requested unapproved synthetic MP4s for just one day
