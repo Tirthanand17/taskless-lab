@@ -1,6 +1,7 @@
 """B4d9 actual nonfactual original 3-video script rehearsal QA; no live network."""
 from __future__ import annotations
 from copy import deepcopy
+from datetime import date,timedelta
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -12,7 +13,8 @@ import unittest
 from unittest.mock import patch
 
 from autopilot.nonfactual_narration_rehearsal import (
-    STATUS, RehearsalRefused, THEMES, _paragraphs, _frames_for, _words,
+    STATUS, RehearsalRefused, THEMES, CASEBOOK, _daily_case, _fresh_opening,
+    _paragraphs, _frames_for, _words,
     build_nonfactual_rehearsals,
 )
 from autopilot.test_ephemeral_claim_review_docket_b4d7 import fixture
@@ -40,6 +42,56 @@ class ThreeVideoOriginalRehearsalTests(unittest.TestCase):
         for k,v in kwargs.items():
             vals[names.index(k)]=v
         return build_nonfactual_rehearsals(*vals)
+
+    def test_seven_consecutive_days_have_distinct_true_spoken_examples(self):
+        # Same topic and same slot must not recycle the exact narration.
+        self.assertEqual(set(CASEBOOK),set(THEMES))
+        for family in THEMES:
+            self.assertEqual(len(CASEBOOK[family]),7)
+            self.assertEqual(len({r[0] for r in CASEBOOK[family]}),7)
+            for slot in ("short_am","long","short_pm"):
+                scripts=set()
+                for n in range(7):
+                    day=(date(2026,11,7)+timedelta(days=n)).isoformat()
+                    theme,opening=_daily_case(family,slot,day)
+                    paragraphs=_fresh_opening(slot,theme,opening)
+                    script="\\n".join(paragraphs)
+                    self.assertNotIn(script,scripts,
+                        (family,slot,day,"recycled same 7-day spoken script"))
+                    scripts.add(script)
+                    self.assertIn("fictional",script.lower())
+                    self.assertNotIn("https://",script)
+                    self.assertNotIn("according to the article",script.lower())
+                    self.assertEqual(len(paragraphs),9 if slot=="long" else 4)
+                    words=_words(script)
+                    self.assertTrue((340<=words<=660) if slot=="long"
+                                    else (95<=words<=155),
+                                    (family,slot,day,words))
+                    frames=_frames_for(paragraphs,7200 if slot=="long" else 1740)
+                    self.assertGreaterEqual(min(frames),180)
+                    self.assertEqual(sum(frames),7200 if slot=="long" else 1740)
+                self.assertEqual(len(scripts),7)
+
+    def test_casebook_is_bounded_handcrafted_not_a_source_headline_generator(self):
+        example_date="2026-11-07"
+        for family,entries in CASEBOOK.items():
+            for row in entries:
+                self.assertEqual(len(row),6)
+                for value in row:
+                    self.assertIsInstance(value,str)
+                    self.assertTrue(8<=len(value)<=180)
+                    self.assertNotIn("https://",value)
+                    self.assertNotIn("according to",value.lower())
+            a,_=_daily_case(family,"short_am",example_date)
+            b,_=_daily_case(family,"short_am","2026-11-08")
+            self.assertNotEqual(a["story_name"],b["story_name"])
+        for bad in ("2026-02-30","2026-13-01","2026-1-1","garbage"):
+            with self.assertRaises(RehearsalRefused):
+                _daily_case("agents","short_am",bad)
+        with self.assertRaises(RehearsalRefused):
+            _daily_case("unsupported","short_am",example_date)
+        with self.assertRaises(RehearsalRefused):
+            _daily_case("agents","unsanctioned",example_date)
 
     def test_three_distinct_original_complete_voiceover_rehearsals_exist(self):
         bundle=self.run_script()
