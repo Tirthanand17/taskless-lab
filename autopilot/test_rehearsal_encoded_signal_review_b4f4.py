@@ -152,7 +152,7 @@ class StrictManualArtifactTests(unittest.TestCase):
         self.assertEqual(REPORT_NAME,"ENCODED_MP4_SIGNAL_WARNINGS_UNAPPROVED.json")
 
     def test_substituted_mp4_rejected_before_ffmpeg(self):
-        video=self.target/export.SLOT_NAMES[1][1]
+        video=self.target/export.SLOT_NAMES[0][1]
         video.write_bytes(b"\x00"*video.stat().st_size)
         calls=[]
         with self.assertRaises(SignalReviewRefused):
