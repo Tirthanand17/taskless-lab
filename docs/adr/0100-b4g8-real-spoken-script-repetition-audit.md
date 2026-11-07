@@ -1,0 +1,26 @@
+# ADR-0100 — B4g8 detect repeated daily video narration independently of date and headlines
+
+**2026-11-07 IST | Branch 2 research-to-original-content bridge | strict NO PUBLISH**
+
+## Actual audit finding
+
+The daily GitHub workflow collects genuinely different dated public lead headlines, and performs public page evidence probing, careful title/topic de-duplication and 3 research outlines. Its 17-scene `B4d9` educational voiceover content is **NOT a factual explanation of any chosen headline**: it is a fixed template for one of six broad families. For the same slot and topic family on multiple days, only the episode ID and research headline differ; **the actual spoken script may be identical**, despite different scheduled slots and original media SHA fingerprints. A new encoded H.264 hash therefore does **not** prove novelty of spoken content. Releasing repeated videos for seven days would undermine the user's objective of varied, engaging, researched daily material.
+
+This increment does not fabricate news, run an unapproved model or grant authenticity. It provides a dependable **early warning** for repeated exact spoken stories before spending cloud minutes synthesizing all speech and video.
+
+## Implementation
+
+1. `autopilot.rehearsal_narration_originality_b4g8` consumes only the already validated **3 original, non-factual 4/9/4-scene** scripts and a prior-history response produced by the existing GitHub-only `recent_research_history`. It validates exact next-day episode identities, ordinal scene numbering, original unapproved flags and bounded text. It computes three domain-separated SHA-256 digests of **normalized spoken paragraphs with scene boundaries**. Episode ID, title, source URL, date and output MP4 bytes are deliberately excluded. It also computes **within-day only** overlap between each script's four-word lexical windows, but retains only numerical overlaps, never words.
+2. The already existing GitHub Actions 14-day **research-only** artifact retains the three unapproved narration digests as **small metadata**, and explicitly marks `unique_against_every_prior_day_proven=false`, no facts, no rights and no YouTube release. No transcript, URL, headline, personal data, voice file, screenshots or external copyrighted source is retained in that public artifact.
+3. `recent_research_history` now **independently validates the research receipt's own canonical SHA256**, as well as the existing editorial digest. Historically valid *pre-B4g8* artifacts without script hashes are accepted for research-topic de-duplication but count as **zero proven script-history days**. On a successful B4g8 run, later runs can read the previously retained 3 digest values, with 7-day lookback and bounded GitHub read-only artifact download.
+4. A source-only warning step runs after the exact three scripts are written, **before** the Kokoro model download and full 3-MP4 encode, summarizes how many of the three spoken scripts exactly repeat recent validated previous-day content, and how many prior days had script receipts. It **does not fail the nonpublishing educational rehearsal on a repeat**, since a rehearsal is designed to test a fixed template; it also never promotes that rehearsal into a unique, approved factual video.
+5. Subsequent owner-controlled production should **require genuine original source-backed scripts, rights and editorial signoff, and uniqueness vs. the channel catalogue**, rather than treating a green rehearsal as release-ready. The older signed exact-media owner release fence and blocked YouTube OAuth remain independent.
+
+## Tests, boundaries and evidence
+
+- Full 17-scene synthesis from the existing actual in-repository source-fixture graph, then 3 hash checks. Changing the plan day and episode IDs/headline while leaving spoken text untouched must yield the **same fingerprints and 3/3 repeated** when earlier hashes exist. Changing actual spoken text alters only that script digest.
+- Fails on mutated scene/episode mapping, bad previous hash, duplicated or unbounded history, falsely asserted factual/rights/YouTube flags, and unsafe public receipt construction.
+- Tests old research receipts without new script metadata and a future historical archive with exact B4g8 hashes and a newly independently verified source receipt hash; forged authority or mismatched digests must fail.
+- The Content Quality Gate collects test modules without voice/model downloads. The Daily Cloud Foundation tests before emitting the public artifact. Only main/schedule/owner-manual non-PR jobs collect actual GitHub historical receipt hashes. **A seven-day script originality claim remains impossible until 7 prior successfully retained days actually exist, and exact script-hash difference alone is not a proof of genuinely original factual reporting.**
+
+No laptop file processing, secret readback, OAuth refresh, YouTube videos.insert, permanent cloud vault, real factual signoff, content license grant, user-data mutation or paid model call is added. **Overall production readiness score remains 45/100**, and 0/21 verified independent live publications; this PR improves visibility but does not prove a deployed factual-content production capability.
