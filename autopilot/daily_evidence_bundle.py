@@ -15,6 +15,7 @@ import argparse
 import datetime as dt
 from hashlib import sha256
 import json
+import re
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -174,7 +175,8 @@ def _validate_sanitized_editorial_alignment(plan:dict, receipt:object)->str:
 
 
 def build_retained_draft_receipt(
-    plan: dict,evidence: dict, *, editorial_receipt:object=None
+    plan: dict,evidence: dict, *, editorial_receipt:object=None,
+    originality_report:object=None,
 ) -> dict:
     """Content-address public run status, never copy headlines URLs or sources."""
     _validate_source_report(evidence)
@@ -290,6 +292,42 @@ def build_retained_draft_receipt(
             plan["editorial_selected_unverified_topics"]
             if matched_editorial_sha is not None else None),
     }
+    if originality_report is not None:
+        # Keep only original script hashes in the public research receipt,
+        # NEVER original spoken script, source URL/title, news text or samples.
+        from autopilot.rehearsal_narration_originality_b4g8 import (
+            STATUS as ORIGINALITY_STATUS,
+        )
+        report=originality_report
+        h=report.get("script_fingerprints_sha256") if type(report) is dict else None
+        if (type(report) is not dict
+            or report.get("status")!=ORIGINALITY_STATUS
+            or report.get("plan_day_ist")!=day
+            or report.get("episode_slots")!=["short_am","long","short_pm"]
+            or report.get("source_fingerprint_domain")!=
+                "NORMALIZED_SPOKEN_SCENES_NOT_EPISODE_ID"
+            or type(h) is not list or len(h)!=3
+            or len(set(h))!=3
+            or any(type(x) is not str or
+                   re.fullmatch(r"[0-9a-f]{64}",x) is None for x in h)
+            or report.get("unique_against_every_prior_day_proven") is not False
+            or report.get("all_three_daily_videos_factually_original_or_rights_checked") is not False
+            or report.get("actual_human_factual_and_rights_approvals")!=0
+            or report.get("youtube_release_authorized") is not False):
+            raise DailyEvidenceRefused(
+                "Script fingerprint report cannot claim human facts, rights or release")
+        result["unapproved_rehearsal_narration_originality"]={
+            "status":ORIGINALITY_STATUS,
+            "plan_day_ist":day,
+            "episode_slots":["short_am","long","short_pm"],
+            "script_fingerprints_sha256":h,
+            "source_fingerprint_domain":
+                "NORMALIZED_SPOKEN_SCENES_NOT_EPISODE_ID",
+            "unique_against_every_prior_day_proven":False,
+            "all_three_daily_videos_factually_original_or_rights_checked":False,
+            "actual_human_factual_and_rights_approvals":0,
+            "youtube_release_authorized":False,
+        }
     result["receipt_sha256"]=sha256(_canonical(result)).hexdigest()
     if len(_canonical(result))>MAX_OUTPUT_BYTES:
         raise DailyEvidenceRefused("Unbounded public receipt")
@@ -316,6 +354,7 @@ def main():
     cli.add_argument("--evidence",required=True)
     cli.add_argument("--output",required=True)
     cli.add_argument("--editorial-receipt",required=False)
+    cli.add_argument("--originality-report",required=False)
     args=cli.parse_args()
     output=Path(args.output)
     if output.is_symlink() or output.exists():
@@ -324,7 +363,10 @@ def main():
         _read_bounded(Path(args.plan)),_read_bounded(Path(args.evidence)),
         editorial_receipt=(
             _read_bounded(Path(args.editorial_receipt))
-            if args.editorial_receipt else None))
+            if args.editorial_receipt else None),
+        originality_report=(
+            _read_bounded(Path(args.originality_report))
+            if args.originality_report else None))
     output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(result,indent=2,ensure_ascii=True)+"\n",encoding="utf8")
     print(json.dumps({
