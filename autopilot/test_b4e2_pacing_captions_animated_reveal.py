@@ -256,8 +256,15 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
                         return_value=""),
                   patch("autopilot.full_original_rehearsal_media_b4e1._verify_encoded_first_reveal",
                         return_value=True)):
-                r=inspect("ffmpeg",movie,ep,cues,total,hashes,pairs)
+                times=[4.1*len(scene["caption_cues"]) for scene in ep["scenes"]]
+                r=inspect("ffmpeg",movie,ep,cues,total,hashes,pairs,
+                          scene_durations=times)
             self.assertEqual(r["original_full_scene_count"],4)
+            self.assertEqual(len(r["pcm_derived_scene_timeline_seconds"]),4)
+            self.assertTrue(r["scene_timeline_derived_from_actual_pcm"])
+            self.assertEqual(
+                r["pcm_derived_scene_timeline_seconds"][-1]["end_seconds"],
+                round(total,3))
             self.assertTrue(r["actual_full_ffmpeg_decode_passed"])
             self.assertTrue(r["first_real_encoded_one_shot_checkpoint_reveal_frame_verified"])
             self.assertTrue(r["srt_caption_baseline_inside_reserved_panel"])

@@ -124,6 +124,19 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
             actual_hash,actual_size=_sha_file(src)
             if (actual_hash!=digest or actual_size!=original_bytes):
                 raise ReviewExportRefused("Actual MP4 bytes mismatch full decoder QA")
+            from autopilot.audio_scene_navigation_b4g1 import (
+                SceneTimecodeRefused,validate_audio_scene_timeline,
+            )
+            if item.get("scene_timeline_derived_from_actual_pcm") is not True:
+                raise ReviewExportRefused(
+                    "Missing scene start times from real physical PCM, no owner review navigation")
+            try:
+                scene_times=validate_audio_scene_timeline(
+                    item.get("pcm_derived_scene_timeline_seconds"),
+                    seconds,scene_count)
+            except SceneTimecodeRefused:
+                raise ReviewExportRefused(
+                    "Source-lock mismatch in actual original scene timeline") from None
             total+=actual_size
             if total>MAX_TOTAL:
                 raise ReviewExportRefused("Review artifact exceeds combined safety size")
@@ -137,6 +150,7 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
                 "sha256":digest,
                 "measured_audio_seconds":seconds,
                 "original_voiced_scene_count":scene_count,
+                "scene_timeline_from_original_pcm":scene_times,
                 "passed_full_h264_aac_decode":True,
                 "all_rights_and_fact_approvals":False,
                 "youtube_upload_authorized":False,
@@ -183,6 +197,8 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
                 "duration_seconds_measured_pcm":item["measured_audio_seconds"],
                 "scenes":[{
                     "scene_number":index,
+                    "source_start_seconds":item["scene_timeline_from_original_pcm"][index-1]["start_seconds"],
+                    "source_end_seconds":item["scene_timeline_from_original_pcm"][index-1]["end_seconds"],
                     "review_status":"NOT_REVIEWED",
                     "timecode_mm_ss":None,
                     "defect_notes":None,

@@ -30,6 +30,9 @@ def qa_and_three_original_mp4s(root: Path) -> dict:
         data=(bytes([30+i])*(310000+i*100))
         source=folder/"EPHEMERAL_FULL_ORIGINAL_NARRATED_REHEARSAL.mp4"
         source.write_bytes(data)
+        from autopilot.audio_scene_navigation_b4g1 import build_audio_scene_timeline
+        duration=(57.8,241.5,57.3)[i]
+        durations=[duration/count]*count
         episodes.append({
             "episode_id":name,
             "slot":slot,
@@ -47,7 +50,10 @@ def qa_and_three_original_mp4s(root: Path) -> dict:
             "release_authorized":False,
             "encoded_h264_aac_sha256":sha256(data).hexdigest(),
             "total_actual_encoded_bytes":len(data),
-            "real_pcm_measured_seconds":(57.8,241.5,57.3)[i],
+            "real_pcm_measured_seconds":duration,
+            "scene_timeline_derived_from_actual_pcm":True,
+            "pcm_derived_scene_timeline_seconds":build_audio_scene_timeline(
+                durations,duration,count),
         })
     return {
         "status":review.REPORT_STATUS,
