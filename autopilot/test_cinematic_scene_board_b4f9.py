@@ -130,6 +130,45 @@ class EditorialSceneIntegrationTests(unittest.TestCase):
                              after.getpixel((540,1680) if ep["kind"]=="short"
                                              else (960,883)))
 
+    def test_real_diagram_pixels_follow_case_semantics_not_just_case_name(self):
+        from PIL import ImageChops
+        from datetime import date,timedelta
+        from autopilot.nonfactual_narration_rehearsal import _daily_case
+        from autopilot.cinematic_scene_board_b4f9 import render_editorial_frame
+        for ep in self.plan["episodes"]:
+            scene=ep["scenes"][0]
+            first=render_editorial_frame(ep,scene,revealed=True,focus_index=0)
+            stamp=ep["episode_id"].split("_")[1]
+            next_date=date(int(stamp[:4]),int(stamp[4:6]),
+                           int(stamp[6:]))+timedelta(days=1)
+            new_title=_daily_case(ep["synthetic_case_family"],ep["slot"],
+                                   next_date.isoformat())[0]["story_name"]
+            varied={**ep,"episode_id":"fm_"+next_date.strftime("%Y%m%d")
+                    +"_"+ep["slot"],"synthetic_case_title":new_title}
+            second=render_editorial_frame(varied,scene,
+                                           revealed=True,focus_index=0)
+            diagram=(75,690,1005,1395) if ep["kind"]=="short" else (
+                     932,184,1840,705)
+            self.assertIsNotNone(ImageChops.difference(
+                first.crop(diagram),second.crop(diagram)).getbbox(),
+                (ep["slot"],"Case scenario chart remains generic"))
+            # Neither variation is allowed to animate the actual captions.
+            px=(540,1680) if ep["kind"]=="short" else (960,883)
+            self.assertEqual(first.getpixel(px),second.getpixel(px))
+
+    def test_curated_large_native_card_words_physically_fit_both_canvases(self):
+        from PIL import Image,ImageDraw
+        from autopilot.real_rehearsal_voice_media_b4e0 import _font
+        from autopilot.synthetic_case_diagram_labels_b4h2 import CASE_STEPS
+        d=ImageDraw.Draw(Image.new("RGB",(1,1)))
+        for words in CASE_STEPS.values():
+            for label in words:
+                # Compare cards are the strictest: each column is 423/1000
+                # of its graphic. 69px native portrait text, 54px landscape.
+                for px,allowed in ((69,363),(54,338)):
+                    bounds=d.textbbox((0,0),label,font=_font(px))
+                    self.assertLessEqual(bounds[2],allowed,(label,px,bounds))
+
     def test_case_metadata_mismatch_invalid_date_and_article_text_rejected(self):
         from autopilot.cinematic_scene_board_b4f9 import (
             render_editorial_frame,SceneDesignRefused,
