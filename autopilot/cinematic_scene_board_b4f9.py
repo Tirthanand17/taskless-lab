@@ -209,7 +209,8 @@ def _diagram(draw, area: tuple, scene_id: str, *, revealed: bool,
                    size=F(26),fill=accent,box=safe)
 
 
-def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool) -> Image.Image:
+def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool,
+                           focus_index:int|None=None) -> Image.Image:
     """Create one full-size frame whose scene title and diagram are measurable."""
     _need(type(ep) is dict and type(scene) is dict
           and type(revealed) is bool,
@@ -227,6 +228,13 @@ def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool) -> Image.Image:
           and type(number) is int and 0<=number<expected,
           "Unverified scene/count/canvas or slot")
     beat=BEATS[scene_id]
+    grammar=beat[3]
+    choices=2 if grammar in ("compare","gate") else 3
+    _need((focus_index is None) or (
+          type(focus_index) is int and revealed
+          and 0 <= focus_index < choices),
+          "Untrusted scene focus or unavailable focus target")
+    active=focus_index if focus_index is not None else number % choices
     palette=THEMES[slot]
     accent=palette["accent"]
     image=Image.new("RGB",(w,h),DEEP)
@@ -267,7 +275,7 @@ def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool) -> Image.Image:
     area=((75,690,1005,1395) if portrait else
           (932,184,1840,705))
     _diagram(draw,area,scene_id,revealed=revealed,
-             active=number%3,accent=accent,soft=palette["soft"])
+             active=active,accent=accent,soft=palette["soft"])
     # Progress is *static* for each scene; no circular load, rotation or loop.
     bar_y=1460 if portrait else 728
     block_width=(850-12*(expected-1))//expected
