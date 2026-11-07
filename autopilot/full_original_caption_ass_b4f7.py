@@ -68,6 +68,63 @@ def _ass_time(t: float) -> str:
     return f"{hh}:{mm:02}:{ss:02}.{cc:02}"
 
 
+def _balance_pcm_phrase_inputs(cues: list[dict],kind: str)->list[dict]:
+    """Balance short final words while preserving every PCM cue's endpoints.
+
+    The legacy generic first-fit packer can put 7 words in the first card
+    and 1 word in the last: a 2s phrase then gives the tail <230 ms.
+    Distribute each original voice phrase among near-equal word groups
+    BEFORE the generic two-line caption-card formatter sees it.
+    """
+    from autopilot.polished_caption_v2 import CONFIG
+    if type(cues) is not list or not 1<=len(cues)<=500:
+        raise NativeCaptionRefused("Missing original PCM subtitles")
+    cfg=CONFIG[kind]
+    max_words=cfg["words"]
+    max_chars=cfg["line_chars"]
+    outputs=[]
+    previous_end=-1.
+    for cue in cues:
+        if type(cue) is not dict:
+            raise NativeCaptionRefused("Invalid PCM subtitle cue")
+        a,b,phrase=cue.get("start"),cue.get("end"),cue.get("text")
+        if (type(a) not in (int,float) or type(b) not in (int,float)
+            or not math.isfinite(a) or not math.isfinite(b)
+            or not 0<=a<b<=360 or a<previous_end-.002
+            or type(phrase) is not str or
+            ASS_TEXT.fullmatch(phrase) is None):
+            raise NativeCaptionRefused("Invalid PCM voice text or time")
+        previous_end=b
+        words=phrase.split()
+        if (not 1<=len(words)<=80 or
+            any(len(word)>max_chars for word in words)):
+            raise NativeCaptionRefused("Narration word is too long to display")
+        batches=(len(words)+max_words-1)//max_words
+        # 9 spoken words with max 7 -> 5 + 4, not 7 + 2.
+        groups=[]
+        cursor=0
+        for i in range(batches):
+            amount=(len(words)-cursor+(batches-i)-1)//(batches-i)
+            group=words[cursor:cursor+amount]
+            cursor+=amount
+            groups.append(" ".join(group))
+        if cursor!=len(words) or any(not x for x in groups):
+            raise NativeCaptionRefused("Original words were lost during balancing")
+        weights=[max(1,len(x)) for x in groups]
+        total=sum(weights)
+        current=0
+        for i,phrase_chunk in enumerate(groups):
+            begin=a+(b-a)*current/total
+            current+=weights[i]
+            finish=b if i==len(groups)-1 else a+(b-a)*current/total
+            if finish-begin<.27:
+                raise NativeCaptionRefused("Voice phrase too fast for readable text")
+            outputs.append({
+                "start":begin, "end":finish, "text":phrase_chunk,
+            })
+    return outputs
+
+
 def compose_rehearsal_native_ass(cues: list[dict],kind: str
                                 ) -> tuple[str,dict]:
     """Create native-scale libass script from actual measured PCM cue text.
@@ -77,7 +134,7 @@ def compose_rehearsal_native_ass(cues: list[dict],kind: str
     """
     c=native_caption_layout(kind)
     try:
-        cards=caption_cards(cues,kind)
+        cards=caption_cards(_balance_pcm_phrase_inputs(cues,kind),kind)
     except (CaptionQualityRejected,TypeError,KeyError,ValueError):
         raise NativeCaptionRefused("Audio phrases cannot be safely fitted") from None
     if (not cards or len(cards)>1600
