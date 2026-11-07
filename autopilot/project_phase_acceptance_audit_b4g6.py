@@ -106,7 +106,9 @@ def inspect_source_acceptance(root: Path) -> dict:
              'PUBLISH_ENABLED") != "true"' in approval),
         "manual_upload_requires_real_external_owner_signature":
             ('verify_owner_release_signature' in approval and
-             'FLOWMINUTE_OWNER_RELEASE_ED25519_PUBLIC_HEX' in owner_signed),
+             'def verify_owner_release_signature(' in owner_signed and
+             'FLOWMINUTE_OWNER_RELEASE_ED25519_PUBLIC_HEX' in approval and
+             'FLOWMINUTE_OWNER_RELEASE_ED25519_PUBLIC_HEX' in publisher),
         "live_channel_readonly_checks_cannot_change_youtube":
             ('workflow_dispatch:' in owner_readonly and
              'environment: youtube-production' in owner_readonly and
