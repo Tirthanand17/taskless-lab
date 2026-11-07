@@ -236,7 +236,8 @@ def prepare_full_rehearsal_plan(*sources: object) -> dict:
 
 
 def _draw_original_full_scene(ep:dict, scene:dict, path:Path,
-                              *,revealed:bool=True)->str:
+                              *,revealed:bool=True,
+                              focus_index:int|None=None)->str:
     """Render a real full-size original editorial infographic; no loops.
 
     B4f9 replaces the old 17-slide template with eleven beat-specific
@@ -251,7 +252,8 @@ def _draw_original_full_scene(ep:dict, scene:dict, path:Path,
         scene.get("scene_id") not in SCENE_CARD_WORDS):
         raise FullRehearsalRefused("Unrecognized original storyboard scene")
     try:
-        canvas=render_editorial_frame(ep,scene,revealed=revealed)
+        canvas=render_editorial_frame(
+            ep,scene,revealed=revealed,focus_index=focus_index)
     except SceneDesignRefused as exc:
         # B4g0: preauthored constant artwork labels only. A detailed bounded
         # clip diagnostic is needed to prevent a falsely green CI that skipped
@@ -369,29 +371,42 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
 
 
 def _encode_full(ffmpeg: str,ep: dict,folder: Path,
-                 images: list[tuple[Path,Path]],scenes: list[float],
+                 images: list[tuple[Path,...]],scenes: list[float],
                  wav: Path,srt: Path,total: float, *,
                  cues: list[dict]) -> Path:
-    """One non-looping reveal per original scene at actual PCM scene start.
+    """One-way 3/4 phase reveals per original scene paced to actual PCM.
 
-    Stage 1 shows the unselected question/example/checkpoint diagram;
-    stage 2 highlights its unique active checkpoint once, then holds.
-    Every original syllable and caption cue remains on the same audio time.
+    Stage 0 shows original neutral checkpoints; later phases highlight
+    each distinct item exactly once in order, then hold. No circular
+    loader, looping highlight, caption panel motion or extra narration.
     """
     if (len(images)!=ep["all_scene_count"] or len(scenes)!=len(images)
         or abs(sum(scenes)-total)>.03
         or any(not 2<=x<=55 for x in scenes)
-        or any(len(pair)!=2 or not all(p.is_file() for p in pair)
+        or any(len(pair) not in (3,4) or
+               not all(p.is_file() and not p.is_symlink() for p in pair)
                for pair in images)):
         raise FullRehearsalRefused("Staged originals and real PCM scene clocks mismatch")
     concat=folder/"EPHEMERAL_ALL_SCENES_ONE_SHOT_REVEAL.ffconcat"
     lines=["ffconcat version 1.0"]
-    for (base,revealed),duration in zip(images,scenes):
-        first=min(REVEAL_SECONDS,duration/6)
-        second=duration-first
-        if not 0.15<=first<=0.5 or second<1.5:
-            raise FullRehearsalRefused("One-time reveal would compromise narration scene")
-        for image,period in ((base,first),(revealed,second)):
+    from autopilot.one_way_storyboard_timing_b4g2 import (
+        OneWayStageRefused,active_focus_sequence,stage_hold_seconds,
+        grammar_for_original_scene,
+    )
+    for stage_images,duration,original_scene in zip(
+            images,scenes,ep["scenes"]):
+        expected=len(active_focus_sequence(
+            grammar_for_original_scene(original_scene["scene_id"])))
+        if len(stage_images)!=expected:
+            raise FullRehearsalRefused(
+                "Source-lock mismatched narration-paced visual phase count")
+        try:
+            holds=stage_hold_seconds(
+                duration,len(stage_images),min(REVEAL_SECONDS,duration/6))
+        except OneWayStageRefused:
+            raise FullRehearsalRefused(
+                "Physical voice scene cannot contain distinct visual stages") from None
+        for image,period in zip(stage_images,holds):
             lines.extend((f"file '{image.resolve().as_posix()}'",
                           f"duration {period:.6f}"))
     lines.append(f"file '{images[-1][-1].resolve().as_posix()}'")
@@ -589,19 +604,37 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         frames=[]
         hashes=[]
         reveal_pairs=[]
+        from autopilot.one_way_storyboard_timing_b4g2 import (
+            active_focus_sequence,
+        )
+        from autopilot.cinematic_scene_board_b4f9 import BEATS
         for scene in ep["scenes"]:
-            intro=folder/f"EPHEMERAL_SCENE_{scene['scene']:02}_START.png"
-            final=folder/f"EPHEMERAL_SCENE_{scene['scene']:02}_REVEALED.png"
-            first_sha=_draw_original_full_scene(ep,scene,intro,revealed=False)
-            last_sha=_draw_original_full_scene(ep,scene,final,revealed=True)
-            if first_sha==last_sha:
-                raise FullRehearsalRefused("One-shot non-looping reveal indistinguishable")
-            reveal_pairs.append((first_sha,last_sha))
-            hashes.append(last_sha)
-            frames.append((intro,final))
+            focus_steps=active_focus_sequence(
+                BEATS[scene["scene_id"]][3])
+            images_for_scene=[]
+            scene_digests=[]
+            for phase,focus_index in enumerate(focus_steps):
+                path=folder/f"EPHEMERAL_SCENE_{scene['scene']:02}_PHASE_{phase}.png"
+                digest=_draw_original_full_scene(
+                    ep,scene,path,
+                    revealed=focus_index is not None,
+                    focus_index=focus_index)
+                images_for_scene.append(path)
+                scene_digests.append(digest)
+            if len(set(scene_digests))!=len(focus_steps):
+                raise FullRehearsalRefused(
+                    "One-way original instructional phases repeated identical images")
+            reveal_pairs.append((scene_digests[0],scene_digests[-1]))
+            hashes.append(scene_digests[-1])
+            frames.append(tuple(images_for_scene))
         movie=_encode_full(ffmpeg,ep,folder,frames,durations,wav,srt,length,cues=cues)
         qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes,reveal_pairs,
                          scene_durations=durations)
+        qa["one_way_editorial_phase_frames_physically_authored"]=sum(
+            len(pair) for pair in frames)
+        qa["narration_paced_distinct_focus_phases"]=[
+            len(pair) for pair in frames]
+        qa["source_locked_voice_caption_text_unmodified_by_visual_phases"]=True
         actual.append(qa)
         print("B4E1_PHYSICAL_COMPLETE_VOICED_EPISODE_DECODED",
               json.dumps({
@@ -630,6 +663,14 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         "all_17_scenes_with_verified_distinct_one_time_reveal_pngs":
             all(x["original_scene_base_and_one_shot_reveal_pngs"]==
                 x["original_full_scene_count"]*2 for x in actual),
+        "source_derived_one_way_visual_stage_frames_total":sum(
+            x["one_way_editorial_phase_frames_physically_authored"]
+            for x in actual),
+        "all_17_scenes_have_distinct_one_way_progressions":all(
+            len(x["narration_paced_distinct_focus_phases"])==
+                x["original_full_scene_count"] and
+            all(n in (3,4) for n in x["narration_paced_distinct_focus_phases"])
+            for x in actual),
         "all_three_actual_mp4_first_one_shot_reveal_frames_verified":
             all(x["first_real_encoded_one_shot_checkpoint_reveal_frame_verified"]
                 for x in actual),

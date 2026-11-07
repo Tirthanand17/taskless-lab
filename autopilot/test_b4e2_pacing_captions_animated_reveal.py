@@ -135,18 +135,24 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
                 _draw_original_full_scene(ep,ep["scenes"][0],
                                           Path(tmp)/"c.png",revealed="yes")
 
-    def test_ffmpeg_scene_concat_contains_34_one_time_visual_events_not_17_stills(self):
+    def test_ffmpeg_scene_concat_contains_paced_no_loop_phases_not_17_stills(self):
         ep=self.plan["episodes"][1]
         with tempfile.TemporaryDirectory() as tmp:
             folder=Path(tmp)
             images=[]
             durations=[13.0 for _ in ep["scenes"]]
-            for i in range(ep["all_scene_count"]):
-                a=folder/f"{i:02}_start.png"
-                b=folder/f"{i:02}_end.png"
-                a.write_bytes(b"a")
-                b.write_bytes(b"b")
-                images.append((a,b))
+            from autopilot.one_way_storyboard_timing_b4g2 import (
+                active_focus_sequence,grammar_for_original_scene,
+            )
+            for i,scene in enumerate(ep["scenes"]):
+                n=len(active_focus_sequence(
+                    grammar_for_original_scene(scene["scene_id"])))
+                stages=[]
+                for phase in range(n):
+                    image=folder/f"{i:02}_stage_{phase}.png"
+                    image.write_bytes(bytes([65+phase]))
+                    stages.append(image)
+                images.append(tuple(stages))
             wav=folder/"voice.wav"
             srt=folder/"captions.srt"
             wav.write_bytes(b"fake")
@@ -160,9 +166,12 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
                            "text":"Original narration captions stay inside the screen panel."}])
             self.assertEqual(result.suffix,".mp4")
             text=(folder/"EPHEMERAL_ALL_SCENES_ONE_SHOT_REVEAL.ffconcat").read_text()
-            self.assertEqual(text.count("\nfile '"),19)
+            self.assertEqual(text.count("\nfile '"),
+                             sum(len(stages) for stages in images)+1)
             self.assertEqual(text.count("duration 0.360000"),9)
-            self.assertEqual(text.count("duration 12.640000"),9)
+            self.assertNotIn("duration 12.640000",text)
+            self.assertTrue(any(len(stage)==4 for stage in images))
+            self.assertTrue(any(len(stage)==3 for stage in images))
             # The real owner MP4 exposed a clipped top-of-screen SRT bug.
             # Only authored native-resolution ASS is now allowed for burn.
             ass=(folder/"EPHEMERAL_NATIVE_PIXEL_VOICE_CAPTIONS.ass").read_text()
