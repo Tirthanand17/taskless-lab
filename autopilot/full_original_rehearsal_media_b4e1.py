@@ -307,14 +307,9 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
                 sample_rate=hz
             if sample_rate!=hz:
                 raise FullRehearsalRefused("TTS changed sample rate between captions")
-            # single, minimal original scene-enter pulse at first chunk.
-            if ticks==scene_start:
-                n=min(int(.06*hz),arr.size)
-                t=np.arange(n,dtype=np.float32)/hz
-                beep=.006*np.sin(2*np.pi*480*t)
-                beep*=np.sin(np.linspace(0,np.pi,n,dtype=np.float32))**2
-                arr=arr.copy()
-                arr[:n]+=beep
+            # Keep spoken PCM untouched here. The B4g3 original soft
+            # procedural focus accents are added ONLY after the whole
+            # scene clock is physically measured, at exact B4g2 cut times.
             start=ticks/hz
             audio.append(arr)
             ticks+=arr.size
@@ -350,7 +345,25 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
             raise FullRehearsalRefused("A spoken chunk omitted original text")
     wav=folder/"EPHEMERAL_FULL_VOICE.wav"
     sound=np.clip(np.concatenate(audio),-.99,.99)
+    from autopilot.original_pcm_sound_design_b4g3 import (
+        OriginalSoundRefused, mix_original_sound_design,
+    )
+    try:
+        sound,sound_proof=mix_original_sound_design(
+            sound,sample_rate,
+            [scene["scene_id"] for scene in ep["scenes"]],scenes)
+    except OriginalSoundRefused:
+        raise FullRehearsalRefused(
+            "Original low-level audio layer no longer matches physical PCM scene cuts"
+        ) from None
+    if (sound_proof["original_pcm_samples"]!=ticks
+        or sound_proof["original_physical_scene_count"]!=len(scenes)
+        or sound_proof["youtube_release_authorized"] is not False):
+        raise FullRehearsalRefused(
+            "Sound effects cannot change original narration sample clock")
     sf.write(str(wav),sound,sample_rate,subtype="PCM_16")
+    (folder/"EPHEMERAL_ORIGINAL_AUDIO_SOUND_DESIGN.json").write_text(
+        json.dumps(sound_proof,sort_keys=True,indent=2)+"\n",encoding="utf8")
     srt=folder/"EPHEMERAL_PCM_TIMED_SENTENCE_CAPTIONS.srt"
     blocks=[]
     for i,c in enumerate(cues,1):
@@ -630,6 +643,25 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         movie=_encode_full(ffmpeg,ep,folder,frames,durations,wav,srt,length,cues=cues)
         qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes,reveal_pairs,
                          scene_durations=durations)
+        sound_report=json.loads(
+            (folder/"EPHEMERAL_ORIGINAL_AUDIO_SOUND_DESIGN.json").read_text(
+                encoding="utf8"))
+        from autopilot.original_pcm_sound_design_b4g3 import (
+            STATUS as ORIGINAL_SOUND_STATUS,plan_pcm_cut_effects,
+        )
+        expected_events=plan_pcm_cut_effects(
+            [scene["scene_id"] for scene in ep["scenes"]],
+            durations,sound_report["sample_rate"])
+        if (sound_report.get("status")!=ORIGINAL_SOUND_STATUS
+            or sound_report.get("sound_events")!=expected_events
+            or sound_report.get("original_pcm_duration_seconds")!=
+                qa["real_pcm_measured_seconds"]
+            or sound_report.get("human_audio_listening_completed") is not False
+            or sound_report.get("youtube_release_authorized") is not False):
+            raise FullRehearsalRefused(
+                "Original sound cues not independently bound to actual source scene clock")
+        qa["b4g3_original_sound_design_mixed_into_actual_wav"]=True
+        qa["original_audio_sound_design"]=sound_report
         qa["one_way_editorial_phase_frames_physically_authored"]=sum(
             len(pair) for pair in frames)
         qa["narration_paced_distinct_focus_phases"]=[
