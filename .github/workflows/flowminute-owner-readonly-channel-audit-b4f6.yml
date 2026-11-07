@@ -1,0 +1,58 @@
+name: FlowMinute Owner YouTube Readonly Channel Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_readonly_channel_audit:
+        description: "Explicit owner opt-in: authenticated read-only channel check and Nov05-11 schedule scan. NO UPLOAD OR YOUTUBE WRITE"
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-owner-youtube-readonly-identity-audit
+  cancel-in-progress: false
+
+jobs:
+  readonly_owner_identity:
+    if: ${{ github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && inputs.confirm_readonly_channel_audit == true }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: youtube-production
+    env:
+      FM_EXPLICIT_OWNER_READONLY_AUDIT: "true"
+    steps:
+      - name: Checkout trusted main without persisting GitHub credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Configure no-cost Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Google OAuth client only (no media or uploader)
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: \
+            'google-api-python-client>=2.140,<3' 'google-auth>=2.30,<3'
+      - name: Verify real owner OAuth channel with read-only YouTube operations
+        env:
+          YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+        run: |
+          set -euo pipefail
+          python -B -m scripts.youtube_owner_live_readonly_audit_b4f6
+      - name: Retain only tiny sanitized no-video-ID read-only receipt for one day
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-OWNER-READONLY-channel-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/flowminute-b4f6-readonly-owner-audit.json
+          if-no-files-found: warn
+          retention-days: 1
+      - name: Destroy runner-only sanitized receipt after audit
+        if: always()
+        run: |
+          rm -f "${RUNNER_TEMP}/flowminute-b4f6-readonly-owner-audit.json"
