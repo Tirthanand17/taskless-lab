@@ -148,6 +148,15 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install actual image decoder before physical storyboard tests (never skip)
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --only-binary=:all: 'Pillow>=11,<13'
+          python - <<'PY'
+          from PIL import Image
+          print("B4G0_PHYSICAL_PILLOW_VERSION="+str(Image.__version__))
+          PY
+
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
