@@ -107,13 +107,15 @@ class NativeCanvasCaptionTests(unittest.TestCase):
                     w,h=cfg["w"],cfg["h"]
                     run=subprocess.run([
                         "ffmpeg","-nostdin","-hide_banner","-loglevel","error",
-                        "-f","lavfi","-i",f"color=c=black:s={w}x{h}:r=1:d=1",
+                        "-f","lavfi","-i",f"color=c=black:s={w}x{h}:r=4:d=1",
                         "-vf",f"ass={target.as_posix()}",
-                        "-frames:v","1","-pix_fmt","rgb24",
+                        "-frames:v","3","-pix_fmt","rgb24",
                         "-f","rawvideo","-",
                     ],capture_output=True,timeout=50,check=True)
-                    pixels=run.stdout
-                    self.assertEqual(len(pixels),w*h*3)
+                    self.assertEqual(len(run.stdout),w*h*3*3)
+                    # Last of 3 frames is at PTS=0.5s: 60ms fade
+                    # finished. Frame zero at 0s correctly has no glyphs.
+                    pixels=run.stdout[-w*h*3:]
                     stride=w*3
                     rows=[y for y in range(h)
                           if any(channel>45 for channel in pixels[
