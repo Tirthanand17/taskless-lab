@@ -159,7 +159,7 @@ def parse_ffmpeg_signals(stderr: str, *, duration: float) -> dict:
     return {
         "black_intervals":blacks,
         "freeze_intervals":freezes,
-        "unpaired_freeze_start_event_count":len(unpaired),
+        "unpaired_freeze_start_event_count":(1 if active_start is not None else 0),
         "unpaired_freeze_events_are_advisory":True,
         "audio_silence_intervals":silences,
         "sample_peak_dbfs_not_true_peak":round(sample_peak,2),
