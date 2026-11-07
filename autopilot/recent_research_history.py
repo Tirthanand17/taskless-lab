@@ -119,8 +119,34 @@ def _receipt_from_archive(data: bytes, day: date) -> dict | None:
             raise HistoryRefused("Malformed or duplicated historical source hashes")
         source_ids.add(sid)
         hashes.add(sub)
+    # B4g8: optional cross-day original-script fingerprint data.
+    # Old archival research-only receipts are accepted, but they are NOT
+    # retroactively credited with a real narration originality check.
+    hashes_of_voice=set()
+    scripted=plan.get("unapproved_rehearsal_narration_originality")
+    if scripted is not None:
+        if (type(scripted) is not dict
+            or scripted.get("status")!=
+                "B4G8_ORIGINAL_REHEARSAL_VOICEOVER_REPEAT_CHECK_NOT_CONTENT_APPROVAL"
+            or scripted.get("plan_day_ist")!=pday.isoformat()
+            or scripted.get("episode_slots")!=["short_am","long","short_pm"]
+            or scripted.get("source_fingerprint_domain")!=
+                "NORMALIZED_SPOKEN_SCENES_NOT_EPISODE_ID"
+            or scripted.get("unique_against_every_prior_day_proven") is not False
+            or scripted.get("all_three_daily_videos_factually_original_or_rights_checked") is not False
+            or scripted.get("actual_human_factual_and_rights_approvals")!=0
+            or scripted.get("youtube_release_authorized") is not False
+            or type(scripted.get("script_fingerprints_sha256")) is not list
+            or len(scripted["script_fingerprints_sha256"])!=3
+            or any(type(v) is not str or HEX64.fullmatch(v) is None
+                   for v in scripted["script_fingerprints_sha256"])
+            or len(set(scripted["script_fingerprints_sha256"]))!=3):
+            raise HistoryRefused(
+                "Invalid or authority-claiming unapproved narration hash receipt")
+        hashes_of_voice=set(scripted["script_fingerprints_sha256"])
     return {"plan_day_ist":pday.isoformat(),"subject_hashes":hashes,
-            "source_ids":source_ids}
+            "source_ids":source_ids,
+            "historical_spoken_sha256":hashes_of_voice}
 
 
 def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
@@ -159,6 +185,8 @@ def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
     seen_run_days=set()
     source_ids=set()
     hashes=set()
+    spoken_hashes=set()
+    spoken_days=set()
     downloads=0
     for created,run_id,attempt in relevant:
         if len(seen_days)>=DAYS or downloads>=MAX_DOWNLOADS:
@@ -187,6 +215,9 @@ def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
             continue
         hashes.update(entry["subject_hashes"])
         source_ids.update(entry["source_ids"])
+        spoken_hashes.update(entry["historical_spoken_sha256"])
+        if entry["historical_spoken_sha256"]:
+            spoken_days.add(planned)
         seen_days.add(planned)
         seen_run_days.add(rday)
     return {
@@ -195,6 +226,8 @@ def gather_history(runs: object, fetch_archive, *, target_day: str) -> dict:
         "verified_prior_research_plan_days":sorted(seen_days),
         "historical_exact_source_ids":sorted(source_ids),
         "historical_subject_sha256":sorted(hashes),
+        "historical_script_sha256":sorted(spoken_hashes),
+        "verified_prior_script_review_days":len(spoken_days),
         "trusted_run_receipt_download_attempts":downloads,
         "not_a_youtube_publication_readback":True,
         "video_release_authorized":False,
