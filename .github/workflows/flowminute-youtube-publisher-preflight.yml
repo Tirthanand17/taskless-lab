@@ -9,6 +9,9 @@ on:
       - "scripts/validate_publish_dispatch_b4f0.py"
       - "scripts/owner_signed_release_b4f1.py"
       - "scripts/owner_youtube_readback_b4f2.py"
+      - "scripts/youtube_owner_live_readonly_audit_b4f6.py"
+      - "scripts/test_youtube_owner_live_readonly_audit_b4f6.py"
+      - ".github/workflows/flowminute-owner-readonly-channel-audit-b4f6.yml"
       - "scripts/reconcile_pending_youtube_b4f3.py"
       - "scripts/youtube_pending_checkpoint_b4f3.py"
       - "scripts/test_reconcile_pending_youtube_b4f3.py"
@@ -29,6 +32,9 @@ on:
       - "scripts/validate_publish_dispatch_b4f0.py"
       - "scripts/owner_signed_release_b4f1.py"
       - "scripts/owner_youtube_readback_b4f2.py"
+      - "scripts/youtube_owner_live_readonly_audit_b4f6.py"
+      - "scripts/test_youtube_owner_live_readonly_audit_b4f6.py"
+      - ".github/workflows/flowminute-owner-readonly-channel-audit-b4f6.yml"
       - "scripts/reconcile_pending_youtube_b4f3.py"
       - "scripts/youtube_pending_checkpoint_b4f3.py"
       - "scripts/test_reconcile_pending_youtube_b4f3.py"
@@ -66,12 +72,13 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install pinned free Ed25519 verifier (no OAuth or credentials)
-        run: python -m pip install --only-binary=:all: cryptography==50.0.2
+        run: |
+          python -m pip install --only-binary=:all: cryptography==50.0.2
       - name: Compile source and run no-network caption/approval/schedule tests
         run: |
           set -euo pipefail
-          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py scripts/github_youtube_attempt_fence_b4e9.py scripts/test_github_youtube_attempt_fence_b4e9.py scripts/validate_publish_dispatch_b4f0.py scripts/test_validate_publish_dispatch_b4f0.py scripts/owner_signed_release_b4f1.py scripts/test_owner_signed_release_b4f1.py scripts/owner_youtube_readback_b4f2.py scripts/test_owner_youtube_readback_b4f2.py scripts/reconcile_pending_youtube_b4f3.py scripts/youtube_pending_checkpoint_b4f3.py scripts/test_reconcile_pending_youtube_b4f3.py
-          python -m unittest scripts.test_publish_youtube_preflight scripts.test_github_youtube_attempt_fence_b4e9 scripts.test_validate_publish_dispatch_b4f0 scripts.test_owner_signed_release_b4f1 scripts.test_owner_youtube_readback_b4f2 scripts.test_reconcile_pending_youtube_b4f3 -v
+          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py scripts/github_youtube_attempt_fence_b4e9.py scripts/test_github_youtube_attempt_fence_b4e9.py scripts/validate_publish_dispatch_b4f0.py scripts/test_validate_publish_dispatch_b4f0.py scripts/owner_signed_release_b4f1.py scripts/test_owner_signed_release_b4f1.py scripts/owner_youtube_readback_b4f2.py scripts/test_owner_youtube_readback_b4f2.py scripts/reconcile_pending_youtube_b4f3.py scripts/youtube_pending_checkpoint_b4f3.py scripts/test_reconcile_pending_youtube_b4f3.py scripts/youtube_owner_live_readonly_audit_b4f6.py scripts/test_youtube_owner_live_readonly_audit_b4f6.py
+          python -m unittest scripts.test_publish_youtube_preflight scripts.test_github_youtube_attempt_fence_b4e9 scripts.test_validate_publish_dispatch_b4f0 scripts.test_owner_signed_release_b4f1 scripts.test_owner_youtube_readback_b4f2 scripts.test_reconcile_pending_youtube_b4f3 scripts.test_youtube_owner_live_readonly_audit_b4f6 -v
       - name: Confirm completed owner releases have matching immutable authenticated schedule receipts
         run: |
           set -euo pipefail
