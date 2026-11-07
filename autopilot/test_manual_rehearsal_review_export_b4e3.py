@@ -98,7 +98,8 @@ class ManualReviewBoundaries(unittest.TestCase):
         self.assertEqual(output["rights_and_owner_approvals"],0)
         expected={name for _,name,_ in review.SLOT_NAMES}
         self.assertEqual(set(f.name for f in self.dest.iterdir()),
-                         expected|{"REVIEW_ONLY_NO_PUBLISH.json","READ_ME_FIRST.txt"})
+                         expected|{"REVIEW_ONLY_NO_PUBLISH.json","READ_ME_FIRST.txt",
+                                   "HUMAN_REVIEW_WORKSHEET_UNFILLED.json"})
         for entry in output["videos"]:
             self.assertEqual(sha256((self.dest/entry["file"]).read_bytes()).hexdigest(),
                              entry["sha256"])
@@ -107,6 +108,29 @@ class ManualReviewBoundaries(unittest.TestCase):
             "source_news_and_publisher_article_passages_included",""))
         self.assertIn("repository read access",
                       (self.dest/"READ_ME_FIRST.txt").read_text())
+
+    def test_sha_bound_worksheet_is_unreviewed_for_all_17_scenes(self):
+        result=self.exported()
+        data=json.loads((self.dest/"HUMAN_REVIEW_WORKSHEET_UNFILLED.json").read_text())
+        self.assertEqual(data["schema"],"B4E5_SHA_BOUND_BLANK_HUMAN_QA_WORKSHEET_V1")
+        self.assertFalse(data["human_review_completed"])
+        self.assertFalse(data["youtube_publish_authorized"])
+        self.assertFalse(data["rights_approved"])
+        self.assertFalse(data["factual_news_approved"])
+        self.assertEqual([len(v["scenes"]) for v in data["videos"]],[4,9,4])
+        for video,original in zip(data["videos"],result["videos"]):
+            self.assertEqual(video["sha256"],original["sha256"])
+            self.assertEqual(video["filename"],original["file"])
+            self.assertEqual(video["overall_human_decision"],"NOT_REVIEWED")
+            self.assertTrue(all(s["review_status"]=="NOT_REVIEWED" for s in video["scenes"]))
+            self.assertTrue(all(status=="NOT_REVIEWED" for status in video["checks"].values()))
+        self.assertEqual(sum(len(v["scenes"]) for v in data["videos"]),17)
+
+    def test_tampered_media_never_exports_blank_worksheet(self):
+        self.report["episodes"][1]["encoded_h264_aac_sha256"]="a"*64
+        with self.assertRaises(review.ReviewExportRefused):
+            self.exported()
+        self.assertFalse(self.dest.exists())
 
     def test_do_not_write_any_wav_srt_source_json_or_model_weights(self):
         (self.root/"untrusted_publisher_article.html").write_text(
