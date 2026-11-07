@@ -232,6 +232,19 @@ def main():
     youtube=load_service()
 
     if schedule:
+        # B4f2: OAuth may be valid for a DIFFERENT owner channel.
+        # Resolve mine=true BEFORE remote videos.insert or attempt reservations.
+        from scripts.owner_youtube_readback_b4f2 import (
+            OwnerYouTubeReadbackRefused, verify_authenticated_owner_channel,
+        )
+        try:
+            owner_identity=verify_authenticated_owner_channel(
+                youtube,args.expected_channel_id)
+            assert owner_identity["authenticated_channel_id"] == args.expected_channel_id
+        except (OwnerYouTubeReadbackRefused, AssertionError):
+            raise SystemExit("OAuth belongs to wrong/unverifiable YouTube channel; no upload") from None
+
+    if schedule:
         # Both barriers are created BEFORE any remote videos.insert:
         # a local O_EXCL crash marker plus persistent GitHub tag refs.
         reserve_local_pending_before_insert(pending_path,{
@@ -308,26 +321,52 @@ def main():
 
     if caption_path.exists():
         cap_body={"snippet": caption_snippet_for_language(language, video_id)}
-        youtube.captions().insert(
+        uploaded_caption=youtube.captions().insert(
           part="snippet",
           body=cap_body,
           media_body=MediaFileUpload(str(caption_path),mimetype="application/octet-stream")
         ).execute()
+        caption_id=uploaded_caption.get("id") if isinstance(uploaded_caption,dict) else None
+        if (not isinstance(caption_id,str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}",caption_id)):
+            raise SystemExit("Caption insert ID unavailable; keep pending upload, no new insert")
         print(f"uploaded {CAPTION_LANGUAGES[language]} SRT captions")
 
     schedule_readback=None
     if schedule:
-        items=youtube.videos().list(part="snippet,status",id=video_id).execute().get("items",[])
-        if len(items)!=1 or items[0].get("id") != video_id:
-            raise SystemExit(f"Upload ID {video_id} exists, but schedule readback was not verified")
-        if not verify_youtube_schedule(items[0],schedule,args.expected_channel_id):
-            raise SystemExit(f"Upload ID {video_id} exists, but exact private publishAt verification failed")
-        schedule_readback={"requested_publish_at_utc":schedule,
-                           "verified_publish_at_utc":schedule,
-                           "channel_id":args.expected_channel_id,
-                           "source_mp4_sha256":digest,
-                           "verified_via":"youtube.videos.list"}
-        print(f"YouTube confirmed video {video_id} is scheduled at {schedule}")
+        # YouTube can report 'uploaded' before processing or 'syncing'
+        # captions after captions.insert. Do NOT claim verified scheduling
+        # until the exact id, transcript, thumbnail and processing are serving.
+        # Failure preserves pending state for READ-ONLY manual reconciliation;
+        # the B4e9 tag fence prevents another videos.insert.
+        from scripts.owner_youtube_readback_b4f2 import (
+            OwnerYouTubeReadbackRefused,
+            verify_processed_private_schedule_and_caption,
+        )
+        try:
+            schedule_readback=verify_processed_private_schedule_and_caption(
+                youtube,
+                video_id=video_id,
+                expected_channel_id=args.expected_channel_id,
+                expected_publish_at=schedule,
+                expected_title=meta["title"],
+                expected_description=meta["description"],
+                expected_language=language,
+                expected_caption_id=caption_id,
+                expected_synthetic_disclosure=True,
+                expected_made_for_kids=False,
+            )
+        except OwnerYouTubeReadbackRefused:
+            raise SystemExit(
+                "Uploaded ID exists but owner processing/captions/thumbnail verification "
+                "is incomplete; preserve recovery receipt and do not re-upload"
+            ) from None
+        schedule_readback.update({
+            "requested_publish_at_utc":schedule,
+            "verified_publish_at_utc":schedule,
+            "source_mp4_sha256":digest,
+            "verified_via":"authenticated youtube.videos.list+captions.list",
+        })
+        print(f"YouTube confirmed processed private schedule for {video_id} at {schedule}")
 
     receipt_path.parent.mkdir(parents=True,exist_ok=True)
     receipt_path.write_text(json.dumps({
