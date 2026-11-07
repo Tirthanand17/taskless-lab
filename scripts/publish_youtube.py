@@ -96,7 +96,7 @@ def reserve_local_pending_before_insert(path: Path, checkpoint: dict) -> None:
         raise ValueError("Prior/ambiguous upload receipt: no new attempt") from exc
     try:
         with os.fdopen(fd,"w",encoding="utf8") as stream:
-            stream.write(json.dumps(checkpoint,sort_keys=True,indent=2)+"\\n")
+            stream.write(json.dumps(checkpoint,sort_keys=True,indent=2)+"\n")
             stream.flush()
             os.fsync(stream.fileno())
         # Stronger local crash consistency on GitHub-hosted Linux runners.
@@ -164,7 +164,7 @@ def main():
 
     schedule = None
     digest = None
-    if not re.fullmatch(r"state/published/[A-Za-z0-9_.-]+\\.json",args.receipt):
+    if not re.fullmatch(r"state/published/[A-Za-z0-9_.-]+\.json",args.receipt):
         raise SystemExit("Receipt path must be inside state/published with safe basename")
     receipt_path=root/args.receipt
     pending_path=receipt_path.with_suffix(receipt_path.suffix+".pending.json")
