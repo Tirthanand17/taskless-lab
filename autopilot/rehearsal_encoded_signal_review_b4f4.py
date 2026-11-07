@@ -95,29 +95,42 @@ def parse_ffmpeg_signals(stderr: str, *, duration: float) -> dict:
     ends=[(_finite(b,MAX_SCAN_SECONDS+1),
            _finite(n,MAX_SCAN_SECONDS+1))
           for b,n in FREEZE_END.findall(stderr)]
-    # FFmpeg can leave the final freeze unfinished (no freeze_end).
-    _need(len(starts) <= 80 and len(ends)<=len(starts),
-          "Unbounded/malformed freeze record")
+    # B4f4 live owner export run 42342965222 proved FFmpeg occasionally
+    # produces >1 freeze_start with no matching freeze_end in the complete
+    # decoded log. Positional pairing is NOT reliable. Each freeze_end
+    # itself reports the independently measured duration: use end-duration,
+    # not starts[i]. Unpaired starts remain advisory, never publish proof.
+    _need(len(starts) <= 80 and len(ends) <= 80,
+          "Unbounded freeze events")
     freezes=[]
-    for i,(b,n) in enumerate(ends):
-        if i >= len(starts):
-            raise SignalReviewRefused("Unmatched freeze interval")
-        a=starts[i]
-        _need(a < b <= duration+2 and abs((b-a)-n)<0.45,
-              "Implausible freeze interval")
-        if n>=5:
+    closed=[]
+    for b,n in ends:
+        a=b-n
+        _need(0 <= a < b <= duration+2 and n >= 0
+              and math.isfinite(a), "Impossible FFmpeg freeze end/duration")
+        closed.append((a,b))
+        if n >= 5:
             freezes.append({"start_seconds":round(a,2),
                             "end_seconds":round(b,2),
                             "duration_seconds":round(n,2)})
-    if len(starts)>len(ends):
-        _need(len(starts)==len(ends)+1,"Unmatched freeze start")
-        a=starts[-1]
-        _need(a<=duration+1,"Freeze starts outside video duration")
-        if duration-a>=5:
-            freezes.append({"start_seconds":round(a,2),
-                            "end_seconds":round(duration,2),
-                            "duration_seconds":round(duration-a,2),
-                            "unfinished_at_video_end":True})
+    unpaired=[a for a in starts
+              if not any(abs(a-first) <= 0.50 for first,_ in closed)]
+    # An unfinished FINAL freeze may legitimately have no freeze_end.
+    # Only infer such an interval when its start is after all completed
+    # freezes, to avoid inventing mid-video freeze durations. If several
+    # extra starts remain, use the latest as a conservative lower bound.
+    if unpaired:
+        last_end=max((b for _,b in closed),default=-1.0)
+        trailing=[a for a in unpaired if last_end <= a <= duration]
+        if trailing:
+            a=max(trailing)
+            if duration-a >= 5:
+                freezes.append({"start_seconds":round(a,2),
+                                "end_seconds":round(duration,2),
+                                "duration_seconds":round(duration-a,2),
+                                "unfinished_at_video_end":True})
+    freezes.sort(key=lambda item:(item["start_seconds"],item["end_seconds"]))
+    _need(len(freezes) <= 80, "Unbounded frozen-picture warning events")
 
     peaks=PEAK.findall(stderr)
     means=MEAN.findall(stderr)
@@ -139,6 +152,8 @@ def parse_ffmpeg_signals(stderr: str, *, duration: float) -> dict:
     return {
         "black_intervals":blacks,
         "freeze_intervals":freezes,
+        "unpaired_freeze_start_event_count":len(unpaired),
+        "unpaired_freeze_events_are_advisory":True,
         "audio_silence_intervals":silences,
         "sample_peak_dbfs_not_true_peak":round(sample_peak,2),
         "sample_mean_dbfs_not_integrated_lufs":round(sample_mean,2),
