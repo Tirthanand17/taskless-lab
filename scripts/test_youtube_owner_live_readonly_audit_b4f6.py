@@ -9,6 +9,7 @@ from scripts.test_owner_youtube_readback_b4f2 import youtube_fake,CHANNEL,OTHER
 from scripts.youtube_owner_live_readonly_audit_b4f6 import (
     OwnerLiveAuditRefused, ReadOnlyYoutubeClient,
     audit_live_owner_readonly, require_manual_owner_context,
+    classify_oauth_secret_shape, _failed_readback,
     EXPECTED_CHANNEL, EXPECTED_WORKFLOW, STATUS,
 )
 
@@ -123,6 +124,41 @@ class LiveOwnerReadOnlyMocks(unittest.TestCase):
         ):
             with self.subTest(fn=str(prohibited)),self.assertRaises(AttributeError):
                 prohibited()
+
+    def test_live_env_credential_format_has_only_coarse_safe_categories(self):
+        self.assertEqual(classify_oauth_secret_shape(None),
+                         "OAUTH_SECRET_NOT_INJECTED")
+        self.assertEqual(classify_oauth_secret_shape("not JSON"),
+                         "OAUTH_SECRET_NOT_JSON_OBJECT")
+        self.assertEqual(classify_oauth_secret_shape('{"token":"sensitive"}'),
+                         "OAUTH_REQUIRED_CREDENTIAL_FIELDS_MISSING")
+        valid='{"client_id":"SENSITIVE_ID","client_secret":"SENSITIVE_SECRET",' + (
+            '"refresh_token":"SENSITIVE_REFRESH"}')
+        self.assertEqual(classify_oauth_secret_shape(valid),
+                         "OAUTH_SHAPE_PRESENT_NOT_YET_AUTHENTICATED")
+        for code in ("OAUTH_SECRET_NOT_JSON_OBJECT",
+                     "OAUTH_REQUIRED_CREDENTIAL_FIELDS_MISSING",
+                     "OAUTH_CHANNEL_API_READBACK_UNAVAILABLE",
+                     "OWNER_CHANNEL_MISMATCH_OR_AMBIGUOUS"):
+            report=_failed_readback(code)
+            self.assertEqual(report["safe_failure_category"],code)
+            self.assertFalse(report["owner_authenticated_youtube_channel_readback_verified"])
+            self.assertFalse(report["schedule_scan_complete"])
+            self.assertNotIn("SENSITIVE",str(report))
+            self.assertEqual(report["youtube_video_insert_update_delete_requests"],0)
+
+    def test_real_owner_wrong_channel_or_api_exception_returns_safe_enum(self):
+        fake=youtube_fake(channel=OTHER)
+        with self.assertRaisesRegex(
+                OwnerLiveAuditRefused,"OWNER_CHANNEL_MISMATCH_OR_AMBIGUOUS"):
+            audit_live_owner_readonly(fake,root=Path.cwd(),checked_at_utc=NOW)
+        fake=youtube_fake(channel=EXPECTED_CHANNEL)
+        fake.channels.return_value.list.return_value.execute.side_effect=RuntimeError(
+            "OAuth bearer private refresh token must never escape")
+        with self.assertRaisesRegex(
+                OwnerLiveAuditRefused,"OAUTH_CHANNEL_API_READBACK_UNAVAILABLE") as err:
+            audit_live_owner_readonly(fake,root=Path.cwd(),checked_at_utc=NOW)
+        self.assertNotIn("bearer",str(err.exception).lower())
 
     def test_main_only_manual_optin_and_sha_guards(self):
         require_manual_owner_context(ENV)
