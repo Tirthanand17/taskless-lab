@@ -28,6 +28,20 @@ PALE = (229,240,252)
 MUTED = (158,184,207)
 DEEP = (9,18,33)
 FRAME = (19,36,55)
+# B4h3: minimum meaningful mobile editorial sizes are tested at
+# 1080->360 portrait and 1920->960 landscape. Values describe actual
+# full-resolution Pillow font glyphs, not CSS units or platform mandates.
+DISPLAY_WIDTH = {"short":360,"long":960}
+EDITORIAL_FONTS = {
+    "scene_eyebrow": {"short":39,"long":36},
+    "scene_description": {"short":38,"long":35},
+    "case_label": {"short":40,"long":38},
+    "diagram_eyebrow_base":39,
+    "diagram_matrix_primary_base":41,
+    "diagram_matrix_secondary_base":36,
+    "diagram_steps_secondary_base":36,
+    "diagram_gate_secondary_base":36,
+}
 
 THEMES = {
     "short_am": {"accent":(92,195,255), "soft":(27,62,87), "name":"MORNING LAB"},
@@ -127,7 +141,7 @@ def _diagram(draw, area: tuple, scene_id: str, *, revealed: bool,
     _safe_text(draw,(X(80),Y(64)),{"compare":"COMPARE THE CONDITIONS",
          "steps":"FOLLOW THE SEQUENCE","matrix":"EXAMINE THE SAMPLE",
          "gate":"QUESTION THE EVIDENCE"}[shape],
-         size=F(31),fill=MUTED,box=safe)
+         size=F(EDITORIAL_FONTS["diagram_eyebrow_base"]),fill=MUTED,box=safe)
     if shape=="compare":
         for i in (0,1):
             bx0=X(55+i*470); bx1=X(478+i*470)
@@ -169,7 +183,7 @@ def _diagram(draw, area: tuple, scene_id: str, *, revealed: bool,
             _safe_text(draw,(X(330),y+round(42*scale)),label,
                        size=F(47),fill=PALE,box=(X(300),y,X(939),y+round(190*h/1000)))
             _safe_text(draw,(X(330),y+round(92*scale)),sub,
-                       size=F(29),fill=MUTED,box=(X(300),y,X(939),y+round(190*h/1000)))
+                       size=F(EDITORIAL_FONTS["diagram_steps_secondary_base"]),fill=MUTED,box=(X(300),y,X(939),y+round(190*h/1000)))
         _safe_text(draw,(X(190),Y(887)),"ONE STEP AT A TIME",size=F(29),
                    fill=accent,box=safe)
     elif shape=="matrix":
@@ -186,9 +200,9 @@ def _diagram(draw, area: tuple, scene_id: str, *, revealed: bool,
                             right-round(25*scale),Y(403)),
                            fill=accent if chosen else (75,109,130))
             _safe_text(draw,(left+round(25*scale),Y(465)),
-                       label,size=F(32),fill=PALE,box=(left,Y(450),right,Y(755)))
+                       label,size=F(EDITORIAL_FONTS["diagram_matrix_primary_base"]),fill=PALE,box=(left,Y(450),right,Y(755)))
             _safe_text(draw,(left+round(25*scale),Y(545)),
-                       sub,size=F(24),fill=MUTED,box=(left,Y(515),right,Y(755)))
+                       sub,size=F(EDITORIAL_FONTS["diagram_matrix_secondary_base"]),fill=MUTED,box=(left,Y(515),right,Y(755)))
         _safe_text(draw,(X(60),Y(847)),"SYNTHETIC INPUTS  /  NO MEASURED RESULT",
                    size=F(27),fill=PALE,box=safe)
     else:
@@ -198,7 +212,7 @@ def _diagram(draw, area: tuple, scene_id: str, *, revealed: bool,
         _safe_text(draw,(X(112),Y(244)),"CAN WE VERIFY IT?",size=F(61),
                    fill=PALE,box=(X(70),Y(211),X(930),Y(475)))
         _safe_text(draw,(X(115),Y(362)),"UNRESOLVED  /  CHECK FIRST",
-                   size=F(29),fill=MUTED,box=(X(70),Y(211),X(930),Y(475)))
+                   size=F(EDITORIAL_FONTS["diagram_gate_secondary_base"]),fill=MUTED,box=(X(70),Y(211),X(930),Y(475)))
         for i,(label,sub) in enumerate(words[:2]):
             b0=X(65+i*468);b1=X(468+i*468)
             chosen=revealed and i==(active%2)
@@ -281,7 +295,7 @@ def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool,
                box=(w-(235 if portrait else 270),top-5,w-64,top+95))
     draw.rectangle((82,top+74,w-82,top+79),fill=accent)
     header_y=225 if portrait else 165
-    _safe_text(draw,(90,header_y),beat[0],size=33 if portrait else 34,
+    _safe_text(draw,(90,header_y),beat[0],size=EDITORIAL_FONTS["scene_eyebrow"]["short" if portrait else "long"],
                fill=accent,box=(80,header_y-5,w-86,header_y+70))
     title_y=295 if portrait else 248
     title_font=100 if portrait else 93
@@ -293,7 +307,7 @@ def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool,
                    box=(78,title_y+i*line_gap-5,max_right,
                         title_y+(i+1)*line_gap))
     desc_y=575 if portrait else 548
-    _safe_text(draw,(88,desc_y),beat[2],size=32 if portrait else 33,
+    _safe_text(draw,(88,desc_y),beat[2],size=EDITORIAL_FONTS["scene_description"]["short" if portrait else "long"],
                fill=MUTED,box=(80,desc_y-4,w-78 if portrait else 870,
                                desc_y+75))
     # Source-locked scenario context makes the educational screen explicitly
@@ -301,8 +315,8 @@ def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool,
     # PowerPoint beat. Stays clear of both the diagram and ASS subtitle box.
     case_y=638 if portrait else 615
     _safe_text(draw,(88,case_y),"CASE / "+case_title.upper(),
-               size=29 if portrait else 28,fill=accent,
-               box=(80,case_y-6,w-80 if portrait else 874,case_y+47))
+               size=EDITORIAL_FONTS["case_label"]["short" if portrait else "long"],fill=accent,
+               box=(80,case_y-6,w-80 if portrait else 874,case_y+56))
     area=((75,690,1005,1395) if portrait else
           (932,184,1840,705))
     _diagram(draw,area,scene_id,revealed=revealed,
