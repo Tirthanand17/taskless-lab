@@ -89,7 +89,7 @@ CASE_STEPS = {
     "Missing age": [
         "CELL",
         "EMPTY",
-        "ANNOTATE"
+        "NOTE"
     ],
     "Inconsistent units": [
         "COUNT",
