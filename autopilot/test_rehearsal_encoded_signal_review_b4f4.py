@@ -54,25 +54,21 @@ class FFmpegParserTests(unittest.TestCase):
         self.assertEqual(result["freeze_intervals"][0]["start_seconds"],12)
 
     def test_actual_live_runner_multiple_unmatched_freeze_starts_are_advisory(self):
-        # Reproduces 2026-11-07 real owner artifact export failure:
-        # many freeze_start but not the same number of freeze_end lines.
-        sample=LOG.replace(
-            "[freezedetect] freeze_end: 18 | freeze_duration: 6\n","")
-        sample += "\n[freezedetect] freeze_start: 19.5\n"
+        # After one completed event, only the final end-of-stream start may
+        # remain open. The previous combined-line regex erroneously missed
+        # completed freeze_end records.
+        sample=LOG + "\n[freezedetect] lavfi.freezedetect.freeze_start: 19.5\n"
         report=parse_ffmpeg_signals(sample,duration=57.8)
-        self.assertEqual(report["unpaired_freeze_start_event_count"],2)
+        self.assertEqual(report["unpaired_freeze_start_event_count"],1)
         self.assertTrue(report["unpaired_freeze_events_are_advisory"])
         self.assertTrue(report["freeze_intervals"][-1]["unfinished_at_video_end"])
         self.assertEqual(report["freeze_intervals"][-1]["start_seconds"],19.5)
         self.assertFalse(report["human_full_audio_visual_watch_completed"])
 
-    def test_mismatched_freeze_start_does_not_corrupt_reported_end_duration(self):
+    def test_mismatched_freeze_start_must_not_invent_completed_interval(self):
         sample=LOG.replace("freeze_start: 12.0", "freeze_start: 25.0")
-        report=parse_ffmpeg_signals(sample,duration=57.8)
-        self.assertEqual(report["freeze_intervals"][0]["start_seconds"],12.0)
-        self.assertEqual(report["freeze_intervals"][0]["end_seconds"],18.0)
-        self.assertEqual(report["freeze_intervals"][0]["duration_seconds"],6)
-        self.assertEqual(report["unpaired_freeze_start_event_count"],1)
+        with self.assertRaises(SignalReviewRefused):
+            parse_ffmpeg_signals(sample,duration=57.8)
 
     def test_overeighty_unpaired_starts_rejected_not_published(self):
         sample=LOG+"\n".join(
@@ -139,7 +135,7 @@ class FFmpegParserTests(unittest.TestCase):
     def test_no_events_is_not_editorial_approval(self):
         minimal="\n".join(line for line in LOG.splitlines()
                           if not any(key in line for key in (
-                              "black_start","freeze_start","freeze_end","silence_end")))
+                              "black_start","freeze_start","freeze_duration","freeze_end","silence_end")))
         report=parse_ffmpeg_signals(minimal,duration=57.8)
         self.assertEqual(report["warning_codes"],[])
         self.assertFalse(report["human_full_audio_visual_watch_completed"])
