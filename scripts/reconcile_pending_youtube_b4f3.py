@@ -161,7 +161,11 @@ def main() -> None:
     expected="UCCcL9Q_jqVq6LJmnYUSAFZA"
     validate_recovery_context(pending,episode,expected)
     from scripts.publish_youtube import load_service
-    client=load_service()
+    try:
+        client=load_service()
+    except (Exception, SystemExit):
+        # SDK errors may include credential details. Never print raw exceptions.
+        raise SystemExit("Protected owner OAuth is unavailable; no write attempted") from None
     try:
         report=inspect_existing_remote_only(client,pending,episode,expected)
     except (ReadonlyRecoveryRefused,OwnerYouTubeReadbackRefused):
