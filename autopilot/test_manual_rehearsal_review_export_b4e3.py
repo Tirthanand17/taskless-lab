@@ -99,7 +99,8 @@ class ManualReviewBoundaries(unittest.TestCase):
         expected={name for _,name,_ in review.SLOT_NAMES}
         self.assertEqual(set(f.name for f in self.dest.iterdir()),
                          expected|{"REVIEW_ONLY_NO_PUBLISH.json","READ_ME_FIRST.txt",
-                                   "HUMAN_REVIEW_WORKSHEET_UNFILLED.json"})
+                                   "HUMAN_REVIEW_WORKSHEET_UNFILLED.json",
+                                   "OPEN_LOCAL_REVIEW_DASHBOARD.html"})
         for entry in output["videos"]:
             self.assertEqual(sha256((self.dest/entry["file"]).read_bytes()).hexdigest(),
                              entry["sha256"])
