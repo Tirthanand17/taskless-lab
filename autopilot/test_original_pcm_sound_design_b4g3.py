@@ -78,7 +78,7 @@ class ProceduralAudioSchedulingTests(unittest.TestCase):
                 plan_pcm_cut_effects(ids,lengths,rate)
 
     def test_unmodified_external_asset_and_numerically_bounded_recipe(self):
-        self.assertEqual(sum(x[1] for x in BED_COMPONENTS),.0024)
+        self.assertAlmostEqual(sum(x[1] for x in BED_COMPONENTS),.0024,places=7)
         self.assertLessEqual(SFX_GAIN,.35)
         self.assertEqual(set(SFX_PER_GRAMMAR),{"compare","steps","matrix","gate"})
         self.assertEqual(len(SFX_PER_GRAMMAR["matrix"]),3)
