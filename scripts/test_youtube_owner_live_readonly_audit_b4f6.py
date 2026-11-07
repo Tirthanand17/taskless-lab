@@ -160,6 +160,67 @@ class LiveOwnerReadOnlyMocks(unittest.TestCase):
             audit_live_owner_readonly(fake,root=Path.cwd(),checked_at_utc=NOW)
         self.assertNotIn("bearer",str(err.exception).lower())
 
+    def test_numeric_youtube_http_errors_use_secret_free_actionable_buckets(self):
+        from types import SimpleNamespace
+        cases=(
+            (400,"YOUTUBE_CHANNEL_HTTP_400_INVALID_REQUEST"),
+            (401,"YOUTUBE_CHANNEL_HTTP_401_OAUTH_REJECTED"),
+            (403,"YOUTUBE_CHANNEL_HTTP_403_SCOPE_QUOTA_OR_FORBIDDEN"),
+            (404,"YOUTUBE_CHANNEL_HTTP_404_NOT_FOUND"),
+            (408,"YOUTUBE_CHANNEL_HTTP_408_TIMEOUT"),
+            (429,"YOUTUBE_CHANNEL_HTTP_429_THROTTLED"),
+            (500,"YOUTUBE_CHANNEL_HTTP_5XX_UPSTREAM"),
+            (502,"YOUTUBE_CHANNEL_HTTP_5XX_UPSTREAM"),
+            (503,"YOUTUBE_CHANNEL_HTTP_5XX_UPSTREAM"),
+            (504,"YOUTUBE_CHANNEL_HTTP_5XX_UPSTREAM"),
+        )
+        for status,safe_code in cases:
+            fake=youtube_fake(channel=EXPECTED_CHANNEL)
+            error=RuntimeError("SECRET_CREDENTIALS_AND_PRIVATE_URL_MUST_NOT_LEAK")
+            error.resp=SimpleNamespace(status=status,content=b"PRIVATE_REFRESH_TOKEN")
+            fake.channels.return_value.list.return_value.execute.side_effect=error
+            with self.subTest(http_status=status),patch(
+                "scripts.youtube_owner_live_readonly_audit_b4f6.read_owner_nov_schedule"
+            ) as scan:
+                with self.assertRaisesRegex(OwnerLiveAuditRefused,safe_code) as caught:
+                    audit_live_owner_readonly(
+                        fake,root=Path.cwd(),checked_at_utc=NOW)
+                scan.assert_not_called()
+                fake.videos.return_value.insert.assert_not_called()
+                self.assertNotIn("SECRET_CREDENTIALS",str(caught.exception))
+                self.assertNotIn("PRIVATE_REFRESH",str(caught.exception))
+                self.assertNotIn(EXPECTED_CHANNEL,str(caught.exception))
+                report=_failed_readback(str(caught.exception))
+                self.assertFalse(
+                    report["owner_authenticated_youtube_channel_readback_verified"])
+                self.assertFalse(report["schedule_scan_complete"])
+                self.assertEqual(report["youtube_video_insert_update_delete_requests"],0)
+
+    def test_known_refresh_failure_class_is_a_safe_enum_not_a_secret(self):
+        RefreshError=type("RefreshError",(RuntimeError,),
+                          {"__module__":"google.auth.exceptions"})
+        fake=youtube_fake(channel=EXPECTED_CHANNEL)
+        fake.channels.return_value.list.return_value.execute.side_effect=RefreshError(
+            "refresh_token=PRIVATE_SECRET invalid_grant")
+        with self.assertRaisesRegex(OwnerLiveAuditRefused,
+                                    "OAUTH_REFRESH_FAILED") as caught:
+            audit_live_owner_readonly(fake,root=Path.cwd(),checked_at_utc=NOW)
+        self.assertNotIn("PRIVATE_SECRET",str(caught.exception))
+        fake.videos.return_value.insert.assert_not_called()
+
+    def test_untrusted_status_values_must_not_be_echoed_or_escalated(self):
+        from types import SimpleNamespace
+        for status in (True,"401",12345,-1,None):
+            fake=youtube_fake(channel=EXPECTED_CHANNEL)
+            err=RuntimeError("BEARER_DO_NOT_REPRINT")
+            err.resp=SimpleNamespace(status=status)
+            fake.channels.return_value.list.return_value.execute.side_effect=err
+            with self.subTest(status=status),self.assertRaisesRegex(
+                  OwnerLiveAuditRefused,
+                  "OAUTH_CHANNEL_API_READBACK_UNAVAILABLE") as caught:
+                audit_live_owner_readonly(fake,root=Path.cwd(),checked_at_utc=NOW)
+            self.assertNotIn("BEARER",str(caught.exception))
+
     def test_main_only_manual_optin_and_sha_guards(self):
         require_manual_owner_context(ENV)
         for key,value in (
