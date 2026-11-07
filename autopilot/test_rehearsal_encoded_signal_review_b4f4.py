@@ -51,6 +51,33 @@ class FFmpegParserTests(unittest.TestCase):
         self.assertTrue(result["freeze_intervals"][0]["unfinished_at_video_end"])
         self.assertEqual(result["freeze_intervals"][0]["start_seconds"],12)
 
+    def test_actual_live_runner_multiple_unmatched_freeze_starts_are_advisory(self):
+        # Reproduces 2026-11-07 real owner artifact export failure:
+        # many freeze_start but not the same number of freeze_end lines.
+        sample=LOG.replace(
+            "[freezedetect] freeze_end: 18 | freeze_duration: 6\\n","")
+        sample += "\\n[freezedetect] freeze_start: 19.5\\n"
+        report=parse_ffmpeg_signals(sample,duration=57.8)
+        self.assertEqual(report["unpaired_freeze_start_event_count"],2)
+        self.assertTrue(report["unpaired_freeze_events_are_advisory"])
+        self.assertTrue(report["freeze_intervals"][-1]["unfinished_at_video_end"])
+        self.assertEqual(report["freeze_intervals"][-1]["start_seconds"],19.5)
+        self.assertFalse(report["human_full_audio_visual_watch_completed"])
+
+    def test_mismatched_freeze_start_does_not_corrupt_reported_end_duration(self):
+        sample=LOG.replace("freeze_start: 12.0", "freeze_start: 25.0")
+        report=parse_ffmpeg_signals(sample,duration=57.8)
+        self.assertEqual(report["freeze_intervals"][0]["start_seconds"],12.0)
+        self.assertEqual(report["freeze_intervals"][0]["end_seconds"],18.0)
+        self.assertEqual(report["freeze_intervals"][0]["duration_seconds"],6)
+        self.assertEqual(report["unpaired_freeze_start_event_count"],1)
+
+    def test_overeighty_unpaired_starts_rejected_not_published(self):
+        sample=LOG+"\\n".join(
+            "[freezedetect] freeze_start: 20" for _ in range(81))
+        with self.assertRaises(SignalReviewRefused):
+            parse_ffmpeg_signals(sample,duration=57.8)
+
     def test_near_clipping_audio_is_marked_review_required(self):
         data=LOG.replace("max_volume: -0.2 dB","max_volume: 0.0 dB")
         result=parse_ffmpeg_signals(data,duration=57.8)
