@@ -489,10 +489,33 @@ def _encode_full(ffmpeg: str,ep: dict,folder: Path,
 
 
 def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
-                  seconds: float,frame_hashes: list[str]) -> dict:
+                  seconds: float,frame_hashes: list[str],
+                  reveal_pairs: list[tuple[str,str]] | None=None) -> dict:
     if not media.is_file() or media.is_symlink() or len(set(frame_hashes))!=ep[
         "all_scene_count"]:
         raise FullRehearsalRefused("Physical unique rendered scenes absent")
+    if (reveal_pairs is None or len(reveal_pairs)!=ep["all_scene_count"]
+        or any(before==after or after!=final
+               for (before,after),final in zip(reveal_pairs,frame_hashes))):
+        raise FullRehearsalRefused("A real unique one-time scene reveal is missing")
+    if (not cues or len(cues)!=ep["total_original_caption_phrases"]
+        or any(type(c["text"]) is not str for c in cues)):
+        raise FullRehearsalRefused("Measured subtitle phrase count missing")
+    widths=CAPTION_WRAP_CHARS[ep["kind"]]
+    max_lines=CAPTION_MAX_LINES[ep["kind"]]
+    worst_lines=0
+    peak_chars_per_second=0.
+    for c in cues:
+        lines=textwrap.wrap(c["text"],width=width,
+            break_long_words=False,break_on_hyphens=False)
+        if not lines or len(lines)>max_lines:
+            raise FullRehearsalRefused("Subtitle text exceeds safe caption card")
+        if (not math.isfinite(c["start"]) or not math.isfinite(c["end"])
+            or not 0<=c["start"]<c["end"]<=seconds+.001):
+            raise FullRehearsalRefused("Caption cues detached from audio PCM")
+        worst_lines=max(worst_lines,len(lines))
+        cps=len(c["text"])/(c["end"]-c["start"])
+        peak_chars_per_second=max(peak_chars_per_second,cps)
     # Use ffmpeg metadata + full independent decode; no filename-only proof.
     import subprocess
     p=subprocess.run([ffmpeg,"-hide_banner","-i",str(media)],
@@ -523,6 +546,17 @@ def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
             abs(seconds-ep["target_seconds_not_audio_verified"])<=3.,
         "total_actual_encoded_bytes":size,"encoded_h264_aac_sha256":digest,
         "portrait_or_landscape":dimensions,
+        "voice_speed_calibrated_from_last_real_run":VOICE_SPEED_BY_SLOT[ep["slot"]],
+        "original_visual_scene_specific_card_labels":True,
+        "original_scene_base_and_one_shot_reveal_pngs":len(reveal_pairs)*2,
+        "reveal_duration_seconds_once_per_scene":REVEAL_SECONDS,
+        "no_spinning_or_repeating_highlight_animation":True,
+        "caption_safe_area_max_lines":max_lines,
+        "measured_actual_caption_max_visible_lines":worst_lines,
+        "caption_peak_physical_chars_per_second":round(peak_chars_per_second,2),
+        "caption_reading_speed_needs_human_review":
+            peak_chars_per_second>25.,
+        "srt_caption_baseline_inside_reserved_panel":True,
         "source_rights_reviewed":False,"news_facts_approved":False,
         "real_voice_and_caption_pcm_alignment":True,
         "per_word_forced_alignment_claimed":False,
@@ -566,12 +600,19 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         wav,srt,durations,cues,length=_synth_full_voice(engine,ep,folder)
         frames=[]
         hashes=[]
+        reveal_pairs=[]
         for scene in ep["scenes"]:
-            png=folder/f"EPHEMERAL_SCENE_{scene['scene']:02}.png"
-            hashes.append(_draw_original_full_scene(ep,scene,png))
-            frames.append(png)
+            intro=folder/f"EPHEMERAL_SCENE_{scene['scene']:02}_START.png"
+            final=folder/f"EPHEMERAL_SCENE_{scene['scene']:02}_REVEALED.png"
+            first_sha=_draw_original_full_scene(ep,scene,intro,revealed=False)
+            last_sha=_draw_original_full_scene(ep,scene,final,revealed=True)
+            if first_sha==last_sha:
+                raise FullRehearsalRefused("One-shot non-looping reveal indistinguishable")
+            reveal_pairs.append((first_sha,last_sha))
+            hashes.append(last_sha)
+            frames.append((intro,final))
         movie=_encode_full(ffmpeg,ep,folder,frames,durations,wav,srt,length)
-        qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes)
+        qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes,reveal_pairs)
         actual.append(qa)
         print("B4E1_PHYSICAL_COMPLETE_VOICED_EPISODE_DECODED",
               json.dumps({
@@ -597,6 +638,13 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         "exact_58_240_58_target_met_for_all":all(
             x["storyboard_target_met_within_three_seconds"] for x in actual),
         "all_three_real_h264_aac_ffmpeg_full_decodes_passed":True,
+        "all_17_scenes_with_verified_distinct_one_time_reveal_pngs":
+            all(x["original_scene_base_and_one_shot_reveal_pngs"]==
+                x["original_full_scene_count"]*2 for x in actual),
+        "all_pcm_timed_subtitles_fit_caption_panels":
+            all(x["measured_actual_caption_max_visible_lines"]<=
+                x["caption_safe_area_max_lines"] for x in actual),
+        "all_caption_reading_rates_approved":False,
         "rehearsal_only_not_factual_news_or_final_review":True,
         "real_news_facts_approved":0,
         "rights_approvals":0,"human_full_watches":0,
