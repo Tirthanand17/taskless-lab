@@ -707,6 +707,8 @@ def build_nonfactual_rehearsals(
             "episode_id":brief["episode_id"], "slot":slot,
             "format":brief["format"],"planned_local_ist":brief["time_ist"],
             "original_working_title_not_news_headline":raw,
+            "synthetic_case_family":family,
+            "synthetic_case_title":theme["story_name"],
             "unverified_source_id":source,
             "unverified_source_full_response_sha256":brief["source_observation_sha256"],
             "observed_evidence_tier":brief["evidence_tier"],

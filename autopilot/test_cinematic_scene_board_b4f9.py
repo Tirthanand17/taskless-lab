@@ -103,6 +103,68 @@ class EditorialSceneIntegrationTests(unittest.TestCase):
         with self.assertRaises(SceneDesignRefused):
             render_editorial_frame(ep,scene,revealed="yes")
 
+    def test_case_bound_pixels_change_for_next_day_without_caption_animation(self):
+        from datetime import date,timedelta
+        from PIL import ImageChops
+        from autopilot.cinematic_scene_board_b4f9 import render_editorial_frame
+        from autopilot.nonfactual_narration_rehearsal import _daily_case
+        for ep in self.plan["episodes"]:
+            scene=ep["scenes"][0]
+            before=render_editorial_frame(ep,scene,revealed=False)
+            stamp=ep["episode_id"].split("_")[1]
+            next_date=(date(int(stamp[:4]),int(stamp[4:6]),
+                            int(stamp[6:]))+timedelta(days=1))
+            next_title=_daily_case(ep["synthetic_case_family"],ep["slot"],
+                                   next_date.isoformat())[0]["story_name"]
+            edited={**ep,"episode_id":"fm_"+next_date.strftime("%Y%m%d")
+                    +"_"+ep["slot"],"synthetic_case_title":next_title}
+            self.assertNotEqual(next_title,ep["synthetic_case_title"])
+            after=render_editorial_frame(edited,scene,revealed=False)
+            # Same 11-grammar storyboard now physically identifies the
+            # unique original fictional case in the scene-safe header.
+            self.assertIsNotNone(ImageChops.difference(
+                before.crop((80,608,874,684)),
+                after.crop((80,608,874,684))).getbbox())
+            self.assertEqual(before.getpixel((540,1680) if ep["kind"]=="short"
+                                             else (960,883)),
+                             after.getpixel((540,1680) if ep["kind"]=="short"
+                                             else (960,883)))
+
+    def test_case_metadata_mismatch_invalid_date_and_article_text_rejected(self):
+        from autopilot.cinematic_scene_board_b4f9 import (
+            render_editorial_frame,SceneDesignRefused,
+        )
+        ep=self.plan["episodes"][0]
+        scene=ep["scenes"][0]
+        bad=[
+            {**ep,"synthetic_case_family":"another topic"},
+            {**ep,"synthetic_case_title":"Reported public headline here"},
+            {**ep,"synthetic_case_title":""},
+            {**ep,"synthetic_case_title":None},
+            {**ep,"episode_id":"fm_20260230_short_am"},
+            {**ep,"episode_id":"fm_20261107_long"},
+            {**ep,"episode_id":"not a valid source day"},
+        ]
+        for forgery in bad:
+            with self.subTest(forgery=repr(forgery.get("synthetic_case_title"))), self.assertRaises(SceneDesignRefused):
+                render_editorial_frame(forgery,scene,revealed=False)
+
+    def test_all_forty_two_case_labels_fit_real_native_glyph_bounds(self):
+        from PIL import Image,ImageDraw
+        from autopilot.real_rehearsal_voice_media_b4e0 import _font
+        from autopilot.nonfactual_narration_rehearsal import CASEBOOK
+        draw=ImageDraw.Draw(Image.new("RGB",(1,1)))
+        for items in CASEBOOK.values():
+            for case in items:
+                title="CASE / "+case[0].upper()
+                for portrait in (True,False):
+                    x=88
+                    size=29 if portrait else 28
+                    bound=draw.textbbox((x,638 if portrait else 615),
+                                        title,font=_font(size))
+                    self.assertLessEqual(bound[2],1000 if portrait else 874,
+                                         (case[0],portrait,bound))
+
     def test_no_generic_old_title_spilled_back_into_first_frame(self):
         from autopilot.cinematic_scene_board_b4f9 import BEATS
         first=BEATS["HOOK_QUESTION"]
