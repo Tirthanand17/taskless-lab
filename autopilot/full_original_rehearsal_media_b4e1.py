@@ -371,29 +371,42 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
 
 
 def _encode_full(ffmpeg: str,ep: dict,folder: Path,
-                 images: list[tuple[Path,Path]],scenes: list[float],
+                 images: list[tuple[Path,...]],scenes: list[float],
                  wav: Path,srt: Path,total: float, *,
                  cues: list[dict]) -> Path:
-    """One non-looping reveal per original scene at actual PCM scene start.
+    """One-way 3/4 phase reveals per original scene paced to actual PCM.
 
-    Stage 1 shows the unselected question/example/checkpoint diagram;
-    stage 2 highlights its unique active checkpoint once, then holds.
-    Every original syllable and caption cue remains on the same audio time.
+    Stage 0 shows original neutral checkpoints; later phases highlight
+    each distinct item exactly once in order, then hold. No circular
+    loader, looping highlight, caption panel motion or extra narration.
     """
     if (len(images)!=ep["all_scene_count"] or len(scenes)!=len(images)
         or abs(sum(scenes)-total)>.03
         or any(not 2<=x<=55 for x in scenes)
-        or any(len(pair)!=2 or not all(p.is_file() for p in pair)
+        or any(len(pair) not in (3,4) or
+               not all(p.is_file() and not p.is_symlink() for p in pair)
                for pair in images)):
         raise FullRehearsalRefused("Staged originals and real PCM scene clocks mismatch")
     concat=folder/"EPHEMERAL_ALL_SCENES_ONE_SHOT_REVEAL.ffconcat"
     lines=["ffconcat version 1.0"]
-    for (base,revealed),duration in zip(images,scenes):
-        first=min(REVEAL_SECONDS,duration/6)
-        second=duration-first
-        if not 0.15<=first<=0.5 or second<1.5:
-            raise FullRehearsalRefused("One-time reveal would compromise narration scene")
-        for image,period in ((base,first),(revealed,second)):
+    from autopilot.one_way_storyboard_timing_b4g2 import (
+        OneWayStageRefused,active_focus_sequence,stage_hold_seconds,
+    )
+    from autopilot.cinematic_scene_board_b4f9 import BEATS
+    for stage_images,duration,original_scene in zip(
+            images,scenes,ep["scenes"]):
+        expected=len(active_focus_sequence(
+            BEATS[original_scene["scene_id"]][3]))
+        if len(stage_images)!=expected:
+            raise FullRehearsalRefused(
+                "Source-lock mismatched narration-paced visual phase count")
+        try:
+            holds=stage_hold_seconds(
+                duration,len(stage_images),min(REVEAL_SECONDS,duration/6))
+        except OneWayStageRefused:
+            raise FullRehearsalRefused(
+                "Physical voice scene cannot contain distinct visual stages") from None
+        for image,period in zip(stage_images,holds):
             lines.extend((f"file '{image.resolve().as_posix()}'",
                           f"duration {period:.6f}"))
     lines.append(f"file '{images[-1][-1].resolve().as_posix()}'")
