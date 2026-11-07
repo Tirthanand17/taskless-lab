@@ -6,6 +6,12 @@ on:
   schedule:
     - cron: "17 13 * * *"
   workflow_dispatch:
+    inputs:
+      retain_rehearsal_review_artifact:
+        description: "Manual opt-in: retain 3 UNAPPROVED original MP4s in GitHub Actions for 1 day; all readers with repo read access can download"
+        required: false
+        type: boolean
+        default: false
   push:
     branches: [main, feature/flowminute-cloud-autopilot-v1]
     paths:
@@ -16,6 +22,8 @@ on:
       - "autopilot/nonfactual_narration_rehearsal.py"
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/full_original_rehearsal_media_b4e1.py"
+      - "autopilot/manual_rehearsal_review_export_b4e3.py"
+      - "autopilot/test_manual_rehearsal_review_export_b4e3.py"
       - "autopilot/test_full_original_rehearsal_media_b4e1.py"
       - "autopilot/test_b4e2_pacing_captions_animated_reveal.py"
       - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
@@ -49,6 +57,8 @@ on:
       - "autopilot/nonfactual_narration_rehearsal.py"
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/full_original_rehearsal_media_b4e1.py"
+      - "autopilot/manual_rehearsal_review_export_b4e3.py"
+      - "autopilot/test_manual_rehearsal_review_export_b4e3.py"
       - "autopilot/test_full_original_rehearsal_media_b4e1.py"
       - "autopilot/test_b4e2_pacing_captions_animated_reveal.py"
       - "autopilot/test_real_rehearsal_voice_media_b4e0.py"
@@ -107,7 +117,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_manual_rehearsal_review_export_b4e3 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
