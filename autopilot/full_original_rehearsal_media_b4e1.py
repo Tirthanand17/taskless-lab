@@ -533,7 +533,7 @@ def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
     if (not cues or len(cues)!=ep["total_original_caption_phrases"]
         or any(type(c["text"]) is not str for c in cues)):
         raise FullRehearsalRefused("Measured subtitle phrase count missing")
-    widths=CAPTION_WRAP_CHARS[ep["kind"]]
+    width=CAPTION_WRAP_CHARS[ep["kind"]]
     max_lines=CAPTION_MAX_LINES[ep["kind"]]
     worst_lines=0
     peak_chars_per_second=0.

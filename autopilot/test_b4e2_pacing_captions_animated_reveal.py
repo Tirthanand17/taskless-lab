@@ -213,5 +213,59 @@ class NonLoopingFullMediaPolishTests(unittest.TestCase):
                 _verify_encoded_first_reveal("ffmpeg",Path("/tmp/broken.mp4"))
 
 
+    def _physical_qa_fixture(self):
+        """Small actual file plus authentic all-scenes original caption text."""
+        from autopilot.full_original_rehearsal_media_b4e1 import _inspect_full
+        ep=self.plan["episodes"][0]
+        cues=[]
+        cursor=0.
+        for scene in ep["scenes"]:
+            for line in scene["caption_cues"]:
+                cues.append({"text":line,"start":cursor,"end":cursor+4.,
+                             "scene":scene["scene"]})
+                cursor+=4.1
+        hashes=[sha256(f"final-{i}".encode()).hexdigest()
+                for i in range(ep["all_scene_count"])]
+        pairs=[(sha256(f"base-{i}".encode()).hexdigest(),digest)
+               for i,digest in enumerate(hashes)]
+        return ep,cues,cursor,hashes,pairs,_inspect_full
+
+    def test_real_post_encode_caption_inspector_executes_complete_safe_path(self):
+        ep,cues,total,hashes,pairs,inspect=self._physical_qa_fixture()
+        class PhysicalMetadata:
+            stderr=("Stream #0:0: Video: h264 (High), yuv420p, 1080x1920\n"
+                    "Stream #0:1: Audio: aac (LC), 24000 Hz, mono\n")
+            stdout=""
+            returncode=1
+        with tempfile.TemporaryDirectory() as root:
+            movie=Path(root)/"rehearsal.mp4"
+            movie.write_bytes(b"test-physically-bounded"*20000)
+            with (patch("subprocess.run",return_value=PhysicalMetadata()),
+                  patch("autopilot.full_original_rehearsal_media_b4e1._run",
+                        return_value=""),
+                  patch("autopilot.full_original_rehearsal_media_b4e1._verify_encoded_first_reveal",
+                        return_value=True)):
+                r=inspect("ffmpeg",movie,ep,cues,total,hashes,pairs)
+            self.assertEqual(r["original_full_scene_count"],4)
+            self.assertTrue(r["actual_full_ffmpeg_decode_passed"])
+            self.assertTrue(r["first_real_encoded_one_shot_checkpoint_reveal_frame_verified"])
+            self.assertTrue(r["srt_caption_baseline_inside_reserved_panel"])
+            self.assertLessEqual(r["measured_actual_caption_max_visible_lines"],4)
+            self.assertEqual(r["voice_speed_calibrated_from_last_real_run"],.93)
+            self.assertEqual(r["original_scene_base_and_one_shot_reveal_pngs"],8)
+            self.assertFalse(r["release_authorized"])
+            self.assertFalse(r["human_full_audio_visual_watch_completed"])
+
+    def test_real_post_encode_inspector_rejects_historical_lost_reveal(self):
+        ep,cues,total,hashes,pairs,inspect=self._physical_qa_fixture()
+        with tempfile.TemporaryDirectory() as root:
+            movie=Path(root)/"rehearsal.mp4"
+            movie.write_bytes(b"x"*400000)
+            bad_pairs=list(pairs)
+            bad_pairs[0]=(hashes[0],hashes[0])
+            with self.assertRaises(FullRehearsalRefused):
+                inspect("ffmpeg",movie,ep,cues,total,hashes,bad_pairs)
+
+
 if __name__=="__main__":
     unittest.main()
