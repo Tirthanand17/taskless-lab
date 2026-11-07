@@ -93,6 +93,39 @@ class ThreeVideoOriginalRehearsalTests(unittest.TestCase):
         with self.assertRaises(RehearsalRefused):
             _daily_case("agents","unsanctioned",example_date)
 
+    def test_all_forty_two_fictional_cases_have_three_distinct_semantic_visual_steps(self):
+        from autopilot.synthetic_case_diagram_labels_b4h2 import (
+            CASE_STEPS,CASE_APPLICATION_SCENES,GENERIC_SAFETY_SCENES,
+            diagram_words_for_case,CaseDiagramRefused,
+        )
+        expected={row[0] for theme in CASEBOOK.values() for row in theme}
+        self.assertEqual(len(expected),42)
+        self.assertEqual(set(CASE_STEPS),expected)
+        self.assertEqual(len({tuple(v) for v in CASE_STEPS.values()}),42)
+        self.assertEqual(len(CASE_APPLICATION_SCENES),9)
+        baseline=(("SOURCE","UNVERIFIED"),("SCOPE","LIMIT"),
+                  ("REVIEW","VERIFY"))
+        for title in expected:
+            steps=CASE_STEPS[title]
+            self.assertEqual(len(steps),3)
+            self.assertEqual(len(set(steps)),3)
+            for step in steps:
+                self.assertTrue(2<=len(step)<=8,(title,step))
+                self.assertEqual(step,step.upper())
+            for scene_id in CASE_APPLICATION_SCENES:
+                result=diagram_words_for_case(title,scene_id,baseline)
+                self.assertEqual(tuple(label for label,_ in result),tuple(steps))
+                self.assertEqual(tuple(sub for _,sub in result),
+                                 ("START","RISK","CHECK"))
+            for scene_id in GENERIC_SAFETY_SCENES:
+                self.assertIs(diagram_words_for_case(title,scene_id,baseline),
+                              baseline,"Release gates must keep original words")
+        for illegal_title,illegal_scene in (
+            ("Invented news headline","MECHANISM"),("","MECHANISM"),
+            ("Wrong task owner","NOT_APPROVED")):
+            with self.assertRaises(CaseDiagramRefused):
+                diagram_words_for_case(illegal_title,illegal_scene,baseline)
+
     def test_three_distinct_original_complete_voiceover_rehearsals_exist(self):
         bundle=self.run_script()
         self.assertEqual(bundle["status"],STATUS)
