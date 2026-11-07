@@ -191,6 +191,14 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
                 "overall_human_decision":"NOT_REVIEWED",
             } for item in entries],
         }
+        # The owner opens this LOCAL file next to the three explicit MP4s.
+        # No web server, CDN, JS dependency, secrets, uploads or approval.
+        from autopilot.offline_review_portal_b4e7 import (
+            build_portal, PORTAL_FILE,
+        )
+        (target/PORTAL_FILE).write_text(
+            build_portal(info, worksheet), encoding="utf8",
+        )
         (target/"HUMAN_REVIEW_WORKSHEET_UNFILLED.json").write_text(
             json.dumps(worksheet,indent=2,ensure_ascii=True)+"\n",encoding="utf8")
         (target/"REVIEW_ONLY_NO_PUBLISH.json").write_text(
@@ -202,6 +210,8 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
             "GitHub artifacts are readable by signed-in users with repository read access.\n"
             "Review only: narrative originality, voice pronunciation, caption legibility,\n"
             "audio synchronization, pacing, scene variety and absence of spinning circles.\n"
+            "Open OPEN_LOCAL_REVIEW_DASHBOARD.html locally, alongside the 3 original MP4s.\n"
+            "Download its PRIVATE review JSON only after full human playback.\n"
             "Fill a PRIVATE COPY of HUMAN_REVIEW_WORKSHEET_UNFILLED.json only after playback.\n"
             "Do not publish, redistribute, assume owner final approval, or quote publisher news.\n"
             "All source snippets, raw research, model weights, MP3/WAV and captions are excluded.\n"
@@ -211,7 +221,8 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
         if set(p.name for p in target.iterdir())!=set(
             name for _,name,_ in SLOT_NAMES)|{
             "REVIEW_ONLY_NO_PUBLISH.json","READ_ME_FIRST.txt",
-            "HUMAN_REVIEW_WORKSHEET_UNFILLED.json"}:
+            "HUMAN_REVIEW_WORKSHEET_UNFILLED.json",
+            "OPEN_LOCAL_REVIEW_DASHBOARD.html"}:
             raise ReviewExportRefused("Unrecognized extra file in review package")
         return info
     except BaseException:
