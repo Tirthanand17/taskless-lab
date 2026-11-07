@@ -19,7 +19,7 @@ class PendingCheckpointRefused(ValueError):
 
 
 def save_existing_caption_identity(path: Path, *, video_id: str, caption_id: str) -> None:
-    if (type(path) is not Path
+    if (not isinstance(path, Path)
         or not path.name.endswith(".json.pending.json")
         or not path.parent.is_dir() or path.parent.is_symlink()
         or path.is_symlink() or not path.is_file()
