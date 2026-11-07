@@ -126,7 +126,7 @@ class UniqueSpokenNarrationSourceTests(unittest.TestCase):
         self.assertFalse(saved["youtube_release_authorized"])
         self.assertFalse(receipt["release_authorized"])
         self.assertFalse(receipt["youtube_publishing_enabled"])
-        self.assertNotIn("actual",json.dumps(saved).lower()[:2])
+        self.assertNotIn("original_voiceover_rehearsal_text",json.dumps(saved))
         altered=deepcopy(preview)
         altered["youtube_release_authorized"]=True
         with self.assertRaises(DailyEvidenceRefused):
@@ -156,6 +156,9 @@ class UniqueSpokenNarrationSourceTests(unittest.TestCase):
                 "actual_human_factual_and_rights_approvals",
                 "youtube_release_authorized",
             )}
+        from autopilot.daily_evidence_bundle import _canonical as digest_canonical
+        research.pop("receipt_sha256")
+        research["receipt_sha256"]=sha256(digest_canonical(research)).hexdigest()
         self.assertEqual(research["plan_day_ist"],"2026-11-07")
         doc=_receipt_from_archive(
             zip_receipts(editorial,research),date(2026,11,8))
