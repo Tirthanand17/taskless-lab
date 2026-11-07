@@ -445,6 +445,9 @@ def _encode_full(ffmpeg: str,ep: dict,folder: Path,
         raise FullRehearsalRefused("Native canvas subtitle geometry mismatch")
     # The authored ASS script (not the reference SRT) is what FFmpeg burns.
     filt=(f"fps={FPS},ass={native_path.as_posix()},format=yuv420p")
+    from autopilot.verified_aac_mastering_b4g5 import (
+        AUDIO_MASTERING_FILTER,AUDIO_ENCODE_HZ,
+    )
     target=folder/"EPHEMERAL_FULL_ORIGINAL_NARRATED_REHEARSAL.mp4"
     _run([ffmpeg,"-nostdin","-y","-hide_banner","-loglevel","error",
           "-f","concat","-safe","0","-i",str(concat),
@@ -453,6 +456,7 @@ def _encode_full(ffmpeg: str,ep: dict,folder: Path,
           "-t",f"{total:.5f}","-r",str(FPS),
           "-c:v","libx264","-preset","ultrafast","-crf","32",
           "-threads","2","-pix_fmt","yuv420p",
+          "-af",AUDIO_MASTERING_FILTER,"-ar",str(AUDIO_ENCODE_HZ),
           "-c:a","aac","-b:a","112k","-movflags","+faststart",
           str(target)],timeout=980)
     return target
@@ -643,6 +647,19 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         movie=_encode_full(ffmpeg,ep,folder,frames,durations,wav,srt,length,cues=cues)
         qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes,reveal_pairs,
                          scene_durations=durations)
+        from autopilot.verified_aac_mastering_b4g5 import (
+            EncodedMasteringRefused,verify_exact_encoded_master,
+        )
+        try:
+            mastering=verify_exact_encoded_master(
+                ffmpeg,movie,qa["encoded_h264_aac_sha256"],
+                qa["real_pcm_measured_seconds"])
+        except EncodedMasteringRefused:
+            raise FullRehearsalRefused(
+                "Final AAC mastering did not pass independent real MP4 LUFS/true-peak measurement"
+            ) from None
+        qa["b4g5_post_encode_aac_lufs_true_peak_verified"]=True
+        qa["original_audio_encoded_mastering"]=mastering
         sound_report=json.loads(
             (folder/"EPHEMERAL_ORIGINAL_AUDIO_SOUND_DESIGN.json").read_text(
                 encoding="utf8"))
@@ -681,7 +698,17 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         or [x["original_full_scene_count"] for x in actual]!=[4,9,4]
         or len({x["encoded_h264_aac_sha256"] for x in actual})!=3):
         raise FullRehearsalRefused("Missing or repeated daily original full voice video")
+    from autopilot.verified_aac_mastering_b4g5 import (
+        EncodedMasteringRefused, verify_three_matching_masters,
+    )
+    try:
+        master_proof=verify_three_matching_masters(actual)
+    except EncodedMasteringRefused:
+        raise FullRehearsalRefused(
+            "Final three original AAC encodes fail cross-video loudness consistency"
+        ) from None
     return {
+        **master_proof,
         "status":STATUS,
         "full_daily_nonfactual_rehearsal_videos_encoded":3,
         "actually_voiced_complete_original_scene_count":17,
