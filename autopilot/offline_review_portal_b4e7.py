@@ -80,6 +80,9 @@ textarea{resize:vertical;min-height:55px}
 button{border:0;color:#fff;background:#2860c2;cursor:pointer}
 .scene{border-top:1px solid #38485e;margin-top:14px;padding-top:10px}
 .capture{margin-top:5px;background:#4b5e7f}
+.scene-jump{margin:8px 0;padding:10px 14px;background:#244b76;border:1px solid #557fa8}
+.scene-jump:focus-visible{outline:3px solid #ffcf64;outline-offset:3px}
+
 .signal-panel{background:#101f36;border:1px solid #3d6284;border-radius:12px;padding:14px;margin:16px 0}
 .signal-panel h3{margin:0 0 5px;color:#dbedfc}
 .signal-panel .signal-list{margin:8px 0 0;padding:0;list-style:none}
@@ -208,6 +211,32 @@ for(const section of document.querySelectorAll("section.episode")) {
   target.appendChild(sceneTitle);
   for(const scene of video.scenes) {
     const div=document.createElement("div");div.className="scene";
+    if(Number.isFinite(scene.source_start_seconds) &&
+       Number.isFinite(scene.source_end_seconds)) {
+      const seek=document.createElement("button");
+      seek.type="button";seek.className="scene-jump";
+      seek.textContent="Jump to scene "+scene.scene_number+" · "+
+        formatSignalTime(scene.source_start_seconds);
+      seek.setAttribute("aria-label","Seek original scene "+scene.scene_number+
+        " at "+formatSignalTime(scene.source_start_seconds));
+      seek.addEventListener("click",()=>{
+        const focusScene=()=>{
+          const playable=Number.isFinite(player.duration) && player.duration>0
+            ? player.duration : video.duration_seconds_measured_pcm;
+          const timestamp=Math.min(scene.source_start_seconds+0.12,
+            scene.source_end_seconds-0.1,playable-0.1);
+          player.currentTime=Math.max(0,timestamp);
+          player.pause();player.focus();
+          // Seeking never changes a worksheet status or signs review.
+        };
+        if(player.readyState>=1) focusScene();
+        else {
+          player.addEventListener("loadedmetadata",focusScene,{once:true});
+          player.load();
+        }
+      });
+      div.appendChild(seek);
+    }
     rowLabel("Scene "+scene.scene_number,
       selectStatus(scene.review_status,x=>{
         scene.review_status=x;
