@@ -700,7 +700,9 @@ def build_nonfactual_rehearsals(
             at+=frames
         if at!=total or len(scenes)!=(4 if is_short else 9):
             raise RehearsalRefused("Scene timing does not match target video length")
-        raw=theme["label"]+" — "+theme["story_name"]+" — "+slot.replace("_"," ").title()+" synthetic test"
+        # Native portrait preview permits at most 3 wrapped 22-character lines.
+        # Keep the richer actual spoken scenario while using a compact title.
+        raw="Synthetic "+theme["story_name"]+" — "+slot.replace("_"," ").title()
         episodes.append({
             "episode_id":brief["episode_id"], "slot":slot,
             "format":brief["format"],"planned_local_ist":brief["time_ist"],
