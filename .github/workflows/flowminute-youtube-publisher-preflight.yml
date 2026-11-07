@@ -7,6 +7,8 @@ on:
       - "scripts/test_publish_youtube_preflight.py"
       - "scripts/github_youtube_attempt_fence_b4e9.py"
       - "scripts/validate_publish_dispatch_b4f0.py"
+      - "scripts/owner_signed_release_b4f1.py"
+      - "scripts/test_owner_signed_release_b4f1.py"
       - "scripts/test_validate_publish_dispatch_b4f0.py"
       - "scripts/test_github_youtube_attempt_fence_b4e9.py"
       - ".github/workflows/publish-artifact-youtube.yml"
@@ -19,6 +21,8 @@ on:
       - "scripts/test_publish_youtube_preflight.py"
       - "scripts/github_youtube_attempt_fence_b4e9.py"
       - "scripts/validate_publish_dispatch_b4f0.py"
+      - "scripts/owner_signed_release_b4f1.py"
+      - "scripts/test_owner_signed_release_b4f1.py"
       - "scripts/test_validate_publish_dispatch_b4f0.py"
       - "scripts/test_github_youtube_attempt_fence_b4e9.py"
       - ".github/workflows/publish-artifact-youtube.yml"
@@ -49,11 +53,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install pinned free Ed25519 verifier (no OAuth or credentials)
+        run: python -m pip install --only-binary=:all: cryptography==50.0.2
       - name: Compile source and run no-network caption/approval/schedule tests
         run: |
           set -euo pipefail
-          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py scripts/github_youtube_attempt_fence_b4e9.py scripts/test_github_youtube_attempt_fence_b4e9.py scripts/validate_publish_dispatch_b4f0.py scripts/test_validate_publish_dispatch_b4f0.py
-          python -m unittest scripts.test_publish_youtube_preflight scripts.test_github_youtube_attempt_fence_b4e9 scripts.test_validate_publish_dispatch_b4f0 -v
+          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py scripts/github_youtube_attempt_fence_b4e9.py scripts/test_github_youtube_attempt_fence_b4e9.py scripts/validate_publish_dispatch_b4f0.py scripts/test_validate_publish_dispatch_b4f0.py scripts/owner_signed_release_b4f1.py scripts/test_owner_signed_release_b4f1.py
+          python -m unittest scripts.test_publish_youtube_preflight scripts.test_github_youtube_attempt_fence_b4e9 scripts.test_validate_publish_dispatch_b4f0 scripts.test_owner_signed_release_b4f1 -v
       - name: Confirm completed owner releases have matching immutable authenticated schedule receipts
         run: |
           set -euo pipefail
