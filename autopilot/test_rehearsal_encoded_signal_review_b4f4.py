@@ -55,8 +55,8 @@ class FFmpegParserTests(unittest.TestCase):
         # Reproduces 2026-11-07 real owner artifact export failure:
         # many freeze_start but not the same number of freeze_end lines.
         sample=LOG.replace(
-            "[freezedetect] freeze_end: 18 | freeze_duration: 6\\n","")
-        sample += "\\n[freezedetect] freeze_start: 19.5\\n"
+            "[freezedetect] freeze_end: 18 | freeze_duration: 6\n","")
+        sample += "\n[freezedetect] freeze_start: 19.5\n"
         report=parse_ffmpeg_signals(sample,duration=57.8)
         self.assertEqual(report["unpaired_freeze_start_event_count"],2)
         self.assertTrue(report["unpaired_freeze_events_are_advisory"])
@@ -73,7 +73,7 @@ class FFmpegParserTests(unittest.TestCase):
         self.assertEqual(report["unpaired_freeze_start_event_count"],1)
 
     def test_overeighty_unpaired_starts_rejected_not_published(self):
-        sample=LOG+"\\n".join(
+        sample=LOG+"\n".join(
             "[freezedetect] freeze_start: 20" for _ in range(81))
         with self.assertRaises(SignalReviewRefused):
             parse_ffmpeg_signals(sample,duration=57.8)
