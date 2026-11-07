@@ -68,7 +68,8 @@ class NativeCanvasCaptionTests(unittest.TestCase):
                     "cinematic_scene_board_b4f9.py").read_text()
         self.assertIn("caption_top=h-390",storyboard)
         self.assertIn("caption_top=h-320",storyboard)
-        self.assertIn("render_editorial_frame(ep,scene,revealed=revealed)",src)
+        self.assertIn("render_editorial_frame(",src)
+        self.assertIn("focus_index=focus_index",src)
 
     def test_missing_unsafe_oversized_and_out_of_order_cues_rejected(self):
         cases=(
