@@ -191,6 +191,7 @@ class EditorialSceneIntegrationTests(unittest.TestCase):
     def test_all_forty_two_case_labels_fit_real_native_glyph_bounds(self):
         from PIL import Image,ImageDraw
         from autopilot.real_rehearsal_voice_media_b4e0 import _font
+        from autopilot.cinematic_scene_board_b4f9 import EDITORIAL_FONTS
         from autopilot.nonfactual_narration_rehearsal import CASEBOOK
         draw=ImageDraw.Draw(Image.new("RGB",(1,1)))
         for items in CASEBOOK.values():
@@ -198,11 +199,50 @@ class EditorialSceneIntegrationTests(unittest.TestCase):
                 title="CASE / "+case[0].upper()
                 for portrait in (True,False):
                     x=88
-                    size=29 if portrait else 28
+                    size=EDITORIAL_FONTS["case_label"]["short" if portrait else "long"]
                     bound=draw.textbbox((x,638 if portrait else 615),
                                         title,font=_font(size))
                     self.assertLessEqual(bound[2],1000 if portrait else 874,
                                          (case[0],portrait,bound))
+
+    def test_mobile_editorial_hierarchy_is_readable_after_physical_downscale(self):
+        from autopilot.cinematic_scene_board_b4f9 import EDITORIAL_FONTS,DISPLAY_WIDTH
+        self.assertEqual(DISPLAY_WIDTH,{"short":360,"long":960})
+        for kind,source_width in (("short",1080),("long",1920)):
+            scale=DISPLAY_WIDTH[kind]/source_width
+            for role in ("scene_eyebrow","scene_description","case_label"):
+                source_font=EDITORIAL_FONTS[role][kind]
+                self.assertGreaterEqual(source_font*scale,12.0,
+                    (role,kind,"editorial type too small on mobile"))
+        diagram_scale={"short":1.0,"long":min(908/930,521/670)}
+        for name in ("diagram_eyebrow_base","diagram_matrix_primary_base",
+                     "diagram_matrix_secondary_base",
+                     "diagram_steps_secondary_base",
+                     "diagram_gate_secondary_base"):
+            font=EDITORIAL_FONTS[name]
+            for kind,source_width in (("short",1080),("long",1920)):
+                native=max(15,round(font*diagram_scale[kind]))
+                displayed=native*DISPLAY_WIDTH[kind]/source_width
+                self.assertGreaterEqual(displayed,12.0,
+                    (name,kind,displayed,"unreadable phone infographic"))
+        self.assertLess(EDITORIAL_FONTS["case_label"]["short"],47,
+                        "Oversized text would crowd visual hierarchy")
+
+    def test_primary_readability_colors_pass_conservative_dark_contrast(self):
+        from autopilot.cinematic_scene_board_b4f9 import PALE,MUTED,DEEP,THEMES
+        def luminance(rgb):
+            srgb=[v/255 for v in rgb]
+            linear=[c/12.92 if c<=.04045 else ((c+.055)/1.055)**2.4
+                    for c in srgb]
+            return linear[0]*.2126+linear[1]*.7152+linear[2]*.0722
+        def ratio(a,b):
+            return (max(luminance(a),luminance(b))+.05)/(
+                    min(luminance(a),luminance(b))+.05)
+        # Video legibility guard; not a claim of official certification.
+        dark=(12,25,43)
+        for ink in (PALE,MUTED,*[THEMES[k]["accent"] for k in THEMES]):
+            self.assertGreaterEqual(ratio(ink,DEEP),4.5)
+            self.assertGreaterEqual(ratio(ink,dark),4.5)
 
     def test_no_generic_old_title_spilled_back_into_first_frame(self):
         from autopilot.cinematic_scene_board_b4f9 import BEATS
