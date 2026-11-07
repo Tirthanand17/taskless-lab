@@ -211,6 +211,8 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
             "Review only: narrative originality, voice pronunciation, caption legibility,\n"
             "audio synchronization, pacing, scene variety and absence of spinning circles.\n"
             "Open OPEN_LOCAL_REVIEW_DASHBOARD.html locally, alongside the 3 original MP4s.\n"
+            "The player may include SHA-bound FFmpeg black/freeze/silence timecode seek buttons.\n"
+            "Seek buttons NEVER mark review items PASS or certify the absence of spinners.\n"
             "Download its PRIVATE review JSON only after full human playback.\n"
             "Fill a PRIVATE COPY of HUMAN_REVIEW_WORKSHEET_UNFILLED.json only after playback.\n"
             "Do not publish, redistribute, assume owner final approval, or quote publisher news.\n"
