@@ -5,6 +5,9 @@ on:
     paths:
       - "scripts/publish_youtube.py"
       - "scripts/test_publish_youtube_preflight.py"
+      - "scripts/github_youtube_attempt_fence_b4e9.py"
+      - "scripts/test_github_youtube_attempt_fence_b4e9.py"
+      - ".github/workflows/publish-artifact-youtube.yml"
       - ".github/workflows/flowminute-youtube-publisher-preflight.yml"
       - "state/approvals/fm_20261102_agent_permissions_*.json"
       - "state/scheduled/fm_20261102_agent_permissions_*.json"
@@ -12,6 +15,9 @@ on:
     paths:
       - "scripts/publish_youtube.py"
       - "scripts/test_publish_youtube_preflight.py"
+      - "scripts/github_youtube_attempt_fence_b4e9.py"
+      - "scripts/test_github_youtube_attempt_fence_b4e9.py"
+      - ".github/workflows/publish-artifact-youtube.yml"
       - ".github/workflows/flowminute-youtube-publisher-preflight.yml"
   workflow_dispatch:
 
@@ -42,8 +48,8 @@ jobs:
       - name: Compile source and run no-network caption/approval/schedule tests
         run: |
           set -euo pipefail
-          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py
-          python -m unittest scripts.test_publish_youtube_preflight -v
+          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py scripts/github_youtube_attempt_fence_b4e9.py scripts/test_github_youtube_attempt_fence_b4e9.py
+          python -m unittest scripts.test_publish_youtube_preflight scripts.test_github_youtube_attempt_fence_b4e9 -v
       - name: Confirm completed owner releases have matching immutable authenticated schedule receipts
         run: |
           set -euo pipefail
