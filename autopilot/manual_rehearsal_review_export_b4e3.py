@@ -153,6 +153,46 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
             "publishing_authorized":False,
             "videos":entries,
         }
+        # Machine-readable review worksheet is intentionally blank: hashes tie
+        # human notes to the *specific* decoded bytes, not to a later rerender.
+        # No reviewer identity, source text, release token, or fake PASS exists.
+        checks=(
+            "opening_hook_under_2_seconds",
+            "every_scene_unique_and_no_rotating_spinner",
+            "voice_clear_pronunciation_and_no_clipping",
+            "caption_readability_mobile_safe_area_and_spelling",
+            "audio_caption_sync_and_sound_effect_balance",
+            "original_visual_labels_legible_and_not_cropped",
+            "narrative_payoff_and_ending",
+            "visual_audio_model_and_music_rights_verified",
+            "factual_claims_primary_source_verified",
+            "human_listened_and_watched_entire_clip",
+        )
+        worksheet={
+            "schema":"B4E5_SHA_BOUND_BLANK_HUMAN_QA_WORKSHEET_V1",
+            "synthetic_educational_media_only":True,
+            "human_review_completed":False,
+            "factual_news_approved":False,
+            "rights_approved":False,
+            "youtube_publish_authorized":False,
+            "instructions":"Watch each full file, then make a separate private copy of this worksheet. Replace NOT_REVIEWED only with evidence; record scene/timestamp issues. Never treat this blank artifact as a release approval.",
+            "videos":[{
+                "slot":item["slot"],
+                "filename":item["file"],
+                "sha256":item["sha256"],
+                "duration_seconds_measured_pcm":item["measured_audio_seconds"],
+                "scenes":[{
+                    "scene_number":index,
+                    "review_status":"NOT_REVIEWED",
+                    "timecode_mm_ss":None,
+                    "defect_notes":None,
+                } for index in range(1,item["original_voiced_scene_count"]+1)],
+                "checks":{check:"NOT_REVIEWED" for check in checks},
+                "overall_human_decision":"NOT_REVIEWED",
+            } for item in entries],
+        }
+        (target/"HUMAN_REVIEW_WORKSHEET_UNFILLED.json").write_text(
+            json.dumps(worksheet,indent=2,ensure_ascii=True)+"\n",encoding="utf8")
         (target/"REVIEW_ONLY_NO_PUBLISH.json").write_text(
             json.dumps(info,indent=2,ensure_ascii=True)+"\n",encoding="utf8")
         (target/"READ_ME_FIRST.txt").write_text(
@@ -162,6 +202,7 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
             "GitHub artifacts are readable by signed-in users with repository read access.\n"
             "Review only: narrative originality, voice pronunciation, caption legibility,\n"
             "audio synchronization, pacing, scene variety and absence of spinning circles.\n"
+            "Fill a PRIVATE COPY of HUMAN_REVIEW_WORKSHEET_UNFILLED.json only after playback.\n"
             "Do not publish, redistribute, assume owner final approval, or quote publisher news.\n"
             "All source snippets, raw research, model weights, MP3/WAV and captions are excluded.\n"
             "After 1 day the review download is expected to expire under repo retention policy.\n",
@@ -169,7 +210,8 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
         )
         if set(p.name for p in target.iterdir())!=set(
             name for _,name,_ in SLOT_NAMES)|{
-            "REVIEW_ONLY_NO_PUBLISH.json","READ_ME_FIRST.txt"}:
+            "REVIEW_ONLY_NO_PUBLISH.json","READ_ME_FIRST.txt",
+            "HUMAN_REVIEW_WORKSHEET_UNFILLED.json"}:
             raise ReviewExportRefused("Unrecognized extra file in review package")
         return info
     except BaseException:
