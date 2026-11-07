@@ -143,7 +143,7 @@ def prepare_review_export(root: Path, target: Path, report: dict) -> dict:
             })
         info={
             "status":EXPORT_STATUS,
-            "intended_use":"Human visual/audio review ONLY. Files may be accessible to anyone with repository read access.",
+            "intended_use":"Original synthetic educational rehearsal video for human visual/audio review ONLY. Files may be accessible to anyone with repository read access.",
             "artifact_retention_days":1,
             "original_synthetic_educational_video_files":3,
             "source_news_and_publisher_article_passages_included":False,
