@@ -61,7 +61,14 @@ class NativeCanvasCaptionTests(unittest.TestCase):
         self.assertNotIn("force_style=",src)
         self.assertNotIn("subtitles={srt.as_posix()}",src)
         self.assertIn("cues=cues",src)
-        self.assertIn("caption_top=h-(390 if portrait else 320)",src)
+        # B4f9 moved all pixel geometry into the independently measured
+        # editorial scene renderer; the exact native ASS reserved card is still
+        # required there for the 1080x1920 and 1920x1080 layouts.
+        storyboard=(Path(__file__).resolve().parent/
+                    "cinematic_scene_board_b4f9.py").read_text()
+        self.assertIn("caption_top=h-390",storyboard)
+        self.assertIn("caption_top=h-320",storyboard)
+        self.assertIn("render_editorial_frame(ep,scene,revealed=revealed)",src)
 
     def test_missing_unsafe_oversized_and_out_of_order_cues_rejected(self):
         cases=(
