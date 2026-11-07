@@ -141,12 +141,16 @@ def audit_live_owner_readonly(youtube: object, *, root: Path,
         "private_schedule_outside_standard_time_count":(0,10000),
         "current_youtube_uploads_scanned":(0,2000),
     }
+    counts={}
     for key,(lo,hi) in allowed.items():
         val=scan.get(key)
         if type(val) is not int or not lo<=val<=hi:
             result["schedule_scan_outcome"]="INCOMPLETE_STOP_NO_MUTATION"
             return result
-        result[key]=val
+        counts[key]=val
+    # Atomic publication of validated aggregates: never leak partial
+    # schedule counts when any later counter fails type/range validation.
+    result.update(counts)
     result["schedule_scan_complete"]=True
     result["schedule_scan_outcome"]="COMPLETE_READONLY_NOV05_NOV11_OWNER_STATUS"
     return result
