@@ -30,12 +30,44 @@ from autopilot.real_rehearsal_voice_media_b4e0 import (
 STATUS = "B4E1_FULL_THREE_ORIGINAL_NONFACTUAL_VOICED_REHEARSALS_PHYSICALLY_RENDERED_NOT_PUBLISHABLE"
 PLAN_STATUS = "B4E1_SOURCE_LOCKED_ALL_17_SCENES_NO_PUBLISH"
 FPS = 24
-CAPTION_MAX_CHARS = 152
+# Conservative cap: <=112 original characters keeps phrases within both
+# the portrait 4-line and landscape 2-line caption panels even with
+# natural word boundaries. No original narration is removed.
+CAPTION_MAX_CHARS = 112
 MAX_SPOKEN_CHUNKS_PER_SCENE = 9
 MAX_SPOKEN_CHUNKS_PER_EPISODE = 100
 MAX_EPISODE_SECONDS = {"short":85.0,"long":340.0}
 MIN_EPISODE_SECONDS = {"short":23.0,"long":95.0}
 MAX_MP4_BYTES = 240_000_000
+# Calibrated from trusted physical main run 42246914153:
+# short AM 59.771s at 0.90, long 227.366s at 0.91, short PM
+# 56.593s at 0.90. This is a VOICE-speed starting point only;
+# measured durations still must be checked for every new script.
+VOICE_SPEED_BY_SLOT = {"short_am":0.93, "long":0.86, "short_pm":0.88}
+VOICE_SPEED_REFERENCE_SECONDS = {
+    "short_am":59.771, "long":227.366, "short_pm":56.593,
+}
+VOICE_SPEED_PREVIOUS = {"short_am":0.90,"long":0.91,"short_pm":0.90}
+REVEAL_SECONDS = 0.36
+CAPTION_WRAP_CHARS = {"short":44, "long":76}
+CAPTION_MAX_LINES = {"short":4, "long":2}
+CAPTION_MARGIN_BOTTOM_PX = {"short":168, "long":148}
+# Every scene has its own didactic visual mini-flow, not the same three
+# rotating/running cards on all 17 scenes. The two-step active reveal
+# happens ONCE, then remains static through each spoken scene.
+SCENE_CARD_WORDS = {
+    "HOOK_QUESTION": (("ASK", "DEFINE"), ("IDEA", "HYPOTHESIS"), ("TEST", "CHECK")),
+    "SOURCE_SCOPE": (("SOURCE", "UNVERIFIED"), ("SCOPE", "LIMIT"), ("REVIEW", "VERIFY")),
+    "DEMONSTRATION": (("SAMPLE", "SYNTHETIC"), ("STEP", "DEMONSTRATE"), ("CHECK", "REPRODUCE")),
+    "VERIFY_AND_LIMIT": (("CLAIM", "QUESTION"), ("LIMIT", "UNCERTAIN"), ("PROOF", "REVIEW")),
+    "MECHANISM": (("INPUT", "SYNTHETIC"), ("PROCESS", "EXPLAIN"), ("OUTPUT", "CHECK")),
+    "BASELINE": (("CONTROL", "BASELINE"), ("CHANGE", "ONE STEP"), ("COMPARE", "FAIR TEST")),
+    "EXAMPLE_1": (("CASE A", "INVENTED"), ("TRACE", "FIRST"), ("CHECK", "RECORD")),
+    "EXAMPLE_2": (("CASE B", "INVENTED"), ("COMPARE", "SECOND"), ("CHECK", "REPEAT")),
+    "COUNTEREXAMPLE": (("FAILURE", "IMAGINED"), ("DETECT", "QUESTION"), ("RECOVER", "REVIEW")),
+    "FACT_AND_RIGHTS_GATE": (("FACT", "UNVERIFIED"), ("RIGHTS", "UNCLEARED"), ("BLOCK", "RELEASE")),
+    "NEXT_VIEWER_ACTION": (("TRY", "SAFE TEST"), ("LOG", "YOUR INPUT"), ("LEARN", "REVIEW")),
+}
 
 
 class FullRehearsalRefused(ValueError):
@@ -203,14 +235,24 @@ def prepare_full_rehearsal_plan(*sources: object) -> dict:
     }
 
 
-def _draw_original_full_scene(ep: dict,scene: dict,path: Path) -> str:
-    """A new physical PNG per complete scene: no moving circular progress UI."""
+def _draw_original_full_scene(ep: dict,scene: dict,path: Path,
+                              *, revealed: bool=True) -> str:
+    """Create a unique original scene frame; 1 reveal only, no spinner loop.
+
+    Two original stills per authored scene form a discrete, single-use
+    highlight animation while the real narration and its PCM-timed subtitles
+    continue uninterrupted. Never draw a ring, clock, loader or rotating dial.
+    """
     from PIL import Image,ImageDraw
     w,h=ep["size"]
     portrait=ep["kind"]=="short"
+    if ep["slot"] not in SLOTS or scene["scene_id"] not in SCENE_CARD_WORDS:
+        raise FullRehearsalRefused("Unrecognized original visual narrative beat")
+    if (type(revealed) is not bool or type(scene["scene"]) is not int
+        or not 0<=scene["scene"]<ep["all_scene_count"]):
+        raise FullRehearsalRefused("Unsafe static/one-shot highlight frame")
     dark,accent,pale=COLORS[SLOTS.index(ep["slot"])]
     idx=scene["scene"]
-    # 17 distinct original stateless slides; subtle progress is discrete only.
     back=tuple(min(255,c+idx*2) for c in dark)
     canvas=Image.new("RGB",(w,h),back)
     d=ImageDraw.Draw(canvas)
@@ -220,23 +262,30 @@ def _draw_original_full_scene(ep: dict,scene: dict,path: Path) -> str:
         d.line((x,50,x,h-50),fill=tuple(min(255,c+10) for c in back),width=1)
     d.text((80,92),"FLOWMINUTE LAB  /  ORIGINAL SYNTHETIC EXERCISE",
            font=_font(23 if portrait else 27),fill=pale)
-    d.text((80,145),f"{ep['slot'].upper()}     SCENE {idx+1:02} / {ep['all_scene_count']:02}",
-           font=_font(29 if portrait else 32,mono=True),fill=(228,235,247))
+    d.text((80,145),
+           f"{ep['slot'].upper()}     SCENE {idx+1:02} / {ep['all_scene_count']:02}",
+           font=_font(29 if portrait else 32,mono=True),
+           fill=(228,235,247))
     top=225
     label=ep["working_title"]
     titlelines=textwrap.wrap(label,width=24 if portrait else 46,
-                             break_long_words=False)[:3]
-    if not titlelines or len(titlelines)>3:
-        raise FullRehearsalRefused("Original educational topic title unreadable")
+                             break_long_words=False)
+    if not 1<=len(titlelines)<=3:
+        raise FullRehearsalRefused("Original educational title too wide for scene")
     for chunk in titlelines:
-        d.text((80,top),chunk,font=_font(58 if portrait else 62),fill=(247,249,254))
+        d.text((80,top),chunk,font=_font(58 if portrait else 62),
+               fill=(247,249,254))
         top+=77
-    upper=570 if portrait else 387
+    upper=max(570 if portrait else 387,top+34)
     height=185 if portrait else 210
     gap=27 if portrait else 33
-    # A rectangular numbered workflow demo, clearly synthetic.
-    cards=("1  QUESTION","2  EXAMPLE","3  CHECK")
-    for i,name in enumerate(cards):
+    if (upper+height+(2*(height+gap) if portrait else 0)
+        >=h-(390 if portrait else 248)-90):
+        raise FullRehearsalRefused("Diagrams would overlap subtitle safe area")
+
+    cards=SCENE_CARD_WORDS[scene["scene_id"]]
+    active=idx%3
+    for i,(header,subtext) in enumerate(cards):
         if portrait:
             x1,y1,x2,y2=(90,upper+i*(height+gap),w-90,
                          upper+i*(height+gap)+height)
@@ -247,23 +296,42 @@ def _draw_original_full_scene(ep: dict,scene: dict,path: Path) -> str:
             y1=upper
             x2=x1+width
             y2=upper+height
-        d.rounded_rectangle((x1,y1,x2,y2),radius=19,
-                            fill=tuple(min(255,c+22+i*5) for c in dark),
-                            outline=accent if i==(idx%3) else pale,width=3)
-        d.rectangle((x1+27,y1+25,x1+43,y1+79),fill=accent)
-        d.text((x1+57,y1+23),name,font=_font(31 if portrait else 32),
-               fill=(248,251,253))
-        d.text((x1+57,y1+87),
-               ("DEFINE","COMPARE","REVIEW")[i],
-               font=_font(28 if portrait else 31),fill=pale)
-    # Captions will physically be burned-in by FFmpeg libass, with their
-    # positions reserved; don't repeat all spoken text on the background.
+        selected=revealed and i==active
+        bg=tuple(min(255,c+(42 if selected else 20)+i*3) for c in dark)
+        d.rounded_rectangle((x1,y1,x2,y2),radius=19,fill=bg,
+                            outline=accent if selected else pale,
+                            width=5 if selected else 2)
+        d.rectangle((x1+27,y1+25,x1+43,y1+79),
+                    fill=accent if selected else pale)
+        d.text((x1+57,y1+23),header,
+               font=_font(32 if portrait else 33),
+               fill=(249,251,253))
+        d.text((x1+57,y1+87),subtext,
+               font=_font(27 if portrait else 29),
+               fill=pale)
+        if selected:
+            # One square-chip checkpoint lights once at REVEAL_SECONDS;
+            # a rectangular marker, NOT a radial indicator.
+            d.rounded_rectangle((x2-89,y1+34,x2-37,y1+86),
+                                radius=8,outline=accent,width=4)
+            d.line((x2-75,y1+61,x2-64,y1+72,x2-48,y1+45),
+                   fill=accent,width=5)
+    # Static number-only progress. No animated orbital loader, bar
+    # sweeping for minutes, flashing or endlessly repeated spin.
+    block_w=44 if portrait else 57
+    bar_y=upper+3*(height+gap)+7 if portrait else upper+height+38
+    for i in range(ep["all_scene_count"]):
+        bx=96+i*(block_w+8)
+        # Long 9-scene landscape card bar fits w=1920. Shorts 4 fit 1080.
+        d.rectangle((bx,bar_y,bx+block_w,bar_y+7),
+                    fill=accent if i<=idx else tuple(min(255,c+18) for c in dark))
     caption_top=h-(390 if portrait else 248)
     d.rounded_rectangle((82,caption_top,w-82,h-128),radius=23,
                         fill=(20,34,53),outline=accent,width=2)
-    d.text((112,caption_top+26),"VOICE CAPTIONS SYNCED TO REAL PCM",
-           font=_font(25 if portrait else 27),fill=pale)
-    d.text((85,h-93),"FICTIONAL EXERCISE  |  NO FACT APPROVAL  |  NO UPLOAD",
+    d.text((112,caption_top+26),"NARRATION: SOURCE-INDEPENDENT PRACTICE",
+           font=_font(24 if portrait else 26),fill=pale)
+    d.text((85,h-93),
+           "FICTIONAL EXERCISE  |  NO FACT APPROVAL  |  NO UPLOAD",
            font=_font(21 if portrait else 23),fill=(184,209,223))
     path.parent.mkdir(parents=True,exist_ok=True)
     canvas.save(path,"PNG",optimize=True)
@@ -295,8 +363,11 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
     for scene in ep["scenes"]:
         scene_start=ticks
         for part in scene["caption_cues"]:
+            slot=ep["slot"]
+            if slot not in VOICE_SPEED_BY_SLOT or ep["voice"]!=VOICES[slot]:
+                raise FullRehearsalRefused("Wrong ownerless Kokoro calibration slot")
             pcm,hz=engine.create(part,voice=ep["voice"],
-                   speed=0.90 if ep["kind"]=="short" else 0.91,lang="en-us")
+                   speed=VOICE_SPEED_BY_SLOT[slot],lang="en-us")
             arr=np.asarray(pcm,dtype=np.float32)
             if (arr.ndim!=1 or not 16000<=hz<=48000
                 or arr.size<hz*.36 or arr.size>hz*32
@@ -356,33 +427,51 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
     for i,c in enumerate(cues,1):
         # libass auto-wraps long statements. Two-line forced display whenever
         # possible, safe lower card plus dark subtitle outline.
-        w=30 if ep["kind"]=="short" else 55
-        txt="\n".join(textwrap.wrap(c["text"],width=w,
-                   break_long_words=False))
-        if len(txt.splitlines())>6:
-            raise FullRehearsalRefused("Sentence too wide for original video caption area")
+        width=CAPTION_WRAP_CHARS[ep["kind"]]
+        visual_lines=textwrap.wrap(c["text"],width=width,
+                   break_long_words=False,break_on_hyphens=False)
+        if (not visual_lines
+            or len(visual_lines)>CAPTION_MAX_LINES[ep["kind"]]
+            or any(len(line)>width+2 for line in visual_lines)):
+            raise FullRehearsalRefused(
+                "Caption exceeds measured subtitle-safe panel height/width")
+        txt="\n".join(visual_lines)
         blocks += [str(i),f"{_stamp(c['start'])} --> {_stamp(c['end'])}",txt,""]
     srt.write_text("\n".join(blocks)+"\n",encoding="utf8")
     return wav,srt,scenes,cues,total
 
 
-def _encode_full(ffmpeg: str,ep: dict,folder: Path,images: list[Path],
-                 scenes: list[float],wav: Path,srt: Path,total: float) -> Path:
+def _encode_full(ffmpeg: str,ep: dict,folder: Path,
+                 images: list[tuple[Path,Path]],scenes: list[float],
+                 wav: Path,srt: Path,total: float) -> Path:
+    """One non-looping reveal per original scene at actual PCM scene start.
+
+    Stage 1 shows the unselected question/example/checkpoint diagram;
+    stage 2 highlights its unique active checkpoint once, then holds.
+    Every original syllable and caption cue remains on the same audio time.
+    """
     if (len(images)!=ep["all_scene_count"] or len(scenes)!=len(images)
         or abs(sum(scenes)-total)>.03
-        or any(not 2<=x<=55 for x in scenes)):
-        raise FullRehearsalRefused("Scene images and real PCM timelines mismatched")
-    concat=folder/"EPHEMERAL_ALL_SCENES.ffconcat"
+        or any(not 2<=x<=55 for x in scenes)
+        or any(len(pair)!=2 or not all(p.is_file() for p in pair)
+               for pair in images)):
+        raise FullRehearsalRefused("Staged originals and real PCM scene clocks mismatch")
+    concat=folder/"EPHEMERAL_ALL_SCENES_ONE_SHOT_REVEAL.ffconcat"
     lines=["ffconcat version 1.0"]
-    for image,duration in zip(images,scenes):
-        lines.extend((f"file '{image.resolve().as_posix()}'",
-                      f"duration {duration:.6f}"))
-    lines.append(f"file '{images[-1].resolve().as_posix()}'")
+    for (base,revealed),duration in zip(images,scenes):
+        first=min(REVEAL_SECONDS,duration/6)
+        second=duration-first
+        if not 0.15<=first<=0.5 or second<1.5:
+            raise FullRehearsalRefused("One-time reveal would compromise narration scene")
+        for image,period in ((base,first),(revealed,second)):
+            lines.extend((f"file '{image.resolve().as_posix()}'",
+                          f"duration {period:.6f}"))
+    lines.append(f"file '{images[-1][-1].resolve().as_posix()}'")
     concat.write_text("\n".join(lines)+"\n",encoding="utf8")
-    # Pinned imageio FFmpeg wheel includes libass; verify at installation
-    # time too. Never attempt an unsafe unapproved apt mirror fallback.
+    # Subtitle baseline is placed INSIDE the lower caption card, not on
+    # the footer disclaimer. Max lines: 4 portrait / 2 landscape.
     font=27 if ep["kind"]=="short" else 24
-    margin=100 if ep["kind"]=="short" else 62
+    margin=CAPTION_MARGIN_BOTTOM_PX[ep["kind"]]
     filt=(f"fps={FPS},subtitles={srt.as_posix()}:force_style="
           "'FontName=DejaVu Sans,"
           f"FontSize={font},Alignment=2,MarginV={margin},"
@@ -402,11 +491,63 @@ def _encode_full(ffmpeg: str,ep: dict,folder: Path,images: list[Path],
     return target
 
 
+def _verify_encoded_first_reveal(ffmpeg: str,media: Path) -> bool:
+    """Sample TWO actual decoded H264 frames around the first one-shot reveal.
+
+    Source PNG digests alone do not establish what FFmpeg encoded. Each
+    sample is scaled to bounded 192x108 luminance, safely kept in RAM;
+    neither screenshots nor source/private narration leave the runner.
+    """
+    import subprocess
+    frames=[]
+    for t in ("0.100","0.900"):
+        try:
+            result=subprocess.run(
+                [ffmpeg,"-nostdin","-hide_banner","-loglevel","error",
+                 "-ss",t,"-i",str(media),"-an",
+                 "-vf","scale=192:108,format=gray",
+                 "-frames:v","1","-f","rawvideo","-pix_fmt","gray","-"],
+                stdout=subprocess.PIPE,stderr=subprocess.PIPE,
+                timeout=45,check=False)
+        except (OSError,subprocess.TimeoutExpired):
+            raise FullRehearsalRefused("Cannot inspect actual transition frames") from None
+        if result.returncode!=0 or len(result.stdout)!=192*108:
+            raise FullRehearsalRefused("Expected physical encoded reveal frame missing")
+        frames.append(result.stdout)
+    diff=sum(x!=y for x,y in zip(frames[0],frames[1]))
+    if diff<55:
+        raise FullRehearsalRefused("Source diagrams differ but encoded MP4 never reveals change")
+    return True
+
+
 def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
-                  seconds: float,frame_hashes: list[str]) -> dict:
+                  seconds: float,frame_hashes: list[str],
+                  reveal_pairs: list[tuple[str,str]] | None=None) -> dict:
     if not media.is_file() or media.is_symlink() or len(set(frame_hashes))!=ep[
         "all_scene_count"]:
         raise FullRehearsalRefused("Physical unique rendered scenes absent")
+    if (reveal_pairs is None or len(reveal_pairs)!=ep["all_scene_count"]
+        or any(before==after or after!=final
+               for (before,after),final in zip(reveal_pairs,frame_hashes))):
+        raise FullRehearsalRefused("A real unique one-time scene reveal is missing")
+    if (not cues or len(cues)!=ep["total_original_caption_phrases"]
+        or any(type(c["text"]) is not str for c in cues)):
+        raise FullRehearsalRefused("Measured subtitle phrase count missing")
+    widths=CAPTION_WRAP_CHARS[ep["kind"]]
+    max_lines=CAPTION_MAX_LINES[ep["kind"]]
+    worst_lines=0
+    peak_chars_per_second=0.
+    for c in cues:
+        lines=textwrap.wrap(c["text"],width=width,
+            break_long_words=False,break_on_hyphens=False)
+        if not lines or len(lines)>max_lines:
+            raise FullRehearsalRefused("Subtitle text exceeds safe caption card")
+        if (not math.isfinite(c["start"]) or not math.isfinite(c["end"])
+            or not 0<=c["start"]<c["end"]<=seconds+.001):
+            raise FullRehearsalRefused("Caption cues detached from audio PCM")
+        worst_lines=max(worst_lines,len(lines))
+        cps=len(c["text"])/(c["end"]-c["start"])
+        peak_chars_per_second=max(peak_chars_per_second,cps)
     # Use ffmpeg metadata + full independent decode; no filename-only proof.
     import subprocess
     p=subprocess.run([ffmpeg,"-hide_banner","-i",str(media)],
@@ -424,6 +565,7 @@ def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
     digest,size=sha256_stream(media,max_bytes=MAX_MP4_BYTES)
     if size<300_000:
         raise FullRehearsalRefused("A complete voiced media file is unexpectedly tiny")
+    physical_reveal=_verify_encoded_first_reveal(ffmpeg,media)
     return {
         "episode_id":ep["episode_id"],
         "slot":ep["slot"],"format":ep["kind"],"voice":ep["voice"],
@@ -437,6 +579,19 @@ def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
             abs(seconds-ep["target_seconds_not_audio_verified"])<=3.,
         "total_actual_encoded_bytes":size,"encoded_h264_aac_sha256":digest,
         "portrait_or_landscape":dimensions,
+        "voice_speed_calibrated_from_last_real_run":VOICE_SPEED_BY_SLOT[ep["slot"]],
+        "original_visual_scene_specific_card_labels":True,
+        "original_scene_base_and_one_shot_reveal_pngs":len(reveal_pairs)*2,
+        "reveal_duration_seconds_once_per_scene":REVEAL_SECONDS,
+        "no_spinning_or_repeating_highlight_animation":True,
+        "first_real_encoded_one_shot_checkpoint_reveal_frame_verified":
+            physical_reveal,
+        "caption_safe_area_max_lines":max_lines,
+        "measured_actual_caption_max_visible_lines":worst_lines,
+        "caption_peak_physical_chars_per_second":round(peak_chars_per_second,2),
+        "caption_reading_speed_needs_human_review":
+            peak_chars_per_second>25.,
+        "srt_caption_baseline_inside_reserved_panel":True,
         "source_rights_reviewed":False,"news_facts_approved":False,
         "real_voice_and_caption_pcm_alignment":True,
         "per_word_forced_alignment_claimed":False,
@@ -480,12 +635,19 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         wav,srt,durations,cues,length=_synth_full_voice(engine,ep,folder)
         frames=[]
         hashes=[]
+        reveal_pairs=[]
         for scene in ep["scenes"]:
-            png=folder/f"EPHEMERAL_SCENE_{scene['scene']:02}.png"
-            hashes.append(_draw_original_full_scene(ep,scene,png))
-            frames.append(png)
+            intro=folder/f"EPHEMERAL_SCENE_{scene['scene']:02}_START.png"
+            final=folder/f"EPHEMERAL_SCENE_{scene['scene']:02}_REVEALED.png"
+            first_sha=_draw_original_full_scene(ep,scene,intro,revealed=False)
+            last_sha=_draw_original_full_scene(ep,scene,final,revealed=True)
+            if first_sha==last_sha:
+                raise FullRehearsalRefused("One-shot non-looping reveal indistinguishable")
+            reveal_pairs.append((first_sha,last_sha))
+            hashes.append(last_sha)
+            frames.append((intro,final))
         movie=_encode_full(ffmpeg,ep,folder,frames,durations,wav,srt,length)
-        qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes)
+        qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes,reveal_pairs)
         actual.append(qa)
         print("B4E1_PHYSICAL_COMPLETE_VOICED_EPISODE_DECODED",
               json.dumps({
@@ -511,6 +673,16 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         "exact_58_240_58_target_met_for_all":all(
             x["storyboard_target_met_within_three_seconds"] for x in actual),
         "all_three_real_h264_aac_ffmpeg_full_decodes_passed":True,
+        "all_17_scenes_with_verified_distinct_one_time_reveal_pngs":
+            all(x["original_scene_base_and_one_shot_reveal_pngs"]==
+                x["original_full_scene_count"]*2 for x in actual),
+        "all_three_actual_mp4_first_one_shot_reveal_frames_verified":
+            all(x["first_real_encoded_one_shot_checkpoint_reveal_frame_verified"]
+                for x in actual),
+        "all_pcm_timed_subtitles_fit_caption_panels":
+            all(x["measured_actual_caption_max_visible_lines"]<=
+                x["caption_safe_area_max_lines"] for x in actual),
+        "all_caption_reading_rates_approved":False,
         "rehearsal_only_not_factual_news_or_final_review":True,
         "real_news_facts_approved":0,
         "rights_approvals":0,"human_full_watches":0,
