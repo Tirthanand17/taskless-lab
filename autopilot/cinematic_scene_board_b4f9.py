@@ -21,6 +21,7 @@ from PIL import Image, ImageDraw
 
 from autopilot.real_rehearsal_voice_media_b4e0 import _font, SLOTS
 from autopilot.nonfactual_narration_rehearsal import _daily_case, THEMES as SCRIPT_THEMES, RehearsalRefused
+from autopilot.synthetic_case_diagram_labels_b4h2 import diagram_words_for_case
 
 STATUS = "B4F9_ORIGINAL_EDITORIAL_STORYBOARDS_HUMAN_REVIEW_ONLY"
 PALE = (229,240,252)
@@ -108,7 +109,8 @@ def _soft_box(draw, rect, *, fill=FRAME, outline=None, radius=24, width=2) -> No
 
 
 def _diagram(draw, area: tuple, scene_id: str, *, revealed: bool,
-             active: int, accent: tuple, soft: tuple) -> None:
+             active: int, accent: tuple, soft: tuple,
+             synthetic_case_title: str) -> None:
     """Four genuinely different grammars, never a circular loader."""
     x0,y0,x1,y1=area
     w,h=x1-x0,y1-y0
@@ -118,7 +120,7 @@ def _diagram(draw, area: tuple, scene_id: str, *, revealed: bool,
     def F(px):return max(15,round(px*scale))
     safe=(x0+10,y0+10,x1-10,y1-10)
     shape=BEATS[scene_id][3]
-    words=CARD_WORDS[scene_id]
+    words=diagram_words_for_case(synthetic_case_title,scene_id,CARD_WORDS[scene_id])
     _soft_box(draw,(x0,y0,x1,y1),fill=(16,32,51),
               outline=_rgb(accent,-25),radius=round(28*scale),width=3)
     draw.rectangle((X(42),Y(58),X(52),Y(115)),fill=accent)
@@ -304,7 +306,8 @@ def render_editorial_frame(ep:dict,scene:dict,*,revealed:bool,
     area=((75,690,1005,1395) if portrait else
           (932,184,1840,705))
     _diagram(draw,area,scene_id,revealed=revealed,
-             active=active,accent=accent,soft=palette["soft"])
+             active=active,accent=accent,soft=palette["soft"],
+             synthetic_case_title=case_title)
     # Progress is *static* for each scene; no circular load, rotation or loop.
     bar_y=1460 if portrait else 728
     block_width=(850-12*(expected-1))//expected
