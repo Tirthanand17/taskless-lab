@@ -199,7 +199,9 @@ def prepare_full_rehearsal_plan(*sources: object) -> dict:
         eps=preview["episodes"][index]
         if (eps["slot"]!=slot
             or eps["rehearsal_sha256"]!=sha256(canonical(item)).hexdigest()
-            or eps["working_title"]!=item["original_working_title_not_news_headline"]):
+            or eps["working_title"]!=item["original_working_title_not_news_headline"]
+            or eps["synthetic_case_title"]!=item["synthetic_case_title"]
+            or eps["synthetic_case_family"]!=item["synthetic_case_family"]):
             raise FullRehearsalRefused("Previous observed AV preview context swapped")
         episodes.append({
             "slot":slot,"episode_id":item["episode_id"],"kind":item["format"],
@@ -211,6 +213,8 @@ def prepare_full_rehearsal_plan(*sources: object) -> dict:
             "rehearsal_sha256":eps["rehearsal_sha256"],
             "authored_full_narration_sha256":sha256(narration.encode("utf8")).hexdigest(),
             "working_title":item["original_working_title_not_news_headline"],
+            "synthetic_case_family":item["synthetic_case_family"],
+            "synthetic_case_title":item["synthetic_case_title"],
             "word_count":item["estimated_script_words"],
             "all_scene_count":target_count,
             "total_original_caption_phrases":all_cues,
