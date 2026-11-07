@@ -325,7 +325,12 @@ def _draw_original_full_scene(ep: dict,scene: dict,path: Path,
         # Long 9-scene landscape card bar fits w=1920. Shorts 4 fit 1080.
         d.rectangle((bx,bar_y,bx+block_w,bar_y+7),
                     fill=accent if i<=idx else tuple(min(255,c+18) for c in dark))
-    caption_top=h-(390 if portrait else 248)
+    # Reserve enough genuine screen pixels for two 36px native-scale
+    # caption lines on the long form, not an 80px card under a title.
+    caption_top=h-(390 if portrait else 320)
+    if bar_y+7>=caption_top-25:
+        raise FullRehearsalRefused(
+            "Original diagram progress bar intrudes on native subtitle panel")
     d.rounded_rectangle((82,caption_top,w-82,h-128),radius=23,
                         fill=(20,34,53),outline=accent,width=2)
     d.text((112,caption_top+26),"NARRATION: SOURCE-INDEPENDENT PRACTICE",
@@ -443,7 +448,8 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
 
 def _encode_full(ffmpeg: str,ep: dict,folder: Path,
                  images: list[tuple[Path,Path]],scenes: list[float],
-                 wav: Path,srt: Path,total: float) -> Path:
+                 wav: Path,srt: Path,total: float, *,
+                 cues: list[dict]) -> Path:
     """One non-looping reveal per original scene at actual PCM scene start.
 
     Stage 1 shows the unselected question/example/checkpoint diagram;
@@ -468,16 +474,27 @@ def _encode_full(ffmpeg: str,ep: dict,folder: Path,
                           f"duration {period:.6f}"))
     lines.append(f"file '{images[-1][-1].resolve().as_posix()}'")
     concat.write_text("\n".join(lines)+"\n",encoding="utf8")
-    # Subtitle baseline is placed INSIDE the lower caption card, not on
-    # the footer disclaimer. Max lines: 4 portrait / 2 landscape.
-    font=27 if ep["kind"]=="short" else 24
-    margin=CAPTION_MARGIN_BOTTOM_PX[ep["kind"]]
-    filt=(f"fps={FPS},subtitles={srt.as_posix()}:force_style="
-          "'FontName=DejaVu Sans,"
-          f"FontSize={font},Alignment=2,MarginV={margin},"
-          "PrimaryColour=&H00FFFFFF,OutlineColour=&H00222222,"
-          "BorderStyle=3,BackColour=&H9A101C2E,Outline=2,Shadow=0',"
-          "format=yuv420p")
+    # LIVE owner MP4 frame review B4f7: the synthetic PlayRes of SRT
+    # made 27pt into ~180px portrait text, clipped at screen TOP and
+    # covered original diagrams. Never burn default SRT force_style.
+    # Write native-pixel ASS with PlayResX/Y == source encoded canvas.
+    from autopilot.full_original_caption_ass_b4f7 import (
+        NativeCaptionRefused, compose_rehearsal_native_ass,
+        write_rehearsal_native_ass,
+    )
+    try:
+        native_script,caption_proof=compose_rehearsal_native_ass(cues,ep["kind"])
+        native_path=write_rehearsal_native_ass(folder,cues,ep["kind"])
+    except NativeCaptionRefused as exc:
+        raise FullRehearsalRefused(
+            "Voice-aligned captions cannot fit physical lower screen panel"
+        ) from None
+    if (not caption_proof["ass_playres_matches_encoded_canvas"]
+        or not caption_proof["source_spoken_words_preserved"]
+        or tuple(caption_proof["physical_canvas_pixels"]) != tuple(ep["size"])):
+        raise FullRehearsalRefused("Native canvas subtitle geometry mismatch")
+    # The authored ASS script (not the reference SRT) is what FFmpeg burns.
+    filt=(f"fps={FPS},ass={native_path.as_posix()},format=yuv420p")
     target=folder/"EPHEMERAL_FULL_ORIGINAL_NARRATED_REHEARSAL.mp4"
     _run([ffmpeg,"-nostdin","-y","-hide_banner","-loglevel","error",
           "-f","concat","-safe","0","-i",str(concat),
@@ -592,6 +609,8 @@ def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
         "caption_reading_speed_needs_human_review":
             peak_chars_per_second>25.,
         "srt_caption_baseline_inside_reserved_panel":True,
+        "native_pixel_ass_burned_into_reserved_panel":True,
+        "max_original_spoken_caption_lines_physically_burned":2,
         "source_rights_reviewed":False,"news_facts_approved":False,
         "real_voice_and_caption_pcm_alignment":True,
         "per_word_forced_alignment_claimed":False,
@@ -646,7 +665,7 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
             reveal_pairs.append((first_sha,last_sha))
             hashes.append(last_sha)
             frames.append((intro,final))
-        movie=_encode_full(ffmpeg,ep,folder,frames,durations,wav,srt,length)
+        movie=_encode_full(ffmpeg,ep,folder,frames,durations,wav,srt,length,cues=cues)
         qa=_inspect_full(ffmpeg,movie,ep,cues,length,hashes,reveal_pairs)
         actual.append(qa)
         print("B4E1_PHYSICAL_COMPLETE_VOICED_EPISODE_DECODED",
