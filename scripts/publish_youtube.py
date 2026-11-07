@@ -193,6 +193,41 @@ def main():
         if receipt_path.exists() or pending_path.exists():
             raise SystemExit("Receipt or prior pending upload exists: refuse potential duplicate upload")
 
+        # B4f1: unsigned/editable checkboxes are not owner authority.
+        # Verify ONE independently signed exact media/channel/time approval
+        # before Google OAuth or any external videos.insert.
+        thumbnail_path=root/args.thumbnail
+        episode_path=root/args.episode
+        if (not thumbnail_path.is_file() or thumbnail_path.is_symlink()
+                or caption_path.is_symlink() or episode_path.is_symlink()
+                or video_path.is_symlink()):
+            raise SystemExit("All signed video, subtitle, thumbnail and episode files must exist and be regular")
+        from scripts.owner_signed_release_b4f1 import (
+            OwnerSignatureRejected, verify_owner_release_signature,
+        )
+        try:
+            with caption_path.open("rb") as fp:
+                srt_digest=hashlib.file_digest(fp,"sha256").hexdigest()
+            with thumbnail_path.open("rb") as fp:
+                thumb_digest=hashlib.file_digest(fp,"sha256").hexdigest()
+            with episode_path.open("rb") as fp:
+                meta_digest=hashlib.file_digest(fp,"sha256").hexdigest()
+            proof=verify_owner_release_signature(
+                approval,
+                public_key_hex=os.environ.get(
+                    "FLOWMINUTE_OWNER_RELEASE_ED25519_PUBLIC_HEX"),
+                channel_id=args.expected_channel_id,
+                episode_id=meta.get("id"),
+                mp4_sha256=digest, srt_sha256=srt_digest,
+                thumbnail_sha256=thumb_digest,
+                metadata_sha256=meta_digest,
+                publish_at_utc=schedule,
+                now=datetime.datetime.now(datetime.timezone.utc),
+            )
+            assert proof["signed_exact_bytes_channel_and_schedule_verified"] is True
+        except (OwnerSignatureRejected, OSError, AssertionError) as exc:
+            raise SystemExit("Owner cryptographic release proof missing or invalid; upload blocked") from None
+
     from googleapiclient.http import MediaFileUpload
     youtube=load_service()
 
