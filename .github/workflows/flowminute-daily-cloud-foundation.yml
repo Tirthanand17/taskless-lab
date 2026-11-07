@@ -22,6 +22,8 @@ on:
       - "autopilot/nonfactual_narration_rehearsal.py"
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/full_original_rehearsal_media_b4e1.py"
+      - "autopilot/audio_scene_navigation_b4g1.py"
+      - "autopilot/test_audio_scene_navigation_b4g1.py"
       - "autopilot/cinematic_scene_board_b4f9.py"
       - "autopilot/quick_storyboard_contact_sheet_b4g0.py"
       - "autopilot/test_quick_storyboard_contact_sheet_b4g0.py"
@@ -74,6 +76,8 @@ on:
       - "autopilot/nonfactual_narration_rehearsal.py"
       - "autopilot/real_rehearsal_voice_media_b4e0.py"
       - "autopilot/full_original_rehearsal_media_b4e1.py"
+      - "autopilot/audio_scene_navigation_b4g1.py"
+      - "autopilot/test_audio_scene_navigation_b4g1.py"
       - "autopilot/cinematic_scene_board_b4f9.py"
       - "autopilot/quick_storyboard_contact_sheet_b4g0.py"
       - "autopilot/test_quick_storyboard_contact_sheet_b4g0.py"
@@ -160,7 +164,7 @@ jobs:
       - name: Verify 48-agent orchestration and strict no-publication gates
         run: |
           set -euo pipefail
-          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_cinematic_scene_board_b4f9 autopilot.test_quick_storyboard_contact_sheet_b4g0 autopilot.test_full_original_caption_ass_b4f7 autopilot.test_manual_rehearsal_review_export_b4e3 autopilot.test_rehearsal_encoded_signal_review_b4f4 autopilot.test_owner_signal_timeline_b4f5 autopilot.test_review_worksheet_validator_b4e6 autopilot.test_offline_review_portal_b4e7 autopilot.test_youtube_private_resumable_contract_b4e8 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
+          python -m unittest -v autopilot.test_agent_org autopilot.test_daily_cloud_plan autopilot.test_evidence_probe autopilot.test_source_fetch_diagnostics_b4d3 autopilot.test_script_draft_agent autopilot.test_daily_evidence_bundle autopilot.test_daily_editorial_board autopilot.test_reconcile_daily_editorial_plan autopilot.test_source_locked_script_briefs autopilot.test_ephemeral_claim_review_docket_b4d7 autopilot.test_recent_research_history_b4d8 autopilot.test_nonfactual_narration_rehearsal_b4d9 autopilot.test_real_rehearsal_voice_media_b4e0 autopilot.test_full_original_rehearsal_media_b4e1 autopilot.test_audio_scene_navigation_b4g1 autopilot.test_cinematic_scene_board_b4f9 autopilot.test_quick_storyboard_contact_sheet_b4g0 autopilot.test_full_original_caption_ass_b4f7 autopilot.test_manual_rehearsal_review_export_b4e3 autopilot.test_rehearsal_encoded_signal_review_b4f4 autopilot.test_owner_signal_timeline_b4f5 autopilot.test_review_worksheet_validator_b4e6 autopilot.test_offline_review_portal_b4e7 autopilot.test_youtube_private_resumable_contract_b4e8 autopilot.test_b4e2_pacing_captions_animated_reveal autopilot.test_b4e0b_wheel_only_voice_runner autopilot.test_arxiv_primary_feed_b4d4
 
       - name: Collect publicly available unverified headlines (not on PRs)
         if: github.event_name != 'pull_request'
