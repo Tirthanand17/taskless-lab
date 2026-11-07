@@ -424,33 +424,51 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
     for i,c in enumerate(cues,1):
         # libass auto-wraps long statements. Two-line forced display whenever
         # possible, safe lower card plus dark subtitle outline.
-        w=30 if ep["kind"]=="short" else 55
-        txt="\n".join(textwrap.wrap(c["text"],width=w,
-                   break_long_words=False))
-        if len(txt.splitlines())>6:
-            raise FullRehearsalRefused("Sentence too wide for original video caption area")
+        width=CAPTION_WRAP_CHARS[ep["kind"]]
+        visual_lines=textwrap.wrap(c["text"],width=width,
+                   break_long_words=False,break_on_hyphens=False)
+        if (not visual_lines
+            or len(visual_lines)>CAPTION_MAX_LINES[ep["kind"]]
+            or any(len(line)>width+2 for line in visual_lines)):
+            raise FullRehearsalRefused(
+                "Caption exceeds measured subtitle-safe panel height/width")
+        txt="\n".join(visual_lines)
         blocks += [str(i),f"{_stamp(c['start'])} --> {_stamp(c['end'])}",txt,""]
     srt.write_text("\n".join(blocks)+"\n",encoding="utf8")
     return wav,srt,scenes,cues,total
 
 
-def _encode_full(ffmpeg: str,ep: dict,folder: Path,images: list[Path],
-                 scenes: list[float],wav: Path,srt: Path,total: float) -> Path:
+def _encode_full(ffmpeg: str,ep: dict,folder: Path,
+                 images: list[tuple[Path,Path]],scenes: list[float],
+                 wav: Path,srt: Path,total: float) -> Path:
+    """One non-looping reveal per original scene at actual PCM scene start.
+
+    Stage 1 shows the unselected question/example/checkpoint diagram;
+    stage 2 highlights its unique active checkpoint once, then holds.
+    Every original syllable and caption cue remains on the same audio time.
+    """
     if (len(images)!=ep["all_scene_count"] or len(scenes)!=len(images)
         or abs(sum(scenes)-total)>.03
-        or any(not 2<=x<=55 for x in scenes)):
-        raise FullRehearsalRefused("Scene images and real PCM timelines mismatched")
-    concat=folder/"EPHEMERAL_ALL_SCENES.ffconcat"
+        or any(not 2<=x<=55 for x in scenes)
+        or any(len(pair)!=2 or not all(p.is_file() for p in pair)
+               for pair in images)):
+        raise FullRehearsalRefused("Staged originals and real PCM scene clocks mismatch")
+    concat=folder/"EPHEMERAL_ALL_SCENES_ONE_SHOT_REVEAL.ffconcat"
     lines=["ffconcat version 1.0"]
-    for image,duration in zip(images,scenes):
-        lines.extend((f"file '{image.resolve().as_posix()}'",
-                      f"duration {duration:.6f}"))
-    lines.append(f"file '{images[-1].resolve().as_posix()}'")
+    for (base,revealed),duration in zip(images,scenes):
+        first=min(REVEAL_SECONDS,duration/6)
+        second=duration-first
+        if not 0.15<=first<=0.5 or second<1.5:
+            raise FullRehearsalRefused("One-time reveal would compromise narration scene")
+        for image,period in ((base,first),(revealed,second)):
+            lines.extend((f"file '{image.resolve().as_posix()}'",
+                          f"duration {period:.6f}"))
+    lines.append(f"file '{images[-1][-1].resolve().as_posix()}'")
     concat.write_text("\n".join(lines)+"\n",encoding="utf8")
-    # Pinned imageio FFmpeg wheel includes libass; verify at installation
-    # time too. Never attempt an unsafe unapproved apt mirror fallback.
+    # Subtitle baseline is placed INSIDE the lower caption card, not on
+    # the footer disclaimer. Max lines: 4 portrait / 2 landscape.
     font=27 if ep["kind"]=="short" else 24
-    margin=100 if ep["kind"]=="short" else 62
+    margin=CAPTION_MARGIN_BOTTOM_PX[ep["kind"]]
     filt=(f"fps={FPS},subtitles={srt.as_posix()}:force_style="
           "'FontName=DejaVu Sans,"
           f"FontSize={font},Alignment=2,MarginV={margin},"
