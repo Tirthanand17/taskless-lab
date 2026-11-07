@@ -65,6 +65,18 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' && vars.PUBLISH_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     environment: youtube-production
+    env:
+      FM_EPISODE: ${{ inputs.episode }}
+      FM_SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+      FM_ARTIFACT_NAME: ${{ inputs.artifact_name }}
+      FM_VIDEO_FILE: ${{ inputs.video_file }}
+      FM_CAPTIONS_FILE: ${{ inputs.captions_file }}
+      FM_THUMBNAIL_FILE: ${{ inputs.thumbnail_file }}
+      FM_RECEIPT: ${{ inputs.receipt }}
+      FM_PUBLISH_AT_UTC: ${{ inputs.publish_at_utc }}
+      FM_VIDEO_SHA256: ${{ inputs.video_sha256 }}
+      FM_APPROVAL_MANIFEST: ${{ inputs.approval_manifest }}
+      FM_PRIVACY: ${{ inputs.privacy }}
     steps:
       - uses: actions/checkout@v4
 
@@ -72,19 +84,31 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Download exact render artifact
+      - name: Validate manual dispatch inputs before external APIs
+        run: |
+          set -euo pipefail
+          python -m scripts.validate_publish_dispatch_b4f0 dispatch
+
+      - name: Download only a successful main-branch render artifact
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p incoming
-          gh run download "${{ inputs.source_run_id }}" \
+          set -euo pipefail
+          gh run view "$FM_SOURCE_RUN_ID" \
             --repo "$GITHUB_REPOSITORY" \
-            --name "${{ inputs.artifact_name }}" \
+            --json headBranch,headSha,conclusion,event \
+            | python -m scripts.validate_publish_dispatch_b4f0 source
+          mkdir -p incoming
+          gh run download "$FM_SOURCE_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "$FM_ARTIFACT_NAME" \
             --dir incoming
-          test -f "incoming/${{ inputs.video_file }}"
+          python -m scripts.validate_publish_dispatch_b4f0 files
 
       - name: Validate release metadata
-        run: python scripts/validate_release.py "${{ inputs.episode }}"
+        run: |
+          set -euo pipefail
+          python scripts/validate_release.py "$FM_EPISODE"
 
       - name: Install YouTube API client
         run: python -m pip install google-api-python-client google-auth google-auth-oauthlib
@@ -95,17 +119,18 @@ jobs:
           PUBLISH_ENABLED: ${{ vars.PUBLISH_ENABLED }}
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           python scripts/publish_youtube.py \
-            --episode "${{ inputs.episode }}" \
-            --video "incoming/${{ inputs.video_file }}" \
-            --captions "incoming/${{ inputs.captions_file }}" \
-            --thumbnail "incoming/${{ inputs.thumbnail_file }}" \
-            --privacy "${{ inputs.privacy }}" \
-            --schedule-at-utc "${{ inputs.publish_at_utc }}" \
-            --expected-sha256 "${{ inputs.video_sha256 }}" \
+            --episode "$FM_EPISODE" \
+            --video "incoming/$FM_VIDEO_FILE" \
+            --captions "incoming/$FM_CAPTIONS_FILE" \
+            --thumbnail "incoming/$FM_THUMBNAIL_FILE" \
+            --privacy "$FM_PRIVACY" \
+            --schedule-at-utc "$FM_PUBLISH_AT_UTC" \
+            --expected-sha256 "$FM_VIDEO_SHA256" \
             --expected-channel-id "UCCcL9Q_jqVq6LJmnYUSAFZA" \
-            --approval-manifest "${{ inputs.approval_manifest }}" \
-            --receipt "${{ inputs.receipt }}" \
+            --approval-manifest "$FM_APPROVAL_MANIFEST" \
+            --receipt "$FM_RECEIPT" \
             --confirm-publish
 
       - name: Commit confirmed schedule receipt or incomplete-upload recovery checkpoint

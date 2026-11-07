@@ -6,6 +6,8 @@ on:
       - "scripts/publish_youtube.py"
       - "scripts/test_publish_youtube_preflight.py"
       - "scripts/github_youtube_attempt_fence_b4e9.py"
+      - "scripts/validate_publish_dispatch_b4f0.py"
+      - "scripts/test_validate_publish_dispatch_b4f0.py"
       - "scripts/test_github_youtube_attempt_fence_b4e9.py"
       - ".github/workflows/publish-artifact-youtube.yml"
       - ".github/workflows/flowminute-youtube-publisher-preflight.yml"
@@ -16,6 +18,8 @@ on:
       - "scripts/publish_youtube.py"
       - "scripts/test_publish_youtube_preflight.py"
       - "scripts/github_youtube_attempt_fence_b4e9.py"
+      - "scripts/validate_publish_dispatch_b4f0.py"
+      - "scripts/test_validate_publish_dispatch_b4f0.py"
       - "scripts/test_github_youtube_attempt_fence_b4e9.py"
       - ".github/workflows/publish-artifact-youtube.yml"
       - ".github/workflows/flowminute-youtube-publisher-preflight.yml"
@@ -48,8 +52,8 @@ jobs:
       - name: Compile source and run no-network caption/approval/schedule tests
         run: |
           set -euo pipefail
-          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py scripts/github_youtube_attempt_fence_b4e9.py scripts/test_github_youtube_attempt_fence_b4e9.py
-          python -m unittest scripts.test_publish_youtube_preflight scripts.test_github_youtube_attempt_fence_b4e9 -v
+          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py scripts/github_youtube_attempt_fence_b4e9.py scripts/test_github_youtube_attempt_fence_b4e9.py scripts/validate_publish_dispatch_b4f0.py scripts/test_validate_publish_dispatch_b4f0.py
+          python -m unittest scripts.test_publish_youtube_preflight scripts.test_github_youtube_attempt_fence_b4e9 scripts.test_validate_publish_dispatch_b4f0 -v
       - name: Confirm completed owner releases have matching immutable authenticated schedule receipts
         run: |
           set -euo pipefail
