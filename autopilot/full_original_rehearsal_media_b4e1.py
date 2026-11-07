@@ -36,6 +36,35 @@ MAX_SPOKEN_CHUNKS_PER_EPISODE = 100
 MAX_EPISODE_SECONDS = {"short":85.0,"long":340.0}
 MIN_EPISODE_SECONDS = {"short":23.0,"long":95.0}
 MAX_MP4_BYTES = 240_000_000
+# Calibrated from trusted physical main run 42246914153:
+# short AM 59.771s at 0.90, long 227.366s at 0.91, short PM
+# 56.593s at 0.90. This is a VOICE-speed starting point only;
+# measured durations still must be checked for every new script.
+VOICE_SPEED_BY_SLOT = {"short_am":0.93, "long":0.86, "short_pm":0.88}
+VOICE_SPEED_REFERENCE_SECONDS = {
+    "short_am":59.771, "long":227.366, "short_pm":56.593,
+}
+VOICE_SPEED_PREVIOUS = {"short_am":0.90,"long":0.91,"short_pm":0.90}
+REVEAL_SECONDS = 0.36
+CAPTION_WRAP_CHARS = {"short":44, "long":76}
+CAPTION_MAX_LINES = {"short":4, "long":2}
+CAPTION_MARGIN_BOTTOM_PX = {"short":168, "long":148}
+# Every scene has its own didactic visual mini-flow, not the same three
+# rotating/running cards on all 17 scenes. The two-step active reveal
+# happens ONCE, then remains static through each spoken scene.
+SCENE_CARD_WORDS = {
+    "HOOK_QUESTION": (("ASK", "DEFINE"), ("IDEA", "HYPOTHESIS"), ("TEST", "CHECK")),
+    "SOURCE_SCOPE": (("SOURCE", "UNVERIFIED"), ("SCOPE", "LIMIT"), ("REVIEW", "VERIFY")),
+    "DEMONSTRATION": (("SAMPLE", "SYNTHETIC"), ("STEP", "DEMONSTRATE"), ("CHECK", "REPRODUCE")),
+    "VERIFY_AND_LIMIT": (("CLAIM", "QUESTION"), ("LIMIT", "UNCERTAIN"), ("PROOF", "REVIEW")),
+    "MECHANISM": (("INPUT", "SYNTHETIC"), ("PROCESS", "EXPLAIN"), ("OUTPUT", "CHECK")),
+    "BASELINE": (("CONTROL", "BASELINE"), ("CHANGE", "ONE STEP"), ("COMPARE", "FAIR TEST")),
+    "EXAMPLE_1": (("CASE A", "INVENTED"), ("TRACE", "FIRST"), ("CHECK", "RECORD")),
+    "EXAMPLE_2": (("CASE B", "INVENTED"), ("COMPARE", "SECOND"), ("CHECK", "REPEAT")),
+    "COUNTEREXAMPLE": (("FAILURE", "IMAGINED"), ("DETECT", "QUESTION"), ("RECOVER", "REVIEW")),
+    "FACT_AND_RIGHTS_GATE": (("FACT", "UNVERIFIED"), ("RIGHTS", "UNCLEARED"), ("BLOCK", "RELEASE")),
+    "NEXT_VIEWER_ACTION": (("TRY", "SAFE TEST"), ("LOG", "YOUR INPUT"), ("LEARN", "REVIEW")),
+}
 
 
 class FullRehearsalRefused(ValueError):
@@ -295,8 +324,11 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
     for scene in ep["scenes"]:
         scene_start=ticks
         for part in scene["caption_cues"]:
+            slot=ep["slot"]
+            if slot not in VOICE_SPEED_BY_SLOT or ep["voice"]!=VOICES[slot]:
+                raise FullRehearsalRefused("Wrong ownerless Kokoro calibration slot")
             pcm,hz=engine.create(part,voice=ep["voice"],
-                   speed=0.90 if ep["kind"]=="short" else 0.91,lang="en-us")
+                   speed=VOICE_SPEED_BY_SLOT[slot],lang="en-us")
             arr=np.asarray(pcm,dtype=np.float32)
             if (arr.ndim!=1 or not 16000<=hz<=48000
                 or arr.size<hz*.36 or arr.size>hz*32
