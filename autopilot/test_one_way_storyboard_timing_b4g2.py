@@ -11,6 +11,7 @@ import unittest
 
 from autopilot.one_way_storyboard_timing_b4g2 import (
     OneWayStageRefused,active_focus_sequence,stage_hold_seconds,
+    SOURCE_SCENE_GRAMMAR,grammar_for_original_scene,
 )
 
 
@@ -39,6 +40,8 @@ class NarrationPacedDistinctStageTests(unittest.TestCase):
                 stage_hold_seconds(total,n,reveal)
         with self.assertRaises(OneWayStageRefused):
             active_focus_sequence("ROTATE_FOREVER")
+        with self.assertRaises(OneWayStageRefused):
+            grammar_for_original_scene("ROTATE_FOREVER")
 
 
 @unittest.skipUnless(importlib.util.find_spec("PIL"),
@@ -60,6 +63,8 @@ class ActuallyDifferentPixelSceneStages(unittest.TestCase):
         from autopilot.cinematic_scene_board_b4f9 import (
             BEATS,render_editorial_frame,SceneDesignRefused,
         )
+        self.assertEqual({key:beat[3] for key,beat in BEATS.items()},
+                         SOURCE_SCENE_GRAMMAR)
         measured=0
         for ep in self.plan["episodes"]:
             scene_count=4 if ep["kind"]=="short" else 9
