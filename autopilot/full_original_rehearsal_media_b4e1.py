@@ -52,6 +52,16 @@ REVEAL_SECONDS = 0.36
 CAPTION_WRAP_CHARS = {"short":44, "long":76}
 CAPTION_MAX_LINES = {"short":4, "long":2}
 CAPTION_MARGIN_BOTTOM_PX = {"short":168, "long":148}
+# The subtitles filter converts SRT through libass at a *288px virtual
+# script height*. FontSize / MarginV in force_style are NOT output pixels.
+# The prior 27/24 and 168/148 values scaled catastrophically: the delivered
+# 1080x1920 Shorts showed giant subtitles over the title/diagrams, and the
+# 1920x1080 Long covered its central original cards. These calibrated
+# virtual-pixel sizes were checked against actual 2026-11-07 MP4 captures
+# and physical FFmpeg probes. Do not use output pixel values directly.
+CAPTION_ASS_SCRIPT_HEIGHT = 288
+CAPTION_ASS_FONT_SIZE = {"short":7, "long":9}
+
 # Every scene has its own didactic visual mini-flow, not the same three
 # rotating/running cards on all 17 scenes. The two-step active reveal
 # happens ONCE, then remains static through each spoken scene.
@@ -328,8 +338,9 @@ def _draw_original_full_scene(ep: dict,scene: dict,path: Path,
     caption_top=h-(390 if portrait else 248)
     d.rounded_rectangle((82,caption_top,w-82,h-128),radius=23,
                         fill=(20,34,53),outline=accent,width=2)
-    d.text((112,caption_top+26),"NARRATION: SOURCE-INDEPENDENT PRACTICE",
-           font=_font(24 if portrait else 26),fill=pale)
+    # Keep the reserved subtitle panel visually clean. The former 26px
+    # "NARRATION" header competed with the lower two-line landscape
+    # captions; full source/fictional disclaimers remain elsewhere.
     d.text((85,h-93),
            "FICTIONAL EXERCISE  |  NO FACT APPROVAL  |  NO UPLOAD",
            font=_font(21 if portrait else 23),fill=(184,209,223))
@@ -441,6 +452,34 @@ def _synth_full_voice(engine,ep: dict,folder: Path) -> tuple[Path,Path,list[floa
     return wav,srt,scenes,cues,total
 
 
+def _safe_pixel_calibrated_srt_filter(ep: dict, srt: Path) -> str:
+    """SRT/libass virtual-288px calibration, checked on actual encoded frames.
+
+    libass's SRT conversion ignores the original 1080/1920p pixel units
+    when sizing FontSize and MarginV. Do NOT pass the physical values
+    directly to force_style: that was the root cause of center-overlapping
+    captions on all three original rehearsals.
+    """
+    if (type(ep) is not dict
+        or ep.get("kind") not in CAPTION_ASS_FONT_SIZE
+        or type(ep.get("size")) not in (tuple,list)
+        or len(ep["size"])!=2
+        or ep["size"][1]!=(1920 if ep["kind"]=="short" else 1080)
+        or not isinstance(srt,Path)):
+        raise FullRehearsalRefused("Invalid image format for calibrated caption style")
+    font=CAPTION_ASS_FONT_SIZE[ep["kind"]]
+    margin=round(CAPTION_MARGIN_BOTTOM_PX[ep["kind"]]*
+                 CAPTION_ASS_SCRIPT_HEIGHT/ep["size"][1])
+    if not 6<=font<=10 or not 20<=margin<=42:
+        raise FullRehearsalRefused("Unsafe source caption scaling")
+    return (f"fps={FPS},subtitles={srt.as_posix()}:force_style="
+            "'FontName=DejaVu Sans,"
+            f"FontSize={font},Alignment=2,MarginV={margin},"
+            "PrimaryColour=&H00FFFFFF,OutlineColour=&H00222222,"
+            "BorderStyle=3,BackColour=&H9A101C2E,Outline=1,Shadow=0',"
+            "format=yuv420p")
+
+
 def _encode_full(ffmpeg: str,ep: dict,folder: Path,
                  images: list[tuple[Path,Path]],scenes: list[float],
                  wav: Path,srt: Path,total: float) -> Path:
@@ -468,16 +507,7 @@ def _encode_full(ffmpeg: str,ep: dict,folder: Path,
                           f"duration {period:.6f}"))
     lines.append(f"file '{images[-1][-1].resolve().as_posix()}'")
     concat.write_text("\n".join(lines)+"\n",encoding="utf8")
-    # Subtitle baseline is placed INSIDE the lower caption card, not on
-    # the footer disclaimer. Max lines: 4 portrait / 2 landscape.
-    font=27 if ep["kind"]=="short" else 24
-    margin=CAPTION_MARGIN_BOTTOM_PX[ep["kind"]]
-    filt=(f"fps={FPS},subtitles={srt.as_posix()}:force_style="
-          "'FontName=DejaVu Sans,"
-          f"FontSize={font},Alignment=2,MarginV={margin},"
-          "PrimaryColour=&H00FFFFFF,OutlineColour=&H00222222,"
-          "BorderStyle=3,BackColour=&H9A101C2E,Outline=2,Shadow=0',"
-          "format=yuv420p")
+    filt=_safe_pixel_calibrated_srt_filter(ep,srt)
     target=folder/"EPHEMERAL_FULL_ORIGINAL_NARRATED_REHEARSAL.mp4"
     _run([ffmpeg,"-nostdin","-y","-hide_banner","-loglevel","error",
           "-f","concat","-safe","0","-i",str(concat),
