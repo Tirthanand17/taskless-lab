@@ -488,6 +488,35 @@ def _encode_full(ffmpeg: str,ep: dict,folder: Path,
     return target
 
 
+def _verify_encoded_first_reveal(ffmpeg: str,media: Path) -> bool:
+    """Sample TWO actual decoded H264 frames around the first one-shot reveal.
+
+    Source PNG digests alone do not establish what FFmpeg encoded. Each
+    sample is scaled to bounded 192x108 luminance, safely kept in RAM;
+    neither screenshots nor source/private narration leave the runner.
+    """
+    import subprocess
+    frames=[]
+    for t in ("0.100","0.900"):
+        try:
+            result=subprocess.run(
+                [ffmpeg,"-nostdin","-hide_banner","-loglevel","error",
+                 "-ss",t,"-i",str(media),"-an",
+                 "-vf","scale=192:108,format=gray",
+                 "-frames:v","1","-f","rawvideo","-pix_fmt","gray","-"],
+                stdout=subprocess.PIPE,stderr=subprocess.PIPE,
+                timeout=45,check=False)
+        except (OSError,subprocess.TimeoutExpired):
+            raise FullRehearsalRefused("Cannot inspect actual transition frames") from None
+        if result.returncode!=0 or len(result.stdout)!=192*108:
+            raise FullRehearsalRefused("Expected physical encoded reveal frame missing")
+        frames.append(result.stdout)
+    diff=sum(x!=y for x,y in zip(frames[0],frames[1]))
+    if diff<55:
+        raise FullRehearsalRefused("Source diagrams differ but encoded MP4 never reveals change")
+    return True
+
+
 def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
                   seconds: float,frame_hashes: list[str],
                   reveal_pairs: list[tuple[str,str]] | None=None) -> dict:
@@ -533,6 +562,7 @@ def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
     digest,size=sha256_stream(media,max_bytes=MAX_MP4_BYTES)
     if size<300_000:
         raise FullRehearsalRefused("A complete voiced media file is unexpectedly tiny")
+    physical_reveal=_verify_encoded_first_reveal(ffmpeg,media)
     return {
         "episode_id":ep["episode_id"],
         "slot":ep["slot"],"format":ep["kind"],"voice":ep["voice"],
@@ -551,6 +581,8 @@ def _inspect_full(ffmpeg: str,media: Path,ep: dict,cues: list[dict],
         "original_scene_base_and_one_shot_reveal_pngs":len(reveal_pairs)*2,
         "reveal_duration_seconds_once_per_scene":REVEAL_SECONDS,
         "no_spinning_or_repeating_highlight_animation":True,
+        "first_real_encoded_one_shot_checkpoint_reveal_frame_verified":
+            physical_reveal,
         "caption_safe_area_max_lines":max_lines,
         "measured_actual_caption_max_visible_lines":worst_lines,
         "caption_peak_physical_chars_per_second":round(peak_chars_per_second,2),
@@ -641,6 +673,9 @@ def physically_render_all_seventeen(plan: object,model: Path,voices: Path,
         "all_17_scenes_with_verified_distinct_one_time_reveal_pngs":
             all(x["original_scene_base_and_one_shot_reveal_pngs"]==
                 x["original_full_scene_count"]*2 for x in actual),
+        "all_three_actual_mp4_first_one_shot_reveal_frames_verified":
+            all(x["first_real_encoded_one_shot_checkpoint_reveal_frame_verified"]
+                for x in actual),
         "all_pcm_timed_subtitles_fit_caption_panels":
             all(x["measured_actual_caption_max_visible_lines"]<=
                 x["caption_safe_area_max_lines"] for x in actual),
