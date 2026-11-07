@@ -232,14 +232,24 @@ def prepare_full_rehearsal_plan(*sources: object) -> dict:
     }
 
 
-def _draw_original_full_scene(ep: dict,scene: dict,path: Path) -> str:
-    """A new physical PNG per complete scene: no moving circular progress UI."""
+def _draw_original_full_scene(ep: dict,scene: dict,path: Path,
+                              *, revealed: bool=True) -> str:
+    """Create a unique original scene frame; 1 reveal only, no spinner loop.
+
+    Two original stills per authored scene form a discrete, single-use
+    highlight animation while the real narration and its PCM-timed subtitles
+    continue uninterrupted. Never draw a ring, clock, loader or rotating dial.
+    """
     from PIL import Image,ImageDraw
     w,h=ep["size"]
     portrait=ep["kind"]=="short"
+    if ep["slot"] not in SLOTS or scene["scene_id"] not in SCENE_CARD_WORDS:
+        raise FullRehearsalRefused("Unrecognized original visual narrative beat")
+    if (type(revealed) is not bool or type(scene["scene"]) is not int
+        or not 0<=scene["scene"]<ep["all_scene_count"]):
+        raise FullRehearsalRefused("Unsafe static/one-shot highlight frame")
     dark,accent,pale=COLORS[SLOTS.index(ep["slot"])]
     idx=scene["scene"]
-    # 17 distinct original stateless slides; subtle progress is discrete only.
     back=tuple(min(255,c+idx*2) for c in dark)
     canvas=Image.new("RGB",(w,h),back)
     d=ImageDraw.Draw(canvas)
@@ -249,23 +259,30 @@ def _draw_original_full_scene(ep: dict,scene: dict,path: Path) -> str:
         d.line((x,50,x,h-50),fill=tuple(min(255,c+10) for c in back),width=1)
     d.text((80,92),"FLOWMINUTE LAB  /  ORIGINAL SYNTHETIC EXERCISE",
            font=_font(23 if portrait else 27),fill=pale)
-    d.text((80,145),f"{ep['slot'].upper()}     SCENE {idx+1:02} / {ep['all_scene_count']:02}",
-           font=_font(29 if portrait else 32,mono=True),fill=(228,235,247))
+    d.text((80,145),
+           f"{ep['slot'].upper()}     SCENE {idx+1:02} / {ep['all_scene_count']:02}",
+           font=_font(29 if portrait else 32,mono=True),
+           fill=(228,235,247))
     top=225
     label=ep["working_title"]
     titlelines=textwrap.wrap(label,width=24 if portrait else 46,
-                             break_long_words=False)[:3]
-    if not titlelines or len(titlelines)>3:
-        raise FullRehearsalRefused("Original educational topic title unreadable")
+                             break_long_words=False)
+    if not 1<=len(titlelines)<=3:
+        raise FullRehearsalRefused("Original educational title too wide for scene")
     for chunk in titlelines:
-        d.text((80,top),chunk,font=_font(58 if portrait else 62),fill=(247,249,254))
+        d.text((80,top),chunk,font=_font(58 if portrait else 62),
+               fill=(247,249,254))
         top+=77
-    upper=570 if portrait else 387
+    upper=max(570 if portrait else 387,top+34)
     height=185 if portrait else 210
     gap=27 if portrait else 33
-    # A rectangular numbered workflow demo, clearly synthetic.
-    cards=("1  QUESTION","2  EXAMPLE","3  CHECK")
-    for i,name in enumerate(cards):
+    if (upper+height+(2*(height+gap) if portrait else 0)
+        >=h-(390 if portrait else 248)-90):
+        raise FullRehearsalRefused("Diagrams would overlap subtitle safe area")
+
+    cards=SCENE_CARD_WORDS[scene["scene_id"]]
+    active=idx%3
+    for i,(header,subtext) in enumerate(cards):
         if portrait:
             x1,y1,x2,y2=(90,upper+i*(height+gap),w-90,
                          upper+i*(height+gap)+height)
@@ -276,23 +293,42 @@ def _draw_original_full_scene(ep: dict,scene: dict,path: Path) -> str:
             y1=upper
             x2=x1+width
             y2=upper+height
-        d.rounded_rectangle((x1,y1,x2,y2),radius=19,
-                            fill=tuple(min(255,c+22+i*5) for c in dark),
-                            outline=accent if i==(idx%3) else pale,width=3)
-        d.rectangle((x1+27,y1+25,x1+43,y1+79),fill=accent)
-        d.text((x1+57,y1+23),name,font=_font(31 if portrait else 32),
-               fill=(248,251,253))
-        d.text((x1+57,y1+87),
-               ("DEFINE","COMPARE","REVIEW")[i],
-               font=_font(28 if portrait else 31),fill=pale)
-    # Captions will physically be burned-in by FFmpeg libass, with their
-    # positions reserved; don't repeat all spoken text on the background.
+        selected=revealed and i==active
+        bg=tuple(min(255,c+(42 if selected else 20)+i*3) for c in dark)
+        d.rounded_rectangle((x1,y1,x2,y2),radius=19,fill=bg,
+                            outline=accent if selected else pale,
+                            width=5 if selected else 2)
+        d.rectangle((x1+27,y1+25,x1+43,y1+79),
+                    fill=accent if selected else pale)
+        d.text((x1+57,y1+23),header,
+               font=_font(32 if portrait else 33),
+               fill=(249,251,253))
+        d.text((x1+57,y1+87),subtext,
+               font=_font(27 if portrait else 29),
+               fill=pale)
+        if selected:
+            # One square-chip checkpoint lights once at REVEAL_SECONDS;
+            # a rectangular marker, NOT a radial indicator.
+            d.rounded_rectangle((x2-89,y1+34,x2-37,y1+86),
+                                radius=8,outline=accent,width=4)
+            d.line((x2-75,y1+61,x2-64,y1+72,x2-48,y1+45),
+                   fill=accent,width=5)
+    # Static number-only progress. No animated orbital loader, bar
+    # sweeping for minutes, flashing or endlessly repeated spin.
+    block_w=44 if portrait else 57
+    bar_y=upper+3*(height+gap)+7 if portrait else upper+height+38
+    for i in range(ep["all_scene_count"]):
+        bx=96+i*(block_w+8)
+        # Long 9-scene landscape card bar fits w=1920. Shorts 4 fit 1080.
+        d.rectangle((bx,bar_y,bx+block_w,bar_y+7),
+                    fill=accent if i<=idx else tuple(min(255,c+18) for c in dark))
     caption_top=h-(390 if portrait else 248)
     d.rounded_rectangle((82,caption_top,w-82,h-128),radius=23,
                         fill=(20,34,53),outline=accent,width=2)
-    d.text((112,caption_top+26),"VOICE CAPTIONS SYNCED TO REAL PCM",
-           font=_font(25 if portrait else 27),fill=pale)
-    d.text((85,h-93),"FICTIONAL EXERCISE  |  NO FACT APPROVAL  |  NO UPLOAD",
+    d.text((112,caption_top+26),"NARRATION: SOURCE-INDEPENDENT PRACTICE",
+           font=_font(24 if portrait else 26),fill=pale)
+    d.text((85,h-93),
+           "FICTIONAL EXERCISE  |  NO FACT APPROVAL  |  NO UPLOAD",
            font=_font(21 if portrait else 23),fill=(184,209,223))
     path.parent.mkdir(parents=True,exist_ok=True)
     canvas.save(path,"PNG",optimize=True)
