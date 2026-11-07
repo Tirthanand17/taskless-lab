@@ -126,9 +126,21 @@ class ActualGeneratedPCMTests(unittest.TestCase):
         # and not at narration end (which is kept original).
         first=report["sound_events"][0]["sample_index"]
         self.assertEqual(first,round(.36*sr))
-        a=np.max(np.abs((mixed-signal)[first:first+int(.08*sr)]))
-        b=np.max(np.abs((mixed-signal)[int(1*sr):int(1.05*sr)]))
-        self.assertGreater(a,4*b)
+        # Exclude the *intended* background ambience, whose fade grows
+        # from 0 to 1 during the first second. Otherwise an 0.36s
+        # effect is incorrectly compared against a louder 1s full bed.
+        t=np.arange(len(signal),dtype=np.float64)/sr
+        fade=np.maximum(0.0,np.minimum(
+            1.0,np.minimum(t/1.0,(len(signal)/sr-t)/1.2)))
+        bed=np.zeros(len(signal),dtype=np.float64)
+        for hz,amplitude in BED_COMPONENTS:
+            bed+=amplitude*np.sin(2*math.pi*hz*t)
+        only_effects=(mixed.astype(np.float64)-signal.astype(np.float64)
+                      -bed*fade)
+        a=np.max(np.abs(only_effects[first:first+int(.08*sr)]))
+        b=np.max(np.abs(only_effects[int(1*sr):int(1.05*sr)]))
+        self.assertGreater(a,.0005)
+        self.assertLess(b,.0000001)
 
     def test_anomalously_hot_voice_reduces_gain_without_pcm_clipping(self):
         import numpy as np
