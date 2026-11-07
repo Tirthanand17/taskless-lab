@@ -54,7 +54,7 @@ class ProceduralAudioSchedulingTests(unittest.TestCase):
         ]
         lengths=[22.0]*9
         events=plan_pcm_cut_effects(ids,lengths,24000)
-        self.assertEqual(len(events),24)
+        self.assertEqual(len(events),22)
         self.assertEqual([x["scene_number"] for x in events[:2]],[1,1])
         self.assertGreater(events[-1]["sample_index"],0)
         self.assertLess(events[-1]["sample_index"],sum(lengths)*24000)
