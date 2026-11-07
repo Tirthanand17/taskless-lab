@@ -33,6 +33,48 @@ STATUS="B4F6_REAL_OWNER_CHANNEL_READONLY_AUDIT_NO_YOUTUBE_MUTATION"
 SHA40=re.compile(r"[0-9a-f]{40}\Z")
 
 
+SAFE_FAILURES = frozenset({
+    "OAUTH_SECRET_NOT_INJECTED",
+    "OAUTH_SECRET_NOT_JSON_OBJECT",
+    "OAUTH_REQUIRED_CREDENTIAL_FIELDS_MISSING",
+    "OAUTH_CLIENT_INITIALIZATION_FAILED",
+    "OAUTH_CHANNEL_API_READBACK_UNAVAILABLE",
+    "OWNER_CHANNEL_MISMATCH_OR_AMBIGUOUS",
+    "OWNER_OAUTH_CHANNEL_NOT_INDEPENDENTLY_VERIFIED",
+})
+
+
+def classify_oauth_secret_shape(raw: object) -> str:
+    """Only a coarse enum; never print/store OAuth JSON, scopes, IDs or tokens."""
+    if not isinstance(raw,str) or not raw or len(raw)>16000:
+        return "OAUTH_SECRET_NOT_INJECTED"
+    try:
+        obj=json.loads(raw)
+    except (ValueError,TypeError):
+        return "OAUTH_SECRET_NOT_JSON_OBJECT"
+    if (type(obj) is not dict
+        or not all(type(obj.get(k)) is str and obj[k]
+                   for k in ("client_id","client_secret","refresh_token"))):
+        return "OAUTH_REQUIRED_CREDENTIAL_FIELDS_MISSING"
+    return "OAUTH_SHAPE_PRESENT_NOT_YET_AUTHENTICATED"
+
+
+def _failed_readback(code: str) -> dict:
+    if code not in SAFE_FAILURES:
+        code="OWNER_OAUTH_CHANNEL_NOT_INDEPENDENTLY_VERIFIED"
+    return {
+        "status":STATUS,
+        "owner_authenticated_youtube_channel_readback_verified":False,
+        "schedule_scan_complete":False,
+        "schedule_scan_outcome":"OAUTH_OR_OWNER_CHANNEL_UNVERIFIED_STOP",
+        "safe_failure_category":code,
+        "youtube_video_insert_update_delete_requests":0,
+        "youtube_video_published_or_scheduled_by_this_audit":False,
+        "independent_owner_signature_or_fact_or_rights_clearance":False,
+        "unattended_7_day_21_video_release_proof":False,
+    }
+
+
 class OwnerLiveAuditRefused(ValueError):
     """Do not perform privileged readback if the job context is ambiguous."""
 
@@ -95,8 +137,13 @@ def audit_live_owner_readonly(youtube: object, *, root: Path,
     owned=ReadOnlyYoutubeClient(youtube)
     try:
         owner=verify_authenticated_owner_channel(owned,EXPECTED_CHANNEL)
-    except Exception:
-        raise OwnerLiveAuditRefused("OWNER_OAUTH_CHANNEL_NOT_INDEPENDENTLY_VERIFIED") from None
+    except Exception as exc:
+        # Only compare against a fixed, locally owned error string. Never
+        # expose arbitrary Google or provider messages in logs/artifacts.
+        code=("OWNER_CHANNEL_MISMATCH_OR_AMBIGUOUS"
+              if str(exc)=="OAuth channel is not exactly the intended owner channel"
+              else "OAUTH_CHANNEL_API_READBACK_UNAVAILABLE")
+        raise OwnerLiveAuditRefused(code) from None
     _need(owner.get("authenticated_channel_id")==EXPECTED_CHANNEL,
           "Owner identity mismatch, no release permission")
     result={
@@ -163,24 +210,28 @@ def main() -> None:
     output=Path(os.environ.get("RUNNER_TEMP", "/tmp"))/"flowminute-b4f6-readonly-owner-audit.json"
     _need(not output.exists() and not output.is_symlink(),
           "Cannot overwrite existing protected owner audit")
-    # Credential value stays in a GitHub environment secret and only enters
-    # Google SDK in memory; no commands/paths that write or print OAuth.
-    try:
-        from scripts.publish_youtube import load_service
-        youtube=load_service()
-        report=audit_live_owner_readonly(
-            youtube,root=root,checked_at_utc=datetime.now(timezone.utc))
-    except Exception:
-        report={
-            "status":STATUS,
-            "owner_authenticated_youtube_channel_readback_verified":False,
-            "schedule_scan_complete":False,
-            "schedule_scan_outcome":"OAUTH_OR_OWNER_CHANNEL_UNVERIFIED_STOP",
-            "youtube_video_insert_update_delete_requests":0,
-            "youtube_video_published_or_scheduled_by_this_audit":False,
-            "independent_owner_signature_or_fact_or_rights_clearance":False,
-            "unattended_7_day_21_video_release_proof":False,
-        }
+    # Credential material is never printed or retained. A failure enum
+    # identifies which stage failed without returning OAuth fields/values.
+    shape=classify_oauth_secret_shape(os.environ.get("YOUTUBE_TOKEN_JSON"))
+    if shape!="OAUTH_SHAPE_PRESENT_NOT_YET_AUTHENTICATED":
+        report=_failed_readback(shape)
+    else:
+        try:
+            from scripts.publish_youtube import load_service
+            youtube=load_service()
+        except (Exception,SystemExit):
+            report=_failed_readback("OAUTH_CLIENT_INITIALIZATION_FAILED")
+        else:
+            try:
+                report=audit_live_owner_readonly(
+                    youtube,root=root,checked_at_utc=datetime.now(timezone.utc))
+            except OwnerLiveAuditRefused as exc:
+                code=(str(exc) if str(exc) in SAFE_FAILURES
+                      else "OWNER_OAUTH_CHANNEL_NOT_INDEPENDENTLY_VERIFIED")
+                report=_failed_readback(code)
+            except Exception:
+                report=_failed_readback(
+                    "OWNER_OAUTH_CHANNEL_NOT_INDEPENDENTLY_VERIFIED")
     output.write_text(json.dumps(report,sort_keys=True,indent=2)+"\n",encoding="utf8")
     print("B4F6_REAL_OWNER_CHANNEL_READBACK_VERIFIED="+
           str(report["owner_authenticated_youtube_channel_readback_verified"]).lower())
@@ -188,6 +239,8 @@ def main() -> None:
     if report["schedule_scan_complete"]:
         print("B4F6_PRIVATE_SCHEDULED_SLOTS="+str(report["private_scheduled_slots_found"]))
         print("B4F6_SLOT_CONFLICTS="+str(report["slot_conflicts"]))
+    if "safe_failure_category" in report:
+        print("B4F6_REDACTED_FAILURE_CLASS="+report["safe_failure_category"])
     print("B4F6_YOUTUBE_WRITES=0; NO_VIDEO_RELEASE_OR_OWNER_APPROVAL")
     if not report["owner_authenticated_youtube_channel_readback_verified"]:
         raise SystemExit(2)
