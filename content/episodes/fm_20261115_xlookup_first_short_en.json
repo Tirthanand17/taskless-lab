@@ -1,0 +1,51 @@
+{
+  "id": "fm_20261115_xlookup_first_short_en",
+  "renderer": "manifest_v2",
+  "type": "short",
+  "language": "en",
+  "title": "XLOOKUP Picks the FIRST Match! Here's How to Check #Shorts",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. Two rows have the same lookup key. XLOOKUP's default search starts with the first match, not the last. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/functions/xlookup-function #FlowMinuteLab #TechTips",
+  "tags": [
+    "Excel",
+    "#SPILL!",
+    "XLOOKUP",
+    "Formulas",
+    "Data accuracy",
+    "Shorts"
+  ],
+  "source_links": [
+    "https://support.microsoft.com/en-us/excel/functions/xlookup-function"
+  ],
+  "scenes": [
+    {
+      "title": "SAME ID TWICE",
+      "narration": "Two rows have the same lookup key. XLOOKUP's default search starts with the first match, not the last."
+    },
+    {
+      "title": "EXACT BY DEFAULT",
+      "narration": "XLOOKUP defaults to exact match. That helps prevent accidental approximate matching, but not duplicate-key ambiguity."
+    },
+    {
+      "title": "SEARCH ORDER",
+      "narration": "Microsoft documents the search-mode argument. Mode one searches first to last, so the first matching row wins."
+    },
+    {
+      "title": "LATEST MATCH",
+      "narration": "For a deliberate last-match search, use search mode negative one, after checking that last really means newest."
+    },
+    {
+      "title": "CHECK YOUR KEY",
+      "narration": "Do not silently treat the first match as unique. Verify the key and row ordering before trusting the returned record."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-15",
+  "proposed_time_ist": "20:30",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
