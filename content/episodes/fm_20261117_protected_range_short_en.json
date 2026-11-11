@@ -1,0 +1,51 @@
+{
+  "id": "fm_20261117_protected_range_short_en",
+  "renderer": "manifest_v2",
+  "type": "short",
+  "language": "en",
+  "title": "Google Sheets Protected Range Is NOT a Security Lock #Shorts",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. A protected Google Sheets range can limit editing, but Google warns that protection is not a security measure. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/docs/answer/1218656 #FlowMinuteLab #TechTips",
+  "tags": [
+    "Google Sheets",
+    "Filter view",
+    "Protected ranges",
+    "Collaboration",
+    "Permissions",
+    "Shorts"
+  ],
+  "source_links": [
+    "https://support.google.com/docs/answer/1218656"
+  ],
+  "scenes": [
+    {
+      "title": "PROTECTED IS NOT SECRET",
+      "narration": "A protected Google Sheets range can limit editing, but Google warns that protection is not a security measure."
+    },
+    {
+      "title": "WHO CAN EDIT",
+      "narration": "In Data, Protect sheets and ranges, you can choose who is allowed to edit a particular area."
+    },
+    {
+      "title": "WARNING OR RESTRICT",
+      "narration": "A warning is not an editing block. Choose Restrict who can edit if you need an actual editing limit."
+    },
+    {
+      "title": "THE COPY CATCH",
+      "narration": "Google notes that people with access may still be able to copy or export protected spreadsheet content."
+    },
+    {
+      "title": "SHARE CAREFULLY",
+      "narration": "Use protection to prevent accidental edits, not to hide secrets. Share sensitive sheets only with people you trust."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-17",
+  "proposed_time_ist": "20:30",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
