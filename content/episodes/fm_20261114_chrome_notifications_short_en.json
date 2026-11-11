@@ -1,0 +1,51 @@
+{
+  "id": "fm_20261114_chrome_notifications_short_en",
+  "renderer": "manifest_v2",
+  "type": "short",
+  "language": "en",
+  "title": "Chrome Website Notifications Won't Stop? Fix the Permission #Shorts",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. Those endless notification popups may be coming from a site you allowed in Chrome. You can revoke that permission. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/chrome/answer/3220216 #FlowMinuteLab #TechTips",
+  "tags": [
+    "Chrome",
+    "Google Account",
+    "Privacy",
+    "Site permissions",
+    "Browser",
+    "Shorts"
+  ],
+  "source_links": [
+    "https://support.google.com/chrome/answer/3220216"
+  ],
+  "scenes": [
+    {
+      "title": "THE SITE KEEPS PINGING",
+      "narration": "Those endless notification popups may be coming from a site you allowed in Chrome. You can revoke that permission."
+    },
+    {
+      "title": "NOT A VIRUS PROOF",
+      "narration": "A noisy notification by itself does not prove your computer is infected. First check which website received permission."
+    },
+    {
+      "title": "THE REAL SETTING",
+      "narration": "On desktop Chrome, open Settings, Privacy and security, Site settings, then Notifications. Your version may label menus differently."
+    },
+    {
+      "title": "REMOVE THE EXCEPTION",
+      "narration": "Find the unwanted site under allowed notifications and block it. Use quieter notification prompts if interruptions continue."
+    },
+    {
+      "title": "ONE CHECK",
+      "narration": "The fix is permission control, not clicking scary alerts. Confirm the site is no longer allowed to notify you."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-14",
+  "proposed_time_ist": "11:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
