@@ -247,8 +247,8 @@ class Nov12ActualOriginalPixelTests(unittest.TestCase):
                     hashes.add(hashlib.sha256(img.tobytes()).hexdigest())
                     # Original illustration lives in the central mobile hero,
                     # not blank repeated title-only cover art.
-                    self.assertNotEqual(img.getpixel((100,500)),
-                                        img.getpixel((100,1150)))
+                    self.assertNotEqual(img.getpixel((540,700)),
+                                        img.getpixel((540,1250)))
         self.assertEqual(len(hashes),3)
 
     def test_all_covers_are_original_high_resolution(self):
