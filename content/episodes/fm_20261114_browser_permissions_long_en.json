@@ -1,0 +1,79 @@
+{
+  "id": "fm_20261114_browser_permissions_long_en",
+  "renderer": "manifest_v2",
+  "type": "long",
+  "language": "en",
+  "title": "Five Browser Permissions Worth Checking Before You Click Allow",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. A fictional website sends notification after notification, even when its tab is closed. You might think it is a virus, but first check whether the browser granted notification access. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/chrome/answer/3220216 #FlowMinuteLab #TechTips",
+  "tags": [
+    "Chrome",
+    "Google Account",
+    "Privacy",
+    "Site permissions",
+    "Browser",
+    "Tutorial"
+  ],
+  "source_links": [
+    "https://support.google.com/chrome/answer/3220216"
+  ],
+  "scenes": [
+    {
+      "title": "WHY WAS THAT SITE PINGING?",
+      "narration": "A fictional website sends notification after notification, even when its tab is closed. You might think it is a virus, but first check whether the browser granted notification access."
+    },
+    {
+      "title": "PERMISSIONS EXPLAINED",
+      "narration": "Websites request specific capabilities and browsers keep rules for them. Some are useful during a task; others outlive the reason you granted access. This tutorial shows a review workflow using original illustrative settings screens."
+    },
+    {
+      "title": "CHECK ONE NOTIFICATIONS",
+      "narration": "On desktop Chrome, open Settings, Privacy and security, Site settings, then Notifications. Look for unfamiliar websites in the allowed list. Block those you no longer want to hear from instead of engaging with suspicious notification content."
+    },
+    {
+      "title": "CHECK TWO LOCATION",
+      "narration": "Location requests may make sense for maps or local search, but not every website needs the same access. In Chrome Site settings review location grants and remove those you do not recognize or no longer need."
+    },
+    {
+      "title": "CHECK THREE CAMERA",
+      "narration": "A video meeting may need camera permission. A random page usually does not. Review which websites have camera access, and keep only the sites that currently require it."
+    },
+    {
+      "title": "CHECK FOUR MICROPHONE",
+      "narration": "Microphone permission can be appropriate for online calls. If an unfamiliar website has retained that grant, review it. Deny unneeded access and allow a trusted site again when an actual task requires it."
+    },
+    {
+      "title": "PROMPTS VS POPUPS",
+      "narration": "Web notifications and popup windows are separate settings. Turning off popup windows does not necessarily revoke a website's previously granted notification permission. Check the specific control tied to the symptom."
+    },
+    {
+      "title": "QUIETER PROMPTS",
+      "narration": "Chrome provides a quieter notification-request experience. This changes how permission prompts appear; it does not magically delete every grant you previously gave. Review allowed sites first."
+    },
+    {
+      "title": "GOOGLE CONNECTIONS",
+      "narration": "Browser site permissions are not the same as connections to a Google Account. Separate account access can persist through an app or service. Visit your official account settings to review third-party connections independently."
+    },
+    {
+      "title": "REMOVE OLD ACCESS",
+      "narration": "If a connected app is no longer useful, remove its access through official account controls. Remember that revoking access does not prove data already provided to that service has been deleted."
+    },
+    {
+      "title": "AVOID FAKE ALERTS",
+      "narration": "A notification saying your computer is infected is not a reliable diagnosis. Avoid clicking alarming links to fix the issue. Open Chrome settings directly and inspect permission grants yourself."
+    },
+    {
+      "title": "FINAL PRIVACY CHECK",
+      "narration": "Finish with a quick audit: notification sites, location grants, camera, microphone, and unrelated third-party account connections. Remove only permissions you do not need and verify trusted services still work."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-14",
+  "proposed_time_ist": "16:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
