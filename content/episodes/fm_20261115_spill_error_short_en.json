@@ -1,0 +1,51 @@
+{
+  "id": "fm_20261115_spill_error_short_en",
+  "renderer": "manifest_v2",
+  "type": "short",
+  "language": "en",
+  "title": "Excel #SPILL! Error? Check the Cells in Its Way #Shorts",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. Your Excel formula returns a spill error. Often the cells where its results should appear are not empty. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error #FlowMinuteLab #TechTips",
+  "tags": [
+    "Excel",
+    "#SPILL!",
+    "XLOOKUP",
+    "Formulas",
+    "Data accuracy",
+    "Shorts"
+  ],
+  "source_links": [
+    "https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error"
+  ],
+  "scenes": [
+    {
+      "title": "ONE CELL BLOCKS IT",
+      "narration": "Your Excel formula returns a spill error. Often the cells where its results should appear are not empty."
+    },
+    {
+      "title": "SEE THE RANGE",
+      "narration": "Select the formula cell. Excel can show the intended spill range with a dashed border."
+    },
+    {
+      "title": "FIND OBSTRUCTION",
+      "narration": "Excel's error alert may offer Select Obstructing Cells. Use it to locate values blocking the output."
+    },
+    {
+      "title": "FIX SAFELY",
+      "narration": "Review what is in those cells. Move unrelated data safely before clearing anything; then let the formula recalculate."
+    },
+    {
+      "title": "NOT EVERY SPILL",
+      "narration": "Blocked ranges are one common cause, not the only one. Read the exact error explanation before deleting data."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-15",
+  "proposed_time_ist": "11:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
