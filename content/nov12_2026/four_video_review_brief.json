@@ -23,7 +23,7 @@
       "description": "Illustrative synthetic sample: Microsoft documents Excel's 15-digit numeric precision limit. Format or import identifiers as Text BEFORE entering them. Existing lost digits cannot be recovered by changing format. Official Microsoft help: https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers #Excel #SpreadsheetTips #DataQuality #Shorts Additional official detail: https://support.microsoft.com/en-us/excel/format-numbers-as-text",
       "scenes": [
         [
-          "THE LAST DIGIT",
+          "EXCEL CHANGED IT",
           "1234567890123456",
           "1234567890123450",
           "A made-up sixteen-digit code ends in six. As an Excel number, its last digit can become zero."
@@ -65,7 +65,7 @@
       "description": "AI models can create convincing but false references. The title shown is an explicitly fictional teaching example, NOT an actual research paper. Check the publication, authors, URL and the specific cited claim. Official overview: https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth #AI #FakeCitations #ResearchTips #Shorts",
       "scenes": [
         [
-          "THIS LOOKS REAL",
+          "AI CITATION: FAKE?",
           "AI ANSWER",
           "FAKE SOURCE?",
           "This confident-looking AI citation could be completely invented. Here's how to catch it."
@@ -107,7 +107,7 @@
       "description": "Original instructional walkthrough using fictional example values, not a recording of real files. Microsoft's Excel docs confirm 15-digit numeric precision, removal of leading zeros, automatic conversions and Text/Power Query import options. Sources: https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers ; https://support.microsoft.com/en-us/excel/data-import-and-analysis-options-in-excel ; https://support.microsoft.com/en-us/excel/stop-automatically-changing-numbers-to-dates . Tell us which data conversion hurt you: DIGITS, ZEROS, or DATES? #Excel #DataScience #PowerQuery #SpreadsheetTips",
       "scenes": [
         [
-          "ONE CELL. WRONG ID.",
+          "EXCEL CHANGED AN ID",
           "1234567890123456",
           "1234567890123450",
           "Look at these two invented identifiers. They differ by just one digit. If you copy long IDs into Excel the wrong way, a value can change without any obvious warning. Let's see why it happens and how to protect your data."
@@ -191,7 +191,7 @@
       "description": "Demonstrated using an original fictional sharing screen, not a real Google account. Google Drive 'Anyone with the link' can let people with the link open the file without signing in. Restricted limits it to people explicitly granted access. See official Google Drive Help: https://support.google.com/drive/answer/7166529 #GoogleDrive #Privacy #Sharing #Shorts",
       "scenes": [
         [
-          "ONE FRIEND?",
+          "DRIVE LINK PUBLIC?",
           "SHARED WITH",
           "ANYONE?",
           "Sent a Drive link to one friend? Anyone with the link doesn't mean only that friend."
