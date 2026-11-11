@@ -126,6 +126,35 @@ class Nov12ActualOriginalPixelTests(unittest.TestCase):
                              brief["episodes"][0]["scenes"][0],0,
                              invalid,PALETTE[0])
 
+    def test_long_video_uses_original_synthetic_data_workbook_not_empty_half_screen(self):
+        from PIL import ImageChops
+        from autopilot.branch1_nov12_four_review_videos import render_frame,PALETTE
+        brief,_=load_brief()
+        ep=brief["episodes"][2]
+        self.assertEqual(ep["type"],"long")
+        self.assertEqual(ep["scenes"][0][0],"EXCEL CHANGED AN ID")
+        for scene_index in (0,4,7):
+            scene=ep["scenes"][scene_index]
+            early=render_frame(ep,scene,scene_index,0,PALETTE[2])
+            after=render_frame(ep,scene,scene_index,2,PALETTE[2])
+            left_area=(108,355,747,790)
+            region_before=early.crop(left_area)
+            region_after=after.crop(left_area)
+            self.assertIsNotNone(ImageChops.difference(
+                region_before,region_after).getbbox(),
+                "Fictional spreadsheet demonstration must visibly advance")
+            self.assertNotEqual(early.getpixel((320,475)),(8,17,30),
+                "No blank left half: visible illustration must cover screen")
+            self.assertEqual(early.getpixel((960,910)),after.getpixel((960,910)),
+                             "Actual subtitle-safe panel must never animate")
+
+    def test_first_frames_name_the_actual_software_or_failure_before_brand(self):
+        brief,_=load_brief()
+        hooks=[ep["scenes"][0][0] for ep in brief["episodes"]]
+        self.assertEqual(hooks,["EXCEL CHANGED IT","AI CITATION: FAKE?",
+                                "EXCEL CHANGED AN ID","DRIVE LINK PUBLIC?"])
+        self.assertTrue(all(len(hook)<=22 for hook in hooks))
+
     def test_all_covers_are_original_high_resolution(self):
         from PIL import Image
         from autopilot.branch1_nov12_four_review_videos import build_cover,PALETTE

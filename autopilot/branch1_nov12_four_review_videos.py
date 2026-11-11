@@ -135,6 +135,46 @@ def rounded(draw,rect,fill,outline=None,radius=24,width=2):
                            outline=outline,width=width)
 
 
+def draw_illustrative_spreadsheet(draw,ep,scene,index,phase,accent):
+    """Original data-type demonstration fills the empty long-video left half.
+
+    Clearly marked as a synthetic illustration; no actual Excel capture,
+    no unverified vendor UI claim, no customer identifiers and no external media.
+    """
+    from PIL import ImageDraw
+    heading,source,observed,_=scene
+    x0,y0,x1,y1=108,355,747,790
+    rounded(draw,(x0,y0,x1,y1),(231,242,246),(123,175,193),25,3)
+    rounded(draw,(x0+12,y0+13,x1-12,y0+82),(29,71,88),
+            (29,71,88),12,2)
+    draw_text(draw,"FICTIONAL DATA  /  NOT A LIVE SCREEN",
+              x0+28,y0+31,x1-x0-56,25,(218,244,250),False)
+    # Light spreadsheet grid with an informative column comparison.
+    col=(x0+318)
+    draw.rectangle((x0+21,y0+101,x1-21,y0+148),
+                   fill=(192,218,231))
+    draw_text(draw,"RAW SOURCE",x0+37,y0+108,265,29,(31,68,89))
+    draw_text(draw,"CELL IMPORT",col+12,y0+108,x1-col-32,29,(31,68,89))
+    rows=[(source,observed),("TEXT VALUE","AUTO TYPE"),
+          ("CHECK INPUT","VERIFY RESULT")]
+    for j,(left,right) in enumerate(rows):
+        top=y0+169+j*76
+        fill=(247,251,252) if j%2==0 else (224,236,242)
+        draw.rectangle((x0+21,top,x1-21,top+67),fill=fill)
+        if (phase>=1 and j==0):
+            draw.rectangle((x0+21,top,col,top+67),fill=(207,241,245))
+        if (phase>=2 and j==0):
+            draw.rectangle((col,top,x1-21,top+67),fill=(255,230,198))
+        draw_text(draw,left,x0+35,top+19,col-x0-58,
+                  33 if j==0 else 28,(17,50,69))
+        draw_text(draw,right,col+12,top+19,x1-col-40,
+                  33 if j==0 else 28,
+                  (142,58,30) if phase>=2 and j==0 else (17,50,69))
+        draw.line((col,top,col,top+67),fill=(136,165,180),width=2)
+    draw_text(draw,"WATCH THE VALUE, NOT JUST THE FORMAT",
+              x0+32,y1-55,x1-x0-60,23,(27,79,97),False)
+
+
 def render_frame(ep,scene,index,phase,accent):
     """Four original instructional diagram layouts, 3 one-way states.
 
@@ -175,6 +215,8 @@ def render_frame(ep,scene,index,phase,accent):
         caption=(margin,827,w-margin,1017)
         step_y=805
     ax0,ay0,ax1,ay1=area
+    if not portrait:
+        draw_illustrative_spreadsheet(d,ep,scene,index,phase,accent)
     rounded(d,area,(19,35,54),(61,89,117),25,3)
     mode=index%4
     visible1=phase>=1
@@ -200,16 +242,19 @@ def render_frame(ep,scene,index,phase,accent):
             draw_text(d,label,rect[0]+27,rect[1]+128,rw-54,
                       67 if portrait else 55,
                       (242,248,255) if active else (165,187,205))
+        if portrait and index==0 and ep["id"]=="nov12_short_a_excel_16digits":
+            draw_text(d,"LAST DIGIT  6 → 0",ax0+45,ay1-100,
+                      ax1-ax0-90,57,accent)
     elif mode==1:
         draw_text(d,"THE RULE",ax0+42,ay0+43,ax1-ax0-85,37,accent)
-        draw_text(d,first,ax0+46,ay0+205,ax1-ax0-98,
-                  115 if portrait else 90,
+        draw_text(d,first,ax0+46,ay0+(205 if portrait else 132),ax1-ax0-98,
+                  115 if portrait else 78,
                   (244,248,253) if visible1 else (116,137,157))
-        d.line((ax0+55,ay0+390 if portrait else ay0+244,
-                ax1-55,ay0+390 if portrait else ay0+244),
+        line_y=ay0+(390 if portrait else 257)
+        d.line((ax0+55,line_y,ax1-55,line_y),
                 fill=accent if visible1 else (77,98,120),width=5)
-        draw_text(d,second,ax0+46,ay0+520 if portrait else ay0+300,
-                  ax1-ax0-98,95 if portrait else 74,
+        draw_text(d,second,ax0+46,ay0+(520 if portrait else 295),
+                  ax1-ax0-98,95 if portrait else 67,
                   accent if visible2 else (114,142,161))
     elif mode==2:
         draw_text(d,"FOLLOW THE TWO CHECKS",ax0+40,ay0+36,
