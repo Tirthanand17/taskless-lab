@@ -1,0 +1,49 @@
+{
+  "id": "nov12_short_c_drive_link",
+  "renderer": "manifest_v2",
+  "type": "short",
+  "language": "en",
+  "title": "Your Google Drive Link May Be Open to Anyone #Shorts",
+  "description": "Demonstrated using an original fictional sharing screen, not a real Google account. Google Drive 'Anyone with the link' can let people with the link open the file without signing in. Restricted limits it to people explicitly granted access. See official Google Drive Help: https://support.google.com/drive/answer/7166529 #GoogleDrive #Privacy #Sharing #Shorts",
+  "tags": [
+    "Google Drive",
+    "sharing permissions",
+    "link privacy",
+    "online safety"
+  ],
+  "source_links": [
+    "https://support.google.com/drive/answer/7166529"
+  ],
+  "scenes": [
+    {
+      "title": "DRIVE LINK PUBLIC?",
+      "narration": "Sent a Drive link to one friend? Anyone with the link doesn't mean only that friend."
+    },
+    {
+      "title": "THE SETTING",
+      "narration": "Google says anyone who gets that link can open the file without signing in, when that setting is enabled."
+    },
+    {
+      "title": "LINK FORWARDED",
+      "narration": "In this fictional example, the link is forwarded. A second person gets access too."
+    },
+    {
+      "title": "PRIVATE FIX",
+      "narration": "For private files, choose Restricted and invite only the people who need access."
+    },
+    {
+      "title": "CHECK THE ROLE",
+      "narration": "Check Viewer versus Editor as well. Before sharing, ask: who can open it, and who can change it?"
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX - original English voiceover",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "proposed_publish_at_utc": "2026-11-12T15:00:00Z",
+  "requested_date_ist": "2026-11-12",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
