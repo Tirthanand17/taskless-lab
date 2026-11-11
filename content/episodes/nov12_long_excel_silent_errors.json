@@ -1,0 +1,79 @@
+{
+  "id": "nov12_long_excel_silent_errors",
+  "renderer": "manifest_v2",
+  "type": "long",
+  "language": "en",
+  "title": "3 Ways Excel Can Silently Change Your Data (And How to Prevent It)",
+  "description": "Original instructional walkthrough using fictional example values, not a recording of real files. Microsoft's Excel docs confirm 15-digit numeric precision, removal of leading zeros, automatic conversions and Text/Power Query import options. Sources: https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers ; https://support.microsoft.com/en-us/excel/data-import-and-analysis-options-in-excel ; https://support.microsoft.com/en-us/excel/stop-automatically-changing-numbers-to-dates . Tell us which data conversion hurt you: DIGITS, ZEROS, or DATES? #Excel #DataScience #PowerQuery #SpreadsheetTips",
+  "tags": [
+    "Excel",
+    "data cleaning",
+    "CSV import",
+    "Power Query",
+    "leading zero",
+    "15 digit precision"
+  ],
+  "source_links": [
+    "https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers"
+  ],
+  "scenes": [
+    {
+      "title": "EXCEL CHANGED AN ID",
+      "narration": "Look at these two invented identifiers. They differ by just one digit. If you copy long IDs into Excel the wrong way, a value can change without any obvious warning. Let's see why it happens and how to protect your data."
+    },
+    {
+      "title": "THE THREE TRAPS",
+      "narration": "We are going to examine three documented Excel behaviors: long-number precision, disappearing leading zeros, and automatic date conversion. All values in these demonstrations are fictional. The goal is a reliable workflow, not a scary headline."
+    },
+    {
+      "title": "TRAP ONE: DIGITS",
+      "narration": "Microsoft documents that Excel numeric values use fifteen significant digits of precision. That limit matters when a code has sixteen or more digits. If the cell is interpreted as a number, digits beyond the fifteenth can be replaced with zeros. Display formatting alone cannot fix lost source data."
+    },
+    {
+      "title": "THE CODE CHANGED",
+      "narration": "Consider this made-up code: one two three four five six seven eight nine zero one two three four five six. As a numeric value in Excel, the last digit can be stored as zero instead of six. The example is not an account number. It's a controlled illustration of the documented precision rule."
+    },
+    {
+      "title": "TRAP TWO: ZERO",
+      "narration": "Now consider a product code that begins with two zeros: zero zero one two three. If Excel interprets it as a normal number, it can become one two three. That's mathematically reasonable but terrible for an identifier, because the original code and the shorter code are not the same label."
+    },
+    {
+      "title": "NUMBERS OR LABELS?",
+      "narration": "This is the key distinction. Prices, quantities, and totals are numbers you may want to calculate. Product IDs, account references, postal codes, and many phone-like fields are labels. If leading zeros or exact digits matter, they should normally be treated as text."
+    },
+    {
+      "title": "TRAP THREE: DATES",
+      "narration": "Excel also tries to recognize dates. Microsoft's support example shows a value like twelve slash two changing into a December date. That may be useful for calendar data, but it changes a code that was never supposed to be a date. Don't let guesses redefine a column."
+    },
+    {
+      "title": "WHY CSV IS TRICKY",
+      "narration": "A CSV is plain text with separators. It does not preserve the original spreadsheet cell types. When software opens or imports it, automatic type detection may decide that an ID is a number or a code is a date. The wrong conversion can happen before you notice it."
+    },
+    {
+      "title": "THE SAFER IMPORT",
+      "narration": "When importing, use Data, then From Text or CSV, and inspect the preview. For identifier columns, use the Text data type rather than accepting an automatic numeric type. In Power Query, check any Changed Type step before loading the result. Menu labels may differ across Excel versions."
+    },
+    {
+      "title": "SET TEXT FIRST",
+      "narration": "For typing or pasting new IDs, preformat the destination cells as Text before adding values. An apostrophe before a code is another documented option for occasional entries. For compatible versions, Excel also offers automatic data conversion settings that can reduce unwanted changes."
+    },
+    {
+      "title": "CAN IT BE UNDONE?",
+      "narration": "Here's the hard part. If Excel has already discarded the sixteenth digit or removed leading zeros, simply changing the format later doesn't reconstruct the original identifier. You need an intact source value and a careful reimport. Never guess a lost digit."
+    },
+    {
+      "title": "THIRTY-SECOND CHECK",
+      "narration": "Before using a new spreadsheet, compare a few IDs with their original records. Check long digits, leading zeros, and any codes that look like dates. That's the practical habit: define the column type before importing and verify samples afterward. Which one has caught you out: digits, zeros, or dates?"
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX - original English voiceover",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "proposed_publish_at_utc": "2026-11-12T10:30:00Z",
+  "requested_date_ist": "2026-11-12",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
