@@ -5,6 +5,7 @@ on:
     paths:
       - "content/nov13_17_2026/**"
       - "autopilot/branch1_nov13_17_original_batch.py"
+      - "autopilot/branch1_nov13_17_case_ui_b1v4.py"
       - "autopilot/test_branch1_nov13_17_original_batch.py"
       - ".github/workflows/flowminute-b1-nov13-17-real-review.yml"
       - "docs/BRANCH1_NOV13_17_SEARCH_LED_RELEASE_PLAN.md"
@@ -48,7 +49,7 @@ jobs:
       - name: Test all fifteen complete scripts and original physical frames, no YouTube
         run: |
           set -euo pipefail
-          python -B -m py_compile autopilot/branch1_nov13_17_original_batch.py autopilot/test_branch1_nov13_17_original_batch.py
+          python -B -m py_compile autopilot/branch1_nov13_17_original_batch.py autopilot/test_branch1_nov13_17_original_batch.py autopilot/branch1_nov13_17_case_ui_b1v4.py
           python -B -m unittest -v autopilot.test_branch1_nov13_17_original_batch
           python -B - <<'PY'
           import ast
