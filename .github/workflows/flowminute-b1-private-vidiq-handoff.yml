@@ -1,0 +1,171 @@
+name: Flowminute B1 Private Draft Release Media Handoff (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/flowminute-b1-private-vidiq-handoff.yml"
+      - "docs/B1_VIDIQ_PRIVATE_DRAFT_MEDIA_HANDOFF.md"
+  workflow_dispatch:
+    inputs:
+      date_ist:
+        description: "One Nov13-17 date, 3 exact owner-review videos"
+        required: true
+        type: choice
+        options: ["2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16", "2026-11-17"]
+      source_run_id:
+        description: "Successful main B1v4 H264/AAC source run ID, not stale pre-V4"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: flowminute-private-vidiq-media-handoff
+  cancel-in-progress: false
+
+jobs:
+  verify_and_prepare:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate branch-safe source and unchanged manual-approved-only release stage
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v scripts.test_prepare_b1_nov13_17_release_candidates
+          python -B - <<'PY'
+          from pathlib import Path
+          p=Path(".github/workflows/flowminute-b1-private-vidiq-handoff.yml").read_text()
+          assert any(ln.strip().startswith("gh release upload ") for ln in p.splitlines())
+          assert any("isDraft" in ln for ln in p.splitlines())
+          for line in p.splitlines():
+              cmd=line.strip()
+              if cmd.startswith("gh release "):
+                  assert cmd.startswith(("gh release upload ","gh release view "))
+              assert not cmd.startswith("youtube.videos().insert")
+          print("B1_OWNER_PRIVATE_DRAFT_STAGE_NO_YOUTUBE_API_AND_NO_PUBLIC_RELEASE")
+          PY
+
+  transfer_three_exact_private_release_assets:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    needs: [verify_and_prepare]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET_DATE: ${{ inputs.date_ist }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+      GITHUB_REF: refs/heads/main
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+      DRAFT_TAG: fm-b1-owner-private-handoff-2026-11-13-17
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Reject wrong run, branch or wrong GitHub workflow before touching media
+        run: |
+          set -euo pipefail
+          if ! [[ "$SOURCE_RUN_ID" =~ ^[1-9][0-9]{0,19}$ ]]; then
+            echo "::error::Source run must be a positive decimal"; exit 2
+          fi
+          gh run view "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --json headBranch,headSha,conclusion,event,workflowName \
+            > "/tmp/flowminute-b1-$TARGET_DATE-source-run.json"
+          python -B - <<'PY'
+          import os,json
+          from pathlib import Path
+          from scripts.prepare_b1_nov13_17_release_candidates import check_main_render_proof
+          date=os.environ["TARGET_DATE"]
+          r=json.loads(Path(f"/tmp/flowminute-b1-{date}-source-run.json").read_text("utf8"))
+          check_main_render_proof(r)
+          # Pin the exact five fully SHA/AV-verified main V4 runs, not
+          # just an arbitrary successful run of a similarly named workflow.
+          trusted={
+              "2026-11-13":"42980029138",
+              "2026-11-14":"42980034017",
+              "2026-11-15":"42980038709",
+              "2026-11-16":"42980042798",
+              "2026-11-17":"42980047435",
+          }
+          if (os.environ["SOURCE_RUN_ID"]!=trusted.get(date)
+              or r["headSha"]!="20ee9ffcd99033dc14fa735b4a8819e255306d31"):
+              raise SystemExit("Source run is not one of five verified B1v4 originals")
+          print("B1_ONLY_TRUSTED_SUCCESSFUL_MAIN_V4_MEDIA",r["headSha"][:12])
+          PY
+      - name: Retrieve only exact named successful owner-review video artifact
+        run: |
+          set -euo pipefail
+          mkdir -p "/tmp/flowminute-b1-$TARGET_DATE-source"
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "flowminute-B1-$TARGET_DATE-2Shorts-1Long-UNAPPROVED-$SOURCE_RUN_ID" \
+            --dir "/tmp/flowminute-b1-$TARGET_DATE-source"
+      - name: Independently SHA-check every MP4/SRT/PNG against original GitHub output and release metadata
+        run: |
+          set -euo pipefail
+          python -B -m scripts.prepare_b1_nov13_17_release_candidates \
+            --date "$TARGET_DATE" --source-run "$SOURCE_RUN_ID"
+      - name: Require existing private *draft* GitHub release never publish it
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/releases" --paginate \
+            -q ".[] | select(.tag_name==\"$DRAFT_TAG\") | .draft" \
+            | grep -Fx true
+          echo "EXISTING_GITHUB_DRAFT_NOT_PUBLIC"
+      - name: Upload 3 original MP4 files to private draft only, no YouTube or public GitHub release
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import os,json,shutil
+          from pathlib import Path
+          from scripts.prepare_b1_nov13_17_release_candidates import file_hash
+          day=os.environ["TARGET_DATE"]
+          root=Path(f"/tmp/flowminute-b1-{day}-flat")
+          manifest=json.loads((root/"THREE_FLAT_RELEASE_CANDIDATES_UNAPPROVED.json").read_text("utf8"))
+          assert manifest["verified_count"]==3
+          assert manifest["youtube_scheduled_count"]==0
+          assert manifest["owner_approved_count"]==0
+          names=("short-am","short-pm","long")
+          export=Path("/tmp/flowminute-owner-private-handoff")
+          assert not export.exists()
+          export.mkdir(mode=0o700)
+          for index,row in enumerate(manifest["entries"]):
+              source=root/row["episode_id"]/"REVIEW_ONLY_FINAL.mp4"
+              assert source.is_file()
+              assert file_hash(source)==row["video_sha256"]
+              target=export/f"{day}_{names[index]}.mp4"
+              shutil.copyfile(source,target)
+              assert file_hash(target)==row["video_sha256"]
+              print("SHA_BOUND_PRIVATE_DRAFT_MEDIA",target.name,row["video_sha256"][:16])
+          PY
+          gh release upload "$DRAFT_TAG" --repo "$GITHUB_REPOSITORY" \
+            /tmp/flowminute-owner-private-handoff/*.mp4
+          gh release view "$DRAFT_TAG" --repo "$GITHUB_REPOSITORY" \
+            --json isDraft,assets \
+            --jq '{draft:.isDraft,assets:[.assets[]|{name,size,digest}]}'
+          echo "PRIVATE_DRAFT_ASSET_UPLOAD_ONLY_0_YOUTUBE_Writes"
+      - name: Delete ephemeral media from GitHub cloud runner
+        if: always()
+        run: |
+          rm -rf "/tmp/flowminute-b1-$TARGET_DATE-source" \
+            "/tmp/flowminute-b1-$TARGET_DATE-flat" \
+            /tmp/flowminute-owner-private-handoff
+          rm -f "/tmp/flowminute-b1-$TARGET_DATE-source-run.json"
+          echo "GITHUB_DRAFT_ONLY_NO_LAPTOP_NO_YOUTUBE_TOKEN_NO_PUBLIC_RELEASE"
