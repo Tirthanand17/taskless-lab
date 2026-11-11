@@ -167,7 +167,7 @@
           "CLEAN IS DIFFERENT",
           "CONTROL CHAR",
           "CLEAN",
-          "The CLEAN function targets nonprinting characters. It is not a universal Unicode scrubber. If you still see mismatches after CLEAN or TRIM, inspect the underlying characters rather than applying random fixes."
+          "The CLEAN function targets nonprinting characters. It is not a universal Unicode scrubber. If mismatches remain after CLEAN or TRIM, inspect the real characters before trying other formulas."
         ],
         [
           "DON'T CHANGE IDS",
