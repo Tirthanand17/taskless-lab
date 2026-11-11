@@ -1,0 +1,200 @@
+{
+  "schema": "FLOWMINUTE_B1_SEARCH_LED_FIVE_DAY_V1",
+  "date_ist": "2026-11-17",
+  "status": "SOURCE_APPROVED_BY_VENDOR_LINKS_ONLY_OWNER_RELEASE_UNAPPROVED",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "episodes": [
+    {
+      "id": "fm_20261117_extra_csv_short_en",
+      "date_ist": "2026-11-17",
+      "kind": "short",
+      "language": "en",
+      "title": "One Extra CSV Can Ruin Your Power Query Combine #Shorts",
+      "source": "https://support.microsoft.com/en-us/excel/import-data-from-a-folder-with-multiple-files-power-query",
+      "source_linked_claims": "Microsoft Power Query folder-combine published instructions; original fictional sample data",
+      "voice": "af_heart",
+      "time_ist": "11:00",
+      "scenes": [
+        [
+          "THREE FILES?",
+          "JAN",
+          "BACKUP.CSV",
+          "Power Query can combine files in a folder, but a hidden backup or unrelated file may be included too."
+        ],
+        [
+          "FOLDER CONTENTS",
+          "ONE SCHEMA",
+          "SAME HEADERS",
+          "Microsoft recommends keeping files with the same schema in a dedicated folder, without unrelated extras."
+        ],
+        [
+          "CHECK PREVIEW",
+          "FILE LIST",
+          "VERIFY",
+          "Before combining, look at the file list. Verify that only the intended monthly files are present."
+        ],
+        [
+          "FILTER FILES",
+          "EXTENSION",
+          "FOLDER PATH",
+          "If the source folder has other files, filter the relevant file names or extensions in Power Query before combining."
+        ],
+        [
+          "THE SAVE",
+          "THREE MONTHS",
+          "NOT BACKUP",
+          "A repeatable query is only as reliable as the files it reads. Check the folder before every refresh."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261117_schema_mismatch_short_en",
+      "date_ist": "2026-11-17",
+      "kind": "short",
+      "language": "en",
+      "title": "Power Query Monthly CSVs Not Combining? Check Headers #Shorts",
+      "source": "https://support.microsoft.com/en-us/excel/import-data-from-a-folder-with-multiple-files-power-query",
+      "source_linked_claims": "Microsoft Power Query folder-combine published instructions; original fictional sample data",
+      "voice": "af_heart",
+      "time_ist": "20:30",
+      "scenes": [
+        [
+          "WHY IS JULY MISSING?",
+          "AMOUNT",
+          "SALES VALUE",
+          "Your monthly files look identical, but July changed the Amount column's name. That can change what Power Query finds."
+        ],
+        [
+          "COLUMN NAMES",
+          "MATCH",
+          "SCHEMA",
+          "Microsoft recommends matching column headers, data types, and numbers of columns when combining folder files."
+        ],
+        [
+          "NOT FILE ORDER",
+          "HEADER NAME",
+          "MATCHES",
+          "The column order can differ, because Power Query matches columns by names. Inconsistent names remain a risk."
+        ],
+        [
+          "FIX THE SOURCE",
+          "RENAME HEADER",
+          "RETRY",
+          "Standardize headers in the source copies or apply a reviewed transformation before combining."
+        ],
+        [
+          "CHECK AFTER REFRESH",
+          "JUNE",
+          "JULY",
+          "After refresh, compare the expected months and row counts. Do not assume all files loaded just because the query ran."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261117_combine_csv_long_en",
+      "date_ist": "2026-11-17",
+      "kind": "long",
+      "language": "en",
+      "title": "Combine Monthly CSV Files in Excel Without Losing Rows | Power Query",
+      "source": "https://support.microsoft.com/en-us/excel/import-data-from-a-folder-with-multiple-files-power-query",
+      "source_linked_claims": "Microsoft Power Query folder-combine published instructions; original fictional sample data",
+      "voice": "am_michael",
+      "time_ist": "16:00",
+      "scenes": [
+        [
+          "ONE FOLDER. FOUR FILES.",
+          "JAN FEB MAR",
+          "BACKUP CSV",
+          "Imagine four fictional CSV files in a folder: January, February, March and a backup. You want three months of sales, not the backup. If you combine blindly, the result may include rows you never intended to analyze."
+        ],
+        [
+          "THE RELIABLE GOAL",
+          "RAW MONTHS",
+          "ONE TABLE",
+          "Power Query can combine multiple files with a consistent schema and make repeatable transformations. Before starting, define which months belong in the final table and what columns each file should provide."
+        ],
+        [
+          "STEP ONE CLEAN FOLDER",
+          "MONTH FILES",
+          "NO EXTRAS",
+          "Microsoft's instructions recommend a dedicated folder without unrelated files. Keep only the intended source CSVs there, or prepare to filter the file list to exactly the required set before you combine."
+        ],
+        [
+          "STEP TWO SAME HEADERS",
+          "AMOUNT",
+          "AMOUNT",
+          "Each file should use consistent header names, data types and column counts. Column order can differ, because Power Query matches columns by column name. A changed header can break the expected schema."
+        ],
+        [
+          "STEP THREE FROM FOLDER",
+          "DATA TAB",
+          "FROM FOLDER",
+          "In supported Excel versions, start on Data, then Get Data, From File, From Folder. Select the folder containing your sample monthly files. This is an original demonstration, not a recording of your own Excel installation."
+        ],
+        [
+          "STEP FOUR INSPECT LIST",
+          "JAN FEB MAR",
+          "BACKUP",
+          "Power Query previews the files. Check every name and extension. If a backup or unrelated report appears, filter it out before loading. Repeating a bad folder selection can create a repeating data error."
+        ],
+        [
+          "STEP FIVE COMBINE",
+          "SAMPLE FILE",
+          "TRANSFORM",
+          "Use Combine and Transform Data to open the Power Query Editor. Check which sample file is selected and the delimiter or data-type detection. A different sample can change the steps Power Query creates."
+        ],
+        [
+          "STEP SIX CHECK TYPES",
+          "00123",
+          "123",
+          "Watch identifier columns: automatic numeric conversion can remove leading zeros. Decide whether a column is an identifier or a mathematical number, then choose the intended type before trusting the combined result."
+        ],
+        [
+          "STEP SEVEN REVIEW STEPS",
+          "CHANGED TYPE",
+          "CHECK",
+          "Power Query records transformation steps. Inspect Changed Type and any filters so they apply correctly to every month. A single wrong assumption can silently propagate into later refreshes."
+        ],
+        [
+          "STEP EIGHT COUNT ROWS",
+          "JAN 10",
+          "TOTAL 30",
+          "In this fictional example, each of three source files contains ten records, so you expect thirty before intentional filtering. A mismatched count is a signal to investigate, not proof the data is clean."
+        ],
+        [
+          "STEP NINE REFRESH",
+          "NEW APRIL",
+          "VERIFY",
+          "Once your query is correct, you can add a compatible new monthly file and refresh. Recheck file inclusion, schema and record counts. Refresh does not replace quality control; it simply re-runs the saved transformations."
+        ],
+        [
+          "FINAL OUTPUT AUDIT",
+          "MONTHS",
+          "ROWS",
+          "Before using the report, compare the combined table with its source files. Verify headers, types, included months, row totals and any exclusions. This small review prevents many expensive spreadsheet mistakes."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    }
+  ]
+}

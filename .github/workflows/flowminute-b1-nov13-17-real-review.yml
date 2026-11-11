@@ -1,0 +1,159 @@
+name: Flowminute B1 Nov13-17 Original 2 Shorts + 1 Long Review (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "content/nov13_17_2026/**"
+      - "autopilot/branch1_nov13_17_original_batch.py"
+      - "autopilot/test_branch1_nov13_17_original_batch.py"
+      - ".github/workflows/flowminute-b1-nov13-17-real-review.yml"
+      - "docs/BRANCH1_NOV13_17_SEARCH_LED_RELEASE_PLAN.md"
+  workflow_dispatch:
+    inputs:
+      date_ist:
+        description: "Exact calendar day to render, two Shorts + one Long"
+        required: true
+        type: choice
+        options: ["2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16", "2026-11-17"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b1-5day-review-${{ github.ref }}-${{ inputs.date_ist }}
+  cancel-in-progress: false
+
+jobs:
+  source_and_native_frame_validation:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install original font and Pillow drawing toolchain
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python -m pip install --disable-pip-version-check --only-binary=:all: 'Pillow>=11,<13'
+      - name: Test all fifteen complete scripts and original physical frames, no YouTube
+        run: |
+          set -euo pipefail
+          python -B -m py_compile autopilot/branch1_nov13_17_original_batch.py autopilot/test_branch1_nov13_17_original_batch.py
+          python -B -m unittest -v autopilot.test_branch1_nov13_17_original_batch
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          source=Path("autopilot/branch1_nov13_17_original_batch.py").read_text()
+          ast.parse(source)
+          for forbidden in ("youtube.videos().insert","publish_youtube",
+                            "upload_youtube","FLOWMINUTE_ENABLE_PUBLISH=true"):
+              assert forbidden not in source
+          assert "owner_final_voice_captions_facts_rights_review" in source
+          assert "physical_h264_aac_full_decode_passed" in source
+          print("B1_15_SOURCE_LOCKED_ALL_FINAL_APPROVAL_FALSE_NO_YOUTUBE")
+          PY
+
+  physical_render_three_real_mp4s:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: [source_and_native_frame_validation]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    env:
+      RUN_DATE: ${{ inputs.date_ist }}
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install original video voice drawing and FFmpeg toolchain
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core libsndfile1
+          python -m pip install --disable-pip-version-check --only-binary=:all: \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' 'soundfile>=0.12,<1' \
+            'kokoro-onnx==0.6.1' 'imageio-ffmpeg>=0.4,<1'
+      - name: Fetch and SHA-verify public Kokoro model and voice weights
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b1-5day-public-voice
+          cd /tmp/flowminute-b1-5day-public-voice
+          base="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 240 \
+            -o kokoro-v1.0.int8.onnx "$base/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 180 \
+            -o voices-v1.0.bin "$base/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+      - name: Render actual two Shorts and one Long with postencoded AAC mastering and full decode
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_nov13_17_original_batch \
+            --date "$RUN_DATE" \
+            --model /tmp/flowminute-b1-5day-public-voice/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b1-5day-public-voice/voices-v1.0.bin \
+            --out "/tmp/flowminute-b1-$RUN_DATE-three"
+      - name: Independently re-hash three full videos, native SRTs, covers and scene contacts
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          day=os.environ["RUN_DATE"]
+          root=Path("/tmp/flowminute-b1-"+day+"-three")
+          m=json.loads((root/"DAY_ORIGINAL_THREE_REVIEW_MANIFEST.json").read_text("utf8"))
+          assert m["status"]=="B1_NOV13_17_PHYSICAL_THREE_ORIGINALS_OWNER_REVIEW_NO_UPLOAD"
+          assert m["actual_h264_aac_verified_mp4_count"]==3
+          assert m["actual_original_shorts"]==2 and m["actual_original_longs"]==1
+          assert m["release_owner_authorizations"]==0
+          assert m["youtube_uploads"]==0 and m["youtube_scheduled_writes"]==0
+          assert [r["kind"] for r in m["episodes"]]==["short","short","long"]
+          assert [r["proposed_time_ist"] for r in m["episodes"]]==["11:00","20:30","16:00"]
+          assert len({r["actual_mp4_sha256"] for r in m["episodes"]})==3
+          for r in m["episodes"]:
+              assert r["physical_h264_aac_full_decode_passed"] is True
+              assert r["post_encoded_mastering"]["integrated_lufs_and_true_peak_within_internal_band"] is True
+              assert r["one_way_original_visual_states"]==3*r["original_scenes"]
+              assert r["owner_final_voice_captions_facts_rights_review"] is False
+              assert r["release_signed"] is False
+              assert r["youtube_uploaded"] is False and r["youtube_scheduled"] is False
+              assert len(r["files"])==4
+              for f in r["files"]:
+                  p=root/r["episode_id"]/f["name"]
+                  assert p.is_file() and not p.is_symlink()
+                  assert p.stat().st_size==f["bytes"]
+                  assert hashlib.sha256(p.read_bytes()).hexdigest()==f["sha256"]
+          print("THREE_REAL_HASHED_FULL_DECODED_ORIGINAL_MP4S_WITH_ZERO_YOUTUBE_WRITES")
+          PY
+      - name: Retain 3 full original review MP4s, SRTs, covers and contact sheets for 7 days
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-B1-${{ inputs.date_ist }}-2Shorts-1Long-UNAPPROVED-${{ github.run_id }}
+          path: /tmp/flowminute-b1-${{ inputs.date_ist }}-three/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 1
+      - name: Destroy original media and model from temporary GitHub runner
+        if: always()
+        run: |
+          rm -rf "/tmp/flowminute-b1-$RUN_DATE-three" /tmp/flowminute-b1-5day-public-voice
+          echo "NO LAPTOP DISK, NO YOUTUBE TOKEN, NO UPLOAD, NO SCHEDULE CHANGE"

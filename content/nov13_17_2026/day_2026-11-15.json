@@ -1,0 +1,200 @@
+{
+  "schema": "FLOWMINUTE_B1_SEARCH_LED_FIVE_DAY_V1",
+  "date_ist": "2026-11-15",
+  "status": "SOURCE_APPROVED_BY_VENDOR_LINKS_ONLY_OWNER_RELEASE_UNAPPROVED",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "episodes": [
+    {
+      "id": "fm_20261115_spill_error_short_en",
+      "date_ist": "2026-11-15",
+      "kind": "short",
+      "language": "en",
+      "title": "Excel #SPILL! Error? Check the Cells in Its Way #Shorts",
+      "source": "https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error",
+      "source_linked_claims": "Official Microsoft support; no real personal workbook",
+      "voice": "af_heart",
+      "time_ist": "11:00",
+      "scenes": [
+        [
+          "ONE CELL BLOCKS IT",
+          "#SPILL!",
+          "RANGE BLOCKED",
+          "Your Excel formula returns a spill error. Often the cells where its results should appear are not empty."
+        ],
+        [
+          "SEE THE RANGE",
+          "DASHED BORDER",
+          "BLOCKER",
+          "Select the formula cell. Excel can show the intended spill range with a dashed border."
+        ],
+        [
+          "FIND OBSTRUCTION",
+          "ERROR ALERT",
+          "BLOCKING CELL",
+          "Excel's error alert may offer Select Obstructing Cells. Use it to locate values blocking the output."
+        ],
+        [
+          "FIX SAFELY",
+          "MOVE VALUE",
+          "RECALCULATE",
+          "Review what is in those cells. Move unrelated data safely before clearing anything; then let the formula recalculate."
+        ],
+        [
+          "NOT EVERY SPILL",
+          "#SPILL!",
+          "CHECK CAUSE",
+          "Blocked ranges are one common cause, not the only one. Read the exact error explanation before deleting data."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261115_xlookup_first_short_en",
+      "date_ist": "2026-11-15",
+      "kind": "short",
+      "language": "en",
+      "title": "XLOOKUP Picks the FIRST Match! Here's How to Check #Shorts",
+      "source": "https://support.microsoft.com/en-us/excel/functions/xlookup-function",
+      "source_linked_claims": "Official Microsoft support; no real personal workbook",
+      "voice": "af_heart",
+      "time_ist": "20:30",
+      "scenes": [
+        [
+          "SAME ID TWICE",
+          "FIRST MATCH",
+          "NOT LATEST",
+          "Two rows have the same lookup key. XLOOKUP's default search starts with the first match, not the last."
+        ],
+        [
+          "EXACT BY DEFAULT",
+          "MATCH 0",
+          "EXACT",
+          "XLOOKUP defaults to exact match. That helps prevent accidental approximate matching, but not duplicate-key ambiguity."
+        ],
+        [
+          "SEARCH ORDER",
+          "MODE 1",
+          "FIRST TO LAST",
+          "Microsoft documents the search-mode argument. Mode one searches first to last, so the first matching row wins."
+        ],
+        [
+          "LATEST MATCH",
+          "MODE -1",
+          "LAST TO FIRST",
+          "For a deliberate last-match search, use search mode negative one, after checking that last really means newest."
+        ],
+        [
+          "CHECK YOUR KEY",
+          "DUPLICATES",
+          "SOURCE ORDER",
+          "Do not silently treat the first match as unique. Verify the key and row ordering before trusting the returned record."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261115_formula_errors_long_en",
+      "date_ist": "2026-11-15",
+      "kind": "long",
+      "language": "en",
+      "title": "3 Excel Formula Errors You Can Diagnose Without Guessing",
+      "source": "https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error",
+      "source_linked_claims": "Official Microsoft support; no real personal workbook",
+      "voice": "am_michael",
+      "time_ist": "16:00",
+      "scenes": [
+        [
+          "IT LOOKS LIKE A BROKEN FORMULA",
+          "#SPILL!",
+          "ONE BLOCKER",
+          "This fictional worksheet shows a formula returning a spill error. The function might be correct; a cell in the destination range can be blocking its results. Let's diagnose three common spreadsheet symptoms without randomly deleting data."
+        ],
+        [
+          "SYMPTOM ONE SPILL",
+          "ARRAY RESULT",
+          "NEEDS SPACE",
+          "Dynamic array formulas can return several values that need neighboring blank cells. If those cells contain anything, Excel may display a spill error instead of the expected list."
+        ],
+        [
+          "SHOW THE RANGE",
+          "DASHED BORDER",
+          "CHECK CELLS",
+          "Select the formula cell. Excel can outline its intended spill range. Look at that range before making changes; an occupied cell might hold important original data."
+        ],
+        [
+          "SAFE SPILL FIX",
+          "COPY FIRST",
+          "MOVE BLOCKER",
+          "Use the error alert when available to find obstructing cells. Save or move necessary data before clearing a truly unnecessary blocker. The goal is to make space without discarding something else."
+        ],
+        [
+          "SYMPTOM TWO NA",
+          "#N/A",
+          "NO MATCH",
+          "An XLOOKUP result of N A often means the lookup value was not found under the chosen match behavior. It is not evidence that the underlying record does not exist in every system."
+        ],
+        [
+          "EXACT MATCH DEFAULT",
+          "MATCH MODE 0",
+          "EXACT",
+          "Unlike older formulas that invite approximate-match mistakes, XLOOKUP uses exact match as its default. That is useful, but a typed ID, whitespace difference, or missing value can still produce no match."
+        ],
+        [
+          "DUPLICATE KEY RISK",
+          "TWO MATCHES",
+          "FIRST ONE",
+          "Another dangerous outcome is not an error at all. If a lookup key occurs twice, XLOOKUP starts at the first match by default. A legitimate-looking returned value may be the wrong transaction."
+        ],
+        [
+          "SEARCH ORDER CHOICE",
+          "FIRST",
+          "LAST",
+          "Microsoft documents search mode one for first to last and negative one for last to first. A reverse search is useful only when the source ordering has a real meaning. Do not use it as a blind fix."
+        ],
+        [
+          "SYMPTOM THREE TEXT",
+          "00123",
+          "123",
+          "Lookup failures can also come from text-versus-number differences. A code with leading zeros is not the same string as a numeric value after its zeros were removed. Compare raw source and lookup key formats."
+        ],
+        [
+          "EXPLAIN THE DIAGNOSIS",
+          "SOURCE KEY",
+          "RETURN KEY",
+          "Before wrapping everything in an error-hiding function, inspect what the formula searched for and which range it scanned. Check duplicate keys and whether expected results require more than one output cell."
+        ],
+        [
+          "ERROR OR SILENT ERROR?",
+          "#SPILL!",
+          "WRONG ROW",
+          "A displayed error is visible and often fixable. A silently wrong lookup result can be worse because it looks valid. Verify output against an independently known sample record."
+        ],
+        [
+          "FINAL TEST CHECKLIST",
+          "SPACE",
+          "MATCH ORDER",
+          "For spill errors, inspect occupied range cells. For no match, check the exact key and data types. For an unexpected match, inspect duplicates and search order. Every fix should preserve the original source."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    }
+  ]
+}

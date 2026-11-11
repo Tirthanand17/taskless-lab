@@ -1,0 +1,206 @@
+{
+  "schema": "FLOWMINUTE_B1_SEARCH_LED_FIVE_DAY_V1",
+  "date_ist": "2026-11-14",
+  "status": "SOURCE_APPROVED_BY_VENDOR_LINKS_ONLY_OWNER_RELEASE_UNAPPROVED",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "episodes": [
+    {
+      "id": "fm_20261114_chrome_notifications_short_en",
+      "date_ist": "2026-11-14",
+      "kind": "short",
+      "language": "en",
+      "title": "Chrome Website Notifications Won't Stop? Fix the Permission #Shorts",
+      "source": "https://support.google.com/chrome/answer/3220216",
+      "source_linked_claims": [
+        "Chrome sites can send notifications; settings and blockers are documented"
+      ],
+      "voice": "af_heart",
+      "time_ist": "11:00",
+      "scenes": [
+        [
+          "THE SITE KEEPS PINGING",
+          "ALLOW",
+          "BLOCK",
+          "Those endless notification popups may be coming from a site you allowed in Chrome. You can revoke that permission."
+        ],
+        [
+          "NOT A VIRUS PROOF",
+          "SITE PERMISSION",
+          "NOT MALWARE",
+          "A noisy notification by itself does not prove your computer is infected. First check which website received permission."
+        ],
+        [
+          "THE REAL SETTING",
+          "PRIVACY",
+          "SITE SETTINGS",
+          "On desktop Chrome, open Settings, Privacy and security, Site settings, then Notifications. Your version may label menus differently."
+        ],
+        [
+          "REMOVE THE EXCEPTION",
+          "ALLOWED SITE",
+          "BLOCK",
+          "Find the unwanted site under allowed notifications and block it. Use quieter notification prompts if interruptions continue."
+        ],
+        [
+          "ONE CHECK",
+          "SITE NAME",
+          "STILL ALLOWED?",
+          "The fix is permission control, not clicking scary alerts. Confirm the site is no longer allowed to notify you."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261114_thirdparty_access_short_en",
+      "date_ist": "2026-11-14",
+      "kind": "short",
+      "language": "en",
+      "title": "Your Google Account Still Trusts Old Apps? Check This #Shorts",
+      "source": "https://support.google.com/accounts/answer/13533235",
+      "source_linked_claims": [
+        "Google Account third-party app and service access management"
+      ],
+      "voice": "bf_emma",
+      "time_ist": "20:30",
+      "scenes": [
+        [
+          "OLD APP ACCESS",
+          "CONNECTED APP",
+          "STILL THERE?",
+          "That old app you stopped using might still be connected to your Google Account. Review access rather than guessing."
+        ],
+        [
+          "WHAT ACCESS?",
+          "SIGN IN",
+          "DATA ACCESS",
+          "Third-party connections can be used for Sign in with Google or to access permitted account data, depending on your grant."
+        ],
+        [
+          "OPEN THE LIST",
+          "ACCOUNT",
+          "CONNECTIONS",
+          "From your Google Account's security and connections area, review third-party apps and services with access."
+        ],
+        [
+          "REMOVE IF UNUSED",
+          "UNUSED APP",
+          "REMOVE ACCESS",
+          "If an app no longer needs access, remove its connection. Google documents that access can be revoked."
+        ],
+        [
+          "DO NOT OVERCLAIM",
+          "REVOKE ACCESS",
+          "NOT DELETE DATA",
+          "Removing access stops future access through that grant; it may not erase data already shared with the service."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261114_browser_permissions_long_en",
+      "date_ist": "2026-11-14",
+      "kind": "long",
+      "language": "en",
+      "title": "Five Browser Permissions Worth Checking Before You Click Allow",
+      "source": "https://support.google.com/chrome/answer/3220216",
+      "source_linked_claims": [
+        "Google Chrome notification and permission controls, Google third party connections"
+      ],
+      "voice": "am_michael",
+      "time_ist": "16:00",
+      "scenes": [
+        [
+          "WHY WAS THAT SITE PINGING?",
+          "ALLOWED",
+          "NOTIFICATIONS",
+          "A fictional website sends notification after notification, even when its tab is closed. You might think it is a virus, but first check whether the browser granted notification access."
+        ],
+        [
+          "PERMISSIONS EXPLAINED",
+          "WEBSITE",
+          "BROWSER",
+          "Websites request specific capabilities and browsers keep rules for them. Some are useful during a task; others outlive the reason you granted access. This tutorial shows a review workflow using original illustrative settings screens."
+        ],
+        [
+          "CHECK ONE NOTIFICATIONS",
+          "ALLOW",
+          "BLOCK",
+          "On desktop Chrome, open Settings, Privacy and security, Site settings, then Notifications. Look for unfamiliar websites in the allowed list. Block those you no longer want to hear from instead of engaging with suspicious notification content."
+        ],
+        [
+          "CHECK TWO LOCATION",
+          "LOCATION",
+          "ASK FIRST",
+          "Location requests may make sense for maps or local search, but not every website needs the same access. In Chrome Site settings review location grants and remove those you do not recognize or no longer need."
+        ],
+        [
+          "CHECK THREE CAMERA",
+          "CAMERA",
+          "REVIEW",
+          "A video meeting may need camera permission. A random page usually does not. Review which websites have camera access, and keep only the sites that currently require it."
+        ],
+        [
+          "CHECK FOUR MICROPHONE",
+          "MIC",
+          "REVOKE",
+          "Microphone permission can be appropriate for online calls. If an unfamiliar website has retained that grant, review it. Deny unneeded access and allow a trusted site again when an actual task requires it."
+        ],
+        [
+          "PROMPTS VS POPUPS",
+          "NOTIFICATION",
+          "POPUP",
+          "Web notifications and popup windows are separate settings. Turning off popup windows does not necessarily revoke a website's previously granted notification permission. Check the specific control tied to the symptom."
+        ],
+        [
+          "QUIETER PROMPTS",
+          "INTERRUPT",
+          "QUIET",
+          "Chrome provides a quieter notification-request experience. This changes how permission prompts appear; it does not magically delete every grant you previously gave. Review allowed sites first."
+        ],
+        [
+          "GOOGLE CONNECTIONS",
+          "THIRD PARTY",
+          "REVIEW",
+          "Browser site permissions are not the same as connections to a Google Account. Separate account access can persist through an app or service. Visit your official account settings to review third-party connections independently."
+        ],
+        [
+          "REMOVE OLD ACCESS",
+          "APP ACCESS",
+          "DISCONNECT",
+          "If a connected app is no longer useful, remove its access through official account controls. Remember that revoking access does not prove data already provided to that service has been deleted."
+        ],
+        [
+          "AVOID FAKE ALERTS",
+          "CLICK HERE!",
+          "STOP",
+          "A notification saying your computer is infected is not a reliable diagnosis. Avoid clicking alarming links to fix the issue. Open Chrome settings directly and inspect permission grants yourself."
+        ],
+        [
+          "FINAL PRIVACY CHECK",
+          "NOTIFICATIONS",
+          "CAM MIC",
+          "Finish with a quick audit: notification sites, location grants, camera, microphone, and unrelated third-party account connections. Remove only permissions you do not need and verify trusted services still work."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    }
+  ]
+}
