@@ -1,0 +1,51 @@
+{
+  "id": "fm_20261113_trim_nbsp_part1_short_en",
+  "renderer": "manifest_v2",
+  "type": "short",
+  "language": "en",
+  "title": "Why Excel TRIM Didn't Remove That Hidden Space #Shorts",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. You cleaned a name with Excel TRIM, but the hidden space remained. It might be a nonbreaking space. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/functions/trim-function #FlowMinuteLab #TechTips",
+  "tags": [
+    "Excel",
+    "Spreadsheet",
+    "Data cleaning",
+    "TRIM",
+    "COUNTA",
+    "Shorts"
+  ],
+  "source_links": [
+    "https://support.microsoft.com/en-us/excel/functions/trim-function"
+  ],
+  "scenes": [
+    {
+      "title": "THE SPACE SURVIVED",
+      "narration": "You cleaned a name with Excel TRIM, but the hidden space remained. It might be a nonbreaking space."
+    },
+    {
+      "title": "THE REAL CAUSE",
+      "narration": "Microsoft explains that TRIM handles normal ASCII spaces, but does not remove character one sixty by itself."
+    },
+    {
+      "title": "THE TEST",
+      "narration": "In this invented row, check the character code instead of repeatedly running the same formula."
+    },
+    {
+      "title": "THE FIX",
+      "narration": "Replace character one sixty with an ordinary space using SUBSTITUTE, then wrap the result in TRIM."
+    },
+    {
+      "title": "COPY THE FORMULA",
+      "narration": "In the formula, substitute character one sixty with a normal space. Then wrap the result in TRIM, and compare it against your data."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-13",
+  "proposed_time_ist": "11:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
