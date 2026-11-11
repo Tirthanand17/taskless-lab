@@ -173,7 +173,7 @@
           "ACTIONS CAN SHARE",
           "THIRD PARTY",
           "SEPARATE POLICY",
-          "If you use actions with external services, data sent to that provider may follow the third party's own privacy policy. A temporary-chat label does not override what a separate service does with information it receives."
+          "If you use actions with external services, the data you send may follow that third party's privacy policy. A temporary-chat label does not override what a separate service does with information it receives."
         ],
         [
           "WHEN TO USE",
