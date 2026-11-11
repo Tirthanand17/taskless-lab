@@ -69,7 +69,7 @@
           "WHY IS JULY MISSING?",
           "AMOUNT",
           "SALES VALUE",
-          "Your monthly files look the same, but July renamed the Amount column to Sales Value."
+          "Your monthly files look identical, but July changed the Amount column's name. That can change what Power Query finds."
         ],
         [
           "COLUMN NAMES",
