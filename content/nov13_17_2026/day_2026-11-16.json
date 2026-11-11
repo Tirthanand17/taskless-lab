@@ -55,45 +55,45 @@
       }
     },
     {
-      "id": "fm_20261116_ai_quotes_short_en",
+      "id": "fm_20261116_temporary_chat_save_short_en",
       "date_ist": "2026-11-16",
       "kind": "short",
       "language": "en",
-      "title": "AI Quoted a Document? Check Those EXACT Words #Shorts",
-      "source": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth",
-      "source_linked_claims": "OpenAI official help center; original fictional demo, not a real ChatGPT account",
+      "title": "Saved a ChatGPT Temporary Chat? This Changes the Rules #Shorts",
+      "source": "https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt",
+      "source_linked_claims": "Temporary chats can be saved and become regular chats",
       "voice": "bf_emma",
       "time_ist": "20:30",
       "scenes": [
         [
-          "THE QUOTE LOOKS REAL",
-          "AI QUOTE",
-          "MISSING WORDS?",
-          "An AI assistant can produce a convincing quotation that is not actually present in the source document."
+          "TEMP CHAT, THEN SAVE",
+          "TEMPORARY",
+          "SAVE CHAT",
+          "Temporary Chat stays out of your ChatGPT history while it remains temporary. But there is a way to save it."
         ],
         [
-          "SOUNDING SURE",
-          "CONFIDENT",
-          "NOT PROOF",
-          "OpenAI notes that chat models can make incorrect or misleading claims even when the answer sounds confident."
+          "AFTER YOU SAVE",
+          "REGULAR CHAT",
+          "NEW RULES",
+          "OpenAI explains that saving a temporary chat converts it into a regular chat with different history and data rules."
         ],
         [
-          "OPEN THE SOURCE",
-          "SOURCE DOC",
-          "FIND TEXT",
-          "Search the original document for the quoted phrase. Confirm that the words and surrounding context match."
+          "TRAINING CONTROL",
+          "ACCOUNT SETTING",
+          "APPLIES",
+          "Once saved, your model-improvement setting and applicable workspace policies determine whether it can be used for training."
         ],
         [
-          "CHECK THE NUMBER",
-          "AI SAYS 50",
-          "DOC SAYS 15",
-          "In this fictional example, the summary changes a number. Verify the exact figure before repeating it."
+          "MEMORY DIFFERENCE",
+          "TEMP NO MEMORY",
+          "SAVED MAY",
+          "Temporary chats do not create memories. After saving, normal personalization rules can apply to that conversation."
         ],
         [
-          "SAFE HABIT",
-          "QUOTE",
-          "VERIFY",
-          "If you cannot find the passage, label it unverified rather than presenting AI-generated wording as a direct quote."
+          "THE SAFE HABIT",
+          "CHECK FIRST",
+          "THEN SAVE",
+          "Before saving, review any sensitive details and the resulting retention rules. Temporary does not mean permanently impossible to store."
         ]
       ],
       "approval": {
@@ -105,87 +105,87 @@
       }
     },
     {
-      "id": "fm_20261116_ai_verify_workflow_long_en",
+      "id": "fm_20261116_temporary_chat_privacy_long_en",
       "date_ist": "2026-11-16",
       "kind": "long",
       "language": "en",
-      "title": "AI Answer Looks Convincing? Verify the Actual Evidence in 5 Steps",
-      "source": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth",
-      "source_linked_claims": "OpenAI official help center; original fictional demo, not a real ChatGPT account",
+      "title": "ChatGPT Temporary Chat vs Regular Chat: 6 Privacy Differences",
+      "source": "https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt",
+      "source_linked_claims": "History, model improvement, memory, personalization, saving and up-to-30-day safety copy",
       "voice": "am_michael",
       "time_ist": "16:00",
       "scenes": [
         [
-          "THE NUMBER CHANGED",
-          "AI 50",
-          "SOURCE 15",
-          "An AI answer looks polished and confident. In this fictional example, it reports fifty when the source says fifteen. The design looks convincing, but the important number changed. Here's a verification workflow."
+          "TEMPORARY IS NOT ZERO STORAGE",
+          "TEMPORARY",
+          "UP TO 30 DAYS",
+          "Temporary Chat sounds like a conversation that vanishes immediately. But OpenAI's documentation explains that an unsaved temporary chat may be kept for up to thirty days for safety. Let's compare what actually changes."
         ],
         [
-          "WHY CONFIDENCE FAILS",
-          "FLUENT TEXT",
-          "NOT PROOF",
-          "Modern chat models produce useful language, but they can still invent facts, citations, or quotations. OpenAI's own help explains these limitations. A helpful draft is not the same as independent verification."
+          "DIFFERENCE ONE HISTORY",
+          "NOT IN HISTORY",
+          "REGULAR SAVED",
+          "Temporary chats remain outside your ChatGPT history while temporary. Regular chats normally remain saved to your account until you delete them or a workspace retention rule applies. These are different forms of storage."
         ],
         [
-          "STEP ONE ORIGINAL",
-          "SOURCE PAGE",
-          "OPEN IT",
-          "Start by opening the original source rather than trusting a link label. Is it a real publication, and does it discuss the claim you want to repeat? Check that the page belongs to the organization being cited."
+          "DIFFERENCE TWO TRAINING",
+          "TEMP NO",
+          "REGULAR SETTING",
+          "While a chat stays temporary, OpenAI says it is not used to improve models. Regular saved chats follow your model-improvement setting and any applicable workspace policy. You still need to check your own data controls."
         ],
         [
-          "STEP TWO SPECIFIC CLAIM",
-          "ANSWER",
-          "PASSAGE",
-          "Find the exact sentence or passage supporting the answer. A real web page can be cited for the wrong claim. If the sentence is missing, do not turn the source's reputation into imaginary evidence."
+          "DIFFERENCE THREE MEMORY",
+          "TEMP NO UPDATE",
+          "SAVED MAY",
+          "A temporary chat doesn't create or update memories. When you save it and convert it to a regular chat, ordinary personalization rules can apply. Don't confuse lack of memory creation with an absolute ban on data retention."
         ],
         [
-          "STEP THREE THE NUMBER",
-          "15",
-          "50",
-          "Next compare numbers, units, dates, and definitions. A tiny numeric change can invert a financial or scientific conclusion. Keep figures from the original document alongside the AI draft for comparison."
+          "PERSONALIZED TEMP MODE",
+          "EXISTING MEMORY",
+          "UNPERSONALIZED",
+          "A temporary chat can start in Personalized or Unpersonalized mode. Personalized mode can use existing memories and instructions, while Unpersonalized does not. Neither creates new memories while it remains temporary."
         ],
         [
-          "STEP FOUR THE QUALIFIER",
-          "CAN",
-          "ALWAYS",
-          "Look for words like may, can, often, and depends. An AI summary that turns may into always overstates the evidence. In this fictional example, the source describes a possibility, not a universal result."
+          "YOU CANNOT SWITCH",
+          "MODE SET",
+          "AT START",
+          "The personalization choice for a temporary chat is made when you begin it. You cannot change that conversation's mode midway. Think through the task before choosing the option you want."
         ],
         [
-          "STEP FIVE MISSING CONTEXT",
-          "FIRST SECTION",
-          "FULL SECTION",
-          "Read at least the surrounding paragraph. An extracted sentence may omit a condition or exception. Verify what population, product version, or date the source discusses before sharing a claim."
+          "DIFFERENCE FOUR RETENTION",
+          "UP TO 30 DAYS",
+          "SAFETY",
+          "For an unsaved temporary chat, OpenAI may keep a copy for up to thirty days for safety. That is not the same as immediate deletion, and it does not mean your temporary conversation appears in your normal chat history."
         ],
         [
-          "WHEN THE LINK FAILS",
-          "404",
-          "NOT VERIFIED",
-          "A link that returns an error, a mismatched title, or a source that never mentioned the topic is a warning. Search the publication's official pages and avoid inventing a supporting citation."
+          "DIFFERENCE FIVE SAVING",
+          "SAVE CHAT",
+          "REGULAR CHAT",
+          "If you choose Save Chat, the temporary conversation becomes a regular chat. From that point, its history, personalization and model-improvement behavior follows the settings that apply to saved conversations."
         ],
         [
-          "VERIFY QUOTED WORDS",
-          "AI QUOTE",
-          "SOURCE TEXT",
-          "Direct quotations need exact words. If a phrase cannot be located in the source, rewrite it as your own summary only after verifying the actual meaning. Do not present it in quotation marks."
+          "FILES AND SAVE",
+          "UPLOADED FILE",
+          "LIBRARY",
+          "If a temporary conversation includes uploaded files and you later save it, eligible files can also become saved in Library or another available space. Don't assume every uploaded file disappears when the chat closes."
         ],
         [
-          "USE PRIMARY HELP",
-          "OFFICIAL DOC",
-          "VERSION",
-          "For software settings, start with the product's current official documentation. Menu names and features can change, so note the supported platform and version rather than treating a screenshot as permanent proof."
+          "ACTIONS CAN SHARE",
+          "THIRD PARTY",
+          "SEPARATE POLICY",
+          "If you use actions with external services, the data you send may follow that third party's privacy policy. A temporary-chat label does not override what a separate service does with information it receives."
         ],
         [
-          "DECIDE WHAT TO SHARE",
-          "EVIDENCE",
-          "CONFIDENCE",
-          "Now separate claims into verified, uncertain, and unsupported. You can still use AI to explain a complex topic, but keep uncertainty visible and avoid giving an unverified answer more certainty than its source warrants."
+          "WHEN TO USE",
+          "ONE-OFF",
+          "LOW HISTORY",
+          "Temporary Chat can help when you don't want an ordinary conversation saved in your history, and you don't want that temporary conversation used to improve models. It is not a substitute for considering what sensitive information you share."
         ],
         [
-          "ONE LAST CHECK",
-          "FIVE STEPS",
-          "NO SHORTCUT",
-          "Before posting a tutorial or citing a result: open the source, locate the claim, compare numbers, preserve qualifiers, and read the surrounding context. Ask which step would have caught the fictional fifty versus fifteen error."
+          "YOUR SIX-POINT CHECK",
+          "HISTORY",
+          "CONTROL",
+          "Remember six questions: will it appear in history, help train models, create memory, use existing personalization, be retained temporarily, or become regular if saved? Check current product settings before sharing important information."
         ]
       ],
       "approval": {

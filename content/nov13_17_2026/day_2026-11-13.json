@@ -57,47 +57,47 @@
       }
     },
     {
-      "id": "fm_20261113_duplicates_part2_short_en",
+      "id": "fm_20261113_count_vs_counta_short_en",
       "date_ist": "2026-11-13",
       "kind": "short",
       "language": "en",
-      "title": "Excel Remove Duplicates Can Delete Data! Check This First #Shorts",
-      "source": "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates",
+      "title": "Excel COUNT Says 2 but You Have 4 Values? Here's Why #Shorts",
+      "source": "https://support.microsoft.com/en-us/excel/ways-to-count-values-in-a-worksheet",
       "source_linked_claims": [
-        "Remove Duplicates permanently deletes; identify correct columns"
+        "COUNT counts numeric values in a range while COUNTA counts nonempty cells"
       ],
       "voice": "af_heart",
       "time_ist": "20:30",
       "scenes": [
         [
-          "DON'T CLICK YET",
-          "5 ROWS",
-          "4 LEFT",
-          "Remove Duplicates can permanently delete a row. In this fictional table, one choice changes your data."
+          "COUNT MISSED THE TEXT",
+          "COUNT = 2",
+          "COUNTA = 4",
+          "In this fictional Excel column, there are four filled cells, but COUNT returns only two. Why the mismatch?"
         ],
         [
-          "SPOT THE RISK",
-          "NAME ONLY",
-          "WRONG KEY",
-          "Two people can share a name. A duplicate name alone does not prove two complete records are duplicates."
+          "WHAT COUNT COUNTS",
+          "NUMBER",
+          "TEXT",
+          "Microsoft explains COUNT counts numeric entries in a range. Text labels are not counted as numbers."
         ],
         [
-          "PREVIEW FIRST",
-          "CONDITIONAL",
-          "FORMATTING",
-          "Microsoft recommends highlighting duplicate values to review them before deciding what to delete."
+          "WHAT COUNTA COUNTS",
+          "NOT EMPTY",
+          "COUNTA",
+          "COUNTA counts cells that contain data, including text. It answers a different question from COUNT."
         ],
         [
-          "COPY THE DATA",
-          "BACKUP",
-          "THEN EDIT",
-          "Copy the original table to another sheet. Choose the identifying columns intentionally before removing rows."
+          "ONE SPECIAL CATCH",
+          "EMPTY STRING",
+          "FORMULA",
+          "Microsoft notes that COUNTA can count formulas returning empty text. Visually blank isn't always truly empty."
         ],
         [
-          "THE SAFE RULE",
-          "MATCH COLUMNS",
-          "VERIFY COUNT",
-          "Review the duplicates and compare row counts after cleanup. Don't delete useful records just to tidy a table."
+          "PICK THE RIGHT TEST",
+          "COUNT",
+          "COUNTA",
+          "Use COUNT for numeric entries and COUNTA for nonempty entries. Check sample rows before trusting any total."
         ]
       ],
       "approval": {
@@ -109,89 +109,89 @@
       }
     },
     {
-      "id": "fm_20261113_excel_cleanup_workflow_long_en",
+      "id": "fm_20261113_invisible_excel_characters_long_en",
       "date_ist": "2026-11-13",
       "kind": "long",
       "language": "en",
-      "title": "Clean Messy Excel Data Without Deleting the Wrong Rows",
-      "source": "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates",
+      "title": "Excel Values Look the Same but Won't Match? Fix Hidden Characters",
+      "source": "https://support.microsoft.com/en-us/excel/functions/trim-function",
       "source_linked_claims": [
-        "Microsoft support remove duplicates, TRIM function, Power Query types"
+        "TRIM handles ASCII 32, not nonbreaking space 160; CLEAN and SUBSTITUTE can help"
       ],
       "voice": "am_michael",
       "time_ist": "16:00",
       "scenes": [
         [
-          "THIS DELETE WAS WRONG",
-          "5 ROWS",
-          "4 LEFT",
-          "Here is a fictional sales table with five rows. Someone selects only the name column and removes duplicates. One entirely different customer's row disappears. The screen looks neater, but the data is now wrong."
-        ],
-        [
-          "WORK BACKWARD",
-          "BEFORE",
-          "AFTER",
-          "A reliable cleanup process starts with a question: which records should exist afterward? Save a copy of the raw file, record its row count, and decide what a unique record means in that dataset."
-        ],
-        [
-          "STEP ONE BACKUP",
-          "RAW FILE",
-          "WORKING COPY",
-          "Make a working copy and keep the raw original untouched. Microsoft cautions that Remove Duplicates permanently deletes duplicate rows from the selected range. A backup lets you undo an incorrect choice."
-        ],
-        [
-          "STEP TWO SPACES",
-          "ANNA SPACE",
+          "TWO NAMES LOOK IDENTICAL",
           "ANNA",
-          "Visible names can look equal while hidden spaces make them different. TRIM removes excess ordinary spaces. Clean the name in a helper column first, instead of overwriting the only stored original."
+          "ANNA?",
+          "These two fictional names look identical. But a spreadsheet comparison can say they are different. The difference could be an invisible character, not a spelling error. Here is how to investigate without destroying the original data."
         ],
         [
-          "HIDDEN SPACE TRAP",
-          "ASCII 32",
+          "THE HIDDEN DIFFERENCE",
+          "REGULAR SPACE",
           "NBSP 160",
-          "One more twist: a nonbreaking space can survive TRIM because Excel's function is designed for ASCII character thirty two. Microsoft recommends checking and replacing character one sixty separately, for example with SUBSTITUTE."
+          "Text copied from websites or reports can contain characters that are hard to notice on a spreadsheet grid. Ordinary spaces and nonbreaking spaces are different character codes even when they appear visually similar."
         ],
         [
-          "STEP THREE TYPES",
+          "THE FIRST WRONG FIX",
+          "RUN TRIM",
+          "STILL WRONG",
+          "Many people try TRIM and assume every space disappears. Microsoft explains that Excel's TRIM specifically handles the common ASCII space character thirty two. A nonbreaking space, character one sixty, may remain."
+        ],
+        [
+          "DIAGNOSE WITH LEN",
+          "LEN BEFORE",
+          "LEN AFTER",
+          "Measure text length before and after a cleanup formula. If two apparently identical values still have different lengths, check for hidden whitespace or control characters. The result is a clue, not proof of which character you have."
+        ],
+        [
+          "CHARACTER THIRTY TWO",
+          "ASCII 32",
+          "TRIM",
+          "For ordinary extra spaces, TRIM can remove leading and trailing spaces and leave one between words. Keep a helper formula so you can see exactly what changed, instead of overwriting the imported field."
+        ],
+        [
+          "CHARACTER ONE SIXTY",
+          "NBSP 160",
+          "SUBSTITUTE",
+          "A nonbreaking space may survive TRIM. Microsoft documents using SUBSTITUTE to replace character one sixty with a regular space, then TRIM to normalize spacing. Confirm which code actually occurs in your file."
+        ],
+        [
+          "FORMULA EXAMPLE",
+          "SUBSTITUTE",
+          "TRIM",
+          "A practical formula replaces CHAR one sixty with a literal regular space using SUBSTITUTE, and wraps that result in TRIM. Copy the formula into a new column first and compare it with raw data."
+        ],
+        [
+          "CLEAN IS DIFFERENT",
+          "CONTROL CHAR",
+          "CLEAN",
+          "The CLEAN function targets nonprinting characters. It is not a universal Unicode scrubber. If mismatches remain after CLEAN or TRIM, inspect the real characters before trying other formulas."
+        ],
+        [
+          "DON'T CHANGE IDS",
           "00123",
           "123",
-          "Next check your data types. An identifier like zero zero one two three is a label, not a number you intend to calculate. If conversion already lost zeros, changing the display format does not reconstruct the source value."
+          "Another trap is converting text identifiers into numbers. An identifier that begins with zeros should generally remain text. Character cleanup and numeric type conversion are different operations with different risks."
         ],
         [
-          "STEP FOUR DUPES",
-          "SAME NAME",
-          "NEW ORDER",
-          "Now highlight potential duplicates without removing them. Decide whether customer ID, order ID, or another set of columns identifies a unique row. A common name can appear on many legitimate orders."
+          "PROTECT ORIGINAL",
+          "RAW SOURCE",
+          "NEW COLUMN",
+          "Never overwrite the only copy of imported records before validating a cleanup. Use a helper column, keep the original, and compare a few exact values. You need to be able to explain every change later."
         ],
         [
-          "WHICH COLUMNS?",
-          "ORDER ID",
-          "CUSTOMER",
-          "In this fictional example, matching a customer name alone is insufficient. Matching an order identifier can be more useful, but only after checking how the source system assigns identifiers and repeated transactions."
+          "VERIFY THE MATCH",
+          "BEFORE FALSE",
+          "AFTER TRUE",
+          "Use a simple, fictional before-and-after comparison. Once the correct hidden character has been replaced, the two intended keys can match. If they still differ, investigate case, formatting and source data."
         ],
         [
-          "DELETE ONLY AFTER",
-          "HIGHLIGHT",
-          "REVIEW",
-          "Excel offers conditional formatting to highlight duplicates. Compare the marked rows side by side. Copy the range before using Data, Remove Duplicates, and carefully select the intended comparison columns."
-        ],
-        [
-          "VERIFY COUNTS",
-          "5 BEFORE",
-          "4 AFTER",
-          "After cleanup, compare starting and ending row counts. For every removed record, identify why it was truly redundant. A file with fewer rows is not automatically a file with better data quality."
-        ],
-        [
-          "POWER QUERY OPTION",
-          "KEEP STEPS",
-          "REFRESH",
-          "Power Query can apply reviewed transformations to repeatable files instead of manual edits. Validate type detection and duplicate rules before refreshing; a repeatable mistake is still a mistake."
-        ],
-        [
-          "CHECK BEFORE SHARE",
-          "COUNT ROWS",
-          "CHECK KEYS",
-          "Before sharing the final data, sample the cleaned rows against the raw source. Audit whitespace, ID types, duplicate keys, and totals. The practical habit is simple: protect the source and verify your output."
+          "FINAL DATA CHECK",
+          "CHARACTER",
+          "SOURCE",
+          "The takeaway is to diagnose first: inspect visible text, compare lengths, identify the exact hidden character, and only then clean it. Keep a recoverable source and verify a sample before sharing your spreadsheet."
         ]
       ],
       "approval": {
