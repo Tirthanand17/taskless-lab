@@ -33,7 +33,8 @@ class Nov12FlatArtifactStagingTests(unittest.TestCase):
             meta=REPO/"content/episodes"/(id_+".json")
             episodir.joinpath(id_+".json").write_bytes(meta.read_bytes())
             episode=json.loads(meta.read_text("utf8"))
-            self.assertEqual(episode["proposed_publish_at_utc"],SLOTS_UTC[i])
+            self.assertEqual(episode["proposed_time_ist"],
+                             ("11:00","13:30","16:00","20:30")[i])
             self.assertEqual(validate(episode,[],editorial_only=False),[],
                              ("Unpublishable metadata content",id_))
             folder=src/id_
@@ -174,7 +175,9 @@ class Nov12FlatArtifactStagingTests(unittest.TestCase):
             self.assertFalse(meta["owner_exact_media_release_signoff_observed"])
             self.assertFalse(meta["youtube_uploaded"])
             self.assertFalse(meta["youtube_scheduled"])
-            self.assertEqual(meta["proposed_publish_at_utc"],utc)
+            self.assertEqual(meta["proposed_time_ist"],
+                             ("11:00","13:30","16:00","20:30")[list(NAMES).index(id_)])
+            self.assertEqual(meta["requested_date_ist"],"2026-11-12")
 
 
 if __name__=="__main__":
