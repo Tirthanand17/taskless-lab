@@ -1,0 +1,146 @@
+name: FlowMinute Nov12 Four Flat Original Release Candidates (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/flowminute-b1-nov12-flat-candidates.yml"
+      - "scripts/prepare_branch1_nov12_release_candidates.py"
+      - "scripts/test_prepare_branch1_nov12_release_candidates.py"
+      - "content/episodes/nov12_*.json"
+      - "docs/BRANCH1_NOV12_SCHEDULE_RELEASE_GATE.md"
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Successful, trusted main-branch four-original-video render run ID (never a PR run)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: flowminute-b1-nov12-flat-candidates
+  cancel-in-progress: false
+
+jobs:
+  no_network_publish_preflight:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Strict four-episode source metadata, SHA, owner and no-upload guard tests
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/prepare_branch1_nov12_release_candidates.py \
+            scripts/test_prepare_branch1_nov12_release_candidates.py
+          python -B -m unittest -v scripts.test_prepare_branch1_nov12_release_candidates
+          python -B scripts/validate_release.py content/episodes/nov12_short_a_excel_16digits.json
+          python -B scripts/validate_release.py content/episodes/nov12_short_b_ai_fake_citations.json
+          python -B scripts/validate_release.py content/episodes/nov12_long_excel_silent_errors.json
+          python -B scripts/validate_release.py content/episodes/nov12_short_c_drive_link.json
+          echo "NOV12 FOUR METADATA VALID; NEVER EXTERNAL RELEASE SIGNATURE OR YOUTUBE UPLOAD"
+
+  package_no_upload_candidates:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    needs: [no_network_publish_preflight]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate successful original main-only video render before artifact download
+        run: |
+          set -euo pipefail
+          if ! [[ "$SOURCE_RUN_ID" =~ ^[1-9][0-9]{0,19}$ ]]; then
+            echo "::error::Invalid source run ID"; exit 2
+          fi
+          gh run view "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --json headBranch,headSha,conclusion,event,workflowName \
+            > /tmp/flowminute-nov12-source-run-readback.json
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.prepare_branch1_nov12_release_candidates import validate_source_run
+          readback=json.loads(Path("/tmp/flowminute-nov12-source-run-readback.json").read_text("utf8"))
+          validate_source_run(readback)
+          print("SOURCE_RUN_MAIN_ONLY_COMPLETE_FOUR_VIDEO_RENDER_VERIFIED_NO_UPLOAD")
+          PY
+      - name: Download only exact original main four-video owner-review artifact
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-nov12-source-owner-review
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "flowminute-NOV12-three-Shorts-one-Long-OWNER-REVIEW-NOT-SCHEDULED-$SOURCE_RUN_ID" \
+            --dir /tmp/flowminute-nov12-source-owner-review
+      - name: Verify all video/caption/cover SHA-256, primary-source metadata and 4 exact UTC targets
+        run: |
+          set -euo pipefail
+          python -B -m scripts.prepare_branch1_nov12_release_candidates \
+            --source-run "$SOURCE_RUN_ID"
+          echo "PREPARED_NOT_APPROVED; NO OWNER SIGNATURE; NO REMOTE SCHEDULE WRITES"
+      - name: Four independent no-release exact-media candidate artifacts (Short Excel)
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-NOV12-SHORT-EXCEL-UNAPPROVED-${{ github.run_id }}
+          path: /tmp/flowminute-nov12-flat-release-candidates/nov12_short_a_excel_16digits/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Four independent no-release exact-media candidate artifacts (Short AI citations)
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-NOV12-SHORT-AI-UNAPPROVED-${{ github.run_id }}
+          path: /tmp/flowminute-nov12-flat-release-candidates/nov12_short_b_ai_fake_citations/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Four independent no-release exact-media candidate artifacts (Long Excel)
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-NOV12-LONG-EXCEL-UNAPPROVED-${{ github.run_id }}
+          path: /tmp/flowminute-nov12-flat-release-candidates/nov12_long_excel_silent_errors/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Four independent no-release exact-media candidate artifacts (Short Drive privacy)
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-NOV12-SHORT-DRIVE-UNAPPROVED-${{ github.run_id }}
+          path: /tmp/flowminute-nov12-flat-release-candidates/nov12_short_c_drive_link/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Record accurate non-upload outcome on run summary
+        run: |
+          {
+            echo "## November 12 — four flat SHA-verified original candidates"
+            echo "Only four owner-review candidates were prepared. **Zero YouTube uploads or scheduled videos.**"
+            echo "Times in UTC: 05:30, 08:00, 10:30 and 15:00 on 2026-11-12."
+            echo "Existing publisher requires owner reviewed/rights cleared, signed Ed25519 exact-video/srt/thumbnail/metadata/time manifest, valid OAuth and channel readback, safe duplicate check, future time."
+            echo "Do not mistake successful preparation for owner authorization or a successful YouTube schedule."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Destroy all downloaded reviewed media and candidate staging on disposable runner
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-nov12-source-owner-review \
+            /tmp/flowminute-nov12-flat-release-candidates
+          rm -f /tmp/flowminute-nov12-source-run-readback.json
+          echo "NO LOCAL OR LAPTOP RETAINED RELEASE_MEDIA, NO GOOGLE OAUTH, NO YOUTUBE WRITE"
