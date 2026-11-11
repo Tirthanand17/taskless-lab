@@ -271,3 +271,60 @@ def overlay_original_hero(image,ep,scene,index,phase,accent):
     else:
         raise OriginalHeroRefused("Mismatch between original media and hero")
     return image
+
+
+def build_viewer_first_cover(ep, accent, folder):
+    """Create original 9:16 Short covers and actual proof-led 16:9 thumbnail.
+
+    The long thumbnail's only headline is "3 SILENT ERRORS", with exact
+    fictional raw/import numbers and an enormous highlighted 6→0 delta.
+    Never use false app screenshots or overpromise a live experiment.
+    """
+    from PIL import Image
+    _required(type(ep) is dict and ep.get("id") in IDS
+              and ep.get("type") in ("short","long")
+              and type(accent) is tuple and len(accent)==3
+              and folder.is_dir(),
+              "Untrusted owner video cover source or destination")
+    if ep["type"]=="short":
+        image=Image.new("RGB",(1080,1920),(8,18,32))
+        d=ImageDraw.Draw(image)
+        for y in range(0,1920,27):
+            rgb=(8+int(y/1920*8),18+int(y/1920*12),
+                 32+int(y/1920*18))
+            d.rectangle((0,y,1080,min(1920,y+27)),fill=rgb)
+        d.rectangle((0,0,14,1920),fill=accent)
+        _t(d,"FLOWMINUTE / REAL-LIFE TECH",79,64,922,30,MUTED,False)
+        d.line((79,130,1001,130),fill=(58,92,119),width=3)
+        _t(d,ep["scenes"][0][0],78,193,925,87,WHITE)
+        overlay_original_hero(image,ep,ep["scenes"][0],0,2,accent)
+        _t(d,"ORIGINAL ILLUSTRATION  /  NOT A REAL ACCOUNT",
+           79,1811,923,25,MUTED,False)
+    else:
+        image=Image.new("RGB",(1280,720),(7,20,35))
+        d=ImageDraw.Draw(image)
+        for y in range(0,720,18):
+            d.rectangle((0,y,1280,min(720,y+18)),
+                        fill=(8+int(y/720*6),21+int(y/720*9),
+                              35+int(y/720*9)))
+        d.rectangle((0,0,13,720),fill=accent)
+        _t(d,"FLOWMINUTE  /  DATA FIX",64,42,750,26,MUTED)
+        _t(d,"3 SILENT ERRORS",64,99,1100,101,WHITE)
+        _pr(d,(68,250,805,396),(29,56,72),(93,136,157),22,3)
+        _t(d,"ORIGINAL ID",94,268,645,25,accent)
+        _t(d,"1234567890123456",94,316,679,54,WHITE)
+        _pr(d,(68,430,805,580),(62,38,46),WARNING,22,4)
+        _t(d,"AFTER NUMBER IMPORT",94,450,645,25,WARNING)
+        _t(d,"1234567890123450",94,498,675,54,WHITE)
+        _pr(d,(832,253,1230,582),(37,56,72),(91,131,154),29)
+        _t(d,"6  →  0",866,333,333,99,WARNING)
+        _t(d,"ONE DIGIT LOST",869,473,333,32,WHITE)
+        for i,label in enumerate(("DIGITS","ZEROS","DATES")):
+            x=70+i*199
+            _pr(d,(x,628,x+177,684),(26,57,78),
+                accent if i==0 else (84,123,149),12,3)
+            _t(d,label,x+17,641,143,28,WHITE)
+        _t(d,"FICTIONAL EXAMPLE",919,637,300,24,MUTED,False)
+    dest=folder/"ORIGINAL_COVER.png"
+    image.save(dest,optimize=True)
+    return dest
