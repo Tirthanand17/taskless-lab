@@ -45,7 +45,7 @@
           "COPY THE FORMULA",
           "=TRIM(",
           "SUBSTITUTE())",
-          "Use equals TRIM, open parenthesis, SUBSTITUTE of A two, CHAR one sixty, and a space. Verify your actual data."
+          "In the formula, substitute character one sixty with a normal space. Then wrap the result in TRIM, and compare it against your data."
         ]
       ],
       "approval": {
@@ -185,7 +185,7 @@
           "POWER QUERY OPTION",
           "KEEP STEPS",
           "REFRESH",
-          "For repeatable files, Power Query can apply a reviewed transformation sequence rather than manual editing each month. Validate type detection and duplicate rules before refreshing; a repeatable mistake is still a mistake."
+          "Power Query can apply reviewed transformations to repeatable files instead of manual edits. Validate type detection and duplicate rules before refreshing; a repeatable mistake is still a mistake."
         ],
         [
           "CHECK BEFORE SHARE",
