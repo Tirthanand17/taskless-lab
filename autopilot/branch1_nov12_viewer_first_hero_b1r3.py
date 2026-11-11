@@ -81,7 +81,8 @@ def _short_first_frame(draw, ep, index, phase, accent, box):
         _t(draw,"THIS PAPER TITLE IS INVENTED.",
            x0+38,y0+101,x1-x0-76,42,WHITE)
         _pr(draw,(x0+37,y0+201,x1-37,y0+677),
-            SHEET,(101,155,166),22,3)
+            SHEET,accent if phase>=1 else (101,155,166),22,
+            5 if phase>=1 else 3)
         _pr(draw,(x0+64,y0+234,x1-64,y0+315),
             (43,84,103),(43,84,103),12)
         _t(draw,"AI-GENERATED REFERENCE",
@@ -102,7 +103,8 @@ def _short_first_frame(draw, ep, index, phase, accent, box):
         _t(draw,"A PRIVATE FILE. A PUBLIC LINK?",
            x0+36,y0+98,x1-x0-72,41,WHITE)
         _pr(draw,(x0+37,y0+204,x1-37,y0+746),
-            SHEET,(92,164,179),21)
+            SHEET,accent if phase>=1 else (92,164,179),21,
+            5 if phase>=1 else 3)
         _pr(draw,(x0+60,y0+236,x1-60,y0+313),
             (47,88,105),(47,88,105),12)
         _t(draw,"FICTIONAL FILE SHARING",x0+85,y0+255,
