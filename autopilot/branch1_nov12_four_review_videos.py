@@ -231,18 +231,19 @@ def render_frame(ep,scene,index,phase,accent):
                       (246,250,253) if active else (144,166,185))
     else:
         # Native-looking ORIGINAL education visualization, not a real UI.
-        top=ay0+115
-        rounded(d,(ax0+38,top,ax1-38,ay1-88),
+        top=ay0+(115 if portrait else 45)
+        rounded(d,(ax0+38,top,ax1-38,ay1-20),
                 (230,237,241),(111,139,160),20,3)
         d.rectangle((ax0+39,top,ax1-39,top+77),fill=(45,70,94))
         for n,c in enumerate(((235,115,100),(230,184,90),(116,209,161))):
             d.ellipse((ax0+62+n*36,top+26,ax0+78+n*36,top+42),fill=c)
-        draw_text(d,"ILLUSTRATIVE DATA",ax0+72,top+125,
+        draw_text(d,"ILLUSTRATIVE DATA",ax0+72,
+                  top+(125 if portrait else 92),
                   ax1-ax0-140,37,(20,50,78))
         cardwidth=ax1-ax0-130
         left=ax0+67
         for i,(label,active) in enumerate(((first,visible1),(second,visible2))):
-            cy=top+240+i*(197 if portrait else 137)
+            cy=top+(240 if portrait else 150)+i*(197 if portrait else 105)
             rounded(d,(left,cy,left+cardwidth,cy+(150 if portrait else 104)),
                     (224,247,248) if active else (210,223,232),
                     (34,153,165) if active else (126,149,164),18)
