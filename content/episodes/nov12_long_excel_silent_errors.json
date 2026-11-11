@@ -71,9 +71,9 @@
   "not_a_real_app_screen_recording": true,
   "original_demo": true,
   "no_real_private_identifiers": true,
-  "proposed_publish_at_utc": "2026-11-12T10:30:00Z",
   "requested_date_ist": "2026-11-12",
   "owner_exact_media_release_signoff_observed": false,
   "youtube_uploaded": false,
-  "youtube_scheduled": false
+  "youtube_scheduled": false,
+  "proposed_time_ist": "16:00"
 }
