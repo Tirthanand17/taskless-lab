@@ -376,10 +376,44 @@ def render(ffmpeg,engine,ep,accent,root):
     from autopilot.verified_aac_mastering_b4g5 import (
         verify_exact_encoded_master,EncodedMasteringRefused,
     )
+    corrected_aac_master=False
     try:
         proof=verify_exact_encoded_master(ffmpeg,mp4,digest(mp4),total)
-    except EncodedMasteringRefused:
-        raise OriginalBatchRefused("Exact final AAC mastered media refused") from None
+    except EncodedMasteringRefused as initial:
+        # Never relax the real post-AAC measurement band. If the *only*
+        # problem was an out-of-band final AAC measurement, perform ONE
+        # bounded audio-only remaster, copying the finished video stream,
+        # then verify full AV decoding and the exact repaired AAC again.
+        if str(initial)!=(
+            "Final encoded audio falls outside conservative owner-review mastering band"
+        ):
+            raise OriginalBatchRefused(
+                "Exact final AAC refused: "+str(initial)
+            ) from None
+        remastered=folder/"ORIGINAL_AAC_REMASTERED_ONLY_IF_MEASURED_NEEDED.mp4"
+        execute([ffmpeg,"-nostdin","-hide_banner","-y","-loglevel","error",
+                 "-i",str(mp4),"-map","0:v:0","-map","0:a:0",
+                 "-c:v","copy","-af",
+                 "loudnorm=I=-18:TP=-2.5:LRA=11:linear=false:print_format=none",
+                 "-ar","48000","-c:a","aac","-b:a","128k",
+                 "-movflags","+faststart",str(remastered)],timeout=300)
+        execute([ffmpeg,"-nostdin","-hide_banner","-loglevel","error",
+                 "-xerror","-i",str(remastered),"-f","null","-"],timeout=760)
+        try:
+            proof=verify_exact_encoded_master(
+                ffmpeg,remastered,digest(remastered),total)
+        except EncodedMasteringRefused as final:
+            raise OriginalBatchRefused(
+                "Exact AAC after one source-preserving remaster refused: "+
+                str(final)
+            ) from None
+        # The proven SHA is the same bytes after move; no source narration
+        # or visual scene timing is regenerated, and the final artifact is
+        # still subject to owner playback.
+        os.replace(remastered,mp4)
+        corrected_aac_master=True
+    need(proof["exact_original_mp4_sha256"]==digest(mp4),
+         "Exact encoded source voice+video hash changed after final AAC verification")
     width,height=(360,640) if ep["kind"]=="short" else (480,270)
     columns=3 if ep["kind"]=="short" else 4
     rows=math.ceil(len(previews)/columns)
@@ -415,6 +449,7 @@ def render(ffmpeg,engine,ep,accent,root):
         "one_way_original_visual_states":3*len(ep["scenes"]),
         "physical_h264_aac_full_decode_passed":True,
         "post_encoded_mastering":proof,
+        "one_bounded_audio_only_corrective_master_used":corrected_aac_master,
         "owner_final_voice_captions_facts_rights_review":False,
         "release_signed":False,"youtube_uploaded":False,
         "youtube_scheduled":False,
