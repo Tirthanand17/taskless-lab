@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "autopilot/branch1_nov12_four_review_videos.py"
+      - "autopilot/branch1_nov12_viewer_first_hero_b1r3.py"
       - "autopilot/test_branch1_nov12_four_review_videos.py"
       - "content/nov12_2026/four_video_review_brief.json"
       - ".github/workflows/flowminute-b1-nov12-four-actual-video-review.yml"

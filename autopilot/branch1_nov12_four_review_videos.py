@@ -307,7 +307,13 @@ def render_frame(ep,scene,index,phase,accent):
     footer_y=h-91 if portrait else h-50
     draw_text(d,"ORIGINAL EDUCATION  -  NO REAL CUSTOMER DATA",
               margin,footer_y,w-2*margin,23,(123,154,178),False)
-    return image
+    # Replace the generic loopable slide middle with distinctive,
+    # topic-specific original evidence. Keep title/header and the actual
+    # native ASS caption-safe card unchanged at their physical pixels.
+    from autopilot.branch1_nov12_viewer_first_hero_b1r3 import (
+        overlay_original_hero,
+    )
+    return overlay_original_hero(image,ep,scene,index,phase,accent)
 
 
 def split_script(text,kind):
@@ -478,31 +484,12 @@ def build_contact(ep,images,folder):
 
 
 def build_cover(ep,accent,folder):
-    from PIL import Image,ImageDraw
-    portrait=ep["type"]=="short"
-    w,h=VIDEO_SIZE["short"] if portrait else (1280,720)
-    image=Image.new("RGB",(w,h),(8,21,38))
-    d=ImageDraw.Draw(image)
-    margin=70
-    rounded(d,(margin,margin,w-margin,h-margin),
-            (24,43,61),accent,27,5)
-    d.rectangle((margin+35,margin+42,margin+48,h-margin-40),fill=accent)
-    line_y=h//2-90
-    words=ep["cover"].split()
-    lines=[]
-    if len(words)>3:
-        cut=math.ceil(len(words)/2)
-        lines=[" ".join(words[:cut])," ".join(words[cut:])]
-    else:lines=[ep["cover"]]
-    for i,heading in enumerate(lines):
-        draw_text(d,heading,margin+85,line_y+i*(145 if portrait else 128),
-                  w-2*margin-155,102 if portrait else 88,
-                  (242,251,255))
-    draw_text(d,"SEE THE REAL FIX  /  EXAMPLES LABELED",
-              margin+92,h-margin-112,w-2*margin-170,26,accent,False)
-    out=folder/"ORIGINAL_COVER.png"
-    image.save(out,optimize=True)
-    return out
+    # B1r3: cover must show an explicit synthetic proof that matches
+    # video frame one. The prior generic headline-only cover loses CTR.
+    from autopilot.branch1_nov12_viewer_first_hero_b1r3 import (
+        build_viewer_first_cover,
+    )
+    return build_viewer_first_cover(ep,accent,folder)
 
 
 def render_video(ffmpeg,engine,ep,accent,root):
