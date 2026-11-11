@@ -97,7 +97,7 @@ def load_brief(source=BRIEF):
                  and all(type(value) is str and value.strip()==value
                          for value in scene)
                  and 4<=len(scene[0])<=38 and 4<=len(scene[1])<=27
-                 and 4<=len(scene[2])<=27
+                 and 3<=len(scene[2])<=27
                  and 30<=len(scene[3])<=540
                  and not any("\n" in value or "\r" in value
                              for value in scene),
