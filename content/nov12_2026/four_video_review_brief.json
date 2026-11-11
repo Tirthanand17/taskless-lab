@@ -20,7 +20,7 @@
       "cover": "EXCEL CHANGED IT?",
       "voice": "af_heart",
       "source": "https://support.microsoft.com/en-us/excel/format-numbers-as-text",
-      "description": "Illustrative synthetic sample: Microsoft documents Excel's 15-digit numeric precision limit. Format or import identifiers as Text BEFORE entering them. Existing lost digits cannot be recovered by changing format. Official Microsoft help: https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers #Excel #SpreadsheetTips #DataQuality #Shorts",
+      "description": "Illustrative synthetic sample: Microsoft documents Excel's 15-digit numeric precision limit. Format or import identifiers as Text BEFORE entering them. Existing lost digits cannot be recovered by changing format. Official Microsoft help: https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers #Excel #SpreadsheetTips #DataQuality #Shorts Additional official detail: https://support.microsoft.com/en-us/excel/format-numbers-as-text",
       "scenes": [
         [
           "THE LAST DIGIT",
@@ -212,7 +212,7 @@
           "PRIVATE FIX",
           "GENERAL ACCESS",
           "RESTRICTED",
-          "For personal files, choose Restricted and invite the specific people who need access."
+          "For private files, choose Restricted and invite only the people who need access."
         ],
         [
           "CHECK THE ROLE",
