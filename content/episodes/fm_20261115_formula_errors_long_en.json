@@ -1,0 +1,79 @@
+{
+  "id": "fm_20261115_formula_errors_long_en",
+  "renderer": "manifest_v2",
+  "type": "long",
+  "language": "en",
+  "title": "3 Excel Formula Errors You Can Diagnose Without Guessing",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. This fictional worksheet shows a formula returning a spill error. The function might be correct; a cell in the destination range can be blocking its results. Let's diagnose three common spreadsheet symptoms without randomly deleting data. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error #FlowMinuteLab #TechTips",
+  "tags": [
+    "Excel",
+    "#SPILL!",
+    "XLOOKUP",
+    "Formulas",
+    "Data accuracy",
+    "Tutorial"
+  ],
+  "source_links": [
+    "https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error"
+  ],
+  "scenes": [
+    {
+      "title": "IT LOOKS LIKE A BROKEN FORMULA",
+      "narration": "This fictional worksheet shows a formula returning a spill error. The function might be correct; a cell in the destination range can be blocking its results. Let's diagnose three common spreadsheet symptoms without randomly deleting data."
+    },
+    {
+      "title": "SYMPTOM ONE SPILL",
+      "narration": "Dynamic array formulas can return several values that need neighboring blank cells. If those cells contain anything, Excel may display a spill error instead of the expected list."
+    },
+    {
+      "title": "SHOW THE RANGE",
+      "narration": "Select the formula cell. Excel can outline its intended spill range. Look at that range before making changes; an occupied cell might hold important original data."
+    },
+    {
+      "title": "SAFE SPILL FIX",
+      "narration": "Use the error alert when available to find obstructing cells. Save or move necessary data before clearing a truly unnecessary blocker. The goal is to make space without discarding something else."
+    },
+    {
+      "title": "SYMPTOM TWO NA",
+      "narration": "An XLOOKUP result of N A often means the lookup value was not found under the chosen match behavior. It is not evidence that the underlying record does not exist in every system."
+    },
+    {
+      "title": "EXACT MATCH DEFAULT",
+      "narration": "Unlike older formulas that invite approximate-match mistakes, XLOOKUP uses exact match as its default. That is useful, but a typed ID, whitespace difference, or missing value can still produce no match."
+    },
+    {
+      "title": "DUPLICATE KEY RISK",
+      "narration": "Another dangerous outcome is not an error at all. If a lookup key occurs twice, XLOOKUP starts at the first match by default. A legitimate-looking returned value may be the wrong transaction."
+    },
+    {
+      "title": "SEARCH ORDER CHOICE",
+      "narration": "Microsoft documents search mode one for first to last and negative one for last to first. A reverse search is useful only when the source ordering has a real meaning. Do not use it as a blind fix."
+    },
+    {
+      "title": "SYMPTOM THREE TEXT",
+      "narration": "Lookup failures can also come from text-versus-number differences. A code with leading zeros is not the same string as a numeric value after its zeros were removed. Compare raw source and lookup key formats."
+    },
+    {
+      "title": "EXPLAIN THE DIAGNOSIS",
+      "narration": "Before wrapping everything in an error-hiding function, inspect what the formula searched for and which range it scanned. Check duplicate keys and whether expected results require more than one output cell."
+    },
+    {
+      "title": "ERROR OR SILENT ERROR?",
+      "narration": "A displayed error is visible and often fixable. A silently wrong lookup result can be worse because it looks valid. Verify output against an independently known sample record."
+    },
+    {
+      "title": "FINAL TEST CHECKLIST",
+      "narration": "For spill errors, inspect occupied range cells. For no match, check the exact key and data types. For an unexpected match, inspect duplicates and search order. Every fix should preserve the original source."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-15",
+  "proposed_time_ist": "16:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
