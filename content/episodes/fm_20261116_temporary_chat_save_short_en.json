@@ -1,0 +1,51 @@
+{
+  "id": "fm_20261116_temporary_chat_save_short_en",
+  "renderer": "manifest_v2",
+  "type": "short",
+  "language": "en",
+  "title": "Saved a ChatGPT Temporary Chat? This Changes the Rules #Shorts",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. Temporary Chat stays out of your ChatGPT history while it remains temporary. But there is a way to save it. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt #FlowMinuteLab #TechTips",
+  "tags": [
+    "ChatGPT",
+    "Temporary Chat",
+    "Privacy",
+    "Memory",
+    "Data controls",
+    "Shorts"
+  ],
+  "source_links": [
+    "https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt"
+  ],
+  "scenes": [
+    {
+      "title": "TEMP CHAT, THEN SAVE",
+      "narration": "Temporary Chat stays out of your ChatGPT history while it remains temporary. But there is a way to save it."
+    },
+    {
+      "title": "AFTER YOU SAVE",
+      "narration": "OpenAI explains that saving a temporary chat converts it into a regular chat with different history and data rules."
+    },
+    {
+      "title": "TRAINING CONTROL",
+      "narration": "Once saved, your model-improvement setting and applicable workspace policies determine whether it can be used for training."
+    },
+    {
+      "title": "MEMORY DIFFERENCE",
+      "narration": "Temporary chats do not create memories. After saving, normal personalization rules can apply to that conversation."
+    },
+    {
+      "title": "THE SAFE HABIT",
+      "narration": "Before saving, review any sensitive details and the resulting retention rules. Temporary does not mean permanently impossible to store."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-16",
+  "proposed_time_ist": "20:30",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
