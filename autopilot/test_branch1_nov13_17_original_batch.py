@@ -35,7 +35,7 @@ class SourceBoundFiveDayTests(unittest.TestCase):
                 self.assertTrue(ep["title"])
                 self.assertEqual(ep["language"],"en")
                 self.assertTrue(ep["source"].startswith("https://"))
-                self.assertNotIn("real footage",ep.get("source_linked_claims","").lower())
+                self.assertNotIn("real footage",str(ep.get("source_linked_claims","")).lower())
                 names.append(ep["id"]); titles.append(ep["title"])
                 from autopilot.branch1_nov12_four_review_videos import split_script
                 for scene in ep["scenes"]:
