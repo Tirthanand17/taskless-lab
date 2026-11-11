@@ -1,0 +1,79 @@
+name: Flowminute B1 Nov13-17 Compact Mobile Thumbnail Review (NO YOUTUBE)
+on:
+  pull_request:
+    paths:
+      - "scripts/b1_nov13_17_compact_thumbnail_review.py"
+      - "scripts/test_b1_nov13_17_compact_thumbnail_review.py"
+      - ".github/workflows/flowminute-b1-compact-thumbnail-review.yml"
+      - "docs/B1_NOV13_17_THUMBNAILS_CAPTIONS_METADATA_AUDIT.md"
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: flowminute-b1-compact-15-thumbnail-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  fifteen_source_locked_poster_tests:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install thumbnail artwork dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -qq -y fonts-dejavu-core
+          python -m pip install --disable-pip-version-check --only-binary=:all: "Pillow>=11,<13"
+      - name: Test all fifteen mobile preview thumbnails and no-release invariants
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/b1_nov13_17_compact_thumbnail_review.py scripts/test_b1_nov13_17_compact_thumbnail_review.py
+          python -B -m unittest -v scripts.test_b1_nov13_17_compact_thumbnail_review
+  export_review_only_original_thumbnail_alternatives:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: [fifteen_source_locked_poster_tests]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install thumbnail dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -qq -y fonts-dejavu-core
+          python -m pip install --disable-pip-version-check --only-binary=:all: "Pillow>=11,<13"
+      - name: Generate 15 small images, no existing video changes
+        run: |
+          set -euo pipefail
+          python -B -m scripts.b1_nov13_17_compact_thumbnail_review --out /tmp/flowminute-15-compact-preview-only
+      - name: Upload review-only compact thumbnails
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-B1-Nov13-17-15-COMPACT-MOBILE-THUMBNAILS-NOT-ON-YOUTUBE-${{ github.run_id }}
+          path: /tmp/flowminute-15-compact-preview-only/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Remove ephemeral cloud media
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-15-compact-preview-only
+          echo "15 images, ZERO YOUTUBE API / TOKEN / VIDEO / THUMBNAIL MUTATIONS"
