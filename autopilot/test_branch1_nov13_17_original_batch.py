@@ -46,6 +46,24 @@ class SourceBoundFiveDayTests(unittest.TestCase):
         self.assertEqual(len(set(names)),15)
         self.assertEqual(len(set(titles)),15)
 
+    def test_new_slate_does_not_repeat_known_public_duplicate_subjects(self):
+        # Channel owned video inventory was actually read via vidIQ on Nov11.
+        # These exact headline patterns already have public videos.
+        prior=("remove duplicates", "combine monthly files",
+               "made up a citation", "fact-check workflow",
+               "ai gave you a source")
+        for day in sorted(VALID_DATES):
+            obj,_=read_day(day)
+            for ep in obj["episodes"]:
+                title=ep["title"].lower()
+                self.assertFalse(any(text in title for text in prior),
+                                 (ep["id"],"previously published premise"))
+        self.assertIn("COUNT",read_day("2026-11-13")[0]["episodes"][1]["title"])
+        self.assertIn("Temporary Chat",
+                      read_day("2026-11-16")[0]["episodes"][2]["title"])
+        self.assertIn("Google Sheets",
+                      read_day("2026-11-17")[0]["episodes"][2]["title"])
+
     def test_unknown_date_and_approval_refused(self):
         for bad in ("2026-11-12","2026-11-18","2026-10-31","tomorrow","2026-11-13Z"):
             with self.assertRaises(OriginalBatchRefused):
