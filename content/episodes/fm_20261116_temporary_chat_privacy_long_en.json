@@ -1,0 +1,79 @@
+{
+  "id": "fm_20261116_temporary_chat_privacy_long_en",
+  "renderer": "manifest_v2",
+  "type": "long",
+  "language": "en",
+  "title": "ChatGPT Temporary Chat vs Regular Chat: 6 Privacy Differences",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. Temporary Chat sounds like a conversation that vanishes immediately. But OpenAI's documentation explains that an unsaved temporary chat may be kept for up to thirty days for safety. Let's compare what actually changes. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt #FlowMinuteLab #TechTips",
+  "tags": [
+    "ChatGPT",
+    "Temporary Chat",
+    "Privacy",
+    "Memory",
+    "Data controls",
+    "Tutorial"
+  ],
+  "source_links": [
+    "https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt"
+  ],
+  "scenes": [
+    {
+      "title": "TEMPORARY IS NOT ZERO STORAGE",
+      "narration": "Temporary Chat sounds like a conversation that vanishes immediately. But OpenAI's documentation explains that an unsaved temporary chat may be kept for up to thirty days for safety. Let's compare what actually changes."
+    },
+    {
+      "title": "DIFFERENCE ONE HISTORY",
+      "narration": "Temporary chats remain outside your ChatGPT history while temporary. Regular chats normally remain saved to your account until you delete them or a workspace retention rule applies. These are different forms of storage."
+    },
+    {
+      "title": "DIFFERENCE TWO TRAINING",
+      "narration": "While a chat stays temporary, OpenAI says it is not used to improve models. Regular saved chats follow your model-improvement setting and any applicable workspace policy. You still need to check your own data controls."
+    },
+    {
+      "title": "DIFFERENCE THREE MEMORY",
+      "narration": "A temporary chat doesn't create or update memories. When you save it and convert it to a regular chat, ordinary personalization rules can apply. Don't confuse lack of memory creation with an absolute ban on data retention."
+    },
+    {
+      "title": "PERSONALIZED TEMP MODE",
+      "narration": "A temporary chat can start in Personalized or Unpersonalized mode. Personalized mode can use existing memories and instructions, while Unpersonalized does not. Neither creates new memories while it remains temporary."
+    },
+    {
+      "title": "YOU CANNOT SWITCH",
+      "narration": "The personalization choice for a temporary chat is made when you begin it. You cannot change that conversation's mode midway. Think through the task before choosing the option you want."
+    },
+    {
+      "title": "DIFFERENCE FOUR RETENTION",
+      "narration": "For an unsaved temporary chat, OpenAI may keep a copy for up to thirty days for safety. That is not the same as immediate deletion, and it does not mean your temporary conversation appears in your normal chat history."
+    },
+    {
+      "title": "DIFFERENCE FIVE SAVING",
+      "narration": "If you choose Save Chat, the temporary conversation becomes a regular chat. From that point, its history, personalization and model-improvement behavior follows the settings that apply to saved conversations."
+    },
+    {
+      "title": "FILES AND SAVE",
+      "narration": "If a temporary conversation includes uploaded files and you later save it, eligible files can also become saved in Library or another available space. Don't assume every uploaded file disappears when the chat closes."
+    },
+    {
+      "title": "ACTIONS CAN SHARE",
+      "narration": "If you use actions with external services, the data you send may follow that third party's privacy policy. A temporary-chat label does not override what a separate service does with information it receives."
+    },
+    {
+      "title": "WHEN TO USE",
+      "narration": "Temporary Chat can help when you don't want an ordinary conversation saved in your history, and you don't want that temporary conversation used to improve models. It is not a substitute for considering what sensitive information you share."
+    },
+    {
+      "title": "YOUR SIX-POINT CHECK",
+      "narration": "Remember six questions: will it appear in history, help train models, create memory, use existing personalization, be retained temporarily, or become regular if saved? Check current product settings before sharing important information."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-16",
+  "proposed_time_ist": "16:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
