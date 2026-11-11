@@ -307,7 +307,13 @@ def render_frame(ep,scene,index,phase,accent):
     footer_y=h-91 if portrait else h-50
     draw_text(d,"ORIGINAL EDUCATION  -  NO REAL CUSTOMER DATA",
               margin,footer_y,w-2*margin,23,(123,154,178),False)
-    return image
+    # Replace the generic loopable slide middle with distinctive,
+    # topic-specific original evidence. Keep title/header and the actual
+    # native ASS caption-safe card unchanged at their physical pixels.
+    from autopilot.branch1_nov12_viewer_first_hero_b1r3 import (
+        overlay_original_hero,
+    )
+    return overlay_original_hero(image,ep,scene,index,phase,accent)
 
 
 def split_script(text,kind):
