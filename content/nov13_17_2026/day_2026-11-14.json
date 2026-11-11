@@ -125,7 +125,7 @@
           "WHY WAS THAT SITE PINGING?",
           "ALLOWED",
           "NOTIFICATIONS",
-          "A fictional website sends notification after notification, even when its tab is closed. You may think it is a virus, but the first useful check is whether the browser has permission to send those alerts."
+          "A fictional website sends notification after notification, even when its tab is closed. You might think it is a virus, but first check whether the browser granted notification access."
         ],
         [
           "PERMISSIONS EXPLAINED",
