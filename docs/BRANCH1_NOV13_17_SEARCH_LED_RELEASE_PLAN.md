@@ -16,13 +16,13 @@ Every day: **Short 1 at 11:00 IST**, **Long at 16:00 IST**, **Short 2 at 20:30 I
 
 | Date | Short 11:00 | Long 16:00 | Short 20:30 |
 | --- | --- | --- | --- |
-| Nov 13 | TRIM leaves nonbreaking space (160) | Clean messy Excel data without losing records | Removing duplicates can permanently delete legitimate rows |
+| Nov 13 | TRIM leaves nonbreaking space (160) | Why visually identical Excel names fail to match | COUNT vs COUNTA: numeric versus filled cells |
 | Nov 14 | Stop unwanted Chrome site notifications | Five site/browser/account permissions worth checking | Remove unused third-party Google account connections |
 | Nov 15 | Diagnose blocked Excel #SPILL! | Three formula symptoms: spill, not-found, silently wrong match | XLOOKUP defaults exact but returns first matching record |
-| Nov 16 | Temporary Chat and up-to-30-day safety retention | Five source verification checks for AI answers | Verify a copied AI quotation against original text |
-| Nov 17 | Power Query folder might include unwanted CSV | Combine monthly CSVs, check schema/type and row count | A changed header can break Power Query folder combining |
+| Nov 16 | Temporary Chat and up-to-30-day safety retention | Six documented differences between Temporary and Regular Chat | What changes when you save a Temporary Chat |
+| Nov 17 | Google Sheets filter view without changing teammates' view | Five collaboration mistakes: filters, protected ranges, sharing | Protected ranges restrict edits but are not security |
 
-**Vendor citations (official):** Microsoft [TRIM](https://support.microsoft.com/en-us/excel/functions/trim-function), [Remove Duplicates](https://support.microsoft.com/en-us/excel/find-and-remove-duplicates), [#SPILL!](https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error), [XLOOKUP](https://support.microsoft.com/en-us/excel/functions/xlookup-function), [Combine folder CSVs](https://support.microsoft.com/en-us/excel/import-data-from-a-folder-with-multiple-files-power-query); Google [Chrome notification controls](https://support.google.com/chrome/answer/3220216), [Account linked-app controls](https://support.google.com/accounts/answer/13533235); OpenAI [Temporary Chat](https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt), [Model factual reliability](https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth).
+**Vendor citations (official):** Microsoft [TRIM](https://support.microsoft.com/en-us/excel/functions/trim-function), [COUNT versus COUNTA](https://support.microsoft.com/en-us/excel/ways-to-count-values-in-a-worksheet), [#SPILL!](https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error), [XLOOKUP](https://support.microsoft.com/en-us/excel/functions/xlookup-function); Google [Chrome notification controls](https://support.google.com/chrome/answer/3220216), [Account linked-app controls](https://support.google.com/accounts/answer/13533235), [Sheets filter views](https://support.google.com/docs/answer/3540681), [Protected sheet/range caveats](https://support.google.com/docs/answer/1218656); OpenAI [Temporary Chat](https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt).
 
 ## Production instructions and limitations
 
@@ -35,3 +35,9 @@ Every day: **Short 1 at 11:00 IST**, **Long at 16:00 IST**, **Short 2 at 20:30 I
 ## Growth experiment
 
 For each published Short at 24h, 72h, and 7d: record actual Shorts feed impressions/shown, stayed-to-watch when available, engaged views, avg duration/percentage watched, first-3s/20s retention where reports have data, comments, shares and subscribers. Long videos: impressions, CTR, first-30s retention, total engaged watch time and search traffic. Match publication ages rather than comparing raw counts. Keep the best hook and edit the worst drop-off; do not publish filler just to meet volume.
+
+## Live owner-channel duplicate protection (Nov 11)
+
+Authenticated vidIQ `user_videos` returned current titles and privacy states, including **already public** November 9 `Excel Remove Duplicates? Check THIS Before You Click`, November 9 `Stop Copy-Pasting CSVs! Combine Monthly Files in Excel Power Query`, and November 10 `AI Made Up a Citation? Use This 5-Step Fact-Check Workflow`. A first draft of this new 5-day slate repeated these concepts too closely. **Rendering was deliberately cancelled for November 13, 16 and 17 and these three dates were rewritten**: Nov13 COUNT/hidden characters, Nov16 Temporary Chat and saved-chat retention, Nov17 Google Sheets filter views/permission restrictions. Nov14/15 original batches were not cancelled.
+
+Do not promote an episode solely because a script or video passes CI if it reuses a topic already posted. Manual original-content and owner review remain required.
