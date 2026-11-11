@@ -138,7 +138,8 @@ def validate_and_stage(root=SOURCE,output=OUTPUT,repo=REPO):
              and metadata.get("title")==original["title"]
              and metadata.get("description")==original["description"]
              and metadata.get("language")=="en"
-             and metadata.get("proposed_publish_at_utc")==SLOTS_UTC[i]
+             and metadata.get("proposed_time_ist")==original["time"]
+             and metadata.get("requested_date_ist")=="2026-11-12"
              and metadata.get("owner_exact_media_release_signoff_observed") is False
              and metadata.get("youtube_uploaded") is False
              and metadata.get("youtube_scheduled") is False
