@@ -155,6 +155,64 @@ class Nov12ActualOriginalPixelTests(unittest.TestCase):
                                 "EXCEL CHANGED AN ID","DRIVE LINK PUBLIC?"])
         self.assertTrue(all(len(hook)<=22 for hook in hooks))
 
+    def test_first_100ms_show_actual_real_world_problem_not_a_loading_card(self):
+        from PIL import ImageChops
+        from autopilot.branch1_nov12_four_review_videos import render_frame,PALETTE
+        brief,_=load_brief()
+        for ep,accent in zip(brief["episodes"],PALETTE):
+            original=ep["scenes"][0]
+            pre=render_frame(ep,original,0,0,accent)
+            action=render_frame(ep,original,0,1,accent)
+            result=render_frame(ep,original,0,2,accent)
+            box=(78,405,1002,1390) if ep["type"]=="short" else (
+                 108,352,1812,790)
+            self.assertIsNotNone(ImageChops.difference(
+                pre.crop(box),action.crop(box)).getbbox())
+            self.assertIsNotNone(ImageChops.difference(
+                action.crop(box),result.crop(box)).getbbox())
+            # No waiting for a grey/empty result: from first rendered frame
+            # the original synthetic example explicitly shows the outcome.
+            self.assertGreaterEqual(len(set(pre.crop(box).getcolors(
+                maxcolors=3_000_000) or [])),10)
+            if ep["type"]=="short":
+                self.assertEqual(pre.crop((78,1500,1002,1765)).tobytes(),
+                                 result.crop((78,1500,1002,1765)).tobytes())
+            else:
+                self.assertEqual(pre.crop((108,827,1812,1017)).tobytes(),
+                                 result.crop((108,827,1812,1017)).tobytes())
+
+    def test_all_27_scenes_have_source_bound_editorial_art_not_identical_templates(self):
+        from PIL import Image,ImageChops
+        from autopilot.branch1_nov12_four_review_videos import render_frame,PALETTE
+        brief,_=load_brief()
+        seen={}
+        for ep,accent in zip(brief["episodes"],PALETTE):
+            for i,scene in enumerate(ep["scenes"]):
+                frame=render_frame(ep,scene,i,0,accent)
+                area=(78,405,1002,1390) if ep["type"]=="short" else (
+                      108,352,1812,790)
+                import hashlib
+                sig=hashlib.sha256(frame.crop(area).tobytes()).hexdigest()
+                self.assertNotIn(sig,seen,("Reused static art",ep["id"],i))
+                seen[sig]=(ep["id"],i)
+        self.assertEqual(len(seen),27)
+
+    def test_hero_rejects_unauthorized_extra_episode_and_invalid_motion_phase(self):
+        from PIL import Image
+        from autopilot.branch1_nov12_viewer_first_hero_b1r3 import (
+            overlay_original_hero,OriginalHeroRefused,
+        )
+        brief,_=load_brief()
+        ep=brief["episodes"][0]
+        blank=Image.new("RGB",(1080,1920))
+        for fake_ep,phase in (
+            ({**ep,"id":"untrusted_private_youtube_episode"},0),
+            (ep,-1),(ep,3),(ep,True),(ep,"0"),
+        ):
+            with self.assertRaises(OriginalHeroRefused):
+                overlay_original_hero(blank,fake_ep,ep["scenes"][0],
+                                      0,phase,(90,209,236))
+
     def test_all_covers_are_original_high_resolution(self):
         from PIL import Image
         from autopilot.branch1_nov12_four_review_videos import build_cover,PALETTE
