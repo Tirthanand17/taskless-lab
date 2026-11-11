@@ -1,0 +1,79 @@
+{
+  "id": "fm_20261117_sheets_collaboration_long_en",
+  "renderer": "manifest_v2",
+  "type": "long",
+  "language": "en",
+  "title": "Google Sheets Shared with a Team? Avoid These 5 Filter & Permission Mistakes",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. Imagine a fictional team spreadsheet where one collaborator applies a regular filter and other people suddenly see fewer rows. No records were deleted, but the shared view changed. Let's make collaboration less confusing. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/docs/answer/3540681 #FlowMinuteLab #TechTips",
+  "tags": [
+    "Google Sheets",
+    "Filter view",
+    "Protected ranges",
+    "Collaboration",
+    "Permissions",
+    "Tutorial"
+  ],
+  "source_links": [
+    "https://support.google.com/docs/answer/3540681"
+  ],
+  "scenes": [
+    {
+      "title": "WHY DID MY ROWS VANISH?",
+      "narration": "Imagine a fictional team spreadsheet where one collaborator applies a regular filter and other people suddenly see fewer rows. No records were deleted, but the shared view changed. Let's make collaboration less confusing."
+    },
+    {
+      "title": "MISTAKE ONE FILTER",
+      "narration": "Google explains that a standard filter can be visible to people with access to the same Sheet. If your filter hides rows, collaborators may wonder whether their records have disappeared."
+    },
+    {
+      "title": "THE FILTER VIEW FIX",
+      "narration": "Use a Filter View when you want to sort and filter your own view without changing what others see. Google Sheets supports saved, named filter views for different ways to inspect the same data."
+    },
+    {
+      "title": "HOW TO CREATE",
+      "narration": "On a computer, choose Data and Create filter view in Google Sheets. Apply your conditions, save the view, and give it a descriptive name. Interface labels can differ between product versions."
+    },
+    {
+      "title": "FILTER VIEW LINK",
+      "narration": "You can also copy the URL of an applied filter view and share that view with a collaborator. A link to a filter view is not the same as giving someone new edit access to the spreadsheet."
+    },
+    {
+      "title": "MISTAKE TWO DELETING",
+      "narration": "Filtering changes what rows you see; it is not an instruction to delete the hidden records. Before removing any data, clear the filter and verify the full source range is intact."
+    },
+    {
+      "title": "MISTAKE THREE EDITING",
+      "narration": "In team workbooks, a collaborator might overwrite a formula cell or dashboard total. Restricting edits to important ranges can help prevent accidental changes while leaving intended input cells editable."
+    },
+    {
+      "title": "HOW TO PROTECT",
+      "narration": "Google Sheets lets you open Data, Protect sheets and ranges, choose a range or sheet and set who can edit. Review those permissions for each protected area instead of relying on a warning message."
+    },
+    {
+      "title": "WARNING VERSUS RESTRICT",
+      "narration": "A warning before editing is not the same as restricting who may edit. Google provides both options. If the aim is to prevent edits by other collaborators, use the correct restriction option."
+    },
+    {
+      "title": "MISTAKE FOUR PRIVACY",
+      "narration": "Protected ranges are not security boundaries. Google explicitly warns people may still copy or export spreadsheet contents. Restrict editing only solves editing risks, not data confidentiality."
+    },
+    {
+      "title": "MISTAKE FIVE SHARING",
+      "narration": "Before distributing an important report, check file-sharing roles. Give editor access only to trusted collaborators who need to modify the document. Use viewer or commenter access for people who do not need to edit."
+    },
+    {
+      "title": "THE TEAM CHECKLIST",
+      "narration": "Use filter views for individual analysis, protect important formulas against unwanted edits, and manage actual access through sharing permissions. The best collaboration setup makes each person's task easy without hiding or exposing the wrong information."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-17",
+  "proposed_time_ist": "16:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}

@@ -1,0 +1,51 @@
+{
+  "id": "fm_20261113_count_vs_counta_short_en",
+  "renderer": "manifest_v2",
+  "type": "short",
+  "language": "en",
+  "title": "Excel COUNT Says 2 but You Have 4 Values? Here's Why #Shorts",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. In this fictional Excel column, there are four filled cells, but COUNT returns only two. Why the mismatch? Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/ways-to-count-values-in-a-worksheet #FlowMinuteLab #TechTips",
+  "tags": [
+    "Excel",
+    "Spreadsheet",
+    "Data cleaning",
+    "TRIM",
+    "COUNTA",
+    "Shorts"
+  ],
+  "source_links": [
+    "https://support.microsoft.com/en-us/excel/ways-to-count-values-in-a-worksheet"
+  ],
+  "scenes": [
+    {
+      "title": "COUNT MISSED THE TEXT",
+      "narration": "In this fictional Excel column, there are four filled cells, but COUNT returns only two. Why the mismatch?"
+    },
+    {
+      "title": "WHAT COUNT COUNTS",
+      "narration": "Microsoft explains COUNT counts numeric entries in a range. Text labels are not counted as numbers."
+    },
+    {
+      "title": "WHAT COUNTA COUNTS",
+      "narration": "COUNTA counts cells that contain data, including text. It answers a different question from COUNT."
+    },
+    {
+      "title": "ONE SPECIAL CATCH",
+      "narration": "Microsoft notes that COUNTA can count formulas returning empty text. Visually blank isn't always truly empty."
+    },
+    {
+      "title": "PICK THE RIGHT TEST",
+      "narration": "Use COUNT for numeric entries and COUNTA for nonempty entries. Check sample rows before trusting any total."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-13",
+  "proposed_time_ist": "20:30",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}

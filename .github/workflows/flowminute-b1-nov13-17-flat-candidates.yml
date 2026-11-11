@@ -1,0 +1,173 @@
+name: Flowminute B1 Nov13-17 Exact Flat Owner Release Candidates (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/flowminute-b1-nov13-17-flat-candidates.yml"
+      - "scripts/prepare_b1_nov13_17_release_candidates.py"
+      - "scripts/test_prepare_b1_nov13_17_release_candidates.py"
+      - "content/episodes/fm_2026111*.json"
+      - "docs/BRANCH1_NOV13_17_SHA_RELEASE_CANDIDATES.md"
+  workflow_dispatch:
+    inputs:
+      date_ist:
+        required: true
+        description: "Exact date of 3 successful original videos to prepare, no publish"
+        type: choice
+        options: ["2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16", "2026-11-17"]
+      source_run_id:
+        description: "Successful manually dispatched main original H264/AAC 3-video GitHub render"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: flowminute-b1-five-day-flat-candidates-${{ github.ref }}-${{ inputs.date_ist }}
+  cancel-in-progress: false
+
+jobs:
+  source_and_release_metadata_gate:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 15 real episode metadata identities, forged-claim and exact file SHA adversarial tests
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/prepare_b1_nov13_17_release_candidates.py scripts/test_prepare_b1_nov13_17_release_candidates.py
+          python -B -m unittest -v scripts.test_prepare_b1_nov13_17_release_candidates
+          python -B - <<'PY'
+          from pathlib import Path
+          import json
+          from scripts.validate_release import validate
+          for d in range(13,18):
+              date=f"2026-11-{d:02d}"
+              day=json.loads(Path(f"content/nov13_17_2026/day_{date}.json").read_text())
+              for ep in day["episodes"]:
+                  meta=json.loads(Path(f"content/episodes/{ep['id']}.json").read_text())
+                  assert not validate(meta,[],editorial_only=False),ep["id"]
+                  assert meta["owner_exact_media_release_signoff_observed"] is False
+                  assert meta["youtube_uploaded"] is False
+                  assert meta["youtube_scheduled"] is False
+          print("FIFTEEN_EXACT_META_VALIDATED_ZERO_SIGNED_APPROVAL_AND_ZERO_YOUTUBE_SCHEDULE")
+          PY
+
+  physically_stage_three_originals_without_publication:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    needs: [source_and_release_metadata_gate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      TARGET_DATE: ${{ inputs.date_ist }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Read real successful source job from GitHub API and require main original render workflow
+        run: |
+          set -euo pipefail
+          if ! [[ "$SOURCE_RUN_ID" =~ ^[1-9][0-9]{0,19}$ ]]; then
+            echo "::error::Invalid numeric source run"; exit 2
+          fi
+          gh run view "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --json headBranch,headSha,conclusion,event,workflowName \
+            > "/tmp/flowminute-b1-$TARGET_DATE-source-run.json"
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          from scripts.prepare_b1_nov13_17_release_candidates import check_main_render_proof
+          p=Path(f"/tmp/flowminute-b1-{os.environ['TARGET_DATE']}-source-run.json")
+          sha=check_main_render_proof(json.loads(p.read_text()))
+          print("B1_TRUSTED_MAIN_ORIGINAL_SOURCE_SHA_VERIFIED",sha[:12])
+          PY
+      - name: Download ONLY exact physical three-video main owner-review artifact
+        run: |
+          set -euo pipefail
+          mkdir -p "/tmp/flowminute-b1-$TARGET_DATE-source"
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "flowminute-B1-$TARGET_DATE-2Shorts-1Long-UNAPPROVED-$SOURCE_RUN_ID" \
+            --dir "/tmp/flowminute-b1-$TARGET_DATE-source"
+      - name: Independently SHA-256 verify every original MP4/SRT/cover/contact and the three source metadata files
+        run: |
+          set -euo pipefail
+          python -B -m scripts.prepare_b1_nov13_17_release_candidates \
+            --date "$TARGET_DATE" --source-run "$SOURCE_RUN_ID"
+      - name: Export three exact tested flat folders for upload-artifact
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          import json,os,shutil
+          date=os.environ["TARGET_DATE"]
+          root=Path(f"/tmp/flowminute-b1-{date}-flat")
+          report=json.loads((root/"THREE_FLAT_RELEASE_CANDIDATES_UNAPPROVED.json").read_text("utf8"))
+          assert report["verified_count"]==3
+          for name,item in zip(("short-am","short-pm","long"),report["entries"]):
+              src=root/item["episode_id"]
+              dest=root/("UPLOAD_"+name)
+              assert src.is_dir() and not src.is_symlink()
+              assert not dest.exists()
+              dest.mkdir(mode=0o700)
+              for p in src.iterdir():
+                  assert p.is_file() and not p.is_symlink()
+                  shutil.copyfile(p,dest/p.name)
+          print("THREE_SOURCE_IDENTITIES_COPIED_TO_KNOWN_FLAT_OUTPUT_NAMES")
+          PY
+      - name: Upload exact SHA-bound morning Short owner-only release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-B1-${{ inputs.date_ist }}-short-am-UNAPPROVED-${{ github.run_id }}
+          path: /tmp/flowminute-b1-${{ inputs.date_ist }}-flat/UPLOAD_short-am/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload exact SHA-bound evening Short owner-only release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-B1-${{ inputs.date_ist }}-short-pm-UNAPPROVED-${{ github.run_id }}
+          path: /tmp/flowminute-b1-${{ inputs.date_ist }}-flat/UPLOAD_short-pm/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload exact SHA-bound afternoon Long owner-only release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-B1-${{ inputs.date_ist }}-long-UNAPPROVED-${{ github.run_id }}
+          path: /tmp/flowminute-b1-${{ inputs.date_ist }}-flat/UPLOAD_long/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Record source-locked dates and ZERO actual YouTube schedules
+        run: |
+          {
+            echo "## Actual original media SHA-256 checked; NO YOUTUBE WRITE"
+            echo "Date: $TARGET_DATE, proposed IST 11:00 (Short), 16:00 (Long), 20:30 (Short)."
+            echo "Three release candidates; owner voice/captions/rights/claims review and four-file owner signature NOT completed."
+            echo "Schedules confirmed on YouTube by this job: **0**."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Destroy ephemeral original media and release candidates on GitHub runner
+        if: always()
+        run: |
+          rm -rf "/tmp/flowminute-b1-$TARGET_DATE-source" \
+            "/tmp/flowminute-b1-$TARGET_DATE-flat"
+          rm -f "/tmp/flowminute-b1-$TARGET_DATE-source-run.json"
+          echo "NO OWNER YOUTUBE TOKEN, NO LAPTOP MEDIA, NO SCHEDULE UPLOAD"
