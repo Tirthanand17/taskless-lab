@@ -1,0 +1,200 @@
+{
+  "schema": "FLOWMINUTE_B1_SEARCH_LED_FIVE_DAY_V1",
+  "date_ist": "2026-11-16",
+  "status": "SOURCE_APPROVED_BY_VENDOR_LINKS_ONLY_OWNER_RELEASE_UNAPPROVED",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "episodes": [
+    {
+      "id": "fm_20261116_temporary_chat_short_en",
+      "date_ist": "2026-11-16",
+      "kind": "short",
+      "language": "en",
+      "title": "ChatGPT Temporary Chat Isn't Instant Deletion #Shorts",
+      "source": "https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt",
+      "source_linked_claims": "OpenAI official help center; original fictional demo, not a real ChatGPT account",
+      "voice": "bf_emma",
+      "time_ist": "11:00",
+      "scenes": [
+        [
+          "TEMP DOES NOT MEAN ZERO",
+          "TEMPORARY CHAT",
+          "NOT HISTORY",
+          "Temporary Chat stays out of your history while it remains temporary, but that does not mean zero retention."
+        ],
+        [
+          "THE SAFETY WINDOW",
+          "UP TO 30 DAYS",
+          "SAFETY",
+          "OpenAI says an unsaved temporary chat may be retained up to thirty days for safety purposes."
+        ],
+        [
+          "NOT TRAINING",
+          "TEMP CHAT",
+          "NO TRAINING",
+          "While it remains temporary, OpenAI says it is not used to improve models and does not create memories."
+        ],
+        [
+          "YOU CAN SAVE IT",
+          "SAVE CHAT",
+          "REGULAR",
+          "If you save a temporary chat, it becomes a regular chat with different history and retention rules."
+        ],
+        [
+          "THE SMART CHECK",
+          "SENSITIVE DATA",
+          "THINK FIRST",
+          "Temporary can be useful for privacy, but still avoid sharing information you don't want stored anywhere."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261116_ai_quotes_short_en",
+      "date_ist": "2026-11-16",
+      "kind": "short",
+      "language": "en",
+      "title": "AI Quoted a Document? Check Those EXACT Words #Shorts",
+      "source": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth",
+      "source_linked_claims": "OpenAI official help center; original fictional demo, not a real ChatGPT account",
+      "voice": "bf_emma",
+      "time_ist": "20:30",
+      "scenes": [
+        [
+          "THE QUOTE LOOKS REAL",
+          "AI QUOTE",
+          "MISSING WORDS?",
+          "An AI assistant can produce a convincing quotation that is not actually present in the source document."
+        ],
+        [
+          "SOUNDING SURE",
+          "CONFIDENT",
+          "NOT PROOF",
+          "OpenAI notes that chat models can make incorrect or misleading claims even when the answer sounds confident."
+        ],
+        [
+          "OPEN THE SOURCE",
+          "SOURCE DOC",
+          "FIND TEXT",
+          "Search the original document for the quoted phrase. Confirm that the words and surrounding context match."
+        ],
+        [
+          "CHECK THE NUMBER",
+          "AI SAYS 50",
+          "DOC SAYS 15",
+          "In this fictional example, the summary changes a number. Verify the exact figure before repeating it."
+        ],
+        [
+          "SAFE HABIT",
+          "QUOTE",
+          "VERIFY",
+          "If you cannot find the passage, label it unverified rather than presenting AI-generated wording as a direct quote."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261116_ai_verify_workflow_long_en",
+      "date_ist": "2026-11-16",
+      "kind": "long",
+      "language": "en",
+      "title": "AI Answer Looks Convincing? Verify the Actual Evidence in 5 Steps",
+      "source": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth",
+      "source_linked_claims": "OpenAI official help center; original fictional demo, not a real ChatGPT account",
+      "voice": "am_michael",
+      "time_ist": "16:00",
+      "scenes": [
+        [
+          "THE NUMBER CHANGED",
+          "AI 50",
+          "SOURCE 15",
+          "An AI answer looks polished and confident. In this fictional example, it reports fifty when the source says fifteen. The design looks convincing, but the important number changed. Here's a verification workflow."
+        ],
+        [
+          "WHY CONFIDENCE FAILS",
+          "FLUENT TEXT",
+          "NOT PROOF",
+          "Modern chat models produce useful language, but they can still invent facts, citations, or quotations. OpenAI's own help explains these limitations. A helpful draft is not the same as independent verification."
+        ],
+        [
+          "STEP ONE ORIGINAL",
+          "SOURCE PAGE",
+          "OPEN IT",
+          "Start by opening the original source rather than trusting a link label. Is it a real publication, and does it discuss the claim you want to repeat? Check that the page belongs to the organization being cited."
+        ],
+        [
+          "STEP TWO SPECIFIC CLAIM",
+          "ANSWER",
+          "PASSAGE",
+          "Find the exact sentence or passage supporting the answer. A real web page can be cited for the wrong claim. If the sentence is missing, do not turn the source's reputation into imaginary evidence."
+        ],
+        [
+          "STEP THREE THE NUMBER",
+          "15",
+          "50",
+          "Next compare numbers, units, dates, and definitions. A tiny numeric change can invert a financial or scientific conclusion. Keep figures from the original document alongside the AI draft for comparison."
+        ],
+        [
+          "STEP FOUR THE QUALIFIER",
+          "CAN",
+          "ALWAYS",
+          "Look for words like may, can, often, and depends. An AI summary that turns may into always overstates the evidence. In this fictional example, the source describes a possibility, not a universal result."
+        ],
+        [
+          "STEP FIVE MISSING CONTEXT",
+          "FIRST SECTION",
+          "FULL SECTION",
+          "Read at least the surrounding paragraph. An extracted sentence may omit a condition or exception. Verify what population, product version, or date the source discusses before sharing a claim."
+        ],
+        [
+          "WHEN THE LINK FAILS",
+          "404",
+          "NOT VERIFIED",
+          "A link that returns an error, a mismatched title, or a source that never mentioned the topic is a warning. Search the publication's official pages and avoid inventing a supporting citation."
+        ],
+        [
+          "VERIFY QUOTED WORDS",
+          "AI QUOTE",
+          "SOURCE TEXT",
+          "Direct quotations need exact words. If a phrase cannot be located in the source, rewrite it as your own summary only after verifying the actual meaning. Do not present it in quotation marks."
+        ],
+        [
+          "USE PRIMARY HELP",
+          "OFFICIAL DOC",
+          "VERSION",
+          "For software settings, start with the product's current official documentation. Menu names and features can change, so note the supported platform and version rather than treating a screenshot as permanent proof."
+        ],
+        [
+          "DECIDE WHAT TO SHARE",
+          "EVIDENCE",
+          "CONFIDENCE",
+          "Now separate claims into verified, uncertain, and unsupported. You can still use AI to explain a complex topic, but keep uncertainty visible and avoid giving an unverified answer more certainty than its source warrants."
+        ],
+        [
+          "ONE LAST CHECK",
+          "FIVE STEPS",
+          "NO SHORTCUT",
+          "Before posting a tutorial or citing a result: open the source, locate the claim, compare numbers, preserve qualifiers, and read the surrounding context. Ask which step would have caught the fictional fifty versus fifteen error."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    }
+  ]
+}
