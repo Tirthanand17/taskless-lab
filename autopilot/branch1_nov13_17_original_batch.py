@@ -278,6 +278,11 @@ def frame(ep,scene,index,phase,accent):
         fn={"sheet":_draw_sheet,"browser":_draw_permissions,
             "ai":_draw_ai,"folder":_draw_folder}[mode]
         fn(d,inner,a,b,phase,accent,index)
+    # B1v4: case-based UI is opaque only inside the original content frame.
+    # Native voice timeline, SRT/ASS area, full-frame source title,
+    # unique one-way progress and original human-review gates are unchanged.
+    from autopilot.branch1_nov13_17_case_ui_b1v4 import paint_story_ui
+    paint_story_ui(d,ep,scene,index,phase,accent,area)
     base_width=(w-2*margin-(len(ep["scenes"])-1)*8)//len(ep["scenes"])
     for j in range(len(ep["scenes"])):
         x=margin+j*(base_width+8)
