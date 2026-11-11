@@ -213,6 +213,44 @@ class Nov12ActualOriginalPixelTests(unittest.TestCase):
                 overlay_original_hero(blank,fake_ep,ep["scenes"][0],
                                       0,phase,(90,209,236))
 
+    def test_long_thumbnail_has_visible_evidence_not_only_a_title_panel(self):
+        from PIL import Image
+        from autopilot.branch1_nov12_four_review_videos import build_cover,PALETTE
+        brief,_=load_brief()
+        with TemporaryDirectory() as d:
+            ep=brief["episodes"][2]
+            path=build_cover(ep,PALETTE[2],Path(d))
+            with Image.open(path) as img:
+                self.assertEqual(img.size,(1280,720))
+                # Two *different* visible source-vs-import data blocks;
+                # the old thumbnail was a generic text-only rectangle.
+                self.assertNotEqual(img.getpixel((80,300)),
+                                    img.getpixel((80,475)))
+                self.assertGreaterEqual(len(img.resize((320,180)).getcolors(
+                    maxcolors=320*180) or []),40)
+                self.assertGreaterEqual(img.getpixel((850,330))[0],16)
+            self.assertIn("silent_errors",ep["id"])
+
+    def test_all_short_covers_now_reveal_specific_original_example_visuals(self):
+        from PIL import Image
+        from autopilot.branch1_nov12_four_review_videos import build_cover,PALETTE
+        brief,_=load_brief()
+        import hashlib
+        hashes=set()
+        with TemporaryDirectory() as d:
+            for ep,accent in zip(brief["episodes"],PALETTE):
+                if ep["type"]!="short":
+                    continue
+                path=build_cover(ep,accent,Path(d))
+                with Image.open(path) as img:
+                    self.assertEqual(img.size,(1080,1920))
+                    hashes.add(hashlib.sha256(img.tobytes()).hexdigest())
+                    # Original illustration lives in the central mobile hero,
+                    # not blank repeated title-only cover art.
+                    self.assertNotEqual(img.getpixel((100,500)),
+                                        img.getpixel((100,1150)))
+        self.assertEqual(len(hashes),3)
+
     def test_all_covers_are_original_high_resolution(self):
         from PIL import Image
         from autopilot.branch1_nov12_four_review_videos import build_cover,PALETTE
