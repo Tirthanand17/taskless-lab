@@ -26,18 +26,18 @@ STATUS="B1_NOV13_17_PHYSICAL_THREE_ORIGINALS_OWNER_REVIEW_NO_UPLOAD"
 VALID_DATES={f"2026-11-{day:02d}" for day in range(13,18)}
 EXPECTED_SOURCE_BY_DATE={
     "2026-11-13":("https://support.microsoft.com/en-us/excel/functions/trim-function",
-        "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates",
-        "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates"),
+        "https://support.microsoft.com/en-us/excel/ways-to-count-values-in-a-worksheet",
+        "https://support.microsoft.com/en-us/excel/functions/trim-function"),
     "2026-11-14":("https://support.google.com/chrome/answer/3220216",
         "https://support.google.com/accounts/answer/13533235",
         "https://support.google.com/chrome/answer/3220216"),
     "2026-11-15":("https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error",
         "https://support.microsoft.com/en-us/excel/functions/xlookup-function",
         "https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error"),
-    "2026-11-16":("https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt",
-        "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth",
-        "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"),
-    "2026-11-17":("https://support.microsoft.com/en-us/excel/import-data-from-a-folder-with-multiple-files-power-query",)*3,
+    "2026-11-16":("https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt",)*3,
+    "2026-11-17":("https://support.google.com/docs/answer/3540681",
+        "https://support.google.com/docs/answer/1218656",
+        "https://support.google.com/docs/answer/3540681"),
 }
 TIME_IST=("11:00","20:30","16:00")
 ACCENT_BY_DAY={
@@ -213,7 +213,7 @@ def _style(ep):
     date=ep["date_ist"]
     return ("browser" if date=="2026-11-14" else
             "ai" if date=="2026-11-16" else
-            "folder" if date=="2026-11-17" else "sheet")
+            "sheet" if date=="2026-11-17" else "sheet")
 
 
 def frame(ep,scene,index,phase,accent):
