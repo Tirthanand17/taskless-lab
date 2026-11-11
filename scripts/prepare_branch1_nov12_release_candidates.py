@@ -78,7 +78,7 @@ def validate_source_run(meta):
 
 
 def validate_and_stage(root=SOURCE,output=OUTPUT,repo=REPO):
-    need(type(root) is Path and type(output) is Path and type(repo) is Path
+    need(isinstance(root,Path) and isinstance(output,Path) and isinstance(repo,Path)
          and root.is_dir() and not root.is_symlink()
          and not output.exists() and not output.is_symlink()
          and repo.is_dir(),
