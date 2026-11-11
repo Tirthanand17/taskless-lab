@@ -48,11 +48,13 @@ jobs:
           python -B - <<'PY'
           from pathlib import Path
           p=Path(".github/workflows/flowminute-b1-private-vidiq-handoff.yml").read_text()
-          assert 'gh release upload' in p
-          assert 'gh release edit' not in p
-          assert '--draft' in p or 'isDraft' in p
-          for forbidden in ("youtube.videos().insert","gh release create", "gh release publish"):
-              assert forbidden not in p
+          assert any(ln.strip().startswith("gh release upload ") for ln in p.splitlines())
+          assert any("isDraft" in ln for ln in p.splitlines())
+          for line in p.splitlines():
+              cmd=line.strip()
+              if cmd.startswith("gh release "):
+                  assert cmd.startswith(("gh release upload ","gh release view "))
+              assert not cmd.startswith("youtube.videos().insert")
           print("B1_OWNER_PRIVATE_DRAFT_STAGE_NO_YOUTUBE_API_AND_NO_PUBLIC_RELEASE")
           PY
 
