@@ -105,7 +105,7 @@ def read_day(date,repo=ROOT):
              "Missing original complete narrative acts")
         for s in scenes:
             need(type(s) is list and len(s)==4
-                 and all(type(x) is str and 2<len(x)<=620
+                 and all(type(x) is str and 1<len(x)<=620
                          and x.strip()==x and "\n" not in x
                          and "{" not in x and "}" not in x for x in s)
                  and len(s[0])<=48 and len(s[1])<=30 and len(s[2])<=30
