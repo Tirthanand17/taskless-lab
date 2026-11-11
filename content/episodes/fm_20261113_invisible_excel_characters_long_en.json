@@ -1,0 +1,79 @@
+{
+  "id": "fm_20261113_invisible_excel_characters_long_en",
+  "renderer": "manifest_v2",
+  "type": "long",
+  "language": "en",
+  "title": "Excel Values Look the Same but Won't Match? Fix Hidden Characters",
+  "description": "A visual, original fictional learning example from FlowMinute Lab. These two fictional names look identical. But a spreadsheet comparison can say they are different. The difference could be an invisible character, not a spelling error. Here is how to investigate without destroying the original data. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/functions/trim-function #FlowMinuteLab #TechTips",
+  "tags": [
+    "Excel",
+    "Spreadsheet",
+    "Data cleaning",
+    "TRIM",
+    "COUNTA",
+    "Tutorial"
+  ],
+  "source_links": [
+    "https://support.microsoft.com/en-us/excel/functions/trim-function"
+  ],
+  "scenes": [
+    {
+      "title": "TWO NAMES LOOK IDENTICAL",
+      "narration": "These two fictional names look identical. But a spreadsheet comparison can say they are different. The difference could be an invisible character, not a spelling error. Here is how to investigate without destroying the original data."
+    },
+    {
+      "title": "THE HIDDEN DIFFERENCE",
+      "narration": "Text copied from websites or reports can contain characters that are hard to notice on a spreadsheet grid. Ordinary spaces and nonbreaking spaces are different character codes even when they appear visually similar."
+    },
+    {
+      "title": "THE FIRST WRONG FIX",
+      "narration": "Many people try TRIM and assume every space disappears. Microsoft explains that Excel's TRIM specifically handles the common ASCII space character thirty two. A nonbreaking space, character one sixty, may remain."
+    },
+    {
+      "title": "DIAGNOSE WITH LEN",
+      "narration": "Measure text length before and after a cleanup formula. If two apparently identical values still have different lengths, check for hidden whitespace or control characters. The result is a clue, not proof of which character you have."
+    },
+    {
+      "title": "CHARACTER THIRTY TWO",
+      "narration": "For ordinary extra spaces, TRIM can remove leading and trailing spaces and leave one between words. Keep a helper formula so you can see exactly what changed, instead of overwriting the imported field."
+    },
+    {
+      "title": "CHARACTER ONE SIXTY",
+      "narration": "A nonbreaking space may survive TRIM. Microsoft documents using SUBSTITUTE to replace character one sixty with a regular space, then TRIM to normalize spacing. Confirm which code actually occurs in your file."
+    },
+    {
+      "title": "FORMULA EXAMPLE",
+      "narration": "A practical formula replaces CHAR one sixty with a literal regular space using SUBSTITUTE, and wraps that result in TRIM. Copy the formula into a new column first and compare it with raw data."
+    },
+    {
+      "title": "CLEAN IS DIFFERENT",
+      "narration": "The CLEAN function targets nonprinting characters. It is not a universal Unicode scrubber. If mismatches remain after CLEAN or TRIM, inspect the real characters before trying other formulas."
+    },
+    {
+      "title": "DON'T CHANGE IDS",
+      "narration": "Another trap is converting text identifiers into numbers. An identifier that begins with zeros should generally remain text. Character cleanup and numeric type conversion are different operations with different risks."
+    },
+    {
+      "title": "PROTECT ORIGINAL",
+      "narration": "Never overwrite the only copy of imported records before validating a cleanup. Use a helper column, keep the original, and compare a few exact values. You need to be able to explain every change later."
+    },
+    {
+      "title": "VERIFY THE MATCH",
+      "narration": "Use a simple, fictional before-and-after comparison. Once the correct hidden character has been replaced, the two intended keys can match. If they still differ, investigate case, formatting and source data."
+    },
+    {
+      "title": "FINAL DATA CHECK",
+      "narration": "The takeaway is to diagnose first: inspect visible text, compare lengths, identify the exact hidden character, and only then clean it. Keep a recoverable source and verify a sample before sharing your spreadsheet."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-13",
+  "proposed_time_ist": "16:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
