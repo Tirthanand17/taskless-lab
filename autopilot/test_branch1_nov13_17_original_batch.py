@@ -116,6 +116,28 @@ class PhysicalSourcePixelTests(unittest.TestCase):
                     seen.add(h)
             self.assertEqual(len(seen),22)  # 5 + 5 + 12 = 22 true beats
 
+    def test_context_native_ui_replaces_slide_cards_without_moving_caption_panel(self):
+        from PIL import ImageChops
+        from autopilot.branch1_nov13_17_case_ui_b1v4 import (
+            paint_story_ui, FictionalUIRefused,
+        )
+        signatures=set()
+        for day in range(13,18):
+            date=f"2026-11-{day:02d}"
+            d,_=read_day(date)
+            for ep in d["episodes"]:
+                artwork=frame(ep,ep["scenes"][0],0,0,ACCENT_BY_DAY[date])
+                rect=(78,392,1002,1418) if ep["kind"]=="short" else (110,356,1810,802)
+                signature=hashlib.sha256(artwork.crop(rect).tobytes()).hexdigest()
+                self.assertNotIn(signature,signatures)
+                signatures.add(signature)
+                self.assertGreater(artwork.crop(rect).getpixel((30,30))[0],0)
+                with self.assertRaises(FictionalUIRefused):
+                    from PIL import ImageDraw
+                    paint_story_ui(ImageDraw.Draw(artwork),ep,ep["scenes"][0],
+                                   0,9,ACCENT_BY_DAY[date],rect)
+        self.assertEqual(len(signatures),15)
+
     def test_five_original_full_aware_covers_by_day(self):
         from PIL import Image
         from tempfile import TemporaryDirectory
