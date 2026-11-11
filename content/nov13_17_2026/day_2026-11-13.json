@@ -1,0 +1,206 @@
+{
+  "schema": "FLOWMINUTE_B1_SEARCH_LED_FIVE_DAY_V1",
+  "date_ist": "2026-11-13",
+  "status": "SOURCE_APPROVED_BY_VENDOR_LINKS_ONLY_OWNER_RELEASE_UNAPPROVED",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "episodes": [
+    {
+      "id": "fm_20261113_trim_nbsp_part1_short_en",
+      "date_ist": "2026-11-13",
+      "kind": "short",
+      "language": "en",
+      "title": "Why Excel TRIM Didn't Remove That Hidden Space #Shorts",
+      "source": "https://support.microsoft.com/en-us/excel/functions/trim-function",
+      "source_linked_claims": [
+        "TRIM only targets ASCII 32, not NBSP 160"
+      ],
+      "voice": "af_heart",
+      "time_ist": "11:00",
+      "scenes": [
+        [
+          "THE SPACE SURVIVED",
+          "TRIM(A2)",
+          "STILL A SPACE",
+          "You cleaned a name with Excel TRIM, but the hidden space remained. It might be a nonbreaking space."
+        ],
+        [
+          "THE REAL CAUSE",
+          "SPACE 32",
+          "NBSP 160",
+          "Microsoft explains that TRIM handles normal ASCII spaces, but does not remove character one sixty by itself."
+        ],
+        [
+          "THE TEST",
+          "TRIM",
+          "CHAR(160)",
+          "In this invented row, check the character code instead of repeatedly running the same formula."
+        ],
+        [
+          "THE FIX",
+          "SUBSTITUTE",
+          "THEN TRIM",
+          "Replace character one sixty with an ordinary space using SUBSTITUTE, then wrap the result in TRIM."
+        ],
+        [
+          "COPY THE FORMULA",
+          "=TRIM(",
+          "SUBSTITUTE())",
+          "Use equals TRIM, open parenthesis, SUBSTITUTE of A two, CHAR one sixty, and a space. Verify your actual data."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261113_duplicates_part2_short_en",
+      "date_ist": "2026-11-13",
+      "kind": "short",
+      "language": "en",
+      "title": "Excel Remove Duplicates Can Delete Data! Check This First #Shorts",
+      "source": "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates",
+      "source_linked_claims": [
+        "Remove Duplicates permanently deletes; identify correct columns"
+      ],
+      "voice": "af_heart",
+      "time_ist": "20:30",
+      "scenes": [
+        [
+          "DON'T CLICK YET",
+          "5 ROWS",
+          "4 LEFT",
+          "Remove Duplicates can permanently delete a row. In this fictional table, one choice changes your data."
+        ],
+        [
+          "SPOT THE RISK",
+          "NAME ONLY",
+          "WRONG KEY",
+          "Two people can share a name. A duplicate name alone does not prove two complete records are duplicates."
+        ],
+        [
+          "PREVIEW FIRST",
+          "CONDITIONAL",
+          "FORMATTING",
+          "Microsoft recommends highlighting duplicate values to review them before deciding what to delete."
+        ],
+        [
+          "COPY THE DATA",
+          "BACKUP",
+          "THEN EDIT",
+          "Copy the original table to another sheet. Choose the identifying columns intentionally before removing rows."
+        ],
+        [
+          "THE SAFE RULE",
+          "MATCH COLUMNS",
+          "VERIFY COUNT",
+          "Review the duplicates and compare row counts after cleanup. Don't delete useful records just to tidy a table."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261113_excel_cleanup_workflow_long_en",
+      "date_ist": "2026-11-13",
+      "kind": "long",
+      "language": "en",
+      "title": "Clean Messy Excel Data Without Deleting the Wrong Rows",
+      "source": "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates",
+      "source_linked_claims": [
+        "Microsoft support remove duplicates, TRIM function, Power Query types"
+      ],
+      "voice": "am_michael",
+      "time_ist": "16:00",
+      "scenes": [
+        [
+          "THIS DELETE WAS WRONG",
+          "5 ROWS",
+          "4 LEFT",
+          "Here is a fictional sales table with five rows. Someone selects only the name column and removes duplicates. One entirely different customer's row disappears. The screen looks neater, but the data is now wrong."
+        ],
+        [
+          "WORK BACKWARD",
+          "BEFORE",
+          "AFTER",
+          "A reliable cleanup process starts with a question: which records should exist afterward? Save a copy of the raw file, record its row count, and decide what a unique record means in that dataset."
+        ],
+        [
+          "STEP ONE BACKUP",
+          "RAW FILE",
+          "WORKING COPY",
+          "Make a working copy and keep the raw original untouched. Microsoft cautions that Remove Duplicates permanently deletes duplicate rows from the selected range. A backup lets you undo an incorrect choice."
+        ],
+        [
+          "STEP TWO SPACES",
+          "ANNA SPACE",
+          "ANNA",
+          "Visible names can look equal while hidden spaces make them different. TRIM removes excess ordinary spaces. Clean the name in a helper column first, instead of overwriting the only stored original."
+        ],
+        [
+          "HIDDEN SPACE TRAP",
+          "ASCII 32",
+          "NBSP 160",
+          "One more twist: a nonbreaking space can survive TRIM because Excel's function is designed for ASCII character thirty two. Microsoft recommends checking and replacing character one sixty separately, for example with SUBSTITUTE."
+        ],
+        [
+          "STEP THREE TYPES",
+          "00123",
+          "123",
+          "Next check your data types. An identifier like zero zero one two three is a label, not a number you intend to calculate. If conversion already lost zeros, changing the display format does not reconstruct the source value."
+        ],
+        [
+          "STEP FOUR DUPES",
+          "SAME NAME",
+          "NEW ORDER",
+          "Now highlight potential duplicates without removing them. Decide whether customer ID, order ID, or another set of columns identifies a unique row. A common name can appear on many legitimate orders."
+        ],
+        [
+          "WHICH COLUMNS?",
+          "ORDER ID",
+          "CUSTOMER",
+          "In this fictional example, matching a customer name alone is insufficient. Matching an order identifier can be more useful, but only after checking how the source system assigns identifiers and repeated transactions."
+        ],
+        [
+          "DELETE ONLY AFTER",
+          "HIGHLIGHT",
+          "REVIEW",
+          "Excel offers conditional formatting to highlight duplicates. Compare the marked rows side by side. Copy the range before using Data, Remove Duplicates, and carefully select the intended comparison columns."
+        ],
+        [
+          "VERIFY COUNTS",
+          "5 BEFORE",
+          "4 AFTER",
+          "After cleanup, compare starting and ending row counts. For every removed record, identify why it was truly redundant. A file with fewer rows is not automatically a file with better data quality."
+        ],
+        [
+          "POWER QUERY OPTION",
+          "KEEP STEPS",
+          "REFRESH",
+          "For repeatable files, Power Query can apply a reviewed transformation sequence rather than manual editing each month. Validate type detection and duplicate rules before refreshing; a repeatable mistake is still a mistake."
+        ],
+        [
+          "CHECK BEFORE SHARE",
+          "COUNT ROWS",
+          "CHECK KEYS",
+          "Before sharing the final data, sample the cleaned rows against the raw source. Audit whitespace, ID types, duplicate keys, and totals. The practical habit is simple: protect the source and verify your output."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    }
+  ]
+}
