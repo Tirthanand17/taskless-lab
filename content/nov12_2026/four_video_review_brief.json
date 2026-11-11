@@ -1,0 +1,226 @@
+{
+  "status": "UNAPPROVED_BRANCH1_2026_11_12_FOUR_ORIGINAL_EDUCATIONAL_VIDEOS",
+  "date_ist": "2026-11-12",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "target_timezone": "Asia/Kolkata",
+  "decision": "owner_review_before_any_youtube_upload_or_schedule",
+  "factual_basis": "Primary vendor documentation only; visuals are synthetic examples and are clearly labeled",
+  "safety": {
+    "actual_publishing_allowed": false,
+    "owner_final_watch": false,
+    "rights_final_review": false,
+    "mock_app_ui_labeled": true
+  },
+  "episodes": [
+    {
+      "id": "nov12_short_a_excel_16digits",
+      "type": "short",
+      "time": "11:00",
+      "title": "Excel Changed My 16-Digit Number! Here's the Fix #Shorts",
+      "cover": "EXCEL CHANGED IT?",
+      "voice": "af_heart",
+      "source": "https://support.microsoft.com/en-us/excel/format-numbers-as-text",
+      "description": "Illustrative synthetic sample: Microsoft documents Excel's 15-digit numeric precision limit. Format or import identifiers as Text BEFORE entering them. Existing lost digits cannot be recovered by changing format. Official Microsoft help: https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers #Excel #SpreadsheetTips #DataQuality #Shorts Additional official detail: https://support.microsoft.com/en-us/excel/format-numbers-as-text",
+      "scenes": [
+        [
+          "THE LAST DIGIT",
+          "1234567890123456",
+          "1234567890123450",
+          "A made-up sixteen-digit code ends in six. As an Excel number, its last digit can become zero."
+        ],
+        [
+          "WHY IT HAPPENS",
+          "15 DIGITS",
+          "PRECISION LIMIT",
+          "Excel stores only fifteen significant digits in numeric cells. This isn't just a display issue."
+        ],
+        [
+          "FIX BEFORE PASTE",
+          "FORMAT COLUMN",
+          "AS TEXT",
+          "Set the column to Text BEFORE you type or paste long identifiers. You can also import as Text."
+        ],
+        [
+          "ALREADY CHANGED?",
+          "LOST DATA",
+          "REIMPORT",
+          "Changing cell formatting afterward cannot restore digits Excel already discarded. Return to the original source."
+        ],
+        [
+          "TRY THIS CHECK",
+          "COMPARE ID",
+          "SOURCE FILE",
+          "Compare a long code against its source before trusting the spreadsheet. Which digit changed?"
+        ]
+      ]
+    },
+    {
+      "id": "nov12_short_b_ai_fake_citations",
+      "type": "short",
+      "time": "13:30",
+      "title": "AI Can Invent Research Papers — Spot the Fake #Shorts",
+      "cover": "FAKE STUDY?",
+      "voice": "bf_emma",
+      "source": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth",
+      "description": "AI models can create convincing but false references. The title shown is an explicitly fictional teaching example, NOT an actual research paper. Check the publication, authors, URL and the specific cited claim. Official overview: https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth #AI #FakeCitations #ResearchTips #Shorts",
+      "scenes": [
+        [
+          "THIS LOOKS REAL",
+          "AI ANSWER",
+          "FAKE SOURCE?",
+          "This confident-looking AI citation could be completely invented. Here's how to catch it."
+        ],
+        [
+          "INVENTED EXAMPLE",
+          "INVISIBLE STUDY",
+          "NOT REAL",
+          "Imagine a citation called the Invisible Spreadsheet Study. We made that title up for this example."
+        ],
+        [
+          "CHECK THE SOURCE",
+          "OPEN LINK",
+          "MATCH TITLE",
+          "Open the link. Do the article title, authors and publication actually match the answer?"
+        ],
+        [
+          "CHECK THE CLAIM",
+          "REAL SOURCE",
+          "WRONG CLAIM",
+          "Even a real paper can be cited for something it never said. Read the specific passage."
+        ],
+        [
+          "ONE SAFE RULE",
+          "NO SOURCE?",
+          "UNVERIFIED",
+          "No trustworthy source? Treat the claim as unverified. Don't share a perfect-looking fake citation."
+        ]
+      ]
+    },
+    {
+      "id": "nov12_long_excel_silent_errors",
+      "type": "long",
+      "time": "16:00",
+      "title": "3 Ways Excel Can Silently Change Your Data (And How to Prevent It)",
+      "cover": "EXCEL CHANGED IT?",
+      "voice": "am_michael",
+      "source": "https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers",
+      "description": "Original instructional walkthrough using fictional example values, not a recording of real files. Microsoft's Excel docs confirm 15-digit numeric precision, removal of leading zeros, automatic conversions and Text/Power Query import options. Sources: https://support.microsoft.com/en-us/excel/keeping-leading-zeros-and-large-numbers ; https://support.microsoft.com/en-us/excel/data-import-and-analysis-options-in-excel ; https://support.microsoft.com/en-us/excel/stop-automatically-changing-numbers-to-dates . Tell us which data conversion hurt you: DIGITS, ZEROS, or DATES? #Excel #DataScience #PowerQuery #SpreadsheetTips",
+      "scenes": [
+        [
+          "ONE CELL. WRONG ID.",
+          "1234567890123456",
+          "1234567890123450",
+          "Look at these two invented identifiers. They differ by just one digit. If you copy long IDs into Excel the wrong way, a value can change without any obvious warning. Let's see why it happens and how to protect your data."
+        ],
+        [
+          "THE THREE TRAPS",
+          "15 DIGITS",
+          "LEADING ZERO",
+          "We are going to examine three documented Excel behaviors: long-number precision, disappearing leading zeros, and automatic date conversion. All values in these demonstrations are fictional. The goal is a reliable workflow, not a scary headline."
+        ],
+        [
+          "TRAP ONE: DIGITS",
+          "15 SIGNIFICANT",
+          "NOT 16",
+          "Microsoft documents that Excel numeric values use fifteen significant digits of precision. That limit matters when a code has sixteen or more digits. If the cell is interpreted as a number, digits beyond the fifteenth can be replaced with zeros. Display formatting alone cannot fix lost source data."
+        ],
+        [
+          "THE CODE CHANGED",
+          "1234567890123456",
+          "1234567890123450",
+          "Consider this made-up code: one two three four five six seven eight nine zero one two three four five six. As a numeric value in Excel, the last digit can be stored as zero instead of six. The example is not an account number. It's a controlled illustration of the documented precision rule."
+        ],
+        [
+          "TRAP TWO: ZERO",
+          "00123",
+          "123",
+          "Now consider a product code that begins with two zeros: zero zero one two three. If Excel interprets it as a normal number, it can become one two three. That's mathematically reasonable but terrible for an identifier, because the original code and the shorter code are not the same label."
+        ],
+        [
+          "NUMBERS OR LABELS?",
+          "ITEM CODE",
+          "NOT A SUM",
+          "This is the key distinction. Prices, quantities, and totals are numbers you may want to calculate. Product IDs, account references, postal codes, and many phone-like fields are labels. If leading zeros or exact digits matter, they should normally be treated as text."
+        ],
+        [
+          "TRAP THREE: DATES",
+          "12/2",
+          "2 DEC",
+          "Excel also tries to recognize dates. Microsoft's support example shows a value like twelve slash two changing into a December date. That may be useful for calendar data, but it changes a code that was never supposed to be a date. Don't let guesses redefine a column."
+        ],
+        [
+          "WHY CSV IS TRICKY",
+          "RAW CSV",
+          "AUTO TYPES",
+          "A CSV is plain text with separators. It does not preserve the original spreadsheet cell types. When software opens or imports it, automatic type detection may decide that an ID is a number or a code is a date. The wrong conversion can happen before you notice it."
+        ],
+        [
+          "THE SAFER IMPORT",
+          "DATA TAB",
+          "FROM TEXT/CSV",
+          "When importing, use Data, then From Text or CSV, and inspect the preview. For identifier columns, use the Text data type rather than accepting an automatic numeric type. In Power Query, check any Changed Type step before loading the result. Menu labels may differ across Excel versions."
+        ],
+        [
+          "SET TEXT FIRST",
+          "EMPTY COLUMN",
+          "TEXT FORMAT",
+          "For typing or pasting new IDs, preformat the destination cells as Text before adding values. An apostrophe before a code is another documented option for occasional entries. For compatible versions, Excel also offers automatic data conversion settings that can reduce unwanted changes."
+        ],
+        [
+          "CAN IT BE UNDONE?",
+          "DAMAGED VALUE",
+          "ORIGINAL SOURCE",
+          "Here's the hard part. If Excel has already discarded the sixteenth digit or removed leading zeros, simply changing the format later doesn't reconstruct the original identifier. You need an intact source value and a careful reimport. Never guess a lost digit."
+        ],
+        [
+          "THIRTY-SECOND CHECK",
+          "COMPARE",
+          "THEN SHARE",
+          "Before using a new spreadsheet, compare a few IDs with their original records. Check long digits, leading zeros, and any codes that look like dates. That's the practical habit: define the column type before importing and verify samples afterward. Which one has caught you out: digits, zeros, or dates?"
+        ]
+      ]
+    },
+    {
+      "id": "nov12_short_c_drive_link",
+      "type": "short",
+      "time": "20:30",
+      "title": "Your Google Drive Link May Be Open to Anyone #Shorts",
+      "cover": "NOT JUST ONE FRIEND",
+      "voice": "af_sarah",
+      "source": "https://support.google.com/drive/answer/7166529",
+      "description": "Demonstrated using an original fictional sharing screen, not a real Google account. Google Drive 'Anyone with the link' can let people with the link open the file without signing in. Restricted limits it to people explicitly granted access. See official Google Drive Help: https://support.google.com/drive/answer/7166529 #GoogleDrive #Privacy #Sharing #Shorts",
+      "scenes": [
+        [
+          "ONE FRIEND?",
+          "SHARED WITH",
+          "ANYONE?",
+          "Sent a Drive link to one friend? Anyone with the link doesn't mean only that friend."
+        ],
+        [
+          "THE SETTING",
+          "ANYONE WITH LINK",
+          "CAN OPEN",
+          "Google says anyone who gets that link can open the file without signing in, when that setting is enabled."
+        ],
+        [
+          "LINK FORWARDED",
+          "FRIEND A",
+          "VIEWER B",
+          "In this fictional example, the link is forwarded. A second person gets access too."
+        ],
+        [
+          "PRIVATE FIX",
+          "GENERAL ACCESS",
+          "RESTRICTED",
+          "For private files, choose Restricted and invite only the people who need access."
+        ],
+        [
+          "CHECK THE ROLE",
+          "VIEWER",
+          "EDITOR",
+          "Check Viewer versus Editor as well. Before sharing, ask: who can open it, and who can change it?"
+        ]
+      ]
+    }
+  ]
+}

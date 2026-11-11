@@ -1,0 +1,164 @@
+name: FlowMinute Branch 1 Nov12 Four Real Original Owner-Review Videos (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_nov12_four_review_videos.py"
+      - "autopilot/test_branch1_nov12_four_review_videos.py"
+      - "content/nov12_2026/four_video_review_brief.json"
+      - ".github/workflows/flowminute-b1-nov12-four-actual-video-review.yml"
+      - "docs/BRANCH1_NOV12_2026_GROWTH_RESET_RESEARCH.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flowminute-b1-nov12-four-synthetic-review-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source_quality_contract:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install original Pillow font renderer
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python -m pip install --disable-pip-version-check --only-binary=:all: 'Pillow>=11,<13'
+      - name: Four source-locked original scripts, 27 native images and zero publication
+        run: |
+          set -euo pipefail
+          python -B -m py_compile autopilot/branch1_nov12_four_review_videos.py autopilot/test_branch1_nov12_four_review_videos.py
+          python -B -m unittest -v autopilot.test_branch1_nov12_four_review_videos
+          python -B - <<'PY'
+          import ast
+          from pathlib import Path
+          source=Path("autopilot/branch1_nov12_four_review_videos.py").read_text()
+          tree=ast.parse(source)
+          for node in ast.walk(tree):
+              if isinstance(node,ast.Import):
+                  for value in node.names:
+                      assert not value.name.startswith(("google","googleapiclient","boto3","requests","yt_dlp"))
+              if isinstance(node,ast.ImportFrom):
+                  assert not (node.module or "").startswith(("google","googleapiclient","boto3","requests"))
+          assert "youtube.videos().insert" not in source
+          assert "youtube.videos().update" not in source
+          assert "original_one_way_visual_scene_phases" in source
+          assert '"release_authorized":False' in source
+          print("B1_NOV12_SOURCE_FOUR_ORIGINALS_NO_OAUTH_UPLOAD_OR_SCHEDULE")
+          PY
+
+  produce_four_real_review_mp4s:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    needs: [source_quality_contract]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      FLOWMINUTE_DAILY_SPEND_CAP_USD: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install original image/voice/FFmpeg toolchain without credentials
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core libsndfile1
+          python -m pip install --disable-pip-version-check --only-binary=:all: \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' 'soundfile>=0.12,<1' \
+            'kokoro-onnx==0.6.1' 'imageio-ffmpeg>=0.4,<1'
+      - name: Obtain public pinned voice model only in disposable GitHub runner
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-nov12-public-voice
+          cd /tmp/flowminute-nov12-public-voice
+          base="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 240 \
+            -o kokoro-v1.0.int8.onnx "$base/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 180 \
+            -o voices-v1.0.bin "$base/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+      - name: Encode three original Shorts and one Long with physical TTS/ASS and full H264 AAC decoding
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_nov12_four_review_videos \
+            --model /tmp/flowminute-nov12-public-voice/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-nov12-public-voice/voices-v1.0.bin \
+            --out /tmp/flowminute-nov12-review-four
+      - name: Assert exact four original decoded MP4s, source-timed captions and ZERO YouTube writes
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          import json,hashlib
+          root=Path("/tmp/flowminute-nov12-review-four")
+          r=json.loads((root/"FOUR_VIDEO_REVIEW_MANIFEST.json").read_text("utf8"))
+          assert r["status"]=="B1_NOV12_FOUR_REAL_ORIGINAL_VIDEO_FILES_OWNER_REVIEW_ONLY_NO_UPLOAD"
+          assert r["physical_review_mp4_count"]==4
+          assert r["original_short_count"]==3 and r["original_long_count"]==1
+          assert r["owner_video_and_voice_reviews_completed"]==0
+          assert r["youtube_uploads"]==0 and r["youtube_schedule_writes"]==0
+          assert r["release_authorized"] is False
+          assert r["simulated_ui_not_real_product_screen_capture"] is True
+          assert len(r["episode_reports"])==4
+          seen=set()
+          for entry in r["episode_reports"]:
+              assert entry["physical_h264_aac_full_decode_passed"] is True
+              assert entry["original_one_way_visual_scene_phases"]==3*entry["real_speech_scene_count"]
+              assert entry["original_mp4_aac_post_encode"]["integrated_lufs_and_true_peak_within_internal_band"] is True
+              assert entry["original_mp4_aac_post_encode"]["human_listening_and_mobile_playback_verified"] is False
+              assert entry["human_full_watch"] is False
+              assert entry["youtube_scheduled"] is False and entry["release_authorized"] is False
+              folder=root/entry["episode_id"]
+              assert len(entry["files"])==4
+              for item in entry["files"]:
+                  path=folder/item["name"]
+                  assert path.is_file() and not path.is_symlink()
+                  assert path.stat().st_size==item["bytes"]
+                  assert hashlib.sha256(path.read_bytes()).hexdigest()==item["sha256"]
+              assert entry["actual_mp4_sha256"] not in seen
+              seen.add(entry["actual_mp4_sha256"])
+              assert (folder/"READ_THIS_FIRST.txt").is_file()
+          assert len(seen)==4
+          print("B1_NOV12_FOUR_REAL_MP4S_4_FULL_DECODES_NATIVE_ASS_SHA_PINNED_NO_YOUTUBE_UPLOAD")
+          PY
+      - name: Retain four ORIGINAL unapproved review MP4s, timed SRTs, covers and contact sheets for 7 days
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowminute-NOV12-three-Shorts-one-Long-OWNER-REVIEW-NOT-SCHEDULED-${{ github.run_id }}
+          path: /tmp/flowminute-nov12-review-four/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 1
+      - name: Purge ephemeral model and original media from GitHub runner
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-nov12-review-four /tmp/flowminute-nov12-public-voice
+          echo "B1_NOV12_GITHUB_ONLY_TEMP_MEDIA_PURGED_ZERO_YOUTUBE_SCHEDULE_WRITES"
