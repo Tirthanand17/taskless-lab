@@ -29,7 +29,7 @@ EXPECTED_SOURCE_BY_DATE={
         "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates",
         "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates"),
     "2026-11-14":("https://support.google.com/chrome/answer/3220216",
-        "https://support.google.com/accounts/answer/3466521",
+        "https://support.google.com/accounts/answer/13533235",
         "https://support.google.com/chrome/answer/3220216"),
     "2026-11-15":("https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error",
         "https://support.microsoft.com/en-us/excel/functions/xlookup-function",
