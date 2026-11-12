@@ -221,5 +221,19 @@
     "fixture": "branch3/a10/fixtures/synthetic-analytics-export.json",
     "workflow": ".github/workflows/branch3-clivox-a10-analytics.yml",
     "state": "SYNTHETIC_VALIDATION_ONLY"
+  },
+  "integrated_source_free_rehearsal": {
+    "pipeline_implemented": true,
+    "source_footage_allowed": false,
+    "exact_a4_storyboard_sha256_to_a5_video_provenance": true,
+    "actual_ffprobe_mp4_and_srt_sha_checks": true,
+    "unsigned_a6_quarantine_required": true,
+    "a8_upload_and_schedule_denied": true,
+    "public_actions_artifact_contains_original_only_demo": true,
+    "private_media_storage_or_creator_license_verified": false,
+    "real_clivox_oauth_or_youtube_upload_enabled": false,
+    "real_licensed_a9_pilot_complete": false,
+    "github_workflow": ".github/workflows/branch3-clivox-integration-rehearsal.yml",
+    "status": "SOURCE_FREE_REAL_MEDIA_QA_AND_NO_RELEASE_ONLY"
   }
 }
