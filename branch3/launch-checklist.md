@@ -24,6 +24,14 @@
 - [x] Audience setting **review separately for every video**, not automatically declared Made for Kids / not Made for Kids.
 - [ ] Enable Intermediate features through Google's official verification flow when owner is ready; do not bypass or reuse FlowMinute credentials.
 
+## First content preparation — 2026-11-12
+- [x] Check live intermediate feature gate: still **Eligible**; owner phone verification needed to enable custom thumbnails/long uploads.
+- [x] Research current campaign leads for gaming, livestream and comedy; classify all as **UNVERIFIED** research, including explicitly non-YouTube and paused examples.
+- [x] Prepare three conceptual viral hooks and first-clip edit/review standards without downloading someone else's media.
+- [ ] Owner completes Google phone/OTP verification privately.
+- [ ] Authenticate campaign operator/actual rights holder; confirm Clivox commercial YouTube license and special requirements.
+- [ ] First exact content permission and source media cleared; only then start media editing.
+
 ## Prior to any clipping
 - [ ] Source creator exists in verified allowlist (`creator_permissions.json`, initially empty); automatic publication remains disabled.
 - [ ] Confirm permission is still active on the source date, covers the precise YouTube video and does not exclude our type of edits, platform, geography or commercial use.
