@@ -33,15 +33,16 @@ Only material covered by direct written creator/rights-holder permission or an a
 6. No guarantee of zero Content ID claims, strikes or monetization eligibility.
 7. Keep all publishing automation off until the user separately approves after channel creation.
 
-## Branch 3 development status — A0, A1 and A2 intake
+## Branch 3 development status — A0, A1, A2 intake and A3 media preflight
 
-The standalone architecture, research evidence, state graph, agent responsibilities, release safeguards and step-by-step implementation roadmap live at [architecture/README.md](architecture/README.md). **A1 metadata-only discovery and A2 pending rights-case intake are implemented**; real lookup mode requires a separately configured public-metadata API key. No clipping rights, media downloads or publishing are allowed.
+The standalone architecture, research evidence, state graph, agent responsibilities, release safeguards and step-by-step implementation roadmap live at [architecture/README.md](architecture/README.md). **A1 metadata-only discovery, A2 pending rights-case intake and A3 confidential media storage preflight are implemented**; real lookup mode requires a separately configured public-metadata API key. No clipping rights, media downloads or publishing are allowed.
 
 - **Architecture docs:** [overview](architecture/README.md), [primary research](architecture/research-evidence.md), [workflow and agent roles](architecture/workflows.md), [security and cloud-only media strategy](architecture/security-and-storage.md), [analytics and operating plan](architecture/ops-and-metrics.md), [rollout and testing](architecture/rollout-and-tests.md), [ADRs](architecture/architecture-decisions.md).
 - **Machine-checkable architecture:** `architecture/architecture-config.json`, `contracts/state-machine.json`, `contracts/clip-job.schema.json`, `contracts/example-discovered-job.json`.
 - **No-publish offline CI:** `.github/workflows/branch3-clivox-architecture.yml`; `scripts/branch3_architecture_gate.py` with adversarial tests.
 - **Implementation reality:** A0 design + A1 read-only metadata ranking + A2 human-rights-review **case intake** are implemented, **not** real rights approval, licensed media extraction or a deployed multi-agent clipping/rendering/publishing platform. See [A1 run instructions](architecture/a1-discovery-implementation.md) and [A2 case intake](architecture/a2-rights-intake-implementation.md) and `.github/workflows/branch3-clivox-a1-discovery.yml`. No third-party media may be fetched before permission; no new Clivox OAuth token, release signer or production environment has been configured.
-- **Next development dependency:** actual creator-granted licensing with game/music/guest rights, owner review of Content Rewards contract terms, and an approved confidential media storage design.
+- **A3 media boundary:** [media storage README](media_storage/README.md) documents the chosen GitHub-first private-vault approach and provides public-media leak checks; **no private vault has been provisioned or approved**. Source footage may not be downloaded until creator-granted rights are verified.
+- **Next development dependency:** actual creator-granted licensing with game/music/guest rights, owner review of Content Rewards contract terms, and the owner's approval and authorization to provision a private media location.
 
 ## First creator-clipping pilot (2026-11-12)
 - **Owner phone verification completed** and live YouTube Studio shows **Intermediate Enabled**; Advanced Eligible.
@@ -58,6 +59,7 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 
 ## Files
 - `architecture/` and `contracts/`: full design, rights-aware state graph, schemas, implementation plan and tests
+- `media_storage/`: A3 confidential media storage policy, unlicensed source manifest and fail-closed preflight; no private vault/footage stored
 - `channel_state.json`: verified creation, channel identity, branding and safety configuration
 - `creator_permissions.json`: empty creator allowlist; no creators eligible by default
 - `scripts/branch3_creator_permission_gate.py`: fail-closed candidate intake check; never upload permission
