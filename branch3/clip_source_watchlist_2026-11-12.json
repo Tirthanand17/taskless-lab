@@ -7,7 +7,7 @@
   "creator_allowlist_empty": true,
   "automatic_download_enabled": false,
   "automatic_publish_enabled": false,
-  "disclosure": "Campaign listings are third-party public offers. They are not proof that the campaign operator controls every source right, that Clivox has joined, that a participant-specific license exists, or that YouTube monetization will approve minimally edited clips.",
+  "disclosure": "Campaign listings are third-party public offers. They are not proof that the campaign operator controls every source right, that Clivox has joined, that a participant-specific license exists, or that YouTube monetization will approve minimally edited clips. Verified official YouTube intermediates no longer block custom thumbnails, but no source campaign permissions have been granted.",
   "candidates": [
     {
       "id": "faze-flank-invitational",
@@ -46,16 +46,19 @@
         "Verify sponsor/streamer/broadcast operator authorization, original soundtrack and guest footage",
         "Read full campaign terms; link points to additional rules",
         "Check paid-promotion disclosure requirement and operator's approval process",
-        "Do not represent a sponsored stream as unsponsored"
+        "Do not represent a sponsored stream as unsponsored",
+        "Official Reach campaign terms require at least 50% audience from USA, Canada, Australia, UK, or New Zealand; newly created Clivox has no proven audience",
+        "Official Reach rules: Expedia must be main focus, reference the correct travel destination, #IShowSpeed, approved Nov 6 stream only; sponsored disclosure rules apply"
       ],
       "recommended_angle": "One unexpected live reaction with a short original explanatory setup and reaction analysis (after terms/source verified)",
-      "initial_priority": "REVIEW_FIRST_IF_TERMS_ACCESSIBLE",
+      "initial_priority": "LOW_UNTIL_50_PERCENT_ELIGIBLE_GEO_AUDIENCE_CONFIRMED",
       "status": "RESEARCH_ONLY_UNVERIFIED",
       "rights_verified": false,
       "clipping_authorized_for_clivox": false,
       "allowlist_approved": false,
       "media_download_authorized": false,
-      "upload_authorized": false
+      "upload_authorized": false,
+      "official_brief_url": "https://reachclipping.com/Expedia-IShowSpeed"
     },
     {
       "id": "ymh-november-2b1c",
@@ -70,16 +73,22 @@
         "Verify official YMH publisher control and exact episode/source link",
         "Review specific prohibited topics, music and talent/guest rights",
         "Confirm commercial YouTube reuse and required credit, episode URL, draft review",
-        "Comedy clip needs meaningful original framing; not merely caption repost"
+        "Comedy clip needs meaningful original framing; not merely caption repost",
+        "Official YMH-run Whop page announces the campaign, but participation-specific rules and the October 26 Content Rewards Creator Terms need owner review first",
+        "Content Rewards Creator Terms 17.6 may assign approved final clip ownership to the brand; owner must decide before joining",
+        "YMH campaign requires #2BearsWeekly, Subscribe!, 2 Bears 1 Cave Ep. 347 and episode link in bio"
       ],
       "recommended_angle": "Unexpected stand-up anecdote with context and original comedic commentary (only after rights/source checked)",
-      "initial_priority": "REVIEW_FIRST_PODCAST_COMEDY",
+      "initial_priority": "PRIMARY_TO_VERIFY_TERMS_NOT_YET_APPROVED",
       "status": "RESEARCH_ONLY_UNVERIFIED",
       "rights_verified": false,
       "clipping_authorized_for_clivox": false,
       "allowlist_approved": false,
       "media_download_authorized": false,
-      "upload_authorized": false
+      "upload_authorized": false,
+      "official_creator_invitation_url": "https://whop.com/ymhclipping/",
+      "episode_source_url": "https://www.youtube.com/watch?v=i6pmnpaOaZQ",
+      "episode_number": 347
     },
     {
       "id": "warzone-season1-excluded",
