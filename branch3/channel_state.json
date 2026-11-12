@@ -34,10 +34,12 @@
     "upload_default_visibility": "private",
     "audience_selection": "review_per_video",
     "standard_features": "enabled",
-    "intermediate_features": "eligible_not_yet_enabled",
+    "intermediate_features": "enabled",
     "advanced_features": "eligible_not_yet_enabled",
     "residence_country": "not_set",
-    "automatic_publishing_enabled": false
+    "automatic_publishing_enabled": false,
+    "phone_verification_status": "confirmed_by_youtube_studio_intermediate_enabled",
+    "phone_verification_checked_ist_date": "2026-11-12"
   },
   "release_gates": {
     "verified_creator_permissions_count": 0,
@@ -53,7 +55,7 @@
     "YouTube handle @Clivox was unavailable; YouTube accepted @ClivoxPulse.",
     "Previously paused branches 1 and 2 remain untouched.",
     "Do not use this repo file itself as proof of creator clipping permission or YouTube upload approval.",
-    "Standard features are enabled; intermediate and advanced features may require account verification.",
+    "Standard and intermediate features were verified Enabled in Studio after owner completed phone verification; advanced features remain Eligible.",
     "Public YouTube channel includes no videos at the time of first-channel creation readback."
   ]
 }
