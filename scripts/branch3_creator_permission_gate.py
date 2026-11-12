@@ -24,6 +24,10 @@ REQUIRED_SCOPE=(
     "commercial_use_allowed",
 )
 REGISTRY=Path(__file__).resolve().parents[1]/"branch3/creator_permissions.json"
+# Category describes editorial positioning; it never grants rights to media.
+CATEGORIES=frozenset({
+    "gaming","livestream","comedy","entertainment","podcast_interview"
+})
 
 class ClipRightsBlocked(ValueError):
     """Insufficient explicit creator permission: no clip acquisition or upload."""
@@ -56,6 +60,18 @@ def eligible_source(registry: dict, clip: dict, *, now: datetime) -> dict:
             and registry.get("policy")=="EXPLICIT_CREATOR_GRANT_ONLY"
             and type(registry.get("creators")) is list)
     require(type(clip) is dict and type(now) is datetime and now.tzinfo is not None)
+    require(clip.get("content_category") in CATEGORIES)
+    # All game footage requires separate publisher commercial-use clearance;
+    # streaming creator permissions cover only the rights the creator owns.
+    require(type(clip.get("contains_video_game_footage")) is bool
+            and type(clip.get("pre_release_or_leaked_game_footage")) is bool
+            and type(clip.get("isolated_game_spoiler_or_in_game_show")) is bool
+            and clip["pre_release_or_leaked_game_footage"] is False
+            and clip["isolated_game_spoiler_or_in_game_show"] is False)
+    if clip["content_category"]=="gaming":
+        require(clip["contains_video_game_footage"] is True)
+    if clip["contains_video_game_footage"]:
+        require(clip.get("game_publisher_commercial_use_manually_verified") is True)
     require(clip.get("video_format") in ("short","long")
             and type(clip.get("creator_id")) is str
             and IDENTIFIER.fullmatch(clip["creator_id"]) is not None
@@ -99,6 +115,7 @@ def eligible_source(registry: dict, clip: dict, *, now: datetime) -> dict:
         "status":"SOURCE_ELIGIBLE_FOR_MANUAL_EDITORIAL_AND_SIGNED_OWNER_REVIEW_ONLY",
         "creator_id":creator["creator_id"],
         "source_video_id":clip["source_video_id"],
+        "content_category":clip["content_category"],
         "copyright_risk_eliminated":False,
         "rights_legal_verification_performed_by_this_script":False,
         "signed_release_authorized":False,
