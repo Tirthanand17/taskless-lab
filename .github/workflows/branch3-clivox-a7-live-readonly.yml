@@ -1,0 +1,46 @@
+name: Clivox A7 Owner-Reviewed READ-ONLY YouTube Connection
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a7-readonly-connection
+  cancel-in-progress: false
+
+jobs:
+  owner_reviewed_clivox_readonly:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment:
+      name: clivox-readonly
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      CLIVOX_A7_CONNECT_APPROVED: ${{ secrets.CLIVOX_A7_CONNECT_APPROVED }}
+      CLIVOX_A7_READONLY_CLIENT_ID: ${{ secrets.CLIVOX_A7_READONLY_CLIENT_ID }}
+      CLIVOX_A7_READONLY_CLIENT_SECRET: ${{ secrets.CLIVOX_A7_READONLY_CLIENT_SECRET }}
+      CLIVOX_A7_READONLY_REFRESH_TOKEN: ${{ secrets.CLIVOX_A7_READONLY_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Confirm only main/manual workflow and never grant YouTube write
+        run: |
+          test "$GITHUB_REPOSITORY" = 'Tirthanand17/taskless-lab'
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$GITHUB_EVENT_NAME" = 'workflow_dispatch'
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+      - name: Verify only Clivox owner OAuth identity (NO uploads)
+        run: |
+          python -B -m scripts.branch3_a7_live_readonly_bridge --mode live
+      # Deliberately no upload-artifact step: private channel data and tokens
+      # must not leave the protected runner via a public-repository artifact.
