@@ -1,0 +1,49 @@
+name: Branch 3 Clivox A8 Private-first Upload Ledger (DRY RUN ONLY)
+
+on:
+  pull_request:
+    paths:
+      - "branch3/a8/**"
+      - "scripts/branch3_a8_private_first_dryrun.py"
+      - "scripts/test_branch3_a8_private_first_dryrun.py"
+      - ".github/workflows/branch3-clivox-a8-dryrun.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run_no_upload_schedule_preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PUBLISH_ENABLED: "false"
+      CLIVOX_YOUTUBE_WRITE_ENABLED: "false"
+      CLIVOX_UPLOAD_LEDGER_DURABLE: "false"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests for strictly private future scheduling and no blind retries
+        run: |
+          python -B -m py_compile scripts/branch3_a8_private_first_dryrun.py scripts/test_branch3_a8_private_first_dryrun.py
+          python -B -m unittest -v scripts.test_branch3_a8_private_first_dryrun
+      - name: Produce synthetic schedule HOLD report with no YouTube requests
+        run: |
+          python -B scripts/branch3_a8_private_first_dryrun.py --out "$RUNNER_TEMP/clivox-a8/no-upload-plan.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a8/no-upload-plan.json").read_text()); assert not d["youtube_upload_authorized"] and not d["youtube_schedule_authorized"] and d["actual_youtube_network_calls"]==0 and not d["persistent_atomic_upload_lock_implemented"]; print("CLIVOX_A8_DRYRUN_HOLD_ALL_RELEASES")'
+      - name: Confirm no Google writes, secrets or persistent lock claims
+        run: |
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = "false"
+          test "$CLIVOX_UPLOAD_LEDGER_DURABLE" = "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a8-private-first-dryrun-report
+          path: ${{ runner.temp }}/clivox-a8/no-upload-plan.json
+          if-no-files-found: error
+          retention-days: 7
