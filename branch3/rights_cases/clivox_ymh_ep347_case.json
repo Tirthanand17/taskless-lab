@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "case_id": "clivox_ymh_ep347_case",
+  "case_status": "NEEDS_HUMAN_REVIEW",
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "source": {
+    "platform": "youtube",
+    "original_video_id": "i6pmnpaOaZQ",
+    "original_video_url": "https://www.youtube.com/watch?v=i6pmnpaOaZQ",
+    "creator_name": "YMH Studios / 2 Bears 1 Cave",
+    "original_creator_channel_id": null,
+    "category": "comedy",
+    "time_in_ms": null,
+    "time_out_ms": null
+  },
+  "permission": {
+    "kind": "not_yet_provided",
+    "public_invitation_url": "https://whop.com/ymhclipping/",
+    "actual_grant_reference": null,
+    "evidence_sha256": null,
+    "issuer_identity_verified": false,
+    "commercial_rights_confirmed": false,
+    "scope_confirmed": false,
+    "revocation_checked": false,
+    "expires_at_utc": null
+  },
+  "underlying_rights": {
+    "music_cleared": false,
+    "guests_cleared": false,
+    "visuals_cleared": false,
+    "game_publisher_cleared": false,
+    "third_party_claims_reviewed": false
+  },
+  "contract": {
+    "terms_reviewed_by_owner": false,
+    "brand_ip_assignment_accepted_by_owner": false,
+    "campaign_joined": false,
+    "copyright_claim_policy_reviewed": false,
+    "sponsor_disclosure_reviewed": false
+  },
+  "review": {
+    "checklist": {
+      "issuer_controls_source_rights": false,
+      "original_youtube_source_confirmed": false,
+      "clip_and_edit_permission": false,
+      "youtube_shorts_redistribution": false,
+      "youtube_commercial_use": false,
+      "license_current_and_not_revoked": false,
+      "source_timestamps_verified": false,
+      "underlying_music_audio_cleared": false,
+      "underlying_visuals_guests_cleared": false,
+      "game_publisher_rights_when_applicable": false,
+      "contract_scope_and_ownership_reviewed": false,
+      "credit_and_sponsor_rules_reviewed": false
+    },
+    "human_verifier_receipt": null,
+    "exact_media_owner_approval": false,
+    "human_approver_identified": false
+  },
+  "controls": {
+    "source_download_enabled": false,
+    "render_enabled": false,
+    "youtube_upload_enabled": false,
+    "youtube_schedule_enabled": false,
+    "allowlist_write_enabled": false
+  }
+}
