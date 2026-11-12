@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "state": "EMPTY_NO_LIVE_UPLOADS",
+  "reservations": [],
+  "remote_video_ids": [],
+  "contains_private_data": false,
+  "atomic_persistent_lock_enabled": false,
+  "remote_api_writes": 0,
+  "notes": "Non-authoritative fixture only; actual remote inventory and distributed atomic lock are not configured."
+}
