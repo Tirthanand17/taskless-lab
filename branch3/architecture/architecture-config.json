@@ -150,5 +150,17 @@
     "video_upload_or_publish_enabled": false,
     "workflow": ".github/workflows/branch3-clivox-a5-original-render.yml",
     "output": "ORIGINAL_ONLY_BENCHMARK_NEVER_FOR_YOUTUBE_PUBLICATION"
+  },
+  "a6_signed_release_preflight": {
+    "ephemeral_ed25519_signature_verification_tested": true,
+    "canonical_asset_metadata_rights_channel_schedule_binding": true,
+    "production_owner_public_key_enrolled": false,
+    "real_owner_signed_video_count": 0,
+    "actual_verified_creator_licenses": 0,
+    "release_automation_enabled": false,
+    "initial_youtube_visibility": "private",
+    "quarantine_default": true,
+    "workflow": ".github/workflows/branch3-clivox-a6-release-quarantine.yml",
+    "status": "OFFLINE_CRYPTO_PREVIEW_NOT_PRODUCTION"
   }
 }
