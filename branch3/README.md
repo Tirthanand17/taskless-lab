@@ -33,9 +33,9 @@ Only material covered by direct written creator/rights-holder permission or an a
 6. No guarantee of zero Content ID claims, strikes or monetization eligibility.
 7. Keep all publishing automation off until the user separately approves after channel creation.
 
-## Branch 3 development status — A0–A5 partial implementation
+## Branch 3 development status — A0–A8 partial implementation
 
-The standalone architecture, research evidence, state graph, agent responsibilities, release safeguards and step-by-step implementation roadmap live at [architecture/README.md](architecture/README.md). **A1 metadata-only discovery, A2 pending rights-case intake, A3 confidential media storage preflight, A4 source-free original scripting, and A5 original-only rendering/technical QA are implemented**; real lookup mode requires a separately configured public-metadata API key. No clipping rights, media downloads or publishing are allowed.
+The standalone architecture, research evidence, state graph, agent responsibilities, release safeguards and step-by-step implementation roadmap live at [architecture/README.md](architecture/README.md). **A1 source discovery, A2 rights-case intake, A3 storage safeguards, A4 original scripts, A5 synthetic rendering/QA, A6 cryptographic release checks, A7 read-only OAuth client and A8 dry-run scheduling safeguards are implemented in part**; real lookup mode requires a separately configured public-metadata API key. No clipping rights, media downloads or publishing are allowed.
 
 - **Architecture docs:** [overview](architecture/README.md), [primary research](architecture/research-evidence.md), [workflow and agent roles](architecture/workflows.md), [security and cloud-only media strategy](architecture/security-and-storage.md), [analytics and operating plan](architecture/ops-and-metrics.md), [rollout and testing](architecture/rollout-and-tests.md), [ADRs](architecture/architecture-decisions.md).
 - **Machine-checkable architecture:** `architecture/architecture-config.json`, `contracts/state-machine.json`, `contracts/clip-job.schema.json`, `contracts/example-discovered-job.json`.
@@ -44,8 +44,9 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 - **A3 media boundary:** [media storage README](media_storage/README.md) documents the chosen GitHub-first private-vault approach and provides public-media leak checks; **no private vault has been provisioned or approved**. Source footage may not be downloaded until creator-granted rights are verified.
 - **A5 original-only media lab:** [rendering and QA guide](a5/README.md), FFmpeg/Pillow source-free sample, 48kHz synthesized preview tones, visual-script SRT and ffprobe mobile-format checks; **not real licensed footage or voice narration**.
 - **A4 original editorial studio:** [editorial README](editorial/README.md), the source-free YMH Ep347 concept fixture and `scripts/branch3_a4_editorial.py` with adversarial tests. This is a draft narrative workflow, **not licensed footage, a finished video or publishing approval**.
-- **Overall progress:** [planning-weighted tracker](architecture/progress-tracker.json) estimates **43% implemented / 57% remaining** across A0–A10; partial components do not imply live functionality.
+- **Overall progress:** [planning-weighted tracker](architecture/progress-tracker.json) estimates **46% implemented / 54% remaining** across A0–A10; partial components do not imply live functionality.
 - **A6 release-security preflight:** [release README](release/README.md) documents exact MP4/metadata/rights/channel/schedule signatures and quarantine. Ephemeral Ed25519 test keys validate integrity checks; **no real owner signing key, final licensed asset or release authority** is enrolled.
+- **A8 private-first dry-run:** [A8 README](a8/README.md) documents private-only future UTC scheduling, an exact release attempt hash, duplicate/ambiguous-upload quarantine and separate remote reconciliation. The code cannot upload or schedule and has **no durable atomic ledger or live Google write authorization**.
 - **A7 read-only YouTube OAuth preflight:** [A7 README](a7/README.md) and `scripts/branch3_a7_readonly_youtube.py` support fixed-host OAuth refresh, `channels.list(mine=true)` exact Clivox identity verification, and bounded first-page upload inventory. All current fixtures are synthetic; **no live Clivox consent, credentials or protected GitHub environment exists**. No uploader is enabled.
 - **Next development dependencies:** actual creator-granted licensing with game/music/guest rights; owner review of Content Rewards contract terms; approved confidential media location; and exact-source editorial verification.
 
@@ -66,6 +67,8 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 - `architecture/` and `contracts/`: full design, rights-aware state graph, schemas, implementation plan and tests
 - `media_storage/`: A3 confidential media storage policy, unlicensed source manifest and fail-closed preflight; no private vault/footage stored
 - `editorial/`: A4 original source-free storyboards and substantive-commentary planning; no unlicensed footage or fabricated quotes
+- `a7/`: isolated read-only Google OAuth identity fixtures, tests and unconnected credentials plan
+- `a8/`: private-first future scheduling and duplicate-retry dry-run; no uploader or live ledger
 - `channel_state.json`: verified creation, channel identity, branding and safety configuration
 - `creator_permissions.json`: empty creator allowlist; no creators eligible by default
 - `scripts/branch3_creator_permission_gate.py`: fail-closed candidate intake check; never upload permission
@@ -85,3 +88,5 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 - `branding/`: additional original scalable SVG studies, no use of borrowed logos/faces
 
 No raw downloaded third-party video, copyright media, refresh tokens, signed URLs or personal information may be committed to this public repository.
+
+**Updated full-system estimate:** 46% engineering planning completion / 54% remaining across A0–A10; not a measure of live publishing readiness.
