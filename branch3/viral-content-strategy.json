@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "channel": "Clivox",
-  "channel_created": false,
+  "channel_created": true,
   "purpose": "Creator-permission-only viral-worthy highlight commentary across high-interest entertainment categories",
   "source_filter": "EXPLICIT_CREATOR_GRANT_ONLY",
   "viral_optimization_goal": "maximize engaged views, audience retention, shares and subscribers per eligible clip; no promise of virality",
@@ -126,5 +126,8 @@
     "https://support.google.com/youtube/answer/16559650",
     "https://support.rockstargames.com/articles/7bNaeoMFTV0iUDGhStTXvz/policy-on-posting-copyrighted-rockstar-games-material"
   ],
-  "no_candidates_approved": true
+  "no_candidates_approved": true,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "handle": "@ClivoxPulse",
+  "channel_url": "https://www.youtube.com/@ClivoxPulse"
 }

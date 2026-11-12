@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
+import struct
 import xml.etree.ElementTree as ET
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -23,7 +24,21 @@ def validate() -> None:
     assert permissions["schema_version"]==1
     viral=json.loads((B3/"viral-content-strategy.json").read_text("utf8"))
     expected=["gaming","livestream","comedy","entertainment","podcast_interview"]
-    assert viral["channel"]=="Clivox" and viral["channel_created"] is False
+    live=json.loads((B3/"channel_state.json").read_text("utf8"))
+    CHANNEL="UCfPEvy0SefE_5nNlYlY_CyQ"
+    assert live["channel_name"]=="Clivox" and live["handle"]=="@ClivoxPulse"
+    assert live["channel_id"]==CHANNEL and live["channel_created"] is True
+    assert live["channel_id"]!=YOUTUBE_OLD
+    assert live["channel_settings"]["upload_default_visibility"]=="private"
+    assert live["channel_settings"]["automatic_publishing_enabled"] is False
+    assert live["release_gates"]["verified_creator_permissions_count"]==0
+    assert live["release_gates"]["publishing_channel_oauth_connected"] is False
+    assert live["release_gates"]["github_release_automation_enabled"] is False
+    assert live["release_gates"]["videos_uploaded_by_this_setup"]==0
+    assert all(live["production_branding"][key] is True for key in
+               ("avatar_uploaded_and_visible","banner_uploaded_and_publicly_visible","about_published_and_visible"))
+    assert viral["channel"]=="Clivox" and viral["channel_created"] is True
+    assert viral["channel_id"]==CHANNEL and viral["handle"]=="@ClivoxPulse"
     assert viral["experiment_priority_order"]==expected
     assert [pillar["id"] for pillar in viral["content_pillars"]]==expected
     assert viral["release_and_rights"]["publishing_enabled"] is False
@@ -49,14 +64,29 @@ def validate() -> None:
         assert svg.tag=="{http://www.w3.org/2000/svg}svg"
         assert int(svg.attrib["width"])==w and int(svg.attrib["height"])==h
         assert svg.attrib["viewBox"]==f"0 0 {w} {h}"
+    # Verify archived production PNG dimensions and bytes, not only SVG studies.
+    for key,expected_dimensions,limit in (
+        ("avatar_png",(1254,1254),4_000_000),
+        ("banner_png",(2560,1440),6_000_000),
+    ):
+        relative=live["production_branding"][key]
+        assert relative.startswith("branch3/branding/") and relative.endswith(".png")
+        png=ROOT/relative
+        assert png.is_file() and not png.is_symlink()
+        assert 100_000 < png.stat().st_size <= limit
+        with png.open("rb") as stream:
+            header=stream.read(24)
+        assert header[:8]==bytes.fromhex("89504e470d0a1a0a")
+        assert header[12:16]==b"IHDR"
+        assert struct.unpack(">II",header[16:24])==expected_dimensions
     banner=(B3/"branding/clivox-banner.svg").read_text("utf8")
     assert "Clips worth watching. Context worth knowing." in banner
     assert "Clivox" in banner
     profile=(B3/"channel-profile.md").read_text("utf8")
     research=(B3/"research.md").read_text("utf8")
     rights=(B3/"rights-and-release.md").read_text("utf8")
-    assert "@Clivox" in profile
-    assert "unverified" in profile.lower()
+    assert "@ClivoxPulse" in profile
+    assert CHANNEL in profile and "LIVE BANNER" in profile
     for url in (
         "https://support.google.com/youtube/answer/1311392",
         "https://support.google.com/youtube/answer/2797466",
@@ -66,7 +96,7 @@ def validate() -> None:
     assert "written" in rights.lower() and "DENY ALL" in rights
     assert "creator-permission-only" in rights.lower()
     assert "No new uploads" in rights
-    print("BRANCH3_STATIC_CHANNEL_READY_ONLY_ZERO_UPLOADS_ZERO_RIGHTS")
+    print("BRANCH3_LIVE_CHANNEL_ASSETS_VERIFIED_NO_UPLOAD_AUTOMATION_ZERO_CREATOR_RIGHTS")
 
 if __name__=="__main__":
     validate()
