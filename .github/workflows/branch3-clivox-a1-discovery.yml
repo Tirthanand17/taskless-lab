@@ -69,7 +69,9 @@ jobs:
           test "$CLIVOX_AUTO_DOWNLOAD_ENABLED" = "false"
           test "$CLIVOX_AUTO_UPLOAD_ENABLED" = "false"
           test "$CLIVOX_CHANNEL_ID" = "UCfPEvy0SefE_5nNlYlY_CyQ"
-          python -B -m unittest -q scripts.test_branch3_discovery
+          python -B -m unittest -q scripts.test_branch3_discovery scripts.test_branch3_discovery_pipeline
+          python -B scripts/branch3_discovery_pipeline.py --input branch3/discovery/fixtures/research-candidates.json --output "$RUNNER_TEMP/clivox-a1/campaign-triage.json"
+          python -B -c 'import json,os; p=os.environ["RUNNER_TEMP"]+"/clivox-a1/campaign-triage.json"; x=json.load(open(p)); assert x["candidate_count"]==3 and not x["youtube_write_enabled"] and all(not c["publishing_authorized"] for c in x["queue"])'
       - name: Discover only public video metadata
         run: |
           python -B scripts/branch3_discovery.py \
@@ -102,5 +104,12 @@ jobs:
         with:
           name: clivox-a1-public-metadata-${{ github.run_id }}
           path: ${{ runner.temp }}/clivox-a1/discovery.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Store separate research-only creator campaign triage
+        uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a1-campaign-triage-${{ github.run_id }}
+          path: ${{ runner.temp }}/clivox-a1/campaign-triage.json
           if-no-files-found: error
           retention-days: 7
