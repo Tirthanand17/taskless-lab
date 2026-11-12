@@ -12,6 +12,10 @@
 9. **Prompt injection in transcripts/creator descriptions:** Web/source content is untrusted data, not tool instruction or signature.
 10. **Legal terms accepted by automation:** Never join campaigns or click terms without explicit human decision; Content Rewards Section 17.6 could assign the edited clip IP to the brand.
 
+## A3 implementation update — 2026-11-12
+
+A3 now has a source-free, read-only implementation: `scripts/branch3_media_storage_preflight.py`, `scripts/test_branch3_media_storage_preflight.py`, `branch3/media_storage/storage-policy.json` and `.github/workflows/branch3-clivox-a3-media-boundary.yml`. It verifies that the public repo cannot be used as a source-media vault and fails on forged approval, wrong channel, unsafe binary files or enabled download/upload flags. It does **not** provision a private repo or guarantee that any actual creator license exists. See `branch3/media_storage/README.md`.
+
 ## Storage design
 **Existing public repo:** source metadata with canonical public URLs and hashed references, registry of permissions (no raw grant documents), workflow definitions, signing public key identities, sanitized analytics. No restricted media files.
 
