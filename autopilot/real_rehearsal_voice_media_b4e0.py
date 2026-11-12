@@ -218,12 +218,20 @@ def original_preview_frame(episode: dict, scene: dict, target: Path) -> str:
            font=_font(27),fill=soft)
     spoken=_wrap(scene["original_voiceover_text"],
                  39 if portrait else 75,5 if portrait else 3)
-    cursor=bottom+81
-    size=36 if portrait else 35
+    # The 16:9 panel is 330px high: its three lines must end above
+    # h-132. Previous 81+2*48+35=212px exceeded the 198px limit.
+    # Keep every spoken word; reduce landscape font/line pitch instead.
+    start_offset=81 if portrait else 72
+    line_pitch=55 if portrait else 43
+    size=36 if portrait else 30
+    assert start_offset+(len(spoken)-1)*line_pitch+size <= (
+        (488 if portrait else 330)-132
+    ), "Caption geometry must fit without cropping"
+    cursor=bottom+start_offset
     for ln in spoken:
         d.text((128,cursor),ln,font=_font(size),fill=(252,251,246))
-        cursor+=55 if portrait else 48
-    if cursor-(55 if portrait else 48)+size > h-132:
+        cursor+=line_pitch
+    if cursor-line_pitch+size > h-132:
         raise PhysicalPreviewRefused("Caption baseline falls outside safe bounds")
     d.text((100,h-97),"FICTIONAL EDUCATIONAL EXAMPLE  •  NOT FOR PUBLICATION",
            font=_font(20),fill=(185,205,223))
