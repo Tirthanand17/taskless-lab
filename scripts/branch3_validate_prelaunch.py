@@ -26,7 +26,10 @@ def validate() -> None:
         assert p.is_file() and p.stat().st_size < 40_000
         body=p.read_text("utf8")
         assert "<script" not in body.lower()
-        assert not re.search(r"(?:https?://|data:|javascript:|<image\\b)",body,re.I)
+        # SVG's required xmlns HTTP URL is a namespace identifier, not a
+        # fetched external asset. Reject actual remote image/link references.
+        stripped=body.replace('xmlns="http://www.w3.org/2000/svg"','')
+        assert not re.search(r"(?:https?://|data:|javascript:|<image\\b|(?:href|xlink:href)\\s*=)",stripped,re.I)
         svg=ET.fromstring(body)
         assert svg.tag=="{http://www.w3.org/2000/svg}svg"
         assert int(svg.attrib["width"])==w and int(svg.attrib["height"])==h
