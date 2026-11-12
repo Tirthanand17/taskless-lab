@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "proposal_id": "clivox_ymh_ep347_80s_restaurant_v1",
+  "category": "comedy",
+  "state": "SOURCE_FREE_HYPOTHESIS_NOT_FOR_RELEASE",
+  "source_case_id": "clivox_ymh_ep347_case",
+  "source_video_id": "i6pmnpaOaZQ",
+  "source_url": "https://www.youtube.com/watch?v=i6pmnpaOaZQ",
+  "research_context": {
+    "full_source_watched": false,
+    "precise_clip_start_ms": null,
+    "precise_clip_end_ms": null,
+    "transcript_verified": false,
+    "speaker_quotation_included": false,
+    "premise": "A chapter index suggests an '80s-themed restaurant idea is discussed. Verify before any narration/clip matching.",
+    "premise_verified": false
+  },
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "orientation": "vertical",
+    "total_duration_seconds": 40,
+    "original_audio_recorded": false,
+    "licensed_media_attached": false
+  },
+  "creative_intent": {
+    "hook_type": "curiosity_question",
+    "suggested_title": "Could an '80s Restaurant Actually Work?",
+    "what_clivox_adds": "Independent humorous thought experiment: why nostalgia can make a strange business pitch sound appealing.",
+    "story_thesis": "Nostalgia is recognizable, which makes it fertile ground for a funny hypothetical business idea.",
+    "factual_claims_checked": false,
+    "human_originality_review_passed": false
+  },
+  "beats": [
+    {
+      "start_s": 0,
+      "end_s": 2,
+      "role": "hook",
+      "visual": "original_kinetic_typography",
+      "original_narration": "Would you try an '80s restaurant?",
+      "source_quotation": null,
+      "editor_note": "Create opening from original words and typography; never label as a source quote."
+    },
+    {
+      "start_s": 2,
+      "end_s": 7,
+      "role": "context",
+      "visual": "original_illustration",
+      "original_narration": "Picture the menu, the music, and the nostalgia. Would it work?",
+      "source_quotation": null,
+      "editor_note": "An original hypothetical setup; not a description of exact dialogue."
+    },
+    {
+      "start_s": 7,
+      "end_s": 21,
+      "role": "licensed_source_placeholder",
+      "visual": "none_until_rights_verified",
+      "original_narration": null,
+      "source_quotation": null,
+      "editor_note": "NO SOURCE FOOTAGE. Only replace after authenticated grant, exact timestamp, speaker context and third-party audio clearance."
+    },
+    {
+      "start_s": 21,
+      "end_s": 36,
+      "role": "original_analysis",
+      "visual": "original_diagram",
+      "original_narration": "Nostalgia is the secret ingredient. Everybody remembers something different, so even a silly business pitch can feel surprisingly familiar. That's why the idea is fun to imagine.",
+      "source_quotation": null,
+      "editor_note": "This is Clivox's original commentary, not a claim about a speaker's actual wording."
+    },
+    {
+      "start_s": 36,
+      "end_s": 40,
+      "role": "ending",
+      "visual": "original_kinetic_typography",
+      "original_narration": "Would you visit, or skip it?",
+      "source_quotation": null,
+      "editor_note": "Question is about the original hypothetical, not proof of how the hosts reacted."
+    }
+  ],
+  "design": {
+    "brand": "Clivox silver-and-orange",
+    "safe_vertical_caption_margin_px": 200,
+    "no_looping_spinner_overlay": true,
+    "no_unlicensed_music": true,
+    "third_party_visuals_in_storyboard": false,
+    "captions_are_substantive_editorial_substitute": false,
+    "paid_promotion_status": "NOT_REVIEWED"
+  },
+  "release_locks": {
+    "creator_grant_verified": false,
+    "underlying_rights_cleared": false,
+    "source_context_checked": false,
+    "clip_timestamp_verified": false,
+    "original_commentary_human_approved": false,
+    "all_media_qa_passed": false,
+    "exact_asset_signed": false,
+    "ready_to_download": false,
+    "ready_to_render": false,
+    "youtube_upload_authorized": false,
+    "youtube_publish_authorized": false
+  }
+}

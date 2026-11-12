@@ -126,5 +126,17 @@
     "workflow": ".github/workflows/branch3-clivox-a3-media-boundary.yml",
     "policy": "branch3/media_storage/storage-policy.json",
     "no_publish_no_download": true
+  },
+  "editorial_preflight": {
+    "a4_source_free_editorial_implemented": true,
+    "creator_source_transcript_verified": false,
+    "exact_clip_timestamps_verified": false,
+    "creator_grants_verified": 0,
+    "human_originality_review_passed": false,
+    "source_media_licensed_or_attached": false,
+    "video_render_or_upload_enabled": false,
+    "storyboard_fixture": "branch3/editorial/fixtures/ymh_ep347_source_free.json",
+    "qa_workflow": ".github/workflows/branch3-clivox-a4-editorial.yml",
+    "status": "SOURCE_FREE_PLAN_ONLY"
   }
 }

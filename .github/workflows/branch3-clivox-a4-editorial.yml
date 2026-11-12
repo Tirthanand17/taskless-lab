@@ -1,0 +1,49 @@
+name: Branch 3 Clivox A4 Original Editorial (NO MEDIA)
+
+on:
+  pull_request:
+    paths:
+      - "branch3/editorial/**"
+      - "scripts/branch3_a4_editorial.py"
+      - "scripts/test_branch3_a4_editorial.py"
+      - ".github/workflows/branch3-clivox-a4-editorial.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate_source_free_storyboard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PUBLISH_ENABLED: "false"
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: "false"
+      CLIVOX_MEDIA_RENDER_ENABLED: "false"
+      CLIVOX_YOUTUBE_WRITE_ENABLED: "false"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate original editorial concept and no-release gates
+        run: |
+          python -B -m py_compile scripts/branch3_a4_editorial.py scripts/test_branch3_a4_editorial.py
+          python -B -m unittest -v scripts.test_branch3_a4_editorial
+          python -B scripts/branch3_a4_editorial.py --input branch3/editorial/fixtures/ymh_ep347_source_free.json --out "$RUNNER_TEMP/clivox-a4/editorial-hold-report.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a4/editorial-hold-report.json"; r=json.loads(p.read_text()); assert r["status"].startswith("HOLD_") and not r["creator_license_verified"] and not r["source_download_authorized"] and not r["youtube_upload_authorized"] and not r["video_render_authorized"]; print("CLIVOX_A4_SOURCE_FREE_EDITORIAL_CI_OK")'
+      - name: Ensure no writing or media production is enabled
+        run: |
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = "false"
+          test "$CLIVOX_MEDIA_RENDER_ENABLED" = "false"
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a4-source-free-storyboard-report
+          path: ${{ runner.temp }}/clivox-a4/editorial-hold-report.json
+          if-no-files-found: error
+          retention-days: 7
