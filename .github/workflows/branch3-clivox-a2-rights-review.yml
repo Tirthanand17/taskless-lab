@@ -1,0 +1,52 @@
+name: Branch 3 Clivox A2 Rights Case Review (NO RIGHTS GRANT)
+
+on:
+  pull_request:
+    paths:
+      - "branch3/rights_cases/**"
+      - "scripts/branch3_rights_case_review.py"
+      - "scripts/test_branch3_rights_case_review.py"
+      - "scripts/branch3_rights_case_intake.py"
+      - "scripts/test_branch3_rights_case_intake.py"
+      - ".github/workflows/branch3-clivox-a2-rights-review.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review_rights_without_approving:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PUBLISH_ENABLED: "false"
+      CLIVOX_AUTO_DOWNLOAD_ENABLED: "false"
+      CLIVOX_AUTO_UPLOAD_ENABLED: "false"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test rights dossier and owner approval guardrails
+        run: |
+          python -B -m py_compile scripts/branch3_rights_case_review.py scripts/test_branch3_rights_case_review.py
+          python -B -m unittest -v scripts.test_branch3_rights_case_review scripts.test_branch3_rights_case_intake
+      - name: Write public-safe HOLD report only
+        run: |
+          python -B scripts/branch3_rights_case_review.py --out "$RUNNER_TEMP/clivox-rights-review/report.json"
+          python -B -c 'import json,os; p=os.environ["RUNNER_TEMP"]+"/clivox-rights-review/report.json"; x=json.load(open(p)); assert x["verified_licenses"]==0 and x["source_media_downloads"]==0 and x["youtube_writes"]==0 and all(not d["youtube_upload_allowed"] for d in x["cases"]); print("CLIVOX_A2_ALL_CASES_HOLD_FOR_HUMAN_REVIEW")'
+      - name: Exercise A1 public-video fixture to A2 pending-rights intake
+        run: |
+          python -B scripts/branch3_discovery.py --mode fixture --category gaming --ids "" --query "" --out "$RUNNER_TEMP/a2-source-fixture.json"
+          python -B scripts/branch3_rights_case_intake.py --source-report "$RUNNER_TEMP/a2-source-fixture.json" --out "$RUNNER_TEMP/clivox-rights-review/fixture-intake.json"
+          python -B -c 'import json,os; p=os.environ["RUNNER_TEMP"]+"/clivox-rights-review/fixture-intake.json"; x=json.load(open(p)); assert x["cases_all_unverified"] and x["creator_permission_grants_issued_by_this_workflow"]==0 and x["youtube_writes"]==0; print("A1_TO_A2_RESEARCH_ONLY_HANDOFF_VERIFIED")'
+      - name: Store public-safe pending-rights report
+        uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a2-unverified-rights-report
+          path: ${{ runner.temp }}/clivox-rights-review/*.json
+          if-no-files-found: error
+          retention-days: 7
