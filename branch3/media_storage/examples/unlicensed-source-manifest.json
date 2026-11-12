@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "media_id": "clivox_ymh_ep347_source_candidate",
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "status": "RESEARCH_ONLY_NO_LICENSE",
+  "kind": "third_party_original_source",
+  "source": {
+    "platform": "youtube",
+    "video_id": "i6pmnpaOaZQ",
+    "canonical_url": "https://www.youtube.com/watch?v=i6pmnpaOaZQ",
+    "exact_in_ms": null,
+    "exact_out_ms": null
+  },
+  "permission": {
+    "source_creator_rights_grant_verified": false,
+    "source_creator_rights_grant_fingerprint_sha256": null,
+    "commercial_youtube_reuse_verified": false,
+    "music_visuals_guests_and_publisher_rights_cleared": false,
+    "permission_active_reverified": false,
+    "license_expires_at_utc": null,
+    "contract_owner_reviewed": false
+  },
+  "vault": {
+    "provider": "github_private_release_asset",
+    "private_repository": null,
+    "asset_id": null,
+    "release_tag": null,
+    "expected_sha256": null,
+    "expected_bytes": null,
+    "privacy_rechecked_with_authenticated_api": false
+  },
+  "controls": {
+    "vault_object_exists": false,
+    "media_fetch_authorized": false,
+    "media_stage_authorized": false,
+    "render_authorized": false,
+    "upload_authorized": false,
+    "publish_authorized": false
+  },
+  "private_bytes_embedded": false,
+  "user_secrets_embedded": false,
+  "note": "Source metadata only. This is not proof of licensing and contains no source media, contract, private download link or access token."
+}
