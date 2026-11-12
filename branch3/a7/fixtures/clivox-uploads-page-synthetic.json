@@ -1,0 +1,9 @@
+{
+  "kind": "youtube#playlistItemListResponse",
+  "etag": "SYNTHETIC_NOT_FROM_GOOGLE",
+  "pageInfo": {
+    "totalResults": 0,
+    "resultsPerPage": 10
+  },
+  "items": []
+}

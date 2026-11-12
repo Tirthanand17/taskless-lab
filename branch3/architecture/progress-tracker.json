@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 38,
-  "overall_estimated_remaining_percent": 62,
+  "overall_estimated_completion_percent": 43,
+  "overall_estimated_remaining_percent": 57,
   "milestone_count": 11,
   "milestones": [
     {
@@ -61,9 +61,9 @@
     {
       "id": "A7",
       "name": "Distinct Clivox YouTube OAuth",
-      "completion_pct": 0,
-      "status": "not_started",
-      "evidence": "No verified read-only owner API connection"
+      "completion_pct": 50,
+      "status": "partial",
+      "evidence": "Clivox-only OAuth read-only client, fixed-host refresh, strict mine=true channel binding, bounded sanitized uploads sample and adversarial CI; owner Google consent, protected environment, dedicated secrets and live identity readback NOT configured"
     },
     {
       "id": "A8",
@@ -100,7 +100,8 @@
     "Distinct Clivox API OAuth and protected release environment",
     "Actual QA-approved, signed and inventoried first pilot",
     "Real licensed source edit + human narration and final audiovisual QA remain pending despite original-only A5 demo",
-    "A6 only verifies mathematical signatures in synthetic offline tests: no enrolled owner signing identity or approved final clip"
+    "A6 only verifies mathematical signatures in synthetic offline tests: no enrolled owner signing identity or approved final clip",
+    "A7 owner Google OAuth consent, Clivox-specific refresh credentials and protected environment must be configured and real channel ID verified"
   ],
   "disclaimer": "Progress estimates reflect partial engineering components, not a claim that third-party clips are licensed or an end-to-end publishing service exists."
 }

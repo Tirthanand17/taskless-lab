@@ -162,5 +162,22 @@
     "quarantine_default": true,
     "workflow": ".github/workflows/branch3-clivox-a6-release-quarantine.yml",
     "status": "OFFLINE_CRYPTO_PREVIEW_NOT_PRODUCTION"
+  },
+  "a7_readonly_oauth": {
+    "read_only_channel_binding_client_implemented": true,
+    "fixed_host_google_api_transport_implemented": true,
+    "read_only_oauth_refresh_logic_implemented": true,
+    "wrong_channel_and_overbroad_scope_tests_implemented": true,
+    "private_inventory_first_page_sampling_implemented": true,
+    "real_clivox_oauth_client_enrolled": false,
+    "google_owner_readonly_consent_verified": false,
+    "dedicated_clivox_refresh_secret_configured": false,
+    "real_channels_mine_readback_verified": false,
+    "private_or_scheduled_inventory_exhaustively_verified": false,
+    "live_oauth_job_enabled": false,
+    "flowminute_oauth_credential_fallback_allowed": false,
+    "uploader_release_credentials_available": false,
+    "workflow": ".github/workflows/branch3-clivox-a7-readonly-preflight.yml",
+    "output": "OFFLINE_SYNTHETIC_READONLY_AUTH_TESTS_NOT_LIVE_CONNECTION"
   }
 }
