@@ -95,8 +95,10 @@ def validate_handoff(
             "A8_UPLOAD_OR_SCHEDULE")
     require(release["release_id"]==schedule["source_release_id"],
             "RELEASE_PLAN_MISMATCH")
-    require(all(x["youtube_upload_authorized"] is False
-                for x in (editorial,qa,quarantine,dry_run)),
+    require(editorial["youtube_upload_authorized"] is False
+            and qa["youtube_upload_authorized"] is False
+            and quarantine["video_upload_authorized"] is False
+            and dry_run["youtube_upload_authorized"] is False,
             "RELEASE_IN_ANY_STAGE")
     return {
         "stage":"CLIVOX_A4_A5_A6_A8_INTEGRATED_SOURCE_FREE_REHEARSAL",
