@@ -83,6 +83,16 @@ def validate_architecture(
     require(discovery.get("third_party_source_download_allowed") is False
             and discovery.get("clip_permission_inferred_from_popularity") is False
             and discovery.get("output_status")=="RESEARCH_ONLY_PUBLIC_METADATA","DISCOVERY_RIGHTS_BYPASS")
+    intake=cfg.get("rights_intake",{})
+    require(intake.get("a2_pending_review_case_generator_implemented") is True
+            and intake.get("a2_human_rights_grant_verification_implemented") is False
+            and intake.get("actual_verified_creator_grants")==0
+            and intake.get("real_contract_review_completed") is False
+            and intake.get("creator_allowlist_automatically_modified") is False
+            and intake.get("source_media_acquisition_authorized") is False
+            and intake.get("public_report_contains_private_legal_agreements") is False
+            and intake.get("output_status")=="AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION",
+            "RIGHTS_INTAKE_PRETENDS_APPROVAL")
     require(cfg.get("metrics",{}).get("missing_metric_policy")=="NULL_NOT_ZERO","INVENTED_ANALYTICS")
     require(cfg.get("categories")==["gaming","livestream","comedy","entertainment","podcast_interview"],"WRONG_CATEGORIES")
     require(channel.get("channel_id")==CLIVOX_ID

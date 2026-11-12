@@ -104,5 +104,15 @@
     "third_party_source_download_allowed": false,
     "clip_permission_inferred_from_popularity": false,
     "output_status": "RESEARCH_ONLY_PUBLIC_METADATA"
+  },
+  "rights_intake": {
+    "a2_pending_review_case_generator_implemented": true,
+    "a2_human_rights_grant_verification_implemented": false,
+    "actual_verified_creator_grants": 0,
+    "real_contract_review_completed": false,
+    "creator_allowlist_automatically_modified": false,
+    "source_media_acquisition_authorized": false,
+    "public_report_contains_private_legal_agreements": false,
+    "output_status": "AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION"
   }
 }

@@ -54,6 +54,20 @@ class ClivoxArchitectureTests(unittest.TestCase):
             with self.subTest(field=field),self.assertRaises(ArchitectureBlocked):
                 self.valid()
 
+    def test_a2_intake_never_masquerades_as_verified_creator_grant(self):
+        for field,value in (
+            ("a2_human_rights_grant_verification_implemented",True),
+            ("actual_verified_creator_grants",1),
+            ("real_contract_review_completed",True),
+            ("creator_allowlist_automatically_modified",True),
+            ("source_media_acquisition_authorized",True),
+            ("public_report_contains_private_legal_agreements",True),
+        ):
+            self.c=data(ARCH)
+            self.c["rights_intake"][field]=value
+            with self.subTest(field=field),self.assertRaises(ArchitectureBlocked):
+                self.valid()
+
     def test_reject_media_in_public_repo(self):
         for field in ("public_repo_contains_copyrighted_raw_video","raw_license_documents_public","private_media_escrow_enabled"):
             self.c=data(ARCH)

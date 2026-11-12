@@ -1,13 +1,13 @@
 # Implementation roadmap and engineering acceptance gates
 
-**Milestones:** A0 architecture complete; A1 bounded public metadata discovery code/workflow implemented and covered by offline tests. Live use of A1 `ids` or `query` still requires a Clivox-specific public-metadata API key; only fixture mode is verified without it. Licensed media acquisition and all publishing are NOT implemented.
+**Milestones:** A0 architecture complete; A1 public metadata discovery implemented and smoke-tested on GitHub; A2 **pending human-rights review intake** added to each discovery workflow. No source rights have been verified. Live use of A1 `ids` or `query` still requires a Clivox metadata API key. Licensed media acquisition and all publishing remain NOT implemented.
 
 ## Work packages
 | ID | Deliverable | Dependencies | Exit criterion |
 |---|---|---|---|
 | A0 | Research, architecture, schema, state graph, tests | None | CI green; no API calls; channel and publishing disabled invariants |
 | A1 | Public metadata discovery adapter | A0 | **Implemented:** manually dispatched GitHub Action + fixed-host YouTube API source metadata + deterministic ranking + fail-closed rights fields + provenance URLs. **Live integration pending restricted metadata API key.** |
-| A2 | Rights-review cases and audit receipts | A1 | actual human verifies rights holder/terms, source-specific scope, game and music rights; zero self-approvals |
+| A2 | Rights-review cases and audit receipts | A1 | **Intake implemented**: pending human-review JSON case per A1 candidate, provenance digest, 14 mandatory checks and zero self-approvals. **Authentic grant verification and signed audit receipt still pending**. |
 | A3 | Private media storage decision and approved provider | A2 | appropriate confidentiality, license compatibility, deletion/expiry access and secure job-only retrieval |
 | A4 | Original story editor + segment scoring | A2 | transcript quotes only from approved source, original commentary and provenance |
 | A5 | H.264/AAC/SRT deterministic renderer and professional 9:16 QA | A3,A4 | render SHA, mobile preview, captions, audio and technical media QC; no repetitive spinner |
@@ -41,5 +41,5 @@ The branch3-clivox-architecture.yml runs standard-library static validators and 
 - Intermediate YouTube features: enabled; advanced eligible.
 - Rights allowlist: empty, so A2 is blocked pending actual creator-issued grant.
 - Campaign pilot YMH Ep347: purely a research treatment; no terms accepted, media downloaded or clips uploaded.
-- A0: architecture complete. A1: implementation and offline tests complete; live API-key connection not yet verified. A2–A10: outstanding.
+- A0: complete. A1: implemented and fixture workflow smoke-tested, live API-key connection not yet verified. A2: **unverified-rights case intake implemented**, actual rightsholder verification pending. A3–A10: outstanding.
 
