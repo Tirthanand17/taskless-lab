@@ -178,7 +178,19 @@
     "flowminute_oauth_credential_fallback_allowed": false,
     "uploader_release_credentials_available": false,
     "workflow": ".github/workflows/branch3-clivox-a7-readonly-preflight.yml",
-    "output": "OFFLINE_SYNTHETIC_READONLY_AUTH_TESTS_NOT_LIVE_CONNECTION"
+    "output": "OFFLINE_SYNTHETIC_READONLY_AUTH_TESTS_NOT_LIVE_CONNECTION",
+    "owner_reviewed_live_bridge_implemented": true,
+    "github_clivox_readonly_environment_created": true,
+    "github_environment_required_reviewer_verified": true,
+    "github_environment_main_only_branch_verified": true,
+    "github_environment_admin_bypass_disabled": true,
+    "github_environment_self_review_possible": true,
+    "github_environment_secret_count": 0,
+    "manual_live_workflow": ".github/workflows/branch3-clivox-a7-live-readonly.yml",
+    "live_bridge_qa_workflow": ".github/workflows/branch3-clivox-a7-live-bridge-qa.yml",
+    "live_access_requires_owner_google_consent": true,
+    "live_run_successfully_executed": false,
+    "live_creators_or_youtube_writes_enabled": false
   },
   "a8_private_first_dryrun": {
     "private_first_schedule_preflight_implemented": true,
