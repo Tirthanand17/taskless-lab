@@ -44,7 +44,7 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 - **A3 media boundary:** [media storage README](media_storage/README.md) documents the chosen GitHub-first private-vault approach and provides public-media leak checks; **no private vault has been provisioned or approved**. Source footage may not be downloaded until creator-granted rights are verified.
 - **A5 original-only media lab:** [rendering and QA guide](a5/README.md), FFmpeg/Pillow source-free sample, 48kHz synthesized preview tones, visual-script SRT and ffprobe mobile-format checks; **not real licensed footage or voice narration**.
 - **A4 original editorial studio:** [editorial README](editorial/README.md), the source-free YMH Ep347 concept fixture and `scripts/branch3_a4_editorial.py` with adversarial tests. This is a draft narrative workflow, **not licensed footage, a finished video or publishing approval**.
-- **Overall progress:** [planning-weighted tracker](architecture/progress-tracker.json) estimates **46% implemented / 54% remaining** across A0–A10; partial components do not imply live functionality.
+- **Overall progress:** [planning-weighted tracker](architecture/progress-tracker.json) estimates **50% implemented / 50% remaining** across A0–A10; partial components do not imply live functionality.
 - **A6 release-security preflight:** [release README](release/README.md) documents exact MP4/metadata/rights/channel/schedule signatures and quarantine. Ephemeral Ed25519 test keys validate integrity checks; **no real owner signing key, final licensed asset or release authority** is enrolled.
 - **A8 private-first dry-run:** [A8 README](a8/README.md) documents private-only future UTC scheduling, an exact release attempt hash, duplicate/ambiguous-upload quarantine and separate remote reconciliation. The code cannot upload or schedule and has **no durable atomic ledger or live Google write authorization**.
 - **A7 read-only YouTube OAuth preflight:** [A7 README](a7/README.md) and `scripts/branch3_a7_readonly_youtube.py` support fixed-host OAuth refresh, `channels.list(mine=true)` exact Clivox identity verification, and bounded first-page upload inventory. All current fixtures are synthetic; **no live Clivox consent, credentials or protected GitHub environment exists**. No uploader is enabled.
@@ -56,6 +56,8 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 - **Rights and contract blocker:** Content Rewards Creator Terms §§17.2/17.6 place third-party rights clearance on participants and can assign approved final edits to the brand. Do not join or accept the contract on behalf of the owner; require informed approval and exact campaign-specific commercial clipping permission.
 - New offline prelaunch validation: `scripts/branch3_validate_pilot_ymh.py` + tests; all publishing and downloading disabled.
 - Full evidence: `content_rewards_contract_review_2026-11-12.md`.
+
+- **A10 analytics (synthetic only):** [analytics and experiments README](a10/README.md) validates simulated YouTube Analytics response tables, keeps Studio feed measures unknown, tests category-and-hook comparisons without declaring fake winners, and generates privacy-safe CI reports. **No real Clivox channel analytics are connected.**
 
 ## Current first-content research status (2026-11-12)
 - **Five public campaign leads** are logged in `clip_source_watchlist_2026-11-12.json` as research only: FaZe tournament, IShowSpeed x Expedia, YMH Studios 2 Bears 1 Cave, and two excluded/paused alternatives.
@@ -69,6 +71,7 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 - `editorial/`: A4 original source-free storyboards and substantive-commentary planning; no unlicensed footage or fabricated quotes
 - `a7/`: isolated read-only Google OAuth identity fixtures, tests and unconnected credentials plan
 - `a8/`: private-first future scheduling and duplicate-retry dry-run; no uploader or live ledger
+- `a10/`: synthetic-only Shorts analytics fixtures and experiment evaluation; no real channel data
 - `channel_state.json`: verified creation, channel identity, branding and safety configuration
 - `creator_permissions.json`: empty creator allowlist; no creators eligible by default
 - `scripts/branch3_creator_permission_gate.py`: fail-closed candidate intake check; never upload permission
@@ -89,4 +92,7 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 
 No raw downloaded third-party video, copyright media, refresh tokens, signed URLs or personal information may be committed to this public repository.
 
-**Updated full-system estimate:** 46% engineering planning completion / 54% remaining across A0–A10; not a measure of live publishing readiness.
+**Updated full-system estimate:** 50% engineering planning completion / 50% remaining across A0–A10; not a measure of live publishing readiness.
+
+## A10 analytics prototype
+The [A10 analytics README](a10/README.md) explains synthetic-only metric parsing and 1/3/7/14-day experiment reviews. Live Clivox OAuth/Analytics data and real published videos remain unconfigured. Overall engineering planning estimate: **50% implemented / 50% remaining**.
