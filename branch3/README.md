@@ -33,11 +33,21 @@ Only material covered by direct written creator/rights-holder permission or an a
 6. No guarantee of zero Content ID claims, strikes or monetization eligibility.
 7. Keep all publishing automation off until the user separately approves after channel creation.
 
+## Current first-content research status (2026-11-12)
+- **Five public campaign leads** are logged in `clip_source_watchlist_2026-11-12.json` as research only: FaZe tournament, IShowSpeed x Expedia, YMH Studios 2 Bears 1 Cave, and two excluded/paused alternatives.
+- **ZERO approved creators and ZERO authorized clips**. Public clip campaigns are not assumed to be a direct license from the original rights holder; campaign operator, underlying music/game IP, YouTube commercial scope and approval requirements must be verified separately.
+- **YouTube intermediate features** are still 'Eligible': Studio explicitly requires **Verify phone number**. The owner must enter phone number/OTP in Google's UI. The project must not copy FlowMinute Lab's tokens or any past personal number.
+- Read `first_clip_pipeline_plan.md` for first three rights-contingent concept treatments and research-backed analytics plan; `permission_request_templates.md` for non-sent official rights requests.
+
 ## Files
 - `channel_state.json`: verified creation, channel identity, branding and safety configuration
 - `creator_permissions.json`: empty creator allowlist; no creators eligible by default
 - `scripts/branch3_creator_permission_gate.py`: fail-closed candidate intake check; never upload permission
 - `viral-content-strategy.json`: five content pillars, priority order, test signals, release blockers
+- `clip_source_watchlist_2026-11-12.json`: five unverified campaign leads, not an allowlist
+- `first_clip_pipeline_plan.md`: first three clip concepts and launch workflow
+- `permission_request_templates.md`: creator/rightsholder outreach drafts, not sent
+- `scripts/branch3_validate_clipping_watchlist.py`: fail-closed research-only candidate check
 - `research.md`: policy evidence and strategy
 - `channel-profile.md`: exact ready-to-paste description and visual configuration
 - `rights-and-release.md`: source approval/claim handling

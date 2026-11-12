@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "created_ist_date": "2026-11-12",
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "channel_handle": "@ClivoxPulse",
+  "policy": "RESEARCH_ONLY_NOT_CREATOR_PERMISSION",
+  "creator_allowlist_empty": true,
+  "automatic_download_enabled": false,
+  "automatic_publish_enabled": false,
+  "disclosure": "Campaign listings are third-party public offers. They are not proof that the campaign operator controls every source right, that Clivox has joined, that a participant-specific license exists, or that YouTube monetization will approve minimally edited clips.",
+  "candidates": [
+    {
+      "id": "faze-flank-invitational",
+      "pillar": "gaming",
+      "title": "FaZe Flank Invitational (Call of Duty highlights)",
+      "campaign_operator": "ClippedIn",
+      "campaign_url": "https://b4e0vdqv6zgqeqj4pfgm.apps.whop.com/c/campaigns/200ea21b-be80-4db8-b552-8e32b148604e",
+      "public_listing_status_at_research": "accepting_clips",
+      "youtube_listed": true,
+      "scope_shown": "official broadcast or participants' POV streams; 9:16 edits; keep official logo",
+      "special_conditions": [
+        "Audience must be at least 60% US: new Clivox channel has no documented audience geography, so this criterion is NOT proven",
+        "Mandatory FaZe player/team tags and logo",
+        "Official broadcaster and game-publisher reuse rights must be checked separately",
+        "Keep clips public for three months (only after exact owner approval)"
+      ],
+      "recommended_angle": "Outstanding clutch play with original tactical breakdown and clear result (only after source and rights checked)",
+      "initial_priority": "LOW_UNTIL_US_AUDIENCE_CONFIRMED",
+      "status": "RESEARCH_ONLY_UNVERIFIED",
+      "rights_verified": false,
+      "clipping_authorized_for_clivox": false,
+      "allowlist_approved": false,
+      "media_download_authorized": false,
+      "upload_authorized": false
+    },
+    {
+      "id": "expedia-ishowspeed-nov6",
+      "pillar": "livestream",
+      "title": "Expedia x IShowSpeed livestream clips",
+      "campaign_operator": "Reach",
+      "campaign_url": "https://contentrewards.com/c/campaigns/afeca1a0-f44c-46ad-8194-09d62b56589e",
+      "public_listing_status_at_research": "accepting_clips",
+      "youtube_listed": true,
+      "scope_shown": "Only 2026-11-06 IShowSpeed Expedia stream footage from 2h56m29s onward; other streams not authorized by this listing",
+      "special_conditions": [
+        "Verify sponsor/streamer/broadcast operator authorization, original soundtrack and guest footage",
+        "Read full campaign terms; link points to additional rules",
+        "Check paid-promotion disclosure requirement and operator's approval process",
+        "Do not represent a sponsored stream as unsponsored"
+      ],
+      "recommended_angle": "One unexpected live reaction with a short original explanatory setup and reaction analysis (after terms/source verified)",
+      "initial_priority": "REVIEW_FIRST_IF_TERMS_ACCESSIBLE",
+      "status": "RESEARCH_ONLY_UNVERIFIED",
+      "rights_verified": false,
+      "clipping_authorized_for_clivox": false,
+      "allowlist_approved": false,
+      "media_download_authorized": false,
+      "upload_authorized": false
+    },
+    {
+      "id": "ymh-november-2b1c",
+      "pillar": "comedy",
+      "title": "YMH Studios 2 Bears 1 Cave November clip campaign",
+      "campaign_operator": "YMH Studios",
+      "campaign_url": "https://b4e0vdqv6zgqeqj4pfgm.apps.whop.com/c/campaigns/51fa8c57-fb2f-44e0-b3a8-158f96cbf018",
+      "public_listing_status_at_research": "accepting_clips",
+      "youtube_listed": true,
+      "scope_shown": "Clip moments from campaign episode, create original edit for YouTube/other listed platforms",
+      "special_conditions": [
+        "Verify official YMH publisher control and exact episode/source link",
+        "Review specific prohibited topics, music and talent/guest rights",
+        "Confirm commercial YouTube reuse and required credit, episode URL, draft review",
+        "Comedy clip needs meaningful original framing; not merely caption repost"
+      ],
+      "recommended_angle": "Unexpected stand-up anecdote with context and original comedic commentary (only after rights/source checked)",
+      "initial_priority": "REVIEW_FIRST_PODCAST_COMEDY",
+      "status": "RESEARCH_ONLY_UNVERIFIED",
+      "rights_verified": false,
+      "clipping_authorized_for_clivox": false,
+      "allowlist_approved": false,
+      "media_download_authorized": false,
+      "upload_authorized": false
+    },
+    {
+      "id": "warzone-season1-excluded",
+      "pillar": "gaming",
+      "title": "Call of Duty Warzone Season 1 clipping listing",
+      "campaign_operator": "Clipping Culture",
+      "campaign_url": "https://b4e0vdqv6zgqeqj4pfgm.apps.whop.com/c/campaigns/db285bc6-9a06-43ff-ae4b-4b5ebf149b8b",
+      "public_listing_status_at_research": "accepting_clips",
+      "youtube_listed": false,
+      "scope_shown": "Official public listing permits TikTok and Instagram Reels only, NOT YouTube",
+      "special_conditions": [
+        "Reject for Clivox even if another page advertises this as a gaming clip campaign",
+        "New YouTube license from actual rights holder would be required"
+      ],
+      "recommended_angle": "DO_NOT_USE_ON_CLIVOX",
+      "initial_priority": "EXCLUDED_YOUTUBE",
+      "status": "RESEARCH_ONLY_UNVERIFIED",
+      "rights_verified": false,
+      "clipping_authorized_for_clivox": false,
+      "allowlist_approved": false,
+      "media_download_authorized": false,
+      "upload_authorized": false
+    },
+    {
+      "id": "scape-paused",
+      "pillar": "gaming",
+      "title": "Scape Early Access game clipping campaign",
+      "campaign_operator": "ScapeWorld Entertainment AB (listed)",
+      "campaign_url": "https://dev-b4e0vdqv6zgqeqj4pfgm.apps.whop.com/c/campaigns/8553875d-dfb0-4a97-aea5-448008876e46",
+      "public_listing_status_at_research": "paused",
+      "youtube_listed": true,
+      "scope_shown": "Listed brief accepts TikTok and YouTube Shorts, but campaign is paused and near budget limit",
+      "special_conditions": [
+        "Do not join, clip or upload while paused",
+        "Publisher attribution and full current commercial license require verification if restarted"
+      ],
+      "recommended_angle": "DO_NOT_USE_WHILE_PAUSED",
+      "initial_priority": "EXCLUDED_PAUSED",
+      "status": "RESEARCH_ONLY_UNVERIFIED",
+      "rights_verified": false,
+      "clipping_authorized_for_clivox": false,
+      "allowlist_approved": false,
+      "media_download_authorized": false,
+      "upload_authorized": false
+    }
+  ],
+  "all_candidates": "RESEARCH_ONLY",
+  "required_review_fields": {
+    "verified_creator_published_policy_or_direct_written_grant": false,
+    "verified_campaign_operator_rights_holder_authority": false,
+    "youtube_commercial_clipping_terms_accepted": false,
+    "clivox_or_public_grant_confirmed": false,
+    "exact_source_video_id_and_timestamp_confirmed": false,
+    "publisher_and_third_party_embedded_rights_cleared": false,
+    "creator_specific_campaign_restrictions_checked": false,
+    "paid_promotion_or_sponsor_disclosure_checked": false,
+    "exact_final_render_approved": false
+  }
+}
