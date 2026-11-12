@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "clip_id": "clivox_ymh_ep347_research_only",
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "status": "DISCOVERED",
+  "category": "comedy",
+  "source": {
+    "creator_channel_id": null,
+    "video_id": "i6pmnpaOaZQ",
+    "canonical_url": "https://www.youtube.com/watch?v=i6pmnpaOaZQ",
+    "exact_in_ms": null,
+    "exact_out_ms": null,
+    "transcript_checked": false
+  },
+  "rights": {
+    "permission_state": "unverified",
+    "creator_issuer_verified": false,
+    "commercial_youtube_licensed": false,
+    "game_music_guest_rights_cleared": false,
+    "evidence_digest_sha256": null,
+    "rights_expire_utc": null
+  },
+  "editorial": {
+    "original_story_approved": false,
+    "fact_check_complete": false,
+    "hook_hypothesis": "What if an eighties-themed restaurant made a comeback? (Research hypothesis; no quote.)"
+  },
+  "media": {
+    "media_sha256": null,
+    "metadata_sha256": null,
+    "qa_passed": false,
+    "file_in_public_repo": false
+  },
+  "release": {
+    "owner_signed": false,
+    "signed_release_proof_ref": null,
+    "release_enabled": false
+  },
+  "youtube": {
+    "video_id": null,
+    "privacy": "not_uploaded",
+    "publish_at_utc": null,
+    "readback_verified": false
+  },
+  "analytics": {
+    "engaged_views": null,
+    "shown_in_feed": null,
+    "reviewed": false
+  }
+}

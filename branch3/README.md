@@ -33,6 +33,16 @@ Only material covered by direct written creator/rights-holder permission or an a
 6. No guarantee of zero Content ID claims, strikes or monetization eligibility.
 7. Keep all publishing automation off until the user separately approves after channel creation.
 
+## Complete system architecture v1 — DESIGN ONLY
+
+The standalone architecture, research evidence, state graph, agent responsibilities, release safeguards and step-by-step implementation roadmap live at [architecture/README.md](architecture/README.md).
+
+- **Architecture docs:** [overview](architecture/README.md), [primary research](architecture/research-evidence.md), [workflow and agent roles](architecture/workflows.md), [security and cloud-only media strategy](architecture/security-and-storage.md), [analytics and operating plan](architecture/ops-and-metrics.md), [rollout and testing](architecture/rollout-and-tests.md), [ADRs](architecture/architecture-decisions.md).
+- **Machine-checkable architecture:** `architecture/architecture-config.json`, `contracts/state-machine.json`, `contracts/clip-job.schema.json`, `contracts/example-discovered-job.json`.
+- **No-publish offline CI:** `.github/workflows/branch3-clivox-architecture.yml`; `scripts/branch3_architecture_gate.py` with adversarial tests.
+- **Implementation reality:** This is the **design baseline**, not a fully deployed multi-agent clipping/rendering/publishing platform. No third-party media may be fetched before permission; no new Clivox OAuth token, release signer or production environment has been configured.
+- **Next development dependency:** actual creator-granted licensing with game/music/guest rights, owner review of Content Rewards contract terms, and an approved confidential media storage design.
+
 ## First creator-clipping pilot (2026-11-12)
 - **Owner phone verification completed** and live YouTube Studio shows **Intermediate Enabled**; Advanced Eligible.
 - **YMH 2 Bears 1 Cave Episode 347** now selected as the **primary research pilot**: official show page, episode source, creator invitation and a source-free original concept in `pilot_ymh_ep347.json`.
@@ -43,10 +53,11 @@ Only material covered by direct written creator/rights-holder permission or an a
 ## Current first-content research status (2026-11-12)
 - **Five public campaign leads** are logged in `clip_source_watchlist_2026-11-12.json` as research only: FaZe tournament, IShowSpeed x Expedia, YMH Studios 2 Bears 1 Cave, and two excluded/paused alternatives.
 - **ZERO approved creators and ZERO authorized clips**. Public clip campaigns are not assumed to be a direct license from the original rights holder; campaign operator, underlying music/game IP, YouTube commercial scope and approval requirements must be verified separately.
-- **YouTube intermediate features** are still 'Eligible': Studio explicitly requires **Verify phone number**. The owner must enter phone number/OTP in Google's UI. The project must not copy FlowMinute Lab's tokens or any past personal number.
+- **YouTube intermediate features Enabled**, verified live after owner-completed phone verification on Nov 12; Advanced remains Eligible. No phone details are stored in GitHub.
 - Read `first_clip_pipeline_plan.md` for first three rights-contingent concept treatments and research-backed analytics plan; `permission_request_templates.md` for non-sent official rights requests.
 
 ## Files
+- `architecture/` and `contracts/`: full design, rights-aware state graph, schemas, implementation plan and tests
 - `channel_state.json`: verified creation, channel identity, branding and safety configuration
 - `creator_permissions.json`: empty creator allowlist; no creators eligible by default
 - `scripts/branch3_creator_permission_gate.py`: fail-closed candidate intake check; never upload permission

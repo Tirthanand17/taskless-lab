@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "project": "Clivox",
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "handle": "@ClivoxPulse",
+  "architecture_state": "DESIGN_ONLY",
+  "source_owner_repo": "Tirthanand17/taskless-lab",
+  "storage": {
+    "public_repo_contains_copyrighted_raw_video": false,
+    "raw_media_storage": "NOT_SELECTED_REQUIRE_OWNER_APPROVAL",
+    "private_media_escrow_enabled": false,
+    "raw_license_documents_public": false,
+    "cloud_hosted_runners_only": true
+  },
+  "isolation": {
+    "branch1_paused": true,
+    "branch2_paused": true,
+    "reuse_flowminute_youtube_tokens": false,
+    "separate_clivox_oauth_configured": false
+  },
+  "safety": {
+    "approved_creators_count": 0,
+    "auto_download_enabled": false,
+    "auto_publish_enabled": false,
+    "api_write_calls_enabled": false,
+    "global_upload_enabled": false,
+    "owner_signing_implemented": false,
+    "github_environment_protection_configured": false
+  },
+  "stage_roles": [
+    "discovery",
+    "rights",
+    "source_context",
+    "hook_story",
+    "media_production",
+    "qa",
+    "owner_release",
+    "youtube_release",
+    "analytics"
+  ],
+  "categories": [
+    "gaming",
+    "livestream",
+    "comedy",
+    "entertainment",
+    "podcast_interview"
+  ],
+  "formats": {
+    "shorts": {
+      "orientation": "vertical",
+      "width": 1080,
+      "height": 1920,
+      "experimental_min_duration_s": 25,
+      "experimental_max_duration_s": 55,
+      "audio_hz": 48000,
+      "container": "mp4",
+      "video_codec": "h264",
+      "audio_codec": "aac"
+    }
+  },
+  "release": {
+    "target_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+    "default_visibility": "private",
+    "require_remote_owner_identity": true,
+    "require_future_utc_schedule": true,
+    "min_schedule_margin_minutes": 30,
+    "require_exact_signed_release": true,
+    "require_human_rights_review": true,
+    "require_original_commentary": true,
+    "require_live_remote_readback": true,
+    "duplicate_upload_policy": "RECONCILE_DO_NOT_BLIND_RETRY",
+    "state": "DISABLED_BY_DESIGN"
+  },
+  "metrics": {
+    "official_api": [
+      "engagedViews",
+      "views",
+      "averageViewDuration",
+      "averageViewPercentage",
+      "shares",
+      "subscribersGained",
+      "likes",
+      "comments"
+    ],
+    "studio_only_when_available": [
+      "shown_in_feed",
+      "chose_to_view_vs_swiped",
+      "audience_retention_curve"
+    ],
+    "missing_metric_policy": "NULL_NOT_ZERO",
+    "experiment_start_after_approved_uploads": 10
+  },
+  "research_checked": "2026-11-12",
+  "notes": "Contract and platform rules must be rechecked before the first actual clip. Pure architecture gate never authorizes legal rights or uploads."
+}
