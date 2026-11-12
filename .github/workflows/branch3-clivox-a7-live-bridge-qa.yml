@@ -1,0 +1,42 @@
+name: Branch 3 Clivox A7 Live Bridge QA (OFFLINE NO SECRETS)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a7_live_readonly_bridge.py'
+      - 'scripts/test_branch3_a7_live_readonly_bridge.py'
+      - '.github/workflows/branch3-clivox-a7-live-readonly.yml'
+      - '.github/workflows/branch3-clivox-a7-live-bridge-qa.yml'
+      - 'branch3/a7/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test_manual_oauth_bridge_offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify no-secret manual OAuth runtime and old-account isolation
+        run: |
+          python -B -m py_compile scripts/branch3_a7_live_readonly_bridge.py scripts/test_branch3_a7_live_readonly_bridge.py
+          python -B -m unittest -v scripts.test_branch3_a7_live_readonly_bridge scripts.test_branch3_a7_readonly_youtube
+      - name: Prove fixture mode does not connect to real account
+        run: |
+          python -B -m scripts.branch3_a7_live_readonly_bridge --mode fixture > "$RUNNER_TEMP/clivox-a7-bridge-fixture.txt"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a7-bridge-fixture.txt"; d=json.loads(p.read_text().splitlines()[0]); assert d["actual_api_requests"]==0 and d["actual_clivox_oauth_verified"] is False and d["upload_authorized"] is False; print("CLIVOX_A7_BRIDGE_FIXTURE_NO_GOOGLE_CALL")'
+      - name: Confirm no publishing secrets or environment used in PR QA
+        run: |
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'

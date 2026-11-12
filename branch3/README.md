@@ -44,9 +44,10 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 - **A3 media boundary:** [media storage README](media_storage/README.md) documents the chosen GitHub-first private-vault approach and provides public-media leak checks; **no private vault has been provisioned or approved**. Source footage may not be downloaded until creator-granted rights are verified.
 - **A5 original-only media lab:** [rendering and QA guide](a5/README.md), FFmpeg/Pillow source-free sample, 48kHz synthesized preview tones, visual-script SRT and ffprobe mobile-format checks; **not real licensed footage or voice narration**.
 - **A4 original editorial studio:** [editorial README](editorial/README.md), the source-free YMH Ep347 concept fixture and `scripts/branch3_a4_editorial.py` with adversarial tests. This is a draft narrative workflow, **not licensed footage, a finished video or publishing approval**.
-- **Overall progress:** [planning-weighted tracker](architecture/progress-tracker.json) estimates **50% implemented / 50% remaining** across A0–A10; partial components do not imply live functionality.
+- **Overall progress:** [planning-weighted tracker](architecture/progress-tracker.json) estimates **52% implemented / 48% remaining** across A0–A10; partial components do not imply live functionality.
 - **A6 release-security preflight:** [release README](release/README.md) documents exact MP4/metadata/rights/channel/schedule signatures and quarantine. Ephemeral Ed25519 test keys validate integrity checks; **no real owner signing key, final licensed asset or release authority** is enrolled.
 - **A8 private-first dry-run:** [A8 README](a8/README.md) documents private-only future UTC scheduling, an exact release attempt hash, duplicate/ambiguous-upload quarantine and separate remote reconciliation. The code cannot upload or schedule and has **no durable atomic ledger or live Google write authorization**.
+- **Protected Clivox read-only connection:** GitHub environment `clivox-readonly` is **created and API-verified** with reviewer `Tirthanand17`, selected `main` branch and administrator bypass disabled; no secrets have been added. [Owner connection setup](a7/OWNER_CONNECTION_SETUP.md) describes the remaining Google OAuth consent and protected environment secrets. The new manual-only workflow cannot upload or publish.
 - **A7 read-only YouTube OAuth preflight:** [A7 README](a7/README.md) and `scripts/branch3_a7_readonly_youtube.py` support fixed-host OAuth refresh, `channels.list(mine=true)` exact Clivox identity verification, and bounded first-page upload inventory. All current fixtures are synthetic; **no live Clivox consent, credentials or protected GitHub environment exists**. No uploader is enabled.
 - **Next development dependencies:** actual creator-granted licensing with game/music/guest rights; owner review of Content Rewards contract terms; approved confidential media location; and exact-source editorial verification.
 
@@ -92,7 +93,9 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 
 No raw downloaded third-party video, copyright media, refresh tokens, signed URLs or personal information may be committed to this public repository.
 
-**Updated full-system estimate:** 50% engineering planning completion / 50% remaining across A0–A10; not a measure of live publishing readiness.
+**Updated full-system estimate:** 52% engineering planning completion / 48% remaining across A0–A10; not a measure of live publishing readiness.
 
 ## A10 analytics prototype
-The [A10 analytics README](a10/README.md) explains synthetic-only metric parsing and 1/3/7/14-day experiment reviews. Live Clivox OAuth/Analytics data and real published videos remain unconfigured. Overall engineering planning estimate: **50% implemented / 50% remaining**.
+The [A10 analytics README](a10/README.md) explains synthetic-only metric parsing and 1/3/7/14-day experiment reviews. Live Clivox OAuth/Analytics data and real published videos remain unconfigured. Overall engineering planning estimate: **52% implemented / 48% remaining**.
+
+**Current full-system estimate:** 52% engineering implementation / 48% remaining, with A7 Google OAuth connection still unverified. See `architecture/progress-tracker.json`.

@@ -17,6 +17,13 @@
 5. Never print OAuth tokens, raw responses or potentially private video IDs in a public Actions log or artifact. The summary records counts, not a private inventory.
 6. Any identity mismatch, 401/403, `invalid_grant`, wrong scope, missing scope evidence or malformed API data is a **hard stop**, not an invitation to try another account's token.
 
+## Protected live-bridge status (GitHub configured, Google not connected)
+
+- GitHub `clivox-readonly` environment **created and verified** on 2026-11-12: required reviewer `Tirthanand17`, main-only deployment branch policy, administrator bypass disabled; self-review allowed. Its secret count is **0**.
+- New separate manual-main-only read-only bridge: `scripts/branch3_a7_live_readonly_bridge.py` and `.github/workflows/branch3-clivox-a7-live-readonly.yml`; all production credentials currently **missing**, so it cannot make a live connection.
+- Independent no-secret test workflow: `.github/workflows/branch3-clivox-a7-live-bridge-qa.yml`.
+- Secure owner steps: [OWNER_CONNECTION_SETUP.md](OWNER_CONNECTION_SETUP.md). No OAuth tokens should be copied into chat or public GitHub files.
+
 ## Implemented code (read-only, not live-connected)
 - `scripts/branch3_a7_readonly_youtube.py`: fixed-host HTTPS only to `oauth2.googleapis.com/token` for refresh (POST) and `www.googleapis.com/youtube/v3/channels` or `/playlistItems` for read-only GET. No YouTube write endpoints.
 - `scripts/test_branch3_a7_readonly_youtube.py`: synthetic API + token-refresh tests, wrong-channel and multiple-channel failures, over-broad scope rejection, forged metadata and secret-leak defenses.
