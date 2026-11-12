@@ -30,6 +30,9 @@ def validate() -> None:
     assert live["channel_id"]==CHANNEL and live["channel_created"] is True
     assert live["channel_id"]!=YOUTUBE_OLD
     assert live["channel_settings"]["upload_default_visibility"]=="private"
+    assert live["channel_settings"]["intermediate_features"]=="enabled"
+    assert live["channel_settings"]["advanced_features"]=="eligible_not_yet_enabled"
+    assert live["channel_settings"]["phone_verification_status"]=="confirmed_by_youtube_studio_intermediate_enabled"
     assert live["channel_settings"]["automatic_publishing_enabled"] is False
     assert live["release_gates"]["verified_creator_permissions_count"]==0
     assert live["release_gates"]["publishing_channel_oauth_connected"] is False
