@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "channel_name": "Clivox",
+  "handle": "@ClivoxPulse",
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "channel_url": "https://www.youtube.com/channel/UCfPEvy0SefE_5nNlYlY_CyQ",
+  "handle_url": "https://www.youtube.com/@ClivoxPulse",
+  "channel_created": true,
+  "created_verified_date_ist": "2026-11-12",
+  "verification_method": "new channel creation and subsequent YouTube Studio & public-channel UI readback",
+  "production_branding": {
+    "avatar_png": "branch3/branding/clivox-live-avatar.png",
+    "banner_png": "branch3/branding/clivox-live-banner-2560x1440.png",
+    "avatar_uploaded_and_visible": true,
+    "banner_uploaded_and_publicly_visible": true,
+    "about_published_and_visible": true
+  },
+  "profile": {
+    "primary_language": "English (channel description); source video language to review per clip",
+    "content_pillars": [
+      "gaming",
+      "livestream",
+      "comedy",
+      "entertainment",
+      "podcast_interview"
+    ],
+    "keywords_saved": true,
+    "channel_category_default_for_uploads": "Entertainment",
+    "social_links_configured": false,
+    "public_business_email_configured": false,
+    "private_contact_data_committed": false
+  },
+  "channel_settings": {
+    "upload_default_visibility": "private",
+    "audience_selection": "review_per_video",
+    "standard_features": "enabled",
+    "intermediate_features": "eligible_not_yet_enabled",
+    "advanced_features": "eligible_not_yet_enabled",
+    "residence_country": "not_set",
+    "automatic_publishing_enabled": false
+  },
+  "release_gates": {
+    "verified_creator_permissions_count": 0,
+    "permission_only_source_intake": true,
+    "all_third_party_rights_checked_per_clip": false,
+    "exact_media_owner_review_required": true,
+    "publishing_channel_oauth_connected": false,
+    "github_release_automation_enabled": false,
+    "videos_uploaded_by_this_setup": 0
+  },
+  "integrity_notes": [
+    "Creation of this separate channel does not authorize use of the previously connected FlowMinute Lab channel token.",
+    "YouTube handle @Clivox was unavailable; YouTube accepted @ClivoxPulse.",
+    "Previously paused branches 1 and 2 remain untouched.",
+    "Do not use this repo file itself as proof of creator clipping permission or YouTube upload approval.",
+    "Standard features are enabled; intermediate and advanced features may require account verification.",
+    "Public YouTube channel includes no videos at the time of first-channel creation readback."
+  ]
+}
