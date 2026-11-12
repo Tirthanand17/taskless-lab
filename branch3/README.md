@@ -33,6 +33,13 @@ Only material covered by direct written creator/rights-holder permission or an a
 6. No guarantee of zero Content ID claims, strikes or monetization eligibility.
 7. Keep all publishing automation off until the user separately approves after channel creation.
 
+## First creator-clipping pilot (2026-11-12)
+- **Owner phone verification completed** and live YouTube Studio shows **Intermediate Enabled**; Advanced Eligible.
+- **YMH 2 Bears 1 Cave Episode 347** now selected as the **primary research pilot**: official show page, episode source, creator invitation and a source-free original concept in `pilot_ymh_ep347.json`.
+- **Rights and contract blocker:** Content Rewards Creator Terms §§17.2/17.6 place third-party rights clearance on participants and can assign approved final edits to the brand. Do not join or accept the contract on behalf of the owner; require informed approval and exact campaign-specific commercial clipping permission.
+- New offline prelaunch validation: `scripts/branch3_validate_pilot_ymh.py` + tests; all publishing and downloading disabled.
+- Full evidence: `content_rewards_contract_review_2026-11-12.md`.
+
 ## Current first-content research status (2026-11-12)
 - **Five public campaign leads** are logged in `clip_source_watchlist_2026-11-12.json` as research only: FaZe tournament, IShowSpeed x Expedia, YMH Studios 2 Bears 1 Cave, and two excluded/paused alternatives.
 - **ZERO approved creators and ZERO authorized clips**. Public clip campaigns are not assumed to be a direct license from the original rights holder; campaign operator, underlying music/game IP, YouTube commercial scope and approval requirements must be verified separately.
@@ -44,6 +51,8 @@ Only material covered by direct written creator/rights-holder permission or an a
 - `creator_permissions.json`: empty creator allowlist; no creators eligible by default
 - `scripts/branch3_creator_permission_gate.py`: fail-closed candidate intake check; never upload permission
 - `viral-content-strategy.json`: five content pillars, priority order, test signals, release blockers
+- `pilot_ymh_ep347.json`: first source-free comedy pilot concept and exact rights gates
+- `content_rewards_contract_review_2026-11-12.md`: primary Creator Terms evidence and IP assignment warning
 - `clip_source_watchlist_2026-11-12.json`: five unverified campaign leads, not an allowlist
 - `first_clip_pipeline_plan.md`: first three clip concepts and launch workflow
 - `permission_request_templates.md`: creator/rightsholder outreach drafts, not sent
