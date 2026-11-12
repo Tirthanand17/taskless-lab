@@ -1,0 +1,106 @@
+name: Clivox A1 Public Metadata Discovery (RESEARCH ONLY)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "fixture (no API key), ids (known public video IDs), or query (one bounded search)"
+        type: choice
+        required: true
+        default: fixture
+        options:
+          - fixture
+          - ids
+          - query
+      category:
+        description: "Research topic; this is NOT a rights grant"
+        type: choice
+        required: true
+        default: gaming
+        options:
+          - gaming
+          - livestream
+          - comedy
+          - entertainment
+          - podcast_interview
+      video_ids:
+        description: "Comma-separated IDs only for mode=ids; max 30"
+        type: string
+        required: false
+        default: ""
+      search_query:
+        description: "One public search query only for mode=query; max 90 chars"
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a1-public-research-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  research_only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PUBLISH_ENABLED: "false"
+      CLIVOX_AUTO_DOWNLOAD_ENABLED: "false"
+      CLIVOX_AUTO_UPLOAD_ENABLED: "false"
+      CLIVOX_CHANNEL_ID: "UCfPEvy0SefE_5nNlYlY_CyQ"
+      DISCOVERY_MODE: ${{ inputs.mode }}
+      DISCOVERY_CATEGORY: ${{ inputs.category }}
+      DISCOVERY_IDS: ${{ inputs.video_ids }}
+      DISCOVERY_QUERY: ${{ inputs.search_query }}
+      # Public metadata API key only. NEVER put OAuth refresh tokens here.
+      CLIVOX_YOUTUBE_METADATA_API_KEY: ${{ secrets.CLIVOX_YOUTUBE_METADATA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Guard no-publishing or copyrighted source acquisition
+        run: |
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_AUTO_DOWNLOAD_ENABLED" = "false"
+          test "$CLIVOX_AUTO_UPLOAD_ENABLED" = "false"
+          test "$CLIVOX_CHANNEL_ID" = "UCfPEvy0SefE_5nNlYlY_CyQ"
+          python -B -m unittest -q scripts.test_branch3_discovery
+      - name: Discover only public video metadata
+        run: |
+          python -B scripts/branch3_discovery.py \
+            --mode "$DISCOVERY_MODE" \
+            --category "$DISCOVERY_CATEGORY" \
+            --ids "$DISCOVERY_IDS" \
+            --query "$DISCOVERY_QUERY" \
+            --out "$RUNNER_TEMP/clivox-a1/discovery.json"
+      - name: Verify report is unlicensed research and contains no media
+        run: |
+          python -B -c '
+          import json,os,pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a1/discovery.json"
+          r=json.loads(p.read_text("utf8"))
+          assert r["stage"]=="A1_DISCOVERY_PUBLIC_METADATA_ONLY"
+          assert r["channel_id"]=="UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert r["release_or_media_acquisition_allowed"] is False
+          assert r["all_candidates_permission_unverified"] is True
+          assert r["youtube_api_write_calls"]==0
+          assert all(
+              c["permission_state"]=="UNVERIFIED"
+              and c["source_media_download_allowed"] is False
+              and c["youtube_upload_authorized"] is False
+              and c["ready_to_publish"] is False
+              for c in r["candidates"]
+          )
+          print("CLIVOX_A1_RESEARCH_ONLY_VERIFIED",len(r["candidates"]))
+          '
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a1-public-metadata-${{ github.run_id }}
+          path: ${{ runner.temp }}/clivox-a1/discovery.json
+          if-no-files-found: error
+          retention-days: 7
