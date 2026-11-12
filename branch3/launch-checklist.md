@@ -8,7 +8,7 @@
 - [x] Create additional Clivox brand channel through YouTube's official channel-creation UI, separate from FlowMinute Lab.
 - [x] Verify actual channel ID `UCfPEvy0SefE_5nNlYlY_CyQ` and https://www.youtube.com/@ClivoxPulse from public YouTube and Studio.
 - [x] Upload premium Clivox avatar/banner from Downloads, check YouTube's all-device banner crop, publish About and validate live public channel. No social links added because none were provided.
-- [ ] Standard YouTube features **enabled**; Intermediate and Advanced **eligible, not enabled**, likely require owner verification. Business contact kept blank to protect personal information.
+- [x] Standard and Intermediate YouTube features **Enabled** in YouTube Studio after owner phone verification (2026-11-12); Advanced still **Eligible**; business email intentionally blank.
 - [x] Verify Clivox `UCfPEvy0SefE_5nNlYlY_CyQ` is distinct from FlowMinute Lab `UCCcL9Q_jqVq6LJmnYUSAFZA` using live channel-selector UI.
 
 ## Viral-ready topic coverage
@@ -22,15 +22,23 @@
 - [x] Default video visibility **Private** to avoid accidental public release.
 - [x] Default category **Entertainment**; original language, titles, rights and captions reviewed per uploaded video.
 - [x] Audience setting **review separately for every video**, not automatically declared Made for Kids / not Made for Kids.
-- [ ] Enable Intermediate features through Google's official verification flow when owner is ready; do not bypass or reuse FlowMinute credentials.
+- [x] YouTube Intermediate features **Enabled** after owner phone verification, independently confirmed live; FlowMinute credentials untouched.
 
 ## First content preparation — 2026-11-12
-- [x] Check live intermediate feature gate: still **Eligible**; owner phone verification needed to enable custom thumbnails/long uploads.
+- [x] Recheck 2026-11-12 YouTube Studio feature gate: **Standard Enabled**, **Intermediate Enabled**, **Advanced Eligible**.
 - [x] Research current campaign leads for gaming, livestream and comedy; classify all as **UNVERIFIED** research, including explicitly non-YouTube and paused examples.
 - [x] Prepare three conceptual viral hooks and first-clip edit/review standards without downloading someone else's media.
-- [ ] Owner completes Google phone/OTP verification privately.
-- [ ] Authenticate campaign operator/actual rights holder; confirm Clivox commercial YouTube license and special requirements.
+- [x] Owner completed Google phone verification; YouTube Studio independently confirmed Intermediate **Enabled**.
+- [ ] Verify YMH Studios / Content Rewards participant-specific license, restricted topics, 18+ platform eligibility and assignment clauses **before agreeing to terms, downloading media or uploading**.
 - [ ] First exact content permission and source media cleared; only then start media editing.
+
+## Verified 2026-11-12 pilot status
+- [x] Research creator's **official YMH Clipping** Whop announcement of the November campaign and Content Rewards' listed YouTube Shorts invitation.
+- [x] Identify YMH Studios' 2 Bears 1 Cave **episode 347** as the exact candidate episode; citation and proposed timestamp are in `pilot_ymh_ep347.json`.
+- [x] Read Content Rewards Creator Terms, noting that some campaign-approved edited clips are **assigned to the brand** (Section 17.6), and participating creators remain responsible for third-party rights (17.2).
+- [ ] Account owner explicitly reviews and accepts third-party marketplace terms if joining; no account created or agreement accepted by project tools.
+- [ ] Confirm the complete source-specific campaign exclusions and whether Clivox may retain/monetize the published Short; public listing alone is NOT clearance.
+- [ ] Run first exact-video editorial and permission audit; no third-party clips downloaded yet.
 
 ## Prior to any clipping
 - [ ] Source creator exists in verified allowlist (`creator_permissions.json`, initially empty); automatic publication remains disabled.

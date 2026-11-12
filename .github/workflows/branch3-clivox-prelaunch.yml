@@ -10,6 +10,8 @@ on:
       - "scripts/test_branch3_creator_permission_gate.py"
       - "scripts/branch3_validate_clipping_watchlist.py"
       - "scripts/test_branch3_clipping_watchlist.py"
+      - "scripts/branch3_validate_pilot_ymh.py"
+      - "scripts/test_branch3_pilot_ymh.py"
   workflow_dispatch:
 
 permissions:
@@ -35,3 +37,5 @@ jobs:
           python -B scripts/branch3_validate_prelaunch.py
           python -B -m unittest -v scripts.test_branch3_creator_permission_gate scripts.test_branch3_clipping_watchlist
           python -B scripts/branch3_validate_clipping_watchlist.py
+          python -B scripts/branch3_validate_pilot_ymh.py
+          python -B -m unittest -v scripts.test_branch3_pilot_ymh
