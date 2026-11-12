@@ -4,13 +4,13 @@
   "type": "short",
   "language": "en",
   "title": "Google Sheets Protected Range Is NOT a Security Lock #Shorts",
-  "description": "A visual, original fictional learning example from FlowMinute Lab. A protected Google Sheets range can limit editing, but Google warns that protection is not a security measure. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/docs/answer/1218656 #FlowMinuteLab #TechTips",
+  "description": "Google Sheets protected ranges restrict editing, not access to sensitive information. Here's the warning-versus-restriction check to make.\n\nOriginal diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/docs/answer/1218656 #FlowMinuteLab #TechTips",
   "tags": [
     "Google Sheets",
-    "Filter view",
-    "Protected ranges",
-    "Collaboration",
-    "Permissions",
+    "Protected range",
+    "Edit permissions",
+    "Sheet security",
+    "Share settings",
     "Shorts"
   ],
   "source_links": [
