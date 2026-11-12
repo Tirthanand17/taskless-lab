@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "channel_id": null,
+  "channel_created": false,
+  "creator_permissions": [],
+  "candidates": [],
+  "global_upload_enabled": false,
+  "notes": "Template only. No licensed sources or authorized uploads yet. Never store private contracts, passwords, OAuth or access tokens in public repository."
+}
