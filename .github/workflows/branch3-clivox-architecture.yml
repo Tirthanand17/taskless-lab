@@ -9,6 +9,8 @@ on:
       - "scripts/test_branch3_architecture_gate.py"
       - "scripts/branch3_discovery.py"
       - "scripts/test_branch3_discovery.py"
+      - "scripts/branch3_rights_case_intake.py"
+      - "scripts/test_branch3_rights_case_intake.py"
       - ".github/workflows/branch3-clivox-a1-discovery.yml"
       - ".github/workflows/branch3-clivox-architecture.yml"
   workflow_dispatch:
@@ -37,9 +39,11 @@ jobs:
         run: |
           python -B -m py_compile scripts/branch3_architecture_gate.py scripts/test_branch3_architecture_gate.py
           python -B scripts/branch3_architecture_gate.py
-          python -B -m unittest -v scripts.test_branch3_architecture_gate scripts.test_branch3_discovery
+          python -B -m unittest -v scripts.test_branch3_architecture_gate scripts.test_branch3_discovery scripts.test_branch3_rights_case_intake
           python -B scripts/branch3_discovery.py --mode fixture --category gaming --out "$RUNNER_TEMP/clivox-a1-offline-fixture.json"
           python -B -c 'import json,os,pathlib; r=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a1-offline-fixture.json").read_text()); assert r["is_synthetic_fixture"] is True and r["release_or_media_acquisition_allowed"] is False and all(c["permission_state"]=="UNVERIFIED" for c in r["candidates"]); print("A1_SYNTHETIC_OFFLINE_PASS")'
+          python -B scripts/branch3_rights_case_intake.py --source-report "$RUNNER_TEMP/clivox-a1-offline-fixture.json" --out "$RUNNER_TEMP/clivox-a2-offline-cases.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a2-offline-cases.json"; d=json.loads(p.read_text()); assert d["cases_all_unverified"] is True and d["creator_permission_grants_issued_by_this_workflow"]==0 and d["media_downloads"]==0 and d["youtube_writes"]==0; print("A2_REVIEW_CASES_PENDING_ONLY")'
           python -B scripts/branch3_validate_prelaunch.py
       - name: Assert no production permission source or uploader has been configured
         run: |
