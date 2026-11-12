@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "phase": "A6_RELEASE_APPROVAL_CRYPTO_PREVIEW",
+  "real_owner_signing_public_key_enrolled": false,
+  "real_signed_releases": 0,
+  "real_verified_creator_licenses": 0,
+  "exact_licensed_asset_available": false,
+  "quarantine_default": true,
+  "live_release_approval_enabled": false,
+  "github_release_workflow_enabled": false,
+  "youtube_write_enabled": false,
+  "immutable_digest_fields": [
+    "channel_id",
+    "release_id",
+    "asset.video_sha256",
+    "asset.metadata_sha256",
+    "asset.source_rights_evidence_sha256",
+    "planned_release.privacy_status",
+    "planned_release.publish_at_utc"
+  ],
+  "status": "DESIGN_AND_OFFLINE_TESTS_ONLY"
+}
