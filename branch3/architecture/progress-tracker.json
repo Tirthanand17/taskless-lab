@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 46,
-  "overall_estimated_remaining_percent": 54,
+  "overall_estimated_completion_percent": 50,
+  "overall_estimated_remaining_percent": 50,
   "milestone_count": 11,
   "milestones": [
     {
@@ -82,9 +82,9 @@
     {
       "id": "A10",
       "name": "Analytics and optimization",
-      "completion_pct": 0,
-      "status": "not_started",
-      "evidence": "No published Clivox content or authenticated analytics"
+      "completion_pct": 50,
+      "status": "partial",
+      "evidence": "Synthetic-only Analytics API table parser, metric validation, null-aware Shorts Studio separation, within-category A/B comparison and adversarial GitHub CI; Clivox Analytics OAuth, published videos and genuine experiments still absent"
     }
   ],
   "creator_licenses_verified": 0,
@@ -102,7 +102,8 @@
     "Real licensed source edit + human narration and final audiovisual QA remain pending despite original-only A5 demo",
     "A6 only verifies mathematical signatures in synthetic offline tests: no enrolled owner signing identity or approved final clip",
     "A7 owner Google OAuth consent, Clivox-specific refresh credentials and protected environment must be configured and real channel ID verified",
-    "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured"
+    "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured",
+    "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
   "disclaimer": "Progress estimates reflect partial engineering components, not a claim that third-party clips are licensed or an end-to-end publishing service exists."
 }

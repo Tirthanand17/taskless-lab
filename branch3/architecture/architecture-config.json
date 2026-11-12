@@ -193,5 +193,21 @@
     "sample_plan": "branch3/a8/fixtures/private-first-dryrun.json",
     "workflow": ".github/workflows/branch3-clivox-a8-dryrun.yml",
     "output": "SYNTHETIC_NO_WRITE_PRIVATE_FIRST_PLAN_ONLY"
+  },
+  "a10_synthetic_analytics": {
+    "analytics_report_shape_parser_implemented": true,
+    "engaged_views_and_watch_metrics_validation_implemented": true,
+    "studio_feed_metrics_kept_separate_and_null": true,
+    "within_category_hook_experiment_review_implemented": true,
+    "experiment_minimum_per_arm": 10,
+    "fake_causal_winner_inference_disallowed": true,
+    "google_analytics_readonly_consent_verified": false,
+    "live_channel_analytics_adapter_implemented": false,
+    "actual_clivox_video_data_present": false,
+    "real_analytics_api_calls_enabled": false,
+    "real_edit_or_schedule_automation_from_metrics": false,
+    "fixture": "branch3/a10/fixtures/synthetic-analytics-export.json",
+    "workflow": ".github/workflows/branch3-clivox-a10-analytics.yml",
+    "state": "SYNTHETIC_VALIDATION_ONLY"
   }
 }

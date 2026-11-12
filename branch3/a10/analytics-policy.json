@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "stage": "A10_EXPERIMENT_EVALUATOR",
+  "execution_mode": "SYNTHETIC_OFFLINE_ONLY",
+  "analytics_scope": "https://www.googleapis.com/auth/yt-analytics.readonly",
+  "video_report_metrics": [
+    "views",
+    "engagedViews",
+    "averageViewDuration",
+    "averageViewPercentage",
+    "shares",
+    "subscribersGained"
+  ],
+  "studio_only_metrics": [
+    "shown_in_feed",
+    "chose_to_view_pct",
+    "audience_retention_curve"
+  ],
+  "minimum_examples_per_arm": 10,
+  "reported_windows_days": [
+    1,
+    3,
+    7,
+    14
+  ],
+  "source_channel_oauth_connected": false,
+  "live_api_enabled": false,
+  "actual_video_count": 0,
+  "synthetic_testing_only": true,
+  "publish_enabled": false,
+  "public_ci_outputs_no_video_ids": true,
+  "handling_missing_metrics": "NULL_NEVER_ZERO",
+  "notes": "Read-only synthetic parser/experimental review; no Clivox uploads, Google Analytics OAuth, real metrics, automated experiment allocation or publishing privileges."
+}
