@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "evidence_type": "AUTHENTICATED_GITHUB_ENVIRONMENT_READBACK",
+  "checked_date_utc": "2026-11-12",
+  "repository": "Tirthanand17/taskless-lab",
+  "environment": "clivox-readonly",
+  "observed_protection": {
+    "required_reviewers_enabled": true,
+    "reviewer_github_logins": [
+      "Tirthanand17"
+    ],
+    "prevent_self_review": false,
+    "can_admins_bypass": false,
+    "custom_branch_policies": true,
+    "allowed_branch_patterns": [
+      {
+        "name": "main",
+        "type": "branch"
+      }
+    ]
+  },
+  "observed_secrets_count": 0,
+  "google_oauth_owner_consent_verified": false,
+  "clivox_oauth_client_installed": false,
+  "clivox_refresh_token_installed": false,
+  "actual_live_channel_identity_verified": false,
+  "note": "This is a public-safe snapshot of authenticated GitHub API readback; recheck live environment policies before any owner OAuth run. No private secret values were obtained or stored. A self-reviewable environment still requires explicit owner approval but not independent dual control."
+}
