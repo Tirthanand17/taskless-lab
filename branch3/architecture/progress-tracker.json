@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 43,
-  "overall_estimated_remaining_percent": 57,
+  "overall_estimated_completion_percent": 46,
+  "overall_estimated_remaining_percent": 54,
   "milestone_count": 11,
   "milestones": [
     {
@@ -68,9 +68,9 @@
     {
       "id": "A8",
       "name": "Protected private-first upload/scheduling",
-      "completion_pct": 0,
-      "status": "not_started",
-      "evidence": "Uploader and signed approval/production protections missing"
+      "completion_pct": 35,
+      "status": "partial",
+      "evidence": "Private-first UTC schedule preflight, exact digest attempt-key, ambiguous/duplicate attempt dry-run and adversarial GitHub tests; no durable atomic ledger, write OAuth, real upload or schedule readback."
     },
     {
       "id": "A9",
@@ -101,7 +101,8 @@
     "Actual QA-approved, signed and inventoried first pilot",
     "Real licensed source edit + human narration and final audiovisual QA remain pending despite original-only A5 demo",
     "A6 only verifies mathematical signatures in synthetic offline tests: no enrolled owner signing identity or approved final clip",
-    "A7 owner Google OAuth consent, Clivox-specific refresh credentials and protected environment must be configured and real channel ID verified"
+    "A7 owner Google OAuth consent, Clivox-specific refresh credentials and protected environment must be configured and real channel ID verified",
+    "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured"
   ],
   "disclaimer": "Progress estimates reflect partial engineering components, not a claim that third-party clips are licensed or an end-to-end publishing service exists."
 }
