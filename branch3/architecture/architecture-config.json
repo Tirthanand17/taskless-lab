@@ -91,5 +91,18 @@
     "experiment_start_after_approved_uploads": 10
   },
   "research_checked": "2026-11-12",
-  "notes": "Contract and platform rules must be rechecked before the first actual clip. Pure architecture gate never authorizes legal rights or uploads."
+  "notes": "Contract and platform rules must be rechecked before the first actual clip. Pure architecture gate never authorizes legal rights or uploads.",
+  "discovery": {
+    "a1_metadata_adapter_implemented": true,
+    "live_metadata_api_key_verified": false,
+    "execution": "manual_github_actions_only",
+    "fixed_api_host": "https://www.googleapis.com/youtube/v3/",
+    "max_known_source_ids_per_run": 30,
+    "max_search_results_per_run": 10,
+    "max_search_calls_per_run": 1,
+    "max_video_details_calls_per_run": 1,
+    "third_party_source_download_allowed": false,
+    "clip_permission_inferred_from_popularity": false,
+    "output_status": "RESEARCH_ONLY_PUBLIC_METADATA"
+  }
 }
