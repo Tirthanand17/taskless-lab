@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "channel_handle": "@ClivoxPulse",
+  "stage": "A7_READONLY_ACCOUNT_BINDING",
+  "workflow_state": "OFFLINE_FIXTURE_ONLY_UNTIL_OWNER_OAUTH",
+  "required_scope": "https://www.googleapis.com/auth/youtube.readonly",
+  "distinct_oauth_client_enrolled": false,
+  "owner_google_consent_verified": false,
+  "oauth_refresh_secret_configured": false,
+  "private_clivox_identity_verified_via_oauth": false,
+  "identity_client_implemented": true,
+  "private_uploads_inventory_reader_implemented": true,
+  "live_run_allowed": false,
+  "oauth_secret_source": "DEDICATED_CLIVOX_SECRETS_ONLY_NO_FLOWMINUTE_FALLBACK",
+  "token_handling": {
+    "never_print_token": true,
+    "never_commit_token": true,
+    "no_token_in_url": true,
+    "do_not_log_raw_api_response": true,
+    "redact_http_errors": true,
+    "do_not_store_refresh_response": true
+  },
+  "allowed_request_methods": [
+    "GET"
+  ],
+  "allowed_youtube_api_paths": [
+    "/youtube/v3/channels",
+    "/youtube/v3/playlistItems"
+  ],
+  "fixed_google_hosts": [
+    "www.googleapis.com",
+    "oauth2.googleapis.com"
+  ],
+  "initial_inventory_limit": 10,
+  "inventory_completeness": "FIRST_PAGE_SAMPLE_ONLY_NOT_PRIVATE_RELEASE_LEDGER",
+  "active_google_environment": null,
+  "oauth_test_status": "NO_CHANNEL_OWNER_AUTHORIZATION_YET",
+  "blocked_flags": {
+    "media_download_enabled": false,
+    "youtube_video_insert_enabled": false,
+    "youtube_video_update_enabled": false,
+    "youtube_video_delete_enabled": false,
+    "youtube_schedule_enabled": false,
+    "youtube_publish_enabled": false,
+    "flowminute_oauth_fallback_enabled": false
+  },
+  "notes": "JSON policies and synthetic API fixtures never demonstrate actual Google OAuth consent, channel authorization or a complete video inventory."
+}
