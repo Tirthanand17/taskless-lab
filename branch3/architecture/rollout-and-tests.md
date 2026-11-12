@@ -34,7 +34,7 @@
 - No use of Branch 1/2 secrets or GH workflow writes while paused.
 
 ## CI posture
-The branch3-clivox-architecture.yml runs standard-library static validators and unittest. The separate `branch3-clivox-a1-discovery.yml` is manual-only, may make **read-only public metadata calls** when a distinct restricted API key exists, and cannot fetch video media. It must have **read-only GitHub permissions, no secrets, no YouTube calls, no media download, no scheduled triggers**. The existing branch3-clivox-prelaunch.yml remains intact. All future publication workflows require separate owner approval and independent PR.
+The branch3-clivox-architecture.yml runs standard-library static validators and unittest. The separate `branch3-clivox-a1-discovery.yml` is manual-only, may make **read-only public metadata calls** when a distinct restricted API key exists, and cannot fetch video media. Both workflows have **read-only GitHub permissions and no media download or publishing**. The manual discovery workflow can call YouTube's *public read-only metadata* endpoints using an optional **metadata-only API key** in Actions secrets; its test/fixture mode requires no key and performs no network calls. Neither workflow has a scheduled trigger. The existing branch3-clivox-prelaunch.yml remains intact. All future publication workflows require separate owner approval and independent PR.
 
 ## Current status
 - Channel identity and logo/banner: complete.
