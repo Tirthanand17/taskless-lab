@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Tirthanand17/taskless-lab/blob/main/branch3/contracts/clip-job.schema.json",
+  "title": "Clivox clip job metadata contract (NOT license)",
+  "description": "Architecture-only metadata contract; schema passing is not actual creator permission, human review or upload consent.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "clip_id",
+    "channel_id",
+    "status",
+    "category",
+    "source",
+    "rights",
+    "editorial",
+    "media",
+    "release",
+    "youtube",
+    "analytics"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "clip_id": {
+      "type": "string",
+      "pattern": "^clivox_[a-z0-9][a-z0-9_-]{6,80}$"
+    },
+    "channel_id": {
+      "const": "UCfPEvy0SefE_5nNlYlY_CyQ"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DISCOVERED",
+        "RIGHTS_PENDING",
+        "RIGHTS_VERIFIED",
+        "EDITORIAL_READY",
+        "MEDIA_STAGED",
+        "QA_PASSED",
+        "OWNER_SIGNED",
+        "PRIVATE_UPLOADED",
+        "SCHEDULED",
+        "PUBLISHED",
+        "MEASURED",
+        "HOLD",
+        "QUARANTINED",
+        "REVOKED",
+        "TAKEDOWN_REVIEW"
+      ]
+    },
+    "category": {
+      "enum": [
+        "gaming",
+        "livestream",
+        "comedy",
+        "entertainment",
+        "podcast_interview"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "creator_channel_id",
+        "video_id",
+        "canonical_url",
+        "exact_in_ms",
+        "exact_out_ms",
+        "transcript_checked"
+      ],
+      "properties": {
+        "creator_channel_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^UC[A-Za-z0-9_-]{22}$"
+        },
+        "video_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{11}$"
+        },
+        "canonical_url": {
+          "type": "string",
+          "pattern": "^https://www.youtube.com/watch\\?v=[A-Za-z0-9_-]{11}$"
+        },
+        "exact_in_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "exact_out_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "transcript_checked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "permission_state",
+        "creator_issuer_verified",
+        "commercial_youtube_licensed",
+        "game_music_guest_rights_cleared",
+        "evidence_digest_sha256",
+        "rights_expire_utc"
+      ],
+      "properties": {
+        "permission_state": {
+          "enum": [
+            "unverified",
+            "verified",
+            "denied",
+            "revoked"
+          ]
+        },
+        "creator_issuer_verified": {
+          "type": "boolean"
+        },
+        "commercial_youtube_licensed": {
+          "type": "boolean"
+        },
+        "game_music_guest_rights_cleared": {
+          "type": "boolean"
+        },
+        "evidence_digest_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "rights_expire_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "editorial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "original_story_approved",
+        "fact_check_complete",
+        "hook_hypothesis"
+      ],
+      "properties": {
+        "original_story_approved": {
+          "type": "boolean"
+        },
+        "fact_check_complete": {
+          "type": "boolean"
+        },
+        "hook_hypothesis": {
+          "type": "string",
+          "maxLength": 240
+        }
+      }
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "media_sha256",
+        "metadata_sha256",
+        "qa_passed",
+        "file_in_public_repo"
+      ],
+      "properties": {
+        "media_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "metadata_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "qa_passed": {
+          "type": "boolean"
+        },
+        "file_in_public_repo": {
+          "const": false
+        }
+      }
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner_signed",
+        "signed_release_proof_ref",
+        "release_enabled"
+      ],
+      "properties": {
+        "owner_signed": {
+          "type": "boolean"
+        },
+        "signed_release_proof_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "release_enabled": {
+          "const": false
+        }
+      }
+    },
+    "youtube": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "video_id",
+        "privacy",
+        "publish_at_utc",
+        "readback_verified"
+      ],
+      "properties": {
+        "video_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9_-]{11}$"
+        },
+        "privacy": {
+          "enum": [
+            "not_uploaded",
+            "private",
+            "unlisted",
+            "public"
+          ]
+        },
+        "publish_at_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "readback_verified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "analytics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engaged_views",
+        "shown_in_feed",
+        "reviewed"
+      ],
+      "properties": {
+        "engaged_views": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "shown_in_feed": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "reviewed": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "DISCOVERED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rights": {
+            "properties": {
+              "permission_state": {
+                "const": "unverified"
+              }
+            }
+          },
+          "release": {
+            "properties": {
+              "owner_signed": {
+                "const": false
+              }
+            }
+          },
+          "youtube": {
+            "properties": {
+              "privacy": {
+                "const": "not_uploaded"
+              },
+              "video_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
