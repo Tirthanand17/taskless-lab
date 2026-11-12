@@ -52,7 +52,8 @@ def validate() -> None:
         "https://support.google.com/youtube/answer/1646861"
     ):
         assert url in research
-    assert "written" in rights.lower() and "BLOCK" in rights
+    assert "written" in rights.lower() and "DENY ALL" in rights
+    assert "creator-permission-only" in rights.lower()
     assert "No automated clip upload" in rights
     print("BRANCH3_STATIC_CHANNEL_READY_ONLY_ZERO_UPLOADS_ZERO_RIGHTS")
 
