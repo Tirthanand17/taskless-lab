@@ -1,6 +1,6 @@
 # Implementation roadmap and engineering acceptance gates
 
-**Milestones:** A0 architecture complete; A1 public metadata discovery implemented and smoke-tested on GitHub; A2 **pending human-rights review intake** added to each discovery workflow. A3 **media-storage preflight and public-repo leakage checks** added, but the private vault is not provisioned. A4 **original source-free scripting and storyboard validation** implemented; rights-cleared edit still blocked. No source rights have been verified. Live use of A1 `ids` or `query` still requires a Clivox metadata API key. Licensed media acquisition and all publishing remain NOT implemented.
+**Milestones:** A0 architecture complete; A1 public metadata discovery implemented and smoke-tested on GitHub; A2 **pending human-rights review intake** added to each discovery workflow. A3 **media-storage preflight and public-repo leakage checks** added, but the private vault is not provisioned. A4 **original source-free scripting and storyboard validation** implemented; A5 **original-only synthetic rendering and technical AV/SRT QA** implemented, while rights-cleared edit, professional narration and final QA remain blocked. No source rights have been verified. Live use of A1 `ids` or `query` still requires a Clivox metadata API key. Licensed media acquisition and all publishing remain NOT implemented.
 
 ## Work packages
 | ID | Deliverable | Dependencies | Exit criterion |
@@ -10,7 +10,7 @@
 | A2 | Rights-review cases and audit receipts | A1 | **Intake implemented**: pending human-review JSON case per A1 candidate, provenance digest, 14 mandatory checks and zero self-approvals. **Authentic grant verification and signed audit receipt still pending**. |
 | A3 | Private media storage decision and approved provider | A2 | **Public/media boundary implemented and tested**; private GitHub release-asset vault proposed, but **not created/linked/approved**; real provider identity/ACL and exact licensed source access remain blocked |
 | A4 | Original story editor + segment scoring | A2 | **Source-free original script/beat validation implemented with CI**; verified quotes/precise source segment, licensed edit and human originality review not yet possible without rights |
-| A5 | H.264/AAC/SRT deterministic renderer and professional 9:16 QA | A3,A4 | render SHA, mobile preview, captions, audio and technical media QC; no repetitive spinner |
+| A5 | H.264/AAC/SRT deterministic renderer and professional 9:16 QA | A3,A4 | **Synthetic original-only render + FFprobe, SHA-256 and visual SRT check implemented**; real licensed source editing, narration/voice mix and final QA blocked until verified rights/private vault |
 | A6 | Signed owner release manifest and quarantine | A5 | full version digest + rights receipt + metadata + channel ID; revocation and expiration test |
 | A7 | Distinct Clivox OAuth and owner read-only inventory | A0, owner consent | mine=true exact channel ID, zero writes, invalid_grant stops |
 | A8 | Protected private-first uploader and schedule ledger | A6,A7, approved protected environment | manual rehearsal only; private upload, safe future publishAt, remote readback, duplicate and timeout reconciliation |
@@ -41,5 +41,5 @@ The branch3-clivox-architecture.yml runs standard-library static validators and 
 - Intermediate YouTube features: enabled; advanced eligible.
 - Rights allowlist: empty, so A2 is blocked pending actual creator-issued grant.
 - Campaign pilot YMH Ep347: purely a research treatment; no terms accepted, media downloaded or clips uploaded.
-- A0: complete. A1: implemented and fixture workflow smoke-tested, live API-key connection not yet verified. A2: **unverified-rights case intake implemented**, actual rightsholder verification pending. A3: fail-closed media boundary and private-vault plan implemented; provisioning and licensed source access outstanding. A4: source-free original storyboard engine implemented, licensed-source editorial QA pending. A5–A10: outstanding. Overall planning estimate: 30% implementation / 70% remaining; see `progress-tracker.json`.
+- A0: complete. A1: implemented and fixture workflow smoke-tested, live API-key connection not yet verified. A2: **unverified-rights case intake implemented**, actual rightsholder verification pending. A3: fail-closed media boundary and private-vault plan implemented; provisioning and licensed source access outstanding. A4: source-free original storyboard engine implemented, licensed-source editorial QA pending. A5: synthetic original-only media preview and technical QA implemented; licensed production/video reviews pending. A6–A10: outstanding. Overall planning estimate: 34% implementation / 66% remaining; see `progress-tracker.json`.
 
