@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "release_id": "clivox_ymh_ep347_synthetic_demo_v1",
+  "release_state": "QUARANTINED_UNLICENSED_DEMO",
+  "asset_kind": "A5_ORIGINAL_ONLY_SYNTHETIC_BENCHMARK",
+  "asset": {
+    "video_sha256": null,
+    "metadata_sha256": null,
+    "source_rights_evidence_sha256": null,
+    "video_bytes": null,
+    "third_party_footage_present": false
+  },
+  "reviewed": {
+    "creator_rights_grant_verified": false,
+    "underlying_rights_cleared": false,
+    "license_not_expired_and_not_revoked": false,
+    "exact_source_context_verified": false,
+    "original_commentary_human_reviewed": false,
+    "final_video_human_reviewed": false,
+    "video_qa_passed_for_actual_licensed_content": false
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "public_key_id": null,
+    "detached_signature_base64": null,
+    "signing_receipt_ref": null,
+    "owner_signed": false
+  },
+  "planned_release": {
+    "target_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+    "privacy_status": "private",
+    "publish_at_utc": null,
+    "owner_approved_exact_schedule": false
+  },
+  "controls": {
+    "production_release_key_enrolled": false,
+    "github_environment_reviewed": false,
+    "channel_oauth_verified": false,
+    "private_vault_verified": false,
+    "quarantine_enabled": true,
+    "media_download_enabled": false,
+    "youtube_upload_enabled": false,
+    "youtube_schedule_enabled": false,
+    "youtube_publish_enabled": false
+  },
+  "note": "A6 draft manifest is not a license or production signoff. No private key, footage or YouTube credentials in the public repo."
+}
