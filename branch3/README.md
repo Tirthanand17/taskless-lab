@@ -7,12 +7,17 @@
 ## Channel identity (proposed, not claimed)
 - Display name: **Clivox**
 - Preferred handle: **@Clivox** (availability must be checked live on YouTube)
-- Focus: original explanations of compelling moments from podcasts, interviews and long-form creator discussions
+- Focus: **viral-worthy creator-approved highlights across gaming (including GTA VI), livestreams, comedy/jokes, entertainment, podcasts and interviews**, always with meaningful original editorial context
 - Language: English first; no assumption of language rights
 - Tagline: **Clips worth watching. Context worth knowing.**
 - Video style: creator-approved excerpt + original commentary/critique/story, source attribution and clear factual context
 - Profile and banner SVG: `branch3/branding/`
 - Final channel About copy: `branch3/channel-profile.md`
+
+## Viral-first multi-category content strategy
+**Current content priorities:** (1) gaming/GTA VI, (2) livestream reactions, (3) comedy/jokes, (4) entertainment/pop culture, and (5) podcasts/interviews. The goal is to find the strongest original, shareable moment in a creator-permitted full video, podcast or livestream rather than copy its most-viewed excerpt. See `viral-content-strategy.json`. This is an editorial testing order, not an assertion that one category will go viral. Keep performance decisions tied to actual Clivox analytics after launch.
+
+**GTA VI is a topic watchlist, not a license.** Rockstar/Take-Two's published fan-video guidance emphasizes non-commercial gameplay and excludes leaked pre-release footage and other restricted clips. Commercial Clivox clips need separately verified publisher/game footage rights when applicable, in addition to streamer permission; no leaks or spoiler compilations.
 
 ## Explicit creator-permission rule
 Only material covered by direct written creator/rights-holder permission or an authentic public clipping policy from that creator enters the candidate pipeline. We never treat a viral video, Fair Use speculation, a general downloadable link, third-party CC upload, or credit-only attribution as blanket permission. See `scripts/branch3_creator_permission_gate.py` and `creator_permissions.json` (empty by default). A permissions record can qualify a proposed candidate for human review; it **never** authorizes upload itself.
@@ -29,6 +34,7 @@ Only material covered by direct written creator/rights-holder permission or an a
 ## Files
 - `creator_permissions.json`: initially empty creator allowlist; no creators eligible by default
 - `scripts/branch3_creator_permission_gate.py`: fail-closed candidate intake check; never upload permission
+- `viral-content-strategy.json`: five content pillars, priority order, test signals, release blockers
 - `research.md`: policy evidence and strategy
 - `channel-profile.md`: exact ready-to-paste description and visual configuration
 - `rights-and-release.md`: source approval/claim handling
