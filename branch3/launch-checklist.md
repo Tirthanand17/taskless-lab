@@ -3,19 +3,26 @@
 ## Before channel creation
 - [x] Separate Branch 3 repository work from Branches 1 and 2.
 - [x] Research YouTube copyright/reused-content/originality/Shorts policy.
-- [x] Choose short proposed brand Clivox and original SVG identity.
-- [ ] Confirm preferred handle availability in YouTube's actual creation dialog.
-- [ ] Owner creates the **additional** channel via https://www.youtube.com/channel_switcher or official YouTube Settings > Add or manage channel(s) > Create channel.
-- [ ] Record new channel ID and URL **from YouTube itself**, never invent.
-- [ ] Upload profile and banner, check desktop/mobile TV crops; finish About and links.
-- [ ] Complete channel feature eligibility/security and business contact privately.
-- [ ] Verify new channel ID is NOT FlowMinute Lab: `UCCcL9Q_jqVq6LJmnYUSAFZA`.
+- [x] Choose Clivox and archive live premium orange/chrome branding from the owner's Downloads folder.
+- [x] Check live handle: @Clivox unavailable; **@ClivoxPulse accepted and verified**.
+- [x] Create additional Clivox brand channel through YouTube's official channel-creation UI, separate from FlowMinute Lab.
+- [x] Verify actual channel ID `UCfPEvy0SefE_5nNlYlY_CyQ` and https://www.youtube.com/@ClivoxPulse from public YouTube and Studio.
+- [x] Upload premium Clivox avatar/banner from Downloads, check YouTube's all-device banner crop, publish About and validate live public channel. No social links added because none were provided.
+- [ ] Standard YouTube features **enabled**; Intermediate and Advanced **eligible, not enabled**, likely require owner verification. Business contact kept blank to protect personal information.
+- [x] Verify Clivox `UCfPEvy0SefE_5nNlYlY_CyQ` is distinct from FlowMinute Lab `UCCcL9Q_jqVq6LJmnYUSAFZA` using live channel-selector UI.
 
 ## Viral-ready topic coverage
 - [x] Scope Clivox to gaming (including GTA VI), livestreams, comedy/jokes, entertainment and podcast/interviews.
 - [ ] Find real creators in each category who explicitly permit clipping; registry remains empty until verified.
 - [ ] For game clips, verify publisher commercial-use rights separately, and enforce GTA VI no-leaks/spoilers restrictions.
 - [ ] Validate each proposed clip's actual hook/retention and audience niche fit; trends alone do not guarantee views.
+
+## Saved production defaults
+- [x] Channel keywords matching Clivox's five content pillars saved via YouTube Studio.
+- [x] Default video visibility **Private** to avoid accidental public release.
+- [x] Default category **Entertainment**; original language, titles, rights and captions reviewed per uploaded video.
+- [x] Audience setting **review separately for every video**, not automatically declared Made for Kids / not Made for Kids.
+- [ ] Enable Intermediate features through Google's official verification flow when owner is ready; do not bypass or reuse FlowMinute credentials.
 
 ## Prior to any clipping
 - [ ] Source creator exists in verified allowlist (`creator_permissions.json`, initially empty); automatic publication remains disabled.
@@ -29,9 +36,10 @@
 - [ ] Avoid a rigid copy-paste template or volume-based growth claims.
 
 ## Account limitation
-The available video management APIs connect/manage **existing** channels; YouTube channel creation requires the owner's official Google account/channel creation UI. Until creation is confirmed, state=CHANNEL_NOT_CREATED, no assigned handle, no authorized publishing, no channel uploads.
+The available video management APIs connect/manage **existing** channels; YouTube channel creation requires the owner's official Google account/channel creation UI. Channel creation was verified on 2026-11-12; actual channel and assets recorded in `channel_state.json`. API upload authorization is not connected, verified creator permissions count is zero, and no videos have been uploaded.
 
-## After owner channel creation
-1. Record actual channel ID in a separate future commit.
-2. Test read-only channel identity and rights inventory.
-3. Only then plan a separately approved first clip upload.
+## After channel creation
+1. [x] Record actual ID/handle/brand in `channel_state.json` and verify channel separation.
+2. [x] Keep publishing automation off and all creator rights unapproved by default.
+3. [ ] Authenticate the **new** channel for read-only API identity checks after independent owner authorization (do not reuse FlowMinute tokens).
+4. [ ] Obtain creator permissions, verify all underlying third-party material, and only then plan a separately approved first clip upload.
