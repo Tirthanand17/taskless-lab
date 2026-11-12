@@ -27,6 +27,9 @@ Research date: **2026-11-12**. This is platform policy/strategy research, **not*
 11. Channel creation: https://support.google.com/youtube/answer/1646861
     - Google-account owner interaction needed. Channel creation cannot be completed by YouTube Data API video-publishing methods.
 
+## This channel's stricter-than-law editorial rule
+**Only use clips from creators who expressly authorize clipping.** A direct written rights-holder grant or a public creator-published clipping policy with evidence, identity, scope, duration, monetization and attribution must be reviewed before any acquisition or editing. Even if a particular use might qualify under copyright exceptions or CC BY, this project will not use it without the creator's explicit clipping permission. Public permission is not enough if third-party music/footage is excluded. Permission is different from YPP eligibility and cannot guarantee no claim. See https://support.google.com/youtube/answer/1311392 and https://support.google.com/youtube/answer/2797449.
+
 ## Choice of format
 **Positioning:** “The interesting moment, explained.” Use 1–2 licensed short excerpts from ONE source in each educational story, not a compilation of unrelated celebrities.
 **Content pillars:** mindset & decision-making; science/technology explained; creator/business lessons; fascinating interviews and surprising ideas. Start with the strongest two pillars based on source rights and viewer response.
