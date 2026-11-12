@@ -98,9 +98,28 @@ jobs:
           )
           print("CLIVOX_A1_RESEARCH_ONLY_VERIFIED",len(r["candidates"]))
           '
+      - name: Create pending human-rights review cases only
+        run: |
+          python -B -m unittest -q scripts.test_branch3_rights_case_intake
+          python -B scripts/branch3_rights_case_intake.py \
+            --source-report "$RUNNER_TEMP/clivox-a1/discovery.json" \
+            --out "$RUNNER_TEMP/clivox-a1/rights-cases.json"
+          python -B -c '
+          import json,os,pathlib
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a1/rights-cases.json"
+          r=json.loads(p.read_text())
+          assert r["stage"]=="A2_RIGHTS_REVIEW_INTAKE_ONLY"
+          assert r["cases_all_unverified"] is True
+          assert r["creator_permission_grants_issued_by_this_workflow"]==0
+          assert r["media_downloads"]==0 and r["youtube_writes"]==0
+          assert all(c["case_state"]=="AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION"
+                     and c["youtube_publish_authorized"] is False
+                     for c in r["cases"])
+          print("CLIVOX_A2_RIGHTS_CASES_PENDING_ONLY",r["pending_case_count"])
+          '
       - uses: actions/upload-artifact@v4
         with:
-          name: clivox-a1-public-metadata-${{ github.run_id }}
-          path: ${{ runner.temp }}/clivox-a1/discovery.json
+          name: clivox-a1-a2-metadata-and-rights-cases-${{ github.run_id }}
+          path: ${{ runner.temp }}/clivox-a1/*.json
           if-no-files-found: error
           retention-days: 7
