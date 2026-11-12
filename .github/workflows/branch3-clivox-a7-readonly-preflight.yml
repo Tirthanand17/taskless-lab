@@ -1,0 +1,51 @@
+name: Branch 3 Clivox A7 Read-Only OAuth Preflight (SYNTHETIC ONLY)
+
+on:
+  pull_request:
+    paths:
+      - "branch3/a7/**"
+      - "scripts/branch3_a7_readonly_youtube.py"
+      - "scripts/test_branch3_a7_readonly_youtube.py"
+      - ".github/workflows/branch3-clivox-a7-readonly-preflight.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify_readonly_oauth_binding_logic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PUBLISH_ENABLED: "false"
+      CLIVOX_A7_LIVE_ENABLED: "false"
+      CLIVOX_YOUTUBE_WRITE_ENABLED: "false"
+      CLIVOX_OAUTH_SECRETS_ENROLLED: "false"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run exact-channel OAuth and inventory safety unit tests
+        run: |
+          python -B -m py_compile scripts/branch3_a7_readonly_youtube.py scripts/test_branch3_a7_readonly_youtube.py
+          python -B -m unittest -v scripts.test_branch3_a7_readonly_youtube
+      - name: Check offline synthetic YouTube channel and uploads fixture
+        run: |
+          python -B scripts/branch3_a7_readonly_youtube.py --mode fixture --out "$RUNNER_TEMP/clivox-a7/read-only-fixture-report.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a7/read-only-fixture-report.json"; r=json.loads(p.read_text()); assert r["actual_api_requests"]==0 and not r["actual_clivox_oauth_verified"] and not r["upload_authorized"] and not r["publish_authorized"]; print("CLIVOX_A7_OFFLINE_READONLY_FIXTURE_OK")'
+      - name: Confirm no secrets, actual Google access or YouTube writes
+        run: |
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_A7_LIVE_ENABLED" = "false"
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = "false"
+          test "$CLIVOX_OAUTH_SECRETS_ENROLLED" = "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a7-synthetic-readonly-identity-report
+          path: ${{ runner.temp }}/clivox-a7/read-only-fixture-report.json
+          if-no-files-found: error
+          retention-days: 7
