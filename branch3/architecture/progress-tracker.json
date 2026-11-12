@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 34,
-  "overall_estimated_remaining_percent": 66,
+  "overall_estimated_completion_percent": 38,
+  "overall_estimated_remaining_percent": 62,
   "milestone_count": 11,
   "milestones": [
     {
@@ -54,9 +54,9 @@
     {
       "id": "A6",
       "name": "Signed exact-video release",
-      "completion_pct": 0,
-      "status": "not_started",
-      "evidence": "No finalized signed media"
+      "completion_pct": 45,
+      "status": "partial",
+      "evidence": "Ed25519 canonical release verification + unsigned quarantine fixture and adversarial CI; production key enrollment, real owner rights and final signed clip pending"
     },
     {
       "id": "A7",
@@ -99,7 +99,8 @@
     "Exact source review and genuinely original clip edit",
     "Distinct Clivox API OAuth and protected release environment",
     "Actual QA-approved, signed and inventoried first pilot",
-    "Real licensed source edit + human narration and final audiovisual QA remain pending despite original-only A5 demo"
+    "Real licensed source edit + human narration and final audiovisual QA remain pending despite original-only A5 demo",
+    "A6 only verifies mathematical signatures in synthetic offline tests: no enrolled owner signing identity or approved final clip"
   ],
   "disclaimer": "Progress estimates reflect partial engineering components, not a claim that third-party clips are licensed or an end-to-end publishing service exists."
 }
