@@ -54,6 +54,9 @@ As checked 2026-11-12, \`videos.list\` costs 1 quota unit and Google currently d
 - https://developers.google.com/youtube/data/reference/rest/v3/search/list
 - https://developers.google.com/youtube/data/determine_quota_cost
 
+## A2 rights-case integration
+Every A1 report now goes through `scripts/branch3_rights_case_intake.py` in the same GitHub workflow, generating human-rights review cases with all clearance flags false. See [A2 intake implementation](a2-rights-intake-implementation.md). This is not an approval of any creator or source.
+
 ## Implementation acceptance
 - ✅ Offline fixture can run without secrets and produces a source-only report.
 - ✅ Tests verify fixed YouTube API host and **no write/media API**.
