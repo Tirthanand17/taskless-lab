@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "kind": "TARGET_STATE_GRAPH_NOT_DEPLOYED",
+  "initial_state": "DISCOVERED",
+  "terminal_states": [
+    "MEASURED",
+    "REVOKED"
+  ],
+  "states": [
+    "DISCOVERED",
+    "RIGHTS_PENDING",
+    "RIGHTS_VERIFIED",
+    "EDITORIAL_READY",
+    "MEDIA_STAGED",
+    "QA_PASSED",
+    "OWNER_SIGNED",
+    "PRIVATE_UPLOADED",
+    "SCHEDULED",
+    "PUBLISHED",
+    "MEASURED",
+    "HOLD",
+    "QUARANTINED",
+    "REVOKED",
+    "TAKEDOWN_REVIEW"
+  ],
+  "transitions": {
+    "DISCOVERED": [
+      "RIGHTS_PENDING",
+      "HOLD"
+    ],
+    "RIGHTS_PENDING": [
+      "RIGHTS_VERIFIED",
+      "HOLD",
+      "REVOKED"
+    ],
+    "RIGHTS_VERIFIED": [
+      "EDITORIAL_READY",
+      "HOLD",
+      "REVOKED"
+    ],
+    "EDITORIAL_READY": [
+      "MEDIA_STAGED",
+      "HOLD",
+      "REVOKED"
+    ],
+    "MEDIA_STAGED": [
+      "QA_PASSED",
+      "HOLD",
+      "QUARANTINED",
+      "REVOKED"
+    ],
+    "QA_PASSED": [
+      "OWNER_SIGNED",
+      "HOLD",
+      "QUARANTINED",
+      "REVOKED"
+    ],
+    "OWNER_SIGNED": [
+      "PRIVATE_UPLOADED",
+      "HOLD",
+      "REVOKED"
+    ],
+    "PRIVATE_UPLOADED": [
+      "SCHEDULED",
+      "HOLD",
+      "QUARANTINED",
+      "REVOKED"
+    ],
+    "SCHEDULED": [
+      "PUBLISHED",
+      "HOLD",
+      "QUARANTINED",
+      "REVOKED"
+    ],
+    "PUBLISHED": [
+      "MEASURED",
+      "HOLD",
+      "TAKEDOWN_REVIEW",
+      "REVOKED"
+    ],
+    "MEASURED": [],
+    "HOLD": [
+      "RIGHTS_PENDING",
+      "EDITORIAL_READY",
+      "MEDIA_STAGED",
+      "QUARANTINED",
+      "REVOKED"
+    ],
+    "QUARANTINED": [
+      "HOLD",
+      "REVOKED",
+      "TAKEDOWN_REVIEW"
+    ],
+    "REVOKED": [],
+    "TAKEDOWN_REVIEW": [
+      "HOLD",
+      "REVOKED"
+    ]
+  },
+  "prohibited_without_external_human_or_owner_proof": [
+    "RIGHTS_VERIFIED",
+    "OWNER_SIGNED",
+    "PRIVATE_UPLOADED",
+    "SCHEDULED",
+    "PUBLISHED"
+  ],
+  "no_automated_transition_implementation": true,
+  "high_risk_actions": [
+    "media_download",
+    "third_party_contract_acceptance",
+    "private_upload",
+    "youtube_schedule",
+    "youtube_publish",
+    "claim_dispute",
+    "copyright_takedown"
+  ],
+  "fatal_errors": [
+    "OAUTH_INVALID_GRANT",
+    "WRONG_CHANNEL",
+    "PERMISSION_NOT_VERIFIED",
+    "EXPIRED_RIGHTS",
+    "GAME_MUSIC_RIGHTS_UNKNOWN",
+    "UNSIGNED_RELEASE",
+    "MEDIA_HASH_MISMATCH",
+    "SCHEDULE_TIMESTAMP_NOT_FUTURE",
+    "REMOTE_ID_COLLISION",
+    "COPYRIGHT_CLAIM",
+    "UNCONFIRMED_UPLOAD"
+  ],
+  "notes": "State diagram is a design. Current offline validator always denies actual movement to protected states. Human attestations must be separately verified."
+}
