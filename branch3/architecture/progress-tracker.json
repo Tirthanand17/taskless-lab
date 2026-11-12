@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 30,
-  "overall_estimated_remaining_percent": 70,
+  "overall_estimated_completion_percent": 34,
+  "overall_estimated_remaining_percent": 66,
   "milestone_count": 11,
   "milestones": [
     {
@@ -47,9 +47,9 @@
     {
       "id": "A5",
       "name": "Video renderer and AV quality assurance",
-      "completion_pct": 0,
-      "status": "not_started",
-      "evidence": "Rights-approved media, private vault and renderer missing"
+      "completion_pct": 45,
+      "status": "partial",
+      "evidence": "Original-only FFmpeg/Pillow vertical synthetic renderer, SRT plan and ffprobe tests under CI; actual licensed media and recorded narration unresolved"
     },
     {
       "id": "A6",
@@ -98,7 +98,8 @@
     "Owner-approved confidential source storage",
     "Exact source review and genuinely original clip edit",
     "Distinct Clivox API OAuth and protected release environment",
-    "Actual QA-approved, signed and inventoried first pilot"
+    "Actual QA-approved, signed and inventoried first pilot",
+    "Real licensed source edit + human narration and final audiovisual QA remain pending despite original-only A5 demo"
   ],
   "disclaimer": "Progress estimates reflect partial engineering components, not a claim that third-party clips are licensed or an end-to-end publishing service exists."
 }

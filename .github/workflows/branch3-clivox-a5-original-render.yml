@@ -1,0 +1,84 @@
+name: Branch 3 Clivox A5 Original-Only Render and Media QA
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a5_*.py'
+      - 'branch3/editorial/**'
+      - 'branch3/a5/**'
+      - '.github/workflows/branch3-clivox-a5-original-render.yml'
+  workflow_dispatch:
+    inputs:
+      render_mode:
+        description: 'Resolution of original-only demonstration'
+        required: true
+        default: preview
+        type: choice
+        options:
+          - preview
+          - full
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a5-original-render-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa_original_demo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_CREATOR_MEDIA_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install FFmpeg and open system typography on ephemeral GitHub runner
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
+          command -v ffmpeg
+          command -v ffprobe
+          python -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Unit tests before any rendering
+        run: |
+          python -B -m py_compile scripts/branch3_a5_render_original_demo.py scripts/branch3_a5_media_qa.py scripts/test_branch3_a5_media.py
+          python -B -m unittest -v scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
+      - name: Generate source-free cinematic 40-second Clivox demo on ephemeral runner
+        env:
+          REQUESTED_MODE: ${{ inputs.render_mode }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/clivox-a5"
+          mode="${REQUESTED_MODE:-preview}"
+          python -B -m scripts.branch3_a5_render_original_demo \
+            --input branch3/editorial/fixtures/ymh_ep347_source_free.json \
+            --output "$RUNNER_TEMP/clivox-a5" --mode "$mode"
+          python -B -m scripts.branch3_a5_media_qa --directory "$RUNNER_TEMP/clivox-a5"
+          python -B -c 'import json,os,pathlib; d=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a5"; j=json.loads((d/"synthetic-technical-qa-report.json").read_text()); m=json.loads((d/"synthetic-demo-manifest.json").read_text()); assert j["synthetic_video_technical_checks_passed"] and not j["youtube_upload_authorized"] and not m["ready_to_publish"] and not m["source_media_attached"] and not m["original_voiceover_recorded"]; print("CLIVOX_A5_DEMO_TECHNICAL_PASS_NOT_PUBLICATION_APPROVAL")'
+      - name: Public-safe original content artifacts ONLY
+        uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a5-original-demo-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/clivox-a5/clivox-original-only-a5-demo.mp4
+            ${{ runner.temp }}/clivox-a5/on-screen-editorial-script-not-dialogue.srt
+            ${{ runner.temp }}/clivox-a5/scene-*.png
+            ${{ runner.temp }}/clivox-a5/synthetic-demo-manifest.json
+            ${{ runner.temp }}/clivox-a5/synthetic-technical-qa-report.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Keep rights and publishing closed
+        run: |
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_CREATOR_MEDIA_DOWNLOAD_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          echo 'Clivox synthetic demo is not a source clip, licensed pilot, or upload authorization.'

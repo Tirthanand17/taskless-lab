@@ -138,5 +138,17 @@
     "storyboard_fixture": "branch3/editorial/fixtures/ymh_ep347_source_free.json",
     "qa_workflow": ".github/workflows/branch3-clivox-a4-editorial.yml",
     "status": "SOURCE_FREE_PLAN_ONLY"
+  },
+  "a5_original_only_render": {
+    "synthetic_media_renderer_implemented": true,
+    "video_ffmpeg_technical_qa_implemented": true,
+    "visual_script_srt_implemented": true,
+    "creator_rights_verified": false,
+    "source_media_licensed_and_attached": false,
+    "original_voiceover_recorded": false,
+    "licensed_media_professional_qa_completed": false,
+    "video_upload_or_publish_enabled": false,
+    "workflow": ".github/workflows/branch3-clivox-a5-original-render.yml",
+    "output": "ORIGINAL_ONLY_BENCHMARK_NEVER_FOR_YOUTUBE_PUBLICATION"
   }
 }
