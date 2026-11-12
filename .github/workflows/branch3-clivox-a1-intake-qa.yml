@@ -1,0 +1,49 @@
+name: Branch 3 Clivox A1 Discovery Quality Gate (NO PUBLISH)
+
+on:
+  pull_request:
+    paths:
+      - "branch3/discovery/**"
+      - "scripts/branch3_discovery.py"
+      - "scripts/branch3_discovery_pipeline.py"
+      - "scripts/test_branch3_discovery.py"
+      - "scripts/test_branch3_discovery_pipeline.py"
+      - ".github/workflows/branch3-clivox-a1-discovery.yml"
+      - ".github/workflows/branch3-clivox-a1-intake-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test_metadata_only_discovery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PUBLISH_ENABLED: "false"
+      CLIVOX_AUTO_DOWNLOAD_ENABLED: "false"
+      CLIVOX_AUTO_UPLOAD_ENABLED: "false"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit and adversarial tests
+        run: |
+          python -B -m py_compile scripts/branch3_discovery.py scripts/branch3_discovery_pipeline.py
+          python -B -m unittest -v scripts.test_branch3_discovery scripts.test_branch3_discovery_pipeline
+      - name: Research-only public campaign triage fixture
+        run: |
+          python -B scripts/branch3_discovery_pipeline.py \
+            --input branch3/discovery/fixtures/research-candidates.json \
+            --output "$RUNNER_TEMP/clivox-campaign-triage.json"
+          python -B -c 'import json,os; d=json.load(open(os.environ["RUNNER_TEMP"]+"/clivox-campaign-triage.json")); assert d["status"]=="RESEARCH_ONLY_UNLICENSED" and d["candidate_count"]==3 and all(not c["source_acquisition_authorized"] for c in d["queue"]); print("CLIVOX_A1_CAMPAIGN_METADATA_ONLY_VALIDATED")'
+      - name: Synthetic public video metadata smoke test
+        run: |
+          python -B scripts/branch3_discovery.py \
+            --mode fixture --category gaming --ids "" --query "" \
+            --out "$RUNNER_TEMP/clivox-video-fixture.json"
+          python -B -c 'import json,os; d=json.load(open(os.environ["RUNNER_TEMP"]+"/clivox-video-fixture.json")); assert d["is_synthetic_fixture"] and d["youtube_api_write_calls"]==0 and not d["release_or_media_acquisition_allowed"]; print("CLIVOX_A1_PUBLIC_VIDEO_METADATA_FIXTURE_VALIDATED")'
