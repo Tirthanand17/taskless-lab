@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440" role="img" aria-label="ContextSpark Clips YouTube channel banner">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#081320"/><stop offset=".5" stop-color="#11283E"/><stop offset="1" stop-color="#0C1A2C"/></linearGradient><linearGradient id="warm" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#FFBE88"/><stop offset="1" stop-color="#FF667A"/></linearGradient><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M100 0H0V100" fill="none" stroke="#365064" stroke-opacity=".30"/></pattern></defs>
+<rect width="2560" height="1440" fill="url(#bg)"/><rect width="2560" height="1440" fill="url(#grid)"/>
+<circle cx="230" cy="280" r="410" fill="none" stroke="#5E9AAC" stroke-opacity=".16" stroke-width="12"/>
+<circle cx="2325" cy="1120" r="530" fill="none" stroke="#5E9AAC" stroke-opacity=".17" stroke-width="12"/>
+<path d="M80 1210Q420 760 690 940T1190 815T1770 940T2480 490" fill="none" stroke="#7DD1D3" stroke-width="11" opacity=".22"/>
+<!-- Everything essential stays within YouTube's approx central safe text zone: x=507..2053, y=509..931. -->
+<rect x="570" y="549" width="152" height="152" rx="35" fill="#183349" stroke="#72BFD1" stroke-width="5"/>
+<path d="M620 594h50v16h-30v18h28v15h-28v17h30v15h-50z" fill="#F1FAFF"/>
+<path d="M686 568l11 27 27 11-27 11-11 27-11-27-27-11 27-11z" fill="url(#warm)"/>
+<text x="760" y="645" fill="#F4FBFF" font-size="102" font-family="DejaVu Sans,Arial,sans-serif" font-weight="bold" letter-spacing="-2">ContextSpark</text>
+<text x="770" y="713" fill="#FF9D88" font-size="46" font-family="DejaVu Sans,Arial,sans-serif" font-weight="bold" letter-spacing="13">CLIPS</text>
+<path d="M760 755H1770" stroke="#60889C" stroke-width="3"/>
+<text x="765" y="828" fill="#C7E3EE" font-size="48" font-family="DejaVu Sans,Arial,sans-serif">Big moments. Better context.</text>
+<circle cx="1815" cy="633" r="92" fill="none" stroke="#FF917F" stroke-width="8"/><path d="M1815 577l23 47 53 8-38 37 9 53-47-25-47 25 9-53-38-37 53-8z" fill="url(#warm)"/>
+</svg>
