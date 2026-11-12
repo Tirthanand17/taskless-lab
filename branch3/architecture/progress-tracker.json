@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "updated_date_ist": "2026-11-12",
+  "channel": "Clivox",
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "scope": "A0_to_A10_full_autonomous_clipping_product",
+  "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
+  "overall_estimated_completion_percent": 30,
+  "overall_estimated_remaining_percent": 70,
+  "milestone_count": 11,
+  "milestones": [
+    {
+      "id": "A0",
+      "name": "Architecture and channel setup",
+      "completion_pct": 100,
+      "status": "done",
+      "evidence": "Merged architecture, live Clivox branding and channel record"
+    },
+    {
+      "id": "A1",
+      "name": "Public metadata discovery",
+      "completion_pct": 80,
+      "status": "partial",
+      "evidence": "Code and CI working; live metadata API key not verified"
+    },
+    {
+      "id": "A2",
+      "name": "Human rights verification",
+      "completion_pct": 45,
+      "status": "partial",
+      "evidence": "Unverified-rights dossier generator; no authenticated creator grants"
+    },
+    {
+      "id": "A3",
+      "name": "Private media storage",
+      "completion_pct": 45,
+      "status": "partial",
+      "evidence": "Public-repo storage safeguards tested; actual private vault not provisioned"
+    },
+    {
+      "id": "A4",
+      "name": "Original scripts and storyboards",
+      "completion_pct": 60,
+      "status": "partial",
+      "evidence": "Source-free editorial validator/fixtures/tests; licensed source context and human editorial review pending"
+    },
+    {
+      "id": "A5",
+      "name": "Video renderer and AV quality assurance",
+      "completion_pct": 0,
+      "status": "not_started",
+      "evidence": "Rights-approved media, private vault and renderer missing"
+    },
+    {
+      "id": "A6",
+      "name": "Signed exact-video release",
+      "completion_pct": 0,
+      "status": "not_started",
+      "evidence": "No finalized signed media"
+    },
+    {
+      "id": "A7",
+      "name": "Distinct Clivox YouTube OAuth",
+      "completion_pct": 0,
+      "status": "not_started",
+      "evidence": "No verified read-only owner API connection"
+    },
+    {
+      "id": "A8",
+      "name": "Protected private-first upload/scheduling",
+      "completion_pct": 0,
+      "status": "not_started",
+      "evidence": "Uploader and signed approval/production protections missing"
+    },
+    {
+      "id": "A9",
+      "name": "First licensed production pilot",
+      "completion_pct": 0,
+      "status": "not_started",
+      "evidence": "Creator licensing and approved final render pending"
+    },
+    {
+      "id": "A10",
+      "name": "Analytics and optimization",
+      "completion_pct": 0,
+      "status": "not_started",
+      "evidence": "No published Clivox content or authenticated analytics"
+    }
+  ],
+  "creator_licenses_verified": 0,
+  "third_party_source_media_downloaded": 0,
+  "clivox_videos_uploaded": 0,
+  "publishing_enabled": false,
+  "github_private_media_vault_provisioned": false,
+  "branch1_and_branch2_paused": true,
+  "most_important_blockers": [
+    "Human-verifiable creator-issued commercial YouTube clipping permission",
+    "Owner-approved confidential source storage",
+    "Exact source review and genuinely original clip edit",
+    "Distinct Clivox API OAuth and protected release environment",
+    "Actual QA-approved, signed and inventoried first pilot"
+  ],
+  "disclaimer": "Progress estimates reflect partial engineering components, not a claim that third-party clips are licensed or an end-to-end publishing service exists."
+}
