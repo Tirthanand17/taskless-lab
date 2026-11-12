@@ -1,0 +1,51 @@
+name: Branch 3 Clivox A6 Signed Release Quarantine (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "branch3/release/**"
+      - "scripts/branch3_a6_signed_release.py"
+      - "scripts/test_branch3_a6_signed_release.py"
+      - ".github/workflows/branch3-clivox-a6-release-quarantine.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline_release_signature_and_quarantine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PUBLISH_ENABLED: "false"
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: "false"
+      CLIVOX_YOUTUBE_WRITE_ENABLED: "false"
+      CLIVOX_SIGNING_KEY_ENROLLED: "false"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install verifier dependency for ephemeral test keys only
+        run: python -m pip install 'cryptography>=44,<47'
+      - name: Test exact-media integrity binding and unsigned quarantine
+        run: |
+          python -B -m py_compile scripts/branch3_a6_signed_release.py scripts/test_branch3_a6_signed_release.py
+          python -B -m unittest -v scripts.test_branch3_a6_signed_release
+          python -B scripts/branch3_a6_signed_release.py --out "$RUNNER_TEMP/clivox-a6/quarantine-report.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a6/quarantine-report.json"; r=json.loads(p.read_text()); assert r["signed_licensed_assets"]==0 and not r["video_upload_authorized"] and not r["youtube_publish_authorized"] and not r["owner_public_key_enrolled"]; print("A6_QUARANTINED_UNSIGNED_NO_PRODUCTION_KEY")'
+      - name: Assert disabled production controls
+        run: |
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = "false"
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = "false"
+          test "$CLIVOX_SIGNING_KEY_ENROLLED" = "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a6-quarantine-only
+          path: ${{ runner.temp }}/clivox-a6/quarantine-report.json
+          retention-days: 7
+          if-no-files-found: error
