@@ -1,11 +1,13 @@
-name: Branch 3 ContextSpark Channel-Ready QA (NO YOUTUBE)
+name: Branch 3 Clivox Channel-Ready QA (NO YOUTUBE)
 
 on:
   pull_request:
     paths:
       - "branch3/**"
-      - ".github/workflows/branch3-contextspark-prelaunch.yml"
+      - ".github/workflows/branch3-clivox-prelaunch.yml"
       - "scripts/branch3_validate_prelaunch.py"
+      - "scripts/branch3_creator_permission_gate.py"
+      - "scripts/test_branch3_creator_permission_gate.py"
   workflow_dispatch:
 
 permissions:
@@ -29,3 +31,4 @@ jobs:
         run: |
           python -B -m py_compile scripts/branch3_validate_prelaunch.py
           python -B scripts/branch3_validate_prelaunch.py
+          python -B -m unittest -v scripts.test_branch3_creator_permission_gate

@@ -3,7 +3,7 @@
 ## Before channel creation
 - [x] Separate Branch 3 repository work from Branches 1 and 2.
 - [x] Research YouTube copyright/reused-content/originality/Shorts policy.
-- [x] Choose proposed brand and original SVG identity.
+- [x] Choose short proposed brand Clivox and original SVG identity.
 - [ ] Confirm preferred handle availability in YouTube's actual creation dialog.
 - [ ] Owner creates the **additional** channel via https://www.youtube.com/channel_switcher or official YouTube Settings > Add or manage channel(s) > Create channel.
 - [ ] Record new channel ID and URL **from YouTube itself**, never invent.
@@ -12,7 +12,9 @@
 - [ ] Verify new channel ID is NOT FlowMinute Lab: `UCCcL9Q_jqVq6LJmnYUSAFZA`.
 
 ## Prior to any clipping
-- [ ] Collect direct written permission or valid commercial-use license and evidence.
+- [ ] Source creator exists in verified allowlist (`creator_permissions.json`, initially empty); automatic publication remains disabled.
+- [ ] Confirm permission is still active on the source date, covers the precise YouTube video and does not exclude our type of edits, platform, geography or commercial use.
+- [ ] Verify a direct creator/rights-holder written grant **or** a creator-published public clipping policy, with source proof and precise commercial Shorts reuse scope; creator not present in allowlist means BLOCK.
 - [ ] Verify third-party material inside the podcast (music, clips, images) is also covered.
 - [ ] Make original commentary/critique/context the core value.
 - [ ] Fact-check quote and render; check reading speed, cut accuracy and mobile visual size.

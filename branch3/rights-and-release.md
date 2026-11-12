@@ -1,31 +1,35 @@
-# Third-party source rights and release gate
+# Clivox — creator-permission-only clipping release policy
 
-No automated clip upload may proceed with just a public video URL. No amount of cropping, subtitle styling, remixing, credit, few-seconds duration or “no copyright intended” notice clears copyright.
+**Default: DENY ALL.** Only clips from YouTubers/podcasters who explicitly provide clipping permission can enter our workflow. This is stricter than a generic fair-use or public-domain analysis. Mere credit, downloading, remix tools, subtitles, low clip duration, a viral source, or someone else's reupload **is not permission**.
 
-## Permission hierarchy
-- Own recording **and** own all underlying visual/music/guest rights: strongest.
-- Written direct permission from each actual rights holder, covering an exact source or defined catalog, editing, clipping, Shorts redistribution, territories, duration, monetization, name/likeness use where relevant, revocation/removal expectations: preferred for celebrity podcasts.
-- Published CC BY license with clear provenance and commercial-use rights, attribution and no third-party rights conflicts: conditional.
-- Licensed stock / public-domain recordings with provenance: conditional.
-- Unlicensed external podcasts and viral creator videos: **BLOCK**; a possible fair-use rationale requires individualized legal/editorial review rather than automated approval.
+## Exactly two eligible proof types
+1. **Direct written permission** issued by the verified creator/actual rights holder (or their authorized representative) to Clivox, expressly allowing excerpting and editing the specified source video(s), YouTube Shorts/standard videos, redistribution and commercial/monetized use. Keep the sensitive contract outside this public repo; include a non-sensitive source ID and SHA-256 fingerprint only.
+2. **Creator-published public clipping policy**, hosted on a verified creator-controlled channel/site, explicitly granting third parties (including this channel) rights to excerpt and repost/edit relevant material on YouTube. Record the canonical policy URL, retrieval date, verifiable author identity, exact scope, commercial permissions, attribution and revocation/expiry terms. A third-party blog *claiming* they allow clips does **not** count. Cached snapshots are evidence only, not a substitute for checking the live policy.
 
-## For each proposed clip require
-1. Source URL, actual owner, original upload date, timestamps, proof of source identity.
-2. Specific license terms/permission record and expiry; separate audio music/film/graphic ownership review.
-3. Exact quotation and context verified against the complete source; no deceptive out-of-context assertion.
-4. Original narration/analysis storyboard and sourced claims; substantive added meaning.
-5. Name, source link, credit language; actual license-required attribution.
-6. Captions, video render, sound and phone readability review.
-7. Explicit signed creator release for this exact render/metadata before scheduling.
-8. Private-first upload and actual live copyright check; Content ID scan is **not** a clearance guarantee.
-9. Dispute only if legitimate rights/legal basis and documented evidence; honor withdrawal requests promptly.
+**Not eligible by itself:** fair use speculation, short length, channel Creative Commons setting with no clear creator-authored clipping policy, public domain, downloaded video, reposts from fans, verbal hearsay, generalized sponsor/affiliate rights, guest permission without program owner rights, and “no copyright intended.” Such material is categorically outside this project's source policy.
 
-## Stopping conditions
-Missing permission; unclear owner; use of copyrighted music, broadcast or sports footage not covered; permission excludes commercial exploitation; source disputes; misleading clip; unresolved claim; YPP reused content red flags; unknown final owner channel ID; unsigned media; schedule collision.
+## Mandatory creator-level and per-source checks
+1. Verify permission issuer controls the original recording rights. Maintain a non-sensitive consent/creator identity reference in `creator_permissions.json`; default allowlist is empty.
+2. Match exact original creator, original source YouTube video ID and timestamps to written grant or public policy scope.
+3. Confirm permission explicitly authorizes clipping/editing, YouTube republication, the intended geography, commercial use/monetization and any mandated credit/links, and has not expired or been withdrawn.
+4. Separately clear any background music, movie footage, sports broadcasts, sound effects, photographs or guest-provided material *not* included in the creator's grant. Exclude or substitute unlicensed elements before release.
+5. Make original editorial analysis or narrative a meaningful part of each video. A plain subtitled repost may still fail YouTube's channel-wide reused-content monetization standard even with permission.
+6. Confirm statements remain accurate in context, disclose edits where necessary, verify captions, accessibility, branding, rendering and final phone-screen playback.
+7. Obtain a separate, exact-video owner/rights/editorial signoff and secure channel authorization; the source allowlist is **never a publishing authorization**.
+8. Check Content ID and potential takedown notices; comply with authentic revocations and do not auto-dispute claims.
 
-## Suggested permission-request text
-Subject: Permission request to create commentary clips from [show/episode]
+## Enforcement
+- `scripts/branch3_creator_permission_gate.py` performs a strict preflight on a proposed creator and source record. Missing or ambiguous fields fail closed.
+- `branch3/creator_permissions.json` is initially `[]`: **zero eligible third-party clips**.
+- A passing machine preflight only means **eligible for further owner review**. It does not prove a legal grant, a human inspection, originality, or YouTube upload approval.
+- No new uploads, automatic scraping, downloading, or publishing have been connected to this gate.
 
-Hello [team/creator], I run an independent YouTube commentary channel, ContextSpark Clips. I'd like written permission to use brief excerpts from [specific video URL / episodes] in original editorial videos that add commentary and explanation, with a prominent link and credit to your original work. May I edit and redistribute excerpts on YouTube Shorts and standard videos, including potentially monetized videos, and use the guest's appearance/voice as shown in the source? Please tell me any time limits, permitted territories, exclusions (especially music/other footage), attribution requirements, review requirements, revenue terms or takedown preferences. I will not publish without the necessary rights. Thank you.
+## Suggested request to copyright owner (send only after selecting a genuine contact)
+**Subject:** Permission to make YouTube commentary clips from [show/episode]
 
-This request does **not** imply permission until the appropriate rights holder agrees.
+Hello [creator or rights team], I operate Clivox, an independent commentary and clipping channel. I'm requesting your written permission to excerpt, edit and republish limited segments from [exact source URL or defined catalog] on YouTube Shorts and regular videos, adding my own commentary. Please confirm whether the license includes monetized YouTube uses, permitted length and dates, countries, required attribution/link, use of guest audio and likeness as shown, and whether all third-party music/footage is included. Please also specify restrictions, revocation rights or prior review requirements. I will not use the source without a valid permission grant.
+
+## Primary policies
+- YouTube copyright myths: https://support.google.com/youtube/answer/2797449
+- YouTube copyright options and risks: https://support.google.com/youtube/answer/2797466
+- YouTube monetization/reused content: https://support.google.com/youtube/answer/1311392
