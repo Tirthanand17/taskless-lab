@@ -4,13 +4,13 @@
   "type": "short",
   "language": "en",
   "title": "Google Sheets Filter Changed Everyone's View? Use THIS #Shorts",
-  "description": "A visual, original fictional learning example from FlowMinute Lab. A normal Google Sheets filter can affect what collaborators see. A filter view is useful when you want your own view. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/docs/answer/3540681 #FlowMinuteLab #TechTips",
+  "description": "Did your Google Sheets filter hide rows for teammates? Use a filter view to work with your own filtered view without changing everyone else's display.\n\nOriginal diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/docs/answer/3540681 #FlowMinuteLab #TechTips",
   "tags": [
     "Google Sheets",
-    "Filter view",
-    "Protected ranges",
-    "Collaboration",
-    "Permissions",
+    "Filter views",
+    "Shared spreadsheets",
+    "Collaborative filtering",
+    "Sheets tutorial",
     "Shorts"
   ],
   "source_links": [

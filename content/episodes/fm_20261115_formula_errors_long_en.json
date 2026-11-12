@@ -4,14 +4,15 @@
   "type": "long",
   "language": "en",
   "title": "3 Excel Formula Errors You Can Diagnose Without Guessing",
-  "description": "A visual, original fictional learning example from FlowMinute Lab. This fictional worksheet shows a formula returning a spill error. The function might be correct; a cell in the destination range can be blocking its results. Let's diagnose three common spreadsheet symptoms without randomly deleting data. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error #FlowMinuteLab #TechTips",
+  "description": "Excel formula looks broken? Diagnose a blocked spill range, a missing lookup match, and duplicate-key surprises without deleting data blindly.\n\nOriginal diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error #FlowMinuteLab #TechTips",
   "tags": [
-    "Excel",
-    "#SPILL!",
+    "Excel formula errors",
+    "SPILL error",
     "XLOOKUP",
-    "Formulas",
-    "Data accuracy",
-    "Tutorial"
+    "N/A error",
+    "Duplicate lookup keys",
+    "Spreadsheet troubleshooting",
+    "Excel tutorial"
   ],
   "source_links": [
     "https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error"

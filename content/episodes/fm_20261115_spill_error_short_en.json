@@ -4,13 +4,13 @@
   "type": "short",
   "language": "en",
   "title": "Excel #SPILL! Error? Check the Cells in Its Way #Shorts",
-  "description": "A visual, original fictional learning example from FlowMinute Lab. Your Excel formula returns a spill error. Often the cells where its results should appear are not empty. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error #FlowMinuteLab #TechTips",
+  "description": "Excel #SPILL! error? A blocked destination cell may be the cause. See how to locate the obstructing cell before deleting or moving data.\n\nOriginal diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.microsoft.com/en-us/excel/how-to-correct-a-spill-error #FlowMinuteLab #TechTips",
   "tags": [
     "Excel",
-    "#SPILL!",
-    "XLOOKUP",
-    "Formulas",
-    "Data accuracy",
+    "SPILL error",
+    "Dynamic arrays",
+    "Obstructing cells",
+    "Excel troubleshooting",
     "Shorts"
   ],
   "source_links": [
