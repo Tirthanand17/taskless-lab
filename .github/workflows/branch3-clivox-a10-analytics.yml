@@ -1,0 +1,49 @@
+name: Branch 3 Clivox A10 Analytics Experiments (SYNTHETIC ONLY)
+
+on:
+  pull_request:
+    paths:
+      - "branch3/a10/**"
+      - "scripts/branch3_a10_analytics.py"
+      - "scripts/test_branch3_a10_analytics.py"
+      - ".github/workflows/branch3-clivox-a10-analytics.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate_synthetic_analytics:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      CLIVOX_ANALYTICS_LIVE_ACCESS: "false"
+      CLIVOX_YOUTUBE_WRITE_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test analytics source, missing metrics and experiments
+        run: |
+          python -B -m py_compile scripts/branch3_a10_analytics.py scripts/test_branch3_a10_analytics.py
+          python -B -m unittest -v scripts.test_branch3_a10_analytics
+      - name: Generate clearly labeled synthetic non-identifying report
+        run: |
+          python -B scripts/branch3_a10_analytics.py --out "$RUNNER_TEMP/clivox-a10/synthetic-report.json"
+          python -B -c 'import json,os,pathlib; r=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a10/synthetic-report.json").read_text()); assert r["synthetic"] and r["actual_authenticated_analytics_calls"]==0 and r["real_clivox_videos_analyzed"]==0 and not r["editorial_upload_scheduling_automatic_changes"] and not r["personal_or_private_video_ids_exported"] and all(not x["causal_winner_declared"] for x in r["experiment_reviews"]); print("CLIVOX_A10_SYNTHETIC_NO_LIVE_ANALYTICS")'
+      - name: Verify no channel secrets, data fetching or uploads
+        run: |
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_ANALYTICS_LIVE_ACCESS" = "false"
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a10-synthetic-analytics-report
+          path: ${{ runner.temp }}/clivox-a10/synthetic-report.json
+          if-no-files-found: error
+          retention-days: 7
