@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "channel": "Clivox",
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "pilot_id": "clivox_ymh_ep347_eighties_restaurant",
+  "workflow_status": "SOURCE_RESEARCH_ONLY_REQUIRES_CREATOR_PERMISSION_AND_OWNER_CONTRACT_REVIEW",
+  "content_pillar": "comedy",
+  "candidate_source": {
+    "original_rights_holder_claimed": "YMH Studios",
+    "rights_holder_verified_for_this_exact_edit": false,
+    "official_show_page": "https://ymhstudios.com/2bears/",
+    "episode_name": "Bert Has Sexy Lady Legs | 2 Bears, 1 Cave",
+    "episode_number": 347,
+    "original_episode_date": "2026-11-09",
+    "original_video_url": "https://www.youtube.com/watch?v=i6pmnpaOaZQ",
+    "original_video_id": "i6pmnpaOaZQ",
+    "campaign_page": "https://contentrewards.com/c/campaigns/51fa8c57-fb2f-44e0-b3a8-158f96cbf018",
+    "creator_public_clipping_invitation_page": "https://whop.com/ymhclipping/",
+    "public_campaign_lists_youtube": true,
+    "public_campaign_participant_terms_unlocked": false,
+    "campaign_membership_confirmed": false,
+    "creator_grant_for_clivox_confirmed": false
+  },
+  "research_window": {
+    "start": "01:04:52",
+    "end": "01:09:36",
+    "chapter_topic": "The Bears Pitch an '80s Restaurant",
+    "window_is_candidate_only": true,
+    "exact_clip_in": null,
+    "exact_clip_out": null,
+    "transcript_verified": false,
+    "spoken_words_quoted": false,
+    "third_party_footage_cleared": false
+  },
+  "campaign_visible_requirements": {
+    "description_tags": [
+      "Subscribe!",
+      "#2BearsWeekly",
+      "2 Bears 1 Cave Ep. 347"
+    ],
+    "source_link_in_channel_bio": "https://www.youtube.com/watch?v=i6pmnpaOaZQ",
+    "original_edit_required": true,
+    "real_music_rights_required": true,
+    "restricted_topics_need_join": true,
+    "do_not_assume_gta_split_screen_approved": true,
+    "brand_owned_final_clip_assignment_review_required": true
+  },
+  "concept": {
+    "hook": "What if an '80s restaurant made a comeback?",
+    "hook_is_original_editorial_hypothesis": true,
+    "first_two_seconds": "Display original retro-inspired text and a question, no copied logos or outside footage",
+    "scene_flow": [
+      {
+        "phase": "original_hook",
+        "time_s": "0-2",
+        "media": "CLIVOX-authored graphics and 1 short narrated question"
+      },
+      {
+        "phase": "verified_context",
+        "time_s": "2-7",
+        "media": "Brief original setup; names/quotes only after full source watched"
+      },
+      {
+        "phase": "permitted_excerpt",
+        "time_s": "7-23",
+        "media": "Placeholder ONLY: insert exactly creator-authorized video segment after review; no media in repo"
+      },
+      {
+        "phase": "original_commentary",
+        "time_s": "23-34",
+        "media": "CLIVOX original narration: analyze why the restaurant pitch is funny or memorable, after verifying actual content"
+      },
+      {
+        "phase": "wrap",
+        "time_s": "34-40",
+        "media": "Original takeaway and contextual viewer question"
+      }
+    ],
+    "hypothetical_duration_seconds": 40,
+    "desired_frame": "1080x1920_9:16",
+    "subtitle_style": "large_high_contrast_speaker_attributed",
+    "music_rule": "none_unless_separately_licensed",
+    "possible_title_template": "The '80s Restaurant Pitch That Made 2 Bears Laugh",
+    "title_not_factual_until_source_review": true,
+    "external_episode_link_required": true
+  },
+  "required_gates": {
+    "full_ymh_campaign_rules_reviewed": false,
+    "participant_eligibility_verified": false,
+    "content_rewards_17_6_assignment_acknowledged": false,
+    "commercial_scope_verified": false,
+    "brand_or_creator_rights_holder_authority_verified": false,
+    "creator_permission_allowlist_added": false,
+    "third_party_music_and_visual_rights_cleared": false,
+    "source_episode_watched_in_context": false,
+    "final_segment_timestamps_verified": false,
+    "clip_originality_reviewed": false,
+    "final_render_approved": false,
+    "new_clivox_channel_oauth_verified": false
+  },
+  "file_generation_allowed": false,
+  "third_party_media_download_allowed": false,
+  "ready_to_upload": false,
+  "ready_to_publish": false,
+  "note": "This is an editorial treatment and research dossier, NOT a script derived from the full episode, NOT a clipping license, and NOT a release approval. No original recording is stored."
+}
