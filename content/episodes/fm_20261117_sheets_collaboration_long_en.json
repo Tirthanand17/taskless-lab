@@ -4,14 +4,14 @@
   "type": "long",
   "language": "en",
   "title": "Google Sheets Shared with a Team? Avoid These 5 Filter & Permission Mistakes",
-  "description": "A visual, original fictional learning example from FlowMinute Lab. Imagine a fictional team spreadsheet where one collaborator applies a regular filter and other people suddenly see fewer rows. No records were deleted, but the shared view changed. Let's make collaboration less confusing. Learn the safe verification step using the official product guidance below. Original diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/docs/answer/3540681 #FlowMinuteLab #TechTips",
+  "description": "Working in a shared Google Sheet? Fix five common filter, editing and permission mistakes without deleting teammates' data.\n\nOriginal diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/docs/answer/3540681 #FlowMinuteLab #TechTips",
   "tags": [
-    "Google Sheets",
-    "Filter view",
+    "Google Sheets collaboration",
+    "Filter views",
     "Protected ranges",
-    "Collaboration",
-    "Permissions",
-    "Tutorial"
+    "Sharing permissions",
+    "Team spreadsheets",
+    "Google Sheets tutorial"
   ],
   "source_links": [
     "https://support.google.com/docs/answer/3540681"
