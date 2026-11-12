@@ -8,6 +8,12 @@
 
 **Not eligible by itself:** fair use speculation, short length, channel Creative Commons setting with no clear creator-authored clipping policy, public domain, downloaded video, reposts from fans, verbal hearsay, generalized sponsor/affiliate rights, guest permission without program owner rights, and “no copyright intended.” Such material is categorically outside this project's source policy.
 
+## Rights for games and livestreams
+- **Streamer permission is not a game-publisher license.** Gaming excerpts also require the publisher's commercial-use rights appropriate to the game and footage. For GTA VI, Rockstar/Take-Two's published general non-commercial fan policy is not sufficient by itself to justify monetized third-party highlight reposts. Verify additional permission or block.
+- For GTA VI: **no leaked/pre-release footage, spoilers or isolated cutscenes**, no isolated in-game TV/comedy performances, and no promoted cheating/exploits. Follow official policy and newer updates. https://support.rockstargames.com/articles/7bNaeoMFTV0iUDGhStTXvz/policy-on-posting-copyrighted-rockstar-games-material
+- Live-stream clipping permission must be issued by the actual stream recording rights holder. Separately clear games, guests, movie/TV segments, music and copyrighted images, which may not be covered by the streamer's grant.
+- Comedy/entertainment clips also require the rights to the performance, underlying writing and embedded TV/movie/audio material, as applicable. No credit-only bypass.
+
 ## Mandatory creator-level and per-source checks
 1. Verify permission issuer controls the original recording rights. Maintain a non-sensitive consent/creator identity reference in `creator_permissions.json`; default allowlist is empty.
 2. Match exact original creator, original source YouTube video ID and timestamps to written grant or public policy scope.
@@ -17,6 +23,9 @@
 6. Confirm statements remain accurate in context, disclose edits where necessary, verify captions, accessibility, branding, rendering and final phone-screen playback.
 7. Obtain a separate, exact-video owner/rights/editorial signoff and secure channel authorization; the source allowlist is **never a publishing authorization**.
 8. Check Content ID and potential takedown notices; comply with authentic revocations and do not auto-dispute claims.
+
+## Discovery policy
+Rank candidate moments by hook strength, clear payoff, retention potential, shareability and creator-permission availability. **Popularity does not waive copyright checks.** `viral-content-strategy.json` contains the category taxonomy and channel-off defaults. No source is treated as eligible based only on an outlier score.
 
 ## Enforcement
 - `scripts/branch3_creator_permission_gate.py` performs a strict preflight on a proposed creator and source record. Missing or ambiguous fields fail closed.
