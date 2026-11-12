@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "source_kind": "SYNTHETIC_YOUTUBE_ANALYTICS_API_RESPONSE",
+  "synthetic": true,
+  "hypothetical_observation_date": "2027-02-01",
+  "window_days": 7,
+  "video_annotations": [
+    {
+      "video_id": "A0000000001",
+      "category": "comedy",
+      "hook_variant": "A",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000002",
+      "category": "comedy",
+      "hook_variant": "B",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000003",
+      "category": "comedy",
+      "hook_variant": "A",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000004",
+      "category": "comedy",
+      "hook_variant": "B",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000005",
+      "category": "comedy",
+      "hook_variant": "A",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000006",
+      "category": "comedy",
+      "hook_variant": "B",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000007",
+      "category": "comedy",
+      "hook_variant": "A",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000008",
+      "category": "comedy",
+      "hook_variant": "B",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000009",
+      "category": "comedy",
+      "hook_variant": "A",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000010",
+      "category": "comedy",
+      "hook_variant": "B",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000011",
+      "category": "comedy",
+      "hook_variant": "A",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    },
+    {
+      "video_id": "A0000000012",
+      "category": "comedy",
+      "hook_variant": "B",
+      "duration_seconds": 40,
+      "editorial_verified": false
+    }
+  ],
+  "analytics_api_response": {
+    "kind": "youtubeAnalytics#resultTable",
+    "columnHeaders": [
+      {
+        "name": "video",
+        "columnType": "DIMENSION",
+        "dataType": "STRING"
+      },
+      {
+        "name": "views",
+        "columnType": "METRIC",
+        "dataType": "INTEGER"
+      },
+      {
+        "name": "engagedViews",
+        "columnType": "METRIC",
+        "dataType": "INTEGER"
+      },
+      {
+        "name": "averageViewDuration",
+        "columnType": "METRIC",
+        "dataType": "FLOAT"
+      },
+      {
+        "name": "averageViewPercentage",
+        "columnType": "METRIC",
+        "dataType": "FLOAT"
+      },
+      {
+        "name": "shares",
+        "columnType": "METRIC",
+        "dataType": "INTEGER"
+      },
+      {
+        "name": "subscribersGained",
+        "columnType": "METRIC",
+        "dataType": "INTEGER"
+      }
+    ],
+    "rows": [
+      [
+        "A0000000001",
+        1050,
+        683,
+        27,
+        67.5,
+        10,
+        4
+      ],
+      [
+        "A0000000002",
+        1100,
+        649,
+        25,
+        62.5,
+        6,
+        3
+      ],
+      [
+        "A0000000003",
+        1330,
+        865,
+        27,
+        67.5,
+        12,
+        5
+      ],
+      [
+        "A0000000004",
+        1380,
+        814,
+        25,
+        62.5,
+        7,
+        3
+      ],
+      [
+        "A0000000005",
+        1610,
+        1047,
+        27,
+        67.5,
+        15,
+        6
+      ],
+      [
+        "A0000000006",
+        1660,
+        979,
+        25,
+        62.5,
+        9,
+        4
+      ],
+      [
+        "A0000000007",
+        1050,
+        683,
+        27,
+        67.5,
+        10,
+        4
+      ],
+      [
+        "A0000000008",
+        1100,
+        649,
+        25,
+        62.5,
+        6,
+        3
+      ],
+      [
+        "A0000000009",
+        1330,
+        865,
+        27,
+        67.5,
+        12,
+        5
+      ],
+      [
+        "A0000000010",
+        1380,
+        814,
+        25,
+        62.5,
+        7,
+        3
+      ],
+      [
+        "A0000000011",
+        1610,
+        1047,
+        27,
+        67.5,
+        15,
+        6
+      ],
+      [
+        "A0000000012",
+        1660,
+        979,
+        25,
+        62.5,
+        9,
+        4
+      ]
+    ]
+  },
+  "studio_metrics": {
+    "source": "NOT_AVAILABLE_NO_STUDIO_EXPORT",
+    "shown_in_feed": null,
+    "chose_to_view_pct": null,
+    "audience_retention_curve": null
+  }
+}
