@@ -1,0 +1,44 @@
+name: Branch 3 Clivox Architecture Contracts (NO MEDIA / NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "branch3/architecture/**"
+      - "branch3/contracts/**"
+      - "scripts/branch3_architecture_gate.py"
+      - "scripts/test_branch3_architecture_gate.py"
+      - ".github/workflows/branch3-clivox-architecture.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify_design_only_contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      CLIVOX_AUTO_DOWNLOAD_ENABLED: "0"
+      CLIVOX_AUTO_UPLOAD_ENABLED: "0"
+      CLIVOX_ARCHITECTURE_STATE: "DESIGN_ONLY"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate architecture contracts and no-release policy
+        run: |
+          python -B -m py_compile scripts/branch3_architecture_gate.py scripts/test_branch3_architecture_gate.py
+          python -B scripts/branch3_architecture_gate.py
+          python -B -m unittest -v scripts.test_branch3_architecture_gate
+          python -B scripts/branch3_validate_prelaunch.py
+      - name: Assert no production permission source or uploader has been configured
+        run: |
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_AUTO_DOWNLOAD_ENABLED" = "0"
+          test "$CLIVOX_AUTO_UPLOAD_ENABLED" = "0"
+          echo "Clivox architecture QA only; no YouTube network request or media acquisition."
