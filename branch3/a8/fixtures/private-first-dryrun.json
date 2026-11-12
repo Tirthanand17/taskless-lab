@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "stage": "A8_PRIVATE_FIRST_RELEASE_DRYRUN",
+  "mode": "NO_YOUTUBE_NETWORK_NO_UPLOAD",
+  "source_release_id": "clivox_ymh_ep347_synthetic_demo_v1",
+  "license_status": "UNVERIFIED",
+  "owner_exact_asset_signature_verified": false,
+  "owner_google_upload_oauth_verified": false,
+  "github_protected_release_environment_verified": false,
+  "real_media_sha256": null,
+  "metadata_sha256": null,
+  "rights_evidence_sha256": null,
+  "privacy_status": "private",
+  "planned_publish_at_utc": "2026-11-20T12:30:00Z",
+  "simulated_now_utc": "2026-11-12T12:00:00Z",
+  "publish_at_is_not_a_real_schedule": true,
+  "production_actions": {
+    "source_download": false,
+    "video_insert": false,
+    "video_update": false,
+    "video_delete": false,
+    "video_schedule": false,
+    "video_publish": false
+  },
+  "idempotency": {
+    "require_attempt_lease": true,
+    "require_remote_readback_before_retry": true,
+    "allow_blind_retry": false,
+    "ledger_is_durable": false,
+    "real_remote_video_inventory_verified": false
+  },
+  "source_first_party_only": false,
+  "video_contains_licensed_clip": false,
+  "plan_not_release_permission": true,
+  "notes": "Synthetic proposed timestamp and empty source metadata are test fixtures; production upload/schedule remains deliberately unimplemented."
+}
