@@ -114,5 +114,17 @@
     "source_media_acquisition_authorized": false,
     "public_report_contains_private_legal_agreements": false,
     "output_status": "AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION"
+  },
+  "media_storage_preflight": {
+    "a3_public_media_boundary_implemented": true,
+    "a3_private_vault_provisioned": false,
+    "owner_storage_provider_approved": false,
+    "repository_visibility_readback_verified": false,
+    "real_rights_grants_verified": 0,
+    "source_footage_acquired": false,
+    "encrypted_or_private_media_upload_configured": false,
+    "workflow": ".github/workflows/branch3-clivox-a3-media-boundary.yml",
+    "policy": "branch3/media_storage/storage-policy.json",
+    "no_publish_no_download": true
   }
 }
