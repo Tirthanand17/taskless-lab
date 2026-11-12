@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "dataset_status": "RESEARCH_ONLY_UNLICENSED",
+  "candidates": [
+    {
+      "candidate_id": "ymh_2bears_ep347_campaign",
+      "category": "comedy",
+      "source_kind": "campaign",
+      "source_url": "https://b4e0vdqv6zgqeqj4pfgm.apps.whop.com/c/campaigns/51fa8c57-fb2f-44e0-b3a8-158f96cbf018",
+      "source_video_id": null,
+      "creator_channel_id": null,
+      "title": "YMH Studios 2 Bears 1 Cave Episode 347: clip invitation",
+      "observed_utc": "2026-11-12T08:00:00Z",
+      "signals": {
+        "fast_hook": true,
+        "clear_payoff": false,
+        "surprise_or_humor": true,
+        "source_context": true,
+        "original_commentary_idea": true,
+        "sharing_potential": true
+      },
+      "video_statistics": {
+        "views": null,
+        "likes": null,
+        "comments": null
+      },
+      "notes": "Official YMH campaign requires participant rights and contract confirmation; score only an editorial hypothesis, no source watched."
+    },
+    {
+      "candidate_id": "ishowspeed_expedia_campaign",
+      "category": "livestream",
+      "source_kind": "campaign",
+      "source_url": "https://contentrewards.com/c/campaigns/afeca1a0-f44c-46ad-8194-09d62b56589e",
+      "source_video_id": null,
+      "creator_channel_id": null,
+      "title": "IShowSpeed x Expedia November stream clipping campaign",
+      "observed_utc": "2026-11-12T08:00:00Z",
+      "signals": {
+        "fast_hook": true,
+        "clear_payoff": true,
+        "surprise_or_humor": true,
+        "source_context": false,
+        "original_commentary_idea": true,
+        "sharing_potential": true
+      },
+      "video_statistics": {
+        "views": null,
+        "likes": null,
+        "comments": null
+      },
+      "notes": "Research lead only. Sponsor and eligible audience geography requirements unresolved."
+    },
+    {
+      "candidate_id": "faze_flank_invitational_campaign",
+      "category": "gaming",
+      "source_kind": "campaign",
+      "source_url": "https://b4e0vdqv6zgqeqj4pfgm.apps.whop.com/c/campaigns/200ea21b-be80-4db8-b552-8e32b148604e",
+      "source_video_id": null,
+      "creator_channel_id": null,
+      "title": "FaZe Flank Invitational tournament highlights clipping campaign",
+      "observed_utc": "2026-11-12T08:00:00Z",
+      "signals": {
+        "fast_hook": true,
+        "clear_payoff": true,
+        "surprise_or_humor": false,
+        "source_context": true,
+        "original_commentary_idea": true,
+        "sharing_potential": true
+      },
+      "video_statistics": {
+        "views": null,
+        "likes": null,
+        "comments": null
+      },
+      "notes": "Research lead only. Audience >=60% US not demonstrated; game/publisher/broadcaster rights unverified."
+    }
+  ]
+}
