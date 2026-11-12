@@ -1,29 +1,31 @@
-# Proposed YouTube channel — Clivox
+# Live YouTube channel — Clivox
 
 **NAME:** Clivox
 
-**HANDLE TO TRY:** @Clivox (unverified; if unavailable, propose @ClivoxClips only after checking)
+**VERIFIED HANDLE:** @ClivoxPulse (`@Clivox` was already taken)
+
+**CHANNEL URL:** https://www.youtube.com/@ClivoxPulse
+
+**CHANNEL ID:** `UCfPEvy0SefE_5nNlYlY_CyQ`
 
 **TAGLINE:** Clips worth watching. Context worth knowing.
 
-**DESCRIPTION (paste into YouTube Studio):**
+**PUBLISHED CHANNEL DESCRIPTION (verified in YouTube Studio):**
 
-Clips worth watching. Context worth knowing.
+Clivox brings you gaming highlights, livestream reactions, funny moments, entertainment clips and unforgettable podcast stories - with original edits, commentary and context.
 
-Clivox turns unforgettable moments from gaming, livestreams, podcasts, entertainment and comedy into short, engaging videos—with original edits, commentary and context. Expect incredible gaming plays, surprising live reactions, funny moments, standout interviews and creator-approved GTA 6 highlights where the necessary rights are secured.
+Expect wild gaming plays, GTA 6 moments when rights permit, hilarious streamer fails, surprising live reactions, comedy, creator challenges and memorable interviews. Every highlight aims for a fast hook, a clear payoff and a reason to watch again.
 
-We focus on the moment that matters: a fast hook, a clear payoff and a reason to share. Featured clips come only from creators who expressly authorize clipping, and any relevant game, music or third-party rights must also be cleared.
+We feature third-party excerpts only when the creator or rights holder expressly permits clipping and YouTube reuse. We credit original sources and check relevant game, music and other rights. Clivox is independent and not affiliated with featured creators or publishers.
 
-We feature excerpts only from creators who have expressly granted clipping rights through written permission or a verified public creator clipping policy. Each published clip must also meet the specific scope and attribution terms, and include meaningful original commentary and source context. Views belong to their speakers; our explanations and editorial conclusions are our own. We are an independent commentary channel, not officially affiliated with the featured creators unless explicitly stated.
+Subscribe for the next moment worth watching.
 
-For licensing, corrections or removal requests: contact us using the business email shown in this channel's About section once configured.
+**KEYWORDS (SAVED):** Clivox, ClivoxPulse, gaming highlights, gaming clips, GTA 6, GTA VI, livestream highlights, streamer reactions, funny moments, gaming fails, epic gaming moments, comedy shorts, entertainment clips, podcast highlights, viral moments, funny reactions, YouTube Shorts, best moments
 
-**KEYWORDS:** gaming clips, GTA 6 highlights, gaming moments, livestream highlights, funny moments, entertainment clips, comedy shorts, streamer reactions, podcast highlights, creator commentary, viral moments explained
+**UPLOAD DEFAULT CATEGORY:** Entertainment; **VISIBILITY:** Private; **AUDIENCE:** Review per video.
 
-**CATEGORY:** Entertainment (proposed; actual category and content lineup to confirm after channel creation)
-
-**PROFILE PHOTO:** `branding/clivox-avatar.svg`; dark navy backdrop, luminous coral quotation glyph and original spark mark; no celebrity faces.
-**BANNER:** `branding/clivox-banner.svg`, 2560x1440 with all text within centered approximate 1546x423 safe zone. Review on phone/TV before upload.
+**LIVE PROFILE PHOTO:** `branding/clivox-live-avatar.png`; original premium chrome-silver/orange Clivox image, public on YouTube.
+**LIVE BANNER:** `branding/clivox-live-banner-2560x1440.png` (2560×1440; 2.57 MB) uploaded and publicly verified. Text and emblem fit inside YouTube's all-device crop.
 
 **PLAYLISTS (when first videos exist):** Gaming & GTA 6; Live Highlights; Funny Moments; Entertainment; Podcast Moments.
 
@@ -36,4 +38,4 @@ Corrections and rights requests: use the channel business email.
 
 **CANDIDATE SOURCE POLICY:** No creator is on the approved list until permission evidence is independently verified. Being famous, viral, or having open downloads is not permission. Source selection is permission-first, popularity-second.
 
-**DO NOT claim “official clips,” “licensed,” “copyright-free,” or “monetized” unless that specific claim is verified.** The final handle, URL, channel ID, avatar and banner uploaded states are pending actual owner-created channel readback.
+**DO NOT claim “official clips,” “licensed,” “copyright-free,” or “monetized” unless that specific claim is verified.** The channel identity and branding were verified live on 2026-11-12. No third-party creators, video uploads, monetization or publishing automation were approved. Leave the public business email blank until the owner supplies a dedicated contact.
