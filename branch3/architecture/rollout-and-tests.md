@@ -1,12 +1,12 @@
 # Implementation roadmap and engineering acceptance gates
 
-**This PR = design + offline safety contracts + no-publish CI.** Production workflows, licensed media acquisition and account OAuth are not implemented here.
+**Milestones:** A0 architecture complete; A1 bounded public metadata discovery code/workflow implemented and covered by offline tests. Live use of A1 `ids` or `query` still requires a Clivox-specific public-metadata API key; only fixture mode is verified without it. Licensed media acquisition and all publishing are NOT implemented.
 
 ## Work packages
 | ID | Deliverable | Dependencies | Exit criterion |
 |---|---|---|---|
 | A0 | Research, architecture, schema, state graph, tests | None | CI green; no API calls; channel and publishing disabled invariants |
-| A1 | Public metadata discovery adapter | A0 | no media download; candidates deduped by source ID and expiry; provenance URLs |
+| A1 | Public metadata discovery adapter | A0 | **Implemented:** manually dispatched GitHub Action + fixed-host YouTube API source metadata + deterministic ranking + fail-closed rights fields + provenance URLs. **Live integration pending restricted metadata API key.** |
 | A2 | Rights-review cases and audit receipts | A1 | actual human verifies rights holder/terms, source-specific scope, game and music rights; zero self-approvals |
 | A3 | Private media storage decision and approved provider | A2 | appropriate confidentiality, license compatibility, deletion/expiry access and secure job-only retrieval |
 | A4 | Original story editor + segment scoring | A2 | transcript quotes only from approved source, original commentary and provenance |
@@ -34,12 +34,12 @@
 - No use of Branch 1/2 secrets or GH workflow writes while paused.
 
 ## CI posture
-The new branch3-clivox-architecture.yml runs only standard-library static validators and unittest. It must have **read-only GitHub permissions, no secrets, no YouTube calls, no media download, no scheduled triggers**. The existing branch3-clivox-prelaunch.yml remains intact. All future publication workflows require separate owner approval and independent PR.
+The branch3-clivox-architecture.yml runs standard-library static validators and unittest. The separate `branch3-clivox-a1-discovery.yml` is manual-only, may make **read-only public metadata calls** when a distinct restricted API key exists, and cannot fetch video media. It must have **read-only GitHub permissions, no secrets, no YouTube calls, no media download, no scheduled triggers**. The existing branch3-clivox-prelaunch.yml remains intact. All future publication workflows require separate owner approval and independent PR.
 
 ## Current status
 - Channel identity and logo/banner: complete.
 - Intermediate YouTube features: enabled; advanced eligible.
 - Rights allowlist: empty, so A2 is blocked pending actual creator-issued grant.
 - Campaign pilot YMH Ep347: purely a research treatment; no terms accepted, media downloaded or clips uploaded.
-- Work completed in this PR: A0, not A1–A10.
+- A0: architecture complete. A1: implementation and offline tests complete; live API-key connection not yet verified. A2–A10: outstanding.
 

@@ -33,14 +33,14 @@ Only material covered by direct written creator/rights-holder permission or an a
 6. No guarantee of zero Content ID claims, strikes or monetization eligibility.
 7. Keep all publishing automation off until the user separately approves after channel creation.
 
-## Complete system architecture v1 — DESIGN ONLY
+## Branch 3 development status — A0 and A1
 
-The standalone architecture, research evidence, state graph, agent responsibilities, release safeguards and step-by-step implementation roadmap live at [architecture/README.md](architecture/README.md).
+The standalone architecture, research evidence, state graph, agent responsibilities, release safeguards and step-by-step implementation roadmap live at [architecture/README.md](architecture/README.md). **A1 metadata-only discovery is now implemented**; real lookup mode requires a separately configured public-metadata API key. No clipping rights, media downloads or publishing are allowed.
 
 - **Architecture docs:** [overview](architecture/README.md), [primary research](architecture/research-evidence.md), [workflow and agent roles](architecture/workflows.md), [security and cloud-only media strategy](architecture/security-and-storage.md), [analytics and operating plan](architecture/ops-and-metrics.md), [rollout and testing](architecture/rollout-and-tests.md), [ADRs](architecture/architecture-decisions.md).
 - **Machine-checkable architecture:** `architecture/architecture-config.json`, `contracts/state-machine.json`, `contracts/clip-job.schema.json`, `contracts/example-discovered-job.json`.
 - **No-publish offline CI:** `.github/workflows/branch3-clivox-architecture.yml`; `scripts/branch3_architecture_gate.py` with adversarial tests.
-- **Implementation reality:** This is the **design baseline**, not a fully deployed multi-agent clipping/rendering/publishing platform. No third-party media may be fetched before permission; no new Clivox OAuth token, release signer or production environment has been configured.
+- **Implementation reality:** A0 design + A1 read-only public video metadata source ranking are implemented, **not** a deployed multi-agent clipping/rendering/publishing platform. See [A1 run instructions](architecture/a1-discovery-implementation.md) and `.github/workflows/branch3-clivox-a1-discovery.yml`. No third-party media may be fetched before permission; no new Clivox OAuth token, release signer or production environment has been configured.
 - **Next development dependency:** actual creator-granted licensing with game/music/guest rights, owner review of Content Rewards contract terms, and an approved confidential media storage design.
 
 ## First creator-clipping pilot (2026-11-12)

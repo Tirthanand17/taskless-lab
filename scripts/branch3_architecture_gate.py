@@ -71,6 +71,18 @@ def validate_architecture(
         require(release.get(flag) is True,"MISSING_RELEASE_GUARD_"+flag)
     require(release.get("min_schedule_margin_minutes")>=30
             and release.get("duplicate_upload_policy")=="RECONCILE_DO_NOT_BLIND_RETRY","UNSAFE_SCHEDULING")
+    discovery=cfg.get("discovery",{})
+    require(discovery.get("a1_metadata_adapter_implemented") is True
+            and discovery.get("live_metadata_api_key_verified") is False
+            and discovery.get("execution")=="manual_github_actions_only","DISCOVERY_MODE_NOT_SAFE")
+    require(discovery.get("fixed_api_host")=="https://www.googleapis.com/youtube/v3/"
+            and discovery.get("max_known_source_ids_per_run")==30
+            and discovery.get("max_search_results_per_run")==10
+            and discovery.get("max_search_calls_per_run")==1
+            and discovery.get("max_video_details_calls_per_run")==1,"UNBOUNDED_DISCOVERY")
+    require(discovery.get("third_party_source_download_allowed") is False
+            and discovery.get("clip_permission_inferred_from_popularity") is False
+            and discovery.get("output_status")=="RESEARCH_ONLY_PUBLIC_METADATA","DISCOVERY_RIGHTS_BYPASS")
     require(cfg.get("metrics",{}).get("missing_metric_policy")=="NULL_NOT_ZERO","INVENTED_ANALYTICS")
     require(cfg.get("categories")==["gaming","livestream","comedy","entertainment","podcast_interview"],"WRONG_CATEGORIES")
     require(channel.get("channel_id")==CLIVOX_ID

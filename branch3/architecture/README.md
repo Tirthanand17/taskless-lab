@@ -1,7 +1,7 @@
 # Clivox Branch 3 — Full Permission-First Production Architecture
 
 **Version:** 1.0 design baseline, 2026-11-12
-**Status:** architecture + offline validators only. NOT a deployed video production/publishing service.
+**Status:** Architecture + offline validators + **A1 public-metadata discovery implementation**. NOT a deployed media extraction / video production / publishing service.
 **Primary repository:** Tirthanand17/taskless-lab; all plans, schemas, workflows and safe metadata live here.
 **Owner channel:** Clivox, @ClivoxPulse, UCfPEvy0SefE_5nNlYlY_CyQ.
 **Unchanged:** Branch 1 FlowMinute Lab manual scheduling and Branch 2 autonomous FlowMinute are PAUSED.
@@ -48,7 +48,7 @@ flowchart TD
   S --> A
 ~~~
 
-The diagram shows a **target implementation**, not currently running automation. The existing system ends at research/rights-only prelaunch QA.
+The diagram shows a **target implementation**, not currently running publishing automation. **Stage A1 metadata discovery is now implemented** as bounded manually triggered read-only GitHub Actions, with a synthetic fixture and optional YouTube Data API public metadata key. Rights review, licensed-media ingestion and uploading remain blocked.
 
 ## Roles and responsibilities
 | Role / component | Safe autonomous work | Cannot self-authorize |
@@ -74,6 +74,8 @@ The diagram shows a **target implementation**, not currently running automation.
 - Verified creator permissions (presently EMPTY): branch3/creator_permissions.json
 - Research-only campaign leads: branch3/clip_source_watchlist_2026-11-12.json
 - Existing source gate: scripts/branch3_creator_permission_gate.py
+- A1 implementation and usage: branch3/architecture/a1-discovery-implementation.md
+- A1 read-only code: scripts/branch3_discovery.py and scripts/test_branch3_discovery.py
 - New job schema: branch3/contracts/clip-job.schema.json
 - New state graph: branch3/contracts/state-machine.json
 - Example *unlicensed* job: branch3/contracts/example-discovered-job.json

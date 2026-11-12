@@ -1,6 +1,6 @@
 # End-to-end workflow — agents, contracts and release process
 
-Target architecture; not all jobs are built. Existing production upload automation stays OFF.
+Target architecture; not all jobs are built. **A1 discovery metadata adapter is implemented and manually runnable in GitHub**; production upload automation stays OFF.
 
 ## Nine stage production flow
 
@@ -44,7 +44,8 @@ Job ID = immutable UUID or collision-resistant slug. Source tuple = creator chan
 No agent can issue a human signoff or license. Model-generated confidence is never proof of rights, channel control, engagement or legal compliance.
 
 ## Proposed GitHub triggers
-- Manual public-metadata discovery, with optional future daily low-cost schedule (read-only).
+- **IMPLEMENTED A1:** manual `branch3-clivox-a1-discovery.yml` for safe synthetic tests and, once configured with a distinct restricted YouTube public-metadata API key, one public video-ID lookup or one bounded query. No cron has been installed. See `a1-discovery-implementation.md`.
+- **Future possibility**: opt-in scheduled metadata discovery only after quota, abuse and cost limits are reviewed; not currently enabled.
 - GitHub Issue/PR based rights review; only authorized human marks RightsGrant verified.
 - workflow_dispatch editorial planning with source candidate ID (no copyrighted media).
 - Manual secure/private media review upon approved rights.
