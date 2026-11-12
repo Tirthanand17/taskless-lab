@@ -57,10 +57,10 @@ jobs:
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/clivox-a5"
           mode="${REQUESTED_MODE:-preview}"
-          python -B scripts/branch3_a5_render_original_demo.py \
+          python -B -m scripts.branch3_a5_render_original_demo \
             --input branch3/editorial/fixtures/ymh_ep347_source_free.json \
             --output "$RUNNER_TEMP/clivox-a5" --mode "$mode"
-          python -B scripts/branch3_a5_media_qa.py --directory "$RUNNER_TEMP/clivox-a5"
+          python -B -m scripts.branch3_a5_media_qa --directory "$RUNNER_TEMP/clivox-a5"
           python -B -c 'import json,os,pathlib; d=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a5"; j=json.loads((d/"synthetic-technical-qa-report.json").read_text()); m=json.loads((d/"synthetic-demo-manifest.json").read_text()); assert j["synthetic_video_technical_checks_passed"] and not j["youtube_upload_authorized"] and not m["ready_to_publish"] and not m["source_media_attached"] and not m["original_voiceover_recorded"]; print("CLIVOX_A5_DEMO_TECHNICAL_PASS_NOT_PUBLICATION_APPROVAL")'
       - name: Public-safe original content artifacts ONLY
         uses: actions/upload-artifact@v4
