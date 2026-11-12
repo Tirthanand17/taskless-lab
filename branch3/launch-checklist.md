@@ -11,6 +11,12 @@
 - [ ] Complete channel feature eligibility/security and business contact privately.
 - [ ] Verify new channel ID is NOT FlowMinute Lab: `UCCcL9Q_jqVq6LJmnYUSAFZA`.
 
+## Viral-ready topic coverage
+- [x] Scope Clivox to gaming (including GTA VI), livestreams, comedy/jokes, entertainment and podcast/interviews.
+- [ ] Find real creators in each category who explicitly permit clipping; registry remains empty until verified.
+- [ ] For game clips, verify publisher commercial-use rights separately, and enforce GTA VI no-leaks/spoilers restrictions.
+- [ ] Validate each proposed clip's actual hook/retention and audience niche fit; trends alone do not guarantee views.
+
 ## Prior to any clipping
 - [ ] Source creator exists in verified allowlist (`creator_permissions.json`, initially empty); automatic publication remains disabled.
 - [ ] Confirm permission is still active on the source date, covers the precise YouTube video and does not exclude our type of edits, platform, geography or commercial use.

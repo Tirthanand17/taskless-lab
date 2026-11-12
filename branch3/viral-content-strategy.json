@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "channel": "Clivox",
+  "channel_created": false,
+  "purpose": "Creator-permission-only viral-worthy highlight commentary across high-interest entertainment categories",
+  "source_filter": "EXPLICIT_CREATOR_GRANT_ONLY",
+  "viral_optimization_goal": "maximize engaged views, audience retention, shares and subscribers per eligible clip; no promise of virality",
+  "experiment_priority_order": [
+    "gaming",
+    "livestream",
+    "comedy",
+    "entertainment",
+    "podcast_interview"
+  ],
+  "content_pillars": [
+    {
+      "id": "gaming",
+      "title": "Gaming & GTA VI",
+      "topics": [
+        "GTA VI / GTA 6 official permitted gameplay",
+        "creator-permissioned gaming highlights",
+        "spectacular wins and fails",
+        "clever gameplay moments"
+      ],
+      "strict_rules": [
+        "Streamer or creator clipping permission and applicable game publisher rights verified for commercial use",
+        "No leaked/pre-release footage",
+        "No isolated game story endings, plot spoilers or copyrighted in-game TV/comedy performances",
+        "No cheating/exploit promotions or unauthorized mods"
+      ]
+    },
+    {
+      "id": "livestream",
+      "title": "Live-stream highlights",
+      "topics": [
+        "hilarious real-time reactions",
+        "surprising live reveals",
+        "streamer challenges",
+        "memorable competitive moments"
+      ],
+      "strict_rules": [
+        "Streamer/recording owner permission verified",
+        "Game footage, broadcast audio, music and guest rights separately cleared",
+        "Never treat public LIVE replay as permission"
+      ]
+    },
+    {
+      "id": "comedy",
+      "title": "Comedy & funny moments",
+      "topics": [
+        "creator-permissioned jokes",
+        "unexpected punchlines",
+        "funny reactions",
+        "relatable moments"
+      ],
+      "strict_rules": [
+        "Writer/performer/recording rights verified",
+        "No standalone copied TV/film comedy scenes without full explicit rights",
+        "No deceptive quote edits"
+      ]
+    },
+    {
+      "id": "entertainment",
+      "title": "Entertainment & pop culture",
+      "topics": [
+        "surprising conversations",
+        "funny behind-the-scenes stories",
+        "wholesome memorable moments",
+        "unexpected creator interactions"
+      ],
+      "strict_rules": [
+        "Original publisher or creator clip grant verified",
+        "Third-party TV/film/audio/guest media must be cleared",
+        "Avoid rumor presented as confirmed fact"
+      ]
+    },
+    {
+      "id": "podcast_interview",
+      "title": "Podcasts & interviews",
+      "topics": [
+        "big reveals",
+        "unexpected opinions",
+        "motivating stories",
+        "interesting disagreements"
+      ],
+      "strict_rules": [
+        "Program rights holder permission verified",
+        "Context preserved; source episode attributed",
+        "Add meaningful original analysis"
+      ]
+    }
+  ],
+  "selection_signals": [
+    "hook_under_2_seconds",
+    "clear_payoff",
+    "surprise_or_humor",
+    "context_without_clickbait",
+    "rights_verified",
+    "strong_original_commentary",
+    "shareability",
+    "repeatable_topic_fit"
+  ],
+  "release_and_rights": {
+    "permission_required_before_download": true,
+    "source_creator_or_owner_permission_verified": false,
+    "independently_clear_embedded_material": true,
+    "no_leaked_game_footage": true,
+    "no_spoiler_cutscenes": true,
+    "owner_exact_final_release_required": true,
+    "publishing_enabled": false
+  },
+  "learning_metrics": [
+    "shown_in_feed",
+    "viewed_vs_swiped",
+    "engaged_views",
+    "average_view_duration",
+    "average_percentage_viewed",
+    "first_seconds_retention",
+    "shares",
+    "subscribers_per_engaged_view",
+    "comment_quality"
+  ],
+  "official_refs": [
+    "https://support.google.com/youtube/answer/1311392",
+    "https://support.google.com/youtube/answer/138161",
+    "https://support.google.com/youtube/answer/16559650",
+    "https://support.rockstargames.com/articles/7bNaeoMFTV0iUDGhStTXvz/policy-on-posting-copyrighted-rockstar-games-material"
+  ],
+  "no_candidates_approved": true
+}

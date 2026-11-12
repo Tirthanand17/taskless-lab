@@ -21,6 +21,17 @@ def validate() -> None:
     assert permissions["policy"]=="EXPLICIT_CREATOR_GRANT_ONLY"
     assert permissions["creators"]==[], "Never auto-approve a real creator in public prelaunch CI"
     assert permissions["schema_version"]==1
+    viral=json.loads((B3/"viral-content-strategy.json").read_text("utf8"))
+    expected=["gaming","livestream","comedy","entertainment","podcast_interview"]
+    assert viral["channel"]=="Clivox" and viral["channel_created"] is False
+    assert viral["experiment_priority_order"]==expected
+    assert [pillar["id"] for pillar in viral["content_pillars"]]==expected
+    assert viral["release_and_rights"]["publishing_enabled"] is False
+    assert viral["release_and_rights"]["permission_required_before_download"] is True
+    assert viral["release_and_rights"]["no_leaked_game_footage"] is True
+    assert viral["no_candidates_approved"] is True
+    assert "GTA VI" in viral["content_pillars"][0]["title"]
+    assert "support.rockstargames.com" in str(viral["official_refs"])
     files={
         "clivox-avatar.svg":(800,800),
         "clivox-banner.svg":(2560,1440),

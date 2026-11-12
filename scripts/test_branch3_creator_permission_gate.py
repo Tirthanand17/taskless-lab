@@ -43,6 +43,11 @@ def fixtures():
        "source_video_id":SOURCE_ID,
        "source_url":f"https://www.youtube.com/watch?v={SOURCE_ID}",
        "video_format":"short",
+       "content_category":"podcast_interview",
+       "contains_video_game_footage":False,
+       "game_publisher_commercial_use_manually_verified":False,
+       "pre_release_or_leaked_game_footage":False,
+       "isolated_game_spoiler_or_in_game_show":False,
        "third_party_embedded_media_cleared":True,
        "source_content_context_reviewed":True,
     }
@@ -69,6 +74,36 @@ class PermissionGateTests(unittest.TestCase):
         r["creators"][0]["scope"]["commercial_use_allowed"]=False
         with self.assertRaises(ClipRightsBlocked):
             eligible_source(r,c,now=NOW)
+    def test_every_viral_pillar_is_eligible_only_with_existing_permission(self):
+        for pillar in ("gaming","livestream","comedy","entertainment","podcast_interview"):
+            r,c=fixtures()
+            c["content_category"]=pillar
+            c["contains_video_game_footage"]=(pillar=="gaming")
+            c["game_publisher_commercial_use_manually_verified"]=(pillar=="gaming")
+            with self.subTest(pillar=pillar):
+                result=eligible_source(r,c,now=NOW)
+                self.assertEqual(result["content_category"],pillar)
+                self.assertFalse(result["youtube_upload_authorized"])
+
+    def test_game_clips_require_separate_publisher_rights_and_no_leaks(self):
+        for bad in (
+            {"content_category":"gaming","contains_video_game_footage":True},
+            {"content_category":"livestream","contains_video_game_footage":True},
+            {"content_category":"gaming","contains_video_game_footage":True,
+             "game_publisher_commercial_use_manually_verified":True,
+             "pre_release_or_leaked_game_footage":True},
+            {"content_category":"gaming","contains_video_game_footage":True,
+             "game_publisher_commercial_use_manually_verified":True,
+             "isolated_game_spoiler_or_in_game_show":True},
+            {"content_category":"gaming","contains_video_game_footage":False,
+             "game_publisher_commercial_use_manually_verified":True},
+            {"content_category":"unknown"},
+        ):
+            r,c=fixtures()
+            c.update(bad)
+            with self.subTest(bad=bad),self.assertRaises(ClipRightsBlocked):
+                eligible_source(r,c,now=NOW)
+
     def test_reject_ambiguous_or_missing_permission(self):
         for change in (
             lambda r,c:r["creators"].clear(),
