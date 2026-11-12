@@ -95,12 +95,15 @@ def draw_card(beat: dict, index: int, total: int, out: Path, mode: str) -> None:
     role=beat["role"]
     require(role in lines,"UNSUPPORTED_SCENE")
     headline,description=lines[role]
-    main=f(100 if max(map(len,headline))<=12 else 86)
     yy=525
     for line in headline:
-        # Lay out by measured actual font width to avoid cropped typography.
-        bbox=draw.textbbox((0,0),line,font=main)
-        require(bbox[2]-bbox[0]<730*k,"HEADLINE_OUT_OF_SAFE_AREA")
+        # Fit by measured glyph bounds (word count alone cannot prevent crop).
+        size=100 if len(line)<=12 else 86
+        main=f(size)
+        while draw.textbbox((0,0),line,font=main)[2] > 725*k:
+            size-=3
+            require(size>=46,"HEADLINE_OUT_OF_SAFE_AREA")
+            main=f(size)
         draw.text(xy(155,yy),line,font=main,fill=SILVER)
         yy+=154
     draw.text(xy(157,1112),description,font=f(27),fill=ORANGE)
@@ -128,7 +131,7 @@ def draw_card(beat: dict, index: int, total: int, out: Path, mode: str) -> None:
         draw.rounded_rectangle(xy(168,1210,872,1360),radius=int(20*k),
                                fill=(31,42,61),outline=(68,79,98),
                                width=max(1,int(2*k)))
-        draw.text(xy(208,1256),"A ORIGINAL STORY",font=f(32),fill=SILVER)
+        draw.text(xy(208,1256),"AN ORIGINAL STORY",font=f(32),fill=SILVER)
     elif role=="hook":
         draw.line([xy(159,1244),xy(872,1244)],fill=ORANGE,
                   width=max(2,int(6*k)))
