@@ -179,5 +179,19 @@
     "uploader_release_credentials_available": false,
     "workflow": ".github/workflows/branch3-clivox-a7-readonly-preflight.yml",
     "output": "OFFLINE_SYNTHETIC_READONLY_AUTH_TESTS_NOT_LIVE_CONNECTION"
+  },
+  "a8_private_first_dryrun": {
+    "private_first_schedule_preflight_implemented": true,
+    "future_utc_margin_minutes": 30,
+    "exact_release_attempt_sha256_implemented": true,
+    "duplicate_and_ambiguous_attempt_preview_implemented": true,
+    "durable_atomic_upload_ledger_implemented": false,
+    "authenticated_remote_reconciliation_implemented": false,
+    "real_google_upload_scope_connected": false,
+    "protected_release_environment_verified": false,
+    "actual_upload_or_schedule_capability": false,
+    "sample_plan": "branch3/a8/fixtures/private-first-dryrun.json",
+    "workflow": ".github/workflows/branch3-clivox-a8-dryrun.yml",
+    "output": "SYNTHETIC_NO_WRITE_PRIVATE_FIRST_PLAN_ONLY"
   }
 }
