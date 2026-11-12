@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "updated_date_ist": "2026-11-12",
+  "updated_date_ist": "2026-11-13",
   "channel": "Clivox",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 52,
-  "overall_estimated_remaining_percent": 48,
+  "overall_estimated_completion_percent": 54,
+  "overall_estimated_remaining_percent": 46,
   "milestone_count": 11,
   "milestones": [
     {
@@ -47,16 +47,16 @@
     {
       "id": "A5",
       "name": "Video renderer and AV quality assurance",
-      "completion_pct": 45,
+      "completion_pct": 55,
       "status": "partial",
-      "evidence": "Original-only FFmpeg/Pillow vertical synthetic renderer, SRT plan and ffprobe tests under CI; actual licensed media and recorded narration unresolved"
+      "evidence": "A4-to-A5 real synthetic MP4/SRT and independent FFprobe SHA/size provenance integration QA added; no licensed footage, narration, real publishing asset"
     },
     {
       "id": "A6",
       "name": "Signed exact-video release",
-      "completion_pct": 45,
+      "completion_pct": 50,
       "status": "partial",
-      "evidence": "Ed25519 canonical release verification + unsigned quarantine fixture and adversarial CI; production key enrollment, real owner rights and final signed clip pending"
+      "evidence": "Integrated A5 video evidence must still match A6 unsigned human-rights quarantine; no owner public key enrolled or final video signed"
     },
     {
       "id": "A7",
@@ -68,16 +68,16 @@
     {
       "id": "A8",
       "name": "Protected private-first upload/scheduling",
-      "completion_pct": 35,
+      "completion_pct": 40,
       "status": "partial",
-      "evidence": "Private-first UTC schedule preflight, exact digest attempt-key, ambiguous/duplicate attempt dry-run and adversarial GitHub tests; no durable atomic ledger, write OAuth, real upload or schedule readback."
+      "evidence": "Integrated end-to-end rehearsal confirms A8 no-write private-first plan and no remote upload; no uploader, atomic durable ledger or live channel credentials"
     },
     {
       "id": "A9",
       "name": "First licensed production pilot",
       "completion_pct": 0,
       "status": "not_started",
-      "evidence": "Creator licensing and approved final render pending"
+      "evidence": "Real first LICENSED production pilot not started; A4-A5-A6-A8 original-only technical rehearsal does not grant clip permission, voiceover, owner approval or YouTube release"
     },
     {
       "id": "A10",
@@ -105,5 +105,19 @@
     "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "Progress estimates reflect partial engineering components, not a claim that third-party clips are licensed or an end-to-end publishing service exists."
+  "disclaimer": "Progress estimates reflect partial engineering components, not a claim that third-party clips are licensed or an end-to-end publishing service exists.",
+  "integrated_rehearsal": {
+    "status": "IMPLEMENTED_PENDING_PR_CI_AT_THIS_COMMIT",
+    "chain": [
+      "A4",
+      "A5",
+      "A6",
+      "A8"
+    ],
+    "github_workflow": ".github/workflows/branch3-clivox-integration-rehearsal.yml",
+    "original_only": true,
+    "licensed_pilot_completed": false,
+    "actual_google_api_requests": 0,
+    "youtube_publication_enabled": false
+  }
 }
