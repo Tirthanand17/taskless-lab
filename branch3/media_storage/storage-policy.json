@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "phase": "A3_CONFIDENTIAL_MEDIA_STORAGE_PREFLIGHT",
+  "controller_repository": "Tirthanand17/taskless-lab",
+  "controller_repository_visibility": "public",
+  "target_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "mode": "NOT_PROVISIONED",
+  "preferred_backend": "github_private_release_asset",
+  "private_vault_repository": null,
+  "private_vault_repository_identity_verified": false,
+  "private_vault_owner_approved": false,
+  "identity_and_access_review_complete": false,
+  "creator_grants_verified": 0,
+  "owner_contract_scope_reviewed": false,
+  "github_production_environment_protection_verified": false,
+  "media_fetch_enabled": false,
+  "media_write_enabled": false,
+  "media_render_enabled": false,
+  "youtube_upload_enabled": false,
+  "data_policy": {
+    "public_repo_raw_rights_media_allowed": false,
+    "public_actions_artifact_rights_media_allowed": false,
+    "public_lfs_rights_media_allowed": false,
+    "public_issue_attachments_rights_media_allowed": false,
+    "private_contract_bytes_in_public_repo_allowed": false,
+    "ephemeral_runner_temp_only": true,
+    "explicit_object_sha256_required": true,
+    "exact_channel_identity_required": true,
+    "rights_expiry_recheck_required": true,
+    "no_blind_retry_on_download_errors": true
+  },
+  "approved_public_visuals": [
+    "branch3/branding/clivox-live-avatar.png",
+    "branch3/branding/clivox-live-banner-2560x1440.png"
+  ],
+  "no_source_media_approved": true,
+  "notes": "Future private GitHub vault requires explicit owner approval and separate access/security audit. This config creates no repository and contains no media or credentials."
+}
