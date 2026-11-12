@@ -1,0 +1,50 @@
+name: Branch 3 Clivox A3 Media Boundary (NO MEDIA / NO WRITES)
+
+on:
+  pull_request:
+    paths:
+      - "branch3/media_storage/**"
+      - "scripts/branch3_media_storage_preflight.py"
+      - "scripts/test_branch3_media_storage_preflight.py"
+      - "branch3/architecture/**"
+      - ".github/workflows/branch3-clivox-a3-media-boundary.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate_unprovisioned_media_boundary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PUBLISH_ENABLED: "false"
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: "false"
+      CLIVOX_MEDIA_STORAGE_WRITE_ENABLED: "false"
+      CLIVOX_YOUTUBE_WRITE_ENABLED: "false"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate source-free A3 confidential storage boundary
+        run: |
+          python -B -m py_compile scripts/branch3_media_storage_preflight.py scripts/test_branch3_media_storage_preflight.py
+          python -B -m unittest -v scripts.test_branch3_media_storage_preflight
+          python -B scripts/branch3_media_storage_preflight.py --out "$RUNNER_TEMP/clivox-a3/public-safe-result.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a3/public-safe-result.json"; r=json.loads(p.read_text()); assert r["creator_grants"]==0 and not r["private_media_vault_provisioned"] and not r["source_download_authorized"] and not r["youtube_upload_authorized"] and not r["licensed_media_detected"]; print("A3_NO_RIGHTS_MEDIA_OR_YOUTUBE_ACCESS")'
+      - name: Check release disabled
+        run: |
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = "false"
+          test "$CLIVOX_MEDIA_STORAGE_WRITE_ENABLED" = "false"
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = "false"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a3-public-safe-preflight
+          path: ${{ runner.temp }}/clivox-a3/public-safe-result.json
+          if-no-files-found: error
+          retention-days: 7
