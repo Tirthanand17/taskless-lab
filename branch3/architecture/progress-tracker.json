@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 62,
-  "overall_estimated_remaining_percent": 38,
+  "overall_estimated_completion_percent": 63,
+  "overall_estimated_remaining_percent": 37,
   "milestone_count": 11,
   "milestones": [
     {
@@ -68,9 +68,9 @@
     {
       "id": "A8",
       "name": "Protected private-first upload/scheduling",
-      "completion_pct": 55,
+      "completion_pct": 65,
       "status": "partial",
-      "evidence": "Existing A8 no-write private-first signed-release plan plus new actual SQLite BEGIN IMMEDIATE atomic single-runner reservations, UNIQUE exact-release/media protections, irreversible ambiguous/no-retry states and parallel adversarial GitHub CI. Not durable across runners; no actual uploader or remote inventory."
+      "evidence": "A8 private-first dry run + same-runner SQLite concurrency tests, now with strict global GitHub Contents ledger blob-SHA/append-chain contract, all-subject uniqueness, simulated six-worker cross-run SHA conflicts and unknown-commit no-blind-retry tests. No real private shared store, anchored independent head, Google inventory or uploader."
     },
     {
       "id": "A9",
@@ -102,10 +102,10 @@
     "Real licensed source edit + human narration and final audiovisual QA remain pending despite original-only A5 demo",
     "A6 only verifies mathematical signatures in synthetic offline tests: no enrolled owner signing identity or approved final clip",
     "A7 Clivox protected GitHub environment now exists, but Google owner OAuth consent, dedicated Clivox client/refresh credentials and live channel ID readback remain pending",
-    "A8 now tests atomic SQLite reservations on one ephemeral GitHub runner, but an authenticated cross-run durable ledger, remote YouTube inventory reconciliation and protected upload credentials remain unconfigured",
+    "A8 global private-ledger SHA-CAS contract and concurrent writer mocks exist, but owner-approved real durable cross-run storage, independently trusted rollback head, remote YouTube inventory and protected upload credentials remain unconfigured",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "62% is a planning-weighted engineering/code estimate (682/11 points rounded), NOT live creator rights, a cross-run durable upload ledger, remote YouTube reconciliation, production OAuth, media vault readiness or uploaded licensed clips. A9 remains 0%.",
+  "disclaimer": "63% is a planning-weighted equal-weight estimate of A0–A10 code and architecture; the global A8 GitHub Contents CAS is an offline simulated protocol, not a live durable cross-run ledger, copyright authorization, real owner signed video, actual YouTube inventory or publishing. A9 licensed pilot remains 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -208,5 +208,24 @@
     "actual_youtube_api_calls": 0,
     "licensed_creator_grants": 0,
     "live_upload_enabled": false
+  },
+  "a8_private_cross_run_cas_protocol": {
+    "stage": "A8_CROSS_RUN_GITHUB_CONTENTS_SHA_CONTRACT_NO_REMOTE_WRITES",
+    "workflow": ".github/workflows/branch3-clivox-a8-private-cas-qa.yml",
+    "code": "scripts/branch3_a8_private_cas_ledger.py",
+    "docs": "branch3/a8/PRIVATE_CROSS_RUN_CAS_PROTOCOL.md",
+    "strict_github_contents_regular_file_blob_sha_check": true,
+    "global_exact_release_media_and_attempt_uniqueness_replay": true,
+    "append_only_bounded_sha256_event_chain": true,
+    "supplied_head_sequence_anchor_rollback_preflight": true,
+    "simulated_six_competing_git_blob_sha_writers": true,
+    "ambiguous_put_just_reconcile_no_blind_retry": true,
+    "protected_private_vault_and_contents_token_configured": false,
+    "trusted_independent_immutable_anchor_enrolled": false,
+    "actual_authenticated_cross_run_ledger_provisioned": false,
+    "actual_youtube_remote_inventory_reconciled": false,
+    "production_oauth_connected": false,
+    "actual_youtube_api_writes": 0,
+    "video_upload_or_publication_enabled": false
   }
 }
