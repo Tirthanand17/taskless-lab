@@ -159,7 +159,11 @@ class CheckpointedA2Tests(unittest.TestCase):
         for bad_time in ("2026-11-13T09:44:00Z", "2026-11-13T10:01:00Z",
                          "2026-11-13T09:55:00+00:00"):
             p, _, key = prepare()
-            signed_checkpoint(p["snapshot"], key, signed_at=bad_time)
+            if bad_time.endswith("Z"):
+                signed_checkpoint(p["snapshot"], key, signed_at=bad_time)
+            else:
+                # Malformed timestamp cannot itself be signed by helper.
+                p["snapshot"]["checkpoint"]["signed_at_utc"] = bad_time
             with self.subTest(signed_at=bad_time), self.assertRaises(ReviewDenied):
                 verify_checkpointed_receipt_preview(**p)
         p, _, _ = prepare()
