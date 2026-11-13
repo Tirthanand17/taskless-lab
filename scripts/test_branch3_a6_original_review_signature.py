@@ -26,9 +26,6 @@ from scripts.branch3_a6_original_review_signature import (
 from scripts.branch3_original_arcade_pilots import (
     CATALOG, sha, validate_catalog
 )
-from scripts.test_branch3_a6_original_handoff import (
-    manifest_for
-)
 
 NOW=datetime(2026,11,13,16,30,tzinfo=timezone.utc)
 REVIEW_TIME="2026-11-13T16:00:00Z"
