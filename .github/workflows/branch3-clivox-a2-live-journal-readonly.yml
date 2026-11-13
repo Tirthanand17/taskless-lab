@@ -1,0 +1,58 @@
+name: Clivox A2 Owner-Reviewed Private Journal READ-ONLY
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a2-owner-private-journal-readonly
+  cancel-in-progress: false
+
+jobs:
+  owner_approved_clivox_readonly_journal:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && github.actor == 'Tirthanand17' && github.triggering_actor == 'Tirthanand17' && github.run_attempt == '1'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    environment:
+      name: clivox-vault-readonly
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_MEDIA_STORAGE_WRITE_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      CLIVOX_A2_APPROVED_PRIVATE_VAULT_NAME: ${{ secrets.CLIVOX_A2_APPROVED_PRIVATE_VAULT_NAME }}
+      CLIVOX_A2_PRIVATE_CONTENTS_READ_TOKEN: ${{ secrets.CLIVOX_A2_PRIVATE_CONTENTS_READ_TOKEN }}
+      CLIVOX_A2_JOURNAL_READ_APPROVED: ${{ secrets.CLIVOX_A2_JOURNAL_READ_APPROVED }}
+      CLIVOX_A2_PINNED_REVOCATION_PUBKEY_HEX: ${{ secrets.CLIVOX_A2_PINNED_REVOCATION_PUBKEY_HEX }}
+      CLIVOX_A2_OWNER_PINNED_ANCHOR_SEQ: ${{ secrets.CLIVOX_A2_OWNER_PINNED_ANCHOR_SEQ }}
+      CLIVOX_A2_OWNER_PINNED_ANCHOR_SHA256: ${{ secrets.CLIVOX_A2_OWNER_PINNED_ANCHOR_SHA256 }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install minimal Ed25519 signature verifier for read-only journal
+        run: python -m pip install --disable-pip-version-check 'cryptography>=44,<47'
+      - name: Deny any cross-channel or public media and confirm owner/main/manual
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = 'Tirthanand17/taskless-lab'
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$GITHUB_EVENT_NAME" = 'workflow_dispatch'
+          test "$GITHUB_ACTOR" = 'Tirthanand17'
+          test "$GITHUB_TRIGGERING_ACTOR" = 'Tirthanand17'
+          test "$GITHUB_RUN_ATTEMPT" = '1'
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = 'false'
+          test "$CLIVOX_MEDIA_STORAGE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+      - name: Fixed-host read-only GitHub owner/ACL and private revocation journal
+        run: |
+          python -B -m scripts.branch3_a2_live_journal_readonly --mode live
+      # NO artifacts. NO raw private journal, credentials, source footage,
+      # Google authorization, media upload or remote GitHub writes.

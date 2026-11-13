@@ -19,6 +19,10 @@ The code's `verify_offline_receipt_preview` accepts explicit caller-provided pub
 
 [Global private revocation ledger CAS contract](github-private-ledger-cas.md) models signed revocation journal append, GitHub blob-SHA content verification and stale-writer rejection. No actual private vault, persistent external anti-rollback head, authenticated signer identity, secret or live writer is configured; it cannot grant rights or media access.
 
+## Owner-reviewed private journal READ-ONLY bridge (not live)
+
+[Owner setup and security limitations](OWNER_LIVE_JOURNAL_READBACK.md) describe a protected manual GitHub Actions job which authenticates the expected private repository, owner-only ACL and source-free signed journal. **Its three live GitHub GETs cannot run until the owner configures a separate private vault and protected secrets.** Passing integrity checks does not establish real creator licensing or a durable independent anchor.
+
 ## Runtime and CI
 
 - `scripts/branch3_a2_review_receipt.py` — restricted pending A2 cases, canonical digest/signature/revocation mathematical checks, strict zero-grant policy. Its CLI runs only the zero-license **pending-case quarantine**, not live receipt signing or registry promotion.
