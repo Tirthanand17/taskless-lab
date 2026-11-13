@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 54,
-  "overall_estimated_remaining_percent": 46,
+  "overall_estimated_completion_percent": 55,
+  "overall_estimated_remaining_percent": 45,
   "milestone_count": 11,
   "milestones": [
     {
@@ -19,23 +19,23 @@
     {
       "id": "A1",
       "name": "Public metadata discovery",
-      "completion_pct": 80,
+      "completion_pct": 82,
       "status": "partial",
-      "evidence": "Code and CI working; live metadata API key not verified"
+      "evidence": "Read-only public metadata discovery/CI, now strict A1->A2 full digest/schema handoff; live metadata API key not verified"
     },
     {
       "id": "A2",
       "name": "Human rights verification",
-      "completion_pct": 45,
+      "completion_pct": 50,
       "status": "partial",
-      "evidence": "Unverified-rights dossier generator; no authenticated creator grants"
+      "evidence": "Pending human-rights dossier generator plus A1->A2 exact-case and tampering integration checks; zero authenticated creator grants"
     },
     {
       "id": "A3",
       "name": "Private media storage",
-      "completion_pct": 45,
+      "completion_pct": 50,
       "status": "partial",
-      "evidence": "Public-repo storage safeguards tested; actual private vault not provisioned"
+      "evidence": "Storage deny policy/manifest/channel/empty rights registry and public path inventory cross-checked against A1->A2; actual private vault not provisioned"
     },
     {
       "id": "A4",
@@ -105,9 +105,9 @@
     "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "Progress estimates reflect partial engineering components, not a claim that third-party clips are licensed or an end-to-end publishing service exists.",
+  "disclaimer": "55% is planning-weighted code engineering (607/11 package points rounded), not authenticated source/rights readiness, a live Google connection or production publishing completion. A9 remains 0%.",
   "integrated_rehearsal": {
-    "status": "IMPLEMENTED_PENDING_PR_CI_AT_THIS_COMMIT",
+    "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
       "A4",
       "A5",
@@ -119,5 +119,21 @@
     "licensed_pilot_completed": false,
     "actual_google_api_requests": 0,
     "youtube_publication_enabled": false
+  },
+  "early_pipeline_handoff": {
+    "status": "PR_CHECKS_IN_PROGRESS_NO_LICENSE",
+    "chain": [
+      "A1",
+      "A2",
+      "A3"
+    ],
+    "workflow": ".github/workflows/branch3-clivox-a123-provenance.yml",
+    "source_sha256_crosschecked": true,
+    "pending_human_case_fields_exactly_compared": true,
+    "public_inventory_and_closed_storage_validated": true,
+    "no_license_or_private_vault_verified": true,
+    "no_source_download_or_youtube_write": true,
+    "initial_adversarial_unit_and_synthetic_workflow_ci_passed": true,
+    "actual_license_or_live_youtube_proven": false
   }
 }
