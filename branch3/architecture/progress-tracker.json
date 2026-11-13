@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 61,
-  "overall_estimated_remaining_percent": 39,
+  "overall_estimated_completion_percent": 62,
+  "overall_estimated_remaining_percent": 38,
   "milestone_count": 11,
   "milestones": [
     {
@@ -68,9 +68,9 @@
     {
       "id": "A8",
       "name": "Protected private-first upload/scheduling",
-      "completion_pct": 40,
+      "completion_pct": 55,
       "status": "partial",
-      "evidence": "Integrated end-to-end rehearsal confirms A8 no-write private-first plan and no remote upload; no uploader, atomic durable ledger or live channel credentials"
+      "evidence": "Existing A8 no-write private-first signed-release plan plus new actual SQLite BEGIN IMMEDIATE atomic single-runner reservations, UNIQUE exact-release/media protections, irreversible ambiguous/no-retry states and parallel adversarial GitHub CI. Not durable across runners; no actual uploader or remote inventory."
     },
     {
       "id": "A9",
@@ -102,10 +102,10 @@
     "Real licensed source edit + human narration and final audiovisual QA remain pending despite original-only A5 demo",
     "A6 only verifies mathematical signatures in synthetic offline tests: no enrolled owner signing identity or approved final clip",
     "A7 Clivox protected GitHub environment now exists, but Google owner OAuth consent, dedicated Clivox client/refresh credentials and live channel ID readback remain pending",
-    "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured",
+    "A8 now tests atomic SQLite reservations on one ephemeral GitHub runner, but an authenticated cross-run durable ledger, remote YouTube inventory reconciliation and protected upload credentials remain unconfigured",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "61% is a planning-weighted code/architecture engineering estimate (667/11 package points rounded); no actual live private vault/readback, independently trusted revocation authority, authenticated creator grants, real licensed footage, production Google authorization or CLIVOX uploads. A9 licensed pilot remains 0%.",
+  "disclaimer": "62% is a planning-weighted engineering/code estimate (682/11 points rounded), NOT live creator rights, a cross-run durable upload ledger, remote YouTube reconciliation, production OAuth, media vault readiness or uploaded licensed clips. A9 remains 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -191,5 +191,22 @@
     "real_persistent_external_anchor_verified": false,
     "private_vault_readonly_env_verified": false,
     "real_creator_license_authenticated": false
+  },
+  "a8_atomic_upload_attempt_rehearsal": {
+    "stage": "A8_EPHEMERAL_TRANSACTIONAL_ATOMIC_REHEARSAL_NO_MEDIA",
+    "workflow": ".github/workflows/branch3-clivox-a8-atomic-ledger-qa.yml",
+    "code": "scripts/branch3_a8_attempt_ledger.py",
+    "docs": "branch3/a8/ATOMIC_ATTEMPT_LEDGER_REHEARSAL.md",
+    "sqlite_single_file_atomic_begin_immediate_implemented": true,
+    "exact_release_and_media_unique_constraints_implemented": true,
+    "parallel_same_file_contenders_tested": true,
+    "uncertain_remote_state_no_retry_monotonic_transition_implemented": true,
+    "local_runner_file_deleted_after_test": true,
+    "actual_cross_runner_durable_reservation_store": false,
+    "authenticated_remote_youtube_inventory_reconciliation": false,
+    "production_clivox_upload_oauth": false,
+    "actual_youtube_api_calls": 0,
+    "licensed_creator_grants": 0,
+    "live_upload_enabled": false
   }
 }
