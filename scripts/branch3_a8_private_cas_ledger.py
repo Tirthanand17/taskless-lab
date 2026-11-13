@@ -265,11 +265,13 @@ def decode_github_contents(reply: dict) -> tuple[dict, str]:
     return obj, sha
 
 
-def build_github_put_contract(*, existing_blob_sha: str, updated: dict) -> dict:
+def build_github_put_contract(*, existing_blob_sha: str, updated: dict,
+                              anchor: dict, now: datetime) -> dict:
     """Pure GitHub Contents update body. Cannot execute a remote PUT."""
     require(type(existing_blob_sha) is str
             and GIT_SHA.fullmatch(existing_blob_sha) is not None,
             "REQUIRES_PREVIOUS_BLOB_SHA")
+    verify_ledger(updated, anchor=anchor, now=now)
     return {
         "message": "clivox: reserve or hold upload attempt (no YouTube)",
         "content": base64.b64encode(bytes_for_ledger(updated)).decode("ascii"),
@@ -278,7 +280,8 @@ def build_github_put_contract(*, existing_blob_sha: str, updated: dict) -> dict:
     }
 
 
-def simulate_cas(*, current_remote_blob_sha: str, proposed_body: dict) -> str:
+def simulate_cas(*, current_remote_blob_sha: str, proposed_body: dict,
+                 anchor: dict, now: datetime) -> str:
     """Only a mock CAS. A future live transport MUST reconcile ambiguity."""
     require(type(current_remote_blob_sha) is str
             and GIT_SHA.fullmatch(current_remote_blob_sha) is not None,
@@ -293,7 +296,8 @@ def simulate_cas(*, current_remote_blob_sha: str, proposed_body: dict) -> str:
         require(0 < len(raw) <= MAX_BYTES, "PROPOSAL_SIZE")
         obj = json.loads(raw.decode("utf-8"))
         require(bytes_for_ledger(obj) == raw, "PROPOSAL_CANONICAL")
-    except (ValueError, UnicodeDecodeError, binascii.Error):
+        verify_ledger(obj, anchor=anchor, now=now)
+    except (ValueError, UnicodeDecodeError, binascii.Error, TypeError):
         raise PrivateCASBlocked("CLIVOX_A8_PRIVATE_CAS_DENIED_BAD_PROPOSAL") from None
     return git_blob_sha(raw)
 
