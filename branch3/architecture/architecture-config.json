@@ -132,7 +132,17 @@
     "a2_authenticated_live_global_revocation_feed_verified": false,
     "a2_checkpoint_workflow": ".github/workflows/branch3-clivox-a2-revocation-checkpoint.yml",
     "a2_checkpoint_implementation": "scripts/branch3_a2_checkpointed_revocations.py",
-    "a2_checkpointed_math_publishing_disabled": true
+    "a2_checkpointed_math_publishing_disabled": true,
+    "a2_global_revocation_journal_chain_logic_implemented": true,
+    "a2_global_github_blob_sha_readback_check_implemented": true,
+    "a2_private_github_contents_cas_request_contract_implemented": true,
+    "a2_stale_concurrent_ledger_writer_detection_tested_offline": true,
+    "a2_private_ledger_policy": "branch3/rights_review/private-ledger-policy.json",
+    "a2_global_ledger_workflow": ".github/workflows/branch3-clivox-a2-private-ledger-cas.yml",
+    "a2_real_private_revocation_ledger_provisioned": false,
+    "a2_real_owner_approved_write_environment_verified": false,
+    "a2_real_external_durable_anchor_enrolled": false,
+    "a2_global_ledger_live_write_enabled": false
   },
   "media_storage_preflight": {
     "a3_public_media_boundary_implemented": true,

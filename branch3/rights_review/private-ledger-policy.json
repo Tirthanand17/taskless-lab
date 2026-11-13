@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "phase": "A2_PRIVATE_LEDGER_CAS_CONTRACT_OFFLINE_ONLY",
+  "controller_public_repo": "Tirthanand17/taskless-lab",
+  "private_ledger_path": "clivox-private/rights/revocation-journal-v1.json",
+  "github_contents_api_put_contract_tested_offline": true,
+  "actual_vault_selected": false,
+  "actual_vault_owner_approved": false,
+  "authenticated_repo_readback_verified": false,
+  "private_ledger_initial_blob_provisioned": false,
+  "production_signer_identity_enrolled": false,
+  "external_durable_anchor_enrolled": false,
+  "dedicated_private_vault_contents_token_enrolled": false,
+  "protected_manual_write_environment_verified": false,
+  "remote_github_get_or_put_enabled": false,
+  "source_media_download_enabled": false,
+  "youtube_upload_schedule_or_publish_enabled": false,
+  "actual_creator_grants_approved": 0,
+  "state": "NO_LIVE_WRITES_NO_RIGHTS"
+}

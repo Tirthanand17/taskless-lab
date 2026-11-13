@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 59,
-  "overall_estimated_remaining_percent": 41,
+  "overall_estimated_completion_percent": 60,
+  "overall_estimated_remaining_percent": 40,
   "milestone_count": 11,
   "milestones": [
     {
@@ -26,9 +26,9 @@
     {
       "id": "A2",
       "name": "Human rights verification",
-      "completion_pct": 75,
+      "completion_pct": 85,
       "status": "partial",
-      "evidence": "Existing strict A1→A2 receipt + Ed25519 review/revocation math, and newly signed 15-minute checkpoint/hash-chain/externally-supplied anchor anti-rollback verifier, with adversarial offline CI. No owner-enrolled keys, authoritative persisted ledger or real creator licenses."
+      "evidence": "Existing strict A1→A2 signed receipt, signed receipt-scoped checkpoint and rollback math, now plus globally chained revocation journal, SHA-verified GitHub Contents readback and optimistic prior-blob-SHA compare-and-swap protocol with synthetic adversarial tests; NO owner approval, live private ledger, real keys, persistent anchor or grants."
     },
     {
       "id": "A3",
@@ -94,7 +94,7 @@
   "github_private_media_vault_provisioned": false,
   "branch1_and_branch2_paused": true,
   "most_important_blockers": [
-    "Real creator-issued commercial clip licenses, authenticated human reviewer/key authority, and actual owner-controlled durable revocation checkpoints (A2 only validates offline signature and chain mathematics)",
+    "Actual creator-issued commercial reuse rights and independently authenticated reviewer/revocation signing authority; global private GitHub Contents SHA-CAS protocol exists OFFLINE but neither private journal nor independent durable trust anchor has been provisioned",
     "A3 owner must select and approve private media storage, configure a protected review environment and grant narrow read-only metadata access for an actual audited GitHub API readback; no real vault exists/verified",
     "Exact source review and genuinely original clip edit",
     "Distinct Clivox API OAuth and protected release environment",
@@ -105,7 +105,7 @@
     "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "59% is a planning-weighted estimate of A0–A10 engineering implementation (647/11 package points rounded), NOT authenticated creator rights, live durable revocation authority, private vault readiness, actual released videos, or YouTube publishing. A9 licensed pilot remains 0%.",
+  "disclaimer": "60% is a planning-weighted engineering completion estimate (657/11 package points rounded) of offline + code-only milestones; NOT a live creator rights ledger, an owner-audited private vault, any authenticated licenses or production CLIVOX publishing. A9 first licensed pilot remains 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -172,6 +172,15 @@
     "externally_supplied_anchor_anti_rollback_check_implemented": true,
     "owner_audited_external_anchor_enrolled": false,
     "actual_authoritative_revocation_ledger_online": false,
-    "checkpoint_qa_workflow": ".github/workflows/branch3-clivox-a2-revocation-checkpoint.yml"
+    "checkpoint_qa_workflow": ".github/workflows/branch3-clivox-a2-revocation-checkpoint.yml",
+    "private_global_ledger_cas_contract_implemented": true,
+    "github_contents_blob_sha_readback_validator_implemented": true,
+    "global_signed_revocation_journal_implemented": true,
+    "concurrent_stale_writer_fail_closed_simulated": true,
+    "github_private_journal_write_enabled": false,
+    "real_global_revocation_journal_online": false,
+    "owner_approved_live_private_write_environment_configured": false,
+    "private_global_ledger_ci": ".github/workflows/branch3-clivox-a2-private-ledger-cas.yml",
+    "private_global_ledger_guide": "branch3/rights_review/github-private-ledger-cas.md"
   }
 }

@@ -15,6 +15,10 @@ The code's `verify_offline_receipt_preview` accepts explicit caller-provided pub
 
 [Receipt-scoped revocation checkpoint security preview](checkpointed-revocations.md) now checks an exact hash chain, detached checkpoint signature, 15-minute timestamp window and a caller-supplied prior trusted-head anchor. Deleted/reordered events and signed revoked receipts fail closed in GitHub-only adversarial CI. **There is no actual owner-controlled persistent checkpoint, enrolled revocation key or remotely complete revocation feed. This check grants no copyright permission or media access.**
 
+## Follow-up: global GitHub SHA-CAS journal protocol (offline only)
+
+[Global private revocation ledger CAS contract](github-private-ledger-cas.md) models signed revocation journal append, GitHub blob-SHA content verification and stale-writer rejection. No actual private vault, persistent external anti-rollback head, authenticated signer identity, secret or live writer is configured; it cannot grant rights or media access.
+
 ## Runtime and CI
 
 - `scripts/branch3_a2_review_receipt.py` — restricted pending A2 cases, canonical digest/signature/revocation mathematical checks, strict zero-grant policy. Its CLI runs only the zero-license **pending-case quarantine**, not live receipt signing or registry promotion.

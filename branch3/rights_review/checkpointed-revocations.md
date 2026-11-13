@@ -22,6 +22,10 @@ This is a **per-receipt** log, *not* proof that all revocations across creators 
 - `branch3/rights_review/review-policy.json`: unchanged fail-closed policy. It must still declare `durable_revocation_ledger=false` and `real_revocation_authority_key_enrolled=false`.
 - `branch3/creator_permissions.json`: still empty. No automatic promotion to licensed creator.
 
+## Subsequent global CAS protocol
+
+[Global private GitHub Contents ledger SHA-CAS design](github-private-ledger-cas.md) is now implemented and tested offline to model cross-receipt append-only revocation sequencing and stale-blob write conflicts. The current trust anchors remain test inputs and no real private ledger has been connected or written.
+
 ## Mandatory production blockers
 
 1. Obtain and independently verify actual rights-holder commercial clipping permissions and underlying soundtrack/game footage/guest clearances, stored in a private approved evidence vault. Never substitute signer mathematics for legal rights.
