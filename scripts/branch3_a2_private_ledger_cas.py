@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import re
+from pathlib import Path
 
 from scripts.branch3_a2_review_receipt import (
     CLIVOX_ID, SHA, REASONS, REVOKE_FIELDS, REVOKE_DOMAIN,
@@ -24,6 +25,7 @@ from scripts.branch3_a2_review_receipt import (
 from scripts.branch3_a2_checkpointed_revocations import GENESIS_HEAD_SHA256
 from scripts.branch3_media_storage_preflight import inspect_private_repo_metadata, StorageDenied
 
+POLICY_PATH = Path(__file__).resolve().parents[1] / "branch3/rights_review/private-ledger-policy.json"
 OWNER = "Tirthanand17"
 PUBLIC_REPO = OWNER + "/taskless-lab"
 FILE_PATH = "clivox-private/rights/revocation-journal-v1.json"
@@ -305,6 +307,41 @@ def simulate_github_cas(
     return git_blob_sha(raw)
 
 
+def validate_closed_policy(policy: dict) -> None:
+    """A changed public JSON flag cannot enable private reads or media writes."""
+    require(type(policy) is dict and set(policy) == {
+        "schema_version", "channel_id", "phase", "controller_public_repo",
+        "private_ledger_path", "github_contents_api_put_contract_tested_offline",
+        "actual_vault_selected", "actual_vault_owner_approved",
+        "authenticated_repo_readback_verified", "private_ledger_initial_blob_provisioned",
+        "production_signer_identity_enrolled", "external_durable_anchor_enrolled",
+        "dedicated_private_vault_contents_token_enrolled",
+        "protected_manual_write_environment_verified",
+        "remote_github_get_or_put_enabled", "source_media_download_enabled",
+        "youtube_upload_schedule_or_publish_enabled", "actual_creator_grants_approved",
+        "state"
+    }, "UNEXPECTED_PRIVATE_LEDGER_POLICY")
+    require(policy["schema_version"] == 1
+            and policy["channel_id"] == CLIVOX_ID
+            and policy["controller_public_repo"] == PUBLIC_REPO
+            and policy["phase"] == "A2_PRIVATE_LEDGER_CAS_CONTRACT_OFFLINE_ONLY"
+            and policy["private_ledger_path"] == FILE_PATH
+            and policy["state"] == "NO_LIVE_WRITES_NO_RIGHTS"
+            and policy["github_contents_api_put_contract_tested_offline"] is True
+            and policy["actual_creator_grants_approved"] == 0,
+            "PREMATURE_PRIVATE_LEDGER_POLICY")
+    for key in (
+        "actual_vault_selected", "actual_vault_owner_approved",
+        "authenticated_repo_readback_verified", "private_ledger_initial_blob_provisioned",
+        "production_signer_identity_enrolled", "external_durable_anchor_enrolled",
+        "dedicated_private_vault_contents_token_enrolled",
+        "protected_manual_write_environment_verified",
+        "remote_github_get_or_put_enabled", "source_media_download_enabled",
+        "youtube_upload_schedule_or_publish_enabled"
+    ):
+        require(policy[key] is False, "FORGED_PRODUCTION_GATE_" + key)
+
+
 def fixture_report() -> dict:
     return {
         "stage": "A2_PRIVATE_LEDGER_CAS_UNCONFIGURED",
@@ -329,6 +366,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=("fixture",), default="fixture")
     parser.parse_args()
+    validate_closed_policy(json.loads(POLICY_PATH.read_text(encoding='utf-8')))
     print(json.dumps(fixture_report(), sort_keys=True))
 
 
