@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 72,
-  "overall_estimated_remaining_percent": 28,
+  "overall_estimated_completion_percent": 73,
+  "overall_estimated_remaining_percent": 27,
   "milestone_count": 11,
   "milestones": [
     {
@@ -68,9 +68,9 @@
     {
       "id": "A8",
       "name": "Protected private-first upload/scheduling",
-      "completion_pct": 82,
+      "completion_pct": 86,
       "status": "partial",
-      "evidence": "Existing original-only private-first and SQLite/cross-run CAS simulation, private canonical EMPTY A8 genesis created, authenticated owner-only bounded Google uploads status adapter (not connected) plus NEW owner/main/protected GitHub live READ-ONLY bridge that validates private repo owner/collaborators, canonical Git blob SHA, global A8 attempt-chain/duplicates and externally supplied prior sequence/head; adversarial no-secrets CI. No dedicated read token, actual live workflow GET run, real independent immutable anchor, remote writer, Google OAuth or upload."
+      "evidence": "A8 has a private empty production attempt ledger, owner-only read-only bridge and mock CAS guards. ACTUAL GitHub private non-main sandbox stale-SHA test: valid conditional update accepted, outdated SHA update rejected HTTP 409 and first write preserved. Optional owner/main/protected sandbox-only GET/PUT/readback code now hard denies production ledger and YouTube. No dedicated sandbox token, no live workflow run, no real production cross-run writer, no immutable external anchor."
     },
     {
       "id": "A9",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "72% is a planning-weighted engineering and protected infrastructure estimate only. A8 now includes owner-only live read-only private attempt ledger code, not an actually executed protected credential run. A matching hash-chain snapshot cannot certify signer identity, external immutable anchor, atomic cross-run reservation, actual video rights, Google upload OAuth, owner A6 signing or private-first YouTube publishing. A9 first production upload remains 0%; Branches 1 and 2 paused.",
+  "disclaimer": "73% is a planning-weighted engineering estimate, NOT production publication readiness. Actual GitHub test only validated sequential stale-SHA HTTP 409 rejection on isolated private non-main sandbox file. No rights/owner-signed final media, real durable production CAS writer, independently immutable anchor, Clivox Google upload OAuth, remote inventory reconciliation or YouTube upload. A9 remains 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -367,5 +367,30 @@
     "actual_youtube_uploads": 0,
     "approved_private_media_storage": false,
     "publishing_enabled": false
+  },
+  "a8_real_github_sandbox_cas_proof": {
+    "stage": "A8_REAL_PRIVATE_GITHUB_STALE_SHA_CONFIRMED_SANDBOX_ONLY",
+    "date_utc": "2026-11-13",
+    "guide": "branch3/a8/REAL_GITHUB_CAS_SANDBOX_PROOF.md",
+    "private_sandbox_branch_exists": true,
+    "private_sandbox_only_test_file_exists": true,
+    "private_sandbox_serial_after_test": 1,
+    "real_prior_blob_sha_update_accepted": true,
+    "real_old_sha_update_rejected_http_409": true,
+    "post_conflict_contents_still_winner": true,
+    "private_sandbox_file_canonicalized_for_future_readback": true,
+    "production_attempt_ledger_modified": false,
+    "real_creator_media_or_license_touched": false,
+    "code": "scripts/branch3_a8_cas_sandbox_writer.py",
+    "workflow": ".github/workflows/branch3-clivox-a8-cas-sandbox-verify.yml",
+    "offline_qa": ".github/workflows/branch3-clivox-a8-cas-sandbox-qa.yml",
+    "real_owner_reviewed_sandbox_environment_created": true,
+    "sandbox_environment_owner_reviewer_main_only_admin_bypass_off_verified": true,
+    "sandbox_environment_secrets_at_readback": 0,
+    "actual_workflow_live_sandbox_write_executed": false,
+    "actual_production_global_writer_implemented": false,
+    "cross_runner_live_race_validated": false,
+    "independent_nonrollbackable_anchor_proven": false,
+    "real_youtube_upload_enabled": false
   }
 }

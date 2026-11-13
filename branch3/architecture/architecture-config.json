@@ -337,7 +337,21 @@
     "a8_real_live_github_actions_readonly_token_configured": false,
     "a8_live_readonly_may_enable_publication": false,
     "a8_actual_github_contents_put_implemented": false,
-    "a8_reconciled_youtube_video_inventory": false
+    "a8_reconciled_youtube_video_inventory": false,
+    "a8_real_private_github_sandbox_stale_sha_conflict_verified": true,
+    "a8_real_private_sandbox_first_update_accepted": true,
+    "a8_real_private_sandbox_stale_second_update_http409_rejected": true,
+    "a8_real_private_sandbox_post_conflict_readback_winner_only": true,
+    "a8_real_private_sandbox_probe_canonicalized": true,
+    "a8_sandbox_cas_writer_module": "scripts/branch3_a8_cas_sandbox_writer.py",
+    "a8_sandbox_cas_live_workflow": ".github/workflows/branch3-clivox-a8-cas-sandbox-verify.yml",
+    "a8_sandbox_cas_no_secrets_qa": ".github/workflows/branch3-clivox-a8-cas-sandbox-qa.yml",
+    "a8_real_owner_protected_sandbox_environment_exists": true,
+    "a8_real_sandbox_environment_secrets_configured": false,
+    "a8_real_sandbox_live_actions_job_executed": false,
+    "a8_live_remote_production_attempt_cas_writer_implemented": false,
+    "a8_live_race_production_tested": false,
+    "a8_real_media_upload_scheduling_enabled": false
   },
   "a10_synthetic_analytics": {
     "analytics_report_shape_parser_implemented": true,

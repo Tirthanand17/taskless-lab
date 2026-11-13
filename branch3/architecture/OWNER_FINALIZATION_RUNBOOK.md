@@ -1,6 +1,6 @@
 # CLIVOX — Real production closure after private infrastructure bootstrap
 
-**Date:** 2026-11-13. **Overall engineering estimate:** 72% implemented / 28% remaining (code/CI planning only). The original-first arcade trio successfully rendered on GitHub as preview and full-resolution review copies; the new A6 SHA-bound human-review handoff is implemented, but still not owner-signed. **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
+**Date:** 2026-11-13. **Overall engineering estimate:** 73% implemented / 27% remaining (code/CI planning only). The original-first arcade trio successfully rendered on GitHub as preview and full-resolution review copies; the new A6 SHA-bound human-review handoff is implemented, but still not owner-signed. **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
 
 ## Verified, actually completed today
 
@@ -13,6 +13,10 @@
 ## Additional owner-protected Analytics environment provisioned
 
 The controller now also has `clivox-analytics-readonly`, configured with a required owner reviewer, `main`-only branch policy and administrator bypass disabled; zero secrets were verified. Its [owner-only A10 readback guide](../a10/OWNER_ANALYTICS_READONLY_SETUP.md) requires separate Clivox `youtube.readonly` + `yt-analytics.readonly` consent, and cannot read metrics or make publication decisions before the owner provides those credentials.
+
+## A8 real GitHub CAS sandbox proof (not production reservation)
+
+The [real private GitHub sandbox proof](../a8/REAL_GITHUB_CAS_SANDBOX_PROOF.md) confirmed one accepted conditional update, one stale SHA update rejected with **HTTP 409**, and the first update preserved after private readback. A new owner-reviewed/main-only `clivox-cas-sandbox` environment is really provisioned with **zero secrets**; an optional sandbox-only writer is implemented, not activated. The **production** upload-attempt ledger and YouTube were not changed. This does not prove cross-run linearizability, protect against independent rollback, approve rights or enable actual uploads.
 
 ## A8 private upload-control readback bridge — no live token
 

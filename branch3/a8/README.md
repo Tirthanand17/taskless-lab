@@ -32,6 +32,10 @@ Primary sources:
 
 [Private global upload attempt ledger CAS contract](PRIVATE_CROSS_RUN_CAS_PROTOCOL.md) now models a bounded append-only journal in an owner-selected private GitHub repository, validates each global release/media uniqueness event and GitHub Contents byte/SHA integrity, and simulates concurrent conditional updates and unknown-write outcomes. **This is only a fixture-driven contract: no private store is provisioned, no live GET/PUT exists, no true distributed lock has been proven, and media/YouTube uploads remain impossible.**
 
+## Added 2026-11-13: real GitHub private SHA-CAS sandbox probe
+
+[Owner-only, SANDBOX-only CAS write validation](REAL_GITHUB_CAS_SANDBOX_PROOF.md) verifies GitHub's actual 409 stale-blob-SHA rejection on a separate non-main private test file, without editing the real A8 upload-attempt journal. An optional protected owner/main-only sandbox writer can recheck the isolated file before/after **one** conditional update, but its environment has **zero** token secrets and it cannot touch production media or YouTube. Concurrent real runner reservations, external immutable heads, genuine A6 release and Google OAuth remain blocked.
+
 ## Added 2026-11-13: protected real private upload-attempt ledger READ-ONLY code
 
 [Owner-only A8 private attempt ledger readback setup](OWNER_PRIVATE_ATTEMPT_READBACK.md) now performs three fixed GitHub API GETs for the private repository, owner-only collaborator list and exact canonical upload attempt journal file, then verifies its blob SHA, strict full event replay and owner-supplied prior anchor. The private genesis file **actually exists** with zero events; this GitHub Actions job **has not been run with a dedicated read-only token**, and its protected environment has zero such secrets. It never performs a remote update or clears an ambiguous upload. The production single-writer CAS, independently durable checkpoint and YouTube upload OAuth are still unconfigured.
