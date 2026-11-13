@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "stage": "ORIGINAL_FIRST_PARTY_FICTIONAL_ARCADE_REVIEW_ASSETS",
+  "creative_origin": "ALL_ORIGINAL_TEXT_VECTOR_GRAPHICS_NO_EXTERNAL_IP",
+  "music_or_game_footage_included": false,
+  "third_party_clips_included": false,
+  "external_images_or_audio_included": false,
+  "original_speech_generation": "ESPEAK_NG_SYNTHETIC_VOICE_NONHUMAN_REVIEW",
+  "human_editorial_review_completed": false,
+  "owner_signed_release_completed": false,
+  "upload_schedule_or_publish_authorized": false,
+  "episodes": [
+    {
+      "id": "clivox_original_door_choice_s01",
+      "format": "short",
+      "series": "THE IMPOSSIBLE ARCADE",
+      "title": "A Door That Opens Only When You IGNORE It",
+      "description": "A fictional mini-game challenge created entirely by CLIVOX. No external gameplay or borrowed clips. Which choice would you make first? #Shorts #Gaming #Challenge",
+      "duration_seconds": 36,
+      "beats": [
+        {
+          "start_s": 0,
+          "end_s": 3,
+          "headline": "THE DOOR KNOWS",
+          "subheadline": "A totally imaginary game.",
+          "spoken": "In this imaginary game, a door knows every move you make.",
+          "art": "door"
+        },
+        {
+          "start_s": 3,
+          "end_s": 10,
+          "headline": "THREE CHOICES",
+          "subheadline": "RED. BLUE. OR NOTHING.",
+          "spoken": "Red locks the room. Blue restarts the clock. Or you can do absolutely nothing.",
+          "art": "buttons"
+        },
+        {
+          "start_s": 10,
+          "end_s": 17,
+          "headline": "PICK ONE NOW",
+          "subheadline": "5  •  4  •  3  •  2  •  1",
+          "spoken": "You have five seconds. Pick before the timer hits zero.",
+          "art": "timer"
+        },
+        {
+          "start_s": 17,
+          "end_s": 26,
+          "headline": "NOTHING WINS",
+          "subheadline": "The door opens when you wait.",
+          "spoken": "Plot twist. Every button was a trap. Ignoring the door is the secret move.",
+          "art": "door"
+        },
+        {
+          "start_s": 26,
+          "end_s": 36,
+          "headline": "WOULD YOU PASS?",
+          "subheadline": "COMMENT YOUR FIRST INSTINCT.",
+          "spoken": "Be honest. Did you press a button, or did you walk away? Drop your answer.",
+          "art": "score"
+        }
+      ]
+    },
+    {
+      "id": "clivox_original_portal_choice_s02",
+      "format": "short",
+      "series": "THE IMPOSSIBLE ARCADE",
+      "title": "Only ONE Portal Is Safe... What Would You Pick?",
+      "description": "Original fictional arcade challenge by CLIVOX. Three portals, one surprising twist. Comment your choice. No reused game footage. #Shorts #Gaming #Quiz",
+      "duration_seconds": 36,
+      "beats": [
+        {
+          "start_s": 0,
+          "end_s": 3,
+          "headline": "THREE PORTALS",
+          "subheadline": "ONLY ONE IS SAFE.",
+          "spoken": "Imagine a game with three portals and one chance to escape.",
+          "art": "portal"
+        },
+        {
+          "start_s": 3,
+          "end_s": 10,
+          "headline": "GOLD OR BLUE?",
+          "subheadline": "OR THE GLITCHING GREEN ONE?",
+          "spoken": "Gold promises treasure. Blue promises safety. Green looks completely broken.",
+          "art": "portal"
+        },
+        {
+          "start_s": 10,
+          "end_s": 18,
+          "headline": "DECIDE FAST",
+          "subheadline": "5  •  4  •  3  •  2  •  1",
+          "spoken": "The timer is almost gone. Pick a color right now.",
+          "art": "timer"
+        },
+        {
+          "start_s": 18,
+          "end_s": 26,
+          "headline": "GREEN IS HOME",
+          "subheadline": "The glitch was a secret exit.",
+          "spoken": "Surprise. The broken-looking green portal was the only one leading home.",
+          "art": "portal"
+        },
+        {
+          "start_s": 26,
+          "end_s": 36,
+          "headline": "DID YOU PICK IT?",
+          "subheadline": "TYPE GOLD, BLUE OR GREEN.",
+          "spoken": "Would you trust the glitch, or choose the safe-looking door? Comment your color.",
+          "art": "score"
+        }
+      ]
+    },
+    {
+      "id": "clivox_original_three_level_arcade_l01",
+      "format": "long",
+      "series": "THE IMPOSSIBLE ARCADE",
+      "title": "3 Impossible Arcade Decisions That Reveal How You Play",
+      "description": "A completely original, fictional CLIVOX arcade challenge. Three interactive rounds, three surprising solutions, one final score. Designed and narrated as an original game-show-style exercise. No borrowed gameplay or third-party clips.",
+      "duration_seconds": 108,
+      "beats": [
+        {
+          "start_s": 0,
+          "end_s": 7,
+          "headline": "THREE LEVELS",
+          "subheadline": "CAN YOU BEAT THE IMPOSSIBLE ARCADE?",
+          "spoken": "Welcome to the Impossible Arcade. Three choices, three twists. How many can you solve?",
+          "art": "arcade"
+        },
+        {
+          "start_s": 7,
+          "end_s": 15,
+          "headline": "RULE ONE",
+          "subheadline": "NO RESTARTS. NO HINTS.",
+          "spoken": "You can pause the video, but pretend there are no retries. Trust your first instinct.",
+          "art": "score"
+        },
+        {
+          "start_s": 15,
+          "end_s": 23,
+          "headline": "LEVEL ONE",
+          "subheadline": "THE DOOR THAT STUDIES YOU.",
+          "spoken": "A mysterious door tracks every button you press. How do you get through it?",
+          "art": "door"
+        },
+        {
+          "start_s": 23,
+          "end_s": 31,
+          "headline": "RED OR BLUE?",
+          "subheadline": "OR DO ABSOLUTELY NOTHING?",
+          "spoken": "Red locks the room. Blue resets the puzzle. Or you can wait and watch.",
+          "art": "buttons"
+        },
+        {
+          "start_s": 31,
+          "end_s": 39,
+          "headline": "LEVEL ONE SOLVED",
+          "subheadline": "THE SECRET WAS PATIENCE.",
+          "spoken": "The door opens only when you stop pressing buttons. Did you get the first point?",
+          "art": "door"
+        },
+        {
+          "start_s": 39,
+          "end_s": 48,
+          "headline": "LEVEL TWO",
+          "subheadline": "THREE PORTALS. ONE HOME.",
+          "spoken": "Gold promises treasure. Blue looks safest. Green looks like a broken game texture.",
+          "art": "portal"
+        },
+        {
+          "start_s": 48,
+          "end_s": 56,
+          "headline": "FIVE SECONDS",
+          "subheadline": "WHICH PORTAL DO YOU TRUST?",
+          "spoken": "Choose now. The bright one, the calm one, or the glitching one?",
+          "art": "timer"
+        },
+        {
+          "start_s": 56,
+          "end_s": 64,
+          "headline": "LEVEL TWO SOLVED",
+          "subheadline": "GREEN WAS THE EXIT.",
+          "spoken": "In our imaginary arcade, the glitch was actually a hidden exit. One more point if you chose green.",
+          "art": "portal"
+        },
+        {
+          "start_s": 64,
+          "end_s": 73,
+          "headline": "LEVEL THREE",
+          "subheadline": "THE BUTTON WITH NO LABEL.",
+          "spoken": "Two buttons promise rewards. The third has no words, just a tiny blinking light.",
+          "art": "buttons"
+        },
+        {
+          "start_s": 73,
+          "end_s": 81,
+          "headline": "FINAL CHOICE",
+          "subheadline": "FOLLOW THE RULES... OR GET CURIOUS?",
+          "spoken": "Would you trust the reward buttons, or press the strange blank one?",
+          "art": "timer"
+        },
+        {
+          "start_s": 81,
+          "end_s": 90,
+          "headline": "LEVEL THREE SOLVED",
+          "subheadline": "THE BLANK BUTTON TURNS OFF THE TRAP.",
+          "spoken": "The unlabeled button shuts down the room and opens the last gate. A risky choice pays off.",
+          "art": "buttons"
+        },
+        {
+          "start_s": 90,
+          "end_s": 98,
+          "headline": "YOUR SCORE",
+          "subheadline": "ZERO, ONE, TWO... OR THREE?",
+          "spoken": "Count your correct choices. Even one good guess can beat this imaginary arcade.",
+          "art": "score"
+        },
+        {
+          "start_s": 98,
+          "end_s": 108,
+          "headline": "NEXT CHALLENGE?",
+          "subheadline": "COMMENT YOUR SCORE BELOW.",
+          "spoken": "Tell me your score out of three, and which level fooled you. Follow Clivox for the next original challenge.",
+          "art": "arcade"
+        }
+      ]
+    }
+  ]
+}
