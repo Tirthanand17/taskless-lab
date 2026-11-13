@@ -376,5 +376,23 @@
     "original_a6_handoff_report_artifact_included_in_github_runner": true,
     "preview_trio_github_run_verified": "43380418384",
     "full_resolution_trio_github_run_verified": "43380650008"
+  },
+  "a10_owner_analytics_readonly": {
+    "fixed_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+    "code": "scripts/branch3_a10_owner_readonly.py",
+    "protected_main_owner_analytics_environment_real_provisioned": true,
+    "environment_name": "clivox-analytics-readonly",
+    "environment_secrets_configured": false,
+    "accepted_readonly_scopes_exact": [
+      "https://www.googleapis.com/auth/youtube.readonly",
+      "https://www.googleapis.com/auth/yt-analytics.readonly"
+    ],
+    "exact_owner_channel_identity_before_reports": true,
+    "live_google_analytics_owner_consent_verified": false,
+    "live_google_requests_completed": 0,
+    "real_channel_stats_verified": false,
+    "private_video_ids_exported": false,
+    "auto_experiment_winners_or_upload_schedule_enabled": false,
+    "youtube_upload_or_publish_enabled": false
   }
 }

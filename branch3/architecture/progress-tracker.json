@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 69,
-  "overall_estimated_remaining_percent": 31,
+  "overall_estimated_completion_percent": 71,
+  "overall_estimated_remaining_percent": 29,
   "milestone_count": 11,
   "milestones": [
     {
@@ -82,9 +82,9 @@
     {
       "id": "A10",
       "name": "Analytics and optimization",
-      "completion_pct": 50,
+      "completion_pct": 70,
       "status": "partial",
-      "evidence": "Synthetic-only Analytics API table parser, metric validation, null-aware Shorts Studio separation, within-category A/B comparison and adversarial GitHub CI; Clivox Analytics OAuth, published videos and genuine experiments still absent"
+      "evidence": "Existing strict synthetic Analytics parser/experiment evaluator plus NEW owner/main protected Google Analytics v2 nonmonetary read-only adapter: exact CLIVOX channel verified before reports.query, exact youtube.readonly + yt-analytics.readonly scopes, bounded max 50 redacted video rows for 7d ending 2d ago, null-safe aggregates/adversarial mock CI. REAL clivox-analytics-readonly environment created/main-only/owner-review/admin bypass off/0 secrets; no real OAuth/readback or true experiments."
     }
   ],
   "creator_licenses_verified": 0,
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "69% is the equal-weight planning/engineering estimate, NOT an authorization or publishing milestone. All three original fictional arcade review MP4s were rendered in preview and full size on GitHub; A6 can produce real-file checksum owner-review packets but cannot sign/approve them. No owner attestation, final narration review, uploader OAuth, production media permission or YouTube upload. A9 licensed/published pilot 0%.",
+  "disclaimer": "71% is the equal-weight implementation estimate for A0-A10 (code/infrastructure). The A10 owner-only Analytics environment is genuinely provisioned but has zero secrets; all Google API traffic remains mock-only until separate owner consent. Real creator licenses, source media approval, editor-accepted final voice/captions, owner A6 signing, production uploader OAuth, durable remote writer, real analytics and A9 published pilot still absent. Branches 1/2 paused.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -320,5 +320,30 @@
     "actual_detached_owner_signature_issued": false,
     "actual_google_upload_enabled": false,
     "youtube_videos_uploaded": 0
+  },
+  "a10_owner_analytics_readonly": {
+    "stage": "A10_OWNER_APPROVED_PROTECTED_ACTUAL_ANALYTICS_READONLY_ADAPTER_NOT_CONNECTED",
+    "workflow": ".github/workflows/branch3-clivox-a10-owner-readonly.yml",
+    "no_secret_ci": ".github/workflows/branch3-clivox-a10-owner-readonly-qa.yml",
+    "code": "scripts/branch3_a10_owner_readonly.py",
+    "guide": "branch3/a10/OWNER_ANALYTICS_READONLY_SETUP.md",
+    "owner_only_main_protected_environment_created_and_verified": true,
+    "environment_name": "clivox-analytics-readonly",
+    "environment_secret_count_at_owner_api_readback": 0,
+    "required_scopes": [
+      "https://www.googleapis.com/auth/youtube.readonly",
+      "https://www.googleapis.com/auth/yt-analytics.readonly"
+    ],
+    "strictly_no_google_upload_or_monetary_scope": true,
+    "distinct_oauth_environment_from_clivox_release": true,
+    "google_channel_identity_before_analytics_required": true,
+    "actual_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+    "private_video_rows_not_exported": true,
+    "max_video_row_sample": 50,
+    "actual_owner_approved_oauth_consent_verified": false,
+    "actual_authenticated_analytics_calls": 0,
+    "real_metrics_or_causal_experiments_verified": false,
+    "human_editorial_optimization_implemented": false,
+    "youtube_publish_authorized": false
   }
 }

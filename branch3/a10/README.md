@@ -1,12 +1,16 @@
 # Clivox A10 — Analytics, experiments and feedback loop
 
-**Implementation date:** 2026-11-12. **Status:** offline, SYNTHETIC analytics parser and comparison planner. No real Clivox uploads, view data, Google Analytics OAuth or optimization automation.
+**Implementation dates:** synthetic parser 2026-11-12; owner-only read-only API adapter 2026-11-13. **Status:** synthetic fixture plus tested Clivox-specific bounded live adapter code and an owner-protected GitHub environment with **zero OAuth secrets**. No genuine Clivox Analytics consent, view data, uploaded video or real optimization decision exists.
 
 ## Official research (recheck before live integration)
 - [YouTube Analytics Reports API](https://developers.google.com/youtube/analytics/reference/reports/query): owner-authorized `GET https://youtubeanalytics.googleapis.com/v2/reports` with ids, time interval, metrics, dimensions and filters. Header column names/types must be mapped and missing rows may be omitted; data can lag several days.
 - [Metrics reference](https://developers.google.com/youtube/analytics/metrics): engagedViews, views, averageViewDuration, averageViewPercentage, shares and subscribersGained are documented metrics; metric meanings and report compatibility must be checked per query.
 - [YouTube Shorts Studio analytics](https://support.google.com/youtube/answer/12942217): shown in feed, viewed versus swiped away and retention displays require separate Studio-backed evidence. **Do not fabricate or infer these from YouTube Analytics API view totals.**
 - OAuth for Analytics uses the dedicated `https://www.googleapis.com/auth/yt-analytics.readonly` scope for ordinary Analytics reports. A7 currently asks only for `youtube.readonly` for channel identity; production Analytics access requires separately reviewed owner consent and protected secrets.
+
+## New protected actual Analytics read-only path (NOT CONNECTED)
+
+[Owner-only CLIVOX Analytics setup and limitations](OWNER_ANALYTICS_READONLY_SETUP.md) adds a separate three-request read-only pathway with `youtube.readonly` and `yt-analytics.readonly` both required, verified Clivox Brand Account, and a maximum 50-row nonmonetary sample in a seven-day window. The separate `clivox-analytics-readonly` GitHub environment was created and checked owner-main-only with administrator bypass disabled; it currently has **zero secrets**. PR CI uses mocked Google responses exclusively. The existing synthetic-only experiment data and policies remain unchanged.
 
 ## What is implemented
 - `scripts/branch3_a10_analytics.py`: validates a fixed YouTube Analytics result-table *shape*, with exact Clivox channel association, video annotations, metrics order and types. In A10 the only accepted input is explicitly `SYNTHETIC_YOUTUBE_ANALYTICS_API_RESPONSE`, never claimed to be a live report.
