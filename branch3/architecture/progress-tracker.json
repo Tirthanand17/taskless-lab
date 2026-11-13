@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 73,
-  "overall_estimated_remaining_percent": 27,
+  "overall_estimated_completion_percent": 74,
+  "overall_estimated_remaining_percent": 26,
   "milestone_count": 11,
   "milestones": [
     {
@@ -68,9 +68,9 @@
     {
       "id": "A8",
       "name": "Protected private-first upload/scheduling",
-      "completion_pct": 86,
+      "completion_pct": 88,
       "status": "partial",
-      "evidence": "A8 has a private empty production attempt ledger, owner-only read-only bridge and mock CAS guards. ACTUAL GitHub private non-main sandbox stale-SHA test: valid conditional update accepted, outdated SHA update rejected HTTP 409 and first write preserved. Optional owner/main/protected sandbox-only GET/PUT/readback code now hard denies production ledger and YouTube. No dedicated sandbox token, no live workflow run, no real production cross-run writer, no immutable external anchor."
+      "evidence": "A8 owner-only global private ledger readback, real isolated private GitHub stale-SHA 409 proof, safe sandbox writer only, new OFFLINE 12-outcome crash and ambiguous YouTube response recovery matrix; strict caller-inventory report schema and 99 deterministic 2-12-worker synthetic CAS schedules. Every uncertain state holds (never retry/upload). Still no live production single-writer CAS, independent external immutable head, enrolled owner release, Google OAuth or actual YouTube video."
     },
     {
       "id": "A9",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "73% is a planning-weighted engineering estimate, NOT production publication readiness. Actual GitHub test only validated sequential stale-SHA HTTP 409 rejection on isolated private non-main sandbox file. No rights/owner-signed final media, real durable production CAS writer, independently immutable anchor, Clivox Google upload OAuth, remote inventory reconciliation or YouTube upload. A9 remains 0%.",
+  "disclaimer": "74% is a rough, planning-weighted engineering estimate only. A8 has offline synthetic crash/reconciliation safety validation but not a deployed/verified production global writer, trusted external rollback anchor, exact-video signed owner release or Clivox OAuth. The original first-party videos are technical review copies. No real A9 upload, no automatic retry or publishing; Branches 1/2 paused.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -392,5 +392,31 @@
     "cross_runner_live_race_validated": false,
     "independent_nonrollbackable_anchor_proven": false,
     "real_youtube_upload_enabled": false
+  },
+  "a8_crash_recovery_contract": {
+    "stage": "A8_ALL_AMBIGUOUS_OUTCOMES_HOLD_OFFLINE_NOT_PRODUCTION_RECONCILIATION",
+    "module": "scripts/branch3_a8_crash_recovery.py",
+    "tests": "scripts/test_branch3_a8_crash_recovery.py",
+    "ci": ".github/workflows/branch3-clivox-a8-crash-recovery-qa.yml",
+    "runbook": "branch3/a8/AMBIGUOUS_COMMIT_RECOVERY_MATRIX.md",
+    "named_uncertain_outcome_count": 12,
+    "adversarial_deterministic_interleaving_cases": 99,
+    "multiworker_bounds": [
+      2,
+      12
+    ],
+    "known_inventory_json_only_shape_validated": true,
+    "imported_remote_inventory_report_not_independently_authenticated": true,
+    "absent_video_in_playlist_never_clears_hold": true,
+    "matching_github_ledger_never_grants_google_upload": true,
+    "ambiguous_post_put_timeout_never_retried": true,
+    "duplicate_media_and_release_deny_retry": true,
+    "real_production_github_cas_writer_deployed": false,
+    "external_immutable_checkpoint_enrolled": false,
+    "actual_google_oauth_scopes_configured": false,
+    "real_owner_signed_final_asset_approved": false,
+    "real_youtube_video_uploaded": false,
+    "source_media_download_enabled": false,
+    "publishing_enabled": false
   }
 }

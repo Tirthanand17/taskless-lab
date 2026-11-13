@@ -2,6 +2,10 @@
 
 **Status:** Engineering prototype only. No real Clivox owner OAuth, licensed source clip, finalized signed release, protected production environment, atomic persistent ledger, remote inventory reconciliation, YouTube upload or schedule.
 
+## New deterministic crash and ambiguity recovery safeguards
+
+The [A8 fail-closed recovery matrix](AMBIGUOUS_COMMIT_RECOVERY_MATRIX.md) adds an independent, source-free decision engine for 12 ambiguous CAS/YouTube outcomes and 99 deterministic mock interleavings among 2–12 workers. It replays the canonical event chain, rejects duplicate release/media subjects and invalid owner-inventory JSON, and **never** authorizes retries, uploads or scheduling even if an inventory report seems empty. These are *offline safety tests*, not production cross-run storage, real OAuth, actual owner approval or real-video readback. A9 remains 0%.
+
 ## Goals and official API constraints
 - `videos.insert` on YouTube must explicitly include `status.privacyStatus=private` (never rely on an unspecified default).
 - `status.publishAt` may only be set on a **never-published, currently-private** video. A past timestamp can publish a video immediately; the planner requires a strictly future UTC time with a 30-minute margin.

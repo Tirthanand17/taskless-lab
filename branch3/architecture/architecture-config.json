@@ -351,7 +351,19 @@
     "a8_real_sandbox_live_actions_job_executed": false,
     "a8_live_remote_production_attempt_cas_writer_implemented": false,
     "a8_live_race_production_tested": false,
-    "a8_real_media_upload_scheduling_enabled": false
+    "a8_real_media_upload_scheduling_enabled": false,
+    "a8_crash_failure_decision_engine_implemented": true,
+    "a8_crash_failure_scenarios_count": 12,
+    "a8_deterministic_worker_interleavings_modelled": 99,
+    "a8_all_ambiguities_hold_no_retry": true,
+    "a8_owner_inventory_reports_only_shape_checked_by_recovery": true,
+    "a8_no_video_original_binary_sha256_guarantee": true,
+    "a8_remote_absence_never_triggers_automatic_upload": true,
+    "a8_crash_recovery_module": "scripts/branch3_a8_crash_recovery.py",
+    "a8_crash_recovery_ci": ".github/workflows/branch3-clivox-a8-crash-recovery-qa.yml",
+    "a8_crash_recovery_live_external_anchor_proven": false,
+    "a8_live_production_writer_activated": false,
+    "a8_google_upload_enabled": false
   },
   "a10_synthetic_analytics": {
     "analytics_report_shape_parser_implemented": true,
