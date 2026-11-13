@@ -118,15 +118,19 @@ class CheckpointedA2Tests(unittest.TestCase):
             verify_checkpointed_receipt_preview(**p)
 
     def test_dropped_tombstone_with_old_signed_checkpoint_denied_by_anchor(self):
-        old, _, _ = prepare(revoked=False)
-        current, _, _ = prepare(revoked=True)
-        # Simulate independent readback of a previously recorded head.
-        old["trusted_floor"] = {
+        current, _, checkpoint_key = prepare(revoked=True)
+        # Start with the same signed review and receipt, not another fixture.
+        stale = copy.deepcopy(current)
+        stale["trusted_floor"] = {
             "sequence": 1,
             "head_sha256": current["snapshot"]["entries"][0]["entry_sha256"],
         }
+        stale["snapshot"]["entries"] = []
+        # Even if someone can produce a signed older checkpoint, a separately
+        # persisted newer anchor prevents the fork from being accepted.
+        signed_checkpoint(stale["snapshot"], checkpoint_key)
         with self.assertRaisesRegex(ReviewDenied, "ROLLBACK_OR_FORK"):
-            verify_checkpointed_receipt_preview(**old)
+            verify_checkpointed_receipt_preview(**stale)
 
     def test_mutations_of_signed_checkpoint_fail(self):
         cases = (
