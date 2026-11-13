@@ -280,7 +280,17 @@
     "a8_external_durable_rollback_anchor_exists": false,
     "a8_real_github_contents_put_implemented": false,
     "a8_youtube_authenticated_remote_inventory_completed": false,
-    "a8_youtube_writes_enabled": false
+    "a8_youtube_writes_enabled": false,
+    "a8_readonly_complete_bounded_uploads_inventory_implemented": true,
+    "a8_readonly_playlist_pagination_max_pages": 20,
+    "a8_readonly_videos_status_batched_max": 50,
+    "a8_readonly_cross_channel_and_duplicate_denial_tested": true,
+    "a8_only_owner_manual_protected_google_get_workflow": ".github/workflows/branch3-clivox-a8-inventory-readonly.yml",
+    "a8_owner_inventory_mock_ci": ".github/workflows/branch3-clivox-a8-inventory-qa.yml",
+    "a8_live_owner_inventory_completed": false,
+    "a8_live_oauth_secret_installed": false,
+    "a8_owner_inventory_cannot_authorize_blind_retry": true,
+    "a8_remote_snapshot_guaranteed_complete_and_fresh": false
   },
   "a10_synthetic_analytics": {
     "analytics_report_shape_parser_implemented": true,
