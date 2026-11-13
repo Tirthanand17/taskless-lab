@@ -10,7 +10,15 @@
     "raw_media_storage": "NOT_SELECTED_REQUIRE_OWNER_APPROVAL",
     "private_media_escrow_enabled": false,
     "raw_license_documents_public": false,
-    "cloud_hosted_runners_only": true
+    "cloud_hosted_runners_only": true,
+    "private_clivox_control_metadata_repo_created": true,
+    "private_control_repo_default_branch_owner_admin_verified": true,
+    "private_control_repo_actual_media_storage_approved": false,
+    "private_control_repo_contains_media_or_contracts": false,
+    "private_empty_a2_revocation_journal_created": true,
+    "private_empty_a8_attempt_journal_created": true,
+    "real_persistent_external_immutable_anchor_configured": false,
+    "private_control_repo_app_installations_audited": false
   },
   "isolation": {
     "branch1_paused": true,
@@ -151,7 +159,12 @@
     "a2_live_journal_readback_workflow": ".github/workflows/branch3-clivox-a2-live-journal-readonly.yml",
     "a2_live_journal_qa_workflow": ".github/workflows/branch3-clivox-a2-live-journal-qa.yml",
     "a2_live_private_journal_readback_completed": false,
-    "a2_live_readback_cannot_grant_license_or_publishing": true
+    "a2_live_readback_cannot_grant_license_or_publishing": true,
+    "a2_actual_private_control_metadata_repo_now_created": true,
+    "a2_empty_private_revocation_journal_now_provisioned": true,
+    "a2_real_revocation_events_written": 0,
+    "a2_actual_independent_signer_authority_enrolled": false,
+    "a2_actual_immutable_external_anchor_enrolled": false
   },
   "media_storage_preflight": {
     "a3_public_media_boundary_implemented": true,
@@ -179,7 +192,18 @@
     "a2_private_journal_readonly_integration_implemented": true,
     "a2_private_journal_live_readback_verified": false,
     "a2_vault_access_uses_separate_readonly_token_if_owner_provisions": true,
-    "a2_no_actual_media_download_or_upload": true
+    "a2_no_actual_media_download_or_upload": true,
+    "private_clivox_metadata_repo_live_exists": true,
+    "private_control_metadata_owner_admin_live_verified": true,
+    "private_control_metadata_owner_only_collaborator_live_observed": true,
+    "protected_environment_clivox_vault_readonly_provisioned": true,
+    "protected_environment_clivox_release_provisioned": true,
+    "both_new_environments_reviewer_main_admin_bypass_live_verified": true,
+    "both_new_environments_secrets_count_at_readback": 0,
+    "owner_rights_holder_contract_storage_approved": false,
+    "media_storage_activated": false,
+    "actual_A3_dedicated_readonly_token_configured": false,
+    "actual_A3_dedicated_live_readback_executed": false
   },
   "editorial_preflight": {
     "a4_source_free_editorial_implemented": true,
@@ -290,7 +314,14 @@
     "a8_live_owner_inventory_completed": false,
     "a8_live_oauth_secret_installed": false,
     "a8_owner_inventory_cannot_authorize_blind_retry": true,
-    "a8_remote_snapshot_guaranteed_complete_and_fresh": false
+    "a8_remote_snapshot_guaranteed_complete_and_fresh": false,
+    "a8_private_empty_global_attempt_ledger_genesis_now_created": true,
+    "a8_protected_owner_release_environment_now_created": true,
+    "a8_private_metadata_repo_visibility_verified": true,
+    "a8_release_environment_secret_count": 0,
+    "a8_real_cross_runner_atomic_updates_activated": false,
+    "a8_actual_youtube_upload_oauth_connected": false,
+    "a8_real_youtube_uploads": 0
   },
   "a10_synthetic_analytics": {
     "analytics_report_shape_parser_implemented": true,
