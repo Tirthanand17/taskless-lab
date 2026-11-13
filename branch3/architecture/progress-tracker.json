@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 67,
-  "overall_estimated_remaining_percent": 33,
+  "overall_estimated_completion_percent": 69,
+  "overall_estimated_remaining_percent": 31,
   "milestone_count": 11,
   "milestones": [
     {
@@ -47,16 +47,16 @@
     {
       "id": "A5",
       "name": "Video renderer and AV quality assurance",
-      "completion_pct": 65,
+      "completion_pct": 70,
       "status": "partial",
-      "evidence": "Existing A5 source-free benchmark plus original-first episodic Pillow/procedural art, local eSpeak-ng voice synthesis and original audio bed, 2 Shorts + one 108s wide title, actual FFmpeg H264/AAC render with independent FFprobe, SRT/audio/SHA QA on GitHub Actions; review-only and no released licensed media."
+      "evidence": "Actual GitHub-hosted first-party 2 Shorts + 108s original fictional arcade review renders in both preview and full 1080x1920/1920x1080 (successful runs 43380418384 and 43380650008), independent FFprobe H264/AAC SHA and draft subtitle checks, plus new real-byte A6 reinspection and hash binding. Synthetic eSpeak voice and captions still require final human review."
     },
     {
       "id": "A6",
       "name": "Signed exact-video release",
-      "completion_pct": 50,
+      "completion_pct": 65,
       "status": "partial",
-      "evidence": "Integrated A5 video evidence must still match A6 unsigned human-rights quarantine; no owner public key enrolled or final video signed"
+      "evidence": "Existing Ed25519 canonical exact-video signature math/quarantine plus NEW real-file original arcade A6 owner handoff. New render workflow recomputes exact MP4/WAV/SRT/catalog/metadata SHA256 and independently regenerates FFprobe QA, verifies package SHA, denies all false human approvals/signatures/uploads and stores seven-day original-only review packet artifact. No enrolled owner signing key, no authenticated real release, no YouTube."
     },
     {
       "id": "A7",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "67% is a planning-weighted engineering/code estimate (737/11 package points rounded). New original-first arcade review pilot workflows can render 2 Shorts and one 108s long first-party fictional video on GitHub, but not necessarily human-vetted or viral. No borrowed clip rights, final human narration, owner-signed released media, real OAuth, authenticated upload or published videos. A9 actual licensed production pilot remains 0%.",
+  "disclaimer": "69% is the equal-weight planning/engineering estimate, NOT an authorization or publishing milestone. All three original fictional arcade review MP4s were rendered in preview and full size on GitHub; A6 can produce real-file checksum owner-review packets but cannot sign/approve them. No owner attestation, final narration review, uploader OAuth, production media permission or YouTube upload. A9 licensed/published pilot 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -297,6 +297,28 @@
     "owner_signed_exact_asset_release": false,
     "first_real_youtube_upload_or_schedule_executed": false,
     "creator_clip_licenses_for_external_content": 0,
-    "youtube_upload_enabled": false
+    "youtube_upload_enabled": false,
+    "actual_preview_all_three_github_action_passed": true,
+    "actual_full_resolution_all_three_github_action_passed": true,
+    "actual_original_a6_handoff_reinspection_code_added": true
+  },
+  "a6_original_owner_handoff": {
+    "stage": "A6_EXACT_REAL_VIDEO_ORIGINAL_OWNER_REVIEW_PACKET_QUARANTINE",
+    "module": "scripts/branch3_a6_original_handoff.py",
+    "adversarial_tests": "scripts/test_branch3_a6_original_handoff.py",
+    "no_secrets_qa": ".github/workflows/branch3-clivox-a6-original-handoff-qa.yml",
+    "existing_render_workflow_extended": ".github/workflows/branch3-clivox-original-arcade-pilots.yml",
+    "documentation": "branch3/release/ORIGINAL_VIDEO_OWNER_REVIEW_HANDOFF.md",
+    "real_video_audio_captions_sha256_recomputed": true,
+    "exact_original_catalog_and_canonical_metadata_sha256_bound": true,
+    "actual_ffprobe_report_recomputed_and_compared": true,
+    "tampered_media_or_forged_human_review_denied": true,
+    "full_size_original_arcade_trio_rendered_on_github": true,
+    "human_editorial_review_completed": false,
+    "final_audio_and_subtitle_edit_completed": false,
+    "owner_production_signer_public_key_enrolled": false,
+    "actual_detached_owner_signature_issued": false,
+    "actual_google_upload_enabled": false,
+    "youtube_videos_uploaded": 0
   }
 }
