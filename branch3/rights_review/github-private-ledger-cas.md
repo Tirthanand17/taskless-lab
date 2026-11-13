@@ -21,6 +21,10 @@ Official GitHub REST references: <https://docs.github.com/en/rest/repos/contents
 - `branch3/rights_review/private-ledger-policy.json` — all real owner, storage, credential, external ledger and YouTube permissions remain disabled. A simple config-field edit cannot turn live I/O on.
 - `.github/workflows/branch3-clivox-a2-private-ledger-cas.yml` — zero secrets, zero private Google/GitHub API calls, zero artifacts; runs A2 and A3 offline security tests.
 
+## Follow-up: read-only remote bridge (code, not connected)
+
+The [owner-reviewed live journal readback bridge](OWNER_LIVE_JOURNAL_READBACK.md) now implements only fixed-host authenticated GitHub GETs (owner metadata, collaborators and exact journal contents) in a protected manual/main workflow. It does not perform the Contents PUT modeled in this document, does not provision a vault or credentials, and does not prove real creator rights or the independent durability of supplied anchor material.
+
 ## Next necessary owner-controlled work — not implied by this PR
 
 1. Obtain real commercial YouTube clipping permissions from the actual copyright holders, including relevant publisher, guest and embedded music rights. Until then `creator_permissions.json` stays empty.
