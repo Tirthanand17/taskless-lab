@@ -1,0 +1,50 @@
+name: Branch 3 Clivox A3 Private Vault Bridge QA (OFFLINE NO SECRETS)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a3_private_vault_readback.py'
+      - 'scripts/test_branch3_a3_private_vault_readback.py'
+      - 'branch3/media_storage/OWNER_PRIVATE_VAULT_READBACK.md'
+      - '.github/workflows/branch3-clivox-a3-live-vault-readback.yml'
+      - '.github/workflows/branch3-clivox-a3-live-vault-qa.yml'
+      - 'branch3/architecture/progress-tracker.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify_no_secrets_and_no_media:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_MEDIA_STORAGE_WRITE_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run strict mocked private-repo and context adversarial tests
+        run: |
+          python -B -m py_compile scripts/branch3_a3_private_vault_readback.py scripts/test_branch3_a3_private_vault_readback.py
+          python -B -m unittest -v scripts.test_branch3_a3_private_vault_readback scripts.test_branch3_media_storage_preflight scripts.test_branch3_a1_a2_a3_handoff
+      - name: Offline fixture must never imply actual vault readback
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a3_private_vault_readback --mode fixture > "$RUNNER_TEMP/clivox-a3-offline.jsonl"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a3-offline.jsonl").read_text().splitlines()[0]); assert d["api_get_count"] == 0 and not d["live_github_private_metadata_readback"] and not d["source_media_download_authorized"] and not d["youtube_upload_authorized"] and not d["youtube_publish_authorized"]; print("CLIVOX_A3_OFFLINE_VAULT_NOT_CONNECTED")'
+      - name: No media or Google write permissions in PR workflow
+        run: |
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = 'false'
+          test "$CLIVOX_MEDIA_STORAGE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+      # No artifact: private-vault objects, legal documents, tokens and source
+      # videos must never be exported by a public PR or Actions workflow.
