@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 60,
-  "overall_estimated_remaining_percent": 40,
+  "overall_estimated_completion_percent": 61,
+  "overall_estimated_remaining_percent": 39,
   "milestone_count": 11,
   "milestones": [
     {
@@ -26,16 +26,16 @@
     {
       "id": "A2",
       "name": "Human rights verification",
-      "completion_pct": 85,
+      "completion_pct": 90,
       "status": "partial",
-      "evidence": "Existing strict A1→A2 signed receipt, signed receipt-scoped checkpoint and rollback math, now plus globally chained revocation journal, SHA-verified GitHub Contents readback and optimistic prior-blob-SHA compare-and-swap protocol with synthetic adversarial tests; NO owner approval, live private ledger, real keys, persistent anchor or grants."
+      "evidence": "A1→A2 provenance, signature/revocation math and offline global journal SHA-CAS plus owner-only manual/main protected read-only private journal API integration (3 bounded GitHub GETs with strict owner ACL/blob signature/owner-pin checks); no actual vault, trust material, legally authenticated grants or live run."
     },
     {
       "id": "A3",
       "name": "Private media storage",
-      "completion_pct": 65,
+      "completion_pct": 70,
       "status": "partial",
-      "evidence": "Existing A3 closed storage boundary plus owner/manual/main-only GitHub fixed-host authenticated private-repo metadata and owner-only collaborator readback; all offline mock tests, no live vault selected/configured or verified"
+      "evidence": "A3 public media boundary/private vault metadata verifier now integrated into A2 owner-triggered read-only private Contents journal workflow; strictly no media access or real private repo created/approved or verified."
     },
     {
       "id": "A4",
@@ -94,7 +94,7 @@
   "github_private_media_vault_provisioned": false,
   "branch1_and_branch2_paused": true,
   "most_important_blockers": [
-    "Actual creator-issued commercial reuse rights and independently authenticated reviewer/revocation signing authority; global private GitHub Contents SHA-CAS protocol exists OFFLINE but neither private journal nor independent durable trust anchor has been provisioned",
+    "Independently authenticated commercial creator clipping grants; owner-controlled real private revocation journal, pinned revocation authority and durable monotonic anchor (A2 live read-only bridge is code only, not configured or run)",
     "A3 owner must select and approve private media storage, configure a protected review environment and grant narrow read-only metadata access for an actual audited GitHub API readback; no real vault exists/verified",
     "Exact source review and genuinely original clip edit",
     "Distinct Clivox API OAuth and protected release environment",
@@ -105,7 +105,7 @@
     "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "60% is a planning-weighted engineering completion estimate (657/11 package points rounded) of offline + code-only milestones; NOT a live creator rights ledger, an owner-audited private vault, any authenticated licenses or production CLIVOX publishing. A9 first licensed pilot remains 0%.",
+  "disclaimer": "61% is a planning-weighted code/architecture engineering estimate (667/11 package points rounded); no actual live private vault/readback, independently trusted revocation authority, authenticated creator grants, real licensed footage, production Google authorization or CLIVOX uploads. A9 licensed pilot remains 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -181,6 +181,15 @@
     "real_global_revocation_journal_online": false,
     "owner_approved_live_private_write_environment_configured": false,
     "private_global_ledger_ci": ".github/workflows/branch3-clivox-a2-private-ledger-cas.yml",
-    "private_global_ledger_guide": "branch3/rights_review/github-private-ledger-cas.md"
+    "private_global_ledger_guide": "branch3/rights_review/github-private-ledger-cas.md",
+    "manual_owner_private_journal_readback_implemented": true,
+    "manual_owner_private_journal_live_execution_completed": false,
+    "live_readback_workflow": ".github/workflows/branch3-clivox-a2-live-journal-readonly.yml",
+    "live_readback_qa_workflow": ".github/workflows/branch3-clivox-a2-live-journal-qa.yml",
+    "live_separate_vault_read_credentials_configured": false,
+    "actual_independently_authenticated_revocation_signer": false,
+    "real_persistent_external_anchor_verified": false,
+    "private_vault_readonly_env_verified": false,
+    "real_creator_license_authenticated": false
   }
 }
