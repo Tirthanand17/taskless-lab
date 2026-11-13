@@ -18,7 +18,7 @@ from scripts.branch3_a8_exhaustive_inventory import (
     inspect_uploaded_inventory
 )
 from scripts.test_branch3_a8_exhaustive_inventory import (
-    synthetic_api
+    synthetic_api, ACCESS
 )
 
 SUBJECT=synthetic_subject(0)
@@ -125,7 +125,7 @@ class A8CrashRecoveryTests(unittest.TestCase):
     def test_inventory_snapshot_even_with_zero_videos_never_allows_retry(self):
         calls=[]
         snapshot=inspect_uploaded_inventory(
-            "SYNTHETIC_ACCESS_TOKEN_NOT_LIVE_01234567890",
+            ACCESS,
             http_call=synthetic_api(calls,pages=[
                 {"kind":"youtube#playlistItemListResponse","items":[]}
             ])
@@ -144,7 +144,7 @@ class A8CrashRecoveryTests(unittest.TestCase):
 
     def test_invalid_inventory_or_forged_binaries_are_rejected(self):
         snapshot=inspect_uploaded_inventory(
-            "SYNTHETIC_ACCESS_TOKEN_NOT_LIVE_01234567890",
+            ACCESS,
             http_call=synthetic_api([],pages=[
                 {"kind":"youtube#playlistItemListResponse","items":[]}
             ])
