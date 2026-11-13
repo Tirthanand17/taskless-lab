@@ -1,0 +1,51 @@
+name: Branch 3 Clivox A8 Complete-Bounded Remote Inventory QA (NO OAUTH)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a8_exhaustive_inventory.py'
+      - 'scripts/test_branch3_a8_exhaustive_inventory.py'
+      - 'branch3/a8/**'
+      - 'branch3/a7/**'
+      - 'branch3/architecture/**'
+      - '.github/workflows/branch3-clivox-a8-inventory-readonly.yml'
+      - '.github/workflows/branch3-clivox-a8-inventory-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mocked_strict_readonly_yt_inventory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      CLIVOX_ACTUAL_OAUTH_CONFIGURED: 'false'
+      CLIVOX_REMOTE_INVENTORY_MAY_AUTHORIZE_RETRY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Strict mocked channel identity, bounded pagination and status tests
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_a8_exhaustive_inventory.py scripts/test_branch3_a8_exhaustive_inventory.py
+          python -B -m unittest -v scripts.test_branch3_a8_exhaustive_inventory scripts.test_branch3_a7_readonly_youtube scripts.test_branch3_a7_live_readonly_bridge scripts.test_branch3_a8_private_cas_ledger
+      - name: Confirm source-free fixture never claims real remote access or upload
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a8_exhaustive_inventory --mode fixture > "$RUNNER_TEMP/clivox-a8-inventory-fixture.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a8-inventory-fixture.json").read_text()); assert d["read_only_pagination_implemented"] and not d["real_owner_google_oauth_configured"] and not d["real_remote_inventory_readback_completed"] and not d["real_time_remote_completeness_guaranteed"] and not d["automatic_upload_retry_authorized"] and d["youtube_get_calls"]==0 and d["youtube_write_calls"]==0 and not d["youtube_upload_authorized"] and not d["youtube_publish_authorized"]; print("CLIVOX_A8_READONLY_INVENTORY_NO_REAL_GOOGLE_OR_UPLOAD")'
+      - name: Deny PR credentials, videos, and YouTube mutations
+        run: |
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_ACTUAL_OAUTH_CONFIGURED" = 'false'
+          test "$CLIVOX_REMOTE_INVENTORY_MAY_AUTHORIZE_RETRY" = 'false'
+      # No private IDs/artifacts or secret-bearing protected environments in PR CI.
