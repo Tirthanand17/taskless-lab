@@ -122,7 +122,17 @@
     "a2_real_grants_issued_through_signed_review": 0,
     "a2_signed_review_test_workflow": ".github/workflows/branch3-clivox-a2-signed-review.yml",
     "a2_rights_receipt_policy": "branch3/rights_review/review-policy.json",
-    "a2_rights_review_preview_never_authorizes_download_or_upload": true
+    "a2_rights_review_preview_never_authorizes_download_or_upload": true,
+    "a2_per_receipt_signed_hash_chain_verifier_implemented": true,
+    "a2_checkpoint_ed25519_signature_math_implemented": true,
+    "a2_checkpoint_max_age_minutes": 15,
+    "a2_externally_supplied_anchor_anti_rollback_check_implemented": true,
+    "a2_actual_persistent_nonrollbackable_anchor_enrolled": false,
+    "a2_independent_revocation_signer_trust_verification_completed": false,
+    "a2_authenticated_live_global_revocation_feed_verified": false,
+    "a2_checkpoint_workflow": ".github/workflows/branch3-clivox-a2-revocation-checkpoint.yml",
+    "a2_checkpoint_implementation": "scripts/branch3_a2_checkpointed_revocations.py",
+    "a2_checkpointed_math_publishing_disabled": true
   },
   "media_storage_preflight": {
     "a3_public_media_boundary_implemented": true,
