@@ -23,6 +23,10 @@ SQLite on one GitHub Actions runner provides real atomic transactions **only amo
 
 Do **not** copy this local DB into the public repository or interpret a green QA suite as permission to upload. No real remote inventory was queried, and a synthetic hash/SQLite row cannot validate copyright or A6 owner release.
 
+## Follow-up: global GitHub Contents SHA-CAS protocol (still not live)
+
+The [A8 global private-ledger contract](PRIVATE_CROSS_RUN_CAS_PROTOCOL.md) extends beyond one local SQLite file by modeling multiple independent GitHub runners competing to update one canonical private ledger via existing-blob SHA checks. These are **mock concurrency tests only**, not proof of real server-side cross-run atomicity or a deployed durable controller. Local SQLite and private global-ledger code both continue to refuse YouTube writes.
+
 ## Next production gates (NOT implemented)
 
 1. Authenticate genuine creator commercial reuse rights, private media storage, final exact asset and the owner's A6 signature.

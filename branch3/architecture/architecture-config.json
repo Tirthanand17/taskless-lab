@@ -267,7 +267,20 @@
     "a8_real_remote_inventory_reconciliation_implemented": false,
     "a8_ephemeral_ledger_workflow": ".github/workflows/branch3-clivox-a8-atomic-ledger-qa.yml",
     "a8_runner_file_not_retained_or_committed": true,
-    "a8_no_actual_upload_or_schedule": true
+    "a8_no_actual_upload_or_schedule": true,
+    "a8_global_private_attempt_ledger_cas_protocol_implemented": true,
+    "a8_global_attempt_and_exact_video_duplicate_replay_guards_tested": true,
+    "a8_github_contents_blob_sha_and_existing_sha_update_contract_tested": true,
+    "a8_simulated_parallel_cross_run_same_blob_conflicts_tested": true,
+    "a8_unknown_github_put_commit_no_auto_retry_tested": true,
+    "a8_private_cas_policy": "branch3/a8/private-cas-policy.json",
+    "a8_private_cas_workflow": ".github/workflows/branch3-clivox-a8-private-cas-qa.yml",
+    "a8_real_owner_approved_private_attempt_ledger_exists": false,
+    "a8_live_private_contents_token_available": false,
+    "a8_external_durable_rollback_anchor_exists": false,
+    "a8_real_github_contents_put_implemented": false,
+    "a8_youtube_authenticated_remote_inventory_completed": false,
+    "a8_youtube_writes_enabled": false
   },
   "a10_synthetic_analytics": {
     "analytics_report_shape_parser_implemented": true,

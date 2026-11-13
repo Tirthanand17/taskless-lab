@@ -1,0 +1,56 @@
+name: Branch 3 Clivox A8 Private Cross-Run CAS Contract (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a8_private_cas_ledger.py'
+      - 'scripts/test_branch3_a8_private_cas_ledger.py'
+      - 'scripts/branch3_a8_attempt_ledger.py'
+      - 'branch3/a8/**'
+      - 'branch3/architecture/**'
+      - '.github/workflows/branch3-clivox-a8-private-cas-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a8-cross-run-cas-fixture-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify_private_contents_ledger_protocol_offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      CLIVOX_REMOTE_INVENTORY_VERIFIED: 'false'
+      CLIVOX_CROSS_RUN_LEDGER_DEPLOYED: 'false'
+      CLIVOX_PRIVATE_LEDGER_WRITE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Replay exact private attempt ledger and adversarial CAS simulation
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_a8_private_cas_ledger.py scripts/test_branch3_a8_private_cas_ledger.py
+          python -B -m unittest -v scripts.test_branch3_a8_private_cas_ledger scripts.test_branch3_a8_attempt_ledger scripts.test_branch3_a8_private_first_dryrun
+      - name: Verify fixture cannot claim real stored reservations or uploads
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a8_private_cas_ledger --mode fixture > "$RUNNER_TEMP/clivox-a8-private-cas-fixture.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a8-private-cas-fixture.json").read_text()); assert d["single_global_ledger_duplicate_subject_guard_implemented"] and d["unknown_commit_no_blind_retry_implemented"] and d["actual_private_cross_run_ledger_provisioned"] is False and d["actual_durable_external_head_verified"] is False and d["real_signed_release_or_creator_grant_verified"] is False and d["actual_github_put_calls"]==0 and d["actual_youtube_api_calls"]==0 and d["youtube_upload_authorized"] is False and d["youtube_schedule_authorized"] is False and d["youtube_publish_authorized"] is False; print("CLIVOX_A8_CAS_PROTOCOL_ONLY_NO_PRIVATE_WRITE_NO_YOUTUBE")'
+      - name: Confirm no remote persistence, permissions or uploads
+        run: |
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_REMOTE_INVENTORY_VERIFIED" = 'false'
+          test "$CLIVOX_CROSS_RUN_LEDGER_DEPLOYED" = 'false'
+          test "$CLIVOX_PRIVATE_LEDGER_WRITE_ENABLED" = 'false'
+      # No secrets, private media, actual API calls or artifacts.

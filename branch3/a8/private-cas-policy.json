@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "phase": "A8_PRIVATE_CAS_PROTOCOL_OFFLINE_ONLY",
+  "private_vault_name_selected": false,
+  "owner_private_vault_approved": false,
+  "private_upload_ledger_bootstrapped": false,
+  "dedicated_contents_write_token_configured": false,
+  "owner_protected_upload_environment_verified": false,
+  "real_independent_ledger_anchor_enrolled": false,
+  "actual_github_get_put_enabled": false,
+  "cross_runner_durable_ledger_verified": false,
+  "creator_licenses_authenticated": 0,
+  "real_owner_video_signatures_verified": 0,
+  "real_clivox_upload_oauth_configured": false,
+  "youtube_api_writes_enabled": false,
+  "source_media_downloads_enabled": false,
+  "state": "NO_LIVE_UPLOADS_OR_CROSS_RUN_STORE"
+}

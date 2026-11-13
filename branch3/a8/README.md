@@ -28,6 +28,10 @@ Primary sources:
 
 [Transactional SQLite attempt-ledger engineering rehearsal](ATOMIC_ATTEMPT_LEDGER_REHEARSAL.md) now validates real atomic unique reservations and ambiguous-state hold using throwaway GitHub-hosted runner SQLite, with parallel-writer adversarial tests. This is **not cross-run durable storage** and no YouTube/Google media write or rightsholder verification is enabled. The original in-memory dry-run and its strict quarantine remain unchanged.
 
+## Added 2026-11-13 — cross-run global SHA-CAS contract (still offline)
+
+[Private global upload attempt ledger CAS contract](PRIVATE_CROSS_RUN_CAS_PROTOCOL.md) now models a bounded append-only journal in an owner-selected private GitHub repository, validates each global release/media uniqueness event and GitHub Contents byte/SHA integrity, and simulates concurrent conditional updates and unknown-write outcomes. **This is only a fixture-driven contract: no private store is provisioned, no live GET/PUT exists, no true distributed lock has been proven, and media/YouTube uploads remain impossible.**
+
 ## Target production API transaction (not implemented here)
 1. Check current verified creator-granted commercial rights and valid signed A6 release over exact media SHA/metadata SHA/rights receipt/channel/schedule.
 2. Independently verify uploader has **new, separately authorized Clivox OAuth**, never FlowMinute Lab's token. Require a protected owner-reviewed GitHub environment with strict branch restrictions.
