@@ -132,7 +132,7 @@ class OriginalPilotQATests(unittest.TestCase):
         for key,value in (
             ("start_s",8),("end_s",99),
             ("art","gta_gameplay"),("headline",""),
-            ("subheadline","borrowed source footage"),
+            ("subheadline","https://untrusted.example/borrowed_game_clip"),
             ("spoken","https://untrusted.example/gaming"),
             ("spoken","t"*200)
         ):
