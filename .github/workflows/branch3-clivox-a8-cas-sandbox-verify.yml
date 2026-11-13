@@ -1,0 +1,58 @@
+name: Clivox A8 Owner-Approved REAL GitHub CAS SANDBOX (NO VIDEO)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a8-real-github-sandbox-probe-unique
+  cancel-in-progress: false
+
+jobs:
+  owner_manual_real_github_cas_sandbox_only:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && github.actor == 'Tirthanand17' && github.triggering_actor == 'Tirthanand17' && github.run_attempt == '1'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    environment:
+      name: clivox-cas-sandbox
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_REAL_ATTEMPT_LEDGER_WRITE_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_AUTOMATIC_UPLOAD_RETRY_ENABLED: 'false'
+      CLIVOX_A8_CAS_SANDBOX_PRIVATE_REPO_NAME: ${{ secrets.CLIVOX_A8_CAS_SANDBOX_PRIVATE_REPO_NAME }}
+      CLIVOX_A8_CAS_SANDBOX_CONTENTS_WRITE_TOKEN: ${{ secrets.CLIVOX_A8_CAS_SANDBOX_CONTENTS_WRITE_TOKEN }}
+      CLIVOX_A8_CAS_SANDBOX_WRITE_APPROVED: ${{ secrets.CLIVOX_A8_CAS_SANDBOX_WRITE_APPROVED }}
+      CLIVOX_A8_CAS_SANDBOX_EXPECTED_SERIAL: ${{ secrets.CLIVOX_A8_CAS_SANDBOX_EXPECTED_SERIAL }}
+      CLIVOX_A8_CAS_SANDBOX_EXPECTED_BLOB_SHA: ${{ secrets.CLIVOX_A8_CAS_SANDBOX_EXPECTED_BLOB_SHA }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Explicitly deny real upload-ledger updates and YouTube operations
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = 'Tirthanand17/taskless-lab'
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$GITHUB_EVENT_NAME" = 'workflow_dispatch'
+          test "$GITHUB_ACTOR" = 'Tirthanand17'
+          test "$GITHUB_TRIGGERING_ACTOR" = 'Tirthanand17'
+          test "$GITHUB_RUN_ATTEMPT" = '1'
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_REAL_ATTEMPT_LEDGER_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = 'false'
+          test "$CLIVOX_AUTOMATIC_UPLOAD_RETRY_ENABLED" = 'false'
+      - name: Owner-only GitHub private SANDBOX existing-file SHA-conditional update and authenticated readback
+        run: |
+          python -B -m scripts.branch3_a8_cas_sandbox_writer --mode live
+      # Isolated test-only non-main branch and fixed JSON path. Never touches
+      # upload-control attempt journal, rights, original media or YouTube.
+      # Zero media artifacts, OAuth access or real uploader credentials.
