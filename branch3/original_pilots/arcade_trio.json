@@ -24,7 +24,7 @@
           "end_s": 3,
           "headline": "THE DOOR KNOWS",
           "subheadline": "A totally imaginary game.",
-          "spoken": "In this imaginary game, a door knows every move you make.",
+          "spoken": "This imaginary door learns your choices.",
           "art": "door"
         },
         {
@@ -74,7 +74,7 @@
           "end_s": 3,
           "headline": "THREE PORTALS",
           "subheadline": "ONLY ONE IS SAFE.",
-          "spoken": "Imagine a game with three portals and one chance to escape.",
+          "spoken": "Three portals. Only one safe escape.",
           "art": "portal"
         },
         {
