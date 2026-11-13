@@ -1,0 +1,66 @@
+name: Branch 3 Clivox A1-A2-A3 Provenance Handoff (NO MEDIA / NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a1_a2_a3_handoff.py'
+      - 'scripts/test_branch3_a1_a2_a3_handoff.py'
+      - 'scripts/branch3_discovery.py'
+      - 'scripts/branch3_rights_case_intake.py'
+      - 'scripts/branch3_media_storage_preflight.py'
+      - 'branch3/media_storage/**'
+      - 'branch3/creator_permissions.json'
+      - 'branch3/integration/a1-a2-a3/**'
+      - '.github/workflows/branch3-clivox-a123-provenance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a123-no-media-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate_research_to_rights_to_vault_quarantine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_MEDIA_STORAGE_WRITE_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Adversarial A1-A2-A3 tests without external services
+        run: |
+          python -B -m py_compile scripts/branch3_a1_a2_a3_handoff.py scripts/test_branch3_a1_a2_a3_handoff.py
+          python -B -m unittest -v scripts.test_branch3_a1_a2_a3_handoff scripts.test_branch3_discovery scripts.test_branch3_rights_case_intake scripts.test_branch3_media_storage_preflight
+      - name: Run real stage handoff using synthetic metadata
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/clivox-a123"
+          python -B scripts/branch3_discovery.py --mode fixture --category gaming --out "$RUNNER_TEMP/clivox-a123/discovery.json"
+          python -B scripts/branch3_rights_case_intake.py --source-report "$RUNNER_TEMP/clivox-a123/discovery.json" --out "$RUNNER_TEMP/clivox-a123/rights-cases.json"
+          python -B -m scripts.branch3_a1_a2_a3_handoff --discovery "$RUNNER_TEMP/clivox-a123/discovery.json" --rights-cases "$RUNNER_TEMP/clivox-a123/rights-cases.json" --out "$RUNNER_TEMP/clivox-a123/public-a1-a2-a3-handoff-report.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a123/public-a1-a2-a3-handoff-report.json"; r=json.loads(p.read_text()); assert r["synthetic_test_fixture"] and r["actual_creator_grants_verified"]==0 and not r["private_media_vault_provisioned"] and not r["source_media_fetch_authorized"] and not r["youtube_upload_authorized"] and not r["youtube_schedule_authorized"] and not r["youtube_publish_authorized"] and r["google_or_youtube_api_writes"]==0; print("A123_SAFETY_HANDOFF_QUARANTINE_PASS")'
+      - name: Upload only sanitized no-rights evidence report
+        uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a123-public-safe-provenance-${{ github.run_id }}
+          path: ${{ runner.temp }}/clivox-a123/public-a1-a2-a3-handoff-report.json
+          retention-days: 7
+          if-no-files-found: error
+      - name: Assert no media / Google writes
+        run: |
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = 'false'
+          test "$CLIVOX_MEDIA_STORAGE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          echo 'No creator grants, private vault, source footage, YouTube uploads or schedules.'
