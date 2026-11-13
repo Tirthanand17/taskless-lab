@@ -154,6 +154,10 @@ class OriginalPilotQATests(unittest.TestCase):
             render_size("copyrighted", "preview")
 
     def test_pillow_scene_is_new_original_procedural_art(self):
+        try:
+            from PIL import Image
+        except ModuleNotFoundError:
+            self.skipTest("Pillow only installed in the dedicated media rendering QA job")
         ep=sample()["episodes"][0]
         with tempfile.TemporaryDirectory() as work:
             output=Path(work)/"scene.png"
