@@ -258,7 +258,16 @@
     "actual_upload_or_schedule_capability": false,
     "sample_plan": "branch3/a8/fixtures/private-first-dryrun.json",
     "workflow": ".github/workflows/branch3-clivox-a8-dryrun.yml",
-    "output": "SYNTHETIC_NO_WRITE_PRIVATE_FIRST_PLAN_ONLY"
+    "output": "SYNTHETIC_NO_WRITE_PRIVATE_FIRST_PLAN_ONLY",
+    "a8_ephemeral_sqlite_transactional_rehearsal_implemented": true,
+    "a8_single_shared_file_atomic_reservation_tested": true,
+    "a8_parallel_duplicate_release_and_media_guards_tested": true,
+    "a8_ambiguous_attempt_monotonic_no_retry_tested": true,
+    "a8_real_cross_runner_durable_ledger_implemented": false,
+    "a8_real_remote_inventory_reconciliation_implemented": false,
+    "a8_ephemeral_ledger_workflow": ".github/workflows/branch3-clivox-a8-atomic-ledger-qa.yml",
+    "a8_runner_file_not_retained_or_committed": true,
+    "a8_no_actual_upload_or_schedule": true
   },
   "a10_synthetic_analytics": {
     "analytics_report_shape_parser_implemented": true,
