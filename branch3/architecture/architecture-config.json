@@ -142,7 +142,16 @@
     "a2_real_private_revocation_ledger_provisioned": false,
     "a2_real_owner_approved_write_environment_verified": false,
     "a2_real_external_durable_anchor_enrolled": false,
-    "a2_global_ledger_live_write_enabled": false
+    "a2_global_ledger_live_write_enabled": false,
+    "a2_owner_main_protected_private_journal_readonly_bridge_implemented": true,
+    "a2_exact_three_fixed_host_github_gets_implemented": true,
+    "a2_privacy_owner_acl_before_contents_enforced": true,
+    "a2_actual_owner_vetted_revocation_pubkey_enrolled": false,
+    "a2_owner_pinned_live_journal_read_credentials_configured": false,
+    "a2_live_journal_readback_workflow": ".github/workflows/branch3-clivox-a2-live-journal-readonly.yml",
+    "a2_live_journal_qa_workflow": ".github/workflows/branch3-clivox-a2-live-journal-qa.yml",
+    "a2_live_private_journal_readback_completed": false,
+    "a2_live_readback_cannot_grant_license_or_publishing": true
   },
   "media_storage_preflight": {
     "a3_public_media_boundary_implemented": true,
@@ -166,7 +175,11 @@
     "a3_runtime_actions_remain_denied": true,
     "a3_private_repo_app_installs_and_external_object_access_audited": false,
     "a3_live_script": "scripts/branch3_a3_private_vault_readback.py",
-    "a3_owner_guide": "branch3/media_storage/OWNER_PRIVATE_VAULT_READBACK.md"
+    "a3_owner_guide": "branch3/media_storage/OWNER_PRIVATE_VAULT_READBACK.md",
+    "a2_private_journal_readonly_integration_implemented": true,
+    "a2_private_journal_live_readback_verified": false,
+    "a2_vault_access_uses_separate_readonly_token_if_owner_provisions": true,
+    "a2_no_actual_media_download_or_upload": true
   },
   "editorial_preflight": {
     "a4_source_free_editorial_implemented": true,
