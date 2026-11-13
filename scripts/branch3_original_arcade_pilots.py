@@ -21,7 +21,6 @@ import subprocess
 from textwrap import wrap
 import wave
 
-from PIL import Image, ImageDraw, ImageFont
 
 ROOT=Path(__file__).resolve().parents[1]
 CATALOG=ROOT/"branch3/original_pilots/arcade_trio.json"
@@ -53,6 +52,7 @@ def require(ok:bool,why:str)->None:
 
 
 def get_font(px:int):
+    from PIL import ImageFont
     match=next((p for p in FONT_CANDIDATES if Path(p).is_file()),None)
     require(match is not None,"FONT_NOT_FOUND")
     return ImageFont.truetype(match,px)
@@ -192,6 +192,7 @@ def art_icon(draw:ImageDraw.ImageDraw,kind:str,cx:int,cy:int,r:int):
 
 
 def draw_scene(beat:dict,*,ep:dict,index:int,out:Path,mode:str)->None:
+    from PIL import Image, ImageDraw
     w,h,fps=render_size(ep["format"],mode)
     im=Image.new("RGB",(w,h),COLORS["bg"])
     dr=ImageDraw.Draw(im)
