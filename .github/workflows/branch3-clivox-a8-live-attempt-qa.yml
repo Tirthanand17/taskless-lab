@@ -1,0 +1,57 @@
+name: Branch 3 Clivox A8 Owner Private Attempt Readback QA (OFFLINE NO SECRETS)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a8_live_attempt_readonly.py'
+      - 'scripts/test_branch3_a8_live_attempt_readonly.py'
+      - 'scripts/branch3_a8_private_cas_ledger.py'
+      - 'branch3/a8/**'
+      - 'branch3/architecture/**'
+      - '.github/workflows/branch3-clivox-a8-live-attempt-readonly.yml'
+      - '.github/workflows/branch3-clivox-a8-live-attempt-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a8-live-attempt-offline-QA-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  strict_private_attempt_blob_and_owner_qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_REAL_PRIVATE_CREDENTIALS_PRESENT: 'false'
+      CLIVOX_REAL_GITHUB_PUT_ENABLED: 'false'
+      CLIVOX_OWNER_ACTUAL_APPROVAL_ENROLLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      CLIVOX_AUTOMATIC_UPLOAD_RETRY_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Full adversarial mocked private-owner readback and global CAS replay
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_a8_live_attempt_readonly.py scripts/test_branch3_a8_live_attempt_readonly.py
+          python -B -m unittest -v scripts.test_branch3_a8_live_attempt_readonly scripts.test_branch3_a8_private_cas_ledger scripts.test_branch3_a3_private_vault_readback
+      - name: Fixture never calls real remote private vault or Google
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a8_live_attempt_readonly --mode fixture > "$RUNNER_TEMP/clivox-a8-live-attempt-fixture.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a8-live-attempt-fixture.json").read_text()); assert d["actual_github_get_count"]==0 and d["actual_github_put_count"]==0 and d["actual_youtube_api_calls"]==0 and not d["real_authenticated_private_attempt_ledger_readback"] and not d["independent_external_anchor_durability_verified"] and not d["automatic_retry_allowed"] and not d["youtube_upload_authorized"] and not d["youtube_schedule_authorized"] and not d["youtube_publish_authorized"]; print("CLIVOX_A8_GITHUB_PRIVATE_ATTEMPT_READBACK_NOT_CONNECTED_NO_WRITES")'
+      - name: Zero credential and publish authority in PR
+        run: |
+          test "$CLIVOX_REAL_PRIVATE_CREDENTIALS_PRESENT" = 'false'
+          test "$CLIVOX_REAL_GITHUB_PUT_ENABLED" = 'false'
+          test "$CLIVOX_OWNER_ACTUAL_APPROVAL_ENROLLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_AUTOMATIC_UPLOAD_RETRY_ENABLED" = 'false'
+      # CI never accesses protected env, private ledger, or cloud permissions.
