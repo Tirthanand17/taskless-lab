@@ -265,7 +265,7 @@ def decode_github_contents(reply: dict) -> tuple[dict, str]:
             "ENCODED_CONTENT_BOUNDS")
     try:
         raw = base64.b64decode(
-            encoded.replace("\\n", "").replace("\\r", ""), validate=True
+            encoded.replace("\n", "").replace("\r", ""), validate=True
         )
         require(0 < len(raw) <= MAX_BYTES, "RAW_CONTENT_BOUNDS")
         require(type(reply.get("size")) is int and reply["size"] == len(raw),
