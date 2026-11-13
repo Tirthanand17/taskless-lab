@@ -11,6 +11,10 @@ The A1 metadata ranker and A2 case intake already create exact, unverified right
 
 The code's `verify_offline_receipt_preview` accepts explicit caller-provided public keys and test-checkpoint values. **This is not production trust.** Public keys need independent owner-controlled enrollment, an approved real-world reviewer process, signed and durably stored revocation snapshots and independent rightsholder authentication; the current script cannot do those steps. An empty revocation input *cannot establish* that permission was never revoked. Its only success result has **all** media/upload/schedule/publish authorizations `false`.
 
+## Follow-up: signed snapshot hash-chain verifier (2026-11-13)
+
+[Receipt-scoped revocation checkpoint security preview](checkpointed-revocations.md) now checks an exact hash chain, detached checkpoint signature, 15-minute timestamp window and a caller-supplied prior trusted-head anchor. Deleted/reordered events and signed revoked receipts fail closed in GitHub-only adversarial CI. **There is no actual owner-controlled persistent checkpoint, enrolled revocation key or remotely complete revocation feed. This check grants no copyright permission or media access.**
+
 ## Runtime and CI
 
 - `scripts/branch3_a2_review_receipt.py` — restricted pending A2 cases, canonical digest/signature/revocation mathematical checks, strict zero-grant policy. Its CLI runs only the zero-license **pending-case quarantine**, not live receipt signing or registry promotion.
