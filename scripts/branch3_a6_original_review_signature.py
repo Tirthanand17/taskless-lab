@@ -24,7 +24,7 @@ import re
 
 from scripts.branch3_a6_original_handoff import (
     CHANNEL, CATALOG, PACKET_NAME, METADATA_NAME, ROOT,
-    read_json, verify_packet, digest, sha, require as handoff_require
+    read_json, verify_packet, digest, sha
 )
 from scripts.branch3_original_arcade_pilots import validate_catalog
 
@@ -217,7 +217,7 @@ def verify_attestation(*,packet:dict,metadata:dict,
 
 def create_unsigned_requests(directory:Path,*,selection:str)->dict:
     require(selection in ("one","all"),"EPISODE_SELECTION")
-    require(type(directory) is Path and directory.is_absolute()
+    require(isinstance(directory,Path) and directory.is_absolute()
             and directory.is_dir() and not directory.is_symlink()
             and ROOT not in directory.parents and directory!=ROOT,
             "OUTSIDE_PUBLIC_REPO_ONLY")
