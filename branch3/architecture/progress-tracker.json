@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 55,
-  "overall_estimated_remaining_percent": 45,
+  "overall_estimated_completion_percent": 57,
+  "overall_estimated_remaining_percent": 43,
   "milestone_count": 11,
   "milestones": [
     {
@@ -33,9 +33,9 @@
     {
       "id": "A3",
       "name": "Private media storage",
-      "completion_pct": 50,
+      "completion_pct": 65,
       "status": "partial",
-      "evidence": "Storage deny policy/manifest/channel/empty rights registry and public path inventory cross-checked against A1->A2; actual private vault not provisioned"
+      "evidence": "Existing A3 closed storage boundary plus owner/manual/main-only GitHub fixed-host authenticated private-repo metadata and owner-only collaborator readback; all offline mock tests, no live vault selected/configured or verified"
     },
     {
       "id": "A4",
@@ -95,7 +95,7 @@
   "branch1_and_branch2_paused": true,
   "most_important_blockers": [
     "Human-verifiable creator-issued commercial YouTube clipping permission",
-    "Owner-approved confidential source storage",
+    "A3 owner must select and approve private media storage, configure a protected review environment and grant narrow read-only metadata access for an actual audited GitHub API readback; no real vault exists/verified",
     "Exact source review and genuinely original clip edit",
     "Distinct Clivox API OAuth and protected release environment",
     "Actual QA-approved, signed and inventoried first pilot",
@@ -105,7 +105,7 @@
     "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "55% is planning-weighted code engineering (607/11 package points rounded), not authenticated source/rights readiness, a live Google connection or production publishing completion. A9 remains 0%.",
+  "disclaimer": "57% is planning-weighted engineering code progress (622/11 package points rounded), not live privacy verification, authenticated creator rights, a deployed media vault, production assets, Google access or release readiness. A9 licensed pilot stays 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -121,7 +121,7 @@
     "youtube_publication_enabled": false
   },
   "early_pipeline_handoff": {
-    "status": "PR_CHECKS_IN_PROGRESS_NO_LICENSE",
+    "status": "MERGED_PR162_CI_GREEN_NO_LICENSE",
     "chain": [
       "A1",
       "A2",
@@ -135,5 +135,21 @@
     "no_source_download_or_youtube_write": true,
     "initial_adversarial_unit_and_synthetic_workflow_ci_passed": true,
     "actual_license_or_live_youtube_proven": false
+  },
+  "private_vault_owner_readback": {
+    "stage": "A3_READONLY_PRIVATE_VAULT_METADATA_CHECK",
+    "workflow": ".github/workflows/branch3-clivox-a3-live-vault-readback.yml",
+    "offline_qa": ".github/workflows/branch3-clivox-a3-live-vault-qa.yml",
+    "owner_only_manual_context_checked": true,
+    "two_fixed_github_gets_implemented": true,
+    "malicious_or_cross_owner_payloads_denied": true,
+    "exact_environment_required": "clivox-vault-readonly",
+    "actual_protected_environment_verified": false,
+    "actual_private_repo_selected": false,
+    "actual_metadata_token_provisioned": false,
+    "actual_authenticated_readback_executed": false,
+    "source_media_fetch_enabled": false,
+    "youtube_upload_enabled": false,
+    "notes": "Only code and mock CI: no real vault provisioning, rights approval, confidential source, OAuth or YouTube writes."
   }
 }

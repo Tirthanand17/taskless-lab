@@ -125,7 +125,19 @@
     "encrypted_or_private_media_upload_configured": false,
     "workflow": ".github/workflows/branch3-clivox-a3-media-boundary.yml",
     "policy": "branch3/media_storage/storage-policy.json",
-    "no_publish_no_download": true
+    "no_publish_no_download": true,
+    "a3_readonly_private_vault_readback_client_implemented": true,
+    "a3_readonly_bridge_offline_adversarial_tests_implemented": true,
+    "a3_live_owner_approved_readback_workflow_implemented": true,
+    "a3_live_readback_environment": "clivox-vault-readonly",
+    "a3_live_environment_protection_verified": false,
+    "a3_owner_approved_private_vault_selected": false,
+    "a3_distinct_metadata_read_token_configured": false,
+    "a3_real_authenticated_vault_readback_completed": false,
+    "a3_runtime_actions_remain_denied": true,
+    "a3_private_repo_app_installs_and_external_object_access_audited": false,
+    "a3_live_script": "scripts/branch3_a3_private_vault_readback.py",
+    "a3_owner_guide": "branch3/media_storage/OWNER_PRIVATE_VAULT_READBACK.md"
   },
   "editorial_preflight": {
     "a4_source_free_editorial_implemented": true,
