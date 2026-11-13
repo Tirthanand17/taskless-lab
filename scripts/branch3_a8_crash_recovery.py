@@ -57,6 +57,26 @@ def check_inventory_claim(claim:dict|None)->bool:
     """
     if claim is None:
         return False
+    required={
+        "stage","channel_id","owner_google_channel_identity_matched",
+        "uploaded_playlist_pagination_exhausted_within_limit",
+        "uploaded_playlist_pages_checked","uploaded_playlist_videos_checked",
+        "statuses_checked_through_videos_list","private_count","unlisted_count",
+        "public_count","private_with_schedule_count","youtube_readonly_get_count",
+        "real_time_remote_completeness_guaranteed",
+        "exact_uploaded_binary_sha256_verified","creator_licenses_verified",
+        "ambiguous_ledger_attempt_automatically_reconciled",
+        "automatic_duplicate_retry_authorized","youtube_upload_authorized",
+        "youtube_schedule_authorized","youtube_publish_authorized",
+        "actual_youtube_write_calls","note"
+    }
+    require(type(claim) is dict and set(claim)==required,
+            "INVENTORY_EXTRA_FIELDS_OR_MISSING")
+    require(claim.get("creator_licenses_verified")==0
+            and type(claim.get("creator_licenses_verified")) is int
+            and type(claim.get("note")) is str
+            and len(claim["note"])<=450,
+            "INVENTORY_FALSE_RIGHTS_OR_NOTE")
     require(type(claim) is dict and claim.get("stage")==INVENTORY_STAGE
             and claim.get("channel_id")==CLIVOX
             and claim.get("owner_google_channel_identity_matched") is True
@@ -84,7 +104,9 @@ def check_inventory_claim(claim:dict|None)->bool:
     require(total==claim["uploaded_playlist_videos_checked"]
             and claim["private_with_schedule_count"]<=claim["private_count"]
             and 1<=claim["uploaded_playlist_pages_checked"]<=20
-            and total<=1000 and claim["youtube_readonly_get_count"]>=2,
+            and total<=1000
+            and claim["youtube_readonly_get_count"]==
+              1+claim["uploaded_playlist_pages_checked"]+(total+49)//50,
             "INVENTORY_COUNTS_INCONSISTENT")
     # This deliberately does not return any private video identifiers,
     # and does not label the self-provided claim as a real authenticated read.
