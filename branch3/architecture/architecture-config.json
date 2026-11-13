@@ -113,7 +113,16 @@
     "creator_allowlist_automatically_modified": false,
     "source_media_acquisition_authorized": false,
     "public_report_contains_private_legal_agreements": false,
-    "output_status": "AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION"
+    "output_status": "AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION",
+    "a2_ed25519_human_review_signature_math_implemented": true,
+    "a2_revocation_tombstone_math_implemented": true,
+    "a2_receipt_binding_exact_pending_case_sha256": true,
+    "a2_real_reviewer_keys_enrolled": false,
+    "a2_durable_signed_revocation_ledger": false,
+    "a2_real_grants_issued_through_signed_review": 0,
+    "a2_signed_review_test_workflow": ".github/workflows/branch3-clivox-a2-signed-review.yml",
+    "a2_rights_receipt_policy": "branch3/rights_review/review-policy.json",
+    "a2_rights_review_preview_never_authorizes_download_or_upload": true
   },
   "media_storage_preflight": {
     "a3_public_media_boundary_implemented": true,
