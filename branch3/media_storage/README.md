@@ -43,7 +43,7 @@ The primary repo contains *only code, checksums, sanitized source IDs and non-se
 
 A passing validator is not a legal clearance or a repository-permission attestation. A3 code explicitly throws on any attempted actual media operation.
 
-## Planned storage activation: all conditions must be true
+## A3 authenticated private-vault metadata bridge — implementation only\n\nA protected, owner-triggered, read-only private GitHub repository and collaborator-list inspection is now implemented. Read [the owner's secure setup instructions](OWNER_PRIVATE_VAULT_READBACK.md). The new job has **not run against an actual private vault**: no repository, protected environment, owner consent, token or media has been provisioned or verified. Its success can never authorize media acquisition, license approval or YouTube publishing.\n\n## Planned storage activation: all conditions must be true
 
 1. Verify a real creator-issued **commercial YouTube clipping license** for the exact source, with relevant time/territory/expiry terms and rights to edit/repost. Confirm music, game publisher, guests, broadcasts and embedded content separately. Campaign invites are not licenses.
 2. Owner personally reviews contract rights and any **IP assignment** to clipping campaigns (Content Rewards Section 17.6); explicit consent/eligibility required before joining.
