@@ -1,6 +1,6 @@
 # CLIVOX — Real production closure after private infrastructure bootstrap
 
-**Date:** 2026-11-13. **Overall engineering estimate:** 73% implemented / 27% remaining (code/CI planning only). The original-first arcade trio successfully rendered on GitHub as preview and full-resolution review copies; the new A6 SHA-bound human-review handoff is implemented, but still not owner-signed. **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
+**Date:** 2026-11-13. **Overall engineering estimate:** 74% implemented / 26% remaining (code/CI planning only). The original-first arcade trio successfully rendered on GitHub as preview and full-resolution review copies; the new A6 SHA-bound human-review handoff is implemented, but still not owner-signed. **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
 
 ## Verified, actually completed today
 
@@ -13,6 +13,10 @@
 ## Additional owner-protected Analytics environment provisioned
 
 The controller now also has `clivox-analytics-readonly`, configured with a required owner reviewer, `main`-only branch policy and administrator bypass disabled; zero secrets were verified. Its [owner-only A10 readback guide](../a10/OWNER_ANALYTICS_READONLY_SETUP.md) requires separate Clivox `youtube.readonly` + `yt-analytics.readonly` consent, and cannot read metrics or make publication decisions before the owner provides those credentials.
+
+## A8 ambiguous-upload/crash recovery — fail closed
+
+The [A8 crash recovery matrix](../a8/AMBIGUOUS_COMMIT_RECOVERY_MATRIX.md) now models 12 failure classes (missing/unknown GitHub commits, 409 conflict, timeout, interrupted worker, unknown YouTube response, duplicated release/media and forged inventory), with 99 deterministic 2–12-worker synthetic schedules. **All decisions hold**: an empty inventory does not prove an upload failed, and a correct local ledger does not authorize Google inserts. This is no-network safety engineering, not a new live credential, licensed footage or complete production uploader.
 
 ## A8 real GitHub CAS sandbox proof (not production reservation)
 
