@@ -82,7 +82,15 @@
     "original_owner_handoff_quarantine_test_workflow": ".github/workflows/branch3-clivox-a6-original-handoff-qa.yml",
     "exact_original_video_audio_caption_metadata_review_pack_supported": true,
     "actual_production_owner_signature_issued": false,
-    "video_legal_rights_human_approved": false
+    "video_legal_rights_human_approved": false,
+    "original_editorial_unsigned_review_request_module": "scripts/branch3_a6_original_review_signature.py",
+    "original_editorial_signature_no_secret_ci": ".github/workflows/branch3-clivox-a6-editorial-signature-qa.yml",
+    "actual_original_video_unsigned_review_artifacts_supported": true,
+    "original_editorial_review_detached_ed25519_math_tested": true,
+    "production_owner_signer_key_independently_enrolled": false,
+    "real_signed_human_review_exists": false,
+    "exact_original_audio_caption_rights_human_approved": false,
+    "original_first_party_release_enabled": false
   },
   "metrics": {
     "official_api": [
@@ -412,7 +420,12 @@
     "original_a6_real_ffprobe_reinspection_and_metadata_binding": true,
     "original_a6_handoff_report_artifact_included_in_github_runner": true,
     "preview_trio_github_run_verified": "43380418384",
-    "full_resolution_trio_github_run_verified": "43380650008"
+    "full_resolution_trio_github_run_verified": "43380650008",
+    "unsigned_per_exact_video_owner_editorial_review_request_generated": true,
+    "original_detached_review_signature_math_tested_only": true,
+    "owner_editorial_review_actually_accepted": false,
+    "original_draft_srt_is_not_forced_aligned": true,
+    "original_final_audio_rights_approved": false
   },
   "a10_owner_analytics_readonly": {
     "fixed_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
