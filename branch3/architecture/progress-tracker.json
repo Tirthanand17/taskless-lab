@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 57,
-  "overall_estimated_remaining_percent": 43,
+  "overall_estimated_completion_percent": 58,
+  "overall_estimated_remaining_percent": 42,
   "milestone_count": 11,
   "milestones": [
     {
@@ -26,9 +26,9 @@
     {
       "id": "A2",
       "name": "Human rights verification",
-      "completion_pct": 50,
+      "completion_pct": 65,
       "status": "partial",
-      "evidence": "Pending human-rights dossier generator plus A1->A2 exact-case and tampering integration checks; zero authenticated creator grants"
+      "evidence": "A1-to-A2 case provenance, signed Ed25519 human-review CLAIM math and distinct-domain signed revocation tombstones with adversarial tests; all mock-only, no enrolled real keys, grant or durable revocation ledger"
     },
     {
       "id": "A3",
@@ -94,7 +94,7 @@
   "github_private_media_vault_provisioned": false,
   "branch1_and_branch2_paused": true,
   "most_important_blockers": [
-    "Human-verifiable creator-issued commercial YouTube clipping permission",
+    "Real independently authenticated creator-issued commercial YouTube source clipping permission, verified human reviewer trust keys, private rights evidence and an authoritative durable revocation ledger (A2 offline signature preview is not a grant)",
     "A3 owner must select and approve private media storage, configure a protected review environment and grant narrow read-only metadata access for an actual audited GitHub API readback; no real vault exists/verified",
     "Exact source review and genuinely original clip edit",
     "Distinct Clivox API OAuth and protected release environment",
@@ -105,7 +105,7 @@
     "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "57% is planning-weighted engineering code progress (622/11 package points rounded), not live privacy verification, authenticated creator rights, a deployed media vault, production assets, Google access or release readiness. A9 licensed pilot stays 0%.",
+  "disclaimer": "58% is planning-weighted A0–A10 engineering implementation (637/11 package points rounded), not live creator licensing, signed production reviews, private media storage, real clips, production Google access or YouTube publication. A9 stays 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -151,5 +151,21 @@
     "source_media_fetch_enabled": false,
     "youtube_upload_enabled": false,
     "notes": "Only code and mock CI: no real vault provisioning, rights approval, confidential source, OAuth or YouTube writes."
+  },
+  "a2_signed_review_preview": {
+    "stage": "OFFLINE_MATHEMATICAL_PREVIEW_NO_LEGAL_GRANT",
+    "workflow": ".github/workflows/branch3-clivox-a2-signed-review.yml",
+    "code": "scripts/branch3_a2_review_receipt.py",
+    "docs": "branch3/rights_review/README.md",
+    "exact_case_sha256_and_channel_binding_implemented": true,
+    "detached_review_signature_math_implemented": true,
+    "explicit_revocation_tombstone_signature_math_implemented": true,
+    "expiry_tamper_wrong_channel_and_sequence_guards_implemented": true,
+    "real_reviewer_keys_enrolled": false,
+    "source_creator_grants_authenticated": 0,
+    "durable_signed_revocation_ledger_provisioned": false,
+    "public_quarantine_report_only": true,
+    "actual_source_downloads": 0,
+    "youtube_api_writes": 0
   }
 }
