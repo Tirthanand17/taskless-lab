@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 58,
-  "overall_estimated_remaining_percent": 42,
+  "overall_estimated_completion_percent": 59,
+  "overall_estimated_remaining_percent": 41,
   "milestone_count": 11,
   "milestones": [
     {
@@ -26,9 +26,9 @@
     {
       "id": "A2",
       "name": "Human rights verification",
-      "completion_pct": 65,
+      "completion_pct": 75,
       "status": "partial",
-      "evidence": "A1-to-A2 case provenance, signed Ed25519 human-review CLAIM math and distinct-domain signed revocation tombstones with adversarial tests; all mock-only, no enrolled real keys, grant or durable revocation ledger"
+      "evidence": "Existing strict A1→A2 receipt + Ed25519 review/revocation math, and newly signed 15-minute checkpoint/hash-chain/externally-supplied anchor anti-rollback verifier, with adversarial offline CI. No owner-enrolled keys, authoritative persisted ledger or real creator licenses."
     },
     {
       "id": "A3",
@@ -94,7 +94,7 @@
   "github_private_media_vault_provisioned": false,
   "branch1_and_branch2_paused": true,
   "most_important_blockers": [
-    "Real independently authenticated creator-issued commercial YouTube source clipping permission, verified human reviewer trust keys, private rights evidence and an authoritative durable revocation ledger (A2 offline signature preview is not a grant)",
+    "Real creator-issued commercial clip licenses, authenticated human reviewer/key authority, and actual owner-controlled durable revocation checkpoints (A2 only validates offline signature and chain mathematics)",
     "A3 owner must select and approve private media storage, configure a protected review environment and grant narrow read-only metadata access for an actual audited GitHub API readback; no real vault exists/verified",
     "Exact source review and genuinely original clip edit",
     "Distinct Clivox API OAuth and protected release environment",
@@ -105,7 +105,7 @@
     "A8 remains dry-run only: protected uploader credentials, atomic durable ledger and remote YouTube inventory reconciliation not configured",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "58% is planning-weighted A0–A10 engineering implementation (637/11 package points rounded), not live creator licensing, signed production reviews, private media storage, real clips, production Google access or YouTube publication. A9 stays 0%.",
+  "disclaimer": "59% is a planning-weighted estimate of A0–A10 engineering implementation (647/11 package points rounded), NOT authenticated creator rights, live durable revocation authority, private vault readiness, actual released videos, or YouTube publishing. A9 licensed pilot remains 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -166,6 +166,12 @@
     "durable_signed_revocation_ledger_provisioned": false,
     "public_quarantine_report_only": true,
     "actual_source_downloads": 0,
-    "youtube_api_writes": 0
+    "youtube_api_writes": 0,
+    "checkpointed_per_receipt_chain_math_implemented": true,
+    "signed_checkpoint_freshness_math_implemented": true,
+    "externally_supplied_anchor_anti_rollback_check_implemented": true,
+    "owner_audited_external_anchor_enrolled": false,
+    "actual_authoritative_revocation_ledger_online": false,
+    "checkpoint_qa_workflow": ".github/workflows/branch3-clivox-a2-revocation-checkpoint.yml"
   }
 }
