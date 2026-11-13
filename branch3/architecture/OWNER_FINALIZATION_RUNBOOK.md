@@ -1,6 +1,6 @@
 # CLIVOX — Real production closure after private infrastructure bootstrap
 
-**Date:** 2026-11-13. **Overall engineering estimate:** 74% implemented / 26% remaining (code/CI planning only). The original-first arcade trio successfully rendered on GitHub as preview and full-resolution review copies; the new A6 SHA-bound human-review handoff is implemented, but still not owner-signed. **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
+**Date:** 2026-11-13. **Overall engineering estimate:** 75% implemented / 25% remaining (code/CI planning only). The original-first arcade trio successfully rendered on GitHub as preview and full-resolution review copies; the new A6 SHA-bound human-review handoff is implemented, but still not owner-signed. **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
 
 ## Verified, actually completed today
 
@@ -25,6 +25,10 @@ The [real private GitHub sandbox proof](../a8/REAL_GITHUB_CAS_SANDBOX_PROOF.md) 
 ## A8 private upload-control readback bridge — no live token
 
 [Owner's A8 GitHub attempt-ledger readback guide](../a8/OWNER_PRIVATE_ATTEMPT_READBACK.md) documents a protected owner/main/manual **read-only** bridge that can verify the already created private empty upload-control file with a separately scoped token and separately retained prior sequence/head anchor. This implementation is tested offline only; the environment **does not yet have its dedicated A8 token**, no actual live GitHub Actions A8 readback has been completed, and a successful read cannot authorize a retry or upload. The existing protected Clivox release environment likewise contains no uploader OAuth secrets.
+
+## New A6 unsigned exact-video human editorial checklist
+
+The [owner editorial-attestation guide](../release/ORIGINAL_EDITORIAL_OWNER_ATTESTATION.md) describes an exact-video hash-bound checklist that future GitHub review artifacts include with **all five review checks false**. CI checks canonical detached Ed25519 signatures using ephemeral keys only. No real owner public key, actual full-video human review, commercial voice/audio/caption clearance, A6 production release or Google uploader OAuth has been verified. These must be completed as **separate owner decisions**, not a test fixture or synthetic signature.
 
 ## Human/owner dependencies that cannot be invented by automation
 

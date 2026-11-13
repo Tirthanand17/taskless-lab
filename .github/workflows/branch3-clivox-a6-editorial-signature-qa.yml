@@ -1,0 +1,59 @@
+name: Branch 3 Clivox A6 Original Review Signature Quarantine QA (NO OWNER KEY)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a6_original_review_signature.py'
+      - 'scripts/test_branch3_a6_original_review_signature.py'
+      - 'scripts/branch3_a6_original_handoff.py'
+      - 'branch3/release/**'
+      - 'branch3/architecture/**'
+      - '.github/workflows/branch3-clivox-a6-editorial-signature-qa.yml'
+      - '.github/workflows/branch3-clivox-original-arcade-pilots.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a6-original-review-signature-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  original_exact_media_review_signature_math_not_owner_release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_TRUSTED_OWNER_PUBLIC_KEY_ENROLLED: 'false'
+      CLIVOX_FINAL_VIDEO_HUMAN_APPROVED: 'false'
+      CLIVOX_REAL_RELEASE_SIGNED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      PUBLISH_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install signature verification library for ephemeral offline keys only
+        run: python -m pip install --disable-pip-version-check 'cryptography>=44,<47'
+      - name: Verify exact-review binding, canonical Ed25519, tampering and unsigned denial
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py
+          python -B -m unittest -v scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_signed_release
+      - name: Fixture must explicitly preserve owner rights and upload locks
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a6_original_review_signature --mode fixture > "$RUNNER_TEMP/clivox-a6-original-review-fixture.json"
+          python -B -c 'import os,json,pathlib; j=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a6-original-review-fixture.json").read_text()); assert j["fixed_video_audio_caption_metadata_binding_implemented"] and j["ed25519_detached_signature_math_tested_only"] and not j["owner_trusted_public_key_independently_enrolled"] and not j["real_owner_review_verified"] and not j["real_signed_release_issued"] and j["actual_private_signature_records_read"]==0 and j["actual_google_api_calls"]==0 and not j["youtube_upload_authorized"] and not j["youtube_schedule_authorized"] and not j["youtube_publish_authorized"]; print("CLIVOX_A6_EDITORIAL_SIGNATURE_MATH_ONLY_OWNER_NOT_ENROLLED_NO_YOUTUBE")'
+      - name: Deny real signer, content approval and publishing in PR
+        run: |
+          test "$CLIVOX_TRUSTED_OWNER_PUBLIC_KEY_ENROLLED" = 'false'
+          test "$CLIVOX_FINAL_VIDEO_HUMAN_APPROVED" = 'false'
+          test "$CLIVOX_REAL_RELEASE_SIGNED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          test "$PUBLISH_ENABLED" = 'false'
+      # Real review source files and future owner private keys NEVER enter PR CI.

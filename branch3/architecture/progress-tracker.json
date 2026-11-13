@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 74,
-  "overall_estimated_remaining_percent": 26,
+  "overall_estimated_completion_percent": 75,
+  "overall_estimated_remaining_percent": 25,
   "milestone_count": 11,
   "milestones": [
     {
@@ -54,9 +54,9 @@
     {
       "id": "A6",
       "name": "Signed exact-video release",
-      "completion_pct": 65,
+      "completion_pct": 75,
       "status": "partial",
-      "evidence": "Existing Ed25519 canonical exact-video signature math/quarantine plus NEW real-file original arcade A6 owner handoff. New render workflow recomputes exact MP4/WAV/SRT/catalog/metadata SHA256 and independently regenerates FFprobe QA, verifies package SHA, denies all false human approvals/signatures/uploads and stores seven-day original-only review packet artifact. No enrolled owner signing key, no authenticated real release, no YouTube."
+      "evidence": "A6 canonical exact-release Ed25519 math (no owner key) and fully real-file original arcade MP4/WAV/SRT/catalog/metadata owner handoff, plus NEW independent unsigned review worksheet per real video, binding hashes and strict offline detached Ed25519 editorial review claim validation. Ephemeral keys exercise forgery/tampering tests. Worksheet remains all-false and owner identity, actual review and rights are NOT authenticated. No production release or YouTube."
     },
     {
       "id": "A7",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "74% is a rough, planning-weighted engineering estimate only. A8 has offline synthetic crash/reconciliation safety validation but not a deployed/verified production global writer, trusted external rollback anchor, exact-video signed owner release or Clivox OAuth. The original first-party videos are technical review copies. No real A9 upload, no automatic retry or publishing; Branches 1/2 paused.",
+  "disclaimer": "75% is engineering planning only, not real-world production readiness. Three original arcade videos are review copies. New A6 unsigned review worksheet and detached Ed25519 signature MATH cannot assert human review, owner key enrollment, commercial audio/graphic rights or actual release. Durable production upload reservation, owner final signature and Clivox-only Google OAuth are absent. A9 remains zero actual uploads; publishing disabled.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -418,5 +418,26 @@
     "real_youtube_video_uploaded": false,
     "source_media_download_enabled": false,
     "publishing_enabled": false
+  },
+  "a6_original_editorial_signed_review": {
+    "stage": "A6_ORIGINAL_FIRST_PARTY_EDITORIAL_SIGNATURE_VERIFICATION_MATH_NO_REAL_OWNER",
+    "module": "scripts/branch3_a6_original_review_signature.py",
+    "tests": "scripts/test_branch3_a6_original_review_signature.py",
+    "ci": ".github/workflows/branch3-clivox-a6-editorial-signature-qa.yml",
+    "actual_render_workflow_extended": ".github/workflows/branch3-clivox-original-arcade-pilots.yml",
+    "guide": "branch3/release/ORIGINAL_EDITORIAL_OWNER_ATTESTATION.md",
+    "unsigned_owner_checklist_per_exact_media_supported": true,
+    "default_checklist_review_completed_false": true,
+    "exact_video_audio_subtitle_metadata_and_review_packet_sha_bound": true,
+    "detached_ed25519_canonical_review_claim_math_implemented": true,
+    "production_owner_public_key_pinned_independently": false,
+    "real_owner_signed_review_issued": false,
+    "full_video_human_playback_review_verified": false,
+    "final_voice_and_caption_editorial_approval_verified": false,
+    "commercial_graphic_audio_voice_tool_rights_verified": false,
+    "real_exact_release_owner_signature_verified": false,
+    "private_upload_ledger_writer_deployed": false,
+    "youtube_uploads": 0,
+    "youtube_write_enabled": false
   }
 }

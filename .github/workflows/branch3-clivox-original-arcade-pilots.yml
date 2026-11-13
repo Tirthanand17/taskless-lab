@@ -8,6 +8,8 @@ on:
       - 'scripts/test_branch3_original_arcade_pilots.py'
       - 'scripts/branch3_a6_original_handoff.py'
       - 'scripts/test_branch3_a6_original_handoff.py'
+      - 'scripts/branch3_a6_original_review_signature.py'
+      - 'scripts/test_branch3_a6_original_review_signature.py'
       - 'branch3/original_pilots/**'
       - 'branch3/architecture/**'
       - '.github/workflows/branch3-clivox-original-arcade-pilots.yml'
@@ -61,15 +63,15 @@ jobs:
           set -euo pipefail
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg espeak-ng fonts-dejavu-core
-          python -m pip install --disable-pip-version-check Pillow==11.3.0
+          python -m pip install --disable-pip-version-check Pillow==11.3.0 'cryptography>=44,<47'
           command -v ffprobe
           command -v ffmpeg
           command -v espeak-ng
       - name: Independent original-rights, scene, caption and technical-QA tests
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py
-          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a6_original_handoff scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
+          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py
+          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
       - name: Render original-first arcade video(s) in disposable GitHub temp only
         run: |
           set -euo pipefail
@@ -85,6 +87,11 @@ jobs:
           set -euo pipefail
           python -B -m scripts.branch3_a6_original_handoff --mode build --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original" > "$RUNNER_TEMP/clivox-original-owner-handoff-result.json"
           python -B -c 'import json,os,pathlib; d=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-original"; m=list(d.glob("*/owner-handoff-quarantined.json")); assert len(m)==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1); assert all(not json.loads(p.read_text())["owner_detached_signature_present"] and not json.loads(p.read_text())["youtube_upload_authorized"] and not json.loads(p.read_text())["youtube_publish_authorized"] for p in m); print("CLIVOX_A6_REAL_VIDEO_DIGEST_HANDOFF_NO_OWNER_APPROVAL_NO_YOUTUBE")'
+      - name: Reinspect exact videos and generate unsigned owner editorial review checklists
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a6_original_review_signature --mode unsigned --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original" > "$RUNNER_TEMP/clivox-owner-editorial-unsigned-result.json"
+          python -B -c 'import json,os,pathlib; d=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-original"; forms=list(d.glob("*/owner-editorial-review-UNSIGNED.json")); assert len(forms)==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1); assert all(all(v is False for v in json.loads(p.read_text())["owner_review_checks"].values()) and json.loads(p.read_text())["owner_review_completed_at_utc"] is None and json.loads(p.read_text())["action"]=="EDITORIAL_REVIEW_CLAIM_ONLY_NO_UPLOAD" for p in forms); print("CLIVOX_A6_ALL_UNSIGNED_REVIEW_CHECKLISTS_BOUND_TO_ACTUAL_MEDIA_NO_OWNER_SIGNING")'
       - name: Upload only author-owned new graphics/fiction/TTS reviewer files (7 days)
         uses: actions/upload-artifact@v4
         with:
@@ -96,6 +103,7 @@ jobs:
             ${{ runner.temp }}/clivox-original/**/original-tts-and-procedural-ambience.wav
             ${{ runner.temp }}/clivox-original/**/metadata-preview.json
             ${{ runner.temp }}/clivox-original/**/owner-handoff-quarantined.json
+            ${{ runner.temp }}/clivox-original/**/owner-editorial-review-UNSIGNED.json
             ${{ runner.temp }}/clivox-original/**/review-manifest.json
             ${{ runner.temp }}/clivox-original/**/technical-review-qa.json
           if-no-files-found: error

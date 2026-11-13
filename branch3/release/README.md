@@ -8,6 +8,10 @@
 
 The signed bytes use the domain separator `CLIVOX-A6-EXACT-RELEASE-V1`. Changing the MP4, title, rights evidence, channel ID or planned time invalidates the signature. This is an offline demonstration; the production key holder and its authority are not enrolled.
 
+## New exact-video editorial review signature bridge (unsigned by default)
+
+[Original-video owner editorial attestation and unsigned checklist](ORIGINAL_EDITORIAL_OWNER_ATTESTATION.md) creates **five unchecked review fields** for every exact MP4/WAV/SRT/metadata A6 handoff; each GitHub original arcade render can package the `owner-editorial-review-UNSIGNED.json` document. A separate Ed25519 detached signature verifier proves **cryptographic consistency only** using ephemeral keys in tests, not the owner's identity, actual human playback, rights, trusted signer enrollment or release. No private key, Google OAuth or real YouTube upload is involved.
+
 ## New original first-party A6 exact-video handoff
 
 The [original arcade exact-asset owner review handoff](ORIGINAL_VIDEO_OWNER_REVIEW_HANDOFF.md) rehashes each *actually rendered* MP4, WAV, SRT, source catalog, canonical metadata and independently regenerated FFprobe QA before producing `owner-handoff-quarantined.json`. It is integrated with the [GitHub original arcade render workflow](../../.github/workflows/branch3-clivox-original-arcade-pilots.yml) and adversarial no-secrets CI. All output remains quarantined; **no actual owner Ed25519 key, authentic detached release, approved commercial third-party licensing, Google upload or scheduled publication exists.**
