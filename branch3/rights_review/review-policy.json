@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "phase": "A2_SIGNED_REVIEW_PREVIEW_ONLY",
+  "real_human_reviewer_key_enrolled": false,
+  "real_revocation_authority_key_enrolled": false,
+  "durable_revocation_ledger": false,
+  "latest_trusted_revocation_sequence": null,
+  "real_authentic_creator_grants": 0,
+  "real_human_reviews_completed": 0,
+  "actual_contract_storage_approved": false,
+  "human_review_not_creator_license": true,
+  "creator_registry_auto_promotion_enabled": false,
+  "source_media_download_enabled": false,
+  "youtube_write_enabled": false,
+  "status": "OFFLINE_TESTS_WITHOUT_PRODUCTION_TRUST"
+}

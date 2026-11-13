@@ -46,7 +46,7 @@ The fixture contains clearly synthetic statistics/channels. **No work occurs in 
 - A source-score rank is not a license, a human attestation or an exact segment transcript.
 - No secrets, personal email, contract contents, third-party recordings or transcripts are included in public GitHub metadata reports.
 
-## Remaining A2 work
+## Follow-up (2026-11-13): signed review and revocation OFFLINE preflight\n\n[Signed-review and revocation preview](../rights_review/README.md) now binds a proposed reviewer claim to an exact pending case, channel, source video and evidence digest with domain-separated Ed25519 verification, and separately tests signed revocation tombstones. This is synthetic/offline cryptographic validation, **not a validated reviewer identity, actual creator rights grant or complete revocation ledger**. Nothing can be promoted to `RIGHTS_VERIFIED` or sent to an uploader.\n\n## Remaining A2 work
 - A verified identity/rights audit receipt with a real human reviewer, source grant signed by the actual rights holder (or authenticated policy), expiry and revocation handling.
 - A private contract/evidence store approved by the owner; no sensitive agreements in this public repository.
 - A privacy-preserving signed review ledger and rights-check revalidation before licensed media acquisition.

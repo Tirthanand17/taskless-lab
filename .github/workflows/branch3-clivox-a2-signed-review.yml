@@ -1,0 +1,66 @@
+name: Branch 3 Clivox A2 Signed Review and Revocation (NO LICENSE / NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "scripts/branch3_a2_review_receipt.py"
+      - "scripts/test_branch3_a2_review_receipt.py"
+      - "branch3/rights_review/**"
+      - "branch3/architecture/**"
+      - ".github/workflows/branch3-clivox-a2-signed-review.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a2-signed-review-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  strict_synthetic_cryptographic_review_and_quarantine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      CLIVOX_CREATOR_SOURCE_DOWNLOAD_ENABLED: "false"
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: "false"
+      CLIVOX_YOUTUBE_WRITE_ENABLED: "false"
+      CLIVOX_REAL_REVIEWER_KEY_ENROLLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install offline Ed25519 mathematical tests only
+        run: python -m pip install --disable-pip-version-check 'cryptography>=44,<47'
+      - name: Adversarial receipt, owner identity and revocation tests
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_a2_review_receipt.py scripts/test_branch3_a2_review_receipt.py
+          python -B -m unittest -v scripts.test_branch3_a2_review_receipt scripts.test_branch3_rights_case_intake scripts.test_branch3_a1_a2_a3_handoff scripts.test_branch3_creator_permission_gate
+      - name: Audit genuine A1 to A2 case object, but SYNTHETIC metadata and no rights
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/clivox-a2-review"
+          python -B scripts/branch3_discovery.py --mode fixture --category gaming --out "$RUNNER_TEMP/clivox-a2-review/discovery.json"
+          python -B scripts/branch3_rights_case_intake.py --source-report "$RUNNER_TEMP/clivox-a2-review/discovery.json" --out "$RUNNER_TEMP/clivox-a2-review/cases.json"
+          python -B -m scripts.branch3_a2_review_receipt --discovery "$RUNNER_TEMP/clivox-a2-review/discovery.json" --cases "$RUNNER_TEMP/clivox-a2-review/cases.json" --out "$RUNNER_TEMP/clivox-a2-review/a2-rights-quarantine-report.json"
+          python -B -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a2-review/a2-rights-quarantine-report.json"; r=json.loads(p.read_text()); assert r["pending_review_cases"]==2 and r["authentic_creator_grants"]==0 and not r["live_owner_reviewed_keys_enrolled"] and not r["durable_revocation_ledger_present"] and not r["source_media_acquisition_authorized"] and not r["youtube_upload_authorized"] and not r["youtube_schedule_authorized"] and not r["youtube_publish_authorized"] and r["youtube_api_writes"]==0; print("CLIVOX_A2_RIGHTS_REVIEW_CRYPTO_TESTS_ONLY_NO_GRANTS")'
+      - name: Upload sanitized pending-rights summary only
+        uses: actions/upload-artifact@v4
+        with:
+          name: clivox-a2-no-rights-review-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/clivox-a2-review/a2-rights-quarantine-report.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Verify no actual signers, media or YouTube APIs
+        run: |
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_CREATOR_SOURCE_DOWNLOAD_ENABLED" = "false"
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = "false"
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = "false"
+          test "$CLIVOX_REAL_REVIEWER_KEY_ENROLLED" = "false"
