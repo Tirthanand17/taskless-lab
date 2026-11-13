@@ -37,7 +37,7 @@ def block(reason: str) -> None:
 
 
 def db_location(path: Path) -> Path:
-    require(type(path) is Path and path.is_absolute()
+    require(isinstance(path, Path) and path.is_absolute()
             and path.suffix == ".sqlite3", "DB_LOCATION")
     require(not path.is_symlink() and ROOT not in path.parents,
             "DB_CANNOT_LIVE_IN_PUBLIC_REPO")
