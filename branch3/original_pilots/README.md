@@ -1,6 +1,6 @@
 # CLIVOX — Original-first 2 Shorts + 1 longer arcade pilot REVIEW pack
 
-**Status:** Code and original scripts only, pending GitHub Actions media rendering, FFprobe validation and owner review. **NOT published, scheduled, approved for upload or licensed third-party clips.**
+**Status (2026-11-13):** All three original preview **and full-resolution** MP4s actually rendered successfully with FFprobe checks in GitHub Actions (runs [43380418384](https://github.com/Tirthanand17/taskless-lab/actions/runs/43380418384) and [43380650008](https://github.com/Tirthanand17/taskless-lab/actions/runs/43380650008)). Human playback/editorial review, final-voice/caption alignment, owner signing, private-first upload and publication are still **NOT complete**. A new A6 exact-asset owner review packet is added to all future renders; previous historical runs do not contain that new A6 packet. **NOT published, scheduled, approved for upload or licensed third-party clips.**
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
@@ -26,6 +26,10 @@ All scripts, metadata, vector drawings and synthesized procedural sound effects 
 - Artifacts: public-safe **original-only** MP4s, rendered scene cards, draft SRTs, SHA manifests and independent technical QA JSON. Seven-day retention; no copyrighted footage, confidential contract or OAuth token stored. The 48kHz synthetic narration is embedded as AAC in MP4; the intermediate WAV is not uploaded.
 
 To view the videos, open the workflow run's **Artifacts** section, download `clivox-original-arcade-review-<run-id>`, and review each `original-review-preview.mp4` by episode directory. All files exist only in GitHub's hosted runner/artifact, **not on a user's laptop or in repository history**.
+
+## New per-video A6 original exact-file review packet
+
+Every new render run first recomputes the technical QA from the real MP4 and binds the exact MP4/WAV/SRT/catalog, metadata and QA SHA-256 values into `owner-handoff-quarantined.json`, alongside `metadata-preview.json`. The full run artifact contains all three packets. This is a **review evidence package only**; it does not establish owner rights, approval or permission to publish. See [A6 owner handoff instructions](../release/ORIGINAL_VIDEO_OWNER_REVIEW_HANDOFF.md).
 
 ## Mandatory creative review before release
 

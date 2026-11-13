@@ -1,0 +1,59 @@
+name: Branch 3 Clivox A6 Original Exact-Asset Owner Handoff QA (NO RELEASE)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a6_original_handoff.py'
+      - 'scripts/test_branch3_a6_original_handoff.py'
+      - 'scripts/branch3_a6_signed_release.py'
+      - 'branch3/release/**'
+      - 'branch3/original_pilots/**'
+      - 'branch3/architecture/**'
+      - '.github/workflows/branch3-clivox-a6-original-handoff-qa.yml'
+      - '.github/workflows/branch3-clivox-original-arcade-pilots.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a6-original-owner-handoff-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  adversarial_exact_video_provenance_stays_quarantined:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_CREATOR_MEDIA_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_OWNER_SIGNING_KEY_PRESENT: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      PUBLISH_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install mathematical signature verifier for existing A6 ephemeral tests
+        run: python -m pip install --disable-pip-version-check 'cryptography>=44,<47'
+      - name: Unit-test hash binding, metadata substitution, video tampering and signing quarantine
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py
+          python -B -m unittest -v scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_signed_release scripts.test_branch3_owner_closure_gate
+      - name: Prove packet creator cannot claim authority without real video
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a6_original_handoff --mode fixture > "$RUNNER_TEMP/clivox-a6-original-handoff-fixture.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-a6-original-handoff-fixture.json").read_text()); assert d["exact_file_handoff_code_implemented"] and not d["actual_human_review_signed"] and not d["production_owner_public_key_enrolled"] and d["licensed_creator_grants_verified"]==0 and not d["youtube_upload_authorized"] and not d["youtube_schedule_authorized"] and not d["youtube_publish_authorized"] and d["google_api_calls"]==0; print("CLIVOX_A6_REAL_ASSET_HASH_HANDOFF_NOT_REAL_RELEASE")'
+      - name: No owner key, third-party media, Google OAuth or publishing
+        run: |
+          test "$CLIVOX_CREATOR_MEDIA_DOWNLOAD_ENABLED" = 'false'
+          test "$CLIVOX_OWNER_SIGNING_KEY_PRESENT" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          test "$PUBLISH_ENABLED" = 'false'
+      # Real-video end-to-end files are generated only in the separate
+      # original-arcade review render job, not in this no-media adversarial CI.

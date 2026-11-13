@@ -1,6 +1,6 @@
 # CLIVOX — Real production closure after private infrastructure bootstrap
 
-**Date:** 2026-11-13. **Overall engineering estimate:** 65% implemented / 35% remaining. **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
+**Date:** 2026-11-13. **Overall engineering estimate:** 69% implemented / 31% remaining (code/CI planning only). The original-first arcade trio successfully rendered on GitHub as preview and full-resolution review copies; the new A6 SHA-bound human-review handoff is implemented, but still not owner-signed. **Operational publishing readiness: BLOCKED.** **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
 
 ## Verified, actually completed today
 

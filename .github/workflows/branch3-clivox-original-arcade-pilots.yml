@@ -6,6 +6,8 @@ on:
       - 'scripts/branch3_original_arcade_pilots.py'
       - 'scripts/branch3_original_arcade_qa.py'
       - 'scripts/test_branch3_original_arcade_pilots.py'
+      - 'scripts/branch3_a6_original_handoff.py'
+      - 'scripts/test_branch3_a6_original_handoff.py'
       - 'branch3/original_pilots/**'
       - 'branch3/architecture/**'
       - '.github/workflows/branch3-clivox-original-arcade-pilots.yml'
@@ -66,8 +68,8 @@ jobs:
       - name: Independent original-rights, scene, caption and technical-QA tests
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py
-          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
+          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py
+          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a6_original_handoff scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
       - name: Render original-first arcade video(s) in disposable GitHub temp only
         run: |
           set -euo pipefail
@@ -78,6 +80,11 @@ jobs:
           set -euo pipefail
           python -B -m scripts.branch3_original_arcade_qa --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original"
           python -B -c 'import pathlib,json,os; d=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-original"; manifests=list(d.glob("*/review-manifest.json")); assert len(manifests)==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1); assert all(json.loads(p.read_text())["ready_to_publish"] is False for p in manifests); reports=list(d.glob("*/technical-review-qa.json")); assert len(reports)==len(manifests) and all(json.loads(p.read_text())["actual_ffprobe_checks_passed"] and not json.loads(p.read_text())["youtube_upload_authorized"] for p in reports); print("CLIVOX_ORIGINAL_FIRST_PARTY_MEDIA_QA_PASS_UPLOAD_LOCKED")'
+      - name: Bind exact original video audio SRT metadata and fresh QA into A6 quarantined owner handoff
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a6_original_handoff --mode build --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original" > "$RUNNER_TEMP/clivox-original-owner-handoff-result.json"
+          python -B -c 'import json,os,pathlib; d=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-original"; m=list(d.glob("*/owner-handoff-quarantined.json")); assert len(m)==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1); assert all(not json.loads(p.read_text())["owner_detached_signature_present"] and not json.loads(p.read_text())["youtube_upload_authorized"] and not json.loads(p.read_text())["youtube_publish_authorized"] for p in m); print("CLIVOX_A6_REAL_VIDEO_DIGEST_HANDOFF_NO_OWNER_APPROVAL_NO_YOUTUBE")'
       - name: Upload only author-owned new graphics/fiction/TTS reviewer files (7 days)
         uses: actions/upload-artifact@v4
         with:
@@ -86,6 +93,9 @@ jobs:
             ${{ runner.temp }}/clivox-original/**/original-review-preview.mp4
             ${{ runner.temp }}/clivox-original/**/narration-timing-draft.srt
             ${{ runner.temp }}/clivox-original/**/scene-*.png
+            ${{ runner.temp }}/clivox-original/**/original-tts-and-procedural-ambience.wav
+            ${{ runner.temp }}/clivox-original/**/metadata-preview.json
+            ${{ runner.temp }}/clivox-original/**/owner-handoff-quarantined.json
             ${{ runner.temp }}/clivox-original/**/review-manifest.json
             ${{ runner.temp }}/clivox-original/**/technical-review-qa.json
           if-no-files-found: error

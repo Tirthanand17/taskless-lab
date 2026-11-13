@@ -8,6 +8,10 @@
 
 The signed bytes use the domain separator `CLIVOX-A6-EXACT-RELEASE-V1`. Changing the MP4, title, rights evidence, channel ID or planned time invalidates the signature. This is an offline demonstration; the production key holder and its authority are not enrolled.
 
+## New original first-party A6 exact-video handoff
+
+The [original arcade exact-asset owner review handoff](ORIGINAL_VIDEO_OWNER_REVIEW_HANDOFF.md) rehashes each *actually rendered* MP4, WAV, SRT, source catalog, canonical metadata and independently regenerated FFprobe QA before producing `owner-handoff-quarantined.json`. It is integrated with the [GitHub original arcade render workflow](../../.github/workflows/branch3-clivox-original-arcade-pilots.yml) and adversarial no-secrets CI. All output remains quarantined; **no actual owner Ed25519 key, authentic detached release, approved commercial third-party licensing, Google upload or scheduled publication exists.**
+
 ## Files
 - `branch3/release/fixtures/unapproved-release.json` — fully quarantined source-free A5 demo, missing video/metadata/rights hashes, no signature or schedule.
 - `branch3/release/release-policy.json` — no production signing key, zero signed releases, zero creator licenses, release disabled.
