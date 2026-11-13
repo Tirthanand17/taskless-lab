@@ -352,5 +352,19 @@
     "real_licensed_a9_pilot_complete": false,
     "github_workflow": ".github/workflows/branch3-clivox-integration-rehearsal.yml",
     "status": "SOURCE_FREE_REAL_MEDIA_QA_AND_NO_RELEASE_ONLY"
+  },
+  "original_first_party_pilots": {
+    "series": "THE IMPOSSIBLE ARCADE",
+    "all_scenes_and_scripts_created_by_clivox": true,
+    "source_catalog": "branch3/original_pilots/arcade_trio.json",
+    "render_workflow": ".github/workflows/branch3-clivox-original-arcade-pilots.yml",
+    "shorts": 2,
+    "landscape_long_episodes": 1,
+    "original_synthetic_tts_voice_nonfinal": true,
+    "no_external_footage_audio_images": true,
+    "full_resolution_review_possible": true,
+    "human_factual_editorial_qa_complete": false,
+    "owner_final_exact_video_signature_exists": false,
+    "youtube_upload_schedule_publish_enabled": false
   }
 }
