@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 71,
-  "overall_estimated_remaining_percent": 29,
+  "overall_estimated_completion_percent": 72,
+  "overall_estimated_remaining_percent": 28,
   "milestone_count": 11,
   "milestones": [
     {
@@ -68,9 +68,9 @@
     {
       "id": "A8",
       "name": "Protected private-first upload/scheduling",
-      "completion_pct": 75,
+      "completion_pct": 82,
       "status": "partial",
-      "evidence": "Existing A8 global idempotency CAS protocol and A7/A8 owner-only read-only YouTube inventory plus REAL private canonical empty attempt ledger created and protected clivox-release GitHub environment. No dedicated uploader, real remote cross-run CAS writer, Google OAuth credentials, rollback-resistant external anchor, real inventory, license or publish."
+      "evidence": "Existing original-only private-first and SQLite/cross-run CAS simulation, private canonical EMPTY A8 genesis created, authenticated owner-only bounded Google uploads status adapter (not connected) plus NEW owner/main/protected GitHub live READ-ONLY bridge that validates private repo owner/collaborators, canonical Git blob SHA, global A8 attempt-chain/duplicates and externally supplied prior sequence/head; adversarial no-secrets CI. No dedicated read token, actual live workflow GET run, real independent immutable anchor, remote writer, Google OAuth or upload."
     },
     {
       "id": "A9",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "71% is the equal-weight implementation estimate for A0-A10 (code/infrastructure). The A10 owner-only Analytics environment is genuinely provisioned but has zero secrets; all Google API traffic remains mock-only until separate owner consent. Real creator licenses, source media approval, editor-accepted final voice/captions, owner A6 signing, production uploader OAuth, durable remote writer, real analytics and A9 published pilot still absent. Branches 1/2 paused.",
+  "disclaimer": "72% is a planning-weighted engineering and protected infrastructure estimate only. A8 now includes owner-only live read-only private attempt ledger code, not an actually executed protected credential run. A matching hash-chain snapshot cannot certify signer identity, external immutable anchor, atomic cross-run reservation, actual video rights, Google upload OAuth, owner A6 signing or private-first YouTube publishing. A9 first production upload remains 0%; Branches 1 and 2 paused.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -345,5 +345,27 @@
     "real_metrics_or_causal_experiments_verified": false,
     "human_editorial_optimization_implemented": false,
     "youtube_publish_authorized": false
+  },
+  "a8_private_live_attempt_readonly": {
+    "stage": "A8_LIVE_OWNER_PRIVATE_ATTEMPT_LEDGER_GET_BRIDGE_UNCONFIGURED",
+    "module": "scripts/branch3_a8_live_attempt_readonly.py",
+    "github_manual_workflow": ".github/workflows/branch3-clivox-a8-live-attempt-readonly.yml",
+    "no_secrets_qa": ".github/workflows/branch3-clivox-a8-live-attempt-qa.yml",
+    "runbook": "branch3/a8/OWNER_PRIVATE_ATTEMPT_READBACK.md",
+    "actual_private_control_ledger_genesis_exists": true,
+    "actual_private_ledger_event_count_at_owner_readback": 0,
+    "actual_private_genesis_sha_chain_head_observed": true,
+    "owner_only_live_github_get_path_implemented": true,
+    "authenticated_private_repo_acl_and_blob_sha_validation_implemented": true,
+    "supplied_prior_sequence_head_rollback_guard_implemented": true,
+    "strict_main_owner_manual_protected_environment_required": true,
+    "protected_environment_previously_created": true,
+    "actual_dedicated_private_contents_read_secret_configured": false,
+    "live_owner_approved_workflow_executed": false,
+    "independent_durable_external_checkpoint_enrolled": false,
+    "actual_remote_cross_run_writer_deployed": false,
+    "actual_youtube_uploads": 0,
+    "approved_private_media_storage": false,
+    "publishing_enabled": false
   }
 }
