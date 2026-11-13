@@ -288,7 +288,26 @@ def write_audio(ep:dict,out:Path)->Path:
             pcm=array("h")
             pcm.frombytes(wav.readframes(wav.getnframes()))
         max_samples=int((beat["end_s"]-beat["start_s"]-.15)*sr)
-        require(len(pcm)<=max_samples,"VOICE_TOO_LONG_FOR_BEAT")
+        # Never silently truncate spoken narration. A modest tempo correction
+        # is permitted, but an excessively dense script fails before encoding.
+        if len(pcm)>max_samples:
+            ratio=(len(pcm)/max_samples)*1.04
+            require(ratio<=1.48,"VOICE_TOO_LONG_FOR_BEAT")
+            sped=out/f"narration-timed-{n:02}.wav"
+            subprocess.run(
+                ["ffmpeg","-hide_banner","-loglevel","error","-nostdin","-y",
+                 "-i",str(converted),"-filter:a",f"atempo={ratio:.5f}",
+                 "-ar",str(sr),"-ac","1","-c:a","pcm_s16le",str(sped)],
+                check=True,timeout=30
+            )
+            with wave.open(str(sped),"rb") as wav:
+                require(wav.getnchannels()==1 and wav.getsampwidth()==2
+                        and wav.getframerate()==sr,
+                        "TIMED_VOICE_FORMAT")
+                pcm=array("h")
+                pcm.frombytes(wav.readframes(wav.getnframes()))
+            sped.unlink(missing_ok=True)
+        require(len(pcm)<=max_samples,"VOICE_OVERFLOW_AFTER_TIME_CORRECTION")
         off=int((beat["start_s"]+.08)*sr)
         for j,value in enumerate(pcm):
             voice[off+j]=int(value*.70)
