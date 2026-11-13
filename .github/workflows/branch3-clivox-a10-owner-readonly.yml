@@ -1,0 +1,54 @@
+name: Clivox A10 Owner-Reviewed Analytics Sample READ-ONLY
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-a10-owner-analytics-readonly
+  cancel-in-progress: false
+
+jobs:
+  owner_reviewed_distinct_clivox_analytics:
+    if: github.repository == 'Tirthanand17/taskless-lab' && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && github.actor == 'Tirthanand17' && github.triggering_actor == 'Tirthanand17' && github.run_attempt == '1'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    environment:
+      name: clivox-analytics-readonly
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_ANALYTICS_WRITE_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_A10_ANALYTICS_READ_APPROVED: ${{ secrets.CLIVOX_A10_ANALYTICS_READ_APPROVED }}
+      CLIVOX_A10_ANALYTICS_CLIENT_ID: ${{ secrets.CLIVOX_A10_ANALYTICS_CLIENT_ID }}
+      CLIVOX_A10_ANALYTICS_CLIENT_SECRET: ${{ secrets.CLIVOX_A10_ANALYTICS_CLIENT_SECRET }}
+      CLIVOX_A10_ANALYTICS_REFRESH_TOKEN: ${{ secrets.CLIVOX_A10_ANALYTICS_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Deny all channels except Clivox and all non-read-only credentials
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = 'Tirthanand17/taskless-lab'
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$GITHUB_EVENT_NAME" = 'workflow_dispatch'
+          test "$GITHUB_ACTOR" = 'Tirthanand17'
+          test "$GITHUB_TRIGGERING_ACTOR" = 'Tirthanand17'
+          test "$GITHUB_RUN_ATTEMPT" = '1'
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_ANALYTICS_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = 'false'
+      - name: Owner authenticated channel identity, then bounded nonmonetary Analytics report GET
+        run: |
+          python -B -m scripts.branch3_a10_owner_readonly --mode live
+      # Sanitized aggregate output only: no raw report, video IDs, user data,
+      # OAuth token, private footage, artifacts or YouTube upload methods.
