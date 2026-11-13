@@ -24,6 +24,10 @@ Primary sources:
 - `branch3/a8/fixtures/empty-upload-ledger.json`: intentionally empty with non-durable storage flags.
 - `.github/workflows/branch3-clivox-a8-dryrun.yml`: GitHub-hosted read-only fixture QA, no OAuth secrets, no media and no YouTube requests; publishes only public-safe JSON report.
 
+## Added 2026-11-13 — transactional one-runner atomic ledger rehearsal
+
+[Transactional SQLite attempt-ledger engineering rehearsal](ATOMIC_ATTEMPT_LEDGER_REHEARSAL.md) now validates real atomic unique reservations and ambiguous-state hold using throwaway GitHub-hosted runner SQLite, with parallel-writer adversarial tests. This is **not cross-run durable storage** and no YouTube/Google media write or rightsholder verification is enabled. The original in-memory dry-run and its strict quarantine remain unchanged.
+
 ## Target production API transaction (not implemented here)
 1. Check current verified creator-granted commercial rights and valid signed A6 release over exact media SHA/metadata SHA/rights receipt/channel/schedule.
 2. Independently verify uploader has **new, separately authorized Clivox OAuth**, never FlowMinute Lab's token. Require a protected owner-reviewed GitHub environment with strict branch restrictions.
