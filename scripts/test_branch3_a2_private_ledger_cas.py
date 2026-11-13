@@ -14,10 +14,10 @@ from scripts.branch3_a2_review_receipt import ReviewDenied, REVOKE_DOMAIN, canon
 from scripts.branch3_a2_checkpointed_revocations import GENESIS_HEAD_SHA256
 from scripts.branch3_a2_private_ledger_cas import (
     CLIVOX_ID, ENTRY_DOMAIN, FILE_PATH, MAX_BYTES, MAX_ENTRIES,
-    PUBLIC_REPO, build_cas_put_body, canonical_ledger,
+    PUBLIC_REPO, POLICY_PATH, build_cas_put_body, canonical_ledger,
     decode_github_contents, entry_sha, fixture_report, git_blob_sha,
     initial_ledger, prepare_append, simulate_github_cas,
-    validate_private_target, verify_journal,
+    validate_private_target, validate_closed_policy, verify_journal,
 )
 
 NOW = datetime(2026, 11, 13, 5, 0, tzinfo=timezone.utc)
@@ -253,6 +253,34 @@ class PrivateCASJournalTests(unittest.TestCase):
         ):
             with self.subTest(anchor=anchor), self.assertRaises(ReviewDenied):
                 verify_journal(initial_ledger(), **opts(key, anchor=anchor))
+
+    def test_closed_ledger_policy_cannot_be_activated_by_public_json(self):
+        policy = json.loads(POLICY_PATH.read_text("utf-8"))
+        validate_closed_policy(policy)
+        false_keys = (
+            "actual_vault_selected", "actual_vault_owner_approved",
+            "authenticated_repo_readback_verified",
+            "private_ledger_initial_blob_provisioned",
+            "production_signer_identity_enrolled",
+            "external_durable_anchor_enrolled",
+            "dedicated_private_vault_contents_token_enrolled",
+            "protected_manual_write_environment_verified",
+            "remote_github_get_or_put_enabled",
+            "source_media_download_enabled",
+            "youtube_upload_schedule_or_publish_enabled"
+        )
+        for flag in false_keys:
+            bad = {**policy, flag: True}
+            with self.subTest(flag=flag), self.assertRaises(ReviewDenied):
+                validate_closed_policy(bad)
+        for key, val in (
+            ("actual_creator_grants_approved", 1),
+            ("private_ledger_path", "../public/ledger.json"),
+            ("channel_id", "UCCcL9Q_jqVq6LJmnYUSAFZA"),
+        ):
+            bad = {**policy, key: val}
+            with self.subTest(key=key), self.assertRaises(ReviewDenied):
+                validate_closed_policy(bad)
 
     def test_fixture_is_never_a_live_vault_or_licensed(self):
         report = fixture_report()
