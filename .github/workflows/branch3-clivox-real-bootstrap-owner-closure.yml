@@ -1,0 +1,52 @@
+name: Branch 3 Clivox Real Private Bootstrap Closure (NO RELEASE)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_owner_closure_gate.py'
+      - 'scripts/test_branch3_owner_closure_gate.py'
+      - 'branch3/architecture/**'
+      - 'branch3/creator_permissions.json'
+      - 'branch3/release/release-policy.json'
+      - 'branch3/rights_review/private-ledger-policy.json'
+      - 'branch3/a8/private-cas-policy.json'
+      - '.github/workflows/branch3-clivox-real-bootstrap-owner-closure.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  enforce_separation_of_real_bootstrap_from_video_release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      CLIVOX_REAL_LICENSE_VERIFIED: 'false'
+      CLIVOX_VAULT_LIVE_TOKEN_CONFIGURED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test no public JSON can forge owner approval or live release
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_owner_closure_gate.py scripts/test_branch3_owner_closure_gate.py
+          python -B -m unittest -v scripts.test_branch3_owner_closure_gate
+      - name: Verify that even actual private metadata bootstrap cannot authorize YouTube
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_owner_closure_gate --mode audit > "$RUNNER_TEMP/clivox-owner-blocked.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-owner-blocked.json").read_text()); assert d["private_metadata_repository_provisioned"] is True and d["owner_review_and_main_only_empty_secret_environments_observed"] is True and d["private_media_vault_owner_approval"] is False and d["rights_holder_grants_authenticated"]==0 and d["real_owner_video_signatures"]==0 and d["dedicated_clivox_google_oauth_connected"] is False and d["real_youtube_inventory_reconciled"] is False and d["youtube_upload_authorized"] is False and d["youtube_schedule_authorized"] is False and d["youtube_publish_authorized"] is False and d["actual_external_api_calls"]==0; print("CLIVOX_REAL_PRIVATE_BOOTSTRAP_WITH_ZERO_RELEASE_AUTHORITY")'
+      - name: No secrets, media, readback or YouTube writes in PR checks
+        run: |
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_REAL_LICENSE_VERIFIED" = 'false'
+          test "$CLIVOX_VAULT_LIVE_TOKEN_CONFIGURED" = 'false'
+      # Public historical bootstrap snapshot only; no private file, log or artifact.
