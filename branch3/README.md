@@ -16,6 +16,10 @@
 - Profile and banner SVG: `branch3/branding/`
 - Final channel About copy: `branch3/channel-profile.md`
 
+## Actual private CLIVOX infrastructure provisioned (2026-11-13)
+
+A separate owner-controlled GitHub **private control-metadata repository** now exists and contains only two empty global genesis journals (A2 revocation, A8 upload attempts). The controller's `clivox-vault-readonly` and `clivox-release` GitHub environments were actually created and verified with owner reviewer, main-only branch and admin bypass disabled; **each has zero secrets**. This is NOT activated confidential media storage, licensed creator permission, independently trusted journal anchors, owner-signed video or a YouTube production uploader. The public repo does not reveal the private repository slug. [Owner-only closure checklist](architecture/OWNER_FINALIZATION_RUNBOOK.md) and [fail-closed bootstrap status](architecture/verified-private-bootstrap.json) describe exactly what remains.
+
 ## Viral-first multi-category content strategy
 **Current content priorities:** (1) gaming/GTA VI, (2) livestream reactions, (3) comedy/jokes, (4) entertainment/pop culture, and (5) podcasts/interviews. The goal is to find the strongest original, shareable moment in a creator-permitted full video, podcast or livestream rather than copy its most-viewed excerpt. See `viral-content-strategy.json`. This is an editorial testing order, not an assertion that one category will go viral. Keep performance decisions tied to actual Clivox analytics after launch.
 
@@ -53,7 +57,7 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 - **A4→A5→A6→A8 integrated video rehearsal:** [integration README](integration/README.md) describes GitHub-hosted generation of a real original-only MP4, independent file-hash and FFprobe QA, storyboard provenance checking and mandatory quarantine. It publishes only a seven-day original demo artifact. **No third-party footage, real voiceover, signed license, YouTube upload or A9 licensed pilot**.
 - **A5 original-only media lab:** [rendering and QA guide](a5/README.md), FFmpeg/Pillow source-free sample, 48kHz synthesized preview tones, visual-script SRT and ffprobe mobile-format checks; **not real licensed footage or voice narration**.
 - **A4 original editorial studio:** [editorial README](editorial/README.md), the source-free YMH Ep347 concept fixture and `scripts/branch3_a4_editorial.py` with adversarial tests. This is a draft narrative workflow, **not licensed footage, a finished video or publishing approval**.
-- **Overall progress:** [planning-weighted tracker](architecture/progress-tracker.json) estimates **64% implemented / 36% remaining** across A0–A10; partial components do not imply live functionality.
+- **Overall progress:** [planning-weighted tracker](architecture/progress-tracker.json) estimates **65% implemented / 35% remaining** across A0–A10; partial components do not imply live functionality.
 - **A6 release-security preflight:** [release README](release/README.md) documents exact MP4/metadata/rights/channel/schedule signatures and quarantine. Ephemeral Ed25519 test keys validate integrity checks; **no real owner signing key, final licensed asset or release authority** is enrolled.
 - **A8 private-first dry-run:** [A8 README](a8/README.md) documents private-only future UTC scheduling, an exact release attempt hash, duplicate/ambiguous-upload quarantine and separate remote reconciliation. The code cannot upload or schedule and has **no durable atomic ledger or live Google write authorization**.
 - **Protected Clivox read-only connection:** GitHub environment `clivox-readonly` is **created and API-verified** with reviewer `Tirthanand17`, selected `main` branch and administrator bypass disabled; no secrets have been added. [Owner connection setup](a7/OWNER_CONNECTION_SETUP.md) describes the remaining Google OAuth consent and protected environment secrets. The new manual-only workflow cannot upload or publish.
@@ -103,9 +107,9 @@ The standalone architecture, research evidence, state graph, agent responsibilit
 
 No raw downloaded third-party video, copyright media, refresh tokens, signed URLs or personal information may be committed to this public repository.
 
-**Updated full-system estimate:** 54% engineering planning completion / 46% remaining across A0–A10; not a measure of live publishing readiness.
+**Updated full-system estimate:** 65% engineering planning completion / 35% remaining across A0–A10; not a measure of live publishing readiness.
 
 ## A10 analytics prototype
-The [A10 analytics README](a10/README.md) explains synthetic-only metric parsing and 1/3/7/14-day experiment reviews. Live Clivox OAuth/Analytics data and real published videos remain unconfigured. Overall engineering planning estimate: **54% implemented / 46% remaining**.
+The [A10 analytics README](a10/README.md) explains synthetic-only metric parsing and 1/3/7/14-day experiment reviews. Live Clivox OAuth/Analytics data and real published videos remain unconfigured. Overall engineering planning estimate: **65% implemented / 35% remaining**.
 
-**Current full-system estimate:** 54% engineering implementation / 46% remaining, with A7 Google OAuth connection still unverified. See `architecture/progress-tracker.json`.
+**Current full-system estimate:** 65% engineering implementation / 35% remaining, with A7 Google OAuth connection still unverified. See `architecture/progress-tracker.json`.
