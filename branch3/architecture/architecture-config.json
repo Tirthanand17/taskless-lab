@@ -326,7 +326,18 @@
     "a8_release_environment_secret_count": 0,
     "a8_real_cross_runner_atomic_updates_activated": false,
     "a8_actual_youtube_upload_oauth_connected": false,
-    "a8_real_youtube_uploads": 0
+    "a8_real_youtube_uploads": 0,
+    "a8_live_private_attempt_readonly_bridge_implemented": true,
+    "a8_private_repo_exact_owner_acl_and_blob_sha_get_verified_in_mock": true,
+    "a8_private_attempt_hash_chain_anchor_replay_tested": true,
+    "a8_live_owner_manual_protected_github_get_workflow": ".github/workflows/branch3-clivox-a8-live-attempt-readonly.yml",
+    "a8_live_private_attempt_no_secret_ci": ".github/workflows/branch3-clivox-a8-live-attempt-qa.yml",
+    "a8_real_owner_private_metadata_genesis_file_verified_again": true,
+    "a8_real_live_github_actions_attempt_readback_completed": false,
+    "a8_real_live_github_actions_readonly_token_configured": false,
+    "a8_live_readonly_may_enable_publication": false,
+    "a8_actual_github_contents_put_implemented": false,
+    "a8_reconciled_youtube_video_inventory": false
   },
   "a10_synthetic_analytics": {
     "analytics_report_shape_parser_implemented": true,

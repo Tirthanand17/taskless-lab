@@ -1,6 +1,6 @@
 # CLIVOX — Real production closure after private infrastructure bootstrap
 
-**Date:** 2026-11-13. **Overall engineering estimate:** 71% implemented / 29% remaining (code/CI planning only). The original-first arcade trio successfully rendered on GitHub as preview and full-resolution review copies; the new A6 SHA-bound human-review handoff is implemented, but still not owner-signed. **Operational publishing readiness: BLOCKED.** **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
+**Date:** 2026-11-13. **Overall engineering estimate:** 72% implemented / 28% remaining (code/CI planning only). The original-first arcade trio successfully rendered on GitHub as preview and full-resolution review copies; the new A6 SHA-bound human-review handoff is implemented, but still not owner-signed. **Operational publishing readiness: BLOCKED.** A9 first licensed production pilot remains 0%.
 
 ## Verified, actually completed today
 
@@ -8,11 +8,15 @@
 - GitHub returned **private visibility, a `main` default branch, owner admin permission and one owner collaborator**. Access by GitHub Apps, installed automation or external backup systems has **not yet been independently audited**.
 - **Two real empty genesis-ledger files** now exist in that separate private repo: `clivox-private/rights/revocation-journal-v1.json` and `clivox-private/upload-control/attempt-ledger-v1.json`. They hold zero revocations and zero upload reservations. They are **not** verified legal rights, signed owner approvals, immutable anchors or a live transactional upload service.
 - The public controller's GitHub environments **`clivox-vault-readonly` and `clivox-release`** exist and have a required `Tirthanand17` reviewer, a `main`-only deployment branch policy and admin bypass disabled. **Both have zero secrets**. This was checked against the GitHub API after creation.
-- A7/A8 read-only YouTube code, A2 journal integrity code, synthetic A4→A8 MP4 rehearsal and A10 analytics tests are in the controller. No Google OAuth, actual media, creator license or video publication exists.
+- A7/A8 read-only YouTube code, A2 journal integrity code, synthetic A4→A8 MP4 rehearsal and A10 analytics tests are in the controller. No Google OAuth, licensed creator source media, authentic commercial creator grants or video publication exists; the original in-house review videos are separate.
 
 ## Additional owner-protected Analytics environment provisioned
 
 The controller now also has `clivox-analytics-readonly`, configured with a required owner reviewer, `main`-only branch policy and administrator bypass disabled; zero secrets were verified. Its [owner-only A10 readback guide](../a10/OWNER_ANALYTICS_READONLY_SETUP.md) requires separate Clivox `youtube.readonly` + `yt-analytics.readonly` consent, and cannot read metrics or make publication decisions before the owner provides those credentials.
+
+## A8 private upload-control readback bridge — no live token
+
+[Owner's A8 GitHub attempt-ledger readback guide](../a8/OWNER_PRIVATE_ATTEMPT_READBACK.md) documents a protected owner/main/manual **read-only** bridge that can verify the already created private empty upload-control file with a separately scoped token and separately retained prior sequence/head anchor. This implementation is tested offline only; the environment **does not yet have its dedicated A8 token**, no actual live GitHub Actions A8 readback has been completed, and a successful read cannot authorize a retry or upload. The existing protected Clivox release environment likewise contains no uploader OAuth secrets.
 
 ## Human/owner dependencies that cannot be invented by automation
 

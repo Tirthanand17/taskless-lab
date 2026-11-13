@@ -32,7 +32,11 @@ Primary sources:
 
 [Private global upload attempt ledger CAS contract](PRIVATE_CROSS_RUN_CAS_PROTOCOL.md) now models a bounded append-only journal in an owner-selected private GitHub repository, validates each global release/media uniqueness event and GitHub Contents byte/SHA integrity, and simulates concurrent conditional updates and unknown-write outcomes. **This is only a fixture-driven contract: no private store is provisioned, no live GET/PUT exists, no true distributed lock has been proven, and media/YouTube uploads remain impossible.**
 
-## Added: Owner-only bounded full playlist/status inventory readback (Google not connected)
+## Added 2026-11-13: protected real private upload-attempt ledger READ-ONLY code
+
+[Owner-only A8 private attempt ledger readback setup](OWNER_PRIVATE_ATTEMPT_READBACK.md) now performs three fixed GitHub API GETs for the private repository, owner-only collaborator list and exact canonical upload attempt journal file, then verifies its blob SHA, strict full event replay and owner-supplied prior anchor. The private genesis file **actually exists** with zero events; this GitHub Actions job **has not been run with a dedicated read-only token**, and its protected environment has zero such secrets. It never performs a remote update or clears an ambiguous upload. The production single-writer CAS, independently durable checkpoint and YouTube upload OAuth are still unconfigured.
+
+
 
 [Owner's uploads inventory runbook](OWNER_UPLOAD_INVENTORY_READBACK.md) describes the protected manual-main read-only workflow which paginates Clivox's uploads playlist within a strict 1000-item bound and verifies each returned video status in batches. Synthetic CI prevents wrong-channel, missing/duplicate or incomplete results. **No live OAuth consent or remote inventory exists yet**, and a metadata snapshot alone cannot permit an ambiguous upload to be retried.
 
