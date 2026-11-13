@@ -22,7 +22,7 @@ import re
 import ssl
 
 from scripts.branch3_a3_private_vault_readback import (
-    API_VERSION, CONTROLLER, HOST, OWNER, expected_paths,
+    API_VERSION, CONTROLLER, HOST, OWNER, expected_paths as a3_expected_paths,
     validate_collaborators, validate_private_repository, VaultReadbackDenied,
 )
 from scripts.branch3_a2_private_ledger_cas import git_blob_sha
@@ -120,27 +120,8 @@ def decode_probe(file: dict) -> tuple[dict, str]:
     return probe,blob_sha
 
 
-def expected_paths(name: str) -> tuple[str,str,str]:
-    repo_path,collab_path=expected_paths_base(name)
-    return (repo_path,collab_path,
-        repo_path+"/contents/"+FILE_PATH+"?ref="+BRANCH)
-
-
-def expected_paths_base(name: str) -> tuple[str,str]:
-    # Delegate slug grammar to the existing private ACL validator.
-    return expected_paths_private(name)
-
-
-def expected_paths_private(name: str) -> tuple[str,str]:
-    return expected_paths_from_a3(name)
-
-
-# Alias the imported A3 function without circular name shadowing.
-expected_paths_from_a3 = expected_paths
-
-
 def fixed_paths(name: str) -> tuple[str,str,str]:
-    repo_path,collab_path=expected_paths_from_a3(name)
+    repo_path,collab_path=a3_expected_paths(name)
     return (repo_path,collab_path,
             repo_path+"/contents/"+FILE_PATH+"?ref="+BRANCH)
 
