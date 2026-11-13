@@ -9,6 +9,10 @@
 - Google testing mode: an External-consent-screen app in `Testing` commonly issues refresh tokens that expire in **7 days** for non-profile scopes. The owner must configure and verify the correct OAuth app lifecycle before persistent CI authorization.
 - GitHub actions secrets/environment rules: https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
 
+## Follow-up: A8 bounded owner uploads inventory verification
+
+The [owner-only A8 uploads inventory runbook](../a8/OWNER_UPLOAD_INVENTORY_READBACK.md) extends the earlier one-page A7 preview to owner-authorized bounded full pagination plus `videos.list` privacy/schedule metadata checks, using the **same already-protected `clivox-readonly` environment** once separately approved. This follow-up is mock-tested only and does not imply owner OAuth secrets or live remote inventory exists.
+
 ## Account identity invariant
 1. Get an OAuth access token using credentials of a **new, Clivox-specific** Google OAuth client. No FlowMinute Lab token reuse, fallback, or untrusted browser-session cookies.
 2. GET `https://www.googleapis.com/youtube/v3/channels?part=id,snippet,contentDetails&mine=true` using the bearer token **in an Authorization header** (not query string).

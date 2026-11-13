@@ -32,6 +32,10 @@ Primary sources:
 
 [Private global upload attempt ledger CAS contract](PRIVATE_CROSS_RUN_CAS_PROTOCOL.md) now models a bounded append-only journal in an owner-selected private GitHub repository, validates each global release/media uniqueness event and GitHub Contents byte/SHA integrity, and simulates concurrent conditional updates and unknown-write outcomes. **This is only a fixture-driven contract: no private store is provisioned, no live GET/PUT exists, no true distributed lock has been proven, and media/YouTube uploads remain impossible.**
 
+## Added: Owner-only bounded full playlist/status inventory readback (Google not connected)
+
+[Owner's uploads inventory runbook](OWNER_UPLOAD_INVENTORY_READBACK.md) describes the protected manual-main read-only workflow which paginates Clivox's uploads playlist within a strict 1000-item bound and verifies each returned video status in batches. Synthetic CI prevents wrong-channel, missing/duplicate or incomplete results. **No live OAuth consent or remote inventory exists yet**, and a metadata snapshot alone cannot permit an ambiguous upload to be retried.
+
 ## Target production API transaction (not implemented here)
 1. Check current verified creator-granted commercial rights and valid signed A6 release over exact media SHA/metadata SHA/rights receipt/channel/schedule.
 2. Independently verify uploader has **new, separately authorized Clivox OAuth**, never FlowMinute Lab's token. Require a protected owner-reviewed GitHub environment with strict branch restrictions.

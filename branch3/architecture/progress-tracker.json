@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 63,
-  "overall_estimated_remaining_percent": 37,
+  "overall_estimated_completion_percent": 64,
+  "overall_estimated_remaining_percent": 36,
   "milestone_count": 11,
   "milestones": [
     {
@@ -61,16 +61,16 @@
     {
       "id": "A7",
       "name": "Distinct Clivox YouTube OAuth",
-      "completion_pct": 70,
+      "completion_pct": 75,
       "status": "partial",
-      "evidence": "Strict Clivox-only read-only OAuth client and mocked validation; manual-only main workflow and live GitHub clivox-readonly environment independently verified with required reviewer, admin bypass disabled and main-only branch restriction; Google OAuth client/owner consent/refresh token absent, no live YouTube readback."
+      "evidence": "Distinct Clivox read-only OAuth owner identity bridge and now bounded complete-paginated uploads playlist/videolist status readback with exact channel binding and protected manual/main-only workflow; only offline mocks, no owner Google OAuth configured or live inventory."
     },
     {
       "id": "A8",
       "name": "Protected private-first upload/scheduling",
-      "completion_pct": 65,
+      "completion_pct": 72,
       "status": "partial",
-      "evidence": "A8 private-first dry run + same-runner SQLite concurrency tests, now with strict global GitHub Contents ledger blob-SHA/append-chain contract, all-subject uniqueness, simulated six-worker cross-run SHA conflicts and unknown-commit no-blind-retry tests. No real private shared store, anchored independent head, Google inventory or uploader."
+      "evidence": "A8 private-first no-write plan, SQLite atomic local idempotency, simulated global GitHub SHA-CAS, now validated read-only uploads playlist exhaustive within strict bound plus videos.list status pagination/owner-channel and no-retry safety; no actual inventory readback/production credentials or durable shared store."
     },
     {
       "id": "A9",
@@ -102,10 +102,10 @@
     "Real licensed source edit + human narration and final audiovisual QA remain pending despite original-only A5 demo",
     "A6 only verifies mathematical signatures in synthetic offline tests: no enrolled owner signing identity or approved final clip",
     "A7 Clivox protected GitHub environment now exists, but Google owner OAuth consent, dedicated Clivox client/refresh credentials and live channel ID readback remain pending",
-    "A8 global private-ledger SHA-CAS contract and concurrent writer mocks exist, but owner-approved real durable cross-run storage, independently trusted rollback head, remote YouTube inventory and protected upload credentials remain unconfigured",
+    "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "63% is a planning-weighted equal-weight estimate of A0–A10 code and architecture; the global A8 GitHub Contents CAS is an offline simulated protocol, not a live durable cross-run ledger, copyright authorization, real owner signed video, actual YouTube inventory or publishing. A9 licensed pilot remains 0%.",
+  "disclaimer": "64% is a planning-weighted engineering code/CI estimate (704/11 points rounded), NOT production readiness. A7/A8 owner-only full-bounded upload inventory verifier is mock-tested but not authenticated live: no Google owner consent, rights grants, licensed media, durable private upload ledger, uploader, remote readback or actual CLIVOX published content. A9 licensed pilot stays 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -227,5 +227,25 @@
     "production_oauth_connected": false,
     "actual_youtube_api_writes": 0,
     "video_upload_or_publication_enabled": false
+  },
+  "a8_authenticated_inventory_preview": {
+    "stage": "A8_BOUNDED_OWNER_ONLY_READONLY_GOOGLE_INVENTORY_NOT_CONNECTED",
+    "workflow": ".github/workflows/branch3-clivox-a8-inventory-readonly.yml",
+    "offline_qa": ".github/workflows/branch3-clivox-a8-inventory-qa.yml",
+    "code": "scripts/branch3_a8_exhaustive_inventory.py",
+    "guide": "branch3/a8/OWNER_UPLOAD_INVENTORY_READBACK.md",
+    "exact_clivox_oauth_channel_required": true,
+    "owner_only_main_protected_workflow_implemented": true,
+    "playlist_pagination_up_to_20_pages_implemented": true,
+    "video_status_50_id_batches_implemented": true,
+    "duplicate_malformed_and_partial_pages_fail_closed": true,
+    "snapshot_not_remote_real_time_completeness_proof": true,
+    "local_video_sha_not_guaranteed_by_youtube_metadata": true,
+    "actual_live_clivox_oauth_connected": false,
+    "actual_google_owner_inventory_read_executed": false,
+    "actual_remote_reconciliation_implemented": false,
+    "retry_after_ambiguous_response_enabled": false,
+    "youtube_api_write_calls": 0,
+    "actual_creator_licenses": 0
   }
 }
