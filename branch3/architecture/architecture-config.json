@@ -77,7 +77,12 @@
     "require_original_commentary": true,
     "require_live_remote_readback": true,
     "duplicate_upload_policy": "RECONCILE_DO_NOT_BLIND_RETRY",
-    "state": "DISABLED_BY_DESIGN"
+    "state": "DISABLED_BY_DESIGN",
+    "original_owner_handoff_integrity_module": "scripts/branch3_a6_original_handoff.py",
+    "original_owner_handoff_quarantine_test_workflow": ".github/workflows/branch3-clivox-a6-original-handoff-qa.yml",
+    "exact_original_video_audio_caption_metadata_review_pack_supported": true,
+    "actual_production_owner_signature_issued": false,
+    "video_legal_rights_human_approved": false
   },
   "metrics": {
     "official_api": [
@@ -365,6 +370,11 @@
     "full_resolution_review_possible": true,
     "human_factual_editorial_qa_complete": false,
     "owner_final_exact_video_signature_exists": false,
-    "youtube_upload_schedule_publish_enabled": false
+    "youtube_upload_schedule_publish_enabled": false,
+    "original_a6_real_video_hash_handoff_code_implemented": true,
+    "original_a6_real_ffprobe_reinspection_and_metadata_binding": true,
+    "original_a6_handoff_report_artifact_included_in_github_runner": true,
+    "preview_trio_github_run_verified": "43380418384",
+    "full_resolution_trio_github_run_verified": "43380650008"
   }
 }
