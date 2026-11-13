@@ -1,0 +1,51 @@
+name: Branch 3 Clivox A8 REAL GitHub CAS Sandbox Adapter QA (NO NETWORK)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a8_cas_sandbox_writer.py'
+      - 'scripts/test_branch3_a8_cas_sandbox_writer.py'
+      - 'scripts/branch3_a8_private_cas_ledger.py'
+      - 'branch3/a8/**'
+      - 'branch3/architecture/**'
+      - '.github/workflows/branch3-clivox-a8-cas-sandbox-qa.yml'
+      - '.github/workflows/branch3-clivox-a8-cas-sandbox-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  real_github_sandbox_cas_adapter_adversarial_offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_REAL_PRIVATE_GITHUB_TOKEN_INSTALLED: 'false'
+      CLIVOX_UPLOAD_ATTEMPT_WRITES_ENABLED: 'false'
+      CLIVOX_MEDIA_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test exact sandbox file, owner ACL, SHA conflict and fail-closed unknown outcomes
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_a8_cas_sandbox_writer.py scripts/test_branch3_a8_cas_sandbox_writer.py
+          python -B -m unittest -v scripts.test_branch3_a8_cas_sandbox_writer scripts.test_branch3_a8_private_cas_ledger scripts.test_branch3_a8_live_attempt_readonly
+      - name: Verify fixture never accesses GitHub or YouTube
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a8_cas_sandbox_writer --mode fixture > "$RUNNER_TEMP/clivox-sandbox-no-network.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-sandbox-no-network.json").read_text()); assert d["separate_sandbox_branch_and_metadata_file_enforced"] and d["real_private_github_stale_sha_409_observed_externally"] and not d["actual_live_sandbox_job_executed"] and not d["production_ledger_put_implemented"] and not d["production_cross_runner_global_reservation_proven"] and d["actual_github_get_count"]==0 and d["actual_github_put_count"]==0 and d["actual_youtube_api_calls"]==0 and not d["youtube_upload_authorized"] and not d["youtube_publish_authorized"]; print("CLIVOX_A8_GITHUB_CAS_SANDBOX_CODE_NO_REMOTE_WRITE_OR_UPLOAD")'
+      - name: Deny remote production controls during unprivileged tests
+        run: |
+          test "$CLIVOX_REAL_PRIVATE_GITHUB_TOKEN_INSTALLED" = 'false'
+          test "$CLIVOX_UPLOAD_ATTEMPT_WRITES_ENABLED" = 'false'
+          test "$CLIVOX_MEDIA_DOWNLOAD_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+      # No GitHub owner-protected secrets, private files, media or artifacts.
