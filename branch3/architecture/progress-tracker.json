@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 64,
-  "overall_estimated_remaining_percent": 36,
+  "overall_estimated_completion_percent": 65,
+  "overall_estimated_remaining_percent": 35,
   "milestone_count": 11,
   "milestones": [
     {
@@ -33,9 +33,9 @@
     {
       "id": "A3",
       "name": "Private media storage",
-      "completion_pct": 70,
+      "completion_pct": 75,
       "status": "partial",
-      "evidence": "A3 public media boundary/private vault metadata verifier now integrated into A2 owner-triggered read-only private Contents journal workflow; strictly no media access or real private repo created/approved or verified."
+      "evidence": "REAL owner-controlled separate GitHub private CLIVOX metadata repository created; main branch, private visibility, owner admin and only owner collaborator checked. Two empty ledger genesis files exist in private repo. REAL protected clivox-vault-readonly and clivox-release environments now main-only/owner-reviewed/no-admin-bypass with 0 secrets. NOT licensed media vault, no token nor live owner readback."
     },
     {
       "id": "A4",
@@ -68,9 +68,9 @@
     {
       "id": "A8",
       "name": "Protected private-first upload/scheduling",
-      "completion_pct": 72,
+      "completion_pct": 75,
       "status": "partial",
-      "evidence": "A8 private-first no-write plan, SQLite atomic local idempotency, simulated global GitHub SHA-CAS, now validated read-only uploads playlist exhaustive within strict bound plus videos.list status pagination/owner-channel and no-retry safety; no actual inventory readback/production credentials or durable shared store."
+      "evidence": "Existing A8 global idempotency CAS protocol and A7/A8 owner-only read-only YouTube inventory plus REAL private canonical empty attempt ledger created and protected clivox-release GitHub environment. No dedicated uploader, real remote cross-run CAS writer, Google OAuth credentials, rollback-resistant external anchor, real inventory, license or publish."
     },
     {
       "id": "A9",
@@ -95,7 +95,7 @@
   "branch1_and_branch2_paused": true,
   "most_important_blockers": [
     "Independently authenticated commercial creator clipping grants; owner-controlled real private revocation journal, pinned revocation authority and durable monotonic anchor (A2 live read-only bridge is code only, not configured or run)",
-    "A3 owner must select and approve private media storage, configure a protected review environment and grant narrow read-only metadata access for an actual audited GitHub API readback; no real vault exists/verified",
+    "A3 separate private CLIVOX metadata repo and 2 owner-reviewed protected GitHub environments NOW EXIST with empty ledgers, but media storage/provider approval, GitHub App access audit, narrow private Contents token, contract provenance and actual licensed source storage are NOT complete",
     "Exact source review and genuinely original clip edit",
     "Distinct Clivox API OAuth and protected release environment",
     "Actual QA-approved, signed and inventoried first pilot",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "64% is a planning-weighted engineering code/CI estimate (704/11 points rounded), NOT production readiness. A7/A8 owner-only full-bounded upload inventory verifier is mock-tested but not authenticated live: no Google owner consent, rights grants, licensed media, durable private upload ledger, uploader, remote readback or actual CLIVOX published content. A9 licensed pilot stays 0%.",
+  "disclaimer": "65% is planning-weighted engineering and actual **private metadata bootstrap** progress (712/11 work-package points rounded), NOT commercial clipping permission, a licensed media vault, independently trusted signers, immutable revocation anchors, real Google OAuth or YouTube publication. Public bootstrap evidence is a historical snapshot; owner verification and license inputs still required. A9 first licensed pilot remains 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -247,5 +247,31 @@
     "retry_after_ambiguous_response_enabled": false,
     "youtube_api_write_calls": 0,
     "actual_creator_licenses": 0
+  },
+  "private_clivox_bootstrap": {
+    "stage": "REAL_PRIVATE_METADATA_REPO_CREATED_WITH_EMPTY_GENESIS_NO_RIGHTS",
+    "checked_date_utc": "2026-11-13",
+    "public_verified_summary": "branch3/architecture/verified-private-bootstrap.json",
+    "owner_closure_audit": "scripts/branch3_owner_closure_gate.py",
+    "private_clivox_metadata_repository_exists": true,
+    "private_repo_visibility_owner_admin_live_verified": true,
+    "only_owner_repo_collaborator_observed": true,
+    "actual_private_a2_revocation_genesis_created": true,
+    "actual_private_a8_upload_attempt_genesis_created": true,
+    "actual_remote_ledger_events": 0,
+    "actual_protected_vault_readonly_environment_created": true,
+    "actual_protected_clivox_release_environment_created": true,
+    "exact_main_only_owner_required_reviewer_verified": true,
+    "admin_bypass_disabled_verified": true,
+    "secret_count_each_environment_at_readback": 0,
+    "authenticated_live_readonly_bridge_run": false,
+    "private_repo_approved_for_licensed_media": false,
+    "actual_media_vault_activated": false,
+    "actual_creator_grant_count": 0,
+    "production_remote_ledger_writer_enabled": false,
+    "owner_signer_keys_enrolled": false,
+    "oauth_consent_completed": false,
+    "youtube_upload_or_publish_enabled": false,
+    "app_installations_and_backup_access_audited": false
   }
 }

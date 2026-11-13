@@ -1,6 +1,6 @@
 # CLIVOX A8 — Global cross-run upload-attempt ledger CAS contract
 
-**2026-11-13:** Offline contract and adversarial simulated GitHub Contents concurrency. **Not a real durable ledger**, not real uploader authorization, and not real YouTube inventory reconciliation.
+**2026-11-13 update:** The owner created a private CLIVOX control-metadata repo and the **canonical zero-event A8 genesis file** at the documented path. The Global CAS protocol is still **offline only**: no actual cross-run remote writer, signed owner authorization, immutable external anchor, uploader OAuth or real YouTube inventory.
 
 ## The exact problem
 
@@ -36,4 +36,4 @@ The two prior production gates are still required: **authentic human-verified co
 5. Keep an ambiguous upload blocked until authenticated remote inventory/owner decision. Do not reuse an attempt ID or automatically retry merely because a GitHub file lacks a video ID.
 6. Add and test a safe operational disable/takedown and revocation propagation mechanism before any public scheduling.
 
-**Current reality:** 0 verified creator grants, 0 CLIVOX uploads, no private media vault, no live private ledger, no real Google upload OAuth and no publishing.
+**Current reality:** owner-only private **metadata** repo plus one empty A8 ledger now exists, but **NO** licensed-media vault, remote CAS writer, independent anchor, Clivox uploader OAuth or real YouTube inventory. 0 verified creator grants, 0 uploads and no publishing.

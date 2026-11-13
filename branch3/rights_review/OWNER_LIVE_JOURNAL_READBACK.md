@@ -1,8 +1,8 @@
 # CLIVOX A2/A3 — Owner-only private journal GitHub READBACK
 
-**Code implemented:** 2026-11-13. **No live private vault, private journal, credentials, signer enrollment or actual readback has been configured or executed.** There are no approved creator clips or licensed videos. This is not a publishing step.
+**Code implemented:** 2026-11-13. **Private metadata bootstrap now exists:** the owner created a separate private CLIVOX GitHub repository with an **empty** global revocation journal; authenticated repo owner/collaborator metadata was independently read through GitHub CLI. The protected `clivox-vault-readonly` environment also exists and is owner-reviewed, main-only, admin-no-bypass with **0 secrets**. **No dedicated token, owner-enrolled signer or actual three-GET workflow readback exists** and no licensed video is authorized.
 
-The public CLIVOX controller repository now contains an optional fixed-host owner-reviewed **read-only** verifier. It requires the separate `clivox-vault-readonly` GitHub Actions environment (not presently verified/provisioned), and refuses calls unless all selected secrets and the manual/main/owner execution context match. In live mode it performs exactly three GETs on `api.github.com` for the same owner-approved private repository:
+The public CLIVOX controller repository now contains an optional fixed-host owner-reviewed **read-only** verifier. It requires the separate `clivox-vault-readonly` GitHub Actions environment (now actually provisioned and protection settings independently verified), and refuses calls unless all selected secrets and the manual/main/owner execution context match. In live mode it performs exactly three GETs on `api.github.com` for the same owner-approved private repository:
 
 1. `GET /repos/Tirthanand17/<private-clivox-vault>`: exact owner/identity, true private visibility, not archived/disabled/forked.
 2. `GET /repos/Tirthanand17/<private-clivox-vault>/collaborators?affiliation=all&per_page=100&page=1`: only the expected owner with admin permissions; pagination is rejected.
@@ -32,6 +32,6 @@ The public CLIVOX controller repository now contains an optional fixed-host owne
 - Even a successful readback is **only a contemporaneous read with supplied validation material**. It does not independently prove the signing key holder's legal role, private vault/contract owner consent, complete revocation history, a nonrollbackable external anchor, current license validity or future permission.
 - The separate anchor must be advanced transactionally under an independently reviewed process. The bridge uses only the pinned sequence/head supplied by the owner; secrets and Actions cannot by themselves prove immutable historical publication.
 - This is **not** a production upload/rights gate: its output has `genuine_creator_licenses_verified=0`, `source_media_download_authorized=false` and all YouTube-write authorizations `false`.
-- No private repo, ACL, consent, original video, signed exact-render A6 release, live Clivox Google OAuth or YouTube production video is configured. Branches 1 and 2 remain paused.
+- The private metadata repository and protected environment have been created, but the owner has NOT yet approved licensed-media storage or provided dedicated read-only token, signer keys, external durable anchor, legal consent, final exact-render release, Clivox Google OAuth or production YouTube video. Branches 1 and 2 remain paused.
 
 References: <https://docs.github.com/en/rest/repos/contents>, <https://docs.github.com/en/rest/collaborators/collaborators>, <https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments>.

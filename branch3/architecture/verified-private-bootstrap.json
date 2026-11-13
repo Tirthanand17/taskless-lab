@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "checked_date_utc": "2026-11-13",
+  "verification_method": "OWNER_AUTHENTICATED_GITHUB_CLI_AND_CONNECTED_GITHUB_FILE_READBACK",
+  "public_record_is_not_live_continuous_attestation": true,
+  "control_repository": {
+    "separate_clivox_private_metadata_repo_created": true,
+    "privacy_and_owner_admin_checked_live": true,
+    "default_branch_main_checked_live": true,
+    "only_owner_listed_as_collaborator_at_readback": true,
+    "installed_app_access_and_external_backups_audited": false,
+    "actual_owner_approved_licensed_media_storage": false,
+    "copyrighted_source_or_contract_uploads": 0,
+    "private_name_intentionally_not_in_public_report": true
+  },
+  "genesis_ledgers": {
+    "a2_revocation_journal_private_file_created": true,
+    "a2_revocation_events": 0,
+    "a8_upload_attempt_journal_private_file_created": true,
+    "a8_upload_attempt_events": 0,
+    "both_channel_ids_checked": true,
+    "production_key_independently_enrolled": false,
+    "nonrollbackable_external_anchor_exists": false,
+    "authenticated_live_cross_run_writer_exists": false
+  },
+  "controller_environments": {
+    "clivox-vault-readonly": {
+      "exists": true,
+      "required_reviewer_owner_verified": true,
+      "deploy_main_only_verified": true,
+      "admin_bypass_disabled_verified": true,
+      "environment_secret_count_at_readback": 0,
+      "actual_private_ledger_authenticated_script_run": false
+    },
+    "clivox-release": {
+      "exists": true,
+      "required_reviewer_owner_verified": true,
+      "deploy_main_only_verified": true,
+      "admin_bypass_disabled_verified": true,
+      "environment_secret_count_at_readback": 0,
+      "actual_release_or_youtube_upload_executed": false
+    }
+  },
+  "channel": {
+    "creator_issued_commercial_licenses_verified": 0,
+    "actual_licensed_media_assets": 0,
+    "signed_owner_video_releases": 0,
+    "genuine_clivox_google_oauth_credentials_configured": false,
+    "real_youtube_upload_inventory_readback_executed": false,
+    "real_youtube_videos_uploaded_by_project": 0,
+    "live_publication_enabled": false
+  },
+  "approved_for_private_media_storage": false,
+  "approved_for_source_download": false,
+  "approved_for_real_ledger_writes": false,
+  "approved_for_youtube_upload": false,
+  "approved_for_youtube_schedule": false,
+  "approved_for_youtube_publish": false,
+  "status": "PRIVATE_METADATA_BOOTSTRAPPED_OWNER_RIGHTS_CREDENTIALS_ABSENT"
+}
