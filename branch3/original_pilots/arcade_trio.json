@@ -39,7 +39,7 @@
           "start_s": 10,
           "end_s": 17,
           "headline": "PICK ONE NOW",
-          "subheadline": "5  •  4  •  3  •  2  •  1",
+          "subheadline": "5  |  4  |  3  |  2  |  1",
           "spoken": "You have five seconds. Pick before the timer hits zero.",
           "art": "timer"
         },
@@ -89,7 +89,7 @@
           "start_s": 10,
           "end_s": 18,
           "headline": "DECIDE FAST",
-          "subheadline": "5  •  4  •  3  •  2  •  1",
+          "subheadline": "5  |  4  |  3  |  2  |  1",
           "spoken": "The timer is almost gone. Pick a color right now.",
           "art": "timer"
         },
