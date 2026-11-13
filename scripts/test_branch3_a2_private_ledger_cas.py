@@ -62,10 +62,13 @@ def readback(ledger=None, *, raw=None):
     }
 
 
-def opts(key, anchor=None):
+DEFAULT_ANCHOR = object()
+
+
+def opts(key, anchor=DEFAULT_ANCHOR):
     return {
         "revocation_public_key": pub(key),
-        "trusted_floor": floor() if anchor is None else anchor,
+        "trusted_floor": floor() if anchor is DEFAULT_ANCHOR else anchor,
         "now": NOW,
     }
 
