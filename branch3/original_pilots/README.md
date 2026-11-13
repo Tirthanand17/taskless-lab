@@ -27,6 +27,10 @@ All scripts, metadata, vector drawings and synthesized procedural sound effects 
 
 To view the videos, open the workflow run's **Artifacts** section, download `clivox-original-arcade-review-<run-id>`, and review each `original-review-preview.mp4` by episode directory. All files exist only in GitHub's hosted runner/artifact, **not on a user's laptop or in repository history**.
 
+## New unsigned exact-video human editorial checklist
+
+Every future three-video render produces an `owner-editorial-review-UNSIGNED.json` per episode in its seven-day GitHub review artifact. The form is bound to the exact real video, audio, subtitle, metadata and A6 handoff digest, but **all five review flags are false** until a human actually watches and checks the video. It does **not** approve the draft synthetic narration or SRT timing; a change to the actual final audio or captions requires new hashes and review. [Owner-only editorial attestation guide](../release/ORIGINAL_EDITORIAL_OWNER_ATTESTATION.md) explains the optional offline signature math without a production key or publishing permission.
+
 ## New per-video A6 original exact-file review packet
 
 Every new render run first recomputes the technical QA from the real MP4 and binds the exact MP4/WAV/SRT/catalog, metadata and QA SHA-256 values into `owner-handoff-quarantined.json`, alongside `metadata-preview.json`. The full run artifact contains all three packets. This is a **review evidence package only**; it does not establish owner rights, approval or permission to publish. See [A6 owner handoff instructions](../release/ORIGINAL_VIDEO_OWNER_REVIEW_HANDOFF.md).
