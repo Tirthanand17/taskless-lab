@@ -65,7 +65,7 @@ class SharedFakeGitHubContent:
         with self.mutex:
             new_blob=simulate_cas(
                 current_remote_blob_sha=self.raw["sha"],
-                proposed_body=body
+                proposed_body=body,anchor=ANCHOR,now=NOW
             )
             raw=base64.b64decode(body["content"],validate=True)
             self.raw={
@@ -123,7 +123,7 @@ class GitHubCASAttemptTests(unittest.TestCase):
             local=server.get()
             parsed, blob_sha=decode_github_contents(local)
             proposal=build_github_put_contract(
-                existing_blob_sha=blob_sha,updated=append(parsed)
+                existing_blob_sha=blob_sha,updated=append(parsed),anchor=ANCHOR,now=NOW
             )
             barrier.wait()
             try:
@@ -143,7 +143,7 @@ class GitHubCASAttemptTests(unittest.TestCase):
         original=server.get()
         before,sha=decode_github_contents(original)
         proposal=build_github_put_contract(existing_blob_sha=sha,
-                                           updated=append(before))
+                                           updated=append(before),anchor=ANCHOR,now=NOW)
         # Network response lost AFTER simulated server accepted it.
         server.try_put(proposal)
         observed,_=decode_github_contents(server.get())
@@ -248,16 +248,16 @@ class GitHubCASAttemptTests(unittest.TestCase):
     def test_stale_wrong_branch_and_nonvalid_put_denied(self):
         first=append(new_ledger())
         before=response(new_ledger())["sha"]
-        body=build_github_put_contract(existing_blob_sha=before,updated=first)
-        after=simulate_cas(current_remote_blob_sha=before,proposed_body=body)
+        body=build_github_put_contract(existing_blob_sha=before,updated=first,anchor=ANCHOR,now=NOW)
+        after=simulate_cas(current_remote_blob_sha=before,proposed_body=body,anchor=ANCHOR,now=NOW)
         self.assertNotEqual(after,before)
         with self.assertRaisesRegex(PrivateCASBlocked,"STALE_WRITE"):
-            simulate_cas(current_remote_blob_sha=after,proposed_body=body)
+            simulate_cas(current_remote_blob_sha=after,proposed_body=body,anchor=ANCHOR,now=NOW)
         for bad in ({**body,"branch":"other"},
                     {**body,"sha":"b"*40},
                     {**body,"token":"secret"}):
             with self.assertRaises(PrivateCASBlocked):
-                simulate_cas(current_remote_blob_sha=before,proposed_body=bad)
+                simulate_cas(current_remote_blob_sha=before,proposed_body=bad,anchor=ANCHOR,now=NOW)
 
     def test_policy_has_zero_real_trust_no_youtube(self):
         policy=json.loads(POLICY.read_text("utf-8"))
