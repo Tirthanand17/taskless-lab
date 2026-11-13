@@ -145,7 +145,8 @@ class ExactOwnerReviewPacketTests(unittest.TestCase):
                 build_packet(episode(),self.folder,catalog_sha256="BAD")
             (self.folder/MANIFEST).write_text(
                 json.dumps({"render_mode":"full"}),encoding="utf-8")
-            with self.assertRaisesRegex(OriginalHandoffDenied,"PACKET_CHANGED"):
+            # Render mode change is rejected at metadata preflight, before packet compare.
+            with self.assertRaisesRegex(OriginalHandoffDenied,"METADATA_CHANGED"):
                 self.validate(packet,metadata)
 
     def test_existing_qa_must_equal_fresh_recomputed_qa(self):
