@@ -4,23 +4,43 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## Verified current owner-correction master — 39 cues / three CSVs
+
+The merged PR #196 `main` [render #43567628633](https://github.com/Tirthanand17/taskless-lab/actions/runs/43567628633)
+completed **SUCCESS** on source SHA `a10e0ef22af06563a759424ea00d2c25ba46fedf`.
+The exact 2 Shorts and 108-second long episode passed independent 39
+encoded-cue frame checks, 39 postmix speech-like activity checks, A6
+SHA-bound unsigned review and contact-sheet/gallery generation.
+The **new** gallery contains **23 scene links + 39 per-cue audio/caption
+review links**, with three CSVs containing **8, 8 and 23** rows.
+The full GitHub Actions run independently checked all rows carry the
+current exact MP4/WAV/SRT hashes and all assessment cells are
+`NOT_REVIEWED`. Artifact ID **14103267736**, name
+`clivox-original-arcade-review-43567628633`, size **23,783,394 bytes**,
+expires **2026-11-21 06:45:33 UTC**.
+
+The **prior run 43566364655 remains historical technical evidence only**.
+Neither automated speech activity nor the generated human issue worksheet
+proves accurate spoken words or real owner listening; no signature, creator
+license, uploaded private video, schedule or YouTube publication exists.
+
 ## A5 exact-media caption correction worksheet (human action; not approval)
 
 After per-cue audio and video engineering gates, the missing step is HUMAN
 correction of the **words actually spoken**, pronunciation, pacing, and
 subtitle presentation. The offline owner gallery now includes a dedicated
 **timecoded caption link** for every draft SRT cue plus one editable
-\`narration-caption-corrections-UNREVIEWED.csv\` in each episode folder.
+`narration-caption-corrections-UNREVIEWED.csv` in each episode folder.
 These CSVs have **8 + 8 + 23 = 39 unreviewed rows**. They carry the episode,
 cue/scene number, cue start and end, complete draft caption, and exact SHA-256
 of the MP4, mixed audio WAV, and editable SRT source. The cue links use local
 relative MP4 media fragments; no online video or script is needed.
 
-After extracting the ZIP, open \`CLIVOX-REVIEW-START-HERE.html\` and listen to
+After extracting the ZIP, open `CLIVOX-REVIEW-START-HERE.html` and listen to
 each cue **and all complete MP4s**, checking the actual spoken words,
 pronunciation, subtitle timing, legibility and final audio mix. In a copy
 of the CSV, record proposed changes in the provided columns. All assessment
-columns begin at \`NOT_REVIEWED\`; a filled CSV is **an issue log**, *never*
+columns begin at `NOT_REVIEWED`; a filled CSV is **an issue log**, *never*
 a signed owner attestation or release. Keep owner notes private; do not commit
 the edited CSV to the public repository, do not copy previous positive review
 claims and do not publish preview masters.
@@ -88,7 +108,7 @@ unsigned worksheets and real owner review. All publishing flags stay false.
 ## A5 exact-SRT scene navigation for owner listening (unapproved)
 
 New original-only review artifacts include an **offline, no-JavaScript scene index**
-inside \`CLIVOX-REVIEW-START-HERE.html\`. The index has **5 + 5 + 13 = 23**
+inside `CLIVOX-REVIEW-START-HERE.html`. The index has **5 + 5 + 13 = 23**
 time-marked scene links for the complete 2-Shorts + 108-second landscape
 review batch. Each row compares the storyboard's **planned narration** against
 the actual SHA-bound **draft SRT text**, and links to the corresponding
@@ -139,7 +159,7 @@ The renderer now applies **bounded, native-ASS subtitle font/margin values** and
 
 ## Latest verified three-video spoken-boundary review master
 
-**Use [GitHub Actions run 43566364655](https://github.com/Tirthanand17/taskless-lab/actions/runs/43566364655) as the current original CLIVOX owner review package.** The automatic `main` render completed successfully with two 1080×1920 Shorts, one 1920×1080 108-second long episode, all-beat frame-caption QA, sound energy/clipping tests, full A6 exact-hash handoffs, three unsigned owner checklists, and offline HTML5 video gallery. Its seven-day review artifact is ~23.8 MB.
+**Use [GitHub Actions run 43567628633](https://github.com/Tirthanand17/taskless-lab/actions/runs/43567628633) as the current original CLIVOX owner review package.** The automatic `main` render completed successfully with two 1080×1920 Shorts, one 1920×1080 108-second long episode, all-beat frame-caption QA, sound energy/clipping tests, full A6 exact-hash handoffs, three unsigned owner checklists, and offline HTML5 video gallery. Its seven-day review artifact is ~23.8 MB.
 
 The **current merged full-resolution main run 43566364655**, after PR #194, completed SUCCESS on SHA `2942e126943a1a63e7c4e2693d769e30602d470d`. The actual 2 Shorts and 108-second landscape review masters were checked at **8 + 8 + 23 = 39 subtitle-cue midpoints** in encoded H.264 frames and for **39 recovered postmix synthetic-speech activity windows**, after subtracting CLIVOX's deterministic original tone/sting bed. Both independent checks passed in the run's explicitly asserted source-free A5 technical QA. The A6 exact-media SHA and all-false owner attestation forms were independently reverified, and the offline 23-scene review gallery and contact sheets generated successfully. GitHub artifact **14102826491**, **23,779,184 bytes**, expires around **2026-11-21 06:31 UTC**. These cues have not been manually listened to or proven word-accurate; no valid owner release, licensing or YouTube upload exists. Sign only a separately human-reviewed and correctly finalized exact-video release, not an old or technical-only hash.
 

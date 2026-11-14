@@ -49,7 +49,7 @@
       "name": "Video renderer and AV quality assurance",
       "completion_pct": 88,
       "status": "partial",
-      "evidence": "Real original-only full-resolution 2 x 36s Shorts and 108s long main GitHub Actions run 43562174869, exact SHA-bound 7d artifact ~23.8MB, independent FFprobe H264/AAC, all-beat subtitle ink/frame QA, actual 48k WAV energy/clipping and first-party procedural-bed-subtracted acoustic onset/offset QA across all 23 scene beats. Assistant parsed downloaded technical-review-qa.json: largest start/end SRT-to-active-speech boundary error 20ms (within 140ms gate), with three all-false unsigned owner review forms and offline gallery. Draft per-word caption sync and natural narration still require owner playback, legal rights and A6 signed release. Zero YouTube. Newer merged PR #190 real full main run 43563685149 passed full two Shorts/108s episode, all 23 no-network scene script/SRT review links, signed-review quarantine, and 7-day 23.8MB owner artifact ID 14101930622. No owner playback or word verification. Newer full main run 43564972354 passed direct 39 (8+8+23) encoded subtitle-cue frame safe-zone tests, contact sheets, 3 unsigned A6 packets and offline 23-scene gallery; artifact 14101663673, 23,777,728 bytes, expiring Nov 21. No human word sync or owner approval. Current merged PR #194 main run 43566364655 passed all 39 final mixed 48k PCM recovered voice-like caption windows plus 39 H264 encoded caption cue frames, A6 exact SHA/owner unsigned, offline gallery and contact sheets, artifact 14102826491/23,779,184 bytes expires Nov 21 06:31 UTC; not ASR, actual word alignment or owner approval."
+      "evidence": "Real original-only full-resolution 2 x 36s Shorts and 108s long main GitHub Actions run 43562174869, exact SHA-bound 7d artifact ~23.8MB, independent FFprobe H264/AAC, all-beat subtitle ink/frame QA, actual 48k WAV energy/clipping and first-party procedural-bed-subtracted acoustic onset/offset QA across all 23 scene beats. Assistant parsed downloaded technical-review-qa.json: largest start/end SRT-to-active-speech boundary error 20ms (within 140ms gate), with three all-false unsigned owner review forms and offline gallery. Draft per-word caption sync and natural narration still require owner playback, legal rights and A6 signed release. Zero YouTube. Newer merged PR #190 real full main run 43563685149 passed full two Shorts/108s episode, all 23 no-network scene script/SRT review links, signed-review quarantine, and 7-day 23.8MB owner artifact ID 14101930622. No owner playback or word verification. Newer full main run 43564972354 passed direct 39 (8+8+23) encoded subtitle-cue frame safe-zone tests, contact sheets, 3 unsigned A6 packets and offline 23-scene gallery; artifact 14101663673, 23,777,728 bytes, expiring Nov 21. No human word sync or owner approval. Current merged PR #194 main run 43566364655 passed all 39 final mixed 48k PCM recovered voice-like caption windows plus 39 H264 encoded caption cue frames, A6 exact SHA/owner unsigned, offline gallery and contact sheets, artifact 14102826491/23,779,184 bytes expires Nov 21 06:31 UTC; not ASR, actual word alignment or owner approval. Latest merged #196 main run 43567628633 SUCCESS: A5 39 audio+39 encoded-caption checks, A6 exact SHA checks, portable 23 scene +39 cue links, 3 CSVs with 39 NOT_REVIEWED exact-media correction rows, artifact 14103267736 size 23,783,394 expires Nov 21 06:45:33 UTC. No reviewer or owner acceptance, no release."
     },
     {
       "id": "A6",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "78% is planning-weighted engineering and technical QA, not live autonomous YouTube readiness. Fully rendered original two Shorts + 108s long in main GitHub run 43562174869; SHA and actual final audio recovered speech-like boundaries across all 23 beats differ from draft SRT by at most 20ms at starts/ends. This is NOT verified word-by-word accuracy, natural/acceptable TTS, all-asset commercial license, owner final review, signed A6 release, production CAS writer or Clivox OAuth. A9 0%, publishing disabled, Branches 1/2 paused. Fresh unapproved CLIVOX scene-level owner artifact: main run 43563685149 (23 relative local scene links, 3 videos). Do not treat prior review hash packets as current; A9 remains zero. Latest original-only reviewer master 43564972354 has 39 real decoded cue-frame visibility checks (NOT OCR, ASR, human audio/visual approval). Previous artifact hash versions are obsolete. Newest unapproved owner video review run 43566364655 has 39 real MP4 caption ink samples and 39 postmix WAV voice-like activity checks; no word-level sync or human listening verified.",
+  "disclaimer": "78% is planning-weighted engineering and technical QA, not live autonomous YouTube readiness. Fully rendered original two Shorts + 108s long in main GitHub run 43562174869; SHA and actual final audio recovered speech-like boundaries across all 23 beats differ from draft SRT by at most 20ms at starts/ends. This is NOT verified word-by-word accuracy, natural/acceptable TTS, all-asset commercial license, owner final review, signed A6 release, production CAS writer or Clivox OAuth. A9 0%, publishing disabled, Branches 1/2 paused. Fresh unapproved CLIVOX scene-level owner artifact: main run 43563685149 (23 relative local scene links, 3 videos). Do not treat prior review hash packets as current; A9 remains zero. Latest original-only reviewer master 43564972354 has 39 real decoded cue-frame visibility checks (NOT OCR, ASR, human audio/visual approval). Previous artifact hash versions are obsolete. Newest unapproved owner video review run 43566364655 has 39 real MP4 caption ink samples and 39 postmix WAV voice-like activity checks; no word-level sync or human listening verified. Latest CLIVOX human correction worksheet master is main run 43567628633; 39 rows are NOT_REVIEWED and not release evidence. Overall remains planning-weighted 78%, actual YouTube A9 remains 0%.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -332,16 +332,16 @@
     "all_23_scenes_speech_srt_start_end_within_140ms_technically_verified": true,
     "measured_max_caption_boundary_difference_seconds": 0.02,
     "human_individual_word_alignment_approved": false,
-    "latest_original_owner_review_artifact_run_id": 43566364655,
-    "latest_full_three_video_gallery_run_id": 43566364655,
-    "latest_full_three_video_gallery_artifact_id": 14102826491,
-    "latest_full_three_video_gallery_artifact_bytes": 23779184,
+    "latest_original_owner_review_artifact_run_id": 43567628633,
+    "latest_full_three_video_gallery_run_id": 43567628633,
+    "latest_full_three_video_gallery_artifact_id": 14103267736,
+    "latest_full_three_video_gallery_artifact_bytes": 23783394,
     "offline_scene_review_index_23_beats_ci_verified": true,
     "all_23_scenes_have_exact_script_to_draft_srt_links": true,
     "owner_scene_playback_and_dialogue_review_completed": false,
     "stale_earlier_sha_review_forms_must_not_be_signed_for_new_master": true,
     "all_39_burned_in_srt_cues_checked_in_actual_mp4": true,
-    "latest_full_main_all_cue_qa_run_id": 43566364655,
+    "latest_full_main_all_cue_qa_run_id": 43567628633,
     "individual_draft_subtitle_cue_counts_by_episode": [
       8,
       8,
@@ -349,11 +349,24 @@
     ],
     "all_23_storyboard_beat_contact_sheet_frames_preserved": true,
     "draft_cue_39_visual_presence_is_not_word_alignment": true,
-    "latest_full_main_audio_and_video_cue_qa_run_id": 43566364655,
+    "latest_full_main_audio_and_video_cue_qa_run_id": 43567628633,
     "all_39_draft_srt_cues_have_postmix_recovered_speech_activity": true,
     "audio_activity_is_not_asr_or_word_alignment": true,
     "actual_individual_speech_words_verified_by_human": false,
-    "final_voice_license_and_owner_signoff": false
+    "final_voice_license_and_owner_signoff": false,
+    "source_free_human_cue_correction_csv_count": 3,
+    "unreviewed_correction_rows_by_episode": [
+      8,
+      8,
+      23
+    ],
+    "unreviewed_correction_rows_total": 39,
+    "exact_video_audio_srt_sha_bound_correction_rows_ci_verified": true,
+    "local_cue_level_video_review_links": 39,
+    "local_scene_level_video_review_links": 23,
+    "correction_csv_is_owner_approval": false,
+    "owner_actual_audio_pronunciation_and_text_review_completed": false,
+    "human_caption_corrections_accepted": false
   },
   "a6_original_owner_handoff": {
     "stage": "A6_EXACT_REAL_VIDEO_ORIGINAL_OWNER_REVIEW_PACKET_QUARANTINE",
