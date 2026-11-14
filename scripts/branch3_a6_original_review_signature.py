@@ -255,6 +255,51 @@ def create_unsigned_requests(directory:Path,*,selection:str)->dict:
     }
 
 
+
+def verify_unsigned_requests(directory:Path,*,selection:str)->dict:
+    """READ-ONLY verification of downloaded original-asset review package.
+
+    Re-runs actual ffprobe, A5 media QA, A6 media/audio/SRT/metadata hashes,
+    and exact unsigned review checklist equality. Valid data is still NOT
+    a human attestation, production release, or Google upload authorization.
+    """
+    require(selection in ("one","all"),"VERIFY_SELECTION")
+    require(isinstance(directory,Path) and directory.is_absolute()
+            and directory.is_dir() and not directory.is_symlink()
+            and ROOT not in directory.parents and directory!=ROOT,
+            "VERIFY_OUTSIDE_REPO_ONLY")
+    episodes=validate_catalog(json.loads(CATALOG.read_text("utf-8")))
+    if selection=="one":
+        episodes=episodes[:1]
+    for episode in episodes:
+        folder=directory/episode["id"]
+        require(folder.is_dir() and not folder.is_symlink(),"VERIFY_FOLDER")
+        source=folder/REQUEST_FILE
+        require(source.is_file() and not source.is_symlink()
+                and 0<source.stat().st_size<=15_000,
+                "MISSING_UNSIGNED_REVIEW")
+        packet=read_json(folder/PACKET_NAME)
+        metadata=read_json(folder/METADATA_NAME)
+        verify_packet(episode,folder,packet,metadata,
+                      catalog_sha256=sha(CATALOG))
+        expected=make_unsigned_review_request(packet,metadata)
+        found=read_json(source)
+        require(found==expected,"CHANGED_OR_FORGED_UNSIGNED_REVIEW")
+    return {
+        "stage":"A6_REAL_MEDIA_UNSIGNED_REVIEW_PACKAGE_READONLY_VERIFIED",
+        "all_episode_video_audio_caption_metadata_and_qa_hashes_recomputed":True,
+        "unsigned_checklist_files_matched_exact_media":True,
+        "episode_count":len(episodes),
+        "actual_owner_signature_keys_loaded":0,
+        "actual_human_video_approvals_verified":0,
+        "real_a6_signed_releases_verified":0,
+        "google_api_calls":0,
+        "youtube_upload_authorized":False,
+        "youtube_schedule_authorized":False,
+        "youtube_publish_authorized":False,
+    }
+
+
 def fixture()->dict:
     return {
         "stage":"A6_ORIGINAL_SIGNED_EDITORIAL_CLAIM_CONTRACT_NOT_OWNER_APPROVAL",
@@ -273,7 +318,7 @@ def fixture()->dict:
 
 def main()->None:
     p=argparse.ArgumentParser()
-    p.add_argument("--mode",choices=("fixture","unsigned"),default="fixture")
+    p.add_argument("--mode",choices=("fixture","unsigned","verify"),default="fixture")
     p.add_argument("--selection",choices=("one","all"),default="one")
     p.add_argument("--directory",type=Path)
     args=p.parse_args()
@@ -282,7 +327,10 @@ def main()->None:
             report=fixture()
         else:
             require(args.directory is not None,"REVIEW_DIRECTORY")
-            report=create_unsigned_requests(args.directory,selection=args.selection)
+            if args.mode=="unsigned":
+                report=create_unsigned_requests(args.directory,selection=args.selection)
+            else:
+                report=verify_unsigned_requests(args.directory,selection=args.selection)
     except (EditorialReviewDenied,ValueError,KeyError,TypeError):
         raise SystemExit(
             "CLIVOX_A6_REVIEW_REJECTED_NO_OWNER_SIGNATURE_NO_YOUTUBE"
