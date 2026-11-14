@@ -434,7 +434,14 @@
     "html_gallery_no_remote_assets_script_tracking_or_youtube": true,
     "html_gallery_exact_media_sha_verified_before_output": true,
     "owner_reviewed_and_approved_all_three": false,
-    "actual_automatic_youtube_posting_enabled": false
+    "actual_automatic_youtube_posting_enabled": false,
+    "pcm_utterance_duration_derived_caption_timing": true,
+    "native_on_screen_subtitles_in_original_review_mp4": true,
+    "subtitle_overlay_produced_by_ffmpeg_libass": true,
+    "srt_cue_word_boundaries_are_estimates": true,
+    "real_audio_and_captions_human_aligned": false,
+    "owner_copyright_and_commercial_voice_approval": false,
+    "google_upload_enabled": false
   },
   "a10_owner_analytics_readonly": {
     "fixed_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
