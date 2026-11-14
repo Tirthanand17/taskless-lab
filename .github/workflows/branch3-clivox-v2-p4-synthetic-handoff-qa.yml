@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/branch3_v2_p4_synthetic_handoff_preflight.py'
       - 'scripts/test_branch3_v2_p4_synthetic_handoff_preflight.py'
+      - 'scripts/branch3_v2_p4_rights_storage_bridge.py'
+      - 'scripts/test_branch3_v2_p4_rights_storage_bridge.py'
       - '.github/workflows/branch3-clivox-v2-p4-synthetic-handoff-qa.yml'
       - 'branch3/clipping_v2/P4_*'
       - 'branch3/clipping_v2/architecture-status.json'
@@ -13,6 +15,8 @@ on:
     paths:
       - 'scripts/branch3_v2_p4_synthetic_handoff_preflight.py'
       - 'scripts/test_branch3_v2_p4_synthetic_handoff_preflight.py'
+      - 'scripts/branch3_v2_p4_rights_storage_bridge.py'
+      - 'scripts/test_branch3_v2_p4_rights_storage_bridge.py'
       - '.github/workflows/branch3-clivox-v2-p4-synthetic-handoff-qa.yml'
       - 'branch3/clipping_v2/P4_*'
       - 'branch3/clipping_v2/architecture-status.json'
@@ -45,6 +49,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install pinned offline rights-validation dependency
+        run: python -m pip install "cryptography==46.0.3"
       - name: Check all outbound/release switches remain off
         run: |
           set -euo pipefail
@@ -59,7 +65,30 @@ jobs:
           set -euo pipefail
           python -B -m unittest -v \
             scripts.test_branch3_v2_p4_synthetic_handoff_preflight \
+            scripts.test_branch3_v2_p4_rights_storage_bridge \
             scripts.test_branch3_media_storage_preflight
+      - name: Verify real P2/P3 rights-to-P4 handoff remains BLOCKED
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_v2_p4_rights_storage_bridge --mode closed > "$RUNNER_TEMP/p4-bridge-hold.json"
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          report=json.loads((Path(os.environ["RUNNER_TEMP"])/"p4-bridge-hold.json").read_text())
+          assert report["stage"] == "CLIVOX_V2_P4_P2P3_RIGHTS_TO_PRIVATE_SOURCE_BOUNDARY_HOLD"
+          assert report["status"] == "NO_RIGHTSHOLDER_LICENSE_OR_OWNER_APPROVED_MEDIA_VAULT"
+          assert report["public_creator_research_count"] == 5
+          assert report["creator_rightsholder_grants_verified"] == 0
+          assert report["creator_original_masters_received"] == 0
+          assert report["authenticated_private_media_vault_approved"] is False
+          assert report["source_ingestion_enabled"] is False
+          assert report["media_render_enabled"] is False
+          assert report["youtube_upload_enabled"] is False
+          assert report["youtube_publish_enabled"] is False
+          assert report["real_p4_milestone_complete"] is False
+          assert len(report["missing_real_world_dependencies"]) == 7
+          print("P4_RIGHTS_STORAGE_BRIDGE_NO_GRANT_NO_MEDIA_NO_YOUTUBE")
+          PY
       - name: Install free Ubuntu FFmpeg and ffprobe tools for source-free fixture only
         run: |
           set -euo pipefail
