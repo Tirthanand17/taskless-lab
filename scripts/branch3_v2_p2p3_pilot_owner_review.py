@@ -218,9 +218,9 @@ def load_public_route_audit(path: Path = AUDIT_FILE) -> dict:
     return data
 
 
-def compile_owner_pilot_packet(*, watchlist: dict, public_audit: dict,
-                               policy: dict, registry: dict,
-                               now: datetime) -> dict:
+def _compose_owner_packet(*, watchlist: dict, public_audit: dict,
+                          policy: dict, registry: dict,
+                          now: datetime) -> dict:
     validate_public_route_audit(public_audit, watchlist, now=now)
     # Existing P3/A2 validator: all real grants/signatures/revocations remain
     # explicitly absent. Source IDs from synthetic A2 cases never attach here.
@@ -320,9 +320,18 @@ def compile_owner_pilot_packet(*, watchlist: dict, public_audit: dict,
         "status":
             "PUBLIC_BUSINESS_ROUTE_REVIEW_ONLY_NO_OWNER_SELECTION_NO_LICENSE",
     }
-    return validate_owner_packet(result, public_audit=public_audit,
-                                 watchlist=watchlist, policy=policy,
-                                 registry=registry, now=now)
+    return result
+
+
+def compile_owner_pilot_packet(*, watchlist: dict, public_audit: dict,
+                               policy: dict, registry: dict,
+                               now: datetime) -> dict:
+    packet = _compose_owner_packet(
+        watchlist=watchlist, public_audit=public_audit,
+        policy=policy, registry=registry, now=now)
+    return validate_owner_packet(
+        packet, public_audit=public_audit, watchlist=watchlist,
+        policy=policy, registry=registry, now=now)
 
 
 def validate_owner_packet(packet: object, *, public_audit: dict,
@@ -331,44 +340,15 @@ def validate_owner_packet(packet: object, *, public_audit: dict,
     """Reconstruct strict output from original P2/P3; forged fields fail."""
     require(type(packet) is dict and set(packet) == OUTPUT,
             "EXACT_OWNER_REVIEW_PACKET_FIELDS")
-    # Recursion-free closed reference: reconstruct via private internal
-    # builder with the validation return skipped.
-    reference = _build_reference(
+    # Independent deterministic reconstruction; no mutable global monkeypatch
+    # or trust in caller-injected owner/signature/creator permission fields.
+    reference = _compose_owner_packet(
         public_audit=public_audit, watchlist=watchlist, policy=policy,
         registry=registry, now=now
     )
     require(canonical(packet) == canonical(reference),
             "ANY_UNAUTHORIZED_OWNER_LICENSE_EDIT_OR_PUBLIC_CONTACT")
     return packet
-
-
-def _build_reference(*, public_audit: dict, watchlist: dict, policy: dict,
-                     registry: dict, now: datetime) -> dict:
-    # Avoid repeating any rights logic; this function only invokes the
-    # composition and tells it not to recursively revalidate.
-    return _compile_reference_only(
-        watchlist=watchlist, public_audit=public_audit,
-        policy=policy, registry=registry, now=now
-    )
-
-
-def _compile_reference_only(*, watchlist: dict, public_audit: dict,
-                            policy: dict, registry: dict,
-                            now: datetime) -> dict:
-    # A deterministic second pass through the exact original implementation,
-    # with a private guard to avoid validation recursion.
-    global validate_owner_packet
-    original = validate_owner_packet
-    try:
-        def no_recursive_validation(packet: dict, **_kwargs) -> dict:
-            return packet
-        validate_owner_packet = no_recursive_validation
-        return compile_owner_pilot_packet(
-            watchlist=watchlist, public_audit=public_audit,
-            policy=policy, registry=registry, now=now
-        )
-    finally:
-        validate_owner_packet = original
 
 
 def production_contact_license_or_clip(*_args, **_kwargs) -> None:
