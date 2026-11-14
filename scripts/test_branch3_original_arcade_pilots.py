@@ -119,7 +119,7 @@ class OriginalPilotQATests(unittest.TestCase):
                 )
                 self.assertTrue(result["owner_must_review_speech_sync"])
                 self.assertFalse(result["machine_forced_alignment_proven"])
-                parts=content.strip().split("\\n\\n")
+                parts=content.strip().split("\n\n")
                 cue_times=[]
                 for section in parts:
                     lines=section.splitlines()
