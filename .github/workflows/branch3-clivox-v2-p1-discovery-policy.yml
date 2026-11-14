@@ -1,0 +1,121 @@
+name: CLIVOX V2 P1 A1-A2-A3 Policy-Safe Metadata QA (NO MEDIA / NO UPLOAD)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/branch3_discovery.py'
+      - 'scripts/test_branch3_discovery.py'
+      - 'scripts/branch3_rights_case_intake.py'
+      - 'scripts/test_branch3_rights_case_intake.py'
+      - 'scripts/branch3_a1_a2_a3_handoff.py'
+      - 'scripts/test_branch3_a1_a2_a3_handoff.py'
+      - '.github/workflows/branch3-clivox-v2-p1-discovery-policy.yml'
+  pull_request:
+    paths:
+      - 'scripts/branch3_discovery.py'
+      - 'scripts/test_branch3_discovery.py'
+      - 'scripts/branch3_rights_case_intake.py'
+      - 'scripts/test_branch3_rights_case_intake.py'
+      - 'scripts/branch3_a1_a2_a3_handoff.py'
+      - 'scripts/test_branch3_a1_a2_a3_handoff.py'
+      - '.github/workflows/branch3-clivox-v2-p1-discovery-policy.yml'
+      - '.github/workflows/branch3-clivox-a1-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic_public_metadata_no_grants:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_YOUTUBE_METADATA_API_KEY: ''
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_AUTO_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_AUTO_UPLOAD_ENABLED: 'false'
+    steps:
+      - name: Checkout without stored credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python standard library only
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run negative tests including strict A1-to-A3 compatibility
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v scripts.test_branch3_discovery scripts.test_branch3_rights_case_intake scripts.test_branch3_a1_a2_a3_handoff scripts.test_branch3_discovery_pipeline
+      - name: Generate a wholly synthetic public-research A1 and rights-pending A2 record
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/clivox-v2-p1"
+          python -B scripts/branch3_discovery.py \
+            --mode fixture --category gaming \
+            --out "$RUNNER_TEMP/clivox-v2-p1/discovery.json"
+          python -B scripts/branch3_rights_case_intake.py \
+            --source-report "$RUNNER_TEMP/clivox-v2-p1/discovery.json" \
+            --out "$RUNNER_TEMP/clivox-v2-p1/rights-cases.json"
+      - name: Independently verify A1/A2 absence of derived metrics, stale caches or rights grants
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json, os
+          from datetime import datetime
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"clivox-v2-p1"
+          a=json.loads((root/"discovery.json").read_text("utf-8"))
+          b=json.loads((root/"rights-cases.json").read_text("utf-8"))
+          assert a["channel_id"]==b["target_channel_id"]=="UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert a["is_synthetic_fixture"] and b["is_synthetic_fixture"]
+          assert a["disallowed_api_data_derived_scores_generated"] is False
+          assert a["cross_owner_statistics_aggregated"] is False
+          assert b["api_derived_scores_or_cross_owner_aggregations_used"] is False
+          assert a["non_authorized_api_data_retention_days"]==7
+          retrieved=datetime.fromisoformat(a["retrieved_at_utc"].replace("Z","+00:00"))
+          expiry=datetime.fromisoformat(a["non_authorized_api_data_expires_at_utc"].replace("Z","+00:00"))
+          assert (expiry-retrieved).total_seconds()==7*86400
+          assert b["non_authorized_api_data_expires_at_utc"]==a["non_authorized_api_data_expires_at_utc"]
+          prohibited={"research_priority_score_0_to_100","research_priority_score_only",
+                      "score_components","views_per_hour","observed_engagement_ratio",
+                      "source_age_hours","source_duration_seconds","most_replayed_timestamp"}
+          assert not (prohibited & a.keys())
+          assert not (prohibited & b.keys())
+          assert all(not (prohibited & x.keys()) for x in a["candidates"])
+          assert all(not (prohibited & x.keys()) for x in b["cases"])
+          assert [x["source_video_id"] for x in a["candidates"]]==sorted(
+              x["source_video_id"] for x in a["candidates"])
+          assert b["pending_case_count"]==len(a["candidates"])==2
+          assert b["creator_permission_grants_issued_by_this_workflow"]==0
+          assert b["media_downloads"]==0 and b["youtube_writes"]==0
+          assert all(not x["youtube_publish_authorized"] for x in b["cases"])
+          assert os.environ["PUBLISH_ENABLED"]=="false"
+          assert os.environ["CLIVOX_AUTO_DOWNLOAD_ENABLED"]=="false"
+          assert os.environ["CLIVOX_AUTO_UPLOAD_ENABLED"]=="false"
+          print("CLIVOX_V2_P1_SYNTHETIC_SCORE_FREE_RIGHTS_PENDING_NO_MEDIA_NO_OAUTH")
+          PY
+      - name: Verify original A1-A2-A3 immutable provenance and deny-state
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a1_a2_a3_handoff \
+            --discovery "$RUNNER_TEMP/clivox-v2-p1/discovery.json" \
+            --rights-cases "$RUNNER_TEMP/clivox-v2-p1/rights-cases.json" \
+            --out "$RUNNER_TEMP/clivox-v2-p1/public-a1-a2-a3-handoff-report.json"
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"clivox-v2-p1/public-a1-a2-a3-handoff-report.json"
+          d=json.loads(p.read_text())
+          assert d["actual_creator_grants_verified"]==0
+          assert d["source_media_fetch_authorized"] is False
+          assert d["youtube_upload_authorized"] is False
+          assert d["youtube_publish_authorized"] is False
+          assert d["google_or_youtube_api_writes"]==0
+          print("CLIVOX_V2_P1_A123_COMPLETE_CONTRACT_STILL_QUARANTINED")
+          PY
+      - name: Do not upload API data, source media or private reviews as artifacts
+        run: |
+          echo 'Synthetic data ephemeral only, no public output artifact. No account OAuth or rights permissions.'

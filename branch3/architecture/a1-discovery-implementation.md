@@ -1,5 +1,8 @@
 # Clivox A1 — Operational metadata discovery and research ranking
 
+> **CLIVOX V2 P1 compliance remediation (2026-11-14):** The new metadata adapter no longer calculates or emits forbidden cross-owner views-per-hour/likes-per-view engagement ratios, weighted full-video "viral" priority scores, ages or converted durations from API data. It instead preserves YouTube-provided public statistics individually, the original ISO-8601 duration and canonical source references; candidate records sort only by their literal source video IDs. A seven-day non-authorized API-data expiry is attached to each disposable report. The downstream A2 rights-case intake and A1→A2→A3 exact-shape handoff reject old derived fields, stale/forged TTLs and forged permissions. A separate, no-key/no-upload P1 GitHub workflow tests all three stages with wholly synthetic input. **No one has licensed any creator clips, and this is not live viral-moment extraction or an approval to upload.** Refer to [new V2 master architecture](../clipping_v2/MASTER_ARCHITECTURE.md) and [P1 implementation notes](../clipping_v2/P1_API_COMPLIANCE_IMPLEMENTATION.md).
+
+
 **Implementation date:** 2026-11-12. A1 is *metadata-discovery only*. No third-party footage downloads, no rights grants, no uploads or publishing. This does NOT mean A2–A10 are operational.
 
 ## Implemented
@@ -34,10 +37,7 @@ Inputs:
 - The JSON artifact is \`clivox-a1-public-metadata-<run_id>\` and expires after 7 days. It contains only public video IDs, titles, source channel IDs, duration, public statistics and a research score. No third-party video or transcripts.
 
 ## Ranking is heuristic and conservative
-- 40% public source-video view velocity (\`views / max(age_hours,12)\`, log scaled)
-- 22% public engagement ratio (when both likes AND comments are actually available; otherwise missing rather than invented)
-- 18% freshness over a maximum 30-day observation window
-- 20% category/title keyword relevance (not a substitute for manually reviewing the underlying content)
+- **Historical V1 weights are RETIRED, not active:** no API-derived velocity, engagement ratio, recency metric or numeric public-statistics-based source score is permitted in P1.
 
 Scores are **0–100 and uncalibrated**. They rank *entire source videos*, not exact moments or the probability a future Short will go viral. Source audience size, upload time, creator fame, previous subscribers, topic and viewing behavior strongly confound comparisons. After A10 and sufficient authorized clips, evaluate real engaged views, shown in feed, swipe-vs-view, retention, shares and subscriber conversion. No AI model claims to predict viral success.
 

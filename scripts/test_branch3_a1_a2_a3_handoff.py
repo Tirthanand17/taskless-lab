@@ -7,7 +7,7 @@ import json
 import unittest
 
 from scripts.branch3_discovery import build_report, mock_fixture
-from scripts.branch3_rights_case_intake import build_rights_cases
+from scripts.branch3_rights_case_intake import build_rights_cases, RightsIntakeBlocked
 from scripts.branch3_a1_a2_a3_handoff import (
     HandoffDenied, audit_handoff, public_discovery_shape
 )
@@ -112,8 +112,32 @@ class A123HandoffTests(unittest.TestCase):
                 d["candidates"][0]["private_contract"] = "secret bytes"
             else:
                 d["candidates"][0]["public_stats"]["private_contact"] = "no"
-            r["rights_cases"] = build_rights_cases(d, generated_at_utc=CASE_TIME)
-            with self.subTest(location=location), self.assertRaises(HandoffDenied):
+            with self.subTest(location=location), self.assertRaises(
+                (HandoffDenied, RightsIntakeBlocked)
+            ):
+                r["rights_cases"] = build_rights_cases(d, generated_at_utc=CASE_TIME)
+                audit_handoff(**r)
+
+    def test_reject_old_derived_rank_schema_and_expired_api_data(self):
+        for k, v in (
+            ("research_priority_score_0_to_100", 88),
+            ("score_components", {"views_per_hour": 90.1}),
+            ("source_age_hours", 24.0),
+            ("most_replayed_timestamp", 77),
+        ):
+            r=baseline()
+            r["discovery"]["candidates"][0][k]=v
+            with self.subTest(k=k), self.assertRaises(HandoffDenied):
+                audit_handoff(**r)
+        for k,v in (
+            ("non_authorized_api_data_retention_days", 31),
+            ("non_authorized_api_data_expires_at_utc", "2026-12-01T12:00:00Z"),
+            ("disallowed_api_data_derived_scores_generated", True),
+            ("cross_owner_statistics_aggregated", True),
+        ):
+            r=baseline()
+            r["discovery"][k]=v
+            with self.subTest(k=k), self.assertRaises(HandoffDenied):
                 audit_handoff(**r)
 
     def test_cross_channel_or_unverified_creator_flags_block(self):

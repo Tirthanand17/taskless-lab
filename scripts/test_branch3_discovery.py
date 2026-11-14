@@ -11,8 +11,9 @@ import unittest
 
 from scripts.branch3_discovery import (
     API_ORIGIN, DiscoveryBlocked, build_report, canonical_ids,
-    collect_public_videos, mock_fixture, parse_duration, public_count,
-    source_score, api_read, utc_timestamp, CATEGORIES, TARGET_CHANNEL
+    collect_public_videos, mock_fixture, public_count, api_read,
+    utc_timestamp, CATEGORIES, TARGET_CHANNEL,
+    NON_AUTHORIZED_API_DATA_RETENTION_DAYS
 )
 
 NOW = datetime(2026, 11, 12, 12, 0, tzinfo=timezone.utc)
@@ -31,7 +32,7 @@ class Response:
 
 
 class A1DiscoveryTests(unittest.TestCase):
-    def test_all_five_categories_and_fixture_score(self):
+    def test_all_five_categories_have_score_free_public_references(self):
         for category in CATEGORIES:
             with self.subTest(category=category):
                 report = build_report(
@@ -53,15 +54,20 @@ class A1DiscoveryTests(unittest.TestCase):
                     self.assertFalse(c["underlying_game_music_guest_rights_cleared"])
                     self.assertFalse(c["youtube_upload_authorized"])
                     self.assertIn("youtube.com/watch?v=", c["source_url"])
-                    self.assertGreaterEqual(c["research_priority_score_0_to_100"], 0)
-                    self.assertLessEqual(c["research_priority_score_0_to_100"], 100)
+                    self.assertNotIn("research_priority_score_0_to_100", c)
+                    self.assertNotIn("score_components", c)
+                    self.assertNotIn("source_age_hours", c)
+                    self.assertNotIn("source_duration_seconds", c)
+                    self.assertIn("source_duration_iso8601", c)
+                    self.assertTrue(set(c["public_stats"]) == {"views", "likes", "comments"})
+                self.assertFalse(report["disallowed_api_data_derived_scores_generated"])
+                self.assertFalse(report["cross_owner_statistics_aggregated"])
+                self.assertEqual(report["non_authorized_api_data_retention_days"], 7)
+                self.assertEqual(report["non_authorized_api_data_expires_at_utc"],
+                                 "2026-11-19T12:00:00Z")
 
-    def test_example_duration_and_missing_stats_not_invented(self):
-        self.assertEqual(parse_duration("PT1H02M04S"), 3724)
-        self.assertEqual(parse_duration("PT21M15S"), 1275)
-        self.assertEqual(parse_duration("P1DT2M"), 86520)
-        self.assertIsNone(parse_duration("LIVE"))
-        self.assertIsNone(parse_duration("PT"))
+    def test_raw_iso_duration_and_missing_stats_not_invented(self):
+        self.assertEqual(NON_AUTHORIZED_API_DATA_RETENTION_DAYS, 7)
         self.assertIsNone(public_count({}, "likeCount"))
         self.assertIsNone(public_count({"viewCount": 1234}, "viewCount"))
         self.assertEqual(public_count({"viewCount": "0"}, "viewCount"), 0)
@@ -72,7 +78,8 @@ class A1DiscoveryTests(unittest.TestCase):
         c = next(c for c in report["candidates"]
                  if c["source_video_id"] == "AbCdEf12345")
         self.assertIsNone(c["public_stats"]["likes"])
-        self.assertIsNone(c["score_components"]["observed_engagement_ratio"])
+        self.assertNotIn("score_components", c)
+        self.assertEqual(c["source_duration_iso8601"], "PT21M15S")
 
     def test_dedupe_and_invalid_payloads(self):
         items = mock_fixture()
@@ -170,14 +177,49 @@ class A1DiscoveryTests(unittest.TestCase):
         self.assertEqual(str(caught.exception),
                          "CLIVOX_DISCOVERY_DENIED_METADATA_API_UNAVAILABLE")
 
-    def test_score_is_source_level_only_not_a_license(self):
-        hi,components=source_score(title="Funny gaming clutch",
-            category="gaming",age_hours=24,views=50000,likes=3500,comments=200)
-        lo,_=source_score(title="Talk",category="gaming",
-            age_hours=30*24,views=10,likes=None,comments=None)
-        self.assertGreater(hi,lo)
-        self.assertIsNotNone(components["views_per_hour"])
-        self.assertEqual(utc_timestamp(NOW),"2026-11-12T12:00:00Z")
+    def test_no_platform_derived_scores_even_when_stats_change(self):
+        baseline = build_report(mock_fixture(), category="gaming",
+                                mode="fixture", query="", now=NOW, fixture=True)
+        changed = mock_fixture()
+        changed[0]["statistics"] = {
+            "viewCount": "999999999", "likeCount": "9", "commentCount": "0"
+        }
+        changed[1]["statistics"] = {
+            "viewCount": "1", "likeCount": "0", "commentCount": "0"
+        }
+        out = build_report(changed, category="gaming", mode="fixture",
+                           query="", now=NOW, fixture=True)
+        self.assertEqual([c["source_video_id"] for c in baseline["candidates"]],
+                         [c["source_video_id"] for c in out["candidates"]])
+        for report in (baseline, out):
+            self.assertFalse(report["disallowed_api_data_derived_scores_generated"])
+            self.assertFalse(report["cross_owner_statistics_aggregated"])
+            for c in report["candidates"]:
+                self.assertFalse(any(k in c for k in (
+                    "research_priority_score_0_to_100", "source_age_hours",
+                    "score_components", "views_per_hour",
+                    "observed_engagement_ratio", "most_replayed_timestamp",
+                    "youtube_retention_peak", "source_duration_seconds"
+                )))
+        changed_first = next(c for c in out["candidates"]
+                             if c["source_video_id"] == "AbCdEf12345")
+        self.assertEqual(changed_first["public_stats"]["views"], 999999999)
+        self.assertEqual(changed_first["public_stats"]["likes"], 9)
+        self.assertEqual(changed_first["public_stats"]["comments"], 0)
+        self.assertEqual(utc_timestamp(NOW), "2026-11-12T12:00:00Z")
+
+    def test_never_produce_fake_replay_spikes_or_expired_data(self):
+        data = build_report(mock_fixture(), category="gaming", mode="fixture",
+                            query="", now=NOW, fixture=True)
+        serial = json.dumps(data)
+        self.assertNotIn("most_replayed_timestamp", serial)
+        self.assertNotIn("research_priority_score_only", serial)
+        self.assertNotIn("source_title_keyword_matches", serial)
+        self.assertNotIn("source_age_hours", serial)
+        from datetime import datetime
+        retrieved = datetime.fromisoformat(data["retrieved_at_utc"].replace("Z", "+00:00"))
+        expires = datetime.fromisoformat(data["non_authorized_api_data_expires_at_utc"].replace("Z", "+00:00"))
+        self.assertEqual((expires - retrieved).days, 7)
 
 
 if __name__ == "__main__":

@@ -91,6 +91,17 @@ jobs:
           assert r["release_or_media_acquisition_allowed"] is False
           assert r["all_candidates_permission_unverified"] is True
           assert r["youtube_api_write_calls"]==0
+          assert r["disallowed_api_data_derived_scores_generated"] is False
+          assert r["cross_owner_statistics_aggregated"] is False
+          assert r["non_authorized_api_data_retention_days"]==7
+          from datetime import datetime
+          retrieved=datetime.fromisoformat(r["retrieved_at_utc"].replace("Z","+00:00"))
+          expiry=datetime.fromisoformat(r["non_authorized_api_data_expires_at_utc"].replace("Z","+00:00"))
+          assert (expiry-retrieved).total_seconds()==7*86400
+          assert all("research_priority_score_0_to_100" not in c
+                     and "score_components" not in c
+                     and "source_age_hours" not in c
+                     for c in r["candidates"])
           assert all(
               c["permission_state"]=="UNVERIFIED"
               and c["source_media_download_allowed"] is False
@@ -114,6 +125,8 @@ jobs:
           assert r["cases_all_unverified"] is True
           assert r["creator_permission_grants_issued_by_this_workflow"]==0
           assert r["media_downloads"]==0 and r["youtube_writes"]==0
+          assert r["api_derived_scores_or_cross_owner_aggregations_used"] is False
+          assert all("research_priority_score_only" not in c for c in r["cases"])
           assert all(c["case_state"]=="AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION"
                      and c["youtube_publish_authorized"] is False
                      for c in r["cases"])
