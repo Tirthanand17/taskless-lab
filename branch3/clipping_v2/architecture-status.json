@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P8_EXACT_SYNTHETIC_VIDEO_UNSIGNED_REVIEW_CI_VERIFIED_MAIN_REAL_OWNER_CREATOR_RIGHTS_AND_RELEASE_BLOCKED",
+  "status": "P9_SOURCE_FREE_PRIVATE_FIRST_INERT_UPLOAD_PREFLIGHT_UNDER_CI_ALL_REAL_OWNER_OAUTH_RIGHTS_AND_UPLOADS_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -127,8 +127,10 @@
     {
       "id": "P9",
       "name": "Controlled private-first Clivox YouTube pilot",
-      "state": "NOT_STARTED",
-      "requires_owner": "Separate explicit final video upload approval"
+      "state": "SYNTHETIC_EXACT_P8_UNSIGNED_REVIEW_TO_P9_PRIVATE_FIRST_AND_DUPLICATE_HOLD_QA_PENDING_CI_REAL_OWNER_OAUTH_RIGHTS_UPLOADS_BLOCKED",
+      "requires_owner": "Separate explicit final video upload approval",
+      "synthetic_preflight_script": "scripts/branch3_v2_p9_private_first_preflight.py",
+      "read_only_ci": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml"
     },
     {
       "id": "P10",
@@ -353,5 +355,18 @@
   "p8_main_qa_run_id": 43591405263,
   "p8_main_qa_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43591405263",
   "p8_main_p4_regression_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43591405303",
-  "p8_main_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43591405236"
+  "p8_main_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43591405236",
+  "p9_source_free_private_first_upload_preflight_implemented_pending_ci": true,
+  "p9_source_free_private_first_upload_preflight_verified_on_main": false,
+  "p9_inert_explicit_private_template_only": true,
+  "p9_upload_idempotency_preview_only": true,
+  "p9_real_durable_remote_upload_lease_verified": false,
+  "p9_real_clivox_upload_scope_oauth_enabled": false,
+  "p9_real_licensed_video_uploaded": 0,
+  "p9_real_scheduled_video_count": 0,
+  "p9_real_owner_release_signed": false,
+  "p9_real_upload_milestone_complete": false,
+  "p9_runbook": "branch3/clipping_v2/P9_PRIVATE_FIRST_SOURCE_FREE_PREFLIGHT.md",
+  "p9_script": "scripts/branch3_v2_p9_private_first_preflight.py",
+  "p9_tests": "scripts/test_branch3_v2_p9_private_first_preflight.py"
 }
