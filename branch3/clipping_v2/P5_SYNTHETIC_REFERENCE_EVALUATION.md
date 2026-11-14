@@ -34,3 +34,10 @@ P2 needs owner-selected verified creator business contacts; P3 requires real aut
 - Full implementation needs green dedicated PR CI, regression CI, and independently verified merged-main runs; do not represent engineering as complete before checks pass.
 
 **Overall real V2 roadmap remains 2/12 (17%)** until actual human/creator milestones are fulfilled. Branch 1 and Branch 2 FlowMinute remain unchanged.
+
+## Verified merged-main engineering evidence (2026-11-14)
+
+- [PR #214](https://github.com/Tirthanand17/taskless-lab/pull/214) passed **4/4 PR workflows**; dedicated [P5 source-free evaluator PR QA #43586077074](https://github.com/Tirthanand17/taskless-lab/actions/runs/43586077074) passed.
+- Merged main implementation SHA: `87eea71ac1f581072b96d4b1bdde18f5cd6e21d5`; [P5 synthetic signal→golden-event evaluation QA #43586169756](https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169756) **success**.
+- [P4 media integrity regression #43586169769](https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169769) and [Content Quality Gate #43586169748](https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169748) **success** after the feature merge.
+- These test passes only verify small synthetic fixture wiring, exact report contracts and failure behavior. They prove **zero** actual editor labels, zero real licensed source, zero creator reuse grants, zero actual video uploads and **no real precision/viral result**.
