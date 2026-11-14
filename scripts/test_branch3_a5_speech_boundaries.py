@@ -39,7 +39,8 @@ Do not publish.
 
 def synthetic_wave(
     path:Path,*,mute_index:int|None=None,amplitude:int=4_000,
-    rate:int=RATE,from_bed:bool=True
+    rate:int=RATE,from_bed:bool=True,
+    mute_segment:tuple[float,float]|None=None
 )->None:
     pcm=array("h")
     for sample in range(rate*8):
@@ -48,7 +49,9 @@ def synthetic_wave(
                   if b["start_s"]<=t<b["end_s"])
         start,end=VOICE_TIMES[beat]
         voice=round(amplitude*math.sin(2*math.pi*175*t)) if (
-            start<=t<end and beat!=mute_index
+            start<=t<end and beat!=mute_index and
+            (mute_segment is None or
+             not (mute_segment[0]<=t<mute_segment[1]))
         ) else 0
         procedural=bed_sample_without_speech(
             sample,BEATS[beat]["start_s"]
@@ -84,6 +87,16 @@ class OriginalAcousticBoundaryTests(unittest.TestCase):
             self.wav,beats=BEATS,duration=8,srt=SRT
         )
         self.assertEqual(d["beat_count"],3)
+        self.assertEqual(d["draft_caption_cue_count"],3)
+        self.assertTrue(d["all_draft_cues_have_recovered_speech_activity"])
+        self.assertTrue(d["per_cue_20ms_activity_not_word_or_phoneme_alignment"])
+        self.assertEqual(len(d["per_cue"]),3)
+        self.assertTrue(all(
+            cue["recovered_speech_active_20ms_windows"]>=
+            cue["minimum_required_active_windows"]
+            and cue["individual_words_verified"] is False
+            for cue in d["per_cue"]
+        ))
         self.assertTrue(d["all_scenes_recovered_speech_like_activity_above_procedural_bed"])
         self.assertTrue(d["draft_caption_onset_offset_within_140ms_of_detected_activity"])
         self.assertFalse(d["individual_spoken_words_verified"])
@@ -100,6 +113,63 @@ class OriginalAcousticBoundaryTests(unittest.TestCase):
                 beat["signal_end_s"],VOICE_TIMES[i][1],delta=.021
             )
             self.assertFalse(beat["spoken_words_or_phonemes_forced_aligned"])
+
+    def test_middle_draft_caption_has_speech_even_when_scene_envelope_is_ok(self):
+        # Scene 2 has three caption cues, first and third retain voice.
+        # Muting just the middle cue leaves the scene onset/offset identical,
+        # so the old beat-boundary check would pass. New per-cue QA rejects.
+        segmented="""1
+00:00:00,200 --> 00:00:01,500
+First scene.
+
+2
+00:00:02,120 --> 00:00:02,550
+Second scene first part.
+
+3
+00:00:02,550 --> 00:00:03,100
+Second scene middle part.
+
+4
+00:00:03,100 --> 00:00:03,800
+Second scene last part.
+
+5
+00:00:05,100 --> 00:00:07,100
+Final scene.
+"""
+        good=audit_mixed_speech_caption_bounds(
+            self.wav,beats=BEATS,duration=8,srt=segmented
+        )
+        self.assertEqual(good["draft_caption_cue_count"],5)
+        self.assertEqual(
+            [c["beat_index"] for c in good["per_cue"]],
+            [0,1,1,1,2]
+        )
+        self.assertFalse(good["individual_spoken_words_verified"])
+        synthetic_wave(self.wav,mute_segment=(2.55,3.10))
+        with self.assertRaisesRegex(
+            SpeechBoundaryDenied,"NO_SPEECH_ACTIVITY_IN_CAPTION_CUE_2_BEAT_1"
+        ):
+            audit_mixed_speech_caption_bounds(
+                self.wav,beats=BEATS,duration=8,srt=segmented
+            )
+
+    def test_cue_with_only_original_bed_not_mistaken_for_voice(self):
+        # A middle window with a deterministic bed is not spoken text.
+        original=SRT.replace(
+            "2\n00:00:02,120 --> 00:00:03,800\nSynthetic scene.",
+            "2\n00:00:02,120 --> 00:00:02,550\nPart one.\n\n"
+            "3\n00:00:02,550 --> 00:00:03,100\nNo speech here.\n\n"
+            "4\n00:00:03,100 --> 00:00:03,800\nPart three."
+        ).replace("3\n00:00:05,100", "5\n00:00:05,100")
+        synthetic_wave(self.wav,mute_segment=(2.55,3.10),from_bed=True)
+        with self.assertRaisesRegex(
+            SpeechBoundaryDenied,"NO_SPEECH_ACTIVITY_IN_CAPTION_CUE_2_BEAT_1"
+        ):
+            audit_mixed_speech_caption_bounds(
+                self.wav,beats=BEATS,duration=8,srt=original
+            )
 
     def test_bed_only_with_original_chime_cannot_masquerade_as_voice(self):
         synthetic_wave(self.wav,mute_index=1)
