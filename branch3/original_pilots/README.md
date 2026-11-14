@@ -4,6 +4,30 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## A5 exact-SRT scene navigation for owner listening (unapproved)
+
+New original-only review artifacts include an **offline, no-JavaScript scene index**
+inside \`CLIVOX-REVIEW-START-HERE.html\`. The index has **5 + 5 + 13 = 23**
+time-marked scene links for the complete 2-Shorts + 108-second landscape
+review batch. Each row compares the storyboard's **planned narration** against
+the actual SHA-bound **draft SRT text**, and links to the corresponding
+relative MP4 with a standard media-fragment time range. Some local browsers
+do not honor media fragments; open the main HTML player and scrub manually in
+that case. Watch and listen to all three complete files, not just individual
+links. A scene link never marks a scene watched or approved.
+
+An independent source-free index validator refuses stale/missing/extra or
+cross-scene SRT cues, text that differs from its own storyboard, suspicious
+media paths, and injected HTML. Adversarial tests cover these cases and
+the GitHub CI renderer checks **23 scene links** in the three-video pack.
+This is only a convenient way for the real owner to identify errors in
+mispronounced words, approximate cue timing, scene transitions, audio balance,
+and artistic quality. **Matching planned text and SRT is not proof of spoken
+word accuracy, phoneme timing, actual rights, owner consent or permission
+to publish.** The exact WAV/MP4/SRT release continues to require fresh owner
+listening, editing, licensing proof and a trusted A6 signature. All automated
+upload/schedule/publication flags remain FALSE.
+
 ## Landscape headline-art clearance — second visual QA correction
 
 The later full-resolution run [43558270457](https://github.com/Tirthanand17/taskless-lab/actions/runs/43558270457) confirmed the **two Shorts' illustrated controls are now visibly separated from spoken captions**, but its landscape contact sheet still showed parts of door/portal art touching orange subheadlines. The landscape geometry now reserves an additional upper safe region: icon graphics begin **below 43% of frame height** and finish before the lower caption zone. The Short geometry remains unchanged. This does not improve the synthetic voice or guarantee audience retention; another real video render and visual check are required before owner approval.

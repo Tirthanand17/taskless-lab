@@ -16,6 +16,7 @@ on:
       - 'scripts/branch3_a6_original_handoff.py'
       - 'scripts/branch3_a6_original_review_signature.py'
       - 'scripts/branch3_a5_owner_review_gallery.py'
+      - 'scripts/branch3_a5_scene_review_index.py'
       - 'scripts/branch3_a5_review_contact_sheet.py'
       - 'branch3/original_pilots/arcade_trio.json'
   pull_request:
@@ -31,7 +32,9 @@ on:
       - 'scripts/branch3_a6_original_review_signature.py'
       - 'scripts/test_branch3_a6_original_review_signature.py'
       - 'scripts/branch3_a5_owner_review_gallery.py'
+      - 'scripts/branch3_a5_scene_review_index.py'
       - 'scripts/test_branch3_a5_owner_review_gallery.py'
+      - 'scripts/test_branch3_a5_scene_review_index.py'
       - 'scripts/branch3_a5_review_contact_sheet.py'
       - 'scripts/test_branch3_a5_review_contact_sheet.py'
       - 'branch3/original_pilots/**'
@@ -95,8 +98,8 @@ jobs:
       - name: Independent original-rights, scene, caption and technical-QA tests
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a5_speech_boundaries.py scripts/test_branch3_a5_speech_boundaries.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
-          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a5_speech_boundaries scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
+          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a5_speech_boundaries.py scripts/test_branch3_a5_speech_boundaries.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_scene_review_index.py scripts/test_branch3_a5_scene_review_index.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
+          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a5_speech_boundaries scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_scene_review_index scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
       - name: Render original-first arcade video(s) in disposable GitHub temp only
         run: |
           set -euo pipefail
@@ -151,7 +154,7 @@ jobs:
         run: |
           set -euo pipefail
           python -B -m scripts.branch3_a5_owner_review_gallery --mode build --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original" > "$RUNNER_TEMP/clivox-gallery-result.json"
-          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-gallery-result.json").read_text()); assert d["episode_count"]==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1) and d["actual_video_audio_srt_and_unsigned_reverified"] and d["only_relative_local_mp4_srt_links"] and d["no_remote_assets_or_browser_scripts"] and not d["human_editorial_review_completed"] and not d["real_owner_release_signed"] and not d["youtube_upload_authorized"] and not d["youtube_schedule_authorized"] and not d["youtube_publish_authorized"]; print("CLIVOX_A5_OFFLINE_REVIEW_GALLERY_SAFE_HUMAN_CHECK_REQUIRED")'
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-gallery-result.json").read_text()); assert d["episode_count"]==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1) and d["actual_video_audio_srt_and_unsigned_reverified"] and d["only_relative_local_mp4_srt_links"] and d["no_remote_assets_or_browser_scripts"] and d["per_scene_draft_caption_review_links"]==(23 if os.environ["SELECTED_EPISODES"]=="all" else 5) and not d["human_editorial_review_completed"] and not d["real_owner_release_signed"] and not d["youtube_upload_authorized"] and not d["youtube_schedule_authorized"] and not d["youtube_publish_authorized"]; print("CLIVOX_A5_OFFLINE_REVIEW_GALLERY_SAFE_HUMAN_CHECK_REQUIRED")'
       - name: Upload only author-owned new graphics/fiction/TTS reviewer files (7 days)
         uses: actions/upload-artifact@v4
         with:
