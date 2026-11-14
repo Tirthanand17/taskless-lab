@@ -4,6 +4,29 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## A5 every-cue encoded-frame subtitle QA (39 draft cues, review-only)
+
+The previous all-beat frame QA sampled only one SRT cue in each storyboard
+scene: 5 + 5 + 13 = 23 actual encoded frames. **Some scenes contain multiple
+subtitle cues**, so a later caption might be offscreen, missing or illegible
+even when the first caption looks fine. The new cue_samples_all_cues inspector
+maps each SRT cue to exactly one contiguous storyboard scene, validates ordered
+timestamps, and seeks an actual FFmpeg-decoded frame at **every cue midpoint**.
+
+For the current first-party arcade trio the intended counts are **8 + 8 + 23
+= 39 encoded caption-frame checks** across the two Shorts and the 108-second
+landscape episode. A single missing/offscreen later cue fails the whole
+technical package; per-cue pixel counts and source scene/cue indices are
+recorded in the hash-bound independent A5 report. The existing 23 scene
+contact-sheet frames plus 3 outro frames remain unchanged, but its gate now
+requires the **all-cue technical QA** rather than merely all-scene sampling.
+
+This remains a **limited white-caption-pixel presence check**, NOT OCR, actual
+word transcription, accurate spoken timing, contrast on every individual glyph,
+professional audio mix, owner listening, voice/tool licensing or release
+authorization. The exact new video/SRT/WAV/QA hashes will need fresh A6
+unsigned worksheets and real owner review. All publishing flags stay false.
+
 ## A5 exact-SRT scene navigation for owner listening (unapproved)
 
 New original-only review artifacts include an **offline, no-JavaScript scene index**

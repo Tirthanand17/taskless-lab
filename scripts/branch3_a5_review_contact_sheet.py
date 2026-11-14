@@ -21,7 +21,7 @@ from scripts.branch3_a6_original_review_signature import (
 )
 from scripts.branch3_original_arcade_pilots import validate_catalog
 from scripts.branch3_original_arcade_qa import (
-    cue_samples_by_beat, decode_actual_frame
+    cue_samples_by_beat, cue_samples_all_cues, decode_actual_frame
 )
 
 NAME="original-beat-review-contact-sheet.jpg"
@@ -60,15 +60,22 @@ def create_one(folder:Path,episode:dict)->dict:
     require(sha(video)==read_json(packet)["exact_video_sha256"],
             "EXACT_REVIEW_VIDEO_HASH")
     qa=read_json(technical)
+    caption_text=srt.read_text("utf-8")
+    all_cues=cue_samples_all_cues(
+        caption_text,episode["beats"],episode["duration_seconds"]
+    )
     safety=qa.get("decoded_actual_frame_caption_safezone_qa")
     require(type(safety) is dict
             and safety.get("every_storyboard_beat_caption_visible_in_safe_zone") is True
-            and safety.get("actual_encoded_frames_checked")==len(episode["beats"])
+            and safety.get("every_draft_caption_cue_visible_in_safe_zone") is True
+            and safety.get("storyboard_beat_count")==len(episode["beats"])
+            and safety.get("actual_encoded_frames_checked")==len(all_cues)
+            and safety.get("draft_caption_cue_count")==len(all_cues)
             and safety.get("caption_layout_human_approved") is False
             and qa.get("youtube_upload_authorized") is False,
-            "MISSING_ALL_BEAT_VISUAL_QA")
+            "MISSING_ALL_CUE_VISUAL_QA")
     points=cue_samples_by_beat(
-        srt.read_text("utf-8"),episode["beats"],episode["duration_seconds"]
+        caption_text,episode["beats"],episode["duration_seconds"]
     )
     require(len(points)==len(episode["beats"]),"SCENE_COUNT")
     target=folder/NAME
