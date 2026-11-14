@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P4_SYNTHETIC_MEDIA_PREFLIGHT_ENGINEERING_PENDING_CI_P2_P3_REAL_RIGHTS_AND_VAULT_BLOCKED",
+  "status": "P4_SYNTHETIC_MEDIA_PREFLIGHT_VERIFIED_ON_MAIN_REAL_P2_P3_RIGHTS_AND_P4_VAULT_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -81,10 +81,11 @@
     {
       "id": "P4",
       "name": "Approved private media storage and creator source delivery",
-      "state": "SYNTHETIC_ONLY_TECHNICAL_PREFLIGHT_PENDING_CI_NO_PRIVATE_VAULT_OR_CREATOR_MEDIA",
+      "state": "TECHNICAL_SYNTHETIC_SOURCE_FREE_QA_VERIFIED_MAIN_REAL_PRIVATE_VAULT_AND_LICENSES_NOT_DONE",
       "requires_owner": "Owner approves source handoff and private vault",
       "synthetic_fixture_preflight_implemented": true,
-      "real_media_ingestion_allowed": false
+      "real_media_ingestion_allowed": false,
+      "main_qa_run_id": 43583149761
     },
     {
       "id": "P5",
@@ -214,9 +215,20 @@
   "p4_private_vault_owner_approved": false,
   "p4_real_media_files_authenticated": 0,
   "p4_real_licensed_media_ingested": 0,
-  "p4_ephemeral_synthetic_ffmpeg_qa_ci_verified": false,
+  "p4_ephemeral_synthetic_ffmpeg_qa_ci_verified": true,
   "p4_test_workflow": ".github/workflows/branch3-clivox-v2-p4-synthetic-handoff-qa.yml",
   "p4_preflight_script": "scripts/branch3_v2_p4_synthetic_handoff_preflight.py",
   "p4_runbook": "branch3/clipping_v2/P4_SYNTHETIC_PRIVATE_MEDIA_HANDOFF.md",
-  "p4_human_acceptance_complete": false
+  "p4_human_acceptance_complete": false,
+  "p4_feature_pr_url": "https://github.com/Tirthanand17/taskless-lab/pull/210",
+  "p4_feature_pr_all_checks_passed": 3,
+  "p4_feature_pr_synthetic_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43583044360",
+  "p4_main_synthetic_workflow_run_id": 43583149761,
+  "p4_main_synthetic_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43583149761",
+  "p4_main_content_quality_run_id": 43583149710,
+  "p4_main_content_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43583149710",
+  "p4_merged_feature_implementation_sha": "1f23a5081a1e6a75b256c58be6116f496d157b69",
+  "p4_offline_python_tests_passed": 21,
+  "p4_real_creator_videos_received": 0,
+  "p4_technical_fixture_only_human_licensing_required": true
 }
