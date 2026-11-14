@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P2P3_PUBLIC_CREATOR_PARTNERSHIP_ROUTES_RECHECKED_OWNER_PILOT_DECISION_PACKET_UNSENT_PENDING_CI_REAL_RIGHTS_SOURCE_AND_UPLOADS_BLOCKED",
+  "status": "P2P3_REFRESHED_PUBLIC_CREATOR_ROUTES_THREE_UNSENT_OWNER_PILOT_OPTIONS_VERIFIED_MAIN_REAL_OWNER_SELECT_RIGHTS_AND_MEDIA_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -57,10 +57,11 @@
     {
       "id": "P2",
       "name": "Creator research and licensing outreach proposal",
-      "state": "ENGINEERING_MAIN_CI_VERIFIED_OWNER_SHORTLIST_NOT_YET_ACCEPTED",
+      "state": "PUBLIC_CREATOR_ROUTE_REVIEW_AND_THREE_UNSENT_OWNER_PILOT_OPTIONS_VERIFIED_MAIN_OWNER_SHORTLIST_IDENTITY_AND_OUTREACH_NOT_APPROVED",
       "requires_owner": "Explicit outreach action approval",
       "human_owner_prospect_selection_completed": false,
-      "engineering_main_ci_run_id": 43579381280
+      "engineering_main_ci_run_id": 43579381280,
+      "main_pilot_review_run_id": 43597991010
     },
     {
       "id": "P3",
@@ -70,7 +71,8 @@
       "authenticated_licenses": 0,
       "owner_verified_signatories": 0,
       "main_proof_run_id": 43580815591,
-      "human_rightsholder_grants_verified": 0
+      "human_rightsholder_grants_verified": 0,
+      "p2p3_fresh_route_quarantine_review_main_run_id": 43597991010
     },
     {
       "id": "P3T",
@@ -446,11 +448,20 @@
   "p2p3_signed_legal_contract_evidence_in_public_repo": 0,
   "p2p3_licensed_video_source_files_acquired": 0,
   "p2p3_real_youtube_uploads": 0,
-  "p2p3_pilot_owner_pack_implemented_pending_ci": true,
-  "p2p3_pilot_owner_pack_verified_on_main": false,
+  "p2p3_pilot_owner_pack_implemented_pending_ci": false,
+  "p2p3_pilot_owner_pack_verified_on_main": true,
   "p2p3_public_research_evidence": "branch3/clipping_v2/prospects/p2p3-public-route-review-2026-11-14.json",
   "p2p3_human_decision_runbook": "branch3/clipping_v2/P2P3_OWNER_PILOT_PARTNERSHIP_DECISION.md",
   "p2p3_code": "scripts/branch3_v2_p2p3_pilot_owner_review.py",
   "p2p3_tests": "scripts/test_branch3_v2_p2p3_pilot_owner_review.py",
-  "p2p3_ci": ".github/workflows/branch3-clivox-v2-p3-licensing-scope.yml"
+  "p2p3_ci": ".github/workflows/branch3-clivox-v2-p3-licensing-scope.yml",
+  "p2p3_feature_pr_url": "https://github.com/Tirthanand17/taskless-lab/pull/228",
+  "p2p3_feature_pr_checks_passed": 5,
+  "p2p3_feature_qa_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43597829474",
+  "p2p3_feature_merge_sha": "84bcbbc2efd0b6bf87bd330d0f0d53f44bdaf5e4",
+  "p2p3_merged_main_qa_run_id": 43597991010,
+  "p2p3_merged_main_qa_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43597991010",
+  "p2p3_merged_main_p4_integrity_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43597991066",
+  "p2p3_merged_main_p5_p11_regression_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43597991043",
+  "p2p3_merged_main_content_quality_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43597991013"
 }
