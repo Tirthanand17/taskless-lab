@@ -36,6 +36,10 @@ All-scene contact sheets from [successful GH render 43557461327](https://github.
 
 In addition to playable review MP4s, new GitHub Actions original arcade review artifacts include an **all-scene contact sheet for each video**, linked in the offline gallery. The independent media gate now decodes caption frames for **all 5 beats per Short and all 13 beats in the longer episode**, rather than just the first cue. Any beat with no actual rendered on-screen subtitle fails QA before an unsigned A6 handoff is produced. This is technical evidence and visual review tooling, not owner commercial/media approval or a guaranteed virality improvement.
 
+## Independent per-scene narration audibility test
+
+A5 technical QA now reads the **actual final 48 kHz WAV** in every scene and checks minimum loud audio-energy coverage, exact timing, and clipping, not just the presence of samples in the first second. It labels this only as **sound-energy evidence**, not proof the actual spoken words are right or intelligible. All final speech/copyright/owner/release/YouTube gates remain locked.
+
 ## Verified three-video corrected visual review artifact
 
 [Corrected full-resolution CLIVOX render — GitHub run 43555814059](https://github.com/Tirthanand17/taskless-lab/actions/runs/43555814059) passed all actual MP4, A5 subtitle-frame, A6 unsigned exact-hash and offline review-gallery checks; the assistant also visually inspected sampled frames in both Shorts and the landscape episode. Review artifact expires under GitHub's seven-day policy. This confirms **technical correction only**; actual channel owner review, rights and release signing have not occurred.

@@ -34,6 +34,10 @@ Each original-first render now checks the visibility of subtitles in an actual e
 
 The latest **corrected full-resolution three-video review** is [Actions run 43555814059](https://github.com/Tirthanand17/taskless-lab/actions/runs/43555814059), with three hash-bound unsigned review packets and offline HTML player. All independent encoded-frame caption safezone QA passed, and assistant frame inspection confirmed readable Shorts subtitles, reduced long subtitles, proper landscape brand positioning and silent outro without stranded text. The owner must **still personally watch and listen to the exact videos**, verify accuracy/commercial licensing and separately sign any final A6 release; no automatic upload is permitted.
 
+## A5 narration sound-energy independent audit
+
+Original-only review renders now independently validate **each** storyboard scene's audio PCM for a small minimum number of clearly audible windows, fail on silent/inaudible later scenes and reject possible near-full-scale clipping. The result is embedded in technical QA JSON and covered by synthetic silence/corruption/clipping tests. This cannot determine word pronunciation or intelligibility and **does not** clear commercial voice/soundtrack rights. An owner must actually listen to the full videos and review the SRT against the speech before any final signing.
+
 ## A5 visual regression: captions and landscape brand
 
 The initial burned-in-caption review package passed FFprobe but **failed human frame inspection**: off-frame subtitles on the vertical Shorts and oversized captions over the landscape headline. The A5 renderer now uses *ASS native coordinate bounds*, not source-video pixel counts, for subtitles, and applies constrained typography to the landscape header and footer. A new actual MP4-frame QA validates that light subtitle glyphs exist in the lower-middle video safe region while all rights/upload locks remain false. Inspect the **new** artifact after this fix and reject earlier asset hashes or owner checklists.

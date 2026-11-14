@@ -13,6 +13,8 @@ import re
 import subprocess
 import wave
 
+from scripts.branch3_a5_narration_energy_qa import audit_original_narration
+
 from scripts.branch3_original_arcade_pilots import (
     ROOT,CATALOG,CHANNEL,validate_catalog,render_size,sha,stamp,
     ArcadeDenied
@@ -294,7 +296,11 @@ def validate_episode_report(episode:dict,manifest:dict,
     if captions is not None:
         require(sha(captions)==manifest["subtitle_sha256"],
                 "CAPTION_SHA_TAMPER")
+    narration_energy=None
     if audio is not None:
+        narration_energy=audit_original_narration(
+            audio,beats=episode["beats"],duration=episode["duration_seconds"]
+        )
         require(sha(audio)==manifest["audio_sha256"],"AUDIO_SHA_TAMPER")
         require(audio.is_file() and not audio.is_symlink(),
                 "AUDIO_FILE")
@@ -314,6 +320,7 @@ def validate_episode_report(episode:dict,manifest:dict,
         "actual_ffprobe_checks_passed":True,
         "resolution":f"{expected[0]}x{expected[1]}",
         "audio_is_synthetic_narration_and_procedural_ambience":True,
+        "independent_original_narration_per_beat_energy_qa":narration_energy,
         "draft_caption_speech_window_derived_from_synthesized_pcm":True,
         "draft_captions_burned_in_mobile_review_mp4":True,
         "decoded_actual_frame_caption_safezone_qa":caption_visual,
