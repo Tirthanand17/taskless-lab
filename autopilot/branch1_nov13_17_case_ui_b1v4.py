@@ -186,6 +186,36 @@ def sheets_short(d,r,a,b,index,phase,accent):
          x1-x0-66,26,INK)
 
 
+def gmail_short(d,r,a,b,index,phase,accent):
+    """Original fictional mailbox visualization, never real account footage."""
+    x0,y0,x1,y1=r
+    heading(d,r,"","MAIL INBOX  /  FAKE EDUCATIONAL EXAMPLE",accent)
+    inner=(x0+30,y0+140,x1-30,y1-106)
+    u0,v0,u1,v1=inner
+    rounded(d,inner,WHITE,(140,174,194),16)
+    rounded(d,(u0+15,v0+15,u1-15,v0+94),(224,239,247),None,10)
+    text(d,"SEARCH MAIL     /     INBOX",u0+41,v0+38,u1-u0-82,32,INK)
+    for j,(name,subject) in enumerate((
+        ("SENT","Send confirmation"),("INBOX","Expected update"),
+        ("SPAM","Look carefully"))):
+        y=v0+122+j*116
+        rounded(d,(u0+27,y,u1-27,y+104),
+                GREEN if phase==1 and j==index%3 else
+                (237,245,249) if j%2 else (229,240,246),None,12)
+        text(d,name,u0+53,y+20,200,31,INK)
+        text(d,subject,u0+258,y+20,u1-u0-311,30,MUTED,False)
+    rounded(d,(u0+27,v1-250,u1-27,v1-135),
+            GREEN if phase==1 else (225,240,245),
+            accent if phase==1 else (126,165,180),14)
+    text(d,a,u0+63,v1-211,u1-u0-126,50,INK)
+    rounded(d,(u0+27,v1-121,u1-27,v1-13),
+            ORANGE if phase==2 else (245,235,231),
+            (233,121,92) if phase==2 else (170,147,140),14)
+    text(d,b,u0+63,v1-89,u1-u0-126,49,ORANGE_DARK)
+    text(d,"FICTIONAL MAILBOX - CHECK GOOGLE HELP",x0+35,y1-77,
+         x1-x0-70,25,INK)
+
+
 def long_ui(d,r,a,b,index,phase,accent,variant):
     x0,y0,x1,y1=r
     rounded(d,r,(226,241,249),FRAME,22)
@@ -200,7 +230,8 @@ def long_ui(d,r,a,b,index,phase,accent,variant):
     app={"excel":"FICTIONAL WORKBOOK / VALUE CHECK",
          "browser":"FICTIONAL PERMISSION SETTINGS",
          "ai":"FICTIONAL CHAT MODE COMPARISON",
-         "sheets":"FICTIONAL SHARED SHEET"}[variant]
+         "sheets":"FICTIONAL SHARED SHEET",
+         "gmail":"FICTIONAL GMAIL INBOX CHECK"}[variant]
     text(d,app,l0+34,t0+27,l1-l0-68,27,WHITE)
     # App-native content: alternating row grid, error/status cells,
     # privacy mode conversation boxes or browser permission controls.
@@ -216,14 +247,15 @@ def long_ui(d,r,a,b,index,phase,accent,variant):
             text(d,f"{j+2:02d}",l0+44,y+32,50,29,MUTED,False)
             text(d,a if j==0 else b,l0+109,y+25,l1-l0-145,
                  58,INK if j==0 else ORANGE_DARK)
-    elif variant=="browser":
+    elif variant in ("browser","gmail"):
         for j in range(2):
             y=t0+123+j*144
             rounded(d,(l0+31,y,l1-32,y+130),
                     (228,244,238) if j==0 and phase==1 else
                     (255,235,219) if j==1 and phase==2 else
                     (234,244,249),None,12)
-            text(d,"CURRENT" if j==0 else "REVIEW ACTION",
+            text(d,("INBOX VIEW" if j==0 else "VERIFY ACTION")
+                 if variant=="gmail" else ("CURRENT" if j==0 else "REVIEW ACTION"),
                  l0+49,y+17,l1-l0-98,24,MUTED)
             text(d,a if j==0 else b,l0+49,y+67,l1-l0-98,54,
                  INK if j==0 else ORANGE_DARK)
@@ -259,10 +291,11 @@ def paint_story_ui(draw,ep,scene,index,phase,accent,area):
        and type(accent) is tuple and len(accent)==3,
        "Unsafe or repeated source data for one-way original UI")
     date=ep.get("date_ist")
-    ok(date in {f"2026-11-{n:02d}" for n in range(13,18)},
+    ok(date in {f"2026-11-{n:02d}" for n in range(13,19)},
        "Unexpected target date outside owner-selected original calendar")
     variant="excel" if date in ("2026-11-13","2026-11-15") else (
         "browser" if date=="2026-11-14" else
+        "gmail" if date=="2026-11-18" else
         "ai" if date=="2026-11-16" else "sheets")
     a,b=scene[1:3]
     # Only overwrite the original approved center rectangle, leaving the
@@ -270,7 +303,8 @@ def paint_story_ui(draw,ep,scene,index,phase,accent,area):
     # physical ASS subtitle area at unchanged pixel coordinates.
     if ep["kind"]=="short":
         factory={"excel":excel_short,"browser":browser_short,
-                 "ai":ai_short,"sheets":sheets_short}[variant]
+                 "ai":ai_short,"sheets":sheets_short,
+                 "gmail":gmail_short}[variant]
         factory(draw,area,a,b,index,phase,accent)
     elif ep["kind"]=="long":
         long_ui(draw,area,a,b,index,phase,accent,variant)
