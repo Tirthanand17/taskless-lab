@@ -6,6 +6,7 @@ No technical QA result may set YouTube upload or public release flags.
 from __future__ import annotations
 
 import argparse
+from io import BytesIO
 import json
 from pathlib import Path
 import re
@@ -62,6 +63,52 @@ def check_caption_draft(content:str,duration:int)->dict:
     return {"draft_caption_cues":len(sections),
             "owner_must_review_speech_sync":True,
             "machine_forced_alignment_proven":False}
+
+
+def visible_caption_safezone_qa(video:Path,srt:str)->dict:
+    """Independent decoded-frame QA: on-screen white subtitle ink MUST be
+    visible in lower-middle safe zone, not offscreen or over the headline.
+
+    Original scene artwork here uses orange/violet/mint, not white, at this
+    lower-panel location; opaque caption glyphs are white. The zero-external-
+    media frame check is a regression signal, not aesthetic or content approval.
+    """
+    from PIL import Image
+    require(video.is_file() and not video.is_symlink()
+            and video.stat().st_size>100_000,"CAPTION_VIDEO_MISSING")
+    sections=re.split(r"\n\s*\n",srt.strip())
+    require(len(sections)>0,"CAPTION_CUES_MISSING")
+    m=TIMING.fullmatch(sections[0])
+    require(m is not None,"FIRST_CAPTION_CUE_BAD")
+    start,end=srt_seconds(m[2]),srt_seconds(m[3])
+    require(0<=start<end and end-start>.05,"CAPTION_START_INVALID")
+    moment=start+(end-start)/2
+    result=subprocess.run([
+        "ffmpeg","-hide_banner","-loglevel","error","-nostdin",
+        "-ss",f"{moment:.3f}","-i",str(video),
+        "-frames:v","1","-f","image2pipe","-vcodec","png","pipe:1"
+    ],capture_output=True,check=True,timeout=45)
+    require(2_000<len(result.stdout)<12_000_000,"CAPTION_FRAME_DECODE")
+    with Image.open(BytesIO(result.stdout)) as original:
+        im=original.convert("RGB")
+    w,h=im.size
+    require(w>=540 and h>=540,"CAPTION_FRAME_DIMENSIONS")
+    x0,x1=round(w*.13),round(w*.87)
+    y0,y1=round(h*.70),round(h*.875)
+    zone=im.crop((x0,y0,x1,y1))
+    # Detect sufficiently bright non-neutral-graphic text pixels only in
+    # the caption safe zone; colored arcade art doesn't satisfy this.
+    white=sum(1 for pixel in zone.getdata()
+              if pixel[0]>=195 and pixel[1]>=195 and pixel[2]>=195)
+    min_white=max(35,round(w*h*.00010))
+    require(white>=min_white,"BURNED_CAPTION_MISSING_OR_OFFSCREEN")
+    return {
+        "first_voice_cue_visible_in_safe_zone":True,
+        "white_text_pixel_count_in_safe_zone":white,
+        "minimum_required_white_caption_pixels":min_white,
+        "caption_sampled_from_actual_encoded_frame":True,
+        "caption_layout_human_approved":False,
+    }
 
 
 def probe(path:Path)->dict:
@@ -148,7 +195,9 @@ def validate_episode_report(episode:dict,manifest:dict,
     caption_report=check_caption_draft(
         subtitles,episode["duration_seconds"]
     )
+    caption_visual=None
     if video is not None:
+        caption_visual=visible_caption_safezone_qa(video,subtitles)
         require(sha(video)==manifest["video_sha256"],"VIDEO_SHA_TAMPER")
         require(video.stat().st_size==manifest.get("video_bytes"),
                 "VIDEO_SIZE")
@@ -177,6 +226,8 @@ def validate_episode_report(episode:dict,manifest:dict,
         "audio_is_synthetic_narration_and_procedural_ambience":True,
         "draft_caption_speech_window_derived_from_synthesized_pcm":True,
         "draft_captions_burned_in_mobile_review_mp4":True,
+        "decoded_actual_frame_caption_safezone_qa":caption_visual,
+        "subtitle_visual_editor_approval_completed":False,
         "human_word_alignment_verified":False,
         "captions":caption_report,
         "human_editorial_video_review_completed":False,
