@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_date_ist": "2026-11-13",
+  "updated_date_ist": "2026-11-14",
   "channel": "Clivox",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
@@ -47,9 +47,9 @@
     {
       "id": "A5",
       "name": "Video renderer and AV quality assurance",
-      "completion_pct": 70,
+      "completion_pct": 75,
       "status": "partial",
-      "evidence": "Actual GitHub-hosted first-party 2 Shorts + 108s original fictional arcade review renders in both preview and full 1080x1920/1920x1080 (successful runs 43380418384 and 43380650008), independent FFprobe H264/AAC SHA and draft subtitle checks, plus new real-byte A6 reinspection and hash binding. Synthetic eSpeak voice and captions still require final human review."
+      "evidence": "Actual GitHub source-free full-resolution 2 Shorts + 108s arcade episode, independently FFprobe/H264/AAC/MP4/WAV/SRT/metadata and owner unsigned checklist verified on main push run 43551704973 (25 MB, all steps passed). New portable OFFLINE HTML5 review gallery creates local video player cards from rehashed exact original media, includes draft SRT and unapproved checklist, no network/browser scripts. Human playback, final voice/SRT sync, asset licensing/rights and A6 signature still pending."
     },
     {
       "id": "A6",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "75% is engineering planning only, not real-world production readiness. Three original arcade videos are review copies. New A6 unsigned review worksheet and detached Ed25519 signature MATH cannot assert human review, owner key enrollment, commercial audio/graphic rights or actual release. Durable production upload reservation, owner final signature and Clivox-only Google OAuth are absent. A9 remains zero actual uploads; publishing disabled.",
+  "disclaimer": "75% remains a conservative engineering/planning estimate, not launch readiness. The source-free 3 original arcade full-resolution MP4s with 3 unsigned checklists were actually rendered on main in verified run 43551704973; optional offline HTML gallery can simplify owner viewing but cannot approve voice/captions, rights, key enrollment, durable global upload controller, Google OAuth or publishing. No owner release or A9 upload. Branches 1 and 2 paused.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -300,7 +300,14 @@
     "youtube_upload_enabled": false,
     "actual_preview_all_three_github_action_passed": true,
     "actual_full_resolution_all_three_github_action_passed": true,
-    "actual_original_a6_handoff_reinspection_code_added": true
+    "actual_original_a6_handoff_reinspection_code_added": true,
+    "verified_auto_full_resolution_main_push_run_id": 43551704973,
+    "verified_auto_full_resolution_main_push_success": true,
+    "verified_main_push_unsigned_checklists_per_exact_media": 3,
+    "verified_main_push_artifact_bytes": 25324834,
+    "offline_html5_owner_gallery_code_implemented": true,
+    "owner_review_completed": false,
+    "synthetic_voice_and_draft_srt_still_require_review": true
   },
   "a6_original_owner_handoff": {
     "stage": "A6_EXACT_REAL_VIDEO_ORIGINAL_OWNER_REVIEW_PACKET_QUARANTINE",
@@ -439,5 +446,24 @@
     "private_upload_ledger_writer_deployed": false,
     "youtube_uploads": 0,
     "youtube_write_enabled": false
+  },
+  "a5_offline_owner_review_gallery": {
+    "stage": "A5_OWNER_WATCHABLE_ORIGINAL_MP4_GALLERY_REVIEW_ARTIFACT_ONLY",
+    "generator": "scripts/branch3_a5_owner_review_gallery.py",
+    "tests": "scripts/test_branch3_a5_owner_review_gallery.py",
+    "qa_workflow": ".github/workflows/branch3-clivox-a5-offline-owner-gallery-qa.yml",
+    "original_render_workflow": ".github/workflows/branch3-clivox-original-arcade-pilots.yml",
+    "documented_url": "branch3/original_pilots/README.md",
+    "generated_html_file": "CLIVOX-REVIEW-START-HERE.html",
+    "verified_latest_automatic_full_three_video_main_push_run": 43551704973,
+    "latest_auto_full_push_all_three_qa_steps_green": true,
+    "source_free_only": true,
+    "gallery_relative_local_media_links_only": true,
+    "gallery_no_js_external_assets_oauth_or_tracking": true,
+    "exact_video_srt_metadata_rehashed_before_gallery": true,
+    "owner_human_review_verified": false,
+    "real_signature_enrolled": false,
+    "actual_rights_of_synthetic_audio_tool_commercial_use_verified": false,
+    "actual_google_uploads_or_schedules": 0
   }
 }
