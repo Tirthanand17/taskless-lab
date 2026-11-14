@@ -428,7 +428,7 @@ class OriginalPilotQATests(unittest.TestCase):
             self.assertTrue(
                 got["every_draft_caption_cue_visible_in_safe_zone"]
             )
-            self.assertEqual(len(got["per_beat_samples"]),8)
+            self.assertEqual(len(got["per_cue_samples"]),8)
             self.assertEqual(decode.call_count,8)
             self.assertFalse(got["caption_layout_human_approved"])
 
