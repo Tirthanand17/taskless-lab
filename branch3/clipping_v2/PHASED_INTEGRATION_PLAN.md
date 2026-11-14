@@ -1,13 +1,13 @@
 # CLIVOX V2 — Phased Integration Roadmap and Acceptance Plan
 
-**Research status 2026-11-14: DESIGN ONLY.** This is a blueprint for later implementation, not permission to start live creator searches, contacts, licensing, downloads, uploads or publishing. Existing FlowMinute Branches 1 and 2 remain untouched.
+**Research 2026-11-14; P1 integration verified 2026-11-14.** P0 architecture and P1 score-free API-source/rights/provenance code are completed on GitHub using synthetic CI data; no live creator metadata key, permissions, source downloading, clip renderer, outreach, uploads or publishing are enabled. Other phases remain a blueprint. Existing FlowMinute Branches 1 and 2 remain untouched.
 
 ## Critical dependency sequence
 
 | ID | Feature and planned work | Gate to move forward | Not yet done |
 |---|---|---|---|
 | **P0** | V2 master architecture, official research sources, free tools, creator target watchlist, editorial/evaluation plan and source-control review | All documents on GitHub, publication flags false, CI green | **THIS planning-only PR** |
-| **P1** | **First engineering integration: YouTube discovery policy remediation**. Audit scripts/branch3_discovery.py for derived YouTube API metrics and cross-owner ranking. Replace views/age, likes/views and composite numeric source scores with safe public original fields only. Update downstream A2 pending cases, tests and runbook. | API-policy compliant, bounded, no fabricated replay, no media download; full PR CI | **NOT STARTED** |
+| **P1 — COMPLETE SOURCE-ONLY** | **First engineering integration: YouTube discovery policy remediation**. Audit scripts/branch3_discovery.py for derived YouTube API metrics and cross-owner ranking. Replace views/age, likes/views and composite numeric source scores with safe public original fields only. Update downstream A2 pending cases, tests and runbook. | API-policy compliant, bounded, no fabricated replay, no media download; full PR CI | **NOT STARTED** |
 | **P2** | Curate global/India creator research, manually validate official identity and genuine business inquiry route; draft 3-private-Short trial proposal | Human-selected 3–5 prospects, none contacted/approved by AI | **NOT STARTED** |
 | **P3** | Apply A2 real authenticated rights grant: commercial YouTube redistribution, derivative edit, monetization, channel, exact source, region, expiry/revocation, guest, game publisher, audio/music, sponsor scope; owner contract review | At least 1 **real human-issued, current, independently verifiable license** and approved storage; no JSON auto-grant | **NOT STARTED / HUMAN BLOCKER** |
 | **P3T (optional)** | Twitch Helix Get Clips references; only creator-authorized editor Clip Downloads API after distinct actual commercial permission | Authenticated editor scopes **and** verified commercial reuse grant | **NOT STARTED** |
@@ -20,9 +20,12 @@
 | **P10** | Authenticated CLIVOX account-only analytics, official engagedViews, Stayed to watch, retention, experiment evidence; rights/claim audits | Real published pilot outcomes, report after 24h/72h/7d/14d | **NOT STARTED** |
 | **P11** | Scale to recurring approved clips + optional podcasts/interviews; measure costs and publisher/creator supply | Multiple current creator agreements, proven QA/signing/storage and editor capacity | **NOT STARTED** |
 
-Actual V2 completion: **integration not started**. The pre-existing Branch 3 original arcade project reports 78% on a DIFFERENT scope; that figure must never be presented as clipping progress.
+V2 roadmap checkpoint progress: **P0 and P1 complete, 2/12 = 17%**; the remaining 10 nonoptional phases are not complete. This unweighted percent is **not product/clip readiness**. The older Branch 3 fictional arcade 78% is a separate scope and must not be presented as clipping progress. Licensed real-world clipping and publishing are still at zero.
 
-## P1 exact implementation brief: first future PR after user approval
+## P1 implementation — completed on merged PR #204
+
+The following engineering brief was implemented and verified; it remains as a reproducibility checklist. New work moves to P2 without bypassing creator consent and media rights.
+
 
 **Do not create a second discovery service; revise the existing module.**
 
