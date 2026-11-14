@@ -207,7 +207,7 @@ CLIVOX channel: UCfPEvy0SefE_5nNlYlY_CyQ · Automatic publishing is OFF.</footer
         "stage":"A5_A6_CLIVOX_OFFLINE_OWNER_REVIEW_GALLERY_UNAPPROVED",
         "episode_count":len(selected),
         "per_scene_draft_caption_review_links":total_scenes,
-        "per_cue_unsiged_correction_review_links":total_cues,
+        "per_cue_unsigned_correction_review_links":total_cues,
         "human_correction_csv_files":len(selected),
         "human_correction_csv_is_release_authorization":False,
         "html_file":OUTPUT,
