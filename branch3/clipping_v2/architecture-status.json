@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P3_UNSIGNED_LICENSE_SCOPE_QUARANTINE_IMPLEMENTED_PENDING_CI_AND_REAL_RIGHTSHOLDER_GRANT",
+  "status": "P3_SCOPE_QUARANTINE_ENGINEERING_VERIFIED_ON_MAIN_P2_HUMAN_AND_REAL_LICENSING_PENDING",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -65,10 +65,12 @@
     {
       "id": "P3",
       "name": "Authenticated commercial rights grants",
-      "state": "SCOPE_INTAKE_ENGINEERING_PENDING_CI_REAL_LICENSE_NOT_OBTAINED",
+      "state": "TECHNICAL_UNSIGNED_SCOPE_QUARANTINE_MAIN_CI_VERIFIED_REAL_LICENSES_NOT_OBTAINED",
       "requires_owner": "Verified actual rights holder and contract",
       "authenticated_licenses": 0,
-      "owner_verified_signatories": 0
+      "owner_verified_signatories": 0,
+      "main_proof_run_id": 43580815591,
+      "human_rightsholder_grants_verified": 0
     },
     {
       "id": "P3T",
@@ -193,8 +195,17 @@
   "p3_real_reviewer_public_keys_enrolled": false,
   "p3_real_complete_revocation_state_verified": false,
   "p3_owner_private_legal_vault_approved": false,
-  "p3_legal_scope_generator_implemented_pending_ci": true,
+  "p3_legal_scope_generator_implemented_pending_ci": false,
   "p3_test_workflow": ".github/workflows/branch3-clivox-v2-p3-licensing-scope.yml",
   "p3_runbook": "branch3/clipping_v2/P3_LICENSING_SCOPE_INTAKE.md",
-  "p3_script": "scripts/branch3_v2_p3_licensing_scope_quarantine.py"
+  "p3_script": "scripts/branch3_v2_p3_licensing_scope_quarantine.py",
+  "p3_eng_offline_ci_verified_on_main": true,
+  "p3_main_test_run_id": 43580815591,
+  "p3_main_test_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43580815591",
+  "p3_feature_pr_url": "https://github.com/Tirthanand17/taskless-lab/pull/208",
+  "p3_feature_pr_checks_passed": 4,
+  "p3_main_implementation_commit_sha": "2338958ed20a3f273b58c46a6455d4208612e7a7",
+  "p3_outreach_or_grant_authorizations_issued": 0,
+  "p3_real_source_clip_licenses_attained": 0,
+  "p3_human_acceptance_complete": false
 }
