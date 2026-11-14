@@ -449,7 +449,14 @@
     "landscape_brand_font_and_tagline_no_overlap_geometry_guard": true,
     "corrected_visual_real_full_render_verified": false,
     "actual_human_visual_signoff": false,
-    "youtube_upload_or_publish_enabled": false
+    "youtube_upload_or_publish_enabled": false,
+    "latest_corrected_original_full_review_run_id": "43555814059",
+    "corrected_full_resolution_source_free_video_all_three_actual_render_verified": true,
+    "corrected_mp4_caption_safezone_actual_decoded_frame_QA_verified": true,
+    "assistant_extracted_actual_final_review_frames_and_inspected_both_shorts_long": true,
+    "corrected_landscape_brand_and_footer_accepted_in_technical_frame_inspection": true,
+    "original_first_party_owner_human_final_review_accepted": false,
+    "real_youtube_upload_enabled": false
   },
   "a10_owner_analytics_readonly": {
     "fixed_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
