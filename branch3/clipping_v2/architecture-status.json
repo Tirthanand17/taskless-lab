@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P5_SYNTHETIC_EDITOR_REFERENCE_EVALUATION_ENGINEERING_PENDING_CI_REAL_RIGHTS_P4_P5_BLOCKED",
+  "status": "P5_SYNTHETIC_EDITOR_REFERENCE_EVALUATION_VERIFIED_ON_MAIN_REAL_RIGHTS_P4_SOURCE_P5_HUMAN_LABELS_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -90,11 +90,12 @@
     {
       "id": "P5",
       "name": "Licensed source event ASR VAD and scene detection",
-      "state": "SYNTHETIC_SIGNAL_MAIN_VERIFIED_EDITORIAL_REFERENCE_EVALUATOR_PENDING_CI_REAL_RIGHTS_AND_MEDIA_BLOCKED",
+      "state": "SYNTHETIC_SIGNAL_AND_REFERENCE_EVALUATION_MAIN_CI_VERIFIED_REAL_RIGHTS_MEDIA_HUMAN_LABELS_BLOCKED",
       "requires_owner": "Actual rights granted media",
       "synthetic_technical_candidate_extraction_implemented": true,
       "real_creator_source_access_authorized": false,
-      "main_ci_run_id": 43585035896
+      "main_ci_run_id": 43585035896,
+      "synthetic_golden_main_verified_run_id": 43586169756
     },
     {
       "id": "P6",
@@ -257,12 +258,23 @@
   "p5_main_p4_regression_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43585035920",
   "p5_main_content_quality_workflow_run_id": 43585036042,
   "p5_main_content_quality_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43585036042",
-  "p5_source_free_editorial_reference_evaluator_implemented_pending_ci": true,
-  "p5_synthetic_evaluator_ci_verified_on_main": false,
+  "p5_source_free_editorial_reference_evaluator_implemented_pending_ci": false,
+  "p5_synthetic_evaluator_ci_verified_on_main": true,
   "p5_synthetic_evaluator_script": "scripts/branch3_v2_p5_synthetic_editorial_evaluation.py",
   "p5_synthetic_evaluator_test": "scripts/test_branch3_v2_p5_synthetic_editorial_evaluation.py",
   "p5_synthetic_evaluator_runbook": "branch3/clipping_v2/P5_SYNTHETIC_REFERENCE_EVALUATION.md",
   "p5_real_editorial_precision_estimated": false,
   "p5_synthetic_golden_reference_is_real_human_label": false,
-  "p5_real_human_labels_count": 0
+  "p5_real_human_labels_count": 0,
+  "p5_synthetic_evaluator_feature_pr_url": "https://github.com/Tirthanand17/taskless-lab/pull/214",
+  "p5_synthetic_evaluator_pr_checks_passed": 4,
+  "p5_synthetic_evaluator_pr_run_id": 43586077074,
+  "p5_synthetic_evaluator_pr_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43586077074",
+  "p5_synthetic_evaluator_main_commit_sha": "87eea71ac1f581072b96d4b1bdde18f5cd6e21d5",
+  "p5_synthetic_evaluator_main_run_id": 43586169756,
+  "p5_synthetic_evaluator_main_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169756",
+  "p5_evaluator_main_p4_regression_run_id": 43586169769,
+  "p5_evaluator_main_p4_regression_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169769",
+  "p5_evaluator_main_quality_run_id": 43586169748,
+  "p5_evaluator_main_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169748"
 }
