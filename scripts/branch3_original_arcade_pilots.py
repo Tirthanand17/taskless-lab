@@ -185,11 +185,15 @@ def original_art_clearance_geometry(w:int,h:int,kind:str)->dict:
             type(w) is int and type(h) is int and
             w>=540 and h>=540,"ART_SAFE_LAYOUT_DIMENSIONS")
     port=kind=="short"
-    center_y=round(h*(.54 if port else .55))
-    radius=round(min(w*.32,h*.19)) if port else round(h*.17)
+    # Landscape has less vertical headroom. Its long orange subheading
+    # can extend to ~0.42h; leave a strict gap before art, and still end
+    # icons above the lower-middle spoken subtitle region.
+    center_y=round(h*(.54 if port else .585))
+    radius=round(min(w*.32,h*.19)) if port else round(h*.12)
     top=center_y-radius-16
     bottom=center_y+radius+16
-    require(top>=round(h*.33) and
+    min_top=round(h*(.33 if port else .43))
+    require(top>=min_top and
             bottom<=round(h*.755) and
             center_y>round(h*.49),
             "ART_OVERLAPS_HEADLINE_OR_CAPTION_SAFEZONE")
