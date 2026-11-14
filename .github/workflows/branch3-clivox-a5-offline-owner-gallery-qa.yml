@@ -1,0 +1,52 @@
+name: Branch 3 Clivox A5 Original Offline Owner Review Gallery QA (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_a5_owner_review_gallery.py'
+      - 'scripts/test_branch3_a5_owner_review_gallery.py'
+      - 'scripts/branch3_a6_original_review_signature.py'
+      - 'branch3/original_pilots/**'
+      - 'branch3/architecture/**'
+      - '.github/workflows/branch3-clivox-a5-offline-owner-gallery-qa.yml'
+      - '.github/workflows/branch3-clivox-original-arcade-pilots.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original_gallery_safe_local_media_only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_NO_GOOGLE_OAUTH: 'true'
+      CLIVOX_OWNER_HUMAN_REVIEW_COMPLETE: 'false'
+      CLIVOX_VIDEO_UPLOAD_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test three local MP4 gallery cards, file tamper and forged review
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py
+          python -B -m unittest -v scripts.test_branch3_a5_owner_review_gallery
+      - name: Offline fixture cannot claim reviewed, signed or uploaded
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a5_owner_review_gallery --mode fixture > "$RUNNER_TEMP/clivox-owner-gallery-fixture.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-owner-gallery-fixture.json").read_text()); assert d["can_build_verified_local_html_review_gallery"] and not d["real_review_gallery_produced_in_fixture"] and not d["actual_owner_signature_verified"] and not d["human_video_review_completed"] and d["actual_google_api_calls"]==0 and not d["youtube_upload_authorized"] and not d["youtube_schedule_authorized"] and not d["youtube_publish_authorized"]; print("CLIVOX_A5_GALLERY_OFFLINE_ONLY_NO_OWNER_RELEASE")'
+      - name: Guard GitHub read-only and no Google or YT
+        run: |
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_NO_GOOGLE_OAUTH" = 'true'
+          test "$CLIVOX_OWNER_HUMAN_REVIEW_COMPLETE" = 'false'
+          test "$CLIVOX_VIDEO_UPLOAD_ENABLED" = 'false'
+      # Never see actual owner keys, Google OAuth, third-party media, or
+      # private rights records. Real MP4 testing happens in renderer workflow.

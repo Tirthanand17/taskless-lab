@@ -26,6 +26,10 @@ The [real private GitHub sandbox proof](../a8/REAL_GITHUB_CAS_SANDBOX_PROOF.md) 
 
 [Owner's A8 GitHub attempt-ledger readback guide](../a8/OWNER_PRIVATE_ATTEMPT_READBACK.md) documents a protected owner/main/manual **read-only** bridge that can verify the already created private empty upload-control file with a separately scoped token and separately retained prior sequence/head anchor. This implementation is tested offline only; the environment **does not yet have its dedicated A8 token**, no actual live GitHub Actions A8 readback has been completed, and a successful read cannot authorize a retry or upload. The existing protected Clivox release environment likewise contains no uploader OAuth secrets.
 
+## A5 owner-friendly original video review gallery
+
+A no-network responsive local HTML viewer will be packaged with new GitHub original arcade review artifacts, displaying all source-free MP4s, draft SRT links, SHA hashes and explicit pending owner checks. It is not uploaded to a public website and does not collect consent, sign approvals, change the private upload ledger or post videos. After downloading and extracting the ZIP, open `CLIVOX-REVIEW-START-HERE.html`, review each exact master, and rerender if voice/caption/visual revisions are needed.
+
 ## A6 automatic full-review artifact and checksum verification
 
 The original arcade GitHub workflow now builds all three full-resolution review videos on relevant `main` pushes and independently verifies all generated unsigned human-review checklists against the **actual** MP4/WAV/SRT/metadata/QA files. This removes reliance on the remote desktop for producing the pack. Artifacts are still seven-day review files, **not owner-watched, commercially cleared, A6-signed or uploaded**. Human must inspect and approve exact final renders; automated technical passes do not count as owner review.
