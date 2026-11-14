@@ -4,6 +4,41 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## Verified real-media private editorial correction intake (no owner decision)
+
+The new source-only [private correction intake runbook](PRIVATE_CUE_CORRECTION_INTAKE.md)
+and script `scripts/branch3_a5_cue_correction_intake.py` now provide a
+**read-only path from a reviewer-edited CSV to a private, actionable editing
+issue plan**. It never modifies source, video/audio/subtitle files or signs
+an owner release. Every mutable row is checked against an actual
+SHA-bound A6 packet, the original SRT cue numbering and timestamps,
+scene mapping, the authored narration and the unmodified baseline
+worksheet, and the entire source-free media package must pass the
+existing independent A6 revalidation again. It does not accept partial
+or contradictory status labels as approvals.
+
+After merge of [PR #198](https://github.com/Tirthanand17/taskless-lab/pull/198),
+the **full-resolution main [Actions run 43569161922](https://github.com/Tirthanand17/taskless-lab/actions/runs/43569161922) completed SUCCESS**
+on `e4a26ceef03728ff52552851efa3749dda3d298d`. The complete original
+2 Shorts + 108-second landscape media passed its 39 audio + 39 encoded
+caption-cue checks, exact A6 unsigned SHA binding, contact sheets and
+gallery, **plus a real end-to-end correction-intake integration against
+the actual MP4/WAV/SRT/A6 files**. CI used *only* an unchanged synthetic
+CSV copy and one clearly labeled synthetic issue: the correct issue
+count and permanent false owner-release/YouTube flags were checked.
+No real owner corrections or notes entered GitHub, and these synthetic
+private JSON reports were outside the uploaded reviewer artifact.
+
+The **new current** artifact is
+`clivox-original-arcade-review-43569161922` (ID **14103870800**,
+**23,784,101 bytes**), expiring **2026-11-21 07:07:03 UTC**.
+It still contains **8 + 8 + 23 = 39 entirely UNREVIEWED correction rows**.
+Old review ZIPs and A6 SHA packets refer to older generated assets;
+do not treat any of them as the current reviewed master. **No user
+has yet provided an edited review worksheet; no actual word/pronunciation
+quality has been human-approved; no signing, licensing, OAuth or YouTube
+upload has been enabled.** All publication flags remain false.
+
 ## Verified current owner-correction master — 39 cues / three CSVs
 
 The merged PR #196 `main` [render #43567628633](https://github.com/Tirthanand17/taskless-lab/actions/runs/43567628633)
@@ -159,7 +194,7 @@ The renderer now applies **bounded, native-ASS subtitle font/margin values** and
 
 ## Latest verified three-video spoken-boundary review master
 
-**Use [GitHub Actions run 43567628633](https://github.com/Tirthanand17/taskless-lab/actions/runs/43567628633) as the current original CLIVOX owner review package.** The automatic `main` render completed successfully with two 1080×1920 Shorts, one 1920×1080 108-second long episode, all-beat frame-caption QA, sound energy/clipping tests, full A6 exact-hash handoffs, three unsigned owner checklists, and offline HTML5 video gallery. Its seven-day review artifact is ~23.8 MB.
+**Use [GitHub Actions run 43569161922](https://github.com/Tirthanand17/taskless-lab/actions/runs/43569161922) as the current original CLIVOX owner review package.** The automatic `main` render completed successfully with two 1080×1920 Shorts, one 1920×1080 108-second long episode, all-beat frame-caption QA, sound energy/clipping tests, full A6 exact-hash handoffs, three unsigned owner checklists, and offline HTML5 video gallery. Its seven-day review artifact is ~23.8 MB.
 
 The **current merged full-resolution main run 43566364655**, after PR #194, completed SUCCESS on SHA `2942e126943a1a63e7c4e2693d769e30602d470d`. The actual 2 Shorts and 108-second landscape review masters were checked at **8 + 8 + 23 = 39 subtitle-cue midpoints** in encoded H.264 frames and for **39 recovered postmix synthetic-speech activity windows**, after subtracting CLIVOX's deterministic original tone/sting bed. Both independent checks passed in the run's explicitly asserted source-free A5 technical QA. The A6 exact-media SHA and all-false owner attestation forms were independently reverified, and the offline 23-scene review gallery and contact sheets generated successfully. GitHub artifact **14102826491**, **23,779,184 bytes**, expires around **2026-11-21 06:31 UTC**. These cues have not been manually listened to or proven word-accurate; no valid owner release, licensing or YouTube upload exists. Sign only a separately human-reviewed and correctly finalized exact-video release, not an old or technical-only hash.
 
