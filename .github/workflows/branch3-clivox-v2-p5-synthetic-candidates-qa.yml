@@ -1,4 +1,4 @@
-name: CLIVOX V2 P5-P9 Source-Free Render, Review and Private-First QA
+name: CLIVOX V2 P5-P10 Source-Free Pipeline and Analytics Provenance QA
 
 on:
   pull_request:
@@ -15,6 +15,12 @@ on:
       - 'scripts/test_branch3_v2_p8_synthetic_unsigned_review.py'
       - 'scripts/branch3_v2_p9_private_first_preflight.py'
       - 'scripts/test_branch3_v2_p9_private_first_preflight.py'
+      - 'scripts/branch3_v2_p10_synthetic_analytics_gates.py'
+      - 'scripts/test_branch3_v2_p10_synthetic_analytics_gates.py'
+      - 'branch3/clipping_v2/P10_*'
+      - 'scripts/branch3_a10_analytics.py'
+      - 'scripts/branch3_a10_owner_readonly.py'
+      - 'branch3/a10/analytics-policy.json'
       - 'branch3/clipping_v2/P9_*'
       - 'scripts/branch3_a8_private_first_dryrun.py'
       - 'branch3/a8/private-cas-policy.json'
@@ -42,6 +48,12 @@ on:
       - 'scripts/test_branch3_v2_p8_synthetic_unsigned_review.py'
       - 'scripts/branch3_v2_p9_private_first_preflight.py'
       - 'scripts/test_branch3_v2_p9_private_first_preflight.py'
+      - 'scripts/branch3_v2_p10_synthetic_analytics_gates.py'
+      - 'scripts/test_branch3_v2_p10_synthetic_analytics_gates.py'
+      - 'branch3/clipping_v2/P10_*'
+      - 'scripts/branch3_a10_analytics.py'
+      - 'scripts/branch3_a10_owner_readonly.py'
+      - 'branch3/a10/analytics-policy.json'
       - 'branch3/clipping_v2/P9_*'
       - 'scripts/branch3_a8_private_first_dryrun.py'
       - 'branch3/a8/private-cas-policy.json'
@@ -97,7 +109,9 @@ jobs:
           python -B -m scripts.branch3_v2_p7_synthetic_vertical_renderer --mode closed
           python -B -m scripts.branch3_v2_p8_synthetic_unsigned_review --mode closed
           python -B -m scripts.branch3_v2_p9_private_first_preflight --mode closed
+          python -B -m scripts.branch3_v2_p10_synthetic_analytics_gates --mode closed
           python -B -m unittest -v \
+            scripts.test_branch3_v2_p10_synthetic_analytics_gates \
             scripts.test_branch3_v2_p9_private_first_preflight \
             scripts.test_branch3_v2_p8_synthetic_unsigned_review \
             scripts.test_branch3_v2_p7_synthetic_vertical_renderer \
@@ -410,6 +424,55 @@ jobs:
           assert unsigned["exact_synthetic_video_sha256"] not in json.dumps(data)
           assert "token" not in json.dumps(data).lower()
           print("CLIVOX_V2_P9_EXACT_P8_UNSIGNED_PRIVATE_FIRST_HOLD_DUPLICATE_AND_AMBIGUITY_QA_PASS_ZERO_HTTP_UPLOADS")
+          PY
+      - name: Validate source-free A10 owner-only metric schema and P10 missing/Studio/experiment gates
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_v2_p10_synthetic_analytics_gates \
+            --mode synthetic \
+            > "$RUNNER_TEMP/clivox-p5-synthetic/p10-offline-analytics-honesty-only.json"
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          from scripts.branch3_v2_p10_synthetic_analytics_gates import (
+              STAGE, REPORT_FIELDS, REQUIRED_METRICS, validate_report,
+              hypothetical_checkpoints,
+          )
+          base = Path(os.environ["RUNNER_TEMP"]) / "clivox-p5-synthetic"
+          report = json.loads((base / "p10-offline-analytics-honesty-only.json").read_text("utf-8"))
+          validate_report(report)
+          assert set(report) == REPORT_FIELDS
+          assert report["stage"] == STAGE
+          assert report["channel_id"] == "UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert report["synthetic_fixture_only"] is True
+          assert report["hypothetical_record_count"] == 12
+          assert [x["metric"] for x in report["metric_provenance"]] == list(REQUIRED_METRICS)
+          assert all(m["real_clivox_value"] is None
+                     and m["can_infer_short_swipe_behaviour"] is False
+                     for m in report["metric_provenance"])
+          assert report["studio_only_metrics"] == {
+              "stayed_to_watch_percent": None,
+              "shown_in_feed": None,
+              "shorts_audience_retention_curve": None,
+          }
+          assert report["hypothetical_review_checkpoints"] == hypothetical_checkpoints()
+          assert report["real_google_requests"] == 0
+          assert report["real_published_videos_observed"] == 0
+          assert report["youtube_uploads"] == 0
+          assert report["real_analytics_oauth_verified"] is False
+          assert report["real_clivox_metrics_observed"] is False
+          assert report["copyright_or_ypp_status_inferred"] is False
+          assert report["shorts_feed_stayed_to_watch_verified"] is False
+          assert report["public_api_derived_viral_score"] is False
+          assert report["cross_owner_metric_aggregation_performed"] is False
+          assert report["experiment_causal_winner_declared"] is False
+          assert report["real_analysis_milestone_complete"] is False
+          assert report["auto_optimization_or_publication_authorized"] is False
+          assert report["youtube_publish_authorized"] is False
+          payload = json.dumps(report, sort_keys=True)
+          assert "A0000000001" not in payload
+          assert "Bearer " not in payload and "access_token" not in payload
+          print("CLIVOX_V2_P10_SYNTHETIC_A10_PROVENANCE_STUDIO_NULL_HYPOTHETICAL_24H_14D_QA_PASS_NO_REAL_GROWTH_NO_UPLOAD")
           PY
       - name: No media or candidate artifact uploaded publicly
         run: |

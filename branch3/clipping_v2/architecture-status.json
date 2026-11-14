@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P9_SOURCE_FREE_EXPLICIT_PRIVATE_NO_NETWORK_PREFLIGHT_CI_VERIFIED_MAIN_REAL_CREATOR_RIGHTS_OWNER_RELEASE_UPLOAD_OAUTH_BLOCKED",
+  "status": "P10_SOURCE_FREE_OWN_ANALYTICS_PROVENANCE_AND_STUDIO_METRIC_HONESTY_UNDER_CI_REAL_OWNER_OAUTH_UPLOADS_OUTCOMES_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -136,8 +136,10 @@
     {
       "id": "P10",
       "name": "Own-channel analytics and experiments",
-      "state": "NOT_STARTED",
-      "requires_owner": "Real authorized CLIVOX Analytics"
+      "state": "SYNTHETIC_A10_EXISTING_FIXTURE_METRIC_AVAILABILITY_AND_HYPOTHETICAL_REVIEW_QA_PENDING_CI_REAL_CLIVOX_ANALYTICS_UNAVAILABLE",
+      "requires_owner": "Real authorized CLIVOX Analytics",
+      "source_free_metric_provenance_script": "scripts/branch3_v2_p10_synthetic_analytics_gates.py",
+      "qa_workflow": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml"
     },
     {
       "id": "P11",
@@ -377,5 +379,20 @@
   "p9_main_p5_to_p9_qa_run_id": 43592633213,
   "p9_main_p5_to_p9_qa_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633213",
   "p9_main_p4_regression_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633097",
-  "p9_main_content_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633083"
+  "p9_main_content_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633083",
+  "p10_source_free_metric_provenance_implemented_pending_ci": true,
+  "p10_source_free_metric_provenance_verified_on_main": false,
+  "p10_existing_owner_a10_adapter_reused": true,
+  "p10_real_clivox_owner_analytics_connected": false,
+  "p10_real_clivox_video_engagement_observed": 0,
+  "p10_real_retention_curves_verified": false,
+  "p10_stayed_to_watch_from_real_studio_verified": false,
+  "p10_real_authorized_published_pilots": 0,
+  "p10_derived_viral_scores_enabled": false,
+  "p10_real_experiment_causal_winner_verified": false,
+  "p10_real_youtube_uploads": 0,
+  "p10_real_milestone_complete": false,
+  "p10_script": "scripts/branch3_v2_p10_synthetic_analytics_gates.py",
+  "p10_tests": "scripts/test_branch3_v2_p10_synthetic_analytics_gates.py",
+  "p10_runbook": "branch3/clipping_v2/P10_SYNTHETIC_ANALYTICS_PROVENANCE_AND_LEARNING.md"
 }
