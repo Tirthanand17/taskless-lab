@@ -18,6 +18,7 @@ on:
       - 'scripts/branch3_a5_owner_review_gallery.py'
       - 'scripts/branch3_a5_cue_review_worksheet.py'
       - 'scripts/branch3_a5_cue_correction_intake.py'
+      - 'scripts/branch3_a5_revision_sandbox.py'
       - 'scripts/branch3_a5_scene_review_index.py'
       - 'scripts/branch3_a5_review_contact_sheet.py'
       - 'branch3/original_pilots/arcade_trio.json'
@@ -36,10 +37,12 @@ on:
       - 'scripts/branch3_a5_owner_review_gallery.py'
       - 'scripts/branch3_a5_cue_review_worksheet.py'
       - 'scripts/branch3_a5_cue_correction_intake.py'
+      - 'scripts/branch3_a5_revision_sandbox.py'
       - 'scripts/branch3_a5_scene_review_index.py'
       - 'scripts/test_branch3_a5_owner_review_gallery.py'
       - 'scripts/test_branch3_a5_cue_review_worksheet.py'
       - 'scripts/test_branch3_a5_cue_correction_intake.py'
+      - 'scripts/test_branch3_a5_revision_sandbox.py'
       - 'scripts/test_branch3_a5_scene_review_index.py'
       - 'scripts/branch3_a5_review_contact_sheet.py'
       - 'scripts/test_branch3_a5_review_contact_sheet.py'
@@ -104,8 +107,8 @@ jobs:
       - name: Independent original-rights, scene, caption and technical-QA tests
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a5_speech_boundaries.py scripts/test_branch3_a5_speech_boundaries.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py scripts/branch3_a5_cue_correction_intake.py scripts/test_branch3_a5_cue_correction_intake.py scripts/branch3_a5_scene_review_index.py scripts/test_branch3_a5_scene_review_index.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
-          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a5_speech_boundaries scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_cue_review_worksheet scripts.test_branch3_a5_cue_correction_intake scripts.test_branch3_a5_scene_review_index scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
+          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a5_speech_boundaries.py scripts/test_branch3_a5_speech_boundaries.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py scripts/branch3_a5_cue_correction_intake.py scripts/test_branch3_a5_cue_correction_intake.py scripts/branch3_a5_revision_sandbox.py scripts/test_branch3_a5_revision_sandbox.py scripts/branch3_a5_scene_review_index.py scripts/test_branch3_a5_scene_review_index.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
+          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a5_speech_boundaries scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_cue_review_worksheet scripts.test_branch3_a5_cue_correction_intake scripts.test_branch3_a5_revision_sandbox scripts.test_branch3_a5_scene_review_index scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
       - name: Render original-first arcade video(s) in disposable GitHub temp only
         run: |
           set -euo pipefail
@@ -312,6 +315,72 @@ jobs:
           assert p["ready_to_schedule"] is False
           assert p["ready_to_publish"] is False
           print("CLIVOX_REAL_H264_WAV_SRT_A6_VERIFIED_SYNTHETIC_CORRECTION_INTAKE_NO_OWNER_NO_YOUTUBE")
+          PY
+      - name: Rehearse SYNTHETIC scene correction through actual encoded MP4/WAV sandbox QA
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/clivox-private-synthetic-revision-only"
+          python -B - <<'PY'
+          import csv
+          import os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])
+          source=root/"clivox-original"/"clivox_original_door_choice_s01"/"narration-caption-corrections-UNREVIEWED.csv"
+          with source.open(encoding="utf-8",newline="") as f:
+              rows=list(csv.DictReader(f))
+              fields=list(rows[0].keys())
+          assert len(rows)==8
+          assert rows[0]["correction_required"]=="NOT_REVIEWED"
+          # Engineered test-only dialogue. Never use a real owner's review
+          # text in GitHub Actions or upload synthetic sandbox output.
+          rows[0]["actual_words_and_pronunciation"]="ISSUE"
+          rows[0]["subtitle_timing"]="OK"
+          rows[0]["caption_visual_readability"]="OK"
+          rows[0]["correction_required"]="YES"
+          rows[0]["suggested_replacement_caption"]="A strange door learns your choices."
+          rows[0]["reviewer_issue_notes"]="CI_SYNTHETIC_ONLY_NOT_REAL_HUMAN_APPROVAL"
+          output=root/"clivox-ci-synthetic-revision-input.csv"
+          with output.open("w",encoding="utf-8",newline="") as f:
+              writer=csv.DictWriter(f,fieldnames=fields)
+              writer.writeheader()
+              writer.writerows(rows)
+          assert sum(r["correction_required"]=="YES" for r in rows)==1
+          PY
+          python -B -m scripts.branch3_a5_revision_sandbox \
+            --review-root "$RUNNER_TEMP/clivox-original" \
+            --selection "$SELECTED_EPISODES" \
+            --episode-id clivox_original_door_choice_s01 \
+            --edited-csv "$RUNNER_TEMP/clivox-ci-synthetic-revision-input.csv" \
+            --output-root "$RUNNER_TEMP/clivox-private-synthetic-revision-only" \
+            --mode preview
+          python -B - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])
+          sandbox=root/"clivox-private-synthetic-revision-only"
+          proof=json.loads((sandbox/"PRIVATE-SANDBOX-TECHNICAL-REPORT.json").read_text("utf-8"))
+          assert proof["candidate_spoken_rewrites_count"]==1
+          assert proof["candidate_scene_changes"]==1
+          assert proof["pending_or_incomplete_original_review_rows"]==7
+          assert proof["full_independent_candidate_technical_qa_passed"] is True
+          assert proof["new_real_encoded_subtitle_cues_checked"]>=1
+          assert proof["new_real_encoded_subtitle_cues_checked"]==proof["new_real_mixed_audio_cues_checked"]
+          assert proof["old_review_source_and_catalog_unchanged"] is True
+          assert proof["no_owner_a6_reuse_or_release_packet_created"] is True
+          assert proof["candidate_sandbox_is_not_release_master"] is True
+          assert proof["human_editorial_acceptance_verified"] is False
+          assert proof["original_signed_release_exists"] is False
+          assert proof["third_party_rights_or_licenses_verified"] is False
+          assert proof["human_voice_words_or_phoneme_alignment_verified"] is False
+          assert proof["youtube_upload_authorized"] is False
+          assert proof["youtube_schedule_authorized"] is False
+          assert proof["youtube_publish_authorized"] is False
+          assert proof["actual_google_api_calls"]==0
+          folder=sandbox/"clivox_original_door_choice_s01"
+          assert not (folder/"owner-handoff-quarantined.json").exists()
+          assert not (folder/"owner-editorial-review-UNSIGNED.json").exists()
+          print("CLIVOX_SYNTHETIC_REVISION_NEW_MP4_WAV_SRT_REAL_QA_PASS_PRIVATE_NO_RELEASE")
           PY
       - name: Upload only author-owned new graphics/fiction/TTS reviewer files (7 days)
         uses: actions/upload-artifact@v4
