@@ -24,6 +24,10 @@ A separate owner-controlled GitHub **private control-metadata repository** now e
 
 [Clivox's separate owner-only dual-read-only Analytics adapter](a10/OWNER_ANALYTICS_READONLY_SETUP.md) now verifies the exact Clivox channel identity before a bounded 50-video nonmonetary report read. The `clivox-analytics-readonly` GitHub environment is **really created, main-only and owner-review protected with zero secrets**. Google owner consent and real metrics **are not configured**; no upload credential, private video identifier, posting decision or schedule can be reused or changed.
 
+## Original artwork now kept clear of caption lower thirds
+
+All-scene contact sheets from [successful GH render 43557461327](https://github.com/Tirthanand17/taskless-lab/actions/runs/43557461327) revealed the door and portal drawings physically overlapping subtitles even though automated caption pixels were present. Renderer layout now reserves a stricter middle illustration slot so the bottom third remains readable. This is a visual layout improvement, not claim of final graphics, professional voice, owner signed-release or more YouTube views.
+
 ## Every-scene visual caption QA + offline storyboard contact sheets
 
 In addition to playable review MP4s, new GitHub Actions original arcade review artifacts include an **all-scene contact sheet for each video**, linked in the offline gallery. The independent media gate now decodes caption frames for **all 5 beats per Short and all 13 beats in the longer episode**, rather than just the first cue. Any beat with no actual rendered on-screen subtitle fails QA before an unsigned A6 handoff is produced. This is technical evidence and visual review tooling, not owner commercial/media approval or a guaranteed virality improvement.

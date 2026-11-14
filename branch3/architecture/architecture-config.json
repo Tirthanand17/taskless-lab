@@ -465,7 +465,14 @@
     "caption_video_frames_checked_per_landscape_episode": 13,
     "additional_outro_visual_frame_for_owner_review": true,
     "all_beat_contact_sheets_real_full_render_passed": false,
-    "owner_human_content_or_rights_reviewer_approved": false
+    "owner_human_content_or_rights_reviewer_approved": false,
+    "full_review_contact_sheet_23_storyboard_caption_frames_verified_run": "43557461327",
+    "all_3_derived_JPEG_contact_sheets_real_and_not_owner_approved": true,
+    "real_contact_sheet_visual_audit_revealed_art_subtitle_overlap": true,
+    "new_art_geometry_reserved_above_caption_lower_third": true,
+    "icon_geometry_4_aspect_resolution_modes_bounded": true,
+    "artwork_safezone_final_full_video_audit_passed": false,
+    "actual_google_upload_enabled": false
   },
   "a10_owner_analytics_readonly": {
     "fixed_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
