@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "stage": "P11_WEEKLY_ORIGINAL_CLIP_SCALE_SOURCE_FREE_FIXTURE",
+  "execution_mode": "SYNTHETIC_CAPACITY_PLANNING_NO_MEDIA_NO_CONTACT_NO_UPLOAD",
+  "synthetic": true,
+  "hypothetical_week_start_utc": "2027-03-01T00:00:00Z",
+  "planning_days": 7,
+  "hypothetical_daily_targets": {
+    "shorts": 2,
+    "long_form": 1
+  },
+  "human_minutes_per_item": {
+    "shorts_edit": 55,
+    "shorts_originality_and_rights_review": 20,
+    "long_edit": 180,
+    "long_originality_and_rights_review": 40
+  },
+  "hypothetical_available_editor_minutes_per_week": 1200,
+  "actual_committed_editor_minutes_per_week": 0,
+  "source_research_cases": [
+    {
+      "category": "gaming_livestream",
+      "rights_state": "PENDING_NO_CONTACT",
+      "source_media_delivered": false,
+      "human_context_originality_reviewed": false,
+      "commercial_youtube_derivatives_licensed": false,
+      "guest_music_game_rights_verified": false
+    },
+    {
+      "category": "podcast_interview",
+      "rights_state": "PENDING_NO_CONTACT",
+      "source_media_delivered": false,
+      "human_context_originality_reviewed": false,
+      "commercial_youtube_derivatives_licensed": false,
+      "guest_music_game_rights_verified": false
+    },
+    {
+      "category": "reaction_comedy",
+      "rights_state": "PENDING_NO_CONTACT",
+      "source_media_delivered": false,
+      "human_context_originality_reviewed": false,
+      "commercial_youtube_derivatives_licensed": false,
+      "guest_music_game_rights_verified": false
+    }
+  ],
+  "verified_rightsholder_agreements": 0,
+  "confirmed_licensed_source_media_files": 0,
+  "approved_private_source_vault": false,
+  "real_editorial_owner_review_signatures": 0,
+  "real_publish_approved_videos": 0,
+  "live_clivox_upload_oauth_connected": false,
+  "live_analytics_evidence_connected": false,
+  "confirmed_youtube_monetization_eligibility": false,
+  "actual_creator_outreach_messages_sent": 0,
+  "actual_media_downloads": 0,
+  "actual_youtube_uploads": 0,
+  "minimum_distinct_creator_partnerships_before_scale": 2,
+  "requires_substantive_original_commentary": true,
+  "requires_human_licensed_source_context_review": true,
+  "requires_current_rights_and_revocation_recheck_per_video": true,
+  "requires_no_misleading_claims_or_unoriginal_template_reuploads": true,
+  "expected_decision": "BLOCK_REAL_SCALING_AWAIT_AUTHENTIC_LICENSES_EDITOR_CAPACITY_AND_OWNER_RELEASE"
+}
