@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P10_SYNTHETIC_OWNER_ANALYTICS_PROVENANCE_STUDIO_NULL_AND_HUMAN_LEARNING_QA_VERIFIED_MAIN_REAL_CLIVOX_OWNER_DATA_UNAVAILABLE",
+  "status": "P11_SOURCE_FREE_WEEKLY_21_ITEM_EDITOR_CAPACITY_RIGHTS_AND_ORIGINALITY_HOLD_QA_PENDING_CI_REAL_LICENSED_SCALING_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -145,8 +145,10 @@
     {
       "id": "P11",
       "name": "Scaled recurring creator partnerships",
-      "state": "NOT_STARTED",
-      "requires_owner": "Verified costs and continuing rights"
+      "state": "SYNTHETIC_ONLY_TWO_SHORTS_ONE_LONG_PER_DAY_RIGHTS_EDITOR_CAPACITY_AND_REUSED_CONTENT_HOLD_QA_PENDING_CI_REAL_SCALE_BLOCKED",
+      "requires_owner": "Verified costs and continuing rights",
+      "supply_fixture": "branch3/clipping_v2/p11-synthetic-weekly-capacity.json",
+      "qa_workflow": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml"
     }
   ],
   "published_media_or_scheduled_youtube_actions_performed_by_this_architecture_change": 0,
@@ -403,5 +405,22 @@
   "p10_main_pipeline_qa_run_id": 43594259100,
   "p10_main_pipeline_qa_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259100",
   "p10_main_p4_regression_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259097",
-  "p10_main_content_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259076"
+  "p10_main_content_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259076",
+  "p11_source_free_editor_rights_scale_implemented_pending_ci": true,
+  "p11_source_free_editor_rights_scale_verified_on_main": false,
+  "p11_hypothetical_seven_day_shorts_target": 14,
+  "p11_hypothetical_seven_day_long_videos_target": 7,
+  "p11_hypothetical_weekly_editor_minutes_demand": 2590,
+  "p11_hypothetical_weekly_editor_minutes_available": 1200,
+  "p11_hypothetical_editor_minutes_gap": 1390,
+  "p11_actual_committed_editor_minutes_verified": 0,
+  "p11_real_licensed_creator_partnerships": 0,
+  "p11_real_original_human_edited_clip_approvals": 0,
+  "p11_actual_recurring_production_capacity_clips": 0,
+  "p11_real_ypp_or_monetization_eligibility_verified": false,
+  "p11_source_free_runbook": "branch3/clipping_v2/P11_SYNTHETIC_SCALE_RIGHTS_AND_CAPACITY.md",
+  "p11_real_scaling_enabled": false,
+  "p11_real_milestone_complete": false,
+  "p11_script": "scripts/branch3_v2_p11_synthetic_scale_readiness.py",
+  "p11_tests": "scripts/test_branch3_v2_p11_synthetic_scale_readiness.py"
 }

@@ -1,4 +1,4 @@
-name: CLIVOX V2 P5-P10 Source-Free Pipeline and Analytics Provenance QA
+name: CLIVOX V2 P5-P11 Source-Free Rights, Analytics and Scale Readiness QA
 
 on:
   pull_request:
@@ -17,6 +17,10 @@ on:
       - 'scripts/test_branch3_v2_p9_private_first_preflight.py'
       - 'scripts/branch3_v2_p10_synthetic_analytics_gates.py'
       - 'scripts/test_branch3_v2_p10_synthetic_analytics_gates.py'
+      - 'scripts/branch3_v2_p11_synthetic_scale_readiness.py'
+      - 'scripts/test_branch3_v2_p11_synthetic_scale_readiness.py'
+      - 'branch3/clipping_v2/p11-synthetic-weekly-capacity.json'
+      - 'branch3/clipping_v2/P11_*'
       - 'branch3/clipping_v2/P10_*'
       - 'scripts/branch3_a10_analytics.py'
       - 'scripts/branch3_a10_owner_readonly.py'
@@ -50,6 +54,10 @@ on:
       - 'scripts/test_branch3_v2_p9_private_first_preflight.py'
       - 'scripts/branch3_v2_p10_synthetic_analytics_gates.py'
       - 'scripts/test_branch3_v2_p10_synthetic_analytics_gates.py'
+      - 'scripts/branch3_v2_p11_synthetic_scale_readiness.py'
+      - 'scripts/test_branch3_v2_p11_synthetic_scale_readiness.py'
+      - 'branch3/clipping_v2/p11-synthetic-weekly-capacity.json'
+      - 'branch3/clipping_v2/P11_*'
       - 'branch3/clipping_v2/P10_*'
       - 'scripts/branch3_a10_analytics.py'
       - 'scripts/branch3_a10_owner_readonly.py'
@@ -110,7 +118,9 @@ jobs:
           python -B -m scripts.branch3_v2_p8_synthetic_unsigned_review --mode closed
           python -B -m scripts.branch3_v2_p9_private_first_preflight --mode closed
           python -B -m scripts.branch3_v2_p10_synthetic_analytics_gates --mode closed
+          python -B -m scripts.branch3_v2_p11_synthetic_scale_readiness --mode closed
           python -B -m unittest -v \
+            scripts.test_branch3_v2_p11_synthetic_scale_readiness \
             scripts.test_branch3_v2_p10_synthetic_analytics_gates \
             scripts.test_branch3_v2_p9_private_first_preflight \
             scripts.test_branch3_v2_p8_synthetic_unsigned_review \
@@ -473,6 +483,62 @@ jobs:
           assert "A0000000001" not in payload
           assert "Bearer " not in payload and "access_token" not in payload
           print("CLIVOX_V2_P10_SYNTHETIC_A10_PROVENANCE_STUDIO_NULL_HYPOTHETICAL_24H_14D_QA_PASS_NO_REAL_GROWTH_NO_UPLOAD")
+          PY
+      - name: P11 seven-day hypothetical 2 Shorts + 1 long capacity and rights/originality STOP gate
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_v2_p11_synthetic_scale_readiness \
+            --mode synthetic \
+            > "$RUNNER_TEMP/clivox-p5-synthetic/p11-supply-editor-capacity-NO-SCALE.json"
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          from scripts.branch3_v2_p11_synthetic_scale_readiness import (
+              BLOCKERS, RESULT_FIELDS, STAGE, validate_report,
+              production_scale_or_contact, P11Denied,
+          )
+          root = Path(os.environ["RUNNER_TEMP"]) / "clivox-p5-synthetic"
+          result = json.loads((root / "p11-supply-editor-capacity-NO-SCALE.json").read_text("utf-8"))
+          validate_report(result)
+          assert set(result) == RESULT_FIELDS
+          assert result["stage"] == STAGE
+          assert result["channel_id"] == "UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert result["simulation_only"] is True
+          assert result["hypothetical_target_shorts"] == 14
+          assert result["hypothetical_target_long_videos"] == 7
+          assert result["hypothetical_total_assets"] == 21
+          assert result["hypothetical_editor_minutes_demand"] == 2590
+          assert result["hypothetical_editor_capacity_gap_minutes"] == 1390
+          assert result["actual_committed_editor_minutes"] == 0
+          assert result["verified_creator_partnerships"] == 0
+          assert result["real_licensed_source_files"] == 0
+          assert result["authorized_production_capacity_assets"] == 0
+          assert result["actual_youtube_uploads"] == 0
+          assert result["real_creator_outreach_messages_sent"] == 0
+          assert result["no_monetization_or_viral_predictions_made"] is True
+          assert result["copyright_license_does_not_equal_ypp_approval"] is True
+          assert result["reused_content_ypp_safety_independently_verified"] is False
+          assert result["real_recurring_clip_scale_enabled"] is False
+          assert result["youtube_publish_authorized"] is False
+          assert result["real_p11_milestone_complete"] is False
+          assert result["blockers"] == list(BLOCKERS)
+          assert len(result["hypothetical_weekly_slots"]) == 7
+          assert all(slot["actual_scheduled_youtube_uploads"] == 0
+                     and slot["real_authorized_shorts"] == 0
+                     and slot["real_authorized_long_videos"] == 0
+                     for slot in result["hypothetical_weekly_slots"])
+          try:
+              production_scale_or_contact()
+              raise AssertionError("P11 production unexpectedly succeeded")
+          except P11Denied:
+              pass
+          # CI log never exports private creator contacts, source files, videos
+          # or claimed real YouTube performance.
+          assert not any(k in json.dumps(result) for k in (
+              "youtube.com/watch?", "creator_email", "access_token", "private_key",
+              "revenue_estimate", "predicted_viral_views",
+          ))
+          print("CLIVOX_V2_P11_SYNTHETIC_21_ITEM_WEEKLY_DEMAND_2590_MINUTES_RIGHTS_ORIGINALITY_AND_STAFFING_HOLD_ZERO_UPLOADS")
           PY
       - name: No media or candidate artifact uploaded publicly
         run: |
