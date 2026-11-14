@@ -1,6 +1,6 @@
 # CLIVOX V2 P4 — Quarantined private-source technical preflight
 
-**Integration state:** synthetic-only code and no-secret test workflow; actual P4 creator-media handoff **NOT COMPLETE**. This is NOT a legal permission verifier or an active vault. The public controller repository remains Tirthanand17/taskless-lab; target channel UCfPEvy0SefE_5nNlYlY_CyQ.
+**Integration state (2026-11-14):** synthetic-only code and no-secret workflow **verified on merged main**, actual P4 creator-media handoff **NOT COMPLETE**. This is NOT a legal permission verifier or an active vault. The public controller repository remains Tirthanand17/taskless-lab; target channel UCfPEvy0SefE_5nNlYlY_CyQ.
 
 ## What was added
 
@@ -19,8 +19,15 @@ The current A3 private vault readback and private GitHub release storage are pri
 
 Do not reinterpret the real-file inspection function as an authorization to process creator material: **the only supported execution in current public CI is a newly generated synthetic sample.** A later protected, independently reviewed private runner must address genuine authorization, consent/revocation, isolation, provenance, race safety, source-size limits, long-video codecs, private media encryption and short-lived access. A passing fixture is not a working licensed clipping pipeline.
 
+## Verified GitHub code and test evidence
+
+- [Feature PR #210](https://github.com/Tirthanand17/taskless-lab/pull/210) merged with **3/3** PR checks green; the [dedicated PR P4 QA run](https://github.com/Tirthanand17/taskless-lab/actions/runs/43583044360) passed after resolving missing distro FFmpeg on the runner.
+- Merged main implementation SHA: `1f23a5081a1e6a75b256c58be6116f496d157b69`; [P4 synthetic integrity/codec/decoding QA run #43583149761](https://github.com/Tirthanand17/taskless-lab/actions/runs/43583149761) **success**.
+- Merged-main [Content Quality Gate #43583149710](https://github.com/Tirthanand17/taskless-lab/actions/runs/43583149710) **success**.
+- **21** source-free Python unit tests across the P4 and existing A3 closed-storage suites passed in dedicated QA, followed by an actual runner-generated synthetic MP4 transcode/FFprobe/FFmpeg validation. No rights-controlled media or private documents were used.
+
 ## Verification and progress
 
-Test locally with standard Python, FFmpeg and ffprobe using your own newly generated synthetic file; the GitHub workflow independently generates its own. No external services, cloud credentials or billable APIs are necessary for this test. Record feature PR CI, merged-main run and exact commit separately. Until verified, this is **P4 synthetic technical preflight pending CI**. Even after CI succeeds, P4 actual acceptance remains blocked by human permissions and vault approval.
+Test locally with standard Python, FFmpeg and ffprobe using your own newly generated synthetic file; the GitHub workflow independently generates its own. No external services, cloud credentials or billable APIs are necessary for this test. Record feature PR CI, merged-main run and exact commit separately. The source-free engineering is **P4 synthetic technical preflight verified on merged main**. P4 actual acceptance is still blocked by independent human rights verification and owner-approved confidential vault/source delivery.
 
 V2 roadmap remains **2/12 (17%)**. No third-party uploads or live creator clips have occurred. FlowMinute Branches 1 and 2 and the original-only Branch 3 video staging are not modified.
