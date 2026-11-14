@@ -41,7 +41,9 @@ def srt_seconds(value:str)->float:
     return int(hours)*3600+int(minutes)*60+int(seconds)+int(millis)/1000.0
 
 
-def check_caption_draft(content:str,duration:int)->dict:
+def check_caption_draft(
+    content:str,duration:int,*,allow_speech_end_before_outro:bool=False
+)->dict:
     require(type(content) is str and 0<len(content)<=30_000,
             "CAPTION_TEXT")
     sections=re.split(r"\n\s*\n",content.strip())
@@ -59,8 +61,16 @@ def check_caption_draft(content:str,duration:int)->dict:
                 and not any("http" in line.lower() for line in lines),
                 "CUE_MOBILE_SAFE")
         last=end
-    require(abs(last-duration)<.2,"SRT_NOT_FULL_TIMELINE")
+    require(type(allow_speech_end_before_outro) is bool,
+            "DRAFT_TAIL_POLICY")
+    if allow_speech_end_before_outro:
+        require(duration-12 <= last <= duration+.2,
+                "SRT_NOT_IN_FINAL_SCENE")
+    else:
+        require(abs(last-duration)<.2,"SRT_NOT_FULL_TIMELINE")
     return {"draft_caption_cues":len(sections),
+            "draft_last_voice_caption_end_seconds":round(last,3),
+            "silence_tail_allowed_for_final_scene":allow_speech_end_before_outro,
             "owner_must_review_speech_sync":True,
             "machine_forced_alignment_proven":False}
 
@@ -193,7 +203,10 @@ def validate_episode_report(episode:dict,manifest:dict,
     duration=float(probe_result.get("format",{}).get("duration",0))
     require(abs(duration-episode["duration_seconds"])<.65,"DURATION")
     caption_report=check_caption_draft(
-        subtitles,episode["duration_seconds"]
+        subtitles,episode["duration_seconds"],
+        allow_speech_end_before_outro=(
+            manifest["srt_measured_synthesized_pcm_speech_windows"]
+        )
     )
     caption_visual=None
     if video is not None:
