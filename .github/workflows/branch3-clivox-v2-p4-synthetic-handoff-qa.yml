@@ -1,0 +1,84 @@
+name: CLIVOX V2 P4 Synthetic Media Handoff QA (NO CREATOR MEDIA)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_v2_p4_synthetic_handoff_preflight.py'
+      - 'scripts/test_branch3_v2_p4_synthetic_handoff_preflight.py'
+      - '.github/workflows/branch3-clivox-v2-p4-synthetic-handoff-qa.yml'
+      - 'branch3/clipping_v2/P4_*'
+      - 'branch3/clipping_v2/architecture-status.json'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/branch3_v2_p4_synthetic_handoff_preflight.py'
+      - 'scripts/test_branch3_v2_p4_synthetic_handoff_preflight.py'
+      - '.github/workflows/branch3-clivox-v2-p4-synthetic-handoff-qa.yml'
+      - 'branch3/clipping_v2/P4_*'
+      - 'branch3/clipping_v2/architecture-status.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-v2-p4-source-free
+  cancel-in-progress: false
+
+jobs:
+  synthetic_private_media_preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_CREATOR_CONTACT_ENABLED: 'false'
+      CLIVOX_SOURCE_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_PRIVATE_MEDIA_WRITE_ENABLED: 'false'
+      CLIVOX_YOUTUBE_UPLOAD_ENABLED: 'false'
+      PUBLISH_ENABLED: 'false'
+    steps:
+      - name: Checkout without persistence or write authorization
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Use standard-library Python only
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check all outbound/release switches remain off
+        run: |
+          set -euo pipefail
+          test "$CLIVOX_CREATOR_CONTACT_ENABLED" = false
+          test "$CLIVOX_SOURCE_DOWNLOAD_ENABLED" = false
+          test "$CLIVOX_PRIVATE_MEDIA_WRITE_ENABLED" = false
+          test "$CLIVOX_YOUTUBE_UPLOAD_ENABLED" = false
+          test "$PUBLISH_ENABLED" = false
+          python -B -m scripts.branch3_v2_p4_synthetic_handoff_preflight --mode closed
+      - name: Adversarial rights, storage, media and codec tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v \
+            scripts.test_branch3_v2_p4_synthetic_handoff_preflight \
+            scripts.test_branch3_media_storage_preflight
+      - name: Create ONLY a generated silent-colored test pattern in ephemeral scratch
+        run: |
+          set -euo pipefail
+          command -v ffmpeg
+          command -v ffprobe
+          mkdir -p "$RUNNER_TEMP/clivox-v2-p4"
+          ffmpeg -hide_banner -loglevel error -nostdin -y \
+            -f lavfi -i testsrc2=size=160x90:rate=15 \
+            -f lavfi -i sine=frequency=440:sample_rate=48000 \
+            -t 1 -threads:v 1 -c:v libx264 -pix_fmt yuv420p \
+            -c:a aac -shortest "$RUNNER_TEMP/clivox-v2-p4/self_generated.mp4"
+          TEST_SHA=$(sha256sum "$RUNNER_TEMP/clivox-v2-p4/self_generated.mp4" | cut -d' ' -f1)
+          TEST_BYTES=$(stat -c%s "$RUNNER_TEMP/clivox-v2-p4/self_generated.mp4")
+          python -B -m scripts.branch3_v2_p4_synthetic_handoff_preflight \
+            --mode synthetic-sample \
+            --scratch "$RUNNER_TEMP/clivox-v2-p4" \
+            --fixture-file self_generated.mp4 \
+            --sha256 "$TEST_SHA" --bytes "$TEST_BYTES"
+      - name: No media artifacts or credentials leave this ephemeral job
+        run: |
+          echo "P4 technical fixture inspected in runner temp only."
+          echo "No private vault, creator rights, source media fetch, outreach or YouTube writes."
