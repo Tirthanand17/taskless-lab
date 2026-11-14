@@ -28,6 +28,9 @@ SAMPLE_STRIDE=16
 THRESHOLD_RMS=250.0
 MIN_ACTIVE_FRAMES=10
 SYNC_TOLERANCE_S=0.14
+# Conservative voice-like signal presence, not word/timing correctness.
+MIN_CUE_ACTIVE_WINDOWS=3
+MIN_CUE_ACTIVE_FRACTION=0.15
 SRT_CLOCK=re.compile(r"\d{2}:\d{2}:\d{2},\d{3}\Z")
 
 
@@ -157,14 +160,18 @@ def audit_mixed_speech_caption_bounds(
         final.byteswap()
     require(len(final)==duration*RATE,"TRUNCATED_PCM")
     results=[]
+    per_cue=[]
+    mapped_cue_indices=[]
     for index,beat in enumerate(beats):
         beg,end=beat["start_s"],beat["end_s"]
-        matching=[
-            (start,stop) for start,stop in intervals
+        cue_indices=[
+            cue_index for cue_index,(start,stop) in enumerate(intervals)
             if start>=beg-.003 and stop<=end+.003
         ]
-        require(len(matching)>=1,
+        require(len(cue_indices)>=1,
                 "NO_SRT_IN_SCENE_"+str(index))
+        mapped_cue_indices.extend(cue_indices)
+        matching=[intervals[i] for i in cue_indices]
         active=[]
         max_rms=0.0
         for tick in range(beg*50,end*50):
@@ -191,6 +198,40 @@ def audit_mixed_speech_caption_bounds(
                 "CAPTION_START_NOT_ANCHORED_TO_SPEECH_"+str(index))
         require(abs(subtitle_end-signal_end)<=SYNC_TOLERANCE_S,
                 "CAPTION_END_NOT_ANCHORED_TO_SPEECH_"+str(index))
+        for cue_index in cue_indices:
+            cue_start,cue_end=intervals[cue_index]
+            # The waveform is already measured from final mixed PCM after
+            # subtracting this renderer's deterministic original tone bed.
+            # Verify activity in *each cue*, not just anywhere in its scene.
+            # Midpoint-in-cue accounts for 20ms sampling and SRT ms rounding.
+            checked=sum(
+                1 for tick in range(beg*50,end*50)
+                if cue_start <= (tick+.5)*FRAME/RATE < cue_end
+            )
+            active_in_cue=sum(
+                1 for tick in active
+                if cue_start <= (tick+.5)*FRAME/RATE < cue_end
+            )
+            minimum=max(
+                MIN_CUE_ACTIVE_WINDOWS,
+                math.ceil(checked*MIN_CUE_ACTIVE_FRACTION)
+            )
+            require(checked>=MIN_CUE_ACTIVE_WINDOWS,
+                    "CAPTION_CUE_TOO_BRIEF_"+str(cue_index))
+            require(active_in_cue>=minimum,
+                    "NO_SPEECH_ACTIVITY_IN_CAPTION_CUE_"+
+                    str(cue_index)+"_BEAT_"+str(index))
+            per_cue.append({
+                "cue_index":cue_index,
+                "beat_index":index,
+                "cue_start_s":round(cue_start,3),
+                "cue_end_s":round(cue_end,3),
+                "recovered_speech_active_20ms_windows":active_in_cue,
+                "checked_20ms_windows":checked,
+                "minimum_required_active_windows":minimum,
+                "recovered_activity_fraction":round(active_in_cue/checked,3),
+                "individual_words_verified":False,
+            })
         results.append({
             "beat_index":index,
             "active_speech_like_windows":len(active),
@@ -201,10 +242,15 @@ def audit_mixed_speech_caption_bounds(
             "draft_caption_end_s":round(subtitle_end,3),
             "spoken_words_or_phonemes_forced_aligned":False,
         })
+    require(mapped_cue_indices==list(range(len(intervals))),
+            "UNMAPPED_OR_CROSS_SCENE_SRT_CUES")
     return {
         "stage":"A5_ORIGINAL_SPEECH_ACTIVITY_SRT_BOUNDARY_AUDIT",
         "sample_rate_hz":RATE,
         "beat_count":len(results),
+        "draft_caption_cue_count":len(per_cue),
+        "all_draft_cues_have_recovered_speech_activity":True,
+        "per_cue_20ms_activity_not_word_or_phoneme_alignment":True,
         "all_scenes_recovered_speech_like_activity_above_procedural_bed":True,
         "draft_caption_onset_offset_within_140ms_of_detected_activity":True,
         "independent_final_mixed_wav_sampled":True,
@@ -217,4 +263,5 @@ def audit_mixed_speech_caption_bounds(
         "youtube_schedule_authorized":False,
         "youtube_publish_authorized":False,
         "per_beat":results,
+        "per_cue":per_cue,
     }
