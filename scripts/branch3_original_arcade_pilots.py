@@ -138,6 +138,62 @@ def render_size(kind:str,mode:str)->tuple[int,int,int]:
     return (540,960,24) if kind=="short" else (960,540,24)
 
 
+def original_review_typography(w:int,h:int,kind:str)->dict:
+    """Conservative, proportional text positions for 9:16 and 16:9 review.
+
+    Constrains the CLIVOX logo/tagline and footer so long-video typography
+    cannot overlap itself or get clipped by landscape frame edges.
+    """
+    require(kind in ("short","long") and w>=540 and h>=540,
+            "TYPOGRAPHY_LAYOUT_INPUT")
+    portrait=kind=="short"
+    brand_px=round(min(w*.078,h*.061))
+    brand_y=round(h*.065)
+    tagline_y=round(h*(.114 if portrait else .131))
+    tagline_px=max(10,round(min(w*.018,h*.021)))
+    footer_y=round(h*.91)
+    footer_px=max(12,round(min(w/35,h*.029)))
+    warning_y=round(h*(.955 if portrait else .947))
+    warning_px=max(11,round(min(w/38,h*.025)))
+    require(brand_y+brand_px+2 <= tagline_y
+            and tagline_y+tagline_px < round(h*.16)
+            and footer_y+footer_px+3 < warning_y
+            and warning_y+warning_px < h,
+            "UNSAFE_BRAND_OR_FOOTER_OVERLAP")
+    return {
+        "brand_font_px":brand_px,
+        "brand_y":brand_y,
+        "tagline_y":tagline_y,
+        "tagline_font_px":tagline_px,
+        "footer_y":footer_y,
+        "footer_font_px":footer_px,
+        "warning_y":warning_y,
+        "warning_font_px":warning_px,
+    }
+
+
+def native_ass_caption_style(kind:str)->str:
+    """FFmpeg libass SRT font/margins in ASS virtual units, NOT pixels.
+
+    ffmpeg SRT-to-ASS uses 384x288 virtual coordinates; using physical
+    pixels in MarginV previously pushed portrait captions out of frame and
+    moved huge landscape captions over the headline. Fixed native units
+    keep video subtitles within lower-middle safe content area for both.
+    """
+    require(kind in ("short","long"),"ASS_CAPTION_KIND")
+    font_size=8 if kind=="short" else 11
+    margin_v=50 if kind=="short" else 55
+    margin_x=28
+    require(6<=font_size<=12 and 40<=margin_v<=70
+            and 20<=margin_x<=40,"ASS_NATIVE_CAPTION_SAFE_BOUNDS")
+    return (
+        f"FontName=DejaVu Sans,FontSize={font_size},Bold=1,"
+        "PrimaryColour=&H00FFFFFF,OutlineColour=&H00101925,"
+        "BorderStyle=1,Outline=1.5,Shadow=0,Alignment=2,"
+        f"MarginV={margin_v},MarginL={margin_x},MarginR={margin_x}"
+    )
+
+
 def text_fit(draw,txt:str,maxw:int,base:int,min_px:int):
     for size in range(base,min_px-1,-2):
         font=get_font(size)
@@ -216,13 +272,15 @@ def draw_scene(beat:dict,*,ep:dict,index:int,out:Path,mode:str)->None:
     dr.rounded_rectangle(
         (margin+4,panel_top+20,margin+9,panel_bottom-20),
         radius=3,fill=COLORS["amber"])
-    dr.text((margin+round(w*.03),round(h*.065)),"CLIVOX",
-            font=text_fit(dr,"CLIVOX",w//2,max(22,w//13),16),
+    typography=original_review_typography(w,h,ep["format"])
+    dr.text((margin+round(w*.03),typography["brand_y"]),"CLIVOX",
+            font=text_fit(dr,"CLIVOX",w//2,
+                          typography["brand_font_px"],16),
             fill=COLORS["pearl"])
-    brand_size=max(10,w//55)
-    dr.text((margin+round(w*.03),round(h*.114)),
+    dr.text((margin+round(w*.03),typography["tagline_y"]),
             "ORIGINAL ARCADE  /  CHALLENGE",
-            font=get_font(brand_size),fill=COLORS["muted"])
+            font=get_font(typography["tagline_font_px"]),
+            fill=COLORS["muted"])
     inner_x=margin+round(w*.06)
     panel_width=w-margin-inner_x-round(w*.04)
     title_font=text_fit(dr,beat["headline"],panel_width,
@@ -242,14 +300,16 @@ def draw_scene(beat:dict,*,ep:dict,index:int,out:Path,mode:str)->None:
     icon_r=round(min(w*.52,h*.22))
     art_icon(dr,beat["art"],icon_cx,icon_cy,icon_r)
     # Mobile-safe bottom band, score/progress, no spinning circle.
-    footer_y=round(h*.91)
+    footer_y=typography["footer_y"]
     info=f"{index+1:02d} / {len(ep['beats']):02d}"
-    dr.text((margin,footer_y),info,font=get_font(max(12,w//35)),
+    dr.text((margin,footer_y),info,
+            font=get_font(typography["footer_font_px"]),
             fill=COLORS["amber"])
     mark="ORIGINAL PREVIEW  /  HUMAN REVIEW REQUIRED"
-    dr.text((margin,round(h*.955)),mark,
+    dr.text((margin,typography["warning_y"]),mark,
             font=text_fit(dr,mark,w-2*margin,
-                          max(11,w//38),9),fill=COLORS["muted"])
+                          typography["warning_font_px"],9),
+            fill=COLORS["muted"])
     track_l=margin+round(w*.19)
     track_r=w-margin
     track_y=footer_y+round(h*.018)
@@ -408,8 +468,9 @@ def draft_srt(
             start=speech_start+(speech_end-speech_start)*elapsed/total_weight
             elapsed+=weights[j]
             end=speech_start+(speech_end-speech_start)*elapsed/total_weight
-            if voice_regions is not None and j==len(lines)-1 and index==len(ep["beats"])-1:
-                end=float(ep["duration_seconds"])
+            # In real synthesized videos, do not leave a lone final word
+            # onscreen for the remaining silent outro. The scene itself
+            # already carries the viewer's call-to-action after speech ends.
             require(end-start>=.055 and
                     all(len(x)<=36 for x in txt.split("\n")),
                     "SUBTITLE_WIDTH_OR_DURATION")
@@ -447,15 +508,9 @@ def encode_video(ep:dict,scenes:list[Path],audio:Path,output:Path,
     # Burn *draft* captions into the offline review MP4 as well as supplying
     # editable SRT: Shorts viewers can evaluate the text without enabling
     # a separate subtitle stream. Do not interpret as final speech alignment.
-    font_size=(25 if mode=="full" else 16) if ep["format"]=="short" else (
-        37 if mode=="full" else 21
-    )
-    margin_v=round(h*(.18 if ep["format"]=="short" else .16))
-    caption_style=(
-        f"FontName=DejaVu Sans,FontSize={font_size},Bold=1,"
-        "PrimaryColour=&H00FFFFFF,OutlineColour=&H00101925,"
-        f"BorderStyle=1,Outline=2,Shadow=1,Alignment=2,MarginV={margin_v}"
-    )
+    # libass uses VIRTUAL subtitle units, not output-frame pixels.
+    # FontSize=25/MarginV=346 physically pushed vertical captions offscreen.
+    caption_style=native_ass_caption_style(ep["format"])
     filters.append(
         f"[precap]subtitles=filename='{captions}':"
         f"force_style='{caption_style}',format=yuv420p[outv]"

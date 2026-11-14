@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "76% is an engineering/planning estimate only. Original first-party review videos now have draft subtitle timing calculated from actual PCM speech-window length and burned-in mobile captions. Final word-level sync, voice quality, all-asset commercial licensing, signed final A6 owner approval, production uploader and OAuth remain unverified. No videos have been published or scheduled by these workflows; A9 remains 0%, Branch 1/2 paused.",
+  "disclaimer": "76% remains an engineering estimate. Actual frame inspection of run 43554270709 revealed portrait captions off screen and oversized long-video overlays despite technically passing H264/AAC QA. This repair applies native libass units and independent MP4 safezone text detection; corrected full-sized render and owner visual playback must pass before using any new A6 artifact. No final human word alignment, commercial voice/asset approval, owner signing, production OAuth or publishing. A9 0%; Branch 1/2 paused.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -312,7 +312,13 @@
     "editable_srt_and_burned_in_review_video_captions_implemented": true,
     "draft_captions_automatically_word_aligned": false,
     "captions_and_soundtrack_editor_review_required": true,
-    "caption_upgrade_full_resolution_main_push_rerender_verified": false
+    "caption_upgrade_full_resolution_main_push_rerender_verified": false,
+    "full_resolution_previous_render_real_frame_audit_found_caption_placement_bug": true,
+    "previous_caption_artifact_43554270709_owner_review_rejected": true,
+    "ass_native_caption_scale_and_margin_correction_code_implemented": true,
+    "landscape_brand_tagline_footer_overlap_guard_implemented": true,
+    "actual_decoded_frame_caption_safezone_qa_implemented": true,
+    "corrected_full_resolution_automatic_render_verified": false
   },
   "a6_original_owner_handoff": {
     "stage": "A6_EXACT_REAL_VIDEO_ORIGINAL_OWNER_REVIEW_PACKET_QUARANTINE",
@@ -485,6 +491,12 @@
     "actual_owner_editorial_and_rights_review_complete": false,
     "new_full_resolution_render_verified": false,
     "owner_new_exact_media_signature_issued": false,
-    "authorized_youtube_uploads": 0
+    "authorized_youtube_uploads": 0,
+    "previous_full_resolution_video_visual_qa_failed": true,
+    "previous_full_resolution_run_id_with_caption_overlay_bug": 43554270709,
+    "native_ass_virtual_unit_font_and_vertical_margin_fixed_in_code": true,
+    "long_brand_and_footer_layout_overlap_fixed_in_code": true,
+    "real_decoded_frame_caption_safezone_assertion_in_QA": true,
+    "new_full_resolution_corrected_video_visual_audit_passed": false
   }
 }

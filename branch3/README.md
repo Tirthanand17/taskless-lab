@@ -24,6 +24,10 @@ A separate owner-controlled GitHub **private control-metadata repository** now e
 
 [Clivox's separate owner-only dual-read-only Analytics adapter](a10/OWNER_ANALYTICS_READONLY_SETUP.md) now verifies the exact Clivox channel identity before a bounded 50-video nonmonetary report read. The `clivox-analytics-readonly` GitHub environment is **really created, main-only and owner-review protected with zero secrets**. Google owner consent and real metrics **are not configured**; no upload credential, private video identifier, posting decision or schedule can be reused or changed.
 
+## Verified visual-frame QA (fixes hidden Shorts captions / oversized long captions)
+
+An actual visual audit found that native libass subtitle coordinates—not output pixels—must control subtitle font and vertical margins. The Shorts' supposed captions were off-screen and the landscape video's oversized text obscured headings. A new strict frame-decoding QA now **rejects encoded videos with no visible caption text in the lower-middle safe region**, while revised typography avoids landscape CLIVOX logo/tagline/footer collisions. The owner still needs to inspect exact final MP4s visually and approve timing/content.
+
 ## Speech-window-timed visible subtitles (review-only)
 
 The original-first renderer now measures each actual synthesized narration PCM region before drafting subtitle timing, rather than allocating cue duration to the entire beat. It also burns mobile-readable high-contrast captions into the MP4 review file and retains the editable SRT. **This is not forced word alignment or a final owner-approved voice/caption edit.** Real rendering/FFprobe QA, owner re-review and a new digest-bound A6 packet are mandatory.

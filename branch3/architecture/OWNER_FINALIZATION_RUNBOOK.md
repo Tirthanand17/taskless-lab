@@ -26,6 +26,10 @@ The [real private GitHub sandbox proof](../a8/REAL_GITHUB_CAS_SANDBOX_PROOF.md) 
 
 [Owner's A8 GitHub attempt-ledger readback guide](../a8/OWNER_PRIVATE_ATTEMPT_READBACK.md) documents a protected owner/main/manual **read-only** bridge that can verify the already created private empty upload-control file with a separately scoped token and separately retained prior sequence/head anchor. This implementation is tested offline only; the environment **does not yet have its dedicated A8 token**, no actual live GitHub Actions A8 readback has been completed, and a successful read cannot authorize a retry or upload. The existing protected Clivox release environment likewise contains no uploader OAuth secrets.
 
+## A5 visual regression: captions and landscape brand
+
+The initial burned-in-caption review package passed FFprobe but **failed human frame inspection**: off-frame subtitles on the vertical Shorts and oversized captions over the landscape headline. The A5 renderer now uses *ASS native coordinate bounds*, not source-video pixel counts, for subtitles, and applies constrained typography to the landscape header and footer. A new actual MP4-frame QA validates that light subtitle glyphs exist in the lower-middle video safe region while all rights/upload locks remain false. Inspect the **new** artifact after this fix and reject earlier asset hashes or owner checklists.
+
 ## Updated A5 spoken caption timing review
 
 The original arcade MP4 now embeds text captions based on the **actual measured post-synthesized voice interval for each storyboard beat**, not the full beat length. It keeps its editable `narration-timing-draft.srt` in the GitHub package. Automated timing is still approximate within the utterance, and the synthesized voice remains a **draft**. Owner must verify real word timing, intelligibility, spelling, mobile crop and all final commercial voice/tool rights; only the exact fully revised/reviewed file may later be owner-signed. The new MP4 has a different SHA-256 and invalidates any earlier file-specific approval.

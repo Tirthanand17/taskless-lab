@@ -10,9 +10,11 @@ import unittest
 from scripts.branch3_original_arcade_pilots import (
     CATALOG, ArcadeDenied, validate_catalog, render_size,
     draw_scene, draft_srt, sha, encode_video,
+    original_review_typography, native_ass_caption_style,
 )
 from scripts.branch3_original_arcade_qa import (
     OriginalQARejected, check_caption_draft, validate_episode_report,
+    visible_caption_safezone_qa,
 )
 
 
@@ -115,7 +117,8 @@ class OriginalPilotQATests(unittest.TestCase):
                 draft_srt(episode,p,voice_regions=regions)
                 content=p.read_text("utf-8")
                 result=check_caption_draft(
-                    content,episode["duration_seconds"]
+                    content,episode["duration_seconds"],
+                    allow_speech_end_before_outro=True
                 )
                 self.assertTrue(result["owner_must_review_speech_sync"])
                 self.assertFalse(result["machine_forced_alignment_proven"])
@@ -127,7 +130,14 @@ class OriginalPilotQATests(unittest.TestCase):
                     cue_times.append((srt_seconds(a),srt_seconds(b)))
                 self.assertAlmostEqual(cue_times[0][0],.08,delta=.003)
                 self.assertAlmostEqual(cue_times[-1][1],
-                                       episode["duration_seconds"],delta=.003)
+                                       episode["duration_seconds"]-.65,delta=.003)
+                self.assertLess(cue_times[-1][1],
+                                episode["duration_seconds"])
+                self.assertTrue(result["silence_tail_allowed_for_final_scene"])
+                # The orphan single-word subtitle may not be held
+                # during the silent final viewer-comment CTA.
+                self.assertLessEqual(cue_times[-1][1],
+                                     episode["duration_seconds"]-.5)
                 # In beat 1, the final draft caption no longer fills the
                 # full screenplay beat; its end derives from actual voice.
                 first_end=next(
@@ -240,6 +250,86 @@ class OriginalPilotQATests(unittest.TestCase):
         self.assertEqual(render_size("long","full"),(1920,1080,30))
         with self.assertRaises(ArcadeDenied):
             render_size("copyrighted", "preview")
+
+    def test_caption_virtual_units_cannot_escape_portrait_or_cover_landscape_heading(self):
+        for kind in ("short","long"):
+            s=native_ass_caption_style(kind)
+            self.assertIn("FontName=DejaVu Sans",s)
+            self.assertIn("Alignment=2",s)
+            self.assertIn("Outline=",s)
+            self.assertIn("MarginL=28",s)
+            self.assertIn("MarginR=28",s)
+            parts=dict(x.split("=",1) for x in s.split(","))
+            # SRT-to-libass coordinates are 384x288 virtual units.
+            # The previous pixel-based MarginV=345 pushed 9:16 text
+            # completely off screen, while MarginV=172 floated landscape
+            # text over the headline. Detect regression in pure tests.
+            self.assertLessEqual(int(parts["MarginV"]),70)
+            self.assertGreaterEqual(int(parts["MarginV"]),40)
+            self.assertLessEqual(int(parts["FontSize"]),12)
+            self.assertGreaterEqual(int(parts["FontSize"]),7)
+            self.assertEqual(int(parts["MarginV"]),
+                             50 if kind=="short" else 55)
+            self.assertEqual(int(parts["FontSize"]),
+                             8 if kind=="short" else 11)
+        with self.assertRaises(ArcadeDenied):
+            native_ass_caption_style("copyrighted")
+
+    def test_brand_and_footer_safe_geometry_for_9_16_and_16_9(self):
+        for kind in ("short","long"):
+            for mode in ("preview","full"):
+                w,h,_=render_size(kind,mode)
+                v=original_review_typography(w,h,kind)
+                with self.subTest(kind=kind,mode=mode):
+                    self.assertLess(v["brand_y"]+v["brand_font_px"],
+                                    v["tagline_y"])
+                    self.assertLess(v["tagline_y"]+v["tagline_font_px"],
+                                    round(h*.16))
+                    self.assertLess(v["footer_y"]+v["footer_font_px"],
+                                    v["warning_y"])
+                    self.assertLess(v["warning_y"]+v["warning_font_px"],h)
+                    if kind=="long":
+                        self.assertLess(v["brand_font_px"],80)
+                        self.assertLess(v["warning_font_px"],32)
+        with self.assertRaises(ArcadeDenied):
+            original_review_typography(1920,1080,"unknown")
+
+    def test_actual_frame_visual_caption_safezone_regression_checks(self):
+        try:
+            from PIL import Image, ImageDraw
+        except ModuleNotFoundError:
+            self.skipTest("Pillow is installed in dedicated real-media CI")
+        from io import BytesIO
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        ep=sample()["episodes"][0]
+        srt=subtitles(ep)
+        with tempfile.TemporaryDirectory() as directory:
+            fake_video=Path(directory)/"fake-review.mp4"
+            fake_video.write_bytes(b"synthetic-test-only"*8000)
+            def simulated_frame(*,white_in_zone:bool):
+                im=Image.new("RGB",(540,960),(12,19,31))
+                dr=ImageDraw.Draw(im)
+                if white_in_zone:
+                    dr.rectangle((120,745,380,775),fill=(240,243,249))
+                else:
+                    dr.rectangle((120,120,380,150),fill=(240,243,249))
+                buf=BytesIO()
+                im.save(buf,format="PNG")
+                return SimpleNamespace(stdout=buf.getvalue())
+            with patch("scripts.branch3_original_arcade_qa.subprocess.run",
+                       return_value=simulated_frame(white_in_zone=True)):
+                d=visible_caption_safezone_qa(fake_video,srt)
+                self.assertTrue(d["first_voice_cue_visible_in_safe_zone"])
+                self.assertGreater(d["white_text_pixel_count_in_safe_zone"],
+                                   d["minimum_required_white_caption_pixels"])
+                self.assertFalse(d["caption_layout_human_approved"])
+            with patch("scripts.branch3_original_arcade_qa.subprocess.run",
+                       return_value=simulated_frame(white_in_zone=False)):
+                with self.assertRaisesRegex(
+                    OriginalQARejected,"BURNED_CAPTION_MISSING_OR_OFFSCREEN"
+                ):
+                    visible_caption_safezone_qa(fake_video,srt)
 
     def test_pillow_scene_is_new_original_procedural_art(self):
         try:
