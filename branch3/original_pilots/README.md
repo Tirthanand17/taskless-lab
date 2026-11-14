@@ -32,6 +32,12 @@ A frame-by-frame inspection of the full-resolution artifact from [GitHub run 435
 
 The renderer now applies **bounded, native-ASS subtitle font/margin values** and proportionally scales the CLIVOX logo/tagline/footnotes for both aspect ratios. Beyond checking codec/SRT hashes, the independent A5 QA now decodes a real frame during a caption cue and requires visible high-contrast caption pixels in a **lower-middle safe region**. This is a regression check, **not** automatic proof of aesthetically perfect positioning, accurate spoken words or owner approval. Every corrected video gets a fresh SHA-256/A6 unsigned review packet. The older buggy review artifact should **not** be approved or published.
 
+## Latest verified three-video spoken-boundary review master
+
+**Use [GitHub Actions run 43562174869](https://github.com/Tirthanand17/taskless-lab/actions/runs/43562174869) as the current original CLIVOX owner review package.** The automatic `main` render completed successfully with two 1080×1920 Shorts, one 1920×1080 108-second long episode, all-beat frame-caption QA, sound energy/clipping tests, full A6 exact-hash handoffs, three unsigned owner checklists, and offline HTML5 video gallery. Its seven-day review artifact is ~23.8 MB.
+
+Independent analysis of the **downloaded actual** `technical-review-qa.json` reports shows the new postmix waveform and SRT starts/ends agree within a maximum of **20 milliseconds across all 23 scene beats** (5 + 5 + 13), tighter than the enforced 140ms threshold. These measured *utterance boundaries* are not evidence that individual words or phrasing are accurate; real owner listening, professional narration, commercial permissions and exact-video signing are still uncompleted. Do not sign earlier, differently hashed review videos.
+
 ## A5 precise spoken-activity start/stop checks (still draft word timing)
 
 An independent audit of actual mixed WAVs from [GitHub run 43560967644](https://github.com/Tirthanand17/taskless-lab/actions/runs/43560967644) found the old editable SRT ended about **0.29–0.34 seconds after genuinely active eSpeak speech** in the scenes checked. The renderer had already started timing the utterance by its PCM container rather than entire storyboard beats, but the file contained trailing silent PCM.
