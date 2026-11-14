@@ -40,3 +40,11 @@ What it cannot prove:
 - Unit tests: \`python -B -m unittest -v scripts.test_branch3_v2_p7_synthetic_vertical_renderer\`.
 - CI synthetic mode (ephemeral runner only): \`python -B -m scripts.branch3_v2_p7_synthetic_vertical_renderer --mode synthetic --scratch "$RUNNER_TEMP/clivox-p5-synthetic" --edl-file synthetic-edl-draft-only.json\`.
 - The CI runner requires standard Ubuntu FFmpeg, fonts-dejavu-core installed **for local rendering only**, and Python 3.12; do not distribute font files. Run on an isolated scratch worker, do not accept outside file paths, and do not execute with permissions for real creator media/upload.
+
+## Actual verification on merged main — 2026-11-14
+
+- [Feature PR #218](https://github.com/Tirthanand17/taskless-lab/pull/218) passed **4/4 checks** and merged source-free P7 renderer at commit `34d4d7abd30169ce237ebbaa009fae5226e1cb11`.
+- [PR P5/P6/P7 generated video QA #43590210618](https://github.com/Tirthanand17/taskless-lab/actions/runs/43590210618) **success** including actual FFmpeg synthetic MP4 rendering, fixed original captions and independent decoded-frame/audio checks.
+- [Merged-main P5/P6/P7 original vertical render QA #43590313799](https://github.com/Tirthanand17/taskless-lab/actions/runs/43590313799) **success**.
+- [Merged-main P4 codec/hash/source quarantine #43590313795](https://github.com/Tirthanand17/taskless-lab/actions/runs/43590313795) and [Content Quality Gate #43590313796](https://github.com/Tirthanand17/taskless-lab/actions/runs/43590313796) **success**.
+- All results use a **newly generated** 270×480, six-second fixture under ephemeral GitHub Actions scratch, not a production 1080×1920 master or creator footage. No video artifact uploaded, no private media vault activated, no actual grant, no owner release or YouTube publish. **Roadmap unchanged: 2/12 = 17%.**
