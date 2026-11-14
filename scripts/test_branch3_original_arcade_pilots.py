@@ -9,7 +9,7 @@ import unittest
 
 from scripts.branch3_original_arcade_pilots import (
     CATALOG, ArcadeDenied, validate_catalog, render_size,
-    draw_scene, draft_srt, sha,
+    draw_scene, draft_srt, sha, encode_video,
 )
 from scripts.branch3_original_arcade_qa import (
     OriginalQARejected, check_caption_draft, validate_episode_report,
@@ -40,6 +40,9 @@ def manifest_for(episode):
         "original_script_and_vector_art":True,
         "tts_voice_synthetic_not_human_recording":True,
         "srt_is_draft_not_forced_aligned":True,
+        "srt_measured_synthesized_pcm_speech_windows":True,
+        "srt_word_timing_is_estimated_not_forced_aligned":True,
+        "draft_captions_burned_into_review_mp4":True,
         "video_file":"original-review-preview.mp4",
         "video_sha256":"a"*64,
         "video_bytes":550000,
@@ -98,6 +101,91 @@ class OriginalPilotQATests(unittest.TestCase):
             self.assertGreaterEqual(result["draft_caption_cues"],
                                     len(ep["beats"]))
             self.assertTrue(result["owner_must_review_speech_sync"])
+
+    def test_audio_pcm_window_srt_is_shorter_than_beat_and_owner_still_review_required(self):
+        from scripts.branch3_original_arcade_qa import srt_seconds
+        for episode in sample()["episodes"]:
+            regions=[]
+            for beat in episode["beats"]:
+                # Simulate a post-synthesis PCM interval shorter than the
+                # original beat; real renderer measures exact samples.
+                regions.append((beat["start_s"]+.08,beat["end_s"]-.65))
+            with tempfile.TemporaryDirectory() as folder:
+                p=Path(folder)/"spoken.srt"
+                draft_srt(episode,p,voice_regions=regions)
+                content=p.read_text("utf-8")
+                result=check_caption_draft(
+                    content,episode["duration_seconds"]
+                )
+                self.assertTrue(result["owner_must_review_speech_sync"])
+                self.assertFalse(result["machine_forced_alignment_proven"])
+                parts=content.strip().split("\\n\\n")
+                cue_times=[]
+                for section in parts:
+                    lines=section.splitlines()
+                    a,b=lines[1].split(" --> ")
+                    cue_times.append((srt_seconds(a),srt_seconds(b)))
+                self.assertAlmostEqual(cue_times[0][0],.08,delta=.003)
+                self.assertAlmostEqual(cue_times[-1][1],
+                                       episode["duration_seconds"],delta=.003)
+                # In beat 1, the final draft caption no longer fills the
+                # full screenplay beat; its end derives from actual voice.
+                first_end=next(
+                    end for start,end in reversed(cue_times)
+                    if end<=episode["beats"][0]["end_s"]
+                )
+                self.assertLessEqual(first_end,
+                                     episode["beats"][0]["end_s"]-.60+.01)
+
+    def test_rejects_unmeasured_or_overlap_speech_regions(self):
+        episode=sample()["episodes"][0]
+        regions=[
+            (b["start_s"]+.08,b["end_s"]-.65)
+            for b in episode["beats"]
+        ]
+        with tempfile.TemporaryDirectory() as folder:
+            p=Path(folder)/"spoken.srt"
+            for bad in (
+                regions[:-1],
+                [(0,999),*regions[1:]],
+                [(0.4,.45),*regions[1:]],
+                ["malicious",*regions[1:]],
+                [[-1,5],*regions[1:]],
+            ):
+                with self.subTest(bad=str(bad)[:30]),self.assertRaises(
+                    (ArcadeDenied,TypeError,ValueError)
+                ):
+                    draft_srt(episode,p,voice_regions=bad)
+
+    def test_review_video_encoding_adds_safe_burned_caption_filter(self):
+        from unittest.mock import patch
+        episode=sample()["episodes"][0]
+        with tempfile.TemporaryDirectory() as folder:
+            work=Path(folder)
+            scenes=[work/f"scene-{i:02}.png" for i in
+                    range(len(episode["beats"]))]
+            captions=work/"narration-timing-draft.srt"
+            captions.write_text(subtitles(episode),"utf-8")
+            calls=[]
+            def mocked_run(args,**kwargs):
+                calls.append(args)
+            with patch("scripts.branch3_original_arcade_pilots.subprocess.run",
+                       side_effect=mocked_run):
+                encode_video(episode,scenes,work/"fictional.wav",
+                             work/"review.mp4","preview",captions=captions)
+            self.assertEqual(len(calls),1)
+            args=calls[0]
+            graph=args[args.index("-filter_complex")+1]
+            self.assertIn("subtitles=filename=",graph)
+            self.assertIn("MarginV=",graph)
+            self.assertIn("force_style=",graph)
+            self.assertIn("format=yuv420p[outv]",graph)
+            self.assertNotIn("http:",graph)
+            self.assertNotIn("youtube",graph.lower())
+            with self.assertRaises(ArcadeDenied):
+                encode_video(episode,scenes,work/"fictional.wav",
+                             work/"review.mp4","preview",
+                             captions=work/"missing.srt")
 
     def test_no_publication_or_false_rights_flags_can_be_promoted(self):
         names=(
