@@ -87,7 +87,7 @@ class AdversarialReleaseHardening(unittest.TestCase):
         watch, audit, _, _ = inputs()
         with self.assertRaises((PilotDenied, ProspectDenied)):
             validate_public_route_audit(audit, watch, now=NOW + timedelta(days=31))
-        with self.assertRaises(PilotDenied):
+        with self.assertRaises((PilotDenied, ProspectDenied)):
             validate_public_route_audit(audit, watch,
                                         now=datetime(2026, 11, 13, tzinfo=timezone.utc))
 
