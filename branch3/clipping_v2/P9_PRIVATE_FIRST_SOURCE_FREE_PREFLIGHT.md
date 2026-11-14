@@ -49,4 +49,11 @@ P2 owner-verified rightsholder prospect; P3 signed current commercial license fo
 - \`python -B -m unittest -v scripts.test_branch3_v2_p9_private_first_preflight\`
 - Ephemeral CI after P8: \`python -B -m scripts.branch3_v2_p9_private_first_preflight --mode synthetic --scratch "$RUNNER_TEMP/clivox-p5-synthetic"\`
 - Workflow \`.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml\` reuses the existing **read-only** P5→P8 pipeline and adds P9 negative cases. The source-free P9 path can be called only with fixed generated test inputs; no media artifact uploads.
-- Only report this slice as technical CI verified after green feature-PR and independent merged-main jobs. Real phase progress remains **2/12 = 17%**.
+- Source-free P9 QA is now verified in PR and independently on main. This does **not** validate the real upload flow, which remains unimplemented and disabled; real progress stays **2/12 = 17%**.
+
+## Verified GitHub evidence (2026-11-14)
+
+- [Implementation PR #222](https://github.com/Tirthanand17/taskless-lab/pull/222) passed **4/4 PR checks**; [P5→P9 no-network integration QA #43592523650](https://github.com/Tirthanand17/taskless-lab/actions/runs/43592523650) **success**.
+- Implementation merged-main SHA `272e62273aec7de5812dd4d95b79e289cef18642`; [P5→P9 exact synthetic review to private-first HOLD QA #43592633213](https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633213) **success**.
+- [P4 media integrity regression #43592633097](https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633097) and [Content Quality Gate #43592633083](https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633083) **success** independently on the same merged-main commit.
+- These pass results mean: generated synthetic MP4 P7→unsigned P8→P9 **offline** plan, duplicate and unknown-commit handling are repeatably fail-closed. They do **not** establish real CLIVOX upload-scope OAuth, a live private ledger, authenticated owner key/release, licensed creator footage, actual remote inventory readback or any uploaded video.
