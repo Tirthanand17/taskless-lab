@@ -60,6 +60,11 @@ jobs:
           python -B -m unittest -v \
             scripts.test_branch3_v2_p4_synthetic_handoff_preflight \
             scripts.test_branch3_media_storage_preflight
+      - name: Install free Ubuntu FFmpeg and ffprobe tools for source-free fixture only
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends ffmpeg
       - name: Create ONLY a generated silent-colored test pattern in ephemeral scratch
         run: |
           set -euo pipefail
