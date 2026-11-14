@@ -4,6 +4,12 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## A5 actual-video visual regression fix for captions and landscape brand
+
+A frame-by-frame inspection of the full-resolution artifact from [GitHub run 43554270709](https://github.com/Tirthanand17/taskless-lab/actions/runs/43554270709) found a **real** typography problem: FFmpeg/libass `FontSize` and `MarginV` were mistakenly calculated using full output pixels, even though SRT subtitles are rendered using a small virtual subtitle coordinate system. As a result, the portrait Shorts' subtitles were off-screen and the landscape captions obscured the headline. The landscape CLIVOX brand/title also overlapped its descriptor.
+
+The renderer now applies **bounded, native-ASS subtitle font/margin values** and proportionally scales the CLIVOX logo/tagline/footnotes for both aspect ratios. Beyond checking codec/SRT hashes, the independent A5 QA now decodes a real frame during a caption cue and requires visible high-contrast caption pixels in a **lower-middle safe region**. This is a regression check, **not** automatic proof of aesthetically perfect positioning, accurate spoken words or owner approval. Every corrected video gets a fresh SHA-256/A6 unsigned review packet. The older buggy review artifact should **not** be approved or published.
+
 ## A5 narration-window subtitles and on-screen reading improvements
 
 The renderer previously spread subtitle cues across **whole screenplay beats**, even when its synthetic narration finished earlier. It now measures the **actual generated 48 kHz post-tempo voice PCM interval per beat** and assigns the editable SRT's cue windows within that interval, distributing estimated cue timing by text length. It also embeds those clearly marked **draft** subtitles into the review MP4 with safe-margin, high-contrast text, while keeping a separately editable SRT in the GitHub artifact.
