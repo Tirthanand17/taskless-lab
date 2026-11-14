@@ -81,7 +81,9 @@ def create_one(folder:Path,episode:dict)->dict:
     label_h=60
     cell_w=frame_w+pad*2
     cell_h=frame_h+label_h+pad*2
-    render_points=[(*item.values(),False) for item in points]
+    render_points=[
+        (item["beat_index"],item["time_s"],False) for item in points
+    ]
     # Include a frame after speech ends, so late-story/outro overlay problems
     # (including stranded captions) remain visible to the owner.
     end=episode["duration_seconds"]-.26
