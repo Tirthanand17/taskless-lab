@@ -1,4 +1,4 @@
-name: CLIVOX V2 P5-P8 Source-Free Signal Render and Unsigned Release QA
+name: CLIVOX V2 P5-P9 Source-Free Render, Review and Private-First QA
 
 on:
   pull_request:
@@ -13,6 +13,12 @@ on:
       - 'scripts/test_branch3_v2_p7_synthetic_vertical_renderer.py'
       - 'scripts/branch3_v2_p8_synthetic_unsigned_review.py'
       - 'scripts/test_branch3_v2_p8_synthetic_unsigned_review.py'
+      - 'scripts/branch3_v2_p9_private_first_preflight.py'
+      - 'scripts/test_branch3_v2_p9_private_first_preflight.py'
+      - 'branch3/clipping_v2/P9_*'
+      - 'scripts/branch3_a8_private_first_dryrun.py'
+      - 'branch3/a8/private-cas-policy.json'
+      - 'scripts/branch3_a7_readonly_youtube.py'
       - 'branch3/clipping_v2/P8_*'
       - 'scripts/branch3_a6_signed_release.py'
       - 'branch3/release/release-policy.json'
@@ -34,6 +40,12 @@ on:
       - 'scripts/test_branch3_v2_p7_synthetic_vertical_renderer.py'
       - 'scripts/branch3_v2_p8_synthetic_unsigned_review.py'
       - 'scripts/test_branch3_v2_p8_synthetic_unsigned_review.py'
+      - 'scripts/branch3_v2_p9_private_first_preflight.py'
+      - 'scripts/test_branch3_v2_p9_private_first_preflight.py'
+      - 'branch3/clipping_v2/P9_*'
+      - 'scripts/branch3_a8_private_first_dryrun.py'
+      - 'branch3/a8/private-cas-policy.json'
+      - 'scripts/branch3_a7_readonly_youtube.py'
       - 'branch3/clipping_v2/P8_*'
       - 'scripts/branch3_a6_signed_release.py'
       - 'branch3/release/release-policy.json'
@@ -84,7 +96,9 @@ jobs:
           python -B -m scripts.branch3_v2_p6_synthetic_storyboard --mode closed
           python -B -m scripts.branch3_v2_p7_synthetic_vertical_renderer --mode closed
           python -B -m scripts.branch3_v2_p8_synthetic_unsigned_review --mode closed
+          python -B -m scripts.branch3_v2_p9_private_first_preflight --mode closed
           python -B -m unittest -v \
+            scripts.test_branch3_v2_p9_private_first_preflight \
             scripts.test_branch3_v2_p8_synthetic_unsigned_review \
             scripts.test_branch3_v2_p7_synthetic_vertical_renderer \
             scripts.test_branch3_v2_p6_synthetic_storyboard \
@@ -339,6 +353,63 @@ jobs:
           assert expected_sha not in json.dumps(data)
           assert str(root) not in json.dumps(data)
           print("CLIVOX_V2_P8_EXACT_SYNTHETIC_MP4_HASH_BOUND_UNSIGNED_REVIEW_QA_PASS_NO_OWNER_RELEASE")
+          PY
+      - name: Recheck P8 unsigned exact-video request and simulate P9 private-first upload as HOLD ONLY
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_v2_p9_private_first_preflight \
+            --mode synthetic --scratch "$RUNNER_TEMP/clivox-p5-synthetic" \
+            > "$RUNNER_TEMP/clivox-p5-synthetic/synthetic-p9-private-first-HOLD-only.json"
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          from scripts.branch3_v2_p9_private_first_preflight import (
+              TEMPLATE, PUBLIC_REPORT_FIELDS, validate_inert_template,
+              dryrun_decision, validate_review_bridge, production_upload_or_schedule,
+              P9Denied,
+          )
+          root = Path(os.environ["RUNNER_TEMP"]) / "clivox-p5-synthetic"
+          path = root / "synthetic-p9-private-first-HOLD-only.json"
+          data = json.loads(path.read_text("utf-8"))
+          assert set(data) == PUBLIC_REPORT_FIELDS
+          assert data["stage"] == "CLIVOX_V2_P9_PRIVATE_FIRST_INERT_PREFLIGHT_ONLY"
+          assert data["channel_id"] == "UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert data["p8_unsigned_packet_bound_to_exact_video"] is True
+          assert data["inert_private_first_template_validated"] is True
+          assert data["dryrun_outcome"] == "NO_ATTEMPT"
+          assert data["dryrun_duplicate_detected"] is False
+          assert data["dryrun_remote_uncertainty_quarantined"] is False
+          for field in ("owner_signature_independently_verified",
+                        "creator_commercial_rights_verified",
+                        "clivox_upload_oauth_verified",
+                        "durable_atomic_attempt_reservation_verified",
+                        "real_remote_inventory_reconciled",
+                        "automatic_retry_enabled", "resume_session_created",
+                        "youtube_upload_authorized", "youtube_schedule_authorized",
+                        "youtube_publish_authorized", "real_p9_milestone_complete"):
+              assert data[field] is False, field
+          assert data["remote_http_calls"] == data["actual_youtube_uploads"] == 0
+          assert data["status"] == "HOLD_NO_OWNER_LICENSE_OAUTH_DURABLE_LEDGER_OR_REMOTE_READBACK"
+          validate_inert_template(TEMPLATE)
+          assert TEMPLATE["status"] == {"privacyStatus": "private", "publishAt": None}
+          assert TEMPLATE["ready_to_send"] is False
+          unsigned = validate_review_bridge(scratch=root)
+          for outcome in ("DUPLICATE_LOCAL_PREVIEW", "UNKNOWN_REMOTE_COMMIT_PREVIEW"):
+              report = dryrun_decision(packet=unsigned, outcome=outcome)
+              assert report["dryrun_duplicate_detected"] is True
+              assert report["actual_youtube_uploads"] == 0
+              assert report["automatic_retry_enabled"] is False
+              assert report["youtube_publish_authorized"] is False
+          try:
+              production_upload_or_schedule()
+              raise AssertionError("P9 production upload unexpectedly succeeded")
+          except P9Denied:
+              pass
+          # Do not output any source hashes or media/Google credentials.
+          assert str(root) not in json.dumps(data)
+          assert unsigned["exact_synthetic_video_sha256"] not in json.dumps(data)
+          assert "token" not in json.dumps(data).lower()
+          print("CLIVOX_V2_P9_EXACT_P8_UNSIGNED_PRIVATE_FIRST_HOLD_DUPLICATE_AND_AMBIGUITY_QA_PASS_ZERO_HTTP_UPLOADS")
           PY
       - name: No media or candidate artifact uploaded publicly
         run: |
