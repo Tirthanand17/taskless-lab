@@ -77,9 +77,11 @@ def _filters(edl: dict) -> str:
         phrase = shot["original_clivox_overlay"]
         require(bool(re.fullmatch(r"[A-Za-z .]+", phrase)) and
                 len(phrase) <= 50, "SAFE_FIXED_CAPTION")
+        # Short synthetic caption cards must fit the 270px vertical preview.
+        font_size = 12 if len(phrase) > 25 else 17
         captions.append(
             "drawtext=fontfile=" + str(FONT) + ":text='" + phrase + "'"
-            + ":fontcolor=white:fontsize=17:box=1:boxcolor=black@0.75"
+            + f":fontcolor=white:fontsize={font_size}:box=1:boxcolor=black@0.75"
             + ":boxborderw=7:x=(w-text_w)/2:y=(h-text_h)*0.68"
             + f":enable='gte(t,{start:g})*lt(t,{end:g})'"
         )
