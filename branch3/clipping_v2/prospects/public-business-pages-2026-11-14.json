@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "research_date_utc": "2026-11-14T00:00:00Z",
+  "research_scope": "PUBLIC_CREATOR_BRANDED_BUSINESS_PAGES_ONLY",
+  "state": "P2_RESEARCH_PROSPECTS_NOT_CONTACTED",
+  "creator_identity_authenticated": false,
+  "creator_rights_verified": false,
+  "human_owner_shortlist_approved": false,
+  "public_creator_business_contacts_only": true,
+  "third_party_media_acquisition_allowed": false,
+  "youtube_upload_authorized": false,
+  "prospects": [
+    {
+      "id": "ankitt_ps5",
+      "display_name": "Ankitt",
+      "lane": "gaming_livestream",
+      "priority_group": "POTENTIAL_CREATOR_PARTNER",
+      "public_creator_page": "https://ankitt.com/",
+      "public_business_page": "https://ankitt.com/",
+      "self_described_content": "PS5 story-driven gaming and live streams",
+      "observed_public_business_route": "SITE_CONTACT_FORM",
+      "evidence_note": "Creator-branded site describes Twitch/YouTube streaming and has a collaborations contact form. Website claim alone does not verify legal control.",
+      "outreach_state": "NOT_CONTACTED",
+      "rights_state": "UNVERIFIED"
+    },
+    {
+      "id": "eggmilk_streamer",
+      "display_name": "Eggmilk",
+      "lane": "gaming_livestream",
+      "priority_group": "POTENTIAL_CREATOR_PARTNER",
+      "public_creator_page": "https://eggmilk.carrd.co/",
+      "public_business_page": "https://eggmilk.carrd.co/",
+      "self_described_content": "Variety/cozy indie and co-op Twitch streams plus YouTube content",
+      "observed_public_business_route": "SITE_CONTACT_FORM",
+      "evidence_note": "Creator-branded Carrd publicly invites business partnerships; not a commercial clipping license or independently authenticated authority.",
+      "outreach_state": "NOT_CONTACTED",
+      "rights_state": "UNVERIFIED"
+    },
+    {
+      "id": "mrjd_gaming",
+      "display_name": "Mr JD Gaming",
+      "lane": "gaming_livestream",
+      "priority_group": "POTENTIAL_CREATOR_PARTNER",
+      "public_creator_page": "https://mrjdgaming.com/",
+      "public_business_page": "https://mrjdgaming.com/contact/",
+      "self_described_content": "Gaming videos, livestreams and social media",
+      "observed_public_business_route": "BUSINESS_INQUIRY_WEBPAGE",
+      "evidence_note": "Search-indexed creator contact page describes business inquiries. Direct page returned 403 during research; human must reverify URL and identity.",
+      "outreach_state": "NOT_CONTACTED",
+      "rights_state": "UNVERIFIED"
+    },
+    {
+      "id": "mandarriaxl",
+      "display_name": "MandarriaXL",
+      "lane": "gaming_livestream",
+      "priority_group": "POTENTIAL_CREATOR_PARTNER",
+      "public_creator_page": "https://www.mandarriaxl.com/",
+      "public_business_page": "https://www.mandarriaxl.com/",
+      "self_described_content": "Unconventional and rare gaming experiences",
+      "observed_public_business_route": "BUSINESS_INQUIRY_WEBPAGE",
+      "evidence_note": "Creator-branded business partnership page lists social platforms and business inquiry; no license or independently verified identity.",
+      "outreach_state": "NOT_CONTACTED",
+      "rights_state": "UNVERIFIED"
+    },
+    {
+      "id": "caseoh_format",
+      "display_name": "CaseOh",
+      "lane": "gaming_livestream",
+      "priority_group": "FAMOUS_FORMAT_RESEARCH",
+      "public_creator_page": "https://caseoh.com/pages/about-me",
+      "public_business_page": "https://caseoh.com/pages/about-me",
+      "self_described_content": "Gaming reaction and variety streams",
+      "observed_public_business_route": "BUSINESS_INQUIRY_WEBPAGE",
+      "evidence_note": "Creator-branded About page links Twitch/YouTube and publicly invites business inquiries, but large-creator partnership availability is unknown; research only.",
+      "outreach_state": "NOT_CONTACTED",
+      "rights_state": "UNVERIFIED"
+    }
+  ]
+}
