@@ -11,6 +11,7 @@ from scripts.branch3_original_arcade_pilots import (
     CATALOG, ArcadeDenied, validate_catalog, render_size,
     draw_scene, draft_srt, sha, encode_video,
     original_review_typography, native_ass_caption_style,
+    original_art_clearance_geometry,
 )
 from scripts.branch3_original_arcade_qa import (
     OriginalQARejected, check_caption_draft, validate_episode_report,
@@ -275,6 +276,25 @@ class OriginalPilotQATests(unittest.TestCase):
                              8 if kind=="short" else 11)
         with self.assertRaises(ArcadeDenied):
             native_ass_caption_style("copyrighted")
+
+    def test_artwork_geometry_stays_clear_of_burned_captions_and_headlines(self):
+        for kind in ("short","long"):
+            for mode in ("preview","full"):
+                w,h,_=render_size(kind,mode)
+                g=original_art_clearance_geometry(w,h,kind)
+                with self.subTest(kind=kind,mode=mode):
+                    self.assertGreaterEqual(g["top"],round(h*.33))
+                    self.assertLessEqual(g["bottom"],round(h*.755))
+                    self.assertEqual(g["center_x"],w//2)
+                    self.assertLessEqual(
+                        g["bottom"],g["caption_reserved_below"]
+                    )
+                    self.assertGreater(g["radius"],70)
+                    self.assertLess(g["radius"],w*.35)
+        with self.assertRaises(ArcadeDenied):
+            original_art_clearance_geometry(1080,1920,"borrowed_game")
+        with self.assertRaises(ArcadeDenied):
+            original_art_clearance_geometry(320,240,"short")
 
     def test_brand_and_footer_safe_geometry_for_9_16_and_16_9(self):
         for kind in ("short","long"):
