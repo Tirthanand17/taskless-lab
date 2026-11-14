@@ -41,4 +41,12 @@ P2 real selected prospect and identity confirmation; P3 independently authentica
 - \`python -B -m unittest -v scripts.test_branch3_v2_p8_synthetic_unsigned_review\`
 - GitHub Actions ephemeral job, after P7 renders output: \`python -B -m scripts.branch3_v2_p8_synthetic_unsigned_review --mode synthetic --scratch "$RUNNER_TEMP/clivox-p5-synthetic"\`
 
-**Do not mark P8's synthetic engineering verified until the PR checks and an independent merged-main CI run succeed.**
+**Technical source-free P8 QA is now verified on PR and merged main; real P8 human/legal release remains blocked.**
+
+## Verified integration evidence (2026-11-14)
+
+- [PR #220](https://github.com/Tirthanand17/taskless-lab/pull/220) passed **4/4** PR checks and was merged at implementation SHA `d2e50c5133b944a08ba30941b365572c1555abf5`.
+- [PR P5→P8 source-free exact-video review QA #43591295340](https://github.com/Tirthanand17/taskless-lab/actions/runs/43591295340) **success**, including actual generated P7 MP4 reinspection and unsigned checklist.
+- [Merged-main P5→P8 exact-media unsigned-review QA #43591405263](https://github.com/Tirthanand17/taskless-lab/actions/runs/43591405263) **success**, independently repeating the full runner-only pipeline.
+- [Merged-main P4 media integrity regression #43591405303](https://github.com/Tirthanand17/taskless-lab/actions/runs/43591405303) and [main Content Quality Gate #43591405236](https://github.com/Tirthanand17/taskless-lab/actions/runs/43591405236) **success**.
+- Results assert zero actual rights grants, zero owner signature, zero independently enrolled owner key, zero real creator footage, zero release permissions and no video or review packet uploaded as an artifact. This engineering proof does **not** complete real P8 or advance V2 above **2/12 = 17%**.
