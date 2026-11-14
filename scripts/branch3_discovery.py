@@ -1,8 +1,10 @@
-"""Clivox A1: bounded, public-metadata-only YouTube discovery and source ranking.
+"""Clivox A1: bounded, YouTube API policy-conservative source references.
 
-No video, captions, transcription, audio, creator credentials, publishing OAuth, or
-third-party source download. This module never creates an approved-rights record.
-Public engagement is NOT evidence of clipping rights or future Shorts performance.
+Public video metadata and verbatim official statistics are **not** a computed
+engagement score, segment retention graph, clip license or future Shorts success.
+No API-data-derived metrics, cross-owner aggregation, third-party media download,
+creator consent, OAuth write access, video upload or publishing.
+Unlicensed metadata has a 7-day expiry in the disposable Actions artifact.
 Standard library only, suitable for GitHub-hosted Actions.
 """
 from __future__ import annotations
@@ -11,7 +13,6 @@ import argparse
 from datetime import datetime, timedelta, timezone
 import html
 import json
-import math
 import os
 from pathlib import Path
 import re
@@ -24,10 +25,6 @@ FLOWMINUTE_CHANNEL = "UCCcL9Q_jqVq6LJmnYUSAFZA"
 API_ORIGIN = "https://www.googleapis.com/youtube/v3/"
 VIDEO_ID = re.compile(r"[A-Za-z0-9_-]{11}\Z")
 CHANNEL_ID = re.compile(r"UC[A-Za-z0-9_-]{22}\Z")
-DURATION = re.compile(
-    r"P(?:(?P<days>\d+)D)?(?:T(?:(?P<hours>\d+)H)?"
-    r"(?:(?P<minutes>\d+)M)?(?:(?P<seconds>\d+)S)?)?\Z"
-)
 CATEGORIES = {
     "gaming": ("gaming", "gta", "gta 6", "clutch", "gameplay", "speedrun", "win", "fail"),
     "livestream": ("livestream", "stream", "live", "reaction", "challenge", "streamer"),
@@ -39,6 +36,7 @@ MAX_VIDEO_IDS = 30
 MAX_SEARCH_RESULTS = 10
 MAX_API_RESPONSE = 2_000_000
 MAX_REPORT_BYTES = 200_000
+NON_AUTHORIZED_API_DATA_RETENTION_DAYS = 7  # Artifact expiration, within 30-day ceiling.
 
 
 class DiscoveryBlocked(ValueError):
@@ -139,59 +137,12 @@ def parse_datetime(value: object) -> datetime:
         raise DiscoveryBlocked("CLIVOX_DISCOVERY_DENIED_BAD_PUBLISHED_DATE") from None
 
 
-def parse_duration(value: object) -> int | None:
-    if type(value) is not str:
-        return None
-    match = DURATION.fullmatch(value)
-    if not match:
-        return None
-    parts = {k: int(v or 0) for k, v in match.groupdict().items()}
-    seconds = (parts["days"] * 86400 + parts["hours"] * 3600
-               + parts["minutes"] * 60 + parts["seconds"])
-    return seconds if seconds > 0 else None
-
-
 def public_count(stats: dict, key: str) -> int | None:
     value = stats.get(key)
     if type(value) is not str or not value.isdecimal() or len(value) > 20:
         return None
     count = int(value)
     return count if count >= 0 else None
-
-
-def source_score(
-    *, title: str, category: str, age_hours: float,
-    views: int | None, likes: int | None, comments: int | None,
-) -> tuple[int, dict]:
-    """Research heuristic, not a prediction or segment-quality evaluation."""
-    require(category in CATEGORIES and age_hours >= 0, "INVALID_SCORE_SOURCE")
-    # Recency, early viewing velocity and engagement. Public likes can be hidden.
-    view_velocity = (views / max(age_hours, 12)) if views is not None else None
-    velocity_component = min(1., math.log10(1 + view_velocity) / 5) if view_velocity is not None else 0.
-    engagement_ratio = None
-    if views and views > 0 and likes is not None and comments is not None:
-        engagement_ratio = min(1., (likes + comments * 3) / views)
-    engagement_component = min(1., engagement_ratio / .10) if engagement_ratio is not None else 0.
-    recency_component = max(0., 1 - age_hours / (30 * 24))
-    terms = CATEGORIES[category]
-    title_lower = title.lower()
-    overlap = sum(bool(re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", title_lower)) for term in terms)
-    relevance_component = min(1., overlap / 2)
-    # Only 20% topic-match: avoid ranking solely by clickbait titles.
-    value = round(100 * (
-        .40 * velocity_component + .22 * engagement_component
-        + .18 * recency_component + .20 * relevance_component
-    ))
-    components = {
-        "views_per_hour": round(view_velocity, 2) if view_velocity is not None else None,
-        "observed_engagement_ratio": round(engagement_ratio, 5) if engagement_ratio is not None else None,
-        "source_title_keyword_matches": overlap,
-        "velocity_component": round(velocity_component, 4),
-        "engagement_component": round(engagement_component, 4),
-        "recency_component": round(recency_component, 4),
-        "relevance_component": round(relevance_component, 4),
-    }
-    return max(0, min(100, value)), components
 
 
 def build_report(
@@ -222,9 +173,8 @@ def build_report(
             continue
         seen.add(video_id)
         published = parse_datetime(snippet.get("publishedAt"))
-        # Ignore impossible future-dated entries; no guessing about a source.
-        age = (now - published).total_seconds() / 3600.
-        if age < 0:
+        # Future-dated source metadata must never be taken as a real video.
+        if published > now:
             continue
         title = html.unescape(str(snippet.get("title", ""))).strip()[:160]
         if not title:
@@ -232,10 +182,6 @@ def build_report(
         view_count = public_count(statistics, "viewCount")
         like_count = public_count(statistics, "likeCount")
         comment_count = public_count(statistics, "commentCount")
-        score, details = source_score(
-            title=title, category=category, age_hours=age,
-            views=view_count, likes=like_count, comments=comment_count,
-        )
         candidates.append({
             "source_video_id": video_id,
             "source_channel_id": channel_id,
@@ -243,13 +189,16 @@ def build_report(
             "source_title": title,
             "source_channel_title": html.unescape(str(snippet.get("channelTitle", ""))).strip()[:100],
             "source_published_utc": utc_timestamp(published),
-            "source_age_hours": round(age, 2),
-            "source_duration_seconds": parse_duration(content.get("duration")),
+            # Preserve original YouTube ISO-8601 value; no calculated
+            # duration/rate/view velocity or API-data-derived metric.
+            "source_duration_iso8601": content.get("duration") if (
+                type(content.get("duration")) is str
+                and len(content["duration"]) <= 50
+                and content["duration"].startswith("P")
+            ) else None,
             "public_stats": {
                 "views": view_count, "likes": like_count, "comments": comment_count,
             },
-            "research_priority_score_0_to_100": score,
-            "score_components": details,
             "permission_state": "UNVERIFIED",
             "rights_holder_identity_verified": False,
             "clivox_commercial_clipping_rights_verified": False,
@@ -261,7 +210,8 @@ def build_report(
             "youtube_upload_authorized": False,
             "sourcing_status": "RESEARCH_ONLY_PUBLIC_METADATA",
         })
-    candidates.sort(key=lambda c: (-c["research_priority_score_0_to_100"], c["source_video_id"]))
+    # Stable lexical ID ordering, not comparative YouTube analytics.
+    candidates.sort(key=lambda c: c["source_video_id"])
     report = {
         "schema_version": 1,
         "channel_id": TARGET_CHANNEL,
@@ -271,14 +221,20 @@ def build_report(
         "category": category,
         "query": query.strip()[:90] if mode == "query" else None,
         "retrieved_at_utc": utc_timestamp(now),
+        "non_authorized_api_data_expires_at_utc": utc_timestamp(
+            now + timedelta(days=NON_AUTHORIZED_API_DATA_RETENTION_DAYS)
+        ),
+        "non_authorized_api_data_retention_days": NON_AUTHORIZED_API_DATA_RETENTION_DAYS,
+        "disallowed_api_data_derived_scores_generated": False,
+        "cross_owner_statistics_aggregated": False,
         "is_synthetic_fixture": fixture,
         "source_of_numbers": "synthetic_test_fixture" if fixture else "youtube_data_api_v3_public_statistics",
         "all_candidates_permission_unverified": True,
         "release_or_media_acquisition_allowed": False,
         "youtube_api_write_calls": 0,
         "upstream_clip_rights_human_review_required": True,
-        "method": "bounded source-video metadata, not segment virality prediction",
-        "explanation": "A score prioritizes full videos for human review. It does not identify an exact clip, grant rights, certify accuracy, predict a viral Short, or authorize downloading/publishing.",
+        "method": "bounded official source metadata, ID-sorted; no calculated engagement or popularity metrics",
+        "explanation": "Official statistics are displayed without new ratios, rankings or heatmaps. Public video data does not identify most-replayed timestamps, grant footage rights, predict Shorts performance or authorize downloading/publishing.",
         "candidates": candidates,
     }
     require(len(json.dumps(report).encode("utf-8")) <= MAX_REPORT_BYTES, "REPORT_TOO_LARGE")
