@@ -23,7 +23,11 @@ from scripts.branch3_discovery import CATEGORIES
 
 DISCOVERY_KEYS = frozenset((
     "schema_version", "channel_id", "channel_handle", "stage", "mode",
-    "category", "query", "retrieved_at_utc", "is_synthetic_fixture",
+    "category", "query", "retrieved_at_utc",
+    "non_authorized_api_data_expires_at_utc",
+    "non_authorized_api_data_retention_days",
+    "disallowed_api_data_derived_scores_generated",
+    "cross_owner_statistics_aggregated", "is_synthetic_fixture",
     "source_of_numbers", "all_candidates_permission_unverified",
     "release_or_media_acquisition_allowed", "youtube_api_write_calls",
     "upstream_clip_rights_human_review_required", "method", "explanation",
@@ -31,18 +35,13 @@ DISCOVERY_KEYS = frozenset((
 ))
 CANDIDATE_KEYS = frozenset((
     "source_video_id", "source_channel_id", "source_url", "source_title",
-    "source_channel_title", "source_published_utc", "source_age_hours",
-    "source_duration_seconds", "public_stats", "research_priority_score_0_to_100",
-    "score_components", "permission_state", "rights_holder_identity_verified",
+    "source_channel_title", "source_published_utc",
+    "source_duration_iso8601", "public_stats",
+    "permission_state", "rights_holder_identity_verified",
     "clivox_commercial_clipping_rights_verified",
     "underlying_game_music_guest_rights_cleared", "source_media_download_allowed",
     "segment_selected", "quote_verified", "ready_to_publish",
     "youtube_upload_authorized", "sourcing_status",
-))
-COMPONENT_KEYS = frozenset((
-    "views_per_hour", "observed_engagement_ratio",
-    "source_title_keyword_matches", "velocity_component",
-    "engagement_component", "recency_component", "relevance_component",
 ))
 MAX_BYTES = 350_000
 
@@ -83,7 +82,13 @@ def public_discovery_shape(discovery: dict) -> None:
     else:
         require(type(discovery["query"]) is str
                 and len(discovery["query"]) <= 90, "QUERY")
-    utc_timestamp(discovery["retrieved_at_utc"])
+    retrieved = utc_timestamp(discovery["retrieved_at_utc"])
+    expires = utc_timestamp(discovery["non_authorized_api_data_expires_at_utc"])
+    require(expires == retrieved + timedelta(days=7)
+            and discovery["non_authorized_api_data_retention_days"] == 7
+            and discovery["disallowed_api_data_derived_scores_generated"] is False
+            and discovery["cross_owner_statistics_aggregated"] is False,
+            "API_DATA_TTL_OR_DERIVED_METRIC")
     for item in discovery["candidates"]:
         require(type(item) is dict and set(item) == CANDIDATE_KEYS,
                 "CANDIDATE_PUBLIC_FIELDS")
@@ -93,16 +98,11 @@ def public_discovery_shape(discovery: dict) -> None:
         for value in item["public_stats"].values():
             require(value is None or (type(value) is int and value >= 0),
                     "PUBLIC_STATS_VALUE")
-        require(type(item["score_components"]) is dict
-                and set(item["score_components"]) == COMPONENT_KEYS,
-                "SCORE_COMPONENT_FIELDS")
-        require(type(item["source_age_hours"]) in (int, float)
-                and item["source_age_hours"] >= 0,
-                "SOURCE_AGE")
-        require(item["source_duration_seconds"] is None
-                or (type(item["source_duration_seconds"]) is int
-                    and item["source_duration_seconds"] > 0),
-                "SOURCE_DURATION")
+        require(item["source_duration_iso8601"] is None
+                or (type(item["source_duration_iso8601"]) is str
+                    and item["source_duration_iso8601"].startswith("P")
+                    and len(item["source_duration_iso8601"]) <= 50),
+                "SOURCE_DURATION_ISO8601")
         require(type(item["source_channel_title"]) is str
                 and len(item["source_channel_title"]) <= 100,
                 "SOURCE_CHANNEL_TITLE")
@@ -119,7 +119,9 @@ def audit_handoff(
     generated_at = rights_cases.get("generated_at_utc")
     retrieved = utc_timestamp(discovery["retrieved_at_utc"])
     generated = utc_timestamp(generated_at)
-    require(retrieved <= generated <= retrieved + timedelta(hours=24),
+    require(retrieved <= generated <= min(
+                retrieved + timedelta(hours=24),
+                utc_timestamp(discovery["non_authorized_api_data_expires_at_utc"]) ),
             "STALE_OR_PRE_SOURCE_RIGHTS_CASES")
     expected_cases = build_rights_cases(discovery, generated_at_utc=generated_at)
     # Exact byte-independent JSON object equality detects any removed checks,
