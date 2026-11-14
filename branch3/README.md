@@ -36,6 +36,10 @@ All-scene contact sheets from [successful GH render 43557461327](https://github.
 
 In addition to playable review MP4s, new GitHub Actions original arcade review artifacts include an **all-scene contact sheet for each video**, linked in the offline gallery. The independent media gate now decodes caption frames for **all 5 beats per Short and all 13 beats in the longer episode**, rather than just the first cue. Any beat with no actual rendered on-screen subtitle fails QA before an unsigned A6 handoff is produced. This is technical evidence and visual review tooling, not owner commercial/media approval or a guaranteed virality improvement.
 
+## Verified current full three-video audio/caption package
+
+The [current GitHub original-arcade review artifact (43562174869)](https://github.com/Tirthanand17/taskless-lab/actions/runs/43562174869) passed real full-resolution frame, narration energy, and independently reconstructed sound-bed-subtracted speech/SRT boundary QA. Parsed technical reports show **23/23 scenes pass** with maximum measured start/end deviation **20ms**. This is not word-level forced alignment or a human-approved final soundtrack. Real YouTube uploads remain 0 and publishing remains disabled.
+
 ## Refined spoken-activity caption timing and final WAV audit
 
 The CLIVOX original arcade renderer now trims **silent eSpeak PCM tails** from estimated subtitle windows. Post-render QA independently extracts speech-like activity from the actual final mixed WAV by subtracting the deterministic original procedural sound bed, and blocks any beat whose SRT start/end is more than **140ms** from that detected envelope. This is stronger evidence of **temporal caption placement**, not independent forced word alignment, accurate narration, human review or legal release.
