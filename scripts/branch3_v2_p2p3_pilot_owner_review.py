@@ -136,7 +136,7 @@ def validate_public_route_audit(audit: object, watchlist: dict,
             and audit["stage"] ==
                 "CLIVOX_V2_P2P3_PUBLIC_ROUTE_RESEARCH_OWNER_REVIEW_ONLY"
             and audit["channel_id"] == CHANNEL
-            and audit["observed_at_utc"] == d["source_research_date_utc"]
+            and audit["observed_at_utc"] == d["research_observed_utc"]
             and audit["source_watchlist"] ==
                 "branch3/clipping_v2/prospects/public-business-pages-2026-11-14.json"
             and audit["official_platform_policy"] ==
