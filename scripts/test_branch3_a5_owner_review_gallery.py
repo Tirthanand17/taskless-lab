@@ -18,7 +18,7 @@ from scripts.branch3_a6_original_handoff import (
 from scripts.branch3_a6_original_review_signature import (
     REQUEST_FILE, make_unsigned_review_request
 )
-from scripts.branch3_original_arcade_pilots import validate_catalog
+from scripts.branch3_original_arcade_pilots import validate_catalog, draft_srt
 
 
 class OfflineOwnerReviewGalleryTests(unittest.TestCase):
@@ -40,10 +40,7 @@ class OfflineOwnerReviewGalleryTests(unittest.TestCase):
                     ("SYNTHETIC_ONLY_VIDEO_"+ep["id"]).encode("ascii")
                 )
                 (folder/WAV).write_bytes(b"synthetic-only-voice")
-                (folder/SRT).write_text(
-                    "1\n00:00:00,000 --> 00:00:01,000\nSYNTHETIC TEST\n",
-                    encoding="utf-8"
-                )
+                draft_srt(ep,folder/SRT)
                 (folder/MANIFEST).write_text(
                     json.dumps({"render_mode":"full"}),encoding="utf-8"
                 )
@@ -85,6 +82,9 @@ class OfflineOwnerReviewGalleryTests(unittest.TestCase):
         self.assertEqual(html.count("<video controls"),3)
         self.assertEqual(html.count("UNSIGNED · NOT PUBLISHED"),3)
         self.assertEqual(html.count("Open draft SRT captions"),3)
+        self.assertEqual(html.count('class="scene-row"'),23)
+        self.assertEqual(html.count("#t="),23)
+        self.assertEqual(result["per_scene_draft_caption_review_links"],23)
         for episode in self.episodes:
             self.assertIn(episode["id"]+"/"+MP4,html)
             self.assertIn(episode["id"]+"/"+SRT,html)
