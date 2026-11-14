@@ -468,8 +468,9 @@ def draft_srt(
             start=speech_start+(speech_end-speech_start)*elapsed/total_weight
             elapsed+=weights[j]
             end=speech_start+(speech_end-speech_start)*elapsed/total_weight
-            if voice_regions is not None and j==len(lines)-1 and index==len(ep["beats"])-1:
-                end=float(ep["duration_seconds"])
+            # In real synthesized videos, do not leave a lone final word
+            # onscreen for the remaining silent outro. The scene itself
+            # already carries the viewer's call-to-action after speech ends.
             require(end-start>=.055 and
                     all(len(x)<=36 for x in txt.split("\n")),
                     "SUBTITLE_WIDTH_OR_DURATION")
