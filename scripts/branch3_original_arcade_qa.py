@@ -82,7 +82,7 @@ def cue_samples_by_beat(
     require(type(content) is str and type(beats) is list
             and 1<=len(beats)<=20 and type(duration) is int
             and 1<=duration<=600,"BEAT_SAMPLE_INPUT")
-    sections=re.split(r"\\n\\s*\\n",content.strip())
+    sections=re.split(r"\n\s*\n",content.strip())
     cues=[]
     for section in sections:
         m=TIMING.fullmatch(section)
@@ -150,7 +150,7 @@ def visible_caption_safezone_qa(
     aesthetics, truthful speech, word alignment or actual owner approval.
     """
     require(type(srt) is str,"SRT_SOURCE_TYPE")
-    sections=re.split(r"\\n\\s*\\n",srt.strip())
+    sections=re.split(r"\n\s*\n",srt.strip())
     require(len(sections)>=1,"CAPTION_CUES_MISSING")
     m=TIMING.fullmatch(sections[0])
     require(m is not None,"FIRST_CAPTION_CUE_BAD")
