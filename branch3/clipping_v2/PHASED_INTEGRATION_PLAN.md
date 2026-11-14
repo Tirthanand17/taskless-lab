@@ -4,10 +4,10 @@
 
 ## Critical dependency sequence
 
-| ID | Feature and planned work | Gate to move forward | Not yet done |
+| ID | Feature and planned work | Gate to move forward | Verified status |
 |---|---|---|---|
-| **P0** | V2 master architecture, official research sources, free tools, creator target watchlist, editorial/evaluation plan and source-control review | All documents on GitHub, publication flags false, CI green | **THIS planning-only PR** |
-| **P1 — COMPLETE SOURCE-ONLY** | **First engineering integration: YouTube discovery policy remediation**. Audit scripts/branch3_discovery.py for derived YouTube API metrics and cross-owner ranking. Replace views/age, likes/views and composite numeric source scores with safe public original fields only. Update downstream A2 pending cases, tests and runbook. | API-policy compliant, bounded, no fabricated replay, no media download; full PR CI | **NOT STARTED** |
+| **P0 — COMPLETE** | V2 master architecture, primary-source policies, tooling, creator research, evaluation and integration gates | [PR #203](https://github.com/Tirthanand17/taskless-lab/pull/203) merged with CI green | **COMPLETE DESIGN / NO LIVE CLIPS** |
+| **P1 — COMPLETE SOURCE-ONLY** | Removed API-derived views/engagement source scores, rewired A2 pending cases and strict A123 handoff, seven-day metadata expiry | [PR #204](https://github.com/Tirthanand17/taskless-lab/pull/204) 24/24 green plus [main CI #43577935757](https://github.com/Tirthanand17/taskless-lab/actions/runs/43577935757) success | **VERIFIED OFFLINE; NO API KEY, MEDIA OR UPLOAD** |
 | **P2** | Curate global/India creator research, manually validate official identity and genuine business inquiry route; draft 3-private-Short trial proposal | Human-selected 3–5 prospects, none contacted/approved by AI | **NOT STARTED** |
 | **P3** | Apply A2 real authenticated rights grant: commercial YouTube redistribution, derivative edit, monetization, channel, exact source, region, expiry/revocation, guest, game publisher, audio/music, sponsor scope; owner contract review | At least 1 **real human-issued, current, independently verifiable license** and approved storage; no JSON auto-grant | **NOT STARTED / HUMAN BLOCKER** |
 | **P3T (optional)** | Twitch Helix Get Clips references; only creator-authorized editor Clip Downloads API after distinct actual commercial permission | Authenticated editor scopes **and** verified commercial reuse grant | **NOT STARTED** |
