@@ -172,6 +172,32 @@ def original_review_typography(w:int,h:int,kind:str)->dict:
     }
 
 
+def original_art_clearance_geometry(w:int,h:int,kind:str)->dict:
+    """Reserve a dedicated illustration slot ABOVE spoken subtitle ink.
+
+    Visual audit of the 23-scene contact sheets showed large door/portal art
+    continuing into the lower subtitle line. Keep original icons in middle
+    panel, end them above ~75% of frame height, and leave upper scene text
+    unobstructed. This is a reproducible layout constraint, not aesthetic
+    owner approval or an automatically verified full video review.
+    """
+    require(kind in ("short","long") and
+            type(w) is int and type(h) is int and
+            w>=540 and h>=540,"ART_SAFE_LAYOUT_DIMENSIONS")
+    port=kind=="short"
+    center_y=round(h*(.54 if port else .56))
+    radius=round(min(w*.32,h*.19)) if port else round(h*.17)
+    top=center_y-radius-16
+    bottom=center_y+radius+16
+    require(top>=round(h*.33) and
+            bottom<=round(h*.755) and
+            center_y>round(h*.49),
+            "ART_OVERLAPS_HEADLINE_OR_CAPTION_SAFEZONE")
+    return {"center_x":w//2,"center_y":center_y,
+            "radius":radius,"top":top,"bottom":bottom,
+            "caption_reserved_below":round(h*.755)}
+
+
 def native_ass_caption_style(kind:str)->str:
     """FFmpeg libass SRT font/margins in ASS virtual units, NOT pixels.
 
@@ -295,10 +321,9 @@ def draw_scene(beat:dict,*,ep:dict,index:int,out:Path,mode:str)->None:
     sub_y=title_y+title_font.size+round(h*.022)
     dr.text((inner_x,sub_y),beat["subheadline"],font=sub_font,
             fill=COLORS["amber"])
-    icon_cx=w//2
-    icon_cy=round(h*(.65 if port else .64))
-    icon_r=round(min(w*.52,h*.22))
-    art_icon(dr,beat["art"],icon_cx,icon_cy,icon_r)
+    artwork=original_art_clearance_geometry(w,h,ep["format"])
+    art_icon(dr,beat["art"],artwork["center_x"],
+             artwork["center_y"],artwork["radius"])
     # Mobile-safe bottom band, score/progress, no spinning circle.
     footer_y=typography["footer_y"]
     info=f"{index+1:02d} / {len(ep['beats']):02d}"
