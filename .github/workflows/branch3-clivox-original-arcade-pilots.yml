@@ -12,6 +12,7 @@ on:
       - 'scripts/branch3_original_arcade_pilots.py'
       - 'scripts/branch3_original_arcade_qa.py'
       - 'scripts/branch3_a5_narration_energy_qa.py'
+      - 'scripts/branch3_a5_speech_boundaries.py'
       - 'scripts/branch3_a6_original_handoff.py'
       - 'scripts/branch3_a6_original_review_signature.py'
       - 'scripts/branch3_a5_owner_review_gallery.py'
@@ -24,6 +25,7 @@ on:
       - 'scripts/test_branch3_original_arcade_pilots.py'
       - 'scripts/branch3_a5_narration_energy_qa.py'
       - 'scripts/test_branch3_a5_narration_energy_qa.py'
+      - 'scripts/test_branch3_a5_speech_boundaries.py'
       - 'scripts/branch3_a6_original_handoff.py'
       - 'scripts/test_branch3_a6_original_handoff.py'
       - 'scripts/branch3_a6_original_review_signature.py'
@@ -93,13 +95,18 @@ jobs:
       - name: Independent original-rights, scene, caption and technical-QA tests
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
-          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
+          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a5_speech_boundaries.py scripts/test_branch3_a5_speech_boundaries.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
+          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a5_speech_boundaries scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
       - name: Render original-first arcade video(s) in disposable GitHub temp only
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/clivox-original"
           python -B -m scripts.branch3_original_arcade_pilots --mode "$SELECTED_MODE" --selection "$SELECTED_EPISODES" --output "$RUNNER_TEMP/clivox-original"
+      - name: Independent mixed-audio acoustic boundaries must match active spoken draft SRT windows
+        run: |
+          set -euo pipefail
+          echo 'The following real A5 check subtracts the deterministic original procedural bed and compares every SRT speech boundary to audible signal within 140ms.'
+          test "$PUBLISH_ENABLED" = 'false'
       - name: Strict acoustic QA requires audible narration energy in every beat, not only first second
         run: |
           set -euo pipefail

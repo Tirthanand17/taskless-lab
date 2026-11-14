@@ -14,6 +14,7 @@ import subprocess
 import wave
 
 from scripts.branch3_a5_narration_energy_qa import audit_original_narration
+from scripts.branch3_a5_speech_boundaries import audit_mixed_speech_caption_bounds
 
 from scripts.branch3_original_arcade_pilots import (
     ROOT,CATALOG,CHANNEL,validate_catalog,render_size,sha,stamp,
@@ -297,9 +298,14 @@ def validate_episode_report(episode:dict,manifest:dict,
         require(sha(captions)==manifest["subtitle_sha256"],
                 "CAPTION_SHA_TAMPER")
     narration_energy=None
+    speech_caption_boundaries=None
     if audio is not None:
         narration_energy=audit_original_narration(
             audio,beats=episode["beats"],duration=episode["duration_seconds"]
+        )
+        speech_caption_boundaries=audit_mixed_speech_caption_bounds(
+            audio,beats=episode["beats"],duration=episode["duration_seconds"],
+            srt=subtitles
         )
         require(sha(audio)==manifest["audio_sha256"],"AUDIO_SHA_TAMPER")
         require(audio.is_file() and not audio.is_symlink(),
@@ -321,6 +327,7 @@ def validate_episode_report(episode:dict,manifest:dict,
         "resolution":f"{expected[0]}x{expected[1]}",
         "audio_is_synthetic_narration_and_procedural_ambience":True,
         "independent_original_narration_per_beat_energy_qa":narration_energy,
+        "independent_mixed_audio_vs_srt_speech_boundary_qa":speech_caption_boundaries,
         "draft_caption_speech_window_derived_from_synthesized_pcm":True,
         "draft_captions_burned_in_mobile_review_mp4":True,
         "decoded_actual_frame_caption_safezone_qa":caption_visual,

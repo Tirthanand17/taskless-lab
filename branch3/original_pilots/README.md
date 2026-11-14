@@ -32,6 +32,14 @@ A frame-by-frame inspection of the full-resolution artifact from [GitHub run 435
 
 The renderer now applies **bounded, native-ASS subtitle font/margin values** and proportionally scales the CLIVOX logo/tagline/footnotes for both aspect ratios. Beyond checking codec/SRT hashes, the independent A5 QA now decodes a real frame during a caption cue and requires visible high-contrast caption pixels in a **lower-middle safe region**. This is a regression check, **not** automatic proof of aesthetically perfect positioning, accurate spoken words or owner approval. Every corrected video gets a fresh SHA-256/A6 unsigned review packet. The older buggy review artifact should **not** be approved or published.
 
+## A5 precise spoken-activity start/stop checks (still draft word timing)
+
+An independent audit of actual mixed WAVs from [GitHub run 43560967644](https://github.com/Tirthanand17/taskless-lab/actions/runs/43560967644) found the old editable SRT ended about **0.29–0.34 seconds after genuinely active eSpeak speech** in the scenes checked. The renderer had already started timing the utterance by its PCM container rather than entire storyboard beats, but the file contained trailing silent PCM.
+
+The next A5 change measures actual above-threshold *dry synthesized voice* activity in 20ms windows to remove silent samples from **draft cue start and end timestamps**. A separate post-render QA reopens the **final mixed WAV**, reconstructs/subtracts CLIVOX's original procedural tone and transition sting, and requires each scene's first/last SRT cue boundary to lie within **140ms** of the recovered active-speech envelope. This detects falsely aligned subtitles and a silent TTS track even when the background music/stings are audible.
+
+Neither activity detector verifies words or phonemes, human listening, TTS quality, spoken accuracy, or sound/voice commercial rights. Individual cue durations are still estimated by character lengths; a human must correct them to actual speech before any A6 final approval. The change regenerates new exact SHA-256 hashes and unsigned review forms.
+
 ## A5 independent every-scene narration energy QA
 
 The technical video check previously only proved that the **first second** of the WAV was non-silent. A new independent pure-Python 48 kHz/16-bit PCM verifier now checks **each storyboard beat** for three or more quarter-second windows of nontrivial audio energy and rejects near-full-scale clipping, wrong sample format, corrupt/truncated audio and missing/overlapping storyboard windows. This catches a video with a working introduction but silent or extremely quiet narration in a later scene.

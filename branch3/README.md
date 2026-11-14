@@ -36,6 +36,10 @@ All-scene contact sheets from [successful GH render 43557461327](https://github.
 
 In addition to playable review MP4s, new GitHub Actions original arcade review artifacts include an **all-scene contact sheet for each video**, linked in the offline gallery. The independent media gate now decodes caption frames for **all 5 beats per Short and all 13 beats in the longer episode**, rather than just the first cue. Any beat with no actual rendered on-screen subtitle fails QA before an unsigned A6 handoff is produced. This is technical evidence and visual review tooling, not owner commercial/media approval or a guaranteed virality improvement.
 
+## Refined spoken-activity caption timing and final WAV audit
+
+The CLIVOX original arcade renderer now trims **silent eSpeak PCM tails** from estimated subtitle windows. Post-render QA independently extracts speech-like activity from the actual final mixed WAV by subtracting the deterministic original procedural sound bed, and blocks any beat whose SRT start/end is more than **140ms** from that detected envelope. This is stronger evidence of **temporal caption placement**, not independent forced word alignment, accurate narration, human review or legal release.
+
 ## Independent per-scene narration audibility test
 
 A5 technical QA now reads the **actual final 48 kHz WAV** in every scene and checks minimum loud audio-energy coverage, exact timing, and clipping, not just the presence of samples in the first second. It labels this only as **sound-energy evidence**, not proof the actual spoken words are right or intelligible. All final speech/copyright/owner/release/YouTube gates remain locked.
