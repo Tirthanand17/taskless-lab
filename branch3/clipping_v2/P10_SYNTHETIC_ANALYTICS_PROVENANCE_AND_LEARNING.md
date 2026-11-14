@@ -46,4 +46,11 @@ P10 adds \`scripts/branch3_v2_p10_synthetic_analytics_gates.py\`, **not another 
 - \`python -B -m unittest -v scripts.test_branch3_v2_p10_synthetic_analytics_gates\`
 - \`python -B -m scripts.branch3_v2_p10_synthetic_analytics_gates --mode synthetic\`
 
-Technical status is not marked verified until all PR checks and a separately confirmed merged-main workflow pass. Milestone completion still **2/12 = 17%**.
+Technical source-free P10 QA is now verified on PR and merged main. Actual CLIVOX audience Analytics and growth outcomes remain **unknown/not observed**; milestone completion still **2/12 = 17%**.
+
+## Evidence of source-free integration on GitHub (2026-11-14)
+
+- [Implementation PR #224](https://github.com/Tirthanand17/taskless-lab/pull/224) passed **4/4** PR checks; [dedicated PR P5→P10 integration QA #43594106599](https://github.com/Tirthanand17/taskless-lab/actions/runs/43594106599) **success**.
+- Merged-main implementation SHA `d830d8c47c557973ac524cce37056272b564133c`; [P5→P10 synthetic events/video/review/HOLD + offline A10 provenance/Studio-null QA #43594259100](https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259100) **success**.
+- [Merged-main P4 video/media integrity regression #43594259097](https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259097) and [Content Quality Gate #43594259076](https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259076) **success**.
+- All results are **synthetic technical test results**, not proof of current CLIVOX growth, replay heatmap, real viewer retention, monetization, owner authorization, licensed creator video, Google OAuth data or public upload. No real P10 phase accepted; overall 2/12 = 17%.
