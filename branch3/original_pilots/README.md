@@ -4,6 +4,12 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## Latest corrected full-resolution CLIVOX review package — visual inspection passed
+
+**Current recommended review artifact:** [main GitHub Actions run 43555814059](https://github.com/Tirthanand17/taskless-lab/actions/runs/43555814059). This actual `main` push render completed successfully for all **three** original videos (2 × 36-second vertical and 108-second horizontal, at 1080×1920 and 1920×1080). Its ~24.4 MB seven-day GitHub artifact includes the offline `CLIVOX-REVIEW-START-HERE.html`, editable SRT files, exact MP4/WAV/metadata SHA-256 handoffs, independent frame-based subtitle safezone checks, and three unsigned owner review checklists.
+
+The assistant additionally downloaded the real artifact into an ephemeral review environment and **inspected actual video frames** from both Shorts and the long episode. The old off-screen subtitle defect, giant long-video overlay and landscape logo/tagline overlap are visibly corrected; the isolated final outro word no longer lingers. **This is technical visual inspection, not the owner's viewing or final commercial/legal/audio approval.** The eSpeak NG voice and approximate per-line captions still need a real human listening pass. Do not sign the older faulty video hashes.
+
 ## A5 actual-video visual regression fix for captions and landscape brand
 
 A frame-by-frame inspection of the full-resolution artifact from [GitHub run 43554270709](https://github.com/Tirthanand17/taskless-lab/actions/runs/43554270709) found a **real** typography problem: FFmpeg/libass `FontSize` and `MarginV` were mistakenly calculated using full output pixels, even though SRT subtitles are rendered using a small virtual subtitle coordinate system. As a result, the portrait Shorts' subtitles were off-screen and the landscape captions obscured the headline. The landscape CLIVOX brand/title also overlapped its descriptor.
