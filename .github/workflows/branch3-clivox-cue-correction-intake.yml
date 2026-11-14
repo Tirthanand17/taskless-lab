@@ -10,6 +10,8 @@ on:
       - 'scripts/test_branch3_a5_cue_correction_intake.py'
       - 'scripts/branch3_a5_private_revision_preview.py'
       - 'scripts/test_branch3_a5_private_revision_preview.py'
+      - 'scripts/branch3_a5_revision_sandbox.py'
+      - 'scripts/test_branch3_a5_revision_sandbox.py'
   pull_request:
     paths:
       - '.github/workflows/branch3-clivox-cue-correction-intake.yml'
@@ -17,6 +19,8 @@ on:
       - 'scripts/test_branch3_a5_cue_correction_intake.py'
       - 'scripts/branch3_a5_private_revision_preview.py'
       - 'scripts/test_branch3_a5_private_revision_preview.py'
+      - 'scripts/branch3_a5_revision_sandbox.py'
+      - 'scripts/test_branch3_a5_revision_sandbox.py'
       - 'scripts/branch3_a5_cue_review_worksheet.py'
       - 'scripts/test_branch3_a5_cue_review_worksheet.py'
       - 'branch3/original_pilots/arcade_trio.json'
@@ -45,11 +49,11 @@ jobs:
       - name: Syntax-check correction intake and exact-file worksheet
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_a5_cue_correction_intake.py scripts/test_branch3_a5_cue_correction_intake.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py scripts/branch3_a5_private_revision_preview.py scripts/test_branch3_a5_private_revision_preview.py
+          python -B -m py_compile scripts/branch3_a5_cue_correction_intake.py scripts/test_branch3_a5_cue_correction_intake.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py scripts/branch3_a5_private_revision_preview.py scripts/test_branch3_a5_private_revision_preview.py scripts/branch3_a5_revision_sandbox.py scripts/test_branch3_a5_revision_sandbox.py
       - name: Run synthetic 39-cue intake, forgery and privacy tests
         run: |
           set -euo pipefail
-          python -B -m unittest -v scripts.test_branch3_a5_cue_correction_intake scripts.test_branch3_a5_cue_review_worksheet scripts.test_branch3_a5_private_revision_preview
+          python -B -m unittest -v scripts.test_branch3_a5_cue_correction_intake scripts.test_branch3_a5_cue_review_worksheet scripts.test_branch3_a5_private_revision_preview scripts.test_branch3_a5_revision_sandbox
       - name: Confirm preview never writes to catalog or automates media release
         run: |
           set -euo pipefail
