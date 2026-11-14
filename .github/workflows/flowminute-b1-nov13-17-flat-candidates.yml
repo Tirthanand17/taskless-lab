@@ -14,7 +14,7 @@ on:
         required: true
         description: "Exact date of 3 successful original videos to prepare, no publish"
         type: choice
-        options: ["2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16", "2026-11-17"]
+        options: ["2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16", "2026-11-17", "2026-11-18"]
       source_run_id:
         description: "Successful manually dispatched main original H264/AAC 3-video GitHub render"
         required: true
@@ -53,7 +53,7 @@ jobs:
           from pathlib import Path
           import json
           from scripts.validate_release import validate
-          for d in range(13,18):
+          for d in range(13,19):
               date=f"2026-11-{d:02d}"
               day=json.loads(Path(f"content/nov13_17_2026/day_{date}.json").read_text())
               for ep in day["episodes"]:

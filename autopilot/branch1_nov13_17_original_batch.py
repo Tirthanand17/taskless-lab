@@ -23,7 +23,7 @@ from autopilot.branch1_nov12_four_review_videos import (
 
 ROOT=Path(__file__).resolve().parents[1]
 STATUS="B1_NOV13_17_PHYSICAL_THREE_ORIGINALS_OWNER_REVIEW_NO_UPLOAD"
-VALID_DATES={f"2026-11-{day:02d}" for day in range(13,18)}
+VALID_DATES={f"2026-11-{day:02d}" for day in range(13,19)}
 EXPECTED_SOURCE_BY_DATE={
     "2026-11-13":("https://support.microsoft.com/en-us/excel/functions/trim-function",
         "https://support.microsoft.com/en-us/excel/ways-to-count-values-in-a-worksheet",
@@ -38,6 +38,9 @@ EXPECTED_SOURCE_BY_DATE={
     "2026-11-17":("https://support.google.com/docs/answer/3540681",
         "https://support.google.com/docs/answer/1218656",
         "https://support.google.com/docs/answer/3540681"),
+    "2026-11-18":("https://support.google.com/mail/answer/2819488",
+        "https://support.google.com/mail/answer/7674059",
+        "https://support.google.com/mail/answer/7015314"),
 }
 TIME_IST=("11:00","20:30","16:00")
 ACCENT_BY_DAY={
@@ -46,6 +49,7 @@ ACCENT_BY_DAY={
     "2026-11-15":(250,190,111),
     "2026-11-16":(188,169,252),
     "2026-11-17":(104,203,240),
+    "2026-11-18":(251,157,132),
 }
 WHITE=(245,250,253)
 BG=(8,20,34)
@@ -65,7 +69,7 @@ def need(ok,reason):
 
 
 def read_day(date,repo=ROOT):
-    need(date in VALID_DATES,"Only Nov 13–17 owner-requested calendar")
+    need(date in VALID_DATES,"Only Nov 13–18 owner-requested calendar")
     path=repo/"content/nov13_17_2026"/f"day_{date}.json"
     need(path.is_file() and not path.is_symlink()
          and path.stat().st_size<50000,"Missing original authored daily brief")
@@ -85,7 +89,7 @@ def read_day(date,repo=ROOT):
         wc=0
         need(type(ep) is dict
              and ep.get("id")==f"fm_{date.replace('-','')}_"+ep["id"].split(f"fm_{date.replace('-','')}_",1)[-1]
-             and re.fullmatch(r"fm_2026111[3-7]_[a-z0-9_]+_(short|long)_en",ep["id"])
+             and re.fullmatch(r"fm_2026111[3-8]_[a-z0-9_]+_(short|long)_en",ep["id"])
              and ep.get("date_ist")==date
              and ep["id"] not in names
              and ep.get("kind")==kind
@@ -211,7 +215,7 @@ def _draw_folder(draw,rect,a,b,phase,accent,index):
 
 def _style(ep):
     date=ep["date_ist"]
-    return ("browser" if date=="2026-11-14" else
+    return ("browser" if date in ("2026-11-14","2026-11-18") else
             "ai" if date=="2026-11-16" else
             "sheet" if date=="2026-11-17" else "sheet")
 

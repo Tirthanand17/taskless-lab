@@ -42,9 +42,9 @@ class SourceBoundFiveDayTests(unittest.TestCase):
                     text=scene[3]
                     self.assertEqual(" ".join(split_script(text,ep["kind"])),
                                      " ".join(text.split()))
-        self.assertEqual(len(names),15)
-        self.assertEqual(len(set(names)),15)
-        self.assertEqual(len(set(titles)),15)
+        self.assertEqual(len(names),18)
+        self.assertEqual(len(set(names)),18)
+        self.assertEqual(len(set(titles)),18)
 
     def test_new_slate_does_not_repeat_known_public_duplicate_subjects(self):
         # Channel owned video inventory was actually read via vidIQ on Nov11.
@@ -65,7 +65,7 @@ class SourceBoundFiveDayTests(unittest.TestCase):
                       read_day("2026-11-17")[0]["episodes"][2]["title"])
 
     def test_unknown_date_and_approval_refused(self):
-        for bad in ("2026-11-12","2026-11-18","2026-10-31","tomorrow","2026-11-13Z"):
+        for bad in ("2026-11-12","2026-11-19","2026-10-31","tomorrow","2026-11-13Z"):
             with self.assertRaises(OriginalBatchRefused):
                 read_day(bad)
         self.assertTrue(STATUS.endswith("NO_UPLOAD"))
@@ -101,7 +101,7 @@ class PhysicalSourcePixelTests(unittest.TestCase):
                     base.crop(sub),end.crop(sub)).getbbox())
                 self.assertIsNone(ImageChops.difference(
                     end,frame(ep,scene,0,2,color)).getbbox())
-        self.assertEqual(len(signatures),15)
+        self.assertEqual(len(signatures),18)
 
     def test_no_circular_loading_animation_and_27_scenes_per_date_have_distinct_hashes(self):
         from PIL import ImageChops
@@ -122,7 +122,7 @@ class PhysicalSourcePixelTests(unittest.TestCase):
             paint_story_ui, FictionalUIRefused,
         )
         signatures=set()
-        for day in range(13,18):
+        for day in range(13,19):
             date=f"2026-11-{day:02d}"
             d,_=read_day(date)
             for ep in d["episodes"]:
@@ -136,7 +136,7 @@ class PhysicalSourcePixelTests(unittest.TestCase):
                     from PIL import ImageDraw
                     paint_story_ui(ImageDraw.Draw(artwork),ep,ep["scenes"][0],
                                    0,9,ACCENT_BY_DAY[date],rect)
-        self.assertEqual(len(signatures),15)
+        self.assertEqual(len(signatures),18)
 
     def test_five_original_full_aware_covers_by_day(self):
         from PIL import Image

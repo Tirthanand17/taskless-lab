@@ -1,0 +1,79 @@
+{
+  "id": "fm_20261118_gmail_missing_email_long_en",
+  "renderer": "manifest_v2",
+  "type": "long",
+  "language": "en",
+  "title": "Missing Important Gmail Emails? 7 Checks Before You Panic",
+  "description": "An important message is missing from Gmail? Use this source-led checklist to search Mail, Spam and Trash; inspect filters, forwarding and storage; and avoid unsafe recovery tricks.\n\nOriginal diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/mail/answer/7015314 #FlowMinuteLab #TechTips",
+  "tags": [
+    "Gmail missing emails",
+    "Gmail search",
+    "Gmail filters",
+    "Spam and Trash",
+    "Email troubleshooting",
+    "Gmail tutorial"
+  ],
+  "source_links": [
+    "https://support.google.com/mail/answer/7015314"
+  ],
+  "scenes": [
+    {
+      "title": "MY IMPORTANT EMAIL VANISHED",
+      "narration": "Imagine a fictional confirmation message you expected today. You refresh your inbox, but there is nothing. Before assuming the sender failed, check where Gmail might have placed or removed the message."
+    },
+    {
+      "title": "CHECK ONE SEARCH EVERYTHING",
+      "narration": "Start with the Gmail search bar and use Show search options. Google's missing-message guide lets you search Mail, Spam and Trash together. Search a unique subject phrase or the sender name if you know it."
+    },
+    {
+      "title": "CHECK TWO SPAM",
+      "narration": "Open Spam and inspect the messages carefully. Legitimate mail sometimes lands there. If the message really belongs in your inbox, use Not spam. Never open an unexpected attachment just to test whether a message is genuine."
+    },
+    {
+      "title": "TRASH IS NOT AN ARCHIVE",
+      "narration": "Look in Trash for recently deleted mail. Google says messages in Spam and Trash are deleted permanently after thirty days, or sooner if you empty those labels yourself. Finding an email in Trash is different from restoring an old deletion."
+    },
+    {
+      "title": "CHECK THREE AUTO FILTERS",
+      "narration": "In Gmail Settings, open See all settings and find Filters and Blocked Addresses. Look for rules using Skip Inbox or Delete it. A filter can hide an important message even when you never touched it manually."
+    },
+    {
+      "title": "A FILTER CAN MISLEAD",
+      "narration": "Imagine a fictional rule that matches every receipt and silently archives it. The sender did nothing wrong; the rule changed its destination. Edit only the specific filter you understand rather than deleting your entire configuration in frustration."
+    },
+    {
+      "title": "CHECK FOUR ALL MAIL",
+      "narration": "Archived messages disappear from the Inbox but stay available in All Mail. This can happen when someone intentionally archives an email or a filter skips the Inbox. Archive is not the same action as deleting the message."
+    },
+    {
+      "title": "CHECK FIVE FORWARDING",
+      "narration": "Review Forwarding and POP or IMAP settings if you connect other email applications. Depending on how the account is configured, another client or forwarding rule can affect what remains in Gmail. Do not change unfamiliar settings without recording their current values."
+    },
+    {
+      "title": "CHECK SIX LINKED DEVICES",
+      "narration": "Gmail syncs mailbox changes across devices and compatible email clients. If a connected program deletes a message, your Gmail view may reflect that deletion too. Check whether you recently managed the same mail on a phone or desktop app."
+    },
+    {
+      "title": "CHECK SEVEN STORAGE",
+      "narration": "Google also lists full account storage as a cause of missing incoming mail. Shared storage includes Drive and Photos. Check your quota and resolve a full-storage warning before blaming every sender or assuming a message was delivered."
+    },
+    {
+      "title": "WHAT NOT TO DO",
+      "narration": "Avoid sending account credentials or one-time codes to strangers claiming they can restore lost messages. Use Gmail's own tools and Google's documented recovery guidance. If the expected message still cannot be found, ask the real sender to check delivery."
+    },
+    {
+      "title": "SAVE THIS SEARCH ORDER",
+      "narration": "Here is the quick sequence: search across Mail, Spam and Trash; check filters and All Mail; inspect forwarding and connected clients; then review storage. These steps locate many problems, but they cannot guarantee recovery of permanently deleted mail."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-18",
+  "proposed_time_ist": "16:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
