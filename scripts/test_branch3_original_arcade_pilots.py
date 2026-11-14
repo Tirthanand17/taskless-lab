@@ -117,7 +117,8 @@ class OriginalPilotQATests(unittest.TestCase):
                 draft_srt(episode,p,voice_regions=regions)
                 content=p.read_text("utf-8")
                 result=check_caption_draft(
-                    content,episode["duration_seconds"]
+                    content,episode["duration_seconds"],
+                    allow_speech_end_before_outro=True
                 )
                 self.assertTrue(result["owner_must_review_speech_sync"])
                 self.assertFalse(result["machine_forced_alignment_proven"])
@@ -129,7 +130,14 @@ class OriginalPilotQATests(unittest.TestCase):
                     cue_times.append((srt_seconds(a),srt_seconds(b)))
                 self.assertAlmostEqual(cue_times[0][0],.08,delta=.003)
                 self.assertAlmostEqual(cue_times[-1][1],
-                                       episode["duration_seconds"],delta=.003)
+                                       episode["duration_seconds"]-.65,delta=.003)
+                self.assertLess(cue_times[-1][1],
+                                episode["duration_seconds"])
+                self.assertTrue(result["silence_tail_allowed_for_final_scene"])
+                # The orphan single-word subtitle may not be held
+                # during the silent final viewer-comment CTA.
+                self.assertLessEqual(cue_times[-1][1],
+                                     episode["duration_seconds"]-.5)
                 # In beat 1, the final draft caption no longer fills the
                 # full screenplay beat; its end derives from actual voice.
                 first_end=next(
