@@ -34,6 +34,10 @@ Each original-first render now checks the visibility of subtitles in an actual e
 
 The latest **corrected full-resolution three-video review** is [Actions run 43555814059](https://github.com/Tirthanand17/taskless-lab/actions/runs/43555814059), with three hash-bound unsigned review packets and offline HTML player. All independent encoded-frame caption safezone QA passed, and assistant frame inspection confirmed readable Shorts subtitles, reduced long subtitles, proper landscape brand positioning and silent outro without stranded text. The owner must **still personally watch and listen to the exact videos**, verify accuracy/commercial licensing and separately sign any final A6 release; no automatic upload is permitted.
 
+## A5 speech-envelope versus SRT boundary QA
+
+The source-free audio renderer now detects active dry voice windows rather than using the synthesized WAV container duration (which includes trailing silence). After mixing, A5 reads the real final audio and subtracts the known original sine/sting bed to independently validate that each storyboard beat's draft subtitle start/end is within **140ms of above-threshold recovered speech-like signal**. It rejects fake sound-bed-only speech even if that beat is not silent, and rejects old stale subtitle timings from prior artifacts. This improves the first/last caption boundary, **not** per-word forced alignment; the actual human owner must listen to every sentence and review pronunciation, sound mixing and precise subtitles before any signing or upload.
+
 ## A5 narration sound-energy independent audit
 
 Original-only review renders now independently validate **each** storyboard scene's audio PCM for a small minimum number of clearly audible windows, fail on silent/inaudible later scenes and reject possible near-full-scale clipping. The result is embedded in technical QA JSON and covered by synthetic silence/corruption/clipping tests. This cannot determine word pronunciation or intelligibility and **does not** clear commercial voice/soundtrack rights. An owner must actually listen to the full videos and review the SRT against the speech before any final signing.
