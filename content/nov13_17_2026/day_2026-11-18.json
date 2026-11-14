@@ -1,0 +1,200 @@
+{
+  "schema": "FLOWMINUTE_B1_SEARCH_LED_FIVE_DAY_V1",
+  "date_ist": "2026-11-18",
+  "status": "SOURCE_APPROVED_BY_VENDOR_LINKS_ONLY_OWNER_RELEASE_UNAPPROVED",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "episodes": [
+    {
+      "id": "fm_20261118_gmail_undo_send_short_en",
+      "date_ist": "2026-11-18",
+      "kind": "short",
+      "language": "en",
+      "title": "Gmail Undo Send: Change This 5-Second Setting #Shorts",
+      "source": "https://support.google.com/mail/answer/2819488",
+      "source_linked_claims": "Gmail desktop Undo Send period can be 5, 10, 20 or 30 seconds",
+      "voice": "af_heart",
+      "time_ist": "11:00",
+      "scenes": [
+        [
+          "SENT TO THE WRONG PERSON?",
+          "UNDO",
+          "NOT RECALL",
+          "Wrong recipient? Gmail shows Undo briefly after sending. It cancels the send window, not an email you can recall much later."
+        ],
+        [
+          "THE FIVE SECOND TRAP",
+          "5 SECONDS",
+          "TOO FAST",
+          "On desktop, the cancellation period can be five, ten, twenty, or thirty seconds. Five disappears quickly."
+        ],
+        [
+          "OPEN GMAIL SETTINGS",
+          "SETTINGS",
+          "SEE ALL",
+          "Open Gmail Settings, then See all settings. Under General, find the Undo Send cancellation period."
+        ],
+        [
+          "CHANGE THE WINDOW",
+          "30 SECONDS",
+          "SAVE CHANGES",
+          "Choose thirty seconds and save changes. Send yourself a harmless test email to rehearse the action."
+        ],
+        [
+          "AFTER YOU HIT SEND",
+          "MESSAGE SENT",
+          "CLICK UNDO",
+          "When Message sent appears, click Undo before time runs out. Once it disappears, do not assume you can retract delivery."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261118_gmail_confidential_short_en",
+      "date_ist": "2026-11-18",
+      "kind": "short",
+      "language": "en",
+      "title": "Gmail Confidential Mode Cannot Stop THIS #Shorts",
+      "source": "https://support.google.com/mail/answer/7674059",
+      "source_linked_claims": "Gmail confidential mode can reduce accidental sharing but cannot block screenshots or camera photos",
+      "voice": "af_heart",
+      "time_ist": "20:30",
+      "scenes": [
+        [
+          "CONFIDENTIAL IS NOT SECRET",
+          "CONFIDENTIAL",
+          "NOT BULLETPROOF",
+          "Gmail Confidential Mode sounds like a lock, but it cannot stop a recipient taking a screenshot."
+        ],
+        [
+          "WHAT THE MODE DISABLES",
+          "FORWARD COPY",
+          "DOWNLOAD",
+          "The mode can disable forwarding, copying, printing, and downloading options inside Gmail. That discourages accidental sharing."
+        ],
+        [
+          "THE SCREENSHOT CATCH",
+          "SCREENSHOT",
+          "CAMERA PHOTO",
+          "But Google warns recipients may still photograph the screen or capture it with another device."
+        ],
+        [
+          "EXPIRY IS NOT ERASURE",
+          "EXPIRATION",
+          "REVOKE ACCESS",
+          "You can set an expiration and revoke access. Those controls do not erase photos someone already made."
+        ],
+        [
+          "THE SAFER DECISION",
+          "THINK FIRST",
+          "TRUST MATTERS",
+          "For truly sensitive information, first ask whether email is the right channel. Never equate a label with guaranteed secrecy."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    },
+    {
+      "id": "fm_20261118_gmail_missing_email_long_en",
+      "date_ist": "2026-11-18",
+      "kind": "long",
+      "language": "en",
+      "title": "Missing Important Gmail Emails? 7 Checks Before You Panic",
+      "source": "https://support.google.com/mail/answer/7015314",
+      "source_linked_claims": "Google's missing Gmail message checklist covers search, spam/trash, filters, forwarding/POP/IMAP and storage",
+      "voice": "am_michael",
+      "time_ist": "16:00",
+      "scenes": [
+        [
+          "MY IMPORTANT EMAIL VANISHED",
+          "EXPECTED MAIL",
+          "NOT IN INBOX",
+          "Imagine a fictional confirmation message you expected today. You refresh your inbox, but there is nothing. Before assuming the sender failed, check where Gmail might have placed or removed the message."
+        ],
+        [
+          "CHECK ONE SEARCH EVERYTHING",
+          "SEARCH OPTIONS",
+          "MAIL SPAM TRASH",
+          "Start with the Gmail search bar and use Show search options. Google's missing-message guide lets you search Mail, Spam and Trash together. Search a unique subject phrase or the sender name if you know it."
+        ],
+        [
+          "CHECK TWO SPAM",
+          "SPAM LABEL",
+          "NOT SPAM",
+          "Open Spam and inspect the messages carefully. Legitimate mail sometimes lands there. If the message really belongs in your inbox, use Not spam. Never open an unexpected attachment just to test whether a message is genuine."
+        ],
+        [
+          "TRASH IS NOT AN ARCHIVE",
+          "TRASH LABEL",
+          "30 DAY LIMIT",
+          "Look in Trash for recently deleted mail. Google says messages in Spam and Trash are deleted permanently after thirty days, or sooner if you empty those labels yourself. Finding an email in Trash is different from restoring an old deletion."
+        ],
+        [
+          "CHECK THREE AUTO FILTERS",
+          "FILTERS TAB",
+          "SKIP INBOX",
+          "In Gmail Settings, open See all settings and find Filters and Blocked Addresses. Look for rules using Skip Inbox or Delete it. A filter can hide an important message even when you never touched it manually."
+        ],
+        [
+          "A FILTER CAN MISLEAD",
+          "MATCH RULE",
+          "REVIEW ACTION",
+          "Imagine a fictional rule that matches every receipt and silently archives it. The sender did nothing wrong; the rule changed its destination. Edit only the specific filter you understand rather than deleting your entire configuration in frustration."
+        ],
+        [
+          "CHECK FOUR ALL MAIL",
+          "ALL MAIL",
+          "ARCHIVED",
+          "Archived messages disappear from the Inbox but stay available in All Mail. This can happen when someone intentionally archives an email or a filter skips the Inbox. Archive is not the same action as deleting the message."
+        ],
+        [
+          "CHECK FIVE FORWARDING",
+          "FORWARDING",
+          "ORIGINAL COPY",
+          "Review Forwarding and POP or IMAP settings if you connect other email applications. Depending on how the account is configured, another client or forwarding rule can affect what remains in Gmail. Do not change unfamiliar settings without recording their current values."
+        ],
+        [
+          "CHECK SIX LINKED DEVICES",
+          "SYNCED DEVICE",
+          "SAME MESSAGE",
+          "Gmail syncs mailbox changes across devices and compatible email clients. If a connected program deletes a message, your Gmail view may reflect that deletion too. Check whether you recently managed the same mail on a phone or desktop app."
+        ],
+        [
+          "CHECK SEVEN STORAGE",
+          "STORAGE FULL",
+          "DELIVERY RISK",
+          "Google also lists full account storage as a cause of missing incoming mail. Shared storage includes Drive and Photos. Check your quota and resolve a full-storage warning before blaming every sender or assuming a message was delivered."
+        ],
+        [
+          "WHAT NOT TO DO",
+          "NO RANDOM FIX",
+          "VERIFY SENDER",
+          "Avoid sending account credentials or one-time codes to strangers claiming they can restore lost messages. Use Gmail's own tools and Google's documented recovery guidance. If the expected message still cannot be found, ask the real sender to check delivery."
+        ],
+        [
+          "SAVE THIS SEARCH ORDER",
+          "SEARCH SPAM",
+          "FILTERS STORAGE",
+          "Here is the quick sequence: search across Mail, Spam and Trash; check filters and All Mail; inspect forwarding and connected clients; then review storage. These steps locate many problems, but they cannot guarantee recovery of permanently deleted mail."
+        ]
+      ],
+      "approval": {
+        "owner_final_watch": false,
+        "rights_cleared": false,
+        "facts_approved": false,
+        "release_signed": false,
+        "youtube_scheduled": false
+      }
+    }
+  ]
+}
