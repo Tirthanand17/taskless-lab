@@ -185,7 +185,7 @@ def original_art_clearance_geometry(w:int,h:int,kind:str)->dict:
             type(w) is int and type(h) is int and
             w>=540 and h>=540,"ART_SAFE_LAYOUT_DIMENSIONS")
     port=kind=="short"
-    center_y=round(h*(.54 if port else .56))
+    center_y=round(h*(.54 if port else .55))
     radius=round(min(w*.32,h*.19)) if port else round(h*.17)
     top=center_y-radius-16
     bottom=center_y+radius+16
