@@ -142,8 +142,21 @@ jobs:
               assert proof["draft_caption_cue_count"]==cue_count
               assert len(proof["per_cue_samples"])==cue_count
               assert proof["caption_layout_human_approved"] is False
+              speech=report["independent_mixed_audio_vs_srt_speech_boundary_qa"]
+              assert speech["draft_caption_cue_count"]==cue_count
+              assert speech["all_draft_cues_have_recovered_speech_activity"] is True
+              assert speech["per_cue_20ms_activity_not_word_or_phoneme_alignment"] is True
+              assert len(speech["per_cue"])==cue_count
+              assert [c["cue_index"] for c in speech["per_cue"]]==list(range(cue_count))
+              assert all(
+                  c["recovered_speech_active_20ms_windows"]>=c["minimum_required_active_windows"]
+                  and c["individual_words_verified"] is False
+                  for c in speech["per_cue"]
+              )
+              assert speech["human_edit_and_caption_approval_complete"] is False
               assert report["youtube_upload_authorized"] is False
           print("CLIVOX_A5_ALL_8_8_23_REAL_MP4_CAPTION_CUES_VISUALLY_TESTED_NO_APPROVAL")
+          print("CLIVOX_A5_ALL_8_8_23_SRT_CUES_RECOVERED_SPEECH_ENERGY_NO_ASR_OR_RELEASE")
           PY
           python -B -c 'import pathlib,json,os; d=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-original"; manifests=list(d.glob("*/review-manifest.json")); assert len(manifests)==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1); assert all(json.loads(p.read_text())["ready_to_publish"] is False for p in manifests); reports=list(d.glob("*/technical-review-qa.json")); assert len(reports)==len(manifests) and all(json.loads(p.read_text())["actual_ffprobe_checks_passed"] and not json.loads(p.read_text())["youtube_upload_authorized"] for p in reports); print("CLIVOX_ORIGINAL_FIRST_PARTY_MEDIA_QA_PASS_UPLOAD_LOCKED")'
       - name: Bind exact original video audio SRT metadata and fresh QA into A6 quarantined owner handoff
