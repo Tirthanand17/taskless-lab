@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P2_PUBLIC_PROSPECT_INTAKE_ENGINEERING_VERIFIED_HUMAN_OWNER_SHORTLIST_PENDING",
+  "status": "P3_UNSIGNED_LICENSE_SCOPE_QUARANTINE_IMPLEMENTED_PENDING_CI_AND_REAL_RIGHTSHOLDER_GRANT",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -65,8 +65,10 @@
     {
       "id": "P3",
       "name": "Authenticated commercial rights grants",
-      "state": "NOT_STARTED",
-      "requires_owner": "Verified actual rights holder and contract"
+      "state": "SCOPE_INTAKE_ENGINEERING_PENDING_CI_REAL_LICENSE_NOT_OBTAINED",
+      "requires_owner": "Verified actual rights holder and contract",
+      "authenticated_licenses": 0,
+      "owner_verified_signatories": 0
     },
     {
       "id": "P3T",
@@ -179,5 +181,20 @@
   "p2_all_unsent_proposal_drafts_verified_in_ci": true,
   "p2_public_research_prospects_owner_selected": 0,
   "p2_engineering_offline_implementation_complete": true,
-  "p2_milestone_human_acceptance_complete": false
+  "p2_milestone_human_acceptance_complete": false,
+  "p3_scope_questions_per_prospect": 30,
+  "p3_unsigned_scope_preview_prospects": 5,
+  "p3_existing_a2_pending_case_source_check_integrated": true,
+  "p3_a2_synthetic_case_count": 2,
+  "p3_real_creator_to_source_identity_linkages_verified": 0,
+  "p3_real_legal_contracts_authenticated": 0,
+  "p3_actual_rights_holders_verified": 0,
+  "p3_real_private_grant_evidence_enrolled": false,
+  "p3_real_reviewer_public_keys_enrolled": false,
+  "p3_real_complete_revocation_state_verified": false,
+  "p3_owner_private_legal_vault_approved": false,
+  "p3_legal_scope_generator_implemented_pending_ci": true,
+  "p3_test_workflow": ".github/workflows/branch3-clivox-v2-p3-licensing-scope.yml",
+  "p3_runbook": "branch3/clipping_v2/P3_LICENSING_SCOPE_INTAKE.md",
+  "p3_script": "scripts/branch3_v2_p3_licensing_scope_quarantine.py"
 }

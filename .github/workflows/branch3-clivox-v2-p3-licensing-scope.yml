@@ -1,0 +1,121 @@
+name: CLIVOX V2 P3 Licensing Scope Quarantine QA (NO GRANTS / NO MEDIA)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_v2_p3_licensing_scope_quarantine.py'
+      - 'scripts/test_branch3_v2_p3_licensing_scope_quarantine.py'
+      - '.github/workflows/branch3-clivox-v2-p3-licensing-scope.yml'
+      - 'branch3/clipping_v2/P3_*'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/branch3_v2_p3_licensing_scope_quarantine.py'
+      - 'scripts/test_branch3_v2_p3_licensing_scope_quarantine.py'
+      - '.github/workflows/branch3-clivox-v2-p3-licensing-scope.yml'
+      - 'branch3/clipping_v2/P3_*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-v2-p3-quarantine-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  unsigned_scope_pending:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_CREATOR_CONTACT_ENABLED: 'false'
+      CLIVOX_LICENSE_GRANT_CREATION_ENABLED: 'false'
+      CLIVOX_AUTO_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_AUTO_UPLOAD_ENABLED: 'false'
+      PUBLISH_ENABLED: 'false'
+    steps:
+      - name: Source checkout without persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python standard library and no Google/Twitch credentials
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install A2 offline crypto test dependency
+        run: |
+          python -m pip install "cryptography==46.0.3"
+      - name: Verify P2 and A2+P3 negative input and ownership cases
+        run: |
+          set -euo pipefail
+          test "$CLIVOX_CREATOR_CONTACT_ENABLED" = "false"
+          test "$CLIVOX_LICENSE_GRANT_CREATION_ENABLED" = "false"
+          test "$CLIVOX_AUTO_DOWNLOAD_ENABLED" = "false"
+          test "$CLIVOX_AUTO_UPLOAD_ENABLED" = "false"
+          test "$PUBLISH_ENABLED" = "false"
+          python -B -m unittest -v \
+            scripts.test_branch3_v2_p3_licensing_scope_quarantine \
+            scripts.test_branch3_v2_creator_prospect_intake \
+            scripts.test_branch3_rights_case_intake \
+            scripts.test_branch3_a2_review_receipt
+      - name: Generate only temporary unsigned scope and unlinked source refs
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/clivox-p3-quarantine"
+          python -B -m scripts.branch3_v2_p3_licensing_scope_quarantine \
+            --input branch3/clipping_v2/prospects/public-business-pages-2026-11-14.json \
+            --out "$RUNNER_TEMP/clivox-p3-quarantine/clivox-v2-p3-unsigned-license-scope-HOLD.json"
+      - name: Independently verify quarantine, separated source and no rights
+        run: |
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          packet=json.loads((Path(os.environ["RUNNER_TEMP"])/
+            "clivox-p3-quarantine/clivox-v2-p3-unsigned-license-scope-HOLD.json").read_text())
+          assert packet["stage"]=="CLIVOX_V2_P3_CONTRACT_SCOPE_INTAKE_QUARANTINED"
+          assert packet["channel_id"]=="UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert packet["research_prospects_count"]==5
+          assert packet["unsigned_requests_generated"]==5
+          assert packet["rights_scope_checks_per_prospect"]>=25
+          assert packet["creator_legal_identity_authenticated"] is False
+          assert packet["creator_to_source_ownership_authenticated"] is False
+          assert packet["actually_signed_contracts_received"]==0
+          assert packet["actual_creator_grants_verified"]==0
+          assert packet["owner_review_completed"] is False
+          assert packet["real_reviewer_key_enrolled"] is False
+          assert packet["real_revocation_head_pinned"] is False
+          assert packet["private_legal_vault_approved"] is False
+          assert packet["source_footage_delivered"] is False
+          assert packet["media_acquisition_authorized"] is False
+          assert packet["clivox_youtube_upload_authorized"] is False
+          assert packet["clivox_youtube_publish_authorized"] is False
+          assert packet["youtube_api_calls"]==0
+          assert packet["creator_outreach_calls"]==0
+          assert packet["source_media_downloads"]==0
+          assert packet["public_output_contains_private_contracts"] is False
+          assert packet["source_case_binding_policy"]=="NO_CROSSWALK_UNTIL_INDEPENDENT_HUMAN_IDENTITY"
+          assert all(r["creator_has_been_contacted"] is False
+                     and r["creator_signed_grant_received"] is False
+                     and r["licensing_authorized"] is False
+                     and r["source_video_id"] is None
+                     and r["a2_pending_source_case_id"] is None
+                     and r["youtube_upload_authorized"] is False
+                     and r["unsigned_scope_request"]["no_license_granted"] is True
+                     and all(v=="PENDING_HUMAN_AUTHENTICATION_NO_GRANT"
+                             for v in r["checklist"].values())
+                     for r in packet["prospect_scope_review_queue"])
+          demo=packet["separate_unlinked_synthetic_a2_cases"]
+          assert demo["a1_synthetic"] is True
+          assert demo["real_source_licenses"]==0
+          assert demo["source_case_count"]==2
+          assert all(x["synthetic_fixture"] is True
+                     and x["potential_creator_prospect_id"] is None
+                     and x["ready_for_media_acquisition"] is False
+                     and x["source_license_exists"] is False
+                     for x in demo["synthetic_cases_only"])
+          print("CLIVOX_V2_P3_SCOPE_PENDING_NO_CONTACT_NO_MEDIA_NO_WRITES")
+          PY
+      - name: Never upload legal documents or owner questionnaire artifacts
+        run: |
+          echo 'Ephemeral unsigned scope only; A2 locked; no creator outreach or source media.'
