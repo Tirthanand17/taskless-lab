@@ -117,10 +117,6 @@ def make_gallery(directory:Path,*,selection:str)->dict:
             episode,sub_file.read_text("utf-8"),episode["id"]+"/"+VIDEO
         )
         total_scenes+=scene_count
-        cue_review,cue_count=make_cue_review_worksheet(
-            folder,episode,sub_file.read_text("utf-8"),packet
-        )
-        total_cues+=cue_count
         name=safe(episode["title"])
         description=safe(episode["description"])
         local_video=safe(episode["id"]+"/"+VIDEO)
@@ -140,6 +136,10 @@ def make_gallery(directory:Path,*,selection:str)->dict:
             )
         else:
             contact_image=""
+        cue_review,cue_count=make_cue_review_worksheet(
+            folder,episode,sub_file.read_text("utf-8"),packet
+        )
+        total_cues+=cue_count
         digest=safe(packet["exact_video_sha256"])
         format_label=safe(
             ("Vertical Short" if episode["format"]=="short"
