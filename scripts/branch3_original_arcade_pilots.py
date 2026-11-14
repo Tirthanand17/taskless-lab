@@ -21,6 +21,8 @@ import subprocess
 from textwrap import wrap
 import wave
 
+from scripts.branch3_a5_speech_boundaries import measure_unmixed_speech_activity
+
 
 ROOT=Path(__file__).resolve().parents[1]
 CATALOG=ROOT/"branch3/original_pilots/arcade_trio.json"
@@ -403,7 +405,12 @@ def write_audio(ep:dict,out:Path)->tuple[Path,list[tuple[float,float]]]:
         # These bounds are measured from actual post-atempo TTS PCM samples,
         # not from the screenplay beat length or an invented speech transcript.
         # Word/phoneme boundaries within this span remain estimates.
-        voice_regions.append((off/sr,(off+len(pcm))/sr))
+        # eSpeak raw PCM contains trailing silence after the last audible
+        # phoneme. Use measured activity, not full WAV container length,
+        # to avoid holding draft captions ~300ms after speech has ended.
+        dry_begin,dry_end=measure_unmixed_speech_activity(pcm)
+        require(dry_end-dry_begin>=.20,"NO_MEASURABLE_SPEECH")
+        voice_regions.append((off/sr+dry_begin,off/sr+dry_end))
         for j,value in enumerate(pcm):
             voice[off+j]=int(value*.70)
         raw.unlink(missing_ok=True)
@@ -446,10 +453,10 @@ def draft_srt(
     ep:dict,path:Path,
     voice_regions:list[tuple[float,float]]|None=None
 )->None:
-    """Draft captions weighted within post-tempo synthesized speech intervals.
+    """Draft captions weighted within acoustically active speech intervals.
 
-    Unlike previous beat-length distribution, real rendered narration segments
-    determine the active cue window. Individual word timing is an estimate:
+    Instead of full beat/window length or eSpeak WAV trailing silence, real
+    dry PCM activity determines the draft cue window. Word timing is estimated:
     neither a forced alignment nor human subtitle/voice approval is claimed.
     A final-episode CTA can remain visible through the last frame.
     """
