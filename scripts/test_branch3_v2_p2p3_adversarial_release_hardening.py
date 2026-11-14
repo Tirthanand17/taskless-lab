@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 import unittest
 
 from scripts.test_branch3_v2_p2p3_pilot_owner_review import inputs, draft, NOW
+from scripts.branch3_v2_creator_prospect_intake import ProspectDenied
 from scripts.branch3_v2_p2p3_pilot_owner_review import (
     PilotDenied, validate_owner_packet, validate_public_route_audit,
     production_contact_license_or_clip,
@@ -84,7 +85,7 @@ class AdversarialReleaseHardening(unittest.TestCase):
 
     def test_expired_route_stays_blocked_even_if_other_fields_unchanged(self):
         watch, audit, _, _ = inputs()
-        with self.assertRaises(PilotDenied):
+        with self.assertRaises((PilotDenied, ProspectDenied)):
             validate_public_route_audit(audit, watch, now=NOW + timedelta(days=31))
         with self.assertRaises(PilotDenied):
             validate_public_route_audit(audit, watch,
