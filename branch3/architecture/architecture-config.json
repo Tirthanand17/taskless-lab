@@ -441,7 +441,15 @@
     "srt_cue_word_boundaries_are_estimates": true,
     "real_audio_and_captions_human_aligned": false,
     "owner_copyright_and_commercial_voice_approval": false,
-    "google_upload_enabled": false
+    "google_upload_enabled": false,
+    "native_libass_virtual_coordinate_subtitle_geometry_corrected": true,
+    "portrait_subtitle_previous_offscreen_bug_found_in_real_mp4": true,
+    "landscape_subtitle_previous_heading_overlay_bug_found_in_real_mp4": true,
+    "real_decoded_mp4_caption_white_pixels_safezone_validation_implemented": true,
+    "landscape_brand_font_and_tagline_no_overlap_geometry_guard": true,
+    "corrected_visual_real_full_render_verified": false,
+    "actual_human_visual_signoff": false,
+    "youtube_upload_or_publish_enabled": false
   },
   "a10_owner_analytics_readonly": {
     "fixed_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
