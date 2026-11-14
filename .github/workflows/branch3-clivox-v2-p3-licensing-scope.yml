@@ -7,6 +7,7 @@ on:
       - 'scripts/test_branch3_v2_p3_licensing_scope_quarantine.py'
       - 'scripts/branch3_v2_p2p3_pilot_owner_review.py'
       - 'scripts/test_branch3_v2_p2p3_pilot_owner_review.py'
+      - 'scripts/test_branch3_v2_p2p3_adversarial_release_hardening.py'
       - 'branch3/clipping_v2/prospects/p2p3-public-route-review-2026-11-14.json'
       - 'branch3/clipping_v2/P2P3_*'
       - 'branch3/clipping_v2/architecture-status.json'
@@ -19,6 +20,7 @@ on:
       - 'scripts/test_branch3_v2_p3_licensing_scope_quarantine.py'
       - 'scripts/branch3_v2_p2p3_pilot_owner_review.py'
       - 'scripts/test_branch3_v2_p2p3_pilot_owner_review.py'
+      - 'scripts/test_branch3_v2_p2p3_adversarial_release_hardening.py'
       - 'branch3/clipping_v2/prospects/p2p3-public-route-review-2026-11-14.json'
       - 'branch3/clipping_v2/P2P3_*'
       - 'branch3/clipping_v2/architecture-status.json'
@@ -66,6 +68,7 @@ jobs:
           test "$PUBLISH_ENABLED" = "false"
           python -B -m unittest -v \
             scripts.test_branch3_v2_p2p3_pilot_owner_review \
+            scripts.test_branch3_v2_p2p3_adversarial_release_hardening \
             scripts.test_branch3_v2_p3_licensing_scope_quarantine \
             scripts.test_branch3_v2_creator_prospect_intake \
             scripts.test_branch3_rights_case_intake \
