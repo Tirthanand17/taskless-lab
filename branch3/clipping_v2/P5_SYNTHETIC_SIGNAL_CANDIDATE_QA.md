@@ -28,4 +28,12 @@
 4. At least 40–60 independently editor-labeled **legal** moments across approved sources, held-out evaluation by creator, top-5 editor-agreement/error analyses and meaningful time saved. No synthetic P5 fixture proves detector performance.
 5. Separate P6 editorial value-add and P8 final owner signed release before any Clivox publication.
 
-**Roadmap:** 2/12 phases = 17% verified complete. P5 signal engineering verified only after PR and main CI; real P5 milestone and real licensed clipping remain blocked. This estimate does **not** count synthetic test implementation as a finished creator-clipping system. FlowMinute B1/B2 untouched.
+**Roadmap:** 2/12 phases = 17% verified complete. P5 signal engineering **verified by PR and main CI**; real P5 milestone and real licensed clipping remain blocked. This estimate does **not** count synthetic test implementation as a finished creator-clipping system. FlowMinute B1/B2 untouched.
+
+## Verification evidence — 2026-11-14
+
+- [Feature PR #212](https://github.com/Tirthanand17/taskless-lab/pull/212) passed **4/4** PR checks and merged, implementation SHA `6544666f93d52673d2e8bdcdda6447adac23f263`.
+- [PR P5 synthetic signal workflow #43584918825](https://github.com/Tirthanand17/taskless-lab/actions/runs/43584918825) **success**, including actual generated black/white and silence/sine sample.
+- [Merged-main P5 acoustic/scene QA #43585035896](https://github.com/Tirthanand17/taskless-lab/actions/runs/43585035896) **success**; the runner verified both scene transitions and acoustic RMS rise without ASR, lyrics, source media, copyright grants or uploader.
+- [Merged-main P4 regression #43585035920](https://github.com/Tirthanand17/taskless-lab/actions/runs/43585035920) and [main Content Quality Gate #43585036042](https://github.com/Tirthanand17/taskless-lab/actions/runs/43585036042) **success**.
+- All output remains synthetic-only with zero actual approved creator media, zero legal grant, zero YouTube upload and no measured viral performance. Real P5 phase and roadmap **2/12 = 17%** are intentionally unchanged.
