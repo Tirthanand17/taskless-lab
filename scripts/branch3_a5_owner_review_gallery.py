@@ -20,6 +20,9 @@ from scripts.branch3_a6_original_review_signature import (
 )
 from scripts.branch3_original_arcade_pilots import validate_catalog
 from scripts.branch3_a5_scene_review_index import make_scene_review_index
+from scripts.branch3_a5_cue_review_worksheet import (
+    make_cue_review_worksheet, WORKSHEET
+)
 
 OUTPUT="CLIVOX-REVIEW-START-HERE.html"
 VIDEO="original-review-preview.mp4"
@@ -50,6 +53,9 @@ ul{padding-left:22px}li{margin:8px 0}
 .scene-review-index ol{padding-left:23px;max-height:560px;overflow-y:auto}
 .scene-row{padding:9px 4px 13px;border-bottom:1px solid var(--edge)}
 .scene-row p{margin:5px 0;font-size:13px;overflow-wrap:anywhere}
+.cue-review-items{padding-left:23px;max-height:560px;overflow-y:auto}
+.cue-row{padding:8px 3px;border-bottom:1px solid var(--edge)}
+.cue-row p{margin:4px 0;font-size:13px;overflow-wrap:anywhere}
 footer{color:var(--muted);font-size:12px;margin:40px 0 0}
 strong{color:#fff}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
@@ -88,6 +94,7 @@ def make_gallery(directory:Path,*,selection:str)->dict:
             "NO_REPLACE_EXISTING_GALLERY")
     cards=[]
     total_scenes=0
+    total_cues=0
     for episode in selected:
         folder=directory/episode["id"]
         packet=read_json(folder/PACKET_NAME)
@@ -110,10 +117,15 @@ def make_gallery(directory:Path,*,selection:str)->dict:
             episode,sub_file.read_text("utf-8"),episode["id"]+"/"+VIDEO
         )
         total_scenes+=scene_count
+        cue_review,cue_count=make_cue_review_worksheet(
+            folder,episode,sub_file.read_text("utf-8"),packet
+        )
+        total_cues+=cue_count
         name=safe(episode["title"])
         description=safe(episode["description"])
         local_video=safe(episode["id"]+"/"+VIDEO)
         local_srt=safe(episode["id"]+"/"+SRT)
+        local_worksheet=safe(episode["id"]+"/"+WORKSHEET)
         sheet=folder/SHEET
         if sheet.exists():
             require(sheet.is_file() and not sheet.is_symlink()
@@ -149,6 +161,8 @@ def make_gallery(directory:Path,*,selection:str)->dict:
   · <a href="{local_srt}" download>Open draft SRT captions</a></p>
   {contact_image}
   {scene_index}
+  <p><a href="{local_worksheet}" download>Save UNSIGNED timecoded cue correction worksheet (CSV)</a></p>
+  {cue_review}
   <details><summary>Exact video SHA-256 and pending owner checks</summary>
     <p><code>{digest}</code></p>
     <ul>{checklist}</ul>
@@ -193,6 +207,9 @@ CLIVOX channel: UCfPEvy0SefE_5nNlYlY_CyQ · Automatic publishing is OFF.</footer
         "stage":"A5_A6_CLIVOX_OFFLINE_OWNER_REVIEW_GALLERY_UNAPPROVED",
         "episode_count":len(selected),
         "per_scene_draft_caption_review_links":total_scenes,
+        "per_cue_unsiged_correction_review_links":total_cues,
+        "human_correction_csv_files":len(selected),
+        "human_correction_csv_is_release_authorization":False,
         "html_file":OUTPUT,
         "actual_video_audio_srt_and_unsigned_reverified":True,
         "only_relative_local_mp4_srt_links":True,
