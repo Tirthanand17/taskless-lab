@@ -119,6 +119,32 @@ jobs:
         run: |
           set -euo pipefail
           python -B -m scripts.branch3_original_arcade_qa --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original"
+          python -B - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"clivox-original"
+          expected={
+              "clivox_original_door_choice_s01":8,
+              "clivox_original_portal_choice_s02":8,
+              "clivox_original_three_level_arcade_l01":23,
+          }
+          selected=expected if os.environ["SELECTED_EPISODES"]=="all" else {
+              next(iter(expected)):next(iter(expected.values()))
+          }
+          assert len(list(root.glob("*/technical-review-qa.json")))==len(selected)
+          for episode_id,cue_count in selected.items():
+              report=json.loads((root/episode_id/"technical-review-qa.json").read_text())
+              proof=report["decoded_actual_frame_caption_safezone_qa"]
+              assert proof["every_storyboard_beat_caption_visible_in_safe_zone"] is True
+              assert proof["every_draft_caption_cue_visible_in_safe_zone"] is True
+              assert proof["actual_encoded_frames_checked"]==cue_count
+              assert proof["draft_caption_cue_count"]==cue_count
+              assert len(proof["per_cue_samples"])==cue_count
+              assert proof["caption_layout_human_approved"] is False
+              assert report["youtube_upload_authorized"] is False
+          print("CLIVOX_A5_ALL_8_8_23_REAL_MP4_CAPTION_CUES_VISUALLY_TESTED_NO_APPROVAL")
+          PY
           python -B -c 'import pathlib,json,os; d=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-original"; manifests=list(d.glob("*/review-manifest.json")); assert len(manifests)==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1); assert all(json.loads(p.read_text())["ready_to_publish"] is False for p in manifests); reports=list(d.glob("*/technical-review-qa.json")); assert len(reports)==len(manifests) and all(json.loads(p.read_text())["actual_ffprobe_checks_passed"] and not json.loads(p.read_text())["youtube_upload_authorized"] for p in reports); print("CLIVOX_ORIGINAL_FIRST_PARTY_MEDIA_QA_PASS_UPLOAD_LOCKED")'
       - name: Bind exact original video audio SRT metadata and fresh QA into A6 quarantined owner handoff
         run: |
