@@ -11,7 +11,10 @@ import argparse
 import json
 
 from scripts.branch3_v2_p5_longform_local_signal_planner import (
-    CHANNEL, LongformDenied, plan_longform_candidates, synthetic_demo,
+    CHANNEL, LongformDenied, canonical, plan_longform_candidates, synthetic_demo,
+)
+from scripts.branch3_v2_p5_synthetic_moment_proposals import (
+    P5Denied, _probe_closed,
 )
 
 STAGE = "CLIVOX_V2_P6_LONGFORM_UNREVIEWED_EDITORIAL_INTAKE_ONLY"
@@ -41,8 +44,18 @@ def need(ok: bool, code: str) -> None:
 
 def verify_candidate_binding(measurements: object, report: object) -> dict:
     """Reject changed timing, fake evidence, added authority, or stale digest."""
-    expected = plan_longform_candidates(measurements)
-    need(type(report) is dict and report == expected,
+    try:
+        _probe_closed()  # The actual P4/A3 policies must remain CLOSED.
+        expected = plan_longform_candidates(measurements)
+        # JSON canonicalization distinguishes false from 0 and true from 1;
+        # ordinary Python dict equality would otherwise accept forged types.
+        supplied_bytes = canonical(report)
+        expected_bytes = canonical(expected)
+    except (LongformDenied, P5Denied, ValueError, TypeError, KeyError, OverflowError):
+        raise EditorialIntakeDenied(
+            "CLIVOX_V2_P6_LONGFORM_DENIED_UNTRUSTED_SOURCE_OR_POLICY"
+        ) from None
+    need(type(report) is dict and supplied_bytes == expected_bytes,
          "EXACT_P5_MEASUREMENT_REPORT_RECOMPUTE")
     need(report["channel_id"] == CHANNEL
          and report["source_media_authenticated"] is False
@@ -51,6 +64,10 @@ def verify_candidate_binding(measurements: object, report: object) -> dict:
          and report["ready_for_render"] is False
          and report["youtube_upload_authorized"] is False,
          "P5_RIGHTS_AND_RENDER_MUST_STAY_BLOCKED")
+    try:
+        _probe_closed()
+    except P5Denied:
+        raise EditorialIntakeDenied("CLIVOX_V2_P6_LONGFORM_DENIED_P4_POLICY_CHANGED") from None
     return expected
 
 
