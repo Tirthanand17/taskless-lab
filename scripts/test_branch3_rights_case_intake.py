@@ -24,6 +24,9 @@ class RightsIntakeTests(unittest.TestCase):
         result=build_rights_cases(report(),generated_at_utc=REVIEWED_AT)
         self.assertEqual(result["stage"],"A2_RIGHTS_REVIEW_INTAKE_ONLY")
         self.assertEqual(result["pending_case_count"],2)
+        self.assertEqual(result["non_authorized_api_data_expires_at_utc"],
+                         "2026-11-19T12:00:00Z")
+        self.assertFalse(result["api_derived_scores_or_cross_owner_aggregations_used"])
         self.assertTrue(result["is_synthetic_fixture"])
         self.assertTrue(result["cases_all_unverified"])
         self.assertEqual(result["creator_permission_grants_issued_by_this_workflow"],0)
@@ -33,6 +36,7 @@ class RightsIntakeTests(unittest.TestCase):
         for c in result["cases"]:
             self.assertTrue(c["case_is_synthetic"])
             self.assertEqual(c["case_state"],"AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION")
+            self.assertNotIn("research_priority_score_only",c)
             self.assertTrue(all(x=="PENDING_HUMAN_VERIFICATION" for x in c["required_checks"].values()))
             self.assertEqual(len(c["required_checks"]),len(PENDING_CHECKS))
             for field in (
@@ -92,6 +96,9 @@ class RightsIntakeTests(unittest.TestCase):
             ("source_channel_id","NOT_A_CHANNEL"),
             ("source_url","https://attacker.example/a"),
             ("research_priority_score_0_to_100",101),
+            ("source_age_hours",24),
+            ("most_replayed_timestamp",120),
+            ("score_components",{"views_per_hour":1000}),
             ("source_title",""),
             ("sourcing_status","APPROVED_TO_CLIP"),
         ):
@@ -108,6 +115,36 @@ class RightsIntakeTests(unittest.TestCase):
         r["candidates"]=r["candidates"]*20
         with self.assertRaises(RightsIntakeBlocked):
             build_rights_cases(r,generated_at_utc=REVIEWED_AT)
+
+    def test_reject_expired_or_forged_non_authorized_api_data(self):
+        for name, value in (
+            ("non_authorized_api_data_retention_days", 30),
+            ("non_authorized_api_data_expires_at_utc", "2027-01-01T00:00:00Z"),
+            ("retrieved_at_utc", "2026-11-01T12:00:00Z"),
+            ("disallowed_api_data_derived_scores_generated", True),
+            ("cross_owner_statistics_aggregated", True),
+        ):
+            r=report();r[name]=value
+            with self.subTest(name=name),self.assertRaises(RightsIntakeBlocked):
+                build_rights_cases(r,generated_at_utc=REVIEWED_AT)
+        with self.assertRaises(RightsIntakeBlocked):
+            build_rights_cases(report(),generated_at_utc="2026-11-30T12:00:00Z")
+
+    def test_reject_forged_stats_and_derived_scores_but_accept_null_stats(self):
+        for stats in (
+            {"views":"100000","likes":0,"comments":0},
+            {"views":100,"likes":-1,"comments":0},
+            {"views":100,"likes":0,"comments":True},
+            {"views":100,"likes":0,"comments":0,"retentionSpike":0.95},
+        ):
+            r=report();r["candidates"][0]["public_stats"]=stats
+            with self.subTest(stats=stats),self.assertRaises(RightsIntakeBlocked):
+                build_rights_cases(r,generated_at_utc=REVIEWED_AT)
+        r=report()
+        r["candidates"][0]["public_stats"]["likes"]=None
+        out=build_rights_cases(r,generated_at_utc=REVIEWED_AT)
+        self.assertTrue(all(c["case_state"]=="AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION"
+                            for c in out["cases"]))
 
     def test_source_video_in_real_mode_remains_unverified(self):
         r=report()
