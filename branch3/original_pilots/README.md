@@ -4,6 +4,12 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## Illustration clearance fix discovered by all-beat contact sheet
+
+The first verified all-beat review artifact, [GitHub run 43557461327](https://github.com/Tirthanand17/taskless-lab/actions/runs/43557461327), confirmed 5 + 5 + 13 caption frames and provided a JPEG contact sheet per episode. Inspecting these **real MP4-derived** visual summaries exposed large portal rings and doors intruding into the same lower-screen area as spoken subtitles. They were technically visible but not visually separated.
+
+The renderer now places original doors, portals, timer and abstract score icons inside a bounded **middle illustration slot**, reserved above the lower-third caption area. A new geometry invariant checks **both preview/full resolution and vertical/landscape** modes so every icon remains inside safe headroom and below-title spacing. The main GitHub render workflow must pass actual encoded-frame and A6 exact-video QA after this change; old review hashes must not be treated as approved. The sound and estimated text timing remain drafts pending owner listening and commercial asset/tool review.
+
 ## New every-beat visual QA and owner contact sheets (under test)
 
 The previous independent subtitle-frame test sampled **only the first spoken cue** in each video. A later scene could lose its captions without the old check detecting it. The new test seeks directly into the **actual encoded MP4** and checks visible caption pixels in a lower-safe area for **every** storyboard beat: five scenes per Short, thirteen scenes in the landscape episode. It also fails if a scene lacks any corresponding SRT cue. The test confirms basic visibility, not exact word alignment or human editorial quality.
