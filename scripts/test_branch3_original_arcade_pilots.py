@@ -14,6 +14,7 @@ from scripts.branch3_original_arcade_pilots import (
 )
 from scripts.branch3_original_arcade_qa import (
     OriginalQARejected, check_caption_draft, validate_episode_report,
+    visible_caption_safezone_qa,
 )
 
 
@@ -284,6 +285,43 @@ class OriginalPilotQATests(unittest.TestCase):
                         self.assertLess(v["warning_font_px"],32)
         with self.assertRaises(ArcadeDenied):
             original_review_typography(1920,1080,"unknown")
+
+    def test_actual_frame_visual_caption_safezone_regression_checks(self):
+        try:
+            from PIL import Image, ImageDraw
+        except ModuleNotFoundError:
+            self.skipTest("Pillow is installed in dedicated real-media CI")
+        from io import BytesIO
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        ep=sample()["episodes"][0]
+        srt=subtitles(ep)
+        with tempfile.TemporaryDirectory() as directory:
+            fake_video=Path(directory)/"fake-review.mp4"
+            fake_video.write_bytes(b"synthetic-test-only"*8000)
+            def simulated_frame(*,white_in_zone:bool):
+                im=Image.new("RGB",(540,960),(12,19,31))
+                dr=ImageDraw.Draw(im)
+                if white_in_zone:
+                    dr.rectangle((120,745,380,775),fill=(240,243,249))
+                else:
+                    dr.rectangle((120,120,380,150),fill=(240,243,249))
+                buf=BytesIO()
+                im.save(buf,format="PNG")
+                return SimpleNamespace(stdout=buf.getvalue())
+            with patch("scripts.branch3_original_arcade_qa.subprocess.run",
+                       return_value=simulated_frame(white_in_zone=True)):
+                d=visible_caption_safezone_qa(fake_video,srt)
+                self.assertTrue(d["first_voice_cue_visible_in_safe_zone"])
+                self.assertGreater(d["white_text_pixel_count_in_safe_zone"],
+                                   d["minimum_required_white_caption_pixels"])
+                self.assertFalse(d["caption_layout_human_approved"])
+            with patch("scripts.branch3_original_arcade_qa.subprocess.run",
+                       return_value=simulated_frame(white_in_zone=False)):
+                with self.assertRaisesRegex(
+                    OriginalQARejected,"BURNED_CAPTION_MISSING_OR_OFFSCREEN"
+                ):
+                    visible_caption_safezone_qa(fake_video,srt)
 
     def test_pillow_scene_is_new_original_procedural_art(self):
         try:
