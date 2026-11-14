@@ -456,7 +456,16 @@
     "assistant_extracted_actual_final_review_frames_and_inspected_both_shorts_long": true,
     "corrected_landscape_brand_and_footer_accepted_in_technical_frame_inspection": true,
     "original_first_party_owner_human_final_review_accepted": false,
-    "real_youtube_upload_enabled": false
+    "real_youtube_upload_enabled": false,
+    "all_storyboard_beat_caption_visibility_qa_in_original_encoded_mp4": true,
+    "all_storyboard_srt_cues_required": true,
+    "source_free_per_episode_visual_contact_sheet_generator": "scripts/branch3_a5_review_contact_sheet.py",
+    "derived_contact_sheet_links_in_offline_owner_gallery": true,
+    "caption_video_frames_checked_per_short": 5,
+    "caption_video_frames_checked_per_landscape_episode": 13,
+    "additional_outro_visual_frame_for_owner_review": true,
+    "all_beat_contact_sheets_real_full_render_passed": false,
+    "owner_human_content_or_rights_reviewer_approved": false
   },
   "a10_owner_analytics_readonly": {
     "fixed_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",

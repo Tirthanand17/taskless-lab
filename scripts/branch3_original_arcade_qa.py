@@ -75,48 +75,125 @@ def check_caption_draft(
             "machine_forced_alignment_proven":False}
 
 
-def visible_caption_safezone_qa(video:Path,srt:str)->dict:
-    """Independent decoded-frame QA: on-screen white subtitle ink MUST be
-    visible in lower-middle safe zone, not offscreen or over the headline.
+def cue_samples_by_beat(
+    content:str, beats:list[dict], duration:int
+)->list[dict]:
+    """Pick one actual cue midpoint in EVERY scene beat (never OCR/word sync)."""
+    require(type(content) is str and type(beats) is list
+            and 1<=len(beats)<=20 and type(duration) is int
+            and 1<=duration<=600,"BEAT_SAMPLE_INPUT")
+    sections=re.split(r"\n\s*\n",content.strip())
+    cues=[]
+    for section in sections:
+        m=TIMING.fullmatch(section)
+        require(m is not None,"BEAT_SAMPLE_SRT_FORMAT")
+        start,end=srt_seconds(m[2]),srt_seconds(m[3])
+        require(0<=start<end<=duration+.2,"BEAT_SAMPLE_CLOCK")
+        cues.append((start,end))
+    samples=[]
+    previous_beat_end=0
+    for index,beat in enumerate(beats):
+        require(type(beat) is dict and
+                type(beat.get("start_s")) is int and
+                type(beat.get("end_s")) is int and
+                beat["start_s"]==previous_beat_end and
+                beat["start_s"]<beat["end_s"]<=duration,
+                "BEAT_SAMPLE_CONTINUITY")
+        previous_beat_end=beat["end_s"]
+        matched=next((
+            (start,end) for start,end in cues
+            if start>=beat["start_s"]-.003 and
+               end<=beat["end_s"]+.003
+        ),None)
+        require(matched is not None,
+                "BEAT_WITHOUT_VISIBLE_SPOKEN_CAPTION")
+        start,end=matched
+        samples.append({
+            "beat_index":index,
+            "time_s":round((start+end)/2,3),
+        })
+    require(previous_beat_end==duration,"BEAT_SAMPLE_TOTAL_DURATION")
+    return samples
 
-    Original scene artwork here uses orange/violet/mint, not white, at this
-    lower-panel location; opaque caption glyphs are white. The zero-external-
-    media frame check is a regression signal, not aesthetic or content approval.
-    """
+
+def decode_actual_frame(video:Path,time_s:float):
+    """Read a single video frame with bounded FFmpeg output, no temp files."""
     from PIL import Image
-    require(video.is_file() and not video.is_symlink()
-            and video.stat().st_size>100_000,"CAPTION_VIDEO_MISSING")
-    sections=re.split(r"\n\s*\n",srt.strip())
-    require(len(sections)>0,"CAPTION_CUES_MISSING")
-    m=TIMING.fullmatch(sections[0])
-    require(m is not None,"FIRST_CAPTION_CUE_BAD")
-    start,end=srt_seconds(m[2]),srt_seconds(m[3])
-    require(0<=start<end and end-start>.05,"CAPTION_START_INVALID")
-    moment=start+(end-start)/2
+    require(isinstance(video,Path) and video.is_file()
+            and not video.is_symlink()
+            and 100_000<video.stat().st_size<300_000_000,
+            "CAPTION_VIDEO_MISSING")
+    require(type(time_s) in (int,float) and
+            0<=time_s<=600,"INVALID_FRAME_TIMESTAMP")
     result=subprocess.run([
         "ffmpeg","-hide_banner","-loglevel","error","-nostdin",
-        "-ss",f"{moment:.3f}","-i",str(video),
+        "-ss",f"{time_s:.3f}","-i",str(video),
         "-frames:v","1","-f","image2pipe","-vcodec","png","pipe:1"
     ],capture_output=True,check=True,timeout=45)
     require(2_000<len(result.stdout)<12_000_000,"CAPTION_FRAME_DECODE")
     with Image.open(BytesIO(result.stdout)) as original:
         im=original.convert("RGB")
     w,h=im.size
-    require(w>=540 and h>=540,"CAPTION_FRAME_DIMENSIONS")
-    x0,x1=round(w*.13),round(w*.87)
-    y0,y1=round(h*.70),round(h*.875)
-    zone=im.crop((x0,y0,x1,y1))
-    # Detect sufficiently bright non-neutral-graphic text pixels only in
-    # the caption safe zone; colored arcade art doesn't satisfy this.
-    white=sum(1 for pixel in zone.getdata()
-              if pixel[0]>=195 and pixel[1]>=195 and pixel[2]>=195)
-    min_white=max(35,round(w*h*.00010))
-    require(white>=min_white,"BURNED_CAPTION_MISSING_OR_OFFSCREEN")
+    require(w>=540 and h>=540 and w<=1920 and h<=1920,
+            "CAPTION_FRAME_DIMENSIONS")
+    return im
+
+
+def visible_caption_safezone_qa(
+    video:Path,srt:str,beats:list[dict]|None=None
+)->dict:
+    """Inspect EVERY storyboard beat in real encoded MP4.
+
+    Only the lower-middle caption region is tested for visible white glyphs.
+    The source-free arcade vector art has no white text in that region; a
+    displaced/missing libass subtitle fails. Sampled frames cannot certify
+    aesthetics, truthful speech, word alignment or actual owner approval.
+    """
+    require(type(srt) is str,"SRT_SOURCE_TYPE")
+    sections=re.split(r"\n\s*\n",srt.strip())
+    require(len(sections)>=1,"CAPTION_CUES_MISSING")
+    m=TIMING.fullmatch(sections[0])
+    require(m is not None,"FIRST_CAPTION_CUE_BAD")
+    a,b=srt_seconds(m[2]),srt_seconds(m[3])
+    require(0<=a<b and b-a>.05,"CAPTION_START_INVALID")
+    if beats is None:
+        samples=[{"beat_index":0,"time_s":round((a+b)/2,3)}]
+    else:
+        require(type(beats) is list and 1<=len(beats)<=20,
+                "VISUAL_BEAT_LIST")
+        samples=cue_samples_by_beat(srt,beats,beats[-1]["end_s"])
+    result_samples=[]
+    for sample in samples:
+        im=decode_actual_frame(video,sample["time_s"])
+        w,h=im.size
+        x0,x1=round(w*.13),round(w*.87)
+        y0,y1=round(h*.70),round(h*.875)
+        zone=im.crop((x0,y0,x1,y1))
+        white=sum(1 for pixel in zone.getdata()
+                  if pixel[0]>=195 and pixel[1]>=195 and pixel[2]>=195)
+        min_white=max(35,round(w*h*.00010))
+        require(white>=min_white,
+                "BURNED_CAPTION_MISSING_OR_OFFSCREEN_BEAT_"+
+                    str(sample["beat_index"]))
+        result_samples.append({
+            "beat_index":sample["beat_index"],
+            "time_s":sample["time_s"],
+            "white_text_pixel_count":white,
+            "minimum_required_pixels":min_white,
+        })
     return {
         "first_voice_cue_visible_in_safe_zone":True,
-        "white_text_pixel_count_in_safe_zone":white,
-        "minimum_required_white_caption_pixels":min_white,
+        "every_storyboard_beat_caption_visible_in_safe_zone":True,
+        "actual_encoded_frames_checked":len(result_samples),
+        "storyboard_beat_count":len(result_samples),
+        "white_text_pixel_count_in_safe_zone":min(
+            x["white_text_pixel_count"] for x in result_samples
+        ),
+        "minimum_required_white_caption_pixels":max(
+            x["minimum_required_pixels"] for x in result_samples
+        ),
         "caption_sampled_from_actual_encoded_frame":True,
+        "per_beat_samples":result_samples,
         "caption_layout_human_approved":False,
     }
 
@@ -210,7 +287,7 @@ def validate_episode_report(episode:dict,manifest:dict,
     )
     caption_visual=None
     if video is not None:
-        caption_visual=visible_caption_safezone_qa(video,subtitles)
+        caption_visual=visible_caption_safezone_qa(video,subtitles,episode["beats"])
         require(sha(video)==manifest["video_sha256"],"VIDEO_SHA_TAMPER")
         require(video.stat().st_size==manifest.get("video_bytes"),
                 "VIDEO_SIZE")

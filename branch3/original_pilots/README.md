@@ -4,6 +4,12 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## New every-beat visual QA and owner contact sheets (under test)
+
+The previous independent subtitle-frame test sampled **only the first spoken cue** in each video. A later scene could lose its captions without the old check detecting it. The new test seeks directly into the **actual encoded MP4** and checks visible caption pixels in a lower-safe area for **every** storyboard beat: five scenes per Short, thirteen scenes in the landscape episode. It also fails if a scene lacks any corresponding SRT cue. The test confirms basic visibility, not exact word alignment or human editorial quality.
+
+A new source-free storyboard contact-sheet generator uses one real frame per beat **plus the final outro** to make a visual JPEG overview of every Short and the 108-second long video. These `original-beat-review-contact-sheet.jpg` files are included in each GitHub Actions original review artifact and linked from the offline HTML player. They help catch late-scene overlap, off-screen text and inappropriate endings; they **do not replace complete human playback or voice/caption review**. Generation re-verifies exact MP4/WAV/SRT/metadata A6 hashes, real FFprobe QA, the all-false owner checklist and all-scene caption visibility before producing a derived JPEG. No external game footage, network assets, signing credentials or YouTube operations are used.
+
 ## Latest corrected full-resolution CLIVOX review package — visual inspection passed
 
 **Current recommended review artifact:** [main GitHub Actions run 43555814059](https://github.com/Tirthanand17/taskless-lab/actions/runs/43555814059). This actual `main` push render completed successfully for all **three** original videos (2 × 36-second vertical and 108-second horizontal, at 1080×1920 and 1920×1080). Its ~24.4 MB seven-day GitHub artifact includes the offline `CLIVOX-REVIEW-START-HERE.html`, editable SRT files, exact MP4/WAV/metadata SHA-256 handoffs, independent frame-based subtitle safezone checks, and three unsigned owner review checklists.

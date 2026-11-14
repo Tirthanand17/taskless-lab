@@ -26,6 +26,10 @@ The [real private GitHub sandbox proof](../a8/REAL_GITHUB_CAS_SANDBOX_PROOF.md) 
 
 [Owner's A8 GitHub attempt-ledger readback guide](../a8/OWNER_PRIVATE_ATTEMPT_READBACK.md) documents a protected owner/main/manual **read-only** bridge that can verify the already created private empty upload-control file with a separately scoped token and separately retained prior sequence/head anchor. This implementation is tested offline only; the environment **does not yet have its dedicated A8 token**, no actual live GitHub Actions A8 readback has been completed, and a successful read cannot authorize a retry or upload. The existing protected Clivox release environment likewise contains no uploader OAuth secrets.
 
+## New all-beat visual QA and offline contact sheets
+
+Each original-first render now checks the visibility of subtitles in an actual encoded frame **for every storyboard beat** rather than just the opening frame. The GitHub artifact includes a small JPEG montage of each video: all storyboard beats plus the silent closing scene, derived from the actual MP4. The offline HTML review viewer links these sheets, making it easier for the human owner to spot scene-by-scene layout faults. A contact sheet cannot authenticate audio/speech timing, rights, owner signing or video playback; **the entire final MP4 still requires manual watch and listen review**. Rendering fresh videos changes their exact SHA-256 and requires new unsigned A6 checklists.
+
 ## Latest corrected video master for owner inspection
 
 The latest **corrected full-resolution three-video review** is [Actions run 43555814059](https://github.com/Tirthanand17/taskless-lab/actions/runs/43555814059), with three hash-bound unsigned review packets and offline HTML player. All independent encoded-frame caption safezone QA passed, and assistant frame inspection confirmed readable Shorts subtitles, reduced long subtitles, proper landscape brand positioning and silent outro without stranded text. The owner must **still personally watch and listen to the exact videos**, verify accuracy/commercial licensing and separately sign any final A6 release; no automatic upload is permitted.

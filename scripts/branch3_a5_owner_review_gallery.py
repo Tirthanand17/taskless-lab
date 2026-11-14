@@ -23,6 +23,7 @@ from scripts.branch3_original_arcade_pilots import validate_catalog
 OUTPUT="CLIVOX-REVIEW-START-HERE.html"
 VIDEO="original-review-preview.mp4"
 SRT="narration-timing-draft.srt"
+SHEET="original-beat-review-contact-sheet.jpg"
 CSS="""
 :root{color-scheme:dark;--bg:#090d17;--card:#151e2d;--edge:#364253;--text:#f0f4f9;--muted:#aab5c5;--orange:#ff762e}
 *{box-sizing:border-box}html{font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
@@ -104,6 +105,20 @@ def make_gallery(directory:Path,*,selection:str)->dict:
         description=safe(episode["description"])
         local_video=safe(episode["id"]+"/"+VIDEO)
         local_srt=safe(episode["id"]+"/"+SRT)
+        sheet=folder/SHEET
+        if sheet.exists():
+            require(sheet.is_file() and not sheet.is_symlink()
+                    and 1000<sheet.stat().st_size<8_000_000,
+                    "UNSAFE_CONTACT_SHEET")
+            contact_image=(
+                '<p><a href="'+safe(episode["id"]+"/"+SHEET)+'" download>'
+                'Save all-beat visual contact sheet</a></p>'
+                '<img src="'+safe(episode["id"]+"/"+SHEET)+'" '
+                'alt="Every original arcade scene and final outro review snapshot" '
+                'loading="lazy" style="max-width:100%;border-radius:12px">'
+            )
+        else:
+            contact_image=""
         digest=safe(packet["exact_video_sha256"])
         format_label=safe(
             ("Vertical Short" if episode["format"]=="short"
@@ -123,6 +138,7 @@ def make_gallery(directory:Path,*,selection:str)->dict:
   <p>{description}</p>
   <p><a href="{local_video}" download>Save original MP4 review copy</a>
   · <a href="{local_srt}" download>Open draft SRT captions</a></p>
+  {contact_image}
   <details><summary>Exact video SHA-256 and pending owner checks</summary>
     <p><code>{digest}</code></p>
     <ul>{checklist}</ul>

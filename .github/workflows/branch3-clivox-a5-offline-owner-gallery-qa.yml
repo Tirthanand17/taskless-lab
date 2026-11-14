@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/branch3_a5_owner_review_gallery.py'
       - 'scripts/test_branch3_a5_owner_review_gallery.py'
+      - 'scripts/branch3_a5_review_contact_sheet.py'
+      - 'scripts/test_branch3_a5_review_contact_sheet.py'
       - 'scripts/branch3_a6_original_review_signature.py'
       - 'branch3/original_pilots/**'
       - 'branch3/architecture/**'
@@ -32,11 +34,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install Pillow for synthetic storyboard/JPEG tests
+        run: python -m pip install --disable-pip-version-check Pillow==11.3.0
       - name: Test three local MP4 gallery cards, file tamper and forged review
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py
-          python -B -m unittest -v scripts.test_branch3_a5_owner_review_gallery
+          python -B -m py_compile scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
+          python -B -m unittest -v scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_review_contact_sheet
       - name: Offline fixture cannot claim reviewed, signed or uploaded
         run: |
           set -euo pipefail

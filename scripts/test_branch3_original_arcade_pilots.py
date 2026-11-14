@@ -15,6 +15,7 @@ from scripts.branch3_original_arcade_pilots import (
 from scripts.branch3_original_arcade_qa import (
     OriginalQARejected, check_caption_draft, validate_episode_report,
     visible_caption_safezone_qa,
+    cue_samples_by_beat, srt_seconds,
 )
 
 
@@ -330,6 +331,74 @@ class OriginalPilotQATests(unittest.TestCase):
                     OriginalQARejected,"BURNED_CAPTION_MISSING_OR_OFFSCREEN"
                 ):
                     visible_caption_safezone_qa(fake_video,srt)
+
+    def test_real_caption_probe_selects_a_cue_for_every_storyboard_beat(self):
+        for episode in sample()["episodes"]:
+            content=subtitles(episode)
+            points=cue_samples_by_beat(
+                content,episode["beats"],episode["duration_seconds"]
+            )
+            self.assertEqual(len(points),len(episode["beats"]))
+            self.assertEqual([x["beat_index"] for x in points],
+                             list(range(len(episode["beats"]))))
+            for point,beat in zip(points,episode["beats"]):
+                self.assertGreaterEqual(point["time_s"],beat["start_s"])
+                self.assertLessEqual(point["time_s"],beat["end_s"])
+            # Delete the entire second-beat subtitle group: old first-cue
+            # visual QA would never notice, new every-beat sampler must.
+            sections=content.strip().split("\n\n")
+            damaged=[]
+            for section in sections:
+                line=section.splitlines()[1]
+                start=srt_seconds(line.split(" --> ")[0])
+                second=episode["beats"][1]
+                if not second["start_s"]<=start<second["end_s"]:
+                    damaged.append(section)
+            with self.assertRaisesRegex(
+                OriginalQARejected,"BEAT_WITHOUT_VISIBLE_SPOKEN_CAPTION"
+            ):
+                cue_samples_by_beat(
+                    "\n\n".join(damaged),
+                    episode["beats"],episode["duration_seconds"]
+                )
+
+    def test_second_beat_offscreen_caption_fails_even_when_first_is_visible(self):
+        try:
+            from PIL import Image,ImageDraw
+        except ModuleNotFoundError:
+            self.skipTest("Pillow available in dedicated media CI")
+        from unittest.mock import patch
+        episode=sample()["episodes"][0]
+        good=Image.new("RGB",(540,960),(10,18,32))
+        ImageDraw.Draw(good).rectangle(
+            (120,745,370,775),fill=(240,242,249)
+        )
+        bad=Image.new("RGB",(540,960),(10,18,32))
+        actual=[good,bad,good,good,good]
+        with patch("scripts.branch3_original_arcade_qa.decode_actual_frame",
+                   side_effect=actual) as decode:
+            with self.assertRaisesRegex(
+                OriginalQARejected,
+                "BURNED_CAPTION_MISSING_OR_OFFSCREEN_BEAT_1"
+            ):
+                visible_caption_safezone_qa(
+                    Path("synthetic-mocked.mp4"),
+                    subtitles(episode),episode["beats"]
+                )
+            self.assertEqual(decode.call_count,2)
+        with patch("scripts.branch3_original_arcade_qa.decode_actual_frame",
+                   return_value=good) as decode:
+            got=visible_caption_safezone_qa(
+                Path("synthetic-mocked.mp4"),
+                subtitles(episode),episode["beats"]
+            )
+            self.assertEqual(got["actual_encoded_frames_checked"],5)
+            self.assertTrue(
+                got["every_storyboard_beat_caption_visible_in_safe_zone"]
+            )
+            self.assertEqual(len(got["per_beat_samples"]),5)
+            self.assertEqual(decode.call_count,5)
+            self.assertFalse(got["caption_layout_human_approved"])
 
     def test_pillow_scene_is_new_original_procedural_art(self):
         try:
