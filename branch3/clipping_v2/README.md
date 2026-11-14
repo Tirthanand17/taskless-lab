@@ -41,3 +41,7 @@ P2 engineering is merged in [PR #206](https://github.com/Tirthanand17/taskless-l
 **P1 is now implemented and verified in source-only GitHub CI.** The remaining high-priority work is P2 partner prospect verification and P3 real licensing before any approved video source acquisition. Do not mistake P1 synthetic checks for a functional clip-producing system.
 
 **Guardrails:** Public GitHub only for code, docs, sanitized test metadata and original synthetic fixtures. Restricted creator media, contracts and private notes must be in separately approved confidential storage. User's laptop storage is not required. FlowMinute Branches 1 and 2 must remain unchanged.
+
+## P4 synthetic-source technical QA (no creator media)
+
+[P4 quarantined media integrity and format preflight](P4_SYNTHETIC_PRIVATE_MEDIA_HANDOFF.md) tests an FFmpeg-generated tiny synthetic sample on a temporary GitHub runner and rejects forged rights/vault/media switches. Engineering is **pending PR CI**. No creator source downloads, private vault provisioning, genuine granted licenses, editing or YouTube uploads are enabled. Real P4 milestone remains blocked, and the verified V2 roadmap is still **2/12 = 17%**.
