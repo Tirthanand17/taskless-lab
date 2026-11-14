@@ -98,11 +98,7 @@ def build_handoff_hold(*, owner_matrix: dict, storage_gate: dict,
     require(type(vault_fixture) is dict
             and vault_fixture == fixture_report()
             and vault_fixture.get("live_github_private_metadata_readback") is False
-            and vault_fixture.get("vault_media_write_authorized") is False
-            if "vault_media_write_authorized" in vault_fixture else
-            type(vault_fixture) is dict
-            and vault_fixture == fixture_report()
-            and vault_fixture.get("live_github_private_metadata_readback") is False,
+            and vault_fixture.get("vault_media_write_authorized", False) is False,
             "A3_IS_OFFLINE_FIXTURE_ONLY")
     return {
         "schema_version": 1,
