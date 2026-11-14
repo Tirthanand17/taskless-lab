@@ -63,6 +63,54 @@ must make to the authored screenplay, regenerated narration, SRT and MP4.
    hashes. Real owner licensing and signing must occur through the separate
    trusted release process **after** full final human playback.
 
+## New A5 private candidate script revision preview — advisory only
+
+After the correction intake has validated the original media and edited
+worksheet, the new `scripts.branch3_a5_private_revision_preview` CLI can
+propose precise spoken-scene text for a human editor **without writing or
+changing** the public original arcade screenplay:
+
+```bash
+python -B -m scripts.branch3_a5_private_revision_preview \
+  --review-root "/private/clivox-extracted-artifact" \
+  --selection all \
+  --episode-id "clivox_original_door_choice_s01" \
+  --edited-csv "/private/clivox-edited-short01.csv" \
+  --output "/private/clivox-short01-candidate-scene-diff.json"
+```
+
+The output is a private, new-file-only (0600 POSIX) JSON proposal. Its source
+identity includes the exact public catalog digest plus the prior SHA-bound
+A6 packet, MP4, WAV, SRT and the edited CSV digest. It re-runs the complete
+read-only correction intake and independent A6 media verification.
+
+For a cue with `actual_words_and_pronunciation=ISSUE` and a valid proposed
+replacement caption, the preview rebuilds the scene's entire proposed
+`spoken` string **in the original cue order** and checks that a hypothetical
+copy of the full original-only catalog passes the same strict schema. The
+report contains only *affected* original/proposed spoken-scene text and
+estimates the **new number of draft subtitle cues** after text wrapping;
+actual speech boundaries and SRT timings cannot be inferred before a new
+voice render. Every proposed scene explicitly requires editor acceptance
+and a fresh TTS/WAV/SRT/MP4/A5/A6 verification.
+
+If an issue relates only to subtitle timing or readability, or if a speech
+issue contains notes without safe replacement text, it becomes a
+`private_manual_editor_tasks` entry. The system never silently changes
+spoken dialogue based on an on-screen timing concern. Unsafe or unrenderable
+proposed voice text (URLs, embedded markup, control/non-ASCII characters,
+formula-looking text, overlong words, or text exceeding the catalog limits)
+is rejected rather than applied.
+
+**The report is neither a git patch nor a release artifact.** It cannot
+claim an authenticated human review or automatically modify the original
+public repository, voice, captions, graphics, title/description, rights
+records, or YouTube account. Only an editor who actually listened to the
+review master may choose which source revisions to author and submit for
+normal review. After any approved source edit, rerender from scratch and
+obtain **new exact-media A6 hashes and a genuinely reviewed owner release**.
+Do not commit raw private reviewer notes or the generated JSON to GitHub.
+
 ## Security and integration rules
 
 - Always re-runs the full A6 **read-only** exact-media verification on the
