@@ -90,7 +90,7 @@ class CandidateProofTests(unittest.TestCase):
         return repo,source,report
 
     def test_exact_3_hash_locked_assets_for_every_day(self):
-        for date in [f"2026-11-{day:02d}" for day in range(13,18)]:
+        for date in [f"2026-11-{day:02d}" for day in range(13,19)]:
             with self.subTest(date=date),TemporaryDirectory() as td:
                 repo,source,report=self.fixture(td,date)
                 out=Path(td)/"flat"
@@ -161,7 +161,7 @@ class CandidateProofTests(unittest.TestCase):
                 self.assertFalse(out.exists())
 
     def test_episode_metadata_false_owner_signature_no_youtube_state(self):
-        for day in range(13,18):
+        for day in range(13,19):
             date=f"2026-11-{day:02d}"
             source=json.loads((DEFAULT_REPO/"content/nov13_17_2026"/f"day_{date}.json").read_text())
             for ep in source["episodes"]:
