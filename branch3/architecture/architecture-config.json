@@ -478,7 +478,17 @@
     "landscape_icon_top_min_fraction": 0.43,
     "landscape_art_headline_safe_geom_code": true,
     "landscape_art_heading_clearance_real_full_run_verified": false,
-    "actual_youtube_upload_enabled": false
+    "actual_youtube_upload_enabled": false,
+    "final_pcm_acoustic_envelope_onsets_used_for_draft_srt": true,
+    "independent_postmix_waveform_subtracted_procedural_bed_validated": true,
+    "real_main_run_23_scene_audio_srt_bounds_verified": "43562174869",
+    "real_main_run_max_boundary_difference_ms": 20,
+    "real_main_run_allowed_difference_ms": 140,
+    "real_all_three_unsigned_packets_reverified": true,
+    "exact_spoken_words_human_aligned": false,
+    "original_audio_commercial_rights_owner_approved": false,
+    "owner_signed_exact_video_release_exists": false,
+    "youtube_upload_enabled": false
   },
   "a10_owner_analytics_readonly": {
     "fixed_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
