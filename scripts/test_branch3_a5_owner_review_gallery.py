@@ -1,6 +1,7 @@
 """A5/A6 portable offline review gallery: no script, network, or false rights."""
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 import re
@@ -19,6 +20,7 @@ from scripts.branch3_a6_original_review_signature import (
     REQUEST_FILE, make_unsigned_review_request
 )
 from scripts.branch3_original_arcade_pilots import validate_catalog, draft_srt
+from scripts.branch3_a5_cue_review_worksheet import WORKSHEET
 
 
 class OfflineOwnerReviewGalleryTests(unittest.TestCase):
@@ -83,11 +85,25 @@ class OfflineOwnerReviewGalleryTests(unittest.TestCase):
         self.assertEqual(html.count("UNSIGNED · NOT PUBLISHED"),3)
         self.assertEqual(html.count("Open draft SRT captions"),3)
         self.assertEqual(html.count('class="scene-row"'),23)
-        self.assertEqual(html.count("#t="),23)
+        self.assertEqual(html.count("#t="),62)
+        self.assertEqual(html.count('class="cue-row"'),39)
         self.assertEqual(result["per_scene_draft_caption_review_links"],23)
+        self.assertEqual(result["per_cue_unsigned_correction_review_links"],39)
+        self.assertEqual(result["human_correction_csv_files"],3)
+        self.assertFalse(result["human_correction_csv_is_release_authorization"])
         for episode in self.episodes:
             self.assertIn(episode["id"]+"/"+MP4,html)
             self.assertIn(episode["id"]+"/"+SRT,html)
+            self.assertIn(episode["id"]+"/"+WORKSHEET,html)
+            worksheet=self.directory/episode["id"]/WORKSHEET
+            self.assertTrue(worksheet.is_file())
+            with worksheet.open(newline="",encoding="utf-8") as stream:
+                rows=list(csv.DictReader(stream))
+            self.assertEqual(len(rows), 23 if episode["format"]=="long" else 8)
+            self.assertTrue(all(
+                row["purpose"]=="EDITORIAL_CORRECTION_ONLY_NOT_APPROVAL"
+                and row["correction_required"]=="NOT_REVIEWED" for row in rows
+            ))
             self.assertIn(self.reports[episode["id"]]["packet"]["exact_video_sha256"],
                           html)
         for bad in ("<script","https://","http://","fetch(","owner-signed","oauth-token"):
@@ -122,6 +138,9 @@ class OfflineOwnerReviewGalleryTests(unittest.TestCase):
         self.assertEqual(out["episode_count"],1)
         html=(self.directory/OUTPUT).read_text("utf-8")
         self.assertEqual(html.count("<video controls"),1)
+        self.assertEqual(html.count('class="cue-row"'),8)
+        self.assertEqual(out["per_cue_unsigned_correction_review_links"],8)
+        self.assertEqual(out["human_correction_csv_files"],1)
         self.assertIn(self.episodes[0]["id"],html)
         self.assertNotIn(self.episodes[1]["id"]+"/"+MP4,html)
 

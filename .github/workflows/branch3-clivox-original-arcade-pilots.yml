@@ -16,6 +16,7 @@ on:
       - 'scripts/branch3_a6_original_handoff.py'
       - 'scripts/branch3_a6_original_review_signature.py'
       - 'scripts/branch3_a5_owner_review_gallery.py'
+      - 'scripts/branch3_a5_cue_review_worksheet.py'
       - 'scripts/branch3_a5_scene_review_index.py'
       - 'scripts/branch3_a5_review_contact_sheet.py'
       - 'branch3/original_pilots/arcade_trio.json'
@@ -32,8 +33,10 @@ on:
       - 'scripts/branch3_a6_original_review_signature.py'
       - 'scripts/test_branch3_a6_original_review_signature.py'
       - 'scripts/branch3_a5_owner_review_gallery.py'
+      - 'scripts/branch3_a5_cue_review_worksheet.py'
       - 'scripts/branch3_a5_scene_review_index.py'
       - 'scripts/test_branch3_a5_owner_review_gallery.py'
+      - 'scripts/test_branch3_a5_cue_review_worksheet.py'
       - 'scripts/test_branch3_a5_scene_review_index.py'
       - 'scripts/branch3_a5_review_contact_sheet.py'
       - 'scripts/test_branch3_a5_review_contact_sheet.py'
@@ -98,8 +101,8 @@ jobs:
       - name: Independent original-rights, scene, caption and technical-QA tests
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a5_speech_boundaries.py scripts/test_branch3_a5_speech_boundaries.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_scene_review_index.py scripts/test_branch3_a5_scene_review_index.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
-          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a5_speech_boundaries scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_scene_review_index scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
+          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a5_speech_boundaries.py scripts/test_branch3_a5_speech_boundaries.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py scripts/branch3_a5_scene_review_index.py scripts/test_branch3_a5_scene_review_index.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
+          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a5_speech_boundaries scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_cue_review_worksheet scripts.test_branch3_a5_scene_review_index scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
       - name: Render original-first arcade video(s) in disposable GitHub temp only
         run: |
           set -euo pipefail
@@ -194,6 +197,54 @@ jobs:
           set -euo pipefail
           python -B -m scripts.branch3_a5_owner_review_gallery --mode build --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original" > "$RUNNER_TEMP/clivox-gallery-result.json"
           python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-gallery-result.json").read_text()); assert d["episode_count"]==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1) and d["actual_video_audio_srt_and_unsigned_reverified"] and d["only_relative_local_mp4_srt_links"] and d["no_remote_assets_or_browser_scripts"] and d["per_scene_draft_caption_review_links"]==(23 if os.environ["SELECTED_EPISODES"]=="all" else 5) and not d["human_editorial_review_completed"] and not d["real_owner_release_signed"] and not d["youtube_upload_authorized"] and not d["youtube_schedule_authorized"] and not d["youtube_publish_authorized"]; print("CLIVOX_A5_OFFLINE_REVIEW_GALLERY_SAFE_HUMAN_CHECK_REQUIRED")'
+      - name: Verify 39 exact-media unsigned cue correction worksheets contain zero approvals
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import csv
+          import json
+          import os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"]) / "clivox-original"
+          expected = {
+              "clivox_original_door_choice_s01": 8,
+              "clivox_original_portal_choice_s02": 8,
+              "clivox_original_three_level_arcade_l01": 23,
+          }
+          if os.environ["SELECTED_EPISODES"] == "one":
+              expected = {next(iter(expected)): 8}
+          found = sorted(root.glob("*/narration-caption-corrections-UNREVIEWED.csv"))
+          assert len(found) == len(expected)
+          gallery = json.loads((Path(os.environ["RUNNER_TEMP"]) /
+              "clivox-gallery-result.json").read_text("utf-8"))
+          assert gallery["per_cue_unsigned_correction_review_links"] == sum(expected.values())
+          assert gallery["human_correction_csv_files"] == len(expected)
+          assert gallery["human_correction_csv_is_release_authorization"] is False
+          for episode_id, count in expected.items():
+              folder = root / episode_id
+              packet = json.loads((folder / "owner-handoff-quarantined.json").read_text("utf-8"))
+              with (folder / "narration-caption-corrections-UNREVIEWED.csv").open(
+                  encoding="utf-8", newline=""
+              ) as source:
+                  records = list(csv.DictReader(source))
+              assert len(records) == count
+              assert [int(r["cue_number"]) for r in records] == list(range(1, count + 1))
+              assert all(
+                  r["exact_video_sha256"] == packet["exact_video_sha256"]
+                  and r["exact_audio_sha256"] == packet["exact_audio_sha256"]
+                  and r["exact_srt_sha256"] == packet["exact_captions_sha256"]
+                  and r["purpose"] == "EDITORIAL_CORRECTION_ONLY_NOT_APPROVAL"
+                  and all(r[k] == "NOT_REVIEWED" for k in (
+                      "actual_words_and_pronunciation", "subtitle_timing",
+                      "caption_visual_readability", "correction_required"
+                  ))
+                  and r["suggested_replacement_caption"] == ""
+                  and r["reviewer_issue_notes"] == ""
+                  for r in records
+              )
+              assert packet["youtube_upload_authorized"] is False
+          print("CLIVOX_UNREVIEWED_EXACT_MEDIA_39_CUES_SAFE_EDITORIAL_CSV_ONLY_NO_UPLOAD")
+          PY
       - name: Upload only author-owned new graphics/fiction/TTS reviewer files (7 days)
         uses: actions/upload-artifact@v4
         with:
@@ -202,6 +253,7 @@ jobs:
             ${{ runner.temp }}/clivox-original/CLIVOX-REVIEW-START-HERE.html
             ${{ runner.temp }}/clivox-original/**/original-review-preview.mp4
             ${{ runner.temp }}/clivox-original/**/narration-timing-draft.srt
+            ${{ runner.temp }}/clivox-original/**/narration-caption-corrections-UNREVIEWED.csv
             ${{ runner.temp }}/clivox-original/**/scene-*.png
             ${{ runner.temp }}/clivox-original/**/original-beat-review-contact-sheet.jpg
             ${{ runner.temp }}/clivox-original/**/original-tts-and-procedural-ambience.wav
