@@ -230,9 +230,9 @@ def visible_caption_safezone_qa(
     return {
         "first_voice_cue_visible_in_safe_zone":True,
         "every_storyboard_beat_caption_visible_in_safe_zone":True,
-        "every_draft_caption_cue_visible_in_safe_zone":True,
+        "every_draft_caption_cue_visible_in_safe_zone":beats is not None,
         "actual_encoded_frames_checked":len(result_samples),
-        "draft_caption_cue_count":len(result_samples),
+        "draft_caption_cue_count":len(result_samples) if beats is not None else None,
         "storyboard_beat_count":len(beats) if beats is not None else 1,
         "white_text_pixel_count_in_safe_zone":min(
             x["white_text_pixel_count"] for x in result_samples
@@ -241,7 +241,7 @@ def visible_caption_safezone_qa(
             x["minimum_required_pixels"] for x in result_samples
         ),
         "caption_sampled_from_actual_encoded_frame":True,
-        "per_beat_samples":result_samples,
+        "per_cue_samples":result_samples,
         "caption_layout_human_approved":False,
     }
 
