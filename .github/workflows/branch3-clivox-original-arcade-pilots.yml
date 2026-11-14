@@ -17,6 +17,7 @@ on:
       - 'scripts/branch3_a6_original_review_signature.py'
       - 'scripts/branch3_a5_owner_review_gallery.py'
       - 'scripts/branch3_a5_cue_review_worksheet.py'
+      - 'scripts/branch3_a5_cue_correction_intake.py'
       - 'scripts/branch3_a5_scene_review_index.py'
       - 'scripts/branch3_a5_review_contact_sheet.py'
       - 'branch3/original_pilots/arcade_trio.json'
@@ -34,9 +35,11 @@ on:
       - 'scripts/test_branch3_a6_original_review_signature.py'
       - 'scripts/branch3_a5_owner_review_gallery.py'
       - 'scripts/branch3_a5_cue_review_worksheet.py'
+      - 'scripts/branch3_a5_cue_correction_intake.py'
       - 'scripts/branch3_a5_scene_review_index.py'
       - 'scripts/test_branch3_a5_owner_review_gallery.py'
       - 'scripts/test_branch3_a5_cue_review_worksheet.py'
+      - 'scripts/test_branch3_a5_cue_correction_intake.py'
       - 'scripts/test_branch3_a5_scene_review_index.py'
       - 'scripts/branch3_a5_review_contact_sheet.py'
       - 'scripts/test_branch3_a5_review_contact_sheet.py'
@@ -101,8 +104,8 @@ jobs:
       - name: Independent original-rights, scene, caption and technical-QA tests
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a5_speech_boundaries.py scripts/test_branch3_a5_speech_boundaries.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py scripts/branch3_a5_scene_review_index.py scripts/test_branch3_a5_scene_review_index.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
-          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a5_speech_boundaries scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_cue_review_worksheet scripts.test_branch3_a5_scene_review_index scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
+          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a5_narration_energy_qa.py scripts/test_branch3_a5_narration_energy_qa.py scripts/branch3_a5_speech_boundaries.py scripts/test_branch3_a5_speech_boundaries.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py scripts/branch3_a5_cue_correction_intake.py scripts/test_branch3_a5_cue_correction_intake.py scripts/branch3_a5_scene_review_index.py scripts/test_branch3_a5_scene_review_index.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
+          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a5_narration_energy_qa scripts.test_branch3_a5_speech_boundaries scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_cue_review_worksheet scripts.test_branch3_a5_cue_correction_intake scripts.test_branch3_a5_scene_review_index scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
       - name: Render original-first arcade video(s) in disposable GitHub temp only
         run: |
           set -euo pipefail
@@ -244,6 +247,71 @@ jobs:
               )
               assert packet["youtube_upload_authorized"] is False
           print("CLIVOX_UNREVIEWED_EXACT_MEDIA_39_CUES_SAFE_EDITORIAL_CSV_ONLY_NO_UPLOAD")
+          PY
+      - name: Reverify ACTUAL full media with synthetic-only A5 correction intake (never upload notes)
+        run: |
+          set -euo pipefail
+          ORIGINAL="$RUNNER_TEMP/clivox-original/clivox_original_door_choice_s01/narration-caption-corrections-UNREVIEWED.csv"
+          cp "$ORIGINAL" "$RUNNER_TEMP/clivox-ci-synthetic-untouched.csv"
+          python -B -m scripts.branch3_a5_cue_correction_intake \
+            --review-root "$RUNNER_TEMP/clivox-original" \
+            --selection "$SELECTED_EPISODES" \
+            --episode-id clivox_original_door_choice_s01 \
+            --edited-csv "$RUNNER_TEMP/clivox-ci-synthetic-untouched.csv" \
+            --output "$RUNNER_TEMP/clivox-ci-synthetic-untouched-report.json"
+          python -B - <<'PY'
+          import csv
+          import json
+          import os
+          from pathlib import Path
+          folder = Path(os.environ["RUNNER_TEMP"])
+          report = json.loads((folder/"clivox-ci-synthetic-untouched-report.json").read_text())
+          assert report["total_cue_rows"] == 8
+          assert report["pending_or_incomplete_rows"] == 8
+          assert report["issue_rows"] == 0
+          assert report["owner_review_completed"] is False
+          assert report["human_review_identity_authenticated"] is False
+          assert report["ready_to_upload"] is False
+          assert report["ready_to_schedule"] is False
+          assert report["ready_to_publish"] is False
+          source = folder/"clivox-ci-synthetic-untouched.csv"
+          with source.open(newline="", encoding="utf-8") as stream:
+              records = list(csv.DictReader(stream))
+              fields = tuple(records[0].keys())
+          assert len(records) == 8
+          # Synthetic fixture only; NO real reviewer input is imported to CI.
+          records[1]["actual_words_and_pronunciation"] = "ISSUE"
+          records[1]["subtitle_timing"] = "OK"
+          records[1]["caption_visual_readability"] = "OK"
+          records[1]["correction_required"] = "YES"
+          records[1]["reviewer_issue_notes"] = "CI_SYNTHETIC_NOT_A_REAL_HUMAN_REVIEW"
+          with (folder/"clivox-ci-synthetic-edited.csv").open("w", newline="", encoding="utf-8") as out:
+              writer = csv.DictWriter(out, fieldnames=fields)
+              writer.writeheader()
+              writer.writerows(records)
+          PY
+          python -B -m scripts.branch3_a5_cue_correction_intake \
+            --review-root "$RUNNER_TEMP/clivox-original" \
+            --selection "$SELECTED_EPISODES" \
+            --episode-id clivox_original_door_choice_s01 \
+            --edited-csv "$RUNNER_TEMP/clivox-ci-synthetic-edited.csv" \
+            --output "$RUNNER_TEMP/clivox-ci-synthetic-edited-report.json"
+          python -B - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          p = json.loads((Path(os.environ["RUNNER_TEMP"])/"clivox-ci-synthetic-edited-report.json").read_text())
+          assert p["total_cue_rows"] == 8
+          assert p["pending_or_incomplete_rows"] == 7
+          assert p["issue_rows"] == 1
+          assert p["proposed_editorial_changes_private"][0]["cue_number"] == 2
+          assert p["human_review_identity_authenticated"] is False
+          assert p["owner_review_completed"] is False
+          assert p["rights_licenses_validated"] is False
+          assert p["ready_to_upload"] is False
+          assert p["ready_to_schedule"] is False
+          assert p["ready_to_publish"] is False
+          print("CLIVOX_REAL_H264_WAV_SRT_A6_VERIFIED_SYNTHETIC_CORRECTION_INTAKE_NO_OWNER_NO_YOUTUBE")
           PY
       - name: Upload only author-owned new graphics/fiction/TTS reviewer files (7 days)
         uses: actions/upload-artifact@v4
