@@ -1,0 +1,94 @@
+name: CLIVOX V2 P2 Creator Prospect Intake QA (NO CONTACT / NO MEDIA)
+
+on:
+  pull_request:
+    paths:
+      - 'branch3/clipping_v2/prospects/public-business-pages-2026-11-14.json'
+      - 'scripts/branch3_v2_creator_prospect_intake.py'
+      - 'scripts/test_branch3_v2_creator_prospect_intake.py'
+      - '.github/workflows/branch3-clivox-v2-p2-prospect-intake.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'branch3/clipping_v2/prospects/public-business-pages-2026-11-14.json'
+      - 'scripts/branch3_v2_creator_prospect_intake.py'
+      - 'scripts/test_branch3_v2_creator_prospect_intake.py'
+      - '.github/workflows/branch3-clivox-v2-p2-prospect-intake.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-v2-p2-qa-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source_only_public_prospects:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_CREATOR_OUTREACH_ENABLED: 'false'
+      CLIVOX_AUTO_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_AUTO_UPLOAD_ENABLED: 'false'
+      PUBLISH_ENABLED: 'false'
+    steps:
+      - name: Checkout no saved token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python standard library only
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run malicious input and privacy unit tests without network
+        run: |
+          set -euo pipefail
+          test "$CLIVOX_CREATOR_OUTREACH_ENABLED" = "false"
+          test "$CLIVOX_AUTO_DOWNLOAD_ENABLED" = "false"
+          test "$CLIVOX_AUTO_UPLOAD_ENABLED" = "false"
+          test "$PUBLISH_ENABLED" = "false"
+          python -B -m unittest -v scripts.test_branch3_v2_creator_prospect_intake
+      - name: Generate P2 strictly unsent owner-review proposals in temporary runner space
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/clivox-p2-not-contacted"
+          python -B -m scripts.branch3_v2_creator_prospect_intake \
+            --input branch3/clipping_v2/prospects/public-business-pages-2026-11-14.json \
+            --output "$RUNNER_TEMP/clivox-p2-not-contacted/clivox-p2-owner-review-UNSENT.json"
+          python -B - <<'PY'
+          import os,json
+          from pathlib import Path
+          d=json.loads((Path(os.environ["RUNNER_TEMP"])/"clivox-p2-not-contacted/clivox-p2-owner-review-UNSENT.json").read_text("utf-8"))
+          assert d["stage"]=="CLIVOX_V2_P2_PUBLIC_PROSPECT_REVIEW_AND_UNSENT_OUTREACH"
+          assert d["channel_id"]=="UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert d["prospect_count"]==5
+          assert d["potential_partner_count"]==4
+          assert d["famous_format_research_only_count"]==1
+          assert d["human_shortlist_approved"] is False
+          assert d["all_proposals_unsent"] is True
+          assert d["all_creator_identity_and_licensing_unverified"] is True
+          assert d["real_creator_contacts_sent"]==0
+          assert d["real_creator_replies_received"]==0
+          assert d["creator_grants_verified"]==0
+          assert d["private_media_sources_delivered"]==0
+          assert d["licensed_source_media_access_authorized"] is False
+          assert d["youtube_upload_authorized"] is False
+          assert d["youtube_schedule_authorized"] is False
+          assert d["youtube_publish_authorized"] is False
+          assert d["google_or_youtube_api_calls"]==0
+          assert d["no_third_party_media_download"] is True
+          assert d["ranking_is_not_based_on_api_views_or_likes"] is True
+          assert all(p["actual_creator_authority_verified"] is False
+                     and p["actual_creator_contacted"] is False
+                     and p["commercial_redistribution_and_monetization_granted"] is False
+                     and p["proposed_outreach"]["state"]=="UNSENT_DRAFT_FOR_OWNER_APPROVAL_ONLY"
+                     and p["proposed_outreach"]["recipient_address"] is None
+                     and p["proposed_outreach"]["sent"] is False
+                     for p in d["review_queue"])
+          print("CLIVOX_V2_P2_OFFLINE_PROSPECTS_VALIDATED_NO_CONTACT_NO_MEDIA_NO_YOUTUBE")
+          PY
+      - name: No uploaded artifacts or published private contacts
+        run: |
+          echo 'P2 candidate packet remains in disposable runner temp; do not upload candidate CSVs, creator correspondence, or proposals publicly.'

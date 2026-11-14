@@ -12,6 +12,23 @@
 6. [Phased Integration Plan](PHASED_INTEGRATION_PLAN.md): ordered P0–P11, human blockers, exact future P1 API policy remediation and tests.
 7. [Architecture Status (JSON)](architecture-status.json): machine-readable, fail-closed **NOT STARTED** V2 status, separate from the older original-fiction engineering percentage.
 
+## P2 public creator partnership groundwork — code in review
+
+The first [P2 creator prospect research intake](P2_CREATOR_PROSPECT_INTAKE.md)
+uses [five creator-branded public business references](prospects/public-business-pages-2026-11-14.json)
+(Ankitt, Eggmilk, Mr JD Gaming, MandarriaXL and CaseOh). The
+[offline-only pipeline](../../scripts/branch3_v2_creator_prospect_intake.py)
+validates them and generates recipient-less **UNSENT** trial proposal drafts
+for a human owner to inspect. The dedicated GitHub Action
+`branch3-clivox-v2-p2-prospect-intake.yml` never contacts creators or
+downloads footage. **No legal identity, contact deliverability, owner
+shortlist selection or commercial rights have yet been verified.**
+
+P2's engineering implementation is under PR/CI review; the actual human
+selection/rights milestone is still open. Therefore the **verified overall
+roadmap remains 2/12 (17%)**, separate from the old 78% source-free
+fictional media engineering estimate.
+
 ## P1 verified and the next workstream
 
 [The P1 metadata/rights/provenance integration](P1_API_COMPLIANCE_IMPLEMENTATION.md) is now merged and validated on `main` with **24/24 PR CI** and [successful A1→A2→A3 source-safe integration run #43577935757](https://github.com/Tirthanand17/taskless-lab/actions/runs/43577935757). Public API derived viral scores were removed and a seven-day expiry plus strict deny-state lineage were added. The roadmap is **17% by phase count**, not 17% of a licensed media clipping/publishing product. No third-party licenses or uploads exist.
