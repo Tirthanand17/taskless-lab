@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P4_SYNTHETIC_MEDIA_PREFLIGHT_VERIFIED_ON_MAIN_REAL_P2_P3_RIGHTS_AND_P4_VAULT_BLOCKED",
+  "status": "P5_SYNTHETIC_ONLY_CANDIDATE_ENGINEERING_PENDING_CI_P2_P3_P4_REAL_RIGHTS_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -90,8 +90,10 @@
     {
       "id": "P5",
       "name": "Licensed source event ASR VAD and scene detection",
-      "state": "NOT_STARTED",
-      "requires_owner": "Actual rights granted media"
+      "state": "SYNTHETIC_ONLY_RMS_LUMA_CANDIDATES_CODE_PENDING_CI_REAL_SOURCE_BLOCKED",
+      "requires_owner": "Actual rights granted media",
+      "synthetic_technical_candidate_extraction_implemented": true,
+      "real_creator_source_access_authorized": false
     },
     {
       "id": "P6",
@@ -230,5 +232,17 @@
   "p4_merged_feature_implementation_sha": "1f23a5081a1e6a75b256c58be6116f496d157b69",
   "p4_offline_python_tests_passed": 21,
   "p4_real_creator_videos_received": 0,
-  "p4_technical_fixture_only_human_licensing_required": true
+  "p4_technical_fixture_only_human_licensing_required": true,
+  "p5_synthetic_technical_signal_pipeline_implemented": true,
+  "p5_real_creator_source_files_processed": 0,
+  "p5_real_rights_holders_authenticated": 0,
+  "p5_real_licensed_candidate_review_complete": false,
+  "p5_ASR_VAD_PySceneDetect_implemented_for_real_sources": false,
+  "p5_human_editor_label_count": 0,
+  "p5_real_top5_evaluation_complete": false,
+  "p5_ci_workflow": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml",
+  "p5_synthetic_preflight_script": "scripts/branch3_v2_p5_synthetic_moment_proposals.py",
+  "p5_runbook": "branch3/clipping_v2/P5_SYNTHETIC_SIGNAL_CANDIDATE_QA.md",
+  "p5_synthetic_ci_verified_on_main": false,
+  "p5_real_milestone_complete": false
 }

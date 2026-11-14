@@ -1,0 +1,128 @@
+name: CLIVOX V2 P5 Synthetic Acoustic/Scene Candidate QA (NO CREATOR SOURCE)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_v2_p5_synthetic_moment_proposals.py'
+      - 'scripts/test_branch3_v2_p5_synthetic_moment_proposals.py'
+      - '.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml'
+      - 'branch3/clipping_v2/P5_*'
+      - 'branch3/clipping_v2/architecture-status.json'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/branch3_v2_p5_synthetic_moment_proposals.py'
+      - 'scripts/test_branch3_v2_p5_synthetic_moment_proposals.py'
+      - '.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml'
+      - 'branch3/clipping_v2/P5_*'
+      - 'branch3/clipping_v2/architecture-status.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clivox-v2-p5-source-free
+  cancel-in-progress: false
+
+jobs:
+  synthetic_signals_only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      CLIVOX_CREATOR_CONTACT_ENABLED: 'false'
+      CLIVOX_SOURCE_DOWNLOAD_ENABLED: 'false'
+      CLIVOX_PRIVATE_MEDIA_WRITE_ENABLED: 'false'
+      CLIVOX_YOUTUBE_UPLOAD_ENABLED: 'false'
+      PUBLISH_ENABLED: 'false'
+    steps:
+      - name: Read-only controller checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python standard library only
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Assert NO RIGHTS OR UPLOAD and run source-free negative tests
+        run: |
+          set -euo pipefail
+          test "$CLIVOX_CREATOR_CONTACT_ENABLED" = false
+          test "$CLIVOX_SOURCE_DOWNLOAD_ENABLED" = false
+          test "$CLIVOX_PRIVATE_MEDIA_WRITE_ENABLED" = false
+          test "$CLIVOX_YOUTUBE_UPLOAD_ENABLED" = false
+          test "$PUBLISH_ENABLED" = false
+          python -B -m scripts.branch3_v2_p5_synthetic_moment_proposals --mode closed
+          python -B -m unittest -v \
+            scripts.test_branch3_v2_p5_synthetic_moment_proposals \
+            scripts.test_branch3_v2_p4_synthetic_handoff_preflight
+      - name: Install Ubuntu FFmpeg for generated color/sine signal ONLY
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends ffmpeg
+      - name: Build original synthetic black/white scene and silence/sine sample in ephemeral runner
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/clivox-p5-synthetic"
+          ffmpeg -hide_banner -loglevel error -nostdin -y \
+            -f lavfi -i "color=c=black:s=160x90:r=10:d=2" \
+            -f lavfi -i "color=c=white:s=160x90:r=10:d=1" \
+            -f lavfi -i "color=c=black:s=160x90:r=10:d=3" \
+            -f lavfi -i "anullsrc=r=48000:cl=mono:d=2" \
+            -f lavfi -i "sine=frequency=440:sample_rate=48000:duration=1" \
+            -f lavfi -i "anullsrc=r=48000:cl=mono:d=3" \
+            -filter_complex "[0:v][1:v][2:v]concat=n=3:v=1:a=0[v];[3:a][4:a][5:a]concat=n=3:v=0:a=1[a]" \
+            -map "[v]" -map "[a]" -t 6 -c:v libx264 -threads:v 1 \
+            -pix_fmt yuv420p -c:a aac \
+            "$RUNNER_TEMP/clivox-p5-synthetic/self_generated.mp4"
+          TEST_SHA=$(sha256sum "$RUNNER_TEMP/clivox-p5-synthetic/self_generated.mp4" | cut -d' ' -f1)
+          TEST_BYTES=$(stat -c%s "$RUNNER_TEMP/clivox-p5-synthetic/self_generated.mp4")
+          python -B -m scripts.branch3_v2_p5_synthetic_moment_proposals \
+            --mode synthetic \
+            --scratch "$RUNNER_TEMP/clivox-p5-synthetic" \
+            --fixture-file self_generated.mp4 \
+            --sha256 "$TEST_SHA" --bytes "$TEST_BYTES" \
+            > "$RUNNER_TEMP/clivox-p5-synthetic/quarantined-signals-only.json"
+      - name: Independently verify observation-only output and fail if invented claims
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = (Path(os.environ["RUNNER_TEMP"]) /
+                  "clivox-p5-synthetic/quarantined-signals-only.json")
+          report = json.loads(path.read_text("utf-8"))
+          assert report["channel_id"] == "UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert report["stage"] == "CLIVOX_V2_P5_SYNTHETIC_SIGNAL_CANDIDATES_ONLY"
+          assert report["synthetic_original_fixture_only"] is True
+          assert report["actual_creator_source_count"] == 0
+          assert report["real_creator_license_count"] == 0
+          assert report["third_party_video_downloads"] == 0
+          assert report["outreach_messages_sent"] == 0
+          assert report["youtube_uploads"] == 0
+          assert report["youtube_api_calls"] == 0
+          assert report["p5_real_licensed_pipeline_complete"] is False
+          assert report["p5_real_editor_label_evaluation_complete"] is False
+          assert report["ASR_or_VAD_performed"] is False
+          assert report["speech_or_quotes_inferred"] is False
+          assert report["youtube_replay_heatmap_inferred"] is False
+          assert report["estimated_viral_performance"] is None
+          assert report["human_source_context_required"] is True
+          assert report["synthetic_technical_candidate_count"] >= 1
+          rows=report["synthetic_candidate_windows"]
+          assert all(
+            0 <= r["start_ms"] < r["end_ms"] <= 6000
+            and r["machine_transcript"] is None
+            and r["creator_rights_verified"] is False
+            and r["ready_for_editorial_use"] is False
+            and r["human_context_review_required"] is True
+            for r in rows)
+          assert any("VIDEO_LUMA_CUT" in r["evidence_kinds"] for r in rows)
+          assert any("ACOUSTIC_RMS_RISE" in r["evidence_kinds"] for r in rows)
+          print("CLIVOX_V2_P5_REAL_GENERATED_SIGNAL_QA_PASS_NO_CREATOR_MEDIA_NO_VIRAL_PREDICTIONS")
+          PY
+      - name: No media or candidate artifact uploaded publicly
+        run: |
+          echo "Synthetic signals only; source bytes and signal packet discarded with runner temp."
