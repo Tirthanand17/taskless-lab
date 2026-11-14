@@ -34,6 +34,10 @@ Any invalid signature, forged owner approval, changed digest, incorrect channel,
 
 A real production release must separately satisfy an independently enrolled owner signing identity, revocation checkpoint, a reviewed **A6 exact release payload** (distinct from editorial attestation), rights evidence, production durable upload reservation and Clivox-only Google OAuth. This PR does **not** implement or activate those external trust decisions.
 
+## No-network owner playback interface
+
+The original full-resolution review workflow now packages a portable `CLIVOX-REVIEW-START-HERE.html` viewer that embeds each *local, exact SHA-verified* video and links its draft subtitle file. It cannot sign or store a checklist; it is simply a convenient way to watch all videos in one place after extracting the GitHub Actions ZIP. [Original arcade reviewer guide](../original_pilots/README.md) describes this interface. Human owner signing, commercial permission and Google uploads remain absent.
+
 ## How to review new artifacts
 
 After a fresh render on the [GitHub workflow](../../.github/workflows/branch3-clivox-original-arcade-pilots.yml) using `selection=all` and `render_mode=full`, download the review artifact within seven days. Each of the three original episodes will now contain:
