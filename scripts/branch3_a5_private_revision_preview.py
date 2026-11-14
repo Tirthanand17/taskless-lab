@@ -41,10 +41,13 @@ def readable_words(text: str) -> str:
     # forbids URLs and escapes in original spoken words. Be as strict here.
     require(all(31 < ord(c) < 127 for c in text)
             and "\\" not in text and "http" not in text.lower()
+            and "<" not in text and ">" not in text
             and not text.lstrip().startswith(("=", "+", "-", "@")),
             "UNSAFE_PROPOSED_SPEECH")
     candidate = normalized(text)
-    require(4 <= len(candidate) <= 185, "NORMALIZED_SPEECH_LENGTH")
+    require(4 <= len(candidate) <= 185
+            and all(len(word) <= 35 for word in candidate.split(" ")),
+            "NORMALIZED_SPEECH_LENGTH")
     return candidate
 
 
