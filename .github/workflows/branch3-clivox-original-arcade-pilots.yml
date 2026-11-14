@@ -14,6 +14,7 @@ on:
       - 'scripts/branch3_a6_original_handoff.py'
       - 'scripts/branch3_a6_original_review_signature.py'
       - 'scripts/branch3_a5_owner_review_gallery.py'
+      - 'scripts/branch3_a5_review_contact_sheet.py'
       - 'branch3/original_pilots/arcade_trio.json'
   pull_request:
     paths:
@@ -26,6 +27,8 @@ on:
       - 'scripts/test_branch3_a6_original_review_signature.py'
       - 'scripts/branch3_a5_owner_review_gallery.py'
       - 'scripts/test_branch3_a5_owner_review_gallery.py'
+      - 'scripts/branch3_a5_review_contact_sheet.py'
+      - 'scripts/test_branch3_a5_review_contact_sheet.py'
       - 'branch3/original_pilots/**'
       - 'branch3/architecture/**'
       - '.github/workflows/branch3-clivox-original-arcade-pilots.yml'
@@ -87,8 +90,8 @@ jobs:
       - name: Independent original-rights, scene, caption and technical-QA tests
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py
-          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
+          python -B -m py_compile scripts/branch3_original_arcade_pilots.py scripts/branch3_original_arcade_qa.py scripts/test_branch3_original_arcade_pilots.py scripts/branch3_a6_original_handoff.py scripts/test_branch3_a6_original_handoff.py scripts/branch3_a6_original_review_signature.py scripts/test_branch3_a6_original_review_signature.py scripts/branch3_a5_owner_review_gallery.py scripts/test_branch3_a5_owner_review_gallery.py scripts/branch3_a5_review_contact_sheet.py scripts/test_branch3_a5_review_contact_sheet.py
+          python -B -m unittest -v scripts.test_branch3_original_arcade_pilots scripts.test_branch3_a6_original_handoff scripts.test_branch3_a6_original_review_signature scripts.test_branch3_a5_owner_review_gallery scripts.test_branch3_a5_review_contact_sheet scripts.test_branch3_a5_media scripts.test_branch3_a4_editorial
       - name: Render original-first arcade video(s) in disposable GitHub temp only
         run: |
           set -euo pipefail
@@ -124,6 +127,11 @@ jobs:
           fi
           test "$PUBLISH_ENABLED" = "false"
           test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = "false"
+      - name: Create per-episode all-beat visual contact sheets from actual encoded MP4s
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a5_review_contact_sheet --mode build --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original" > "$RUNNER_TEMP/clivox-all-beat-visual-sheets.json"
+          python -B -c 'import os,pathlib,json; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-all-beat-visual-sheets.json").read_text()); assert d["episode_count"]==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1) and d["actual_original_video_files_revalidated"] and d["all_scene_frames_included_plus_outro"] and not d["owner_review_and_playback_completed"] and not d["real_owner_signed_release_exists"] and not d["youtube_upload_authorized"] and not d["youtube_schedule_authorized"] and not d["youtube_publish_authorized"]; assert all(x["total_contact_sheet_frames"]==x["scene_frames"]+1 and x["outro_frames"]==1 for x in d["contact_sheets"]); print("CLIVOX_A5_ALL_BEAT_CONTACT_SHEETS_REAL_MP4_AND_OUTRO_PASS")'
       - name: Generate offline playable CLIVOX owner review gallery bound to exact SHA-verified videos
         run: |
           set -euo pipefail
@@ -138,6 +146,7 @@ jobs:
             ${{ runner.temp }}/clivox-original/**/original-review-preview.mp4
             ${{ runner.temp }}/clivox-original/**/narration-timing-draft.srt
             ${{ runner.temp }}/clivox-original/**/scene-*.png
+            ${{ runner.temp }}/clivox-original/**/original-beat-review-contact-sheet.jpg
             ${{ runner.temp }}/clivox-original/**/original-tts-and-procedural-ambience.wav
             ${{ runner.temp }}/clivox-original/**/metadata-preview.json
             ${{ runner.temp }}/clivox-original/**/owner-handoff-quarantined.json
