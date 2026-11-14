@@ -1,4 +1,4 @@
-name: CLIVOX V2 P5/P6/P7 Source-Free Signals to 9:16 Render QA
+name: CLIVOX V2 P5-P8 Source-Free Signal Render and Unsigned Release QA
 
 on:
   pull_request:
@@ -11,6 +11,11 @@ on:
       - 'scripts/test_branch3_v2_p6_synthetic_storyboard.py'
       - 'scripts/branch3_v2_p7_synthetic_vertical_renderer.py'
       - 'scripts/test_branch3_v2_p7_synthetic_vertical_renderer.py'
+      - 'scripts/branch3_v2_p8_synthetic_unsigned_review.py'
+      - 'scripts/test_branch3_v2_p8_synthetic_unsigned_review.py'
+      - 'branch3/clipping_v2/P8_*'
+      - 'scripts/branch3_a6_signed_release.py'
+      - 'branch3/release/release-policy.json'
       - 'branch3/clipping_v2/P7_*'
       - 'branch3/clipping_v2/P6_*'
       - '.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml'
@@ -27,6 +32,11 @@ on:
       - 'scripts/test_branch3_v2_p6_synthetic_storyboard.py'
       - 'scripts/branch3_v2_p7_synthetic_vertical_renderer.py'
       - 'scripts/test_branch3_v2_p7_synthetic_vertical_renderer.py'
+      - 'scripts/branch3_v2_p8_synthetic_unsigned_review.py'
+      - 'scripts/test_branch3_v2_p8_synthetic_unsigned_review.py'
+      - 'branch3/clipping_v2/P8_*'
+      - 'scripts/branch3_a6_signed_release.py'
+      - 'branch3/release/release-policy.json'
       - 'branch3/clipping_v2/P7_*'
       - 'branch3/clipping_v2/P6_*'
       - '.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml'
@@ -73,7 +83,9 @@ jobs:
           python -B -m scripts.branch3_v2_p5_synthetic_editorial_evaluation --mode closed
           python -B -m scripts.branch3_v2_p6_synthetic_storyboard --mode closed
           python -B -m scripts.branch3_v2_p7_synthetic_vertical_renderer --mode closed
+          python -B -m scripts.branch3_v2_p8_synthetic_unsigned_review --mode closed
           python -B -m unittest -v \
+            scripts.test_branch3_v2_p8_synthetic_unsigned_review \
             scripts.test_branch3_v2_p7_synthetic_vertical_renderer \
             scripts.test_branch3_v2_p6_synthetic_storyboard \
             scripts.test_branch3_v2_p5_synthetic_editorial_evaluation \
@@ -266,6 +278,67 @@ jobs:
           assert str(root) not in json.dumps(report)
           assert "source_url" not in report and "contract" not in report
           print("CLIVOX_V2_P7_SYNTHETIC_9_16_RENDER_AV_SYNC_CAPTIONS_PASS_NO_REAL_CREATOR_SOURCE_NO_RELEASE")
+          PY
+      - name: Recheck exact generated MP4 and write strictly UNSIGNED owner review into ephemeral scratch
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_v2_p8_synthetic_unsigned_review \
+            --mode synthetic --scratch "$RUNNER_TEMP/clivox-p5-synthetic" \
+            > "$RUNNER_TEMP/clivox-p5-synthetic/synthetic-p8-review-qa-only.json"
+          python -B - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          from scripts.branch3_v2_p8_synthetic_unsigned_review import (
+              CHECKS, canonical, validate_unsigned_packet, closed_release_boundary,
+          )
+          root = Path(os.environ["RUNNER_TEMP"]) / "clivox-p5-synthetic"
+          data = json.loads((root / "synthetic-p8-review-qa-only.json").read_text("utf-8"))
+          assert data["stage"] == "CLIVOX_V2_P8_SYNTHETIC_EXACT_MEDIA_UNSIGNED_REVIEW_QA"
+          assert data["channel_id"] == "UCfPEvy0SefE_5nNlYlY_CyQ"
+          for key in (
+              "synthetic_exact_video_bytes_hashed",
+              "synthetic_exact_p6_edl_and_p7_qa_hash_bound",
+              "synthetic_media_redecoded_and_audio_visual_rechecked",
+              "unsigned_quarantined_review_packet_created_in_runner",
+              "review_checks_default_false",
+          ):
+              assert data[key] is True, key
+          assert data["real_rights_grants"] == 0
+          assert data["real_creator_media"] == 0
+          assert data["real_trusted_owner_key_enrolled"] is False
+          assert data["authentic_owner_review_verified"] is False
+          assert data["actual_owner_detached_signature_present"] is False
+          assert data["real_rights_revocation_freshness_verified"] is False
+          assert data["youtube_uploads"] == 0
+          assert data["youtube_publish_authorized"] is False
+          assert data["p8_real_owner_release_milestone_complete"] is False
+
+          video = root / "synthetic_clivox_short.mp4"
+          edl = json.loads((root / "synthetic-edl-draft-only.json").read_text("utf-8"))
+          qa = json.loads((root / "synthetic-render-qa-only.json").read_text("utf-8"))
+          packet = json.loads((root / "owner-review-UNSIGNED-synthetic.json").read_text("utf-8"))
+          expected_sha = hashlib.sha256(video.read_bytes()).hexdigest()
+          validate_unsigned_packet(
+              packet, video_sha=expected_sha, video_bytes=video.stat().st_size,
+              edl=edl, p7_report=qa)
+          assert packet["exact_p6_storyboard_sha256"] == hashlib.sha256(canonical(edl)).hexdigest()
+          assert packet["exact_p7_qa_report_sha256"] == hashlib.sha256(canonical(qa)).hexdigest()
+          assert packet["review_state"] == "UNSIGNED_QUARANTINED_TEST_ONLY"
+          assert set(packet["review_checks"]) == set(CHECKS)
+          assert all(v is False for v in packet["review_checks"].values())
+          assert packet["detached_signature_base64"] is None
+          assert packet["source_rights_evidence_sha256"] is None
+          assert packet["publish_at_utc"] is None
+          assert packet["owner_public_key_independently_enrolled"] is False
+          assert packet["owner_release_signed"] is False
+          assert packet["youtube_upload_authorized"] is False
+          assert packet["youtube_publish_authorized"] is False
+          assert packet["real_rights_freshness_verified"] is False
+          closed_release_boundary()
+          # No media hashes or contracts in the public runner log.
+          assert expected_sha not in json.dumps(data)
+          assert str(root) not in json.dumps(data)
+          print("CLIVOX_V2_P8_EXACT_SYNTHETIC_MP4_HASH_BOUND_UNSIGNED_REVIEW_QA_PASS_NO_OWNER_RELEASE")
           PY
       - name: No media or candidate artifact uploaded publicly
         run: |
