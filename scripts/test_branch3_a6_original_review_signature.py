@@ -20,7 +20,7 @@ from scripts.branch3_a6_original_handoff import (
 )
 from scripts.branch3_a6_original_review_signature import (
     CHECKS, DOMAIN, FIELDS, REQUEST_FILE, EditorialReviewDenied,
-    create_unsigned_requests, fixture, make_unsigned_review_request,
+    create_unsigned_requests, verify_unsigned_requests, fixture, make_unsigned_review_request,
     payload, strict_review_claim, verify_attestation
 )
 from scripts.branch3_original_arcade_pilots import (
@@ -244,6 +244,56 @@ class A6EditorialSignatureTests(unittest.TestCase):
                 create_unsigned_requests(self.root,selection="one")
         with self.assertRaises(EditorialReviewDenied):
             create_unsigned_requests(Path.cwd(),selection="one")
+
+    def test_downloaded_artifact_unsigned_forms_must_match_exact_rehashed_subject(self):
+        # Fake source bytes and mock FFprobe only here; actual render CI
+        # executes verify_packet against actual MP4 and FFprobe.
+        with patch(
+            "scripts.branch3_a6_original_review_signature.verify_packet",
+            return_value={"technical_video_verified":True}
+        ):
+            create_unsigned_requests(self.root,selection="one")
+            passed=verify_unsigned_requests(self.root,selection="one")
+            self.assertEqual(passed["episode_count"],1)
+            self.assertTrue(passed["unsigned_checklist_files_matched_exact_media"])
+            self.assertEqual(passed["actual_human_video_approvals_verified"],0)
+            self.assertFalse(passed["youtube_upload_authorized"])
+            self.assertFalse(passed["youtube_publish_authorized"])
+            target=self.folder/REQUEST_FILE
+            original=target.read_text("utf-8")
+            wrong=json.loads(original)
+            wrong["owner_review_checks"]["exact_full_video_watched"]=True
+            target.write_text(json.dumps(wrong),encoding="utf-8")
+            with self.assertRaisesRegex(EditorialReviewDenied,
+                                        "CHANGED_OR_FORGED_UNSIGNED"):
+                verify_unsigned_requests(self.root,selection="one")
+            target.write_text(original,encoding="utf-8")
+            wrong=json.loads(original)
+            wrong["exact_video_sha256"]="f"*64
+            target.write_text(json.dumps(wrong),encoding="utf-8")
+            with self.assertRaisesRegex(EditorialReviewDenied,
+                                        "CHANGED_OR_FORGED_UNSIGNED"):
+                verify_unsigned_requests(self.root,selection="one")
+            target.write_text(original,encoding="utf-8")
+            altered_metadata={**self.metadata,"title":"Injected false title"}
+            (self.folder/METADATA_NAME).write_text(
+                json.dumps(altered_metadata),encoding="utf-8")
+            with self.assertRaises(EditorialReviewDenied):
+                verify_unsigned_requests(self.root,selection="one")
+            (self.folder/METADATA_NAME).write_text(
+                json.dumps(self.metadata),encoding="utf-8")
+            self.assertTrue(verify_unsigned_requests(
+                self.root,selection="one"
+            )["unsigned_checklist_files_matched_exact_media"])
+            target.unlink()
+            target.symlink_to(self.folder/METADATA_NAME)
+            with self.assertRaisesRegex(EditorialReviewDenied,
+                                        "MISSING_UNSIGNED_REVIEW"):
+                verify_unsigned_requests(self.root,selection="one")
+            target.unlink()
+            target.write_text(original,encoding="utf-8")
+            with self.assertRaises(EditorialReviewDenied):
+                verify_unsigned_requests(Path.cwd(),selection="one")
 
     def test_quarantined_fixture_remains_unsigned(self):
         v=fixture()
