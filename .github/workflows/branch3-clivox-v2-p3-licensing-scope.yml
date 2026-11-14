@@ -1,10 +1,15 @@
-name: CLIVOX V2 P3 Licensing Scope Quarantine QA (NO GRANTS / NO MEDIA)
+name: CLIVOX V2 P2/P3 Public Route Owner Pilot and Unsigned Licensing QA
 
 on:
   pull_request:
     paths:
       - 'scripts/branch3_v2_p3_licensing_scope_quarantine.py'
       - 'scripts/test_branch3_v2_p3_licensing_scope_quarantine.py'
+      - 'scripts/branch3_v2_p2p3_pilot_owner_review.py'
+      - 'scripts/test_branch3_v2_p2p3_pilot_owner_review.py'
+      - 'branch3/clipping_v2/prospects/p2p3-public-route-review-2026-11-14.json'
+      - 'branch3/clipping_v2/P2P3_*'
+      - 'branch3/clipping_v2/architecture-status.json'
       - '.github/workflows/branch3-clivox-v2-p3-licensing-scope.yml'
       - 'branch3/clipping_v2/P3_*'
   push:
@@ -12,6 +17,11 @@ on:
     paths:
       - 'scripts/branch3_v2_p3_licensing_scope_quarantine.py'
       - 'scripts/test_branch3_v2_p3_licensing_scope_quarantine.py'
+      - 'scripts/branch3_v2_p2p3_pilot_owner_review.py'
+      - 'scripts/test_branch3_v2_p2p3_pilot_owner_review.py'
+      - 'branch3/clipping_v2/prospects/p2p3-public-route-review-2026-11-14.json'
+      - 'branch3/clipping_v2/P2P3_*'
+      - 'branch3/clipping_v2/architecture-status.json'
       - '.github/workflows/branch3-clivox-v2-p3-licensing-scope.yml'
       - 'branch3/clipping_v2/P3_*'
   workflow_dispatch:
@@ -55,6 +65,7 @@ jobs:
           test "$CLIVOX_AUTO_UPLOAD_ENABLED" = "false"
           test "$PUBLISH_ENABLED" = "false"
           python -B -m unittest -v \
+            scripts.test_branch3_v2_p2p3_pilot_owner_review \
             scripts.test_branch3_v2_p3_licensing_scope_quarantine \
             scripts.test_branch3_v2_creator_prospect_intake \
             scripts.test_branch3_rights_case_intake \
@@ -115,6 +126,82 @@ jobs:
                      and x["source_license_exists"] is False
                      for x in demo["synthetic_cases_only"])
           print("CLIVOX_V2_P3_SCOPE_PENDING_NO_CONTACT_NO_MEDIA_NO_WRITES")
+          PY
+      - name: Verify fresh five public route observations and generate strictly UNSENT three-option owner pilot review
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_v2_p2p3_pilot_owner_review --mode closed
+          mkdir -p "$RUNNER_TEMP/clivox-p2p3-owner-review"
+          python -B -m scripts.branch3_v2_p2p3_pilot_owner_review \
+            --mode review \
+            --out "$RUNNER_TEMP/clivox-p2p3-owner-review/clivox-v2-p2p3-pilot-owner-review-UNSENT.json" \
+            > "$RUNNER_TEMP/clivox-p2p3-owner-review/public-qa-NO-CONTACT.json"
+          python -B - <<'PY'
+          from datetime import datetime, timezone
+          import json, os
+          from pathlib import Path
+          from scripts.branch3_v2_creator_prospect_intake import DATA, load_watchlist
+          from scripts.branch3_v2_p2p3_pilot_owner_review import (
+              FIRST, OUT_NAME, STAGE, load_public_route_audit,
+              validate_owner_packet, validate_public_route_audit,
+              production_contact_license_or_clip, PilotDenied,
+          )
+          from scripts.branch3_a2_review_receipt import (
+              POLICY, REGISTRY, read_json,
+          )
+          root = Path(os.environ["RUNNER_TEMP"]) / "clivox-p2p3-owner-review"
+          safe = json.loads((root / "public-qa-NO-CONTACT.json").read_text("utf-8"))
+          assert safe["stage"] == STAGE
+          assert safe["channel_id"] == "UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert safe["research_review_first_count"] == 3
+          assert safe["other_research_or_deferred_count"] == 2
+          assert safe["outreach_sent"] == 0 and safe["creator_rights_granted"] == 0
+          assert safe["media_downloads"] == safe["youtube_uploads"] == 0
+          assert safe["owner_human_approval_verified"] is False
+          assert safe["pilot_drafts_created_in_ephemeral_dir_only"] is True
+          packet = json.loads((root / OUT_NAME).read_text("utf-8"))
+          watch = load_watchlist(DATA)
+          audit = load_public_route_audit()
+          now = datetime.now(timezone.utc)
+          validate_public_route_audit(audit, watch, now=now)
+          validate_owner_packet(
+              packet, watchlist=watch, public_audit=audit,
+              policy=read_json(POLICY), registry=read_json(REGISTRY), now=now)
+          assert packet["stage"] == STAGE
+          assert packet["owner_review_first_count"] == 3
+          assert [x["prospect_id"] for x in packet["owner_review_first_options"]] == list(FIRST)
+          assert len(packet["deferred_or_format_only_options"]) == 2
+          assert packet["all_proposals_unsent"] is True
+          assert packet["all_owner_shortlist_selections_unapproved"] is True
+          assert packet["all_legal_creator_identities_unverified"] is True
+          assert packet["all_source_rights_and_guest_music_game_not_cleared"] is True
+          assert packet["creator_messages_sent"] == 0
+          assert packet["creator_replies_received"] == 0
+          assert packet["authenticated_licenses_received"] == 0
+          assert packet["creator_source_files_delivered"] == 0
+          assert packet["youtube_uploads"] == 0
+          assert packet["owner_release_signed"] is False
+          assert packet["licensing_authorized"] is False
+          assert packet["media_download_authorized"] is False
+          assert packet["video_editing_authorized"] is False
+          assert packet["youtube_upload_authorized"] is False
+          assert packet["youtube_publish_authorized"] is False
+          assert packet["unsigned_negotiation_terms"]["no_license_granted"] is True
+          assert packet["unsigned_negotiation_terms"]["request_only_not_agreement"] is True
+          assert all(x["recipient_address"] is None
+                     and x["allow_contact"] is False
+                     and x["allow_source_download"] is False
+                     and x["allow_upload"] is False
+                     and x["rights_checklist_pending_count"] >= 25
+                     for x in packet["owner_review_first_options"]+
+                              packet["deferred_or_format_only_options"])
+          assert "@" not in json.dumps(packet)
+          try:
+              production_contact_license_or_clip()
+              raise AssertionError("Outreach action should be blocked")
+          except PilotDenied:
+              pass
+          print("CLIVOX_V2_P2P3_FIVE_PUBLIC_ROUTE_PAGES_THREE_UNSENT_OWNER_OPTIONS_ZERO_LICENSES_MEDIA_CONTACTS_UPLOADS")
           PY
       - name: Never upload legal documents or owner questionnaire artifacts
         run: |
