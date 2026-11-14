@@ -2,6 +2,10 @@
 
 **Date:** 2026-11-14. **Status:** technical intake only; real creator rights NOT granted, owner/rights-holder identity NOT verified, no source acquisition or YouTube publishing.
 
+## Verified GitHub integration evidence
+
+[PR #208](https://github.com/Tirthanand17/taskless-lab/pull/208) passed **4/4 PR checks** and merged at `2338958ed20a3f273b58c46a6455d4208612e7a7`. The dedicated [merged-main P3 GitHub Actions run #43580815591](https://github.com/Tirthanand17/taskless-lab/actions/runs/43580815591) **succeeded**: 5 pending unsigned scope questionnaires, 30 unchecked conditions each, two synthetic A2 case IDs explicitly unlinked to any real prospect, and no real owner signing/creator grant, source video, email, Google API or upload. **P3 engineering is verified; actual legal permission has not been obtained.** The overall V2 roadmap remains **2/12 fully accepted phases = 17%**.
+
 ## Why this integration is necessary
 
 P2 lists public creator-branded inquiry pages, not authenticated rights holders, commercial licenses, or proof the person owns any particular recording. Existing A2 signed-review modules implement offline signature and revocation mathematics but deliberately do not enroll real owner keys or approve a legal agreement. A forged GitHub field claiming "approved" or a test-signed synthetic A2 receipt cannot grant permission to download, edit, monetize or reupload Twitch/YouTube content.
