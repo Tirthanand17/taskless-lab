@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P10_SOURCE_FREE_OWN_ANALYTICS_PROVENANCE_AND_STUDIO_METRIC_HONESTY_UNDER_CI_REAL_OWNER_OAUTH_UPLOADS_OUTCOMES_BLOCKED",
+  "status": "P10_SYNTHETIC_OWNER_ANALYTICS_PROVENANCE_STUDIO_NULL_AND_HUMAN_LEARNING_QA_VERIFIED_MAIN_REAL_CLIVOX_OWNER_DATA_UNAVAILABLE",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -136,10 +136,11 @@
     {
       "id": "P10",
       "name": "Own-channel analytics and experiments",
-      "state": "SYNTHETIC_A10_EXISTING_FIXTURE_METRIC_AVAILABILITY_AND_HYPOTHETICAL_REVIEW_QA_PENDING_CI_REAL_CLIVOX_ANALYTICS_UNAVAILABLE",
+      "state": "SYNTHETIC_A10_API_SHAPE_OWNER_ONLY_PROVENANCE_STUDIO_NULL_AND_HYPOTHETICAL_24H_14D_QA_VERIFIED_MAIN_REAL_ANALYTICS_AND_RELEASE_BLOCKED",
       "requires_owner": "Real authorized CLIVOX Analytics",
       "source_free_metric_provenance_script": "scripts/branch3_v2_p10_synthetic_analytics_gates.py",
-      "qa_workflow": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml"
+      "qa_workflow": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml",
+      "main_qa_run_id": 43594259100
     },
     {
       "id": "P11",
@@ -380,8 +381,8 @@
   "p9_main_p5_to_p9_qa_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633213",
   "p9_main_p4_regression_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633097",
   "p9_main_content_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43592633083",
-  "p10_source_free_metric_provenance_implemented_pending_ci": true,
-  "p10_source_free_metric_provenance_verified_on_main": false,
+  "p10_source_free_metric_provenance_implemented_pending_ci": false,
+  "p10_source_free_metric_provenance_verified_on_main": true,
   "p10_existing_owner_a10_adapter_reused": true,
   "p10_real_clivox_owner_analytics_connected": false,
   "p10_real_clivox_video_engagement_observed": 0,
@@ -394,5 +395,13 @@
   "p10_real_milestone_complete": false,
   "p10_script": "scripts/branch3_v2_p10_synthetic_analytics_gates.py",
   "p10_tests": "scripts/test_branch3_v2_p10_synthetic_analytics_gates.py",
-  "p10_runbook": "branch3/clipping_v2/P10_SYNTHETIC_ANALYTICS_PROVENANCE_AND_LEARNING.md"
+  "p10_runbook": "branch3/clipping_v2/P10_SYNTHETIC_ANALYTICS_PROVENANCE_AND_LEARNING.md",
+  "p10_feature_pr_url": "https://github.com/Tirthanand17/taskless-lab/pull/224",
+  "p10_feature_pr_checks_passed": 4,
+  "p10_feature_pr_pipeline_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43594106599",
+  "p10_implementation_main_sha": "d830d8c47c557973ac524cce37056272b564133c",
+  "p10_main_pipeline_qa_run_id": 43594259100,
+  "p10_main_pipeline_qa_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259100",
+  "p10_main_p4_regression_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259097",
+  "p10_main_content_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43594259076"
 }
