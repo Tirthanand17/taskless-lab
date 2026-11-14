@@ -4,13 +4,14 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P1_PUBLIC_API_DISCOVERY_COMPLIANCE_INTEGRATION_PENDING_CI",
+  "status": "P1_VERIFIED_OFFLINE_POLICY_SAFE_DISCOVERY_P2_NOT_STARTED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
   "old_branch3_synthetic_progress_is_not_v2_clipping_progress": true,
   "clipping_engine_implementation_completed_phases": [
-    "P0"
+    "P0",
+    "P1"
   ],
   "clipping_engine_implementation_not_started": false,
   "clipping_engine_overall_completion_percentage": null,
@@ -48,8 +49,10 @@
     {
       "id": "P1",
       "name": "Existing discovery API compliance repair",
-      "state": "IMPLEMENTED_PENDING_PR_AND_MAIN_CI",
-      "requires_owner": "Separate integration request"
+      "state": "VERIFIED_MAIN_OFFLINE_SYNTHETIC_A1_A2_A3_NO_LIVE_API_OR_RIGHTS",
+      "requires_owner": "Separate integration request",
+      "evidence_run_id": 43577935757,
+      "commit_sha": "2d5de10a744b2313129169b801c71d15aa02d2d6"
     },
     {
       "id": "P2",
@@ -128,13 +131,22 @@
     "branch3/clipping_v2/PHASED_INTEGRATION_PLAN.md"
   ],
   "roadmap_nonoptional_phases_total": 12,
-  "roadmap_confirmed_completed_phases": 1,
-  "roadmap_estimated_progress_percent": 8,
-  "p1_code_implemented_pending_ci": true,
+  "roadmap_confirmed_completed_phases": 2,
+  "roadmap_estimated_progress_percent": 17,
+  "p1_code_implemented_pending_ci": false,
   "p1_old_public_api_derived_engagement_rank_removed": true,
   "p1_a2_and_a123_source_contract_updated": true,
   "p1_source_data_retention_days": 7,
   "p1_real_metadata_api_key_authenticated": false,
   "p1_live_public_discovery_completed": false,
-  "p1_first_licensed_creator_clips_produced": 0
+  "p1_first_licensed_creator_clips_produced": 0,
+  "roadmap_remaining_phases": 10,
+  "p1_offline_synthetic_a1_a2_a3_integration_passed_on_main": true,
+  "p1_pr_ci_workflows_passed": 24,
+  "p1_pr_url": "https://github.com/Tirthanand17/taskless-lab/pull/204",
+  "p1_main_commit_sha": "2d5de10a744b2313129169b801c71d15aa02d2d6",
+  "p1_main_synthetic_integration_run_id": 43577935757,
+  "p1_main_synthetic_integration_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43577935757",
+  "p1_video_media_downloads_or_youtube_writes": 0,
+  "p1_live_youtube_api_queries_performed": false
 }

@@ -1,6 +1,6 @@
 # CLIVOX Viral Clipping V2 — Research and Architecture Index
 
-**Status (2026-11-14): RESEARCH / DESIGN ONLY.** No V2 production integrations have started. No creator has licensed content to CLIVOX; no real source footage is acquired, uploaded, scheduled or published. This is the **intended viral-clipping product**, not the earlier fictional-arcade render test system.
+**Status (2026-11-14): P1 SOURCE-ONLY INTEGRATION VERIFIED IN CI.** Research/architecture P0 and offline YouTube metadata compliance P1 are complete (2/12 roadmap phases, 17% checkpoint progress). **No actual licensed creator clipping pipeline, rights grants, real source media, live metadata API access, or uploads yet.** No real source footage is acquired, scheduled or published. This is the **intended viral-clipping product**, not the earlier fictional-arcade render test system.
 
 ## Read in this order
 
@@ -12,8 +12,14 @@
 6. [Phased Integration Plan](PHASED_INTEGRATION_PLAN.md): ordered P0–P11, human blockers, exact future P1 API policy remediation and tests.
 7. [Architecture Status (JSON)](architecture-status.json): machine-readable, fail-closed **NOT STARTED** V2 status, separate from the older original-fiction engineering percentage.
 
+## P1 verified and the next workstream
+
+[The P1 metadata/rights/provenance integration](P1_API_COMPLIANCE_IMPLEMENTATION.md) is now merged and validated on `main` with **24/24 PR CI** and [successful A1→A2→A3 source-safe integration run #43577935757](https://github.com/Tirthanand17/taskless-lab/actions/runs/43577935757). Public API derived viral scores were removed and a seven-day expiry plus strict deny-state lineage were added. The roadmap is **17% by phase count**, not 17% of a licensed media clipping/publishing product. No third-party licenses or uploads exist.
+
+**Next P2:** approved creator prospect research and lawful partnership/outreach plan, with no unsolicited contact without permission; later real licensing/storage and highlight detection remain separately gated.
+
 ## First recommended integration *after* user authorizes engineering
 
-**P1: YouTube Data API derived-metrics compliance hardening in existing A1 discovery**. The current metadata-only adapter has derived view velocity / engagement composite scoring that needs current API developer-policy review and likely refactoring before live integration. Preserve existing deterministic source identity, bounds and rights-pending case plumbing; do not build a duplicative crawler. No video download, rights approval or live upload as part of P1.
+**P1 is now implemented and verified in source-only GitHub CI.** The remaining high-priority work is P2 partner prospect verification and P3 real licensing before any approved video source acquisition. Do not mistake P1 synthetic checks for a functional clip-producing system.
 
 **Guardrails:** Public GitHub only for code, docs, sanitized test metadata and original synthetic fixtures. Restricted creator media, contracts and private notes must be in separately approved confidential storage. User's laptop storage is not required. FlowMinute Branches 1 and 2 must remain unchanged.

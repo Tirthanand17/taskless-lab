@@ -1,6 +1,6 @@
 # CLIVOX Viral Clipping Engine V2 — Master Architecture
 
-**Research freeze:** 2026-11-14 (Asia/Kolkata). **Decision status:** DESIGN/RESEARCH ONLY; integration begins ONLY after separate user direction. **Not a live clipping bot.** All creator-footage ingestion, automated contact, licensing, live upload, scheduled publication and payment features are **OFF**.
+**Research freeze:** 2026-11-14 (Asia/Kolkata). **Latest integration:** User authorized P1; [PR #204](https://github.com/Tirthanand17/taskless-lab/pull/204) merged with 24/24 PR checks and [main CI #43577935757](https://github.com/Tirthanand17/taskless-lab/actions/runs/43577935757) passed. **P0+P1 = 2/12 roadmap checkpoints (17%), NOT a working clipping engine.** **Not a live clipping bot.** Creator footage ingestion, automated contact, licensing, live upload, scheduled publication and payment features are **OFF**.
 
 **Canonical repository:** [taskless-lab](https://github.com/Tirthanand17/taskless-lab). **CLIVOX YouTube channel:** \`UCfPEvy0SefE_5nNlYlY_CyQ\`, \`@ClivoxPulse\`. **Branches 1 and 2:** FlowMinute remains isolated and paused; do not change those workflows or reuse their tokens.
 
