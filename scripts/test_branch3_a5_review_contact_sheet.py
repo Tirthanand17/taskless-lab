@@ -10,6 +10,7 @@ from unittest.mock import patch
 from scripts.branch3_a5_review_contact_sheet import (
     NAME, ContactSheetBlocked, build, create_one, fixture
 )
+from scripts.branch3_original_arcade_qa import cue_samples_all_cues
 from scripts.branch3_original_arcade_pilots import (
     CATALOG, draft_srt, sha, validate_catalog
 )
@@ -27,6 +28,10 @@ class OriginalStoryboardSheetTests(unittest.TestCase):
             vid=folder/"original-review-preview.mp4"
             vid.write_bytes(("SYNTHETIC_FAKE_MP4_"+episode["id"]).encode()*150)
             draft_srt(episode,folder/"narration-timing-draft.srt")
+            cues=cue_samples_all_cues(
+                (folder/"narration-timing-draft.srt").read_text("utf-8"),
+                episode["beats"],episode["duration_seconds"]
+            )
             (folder/"review-manifest.json").write_text('{"fake":"yes"}',"utf-8")
             (folder/"owner-handoff-quarantined.json").write_text(
                 json.dumps({"exact_video_sha256":sha(vid)}),"utf-8"
@@ -35,7 +40,10 @@ class OriginalStoryboardSheetTests(unittest.TestCase):
                 json.dumps({
                     "decoded_actual_frame_caption_safezone_qa":{
                         "every_storyboard_beat_caption_visible_in_safe_zone":True,
-                        "actual_encoded_frames_checked":len(episode["beats"]),
+                        "every_draft_caption_cue_visible_in_safe_zone":True,
+                        "actual_encoded_frames_checked":len(cues),
+                        "draft_caption_cue_count":len(cues),
+                        "storyboard_beat_count":len(episode["beats"]),
                         "caption_layout_human_approved":False,
                     },
                     "youtube_upload_authorized":False,
@@ -104,6 +112,9 @@ class OriginalStoryboardSheetTests(unittest.TestCase):
             {"decoded_actual_frame_caption_safezone_qa":{
                 **original["decoded_actual_frame_caption_safezone_qa"],
                 "actual_encoded_frames_checked":1}},
+            {"decoded_actual_frame_caption_safezone_qa":{
+                **original["decoded_actual_frame_caption_safezone_qa"],
+                "every_draft_caption_cue_visible_in_safe_zone":False}},
             {"youtube_upload_authorized":True},
         ):
             changed={**original,**variant}
