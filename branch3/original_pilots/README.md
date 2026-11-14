@@ -32,6 +32,12 @@ A frame-by-frame inspection of the full-resolution artifact from [GitHub run 435
 
 The renderer now applies **bounded, native-ASS subtitle font/margin values** and proportionally scales the CLIVOX logo/tagline/footnotes for both aspect ratios. Beyond checking codec/SRT hashes, the independent A5 QA now decodes a real frame during a caption cue and requires visible high-contrast caption pixels in a **lower-middle safe region**. This is a regression check, **not** automatic proof of aesthetically perfect positioning, accurate spoken words or owner approval. Every corrected video gets a fresh SHA-256/A6 unsigned review packet. The older buggy review artifact should **not** be approved or published.
 
+## A5 independent every-scene narration energy QA
+
+The technical video check previously only proved that the **first second** of the WAV was non-silent. A new independent pure-Python 48 kHz/16-bit PCM verifier now checks **each storyboard beat** for three or more quarter-second windows of nontrivial audio energy and rejects near-full-scale clipping, wrong sample format, corrupt/truncated audio and missing/overlapping storyboard windows. This catches a video with a working introduction but silent or extremely quiet narration in a later scene.
+
+This is an **acoustic-energy proxy**, not speech recognition or voice/caption alignment: a loud musical or sound effect could also pass. Human must still listen through the entire master to catch mispronunciations, irritating TTS, copyright/license issues, sound effects masking speech or badly aligned text. Each independently QA'd WAV remains SHA-bound to the exact A6 handoff; no publication rights are gained.
+
 ## A5 narration-window subtitles and on-screen reading improvements
 
 The renderer previously spread subtitle cues across **whole screenplay beats**, even when its synthetic narration finished earlier. It now measures the **actual generated 48 kHz post-tempo voice PCM interval per beat** and assigns the editable SRT's cue windows within that interval, distributing estimated cue timing by text length. It also embeds those clearly marked **draft** subtitles into the review MP4 with safe-margin, high-contrast text, while keeping a separately editable SRT in the GitHub artifact.
