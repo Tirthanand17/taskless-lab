@@ -1,0 +1,55 @@
+name: Branch 3 CLIVOX A5 Private Editorial Correction Intake QA (NO UPLOAD)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/branch3-clivox-cue-correction-intake.yml'
+      - 'scripts/branch3_a5_cue_correction_intake.py'
+      - 'scripts/test_branch3_a5_cue_correction_intake.py'
+  pull_request:
+    paths:
+      - '.github/workflows/branch3-clivox-cue-correction-intake.yml'
+      - 'scripts/branch3_a5_cue_correction_intake.py'
+      - 'scripts/test_branch3_a5_cue_correction_intake.py'
+      - 'scripts/branch3_a5_cue_review_worksheet.py'
+      - 'scripts/test_branch3_a5_cue_review_worksheet.py'
+      - 'branch3/original_pilots/arcade_trio.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fail_closed_private_cue_intake:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
+      CLIVOX_OWNER_RELEASE_ENABLED: 'false'
+    steps:
+      - name: Checkout public source code without write credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Syntax-check correction intake and exact-file worksheet
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch3_a5_cue_correction_intake.py scripts/test_branch3_a5_cue_correction_intake.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py
+      - name: Run synthetic 39-cue intake, forgery and privacy tests
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v scripts.test_branch3_a5_cue_correction_intake scripts.test_branch3_a5_cue_review_worksheet
+      - name: Confirm no real owner review, media, secrets or Google access
+        run: |
+          set -euo pipefail
+          test "$PUBLISH_ENABLED" = 'false'
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = 'false'
+          test "$CLIVOX_OWNER_RELEASE_ENABLED" = 'false'
+          echo 'Private editorial issue planning only. Unit fixtures are synthetic. No owner claims or files are uploaded.'
