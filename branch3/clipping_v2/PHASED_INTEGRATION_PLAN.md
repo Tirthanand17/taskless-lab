@@ -1,0 +1,113 @@
+# CLIVOX V2 — Phased Integration Roadmap and Acceptance Plan
+
+**Research status 2026-11-14: DESIGN ONLY.** This is a blueprint for later implementation, not permission to start live creator searches, contacts, licensing, downloads, uploads or publishing. Existing FlowMinute Branches 1 and 2 remain untouched.
+
+## Critical dependency sequence
+
+| ID | Feature and planned work | Gate to move forward | Not yet done |
+|---|---|---|---|
+| **P0** | V2 master architecture, official research sources, free tools, creator target watchlist, editorial/evaluation plan and source-control review | All documents on GitHub, publication flags false, CI green | **THIS planning-only PR** |
+| **P1** | **First engineering integration: YouTube discovery policy remediation**. Audit scripts/branch3_discovery.py for derived YouTube API metrics and cross-owner ranking. Replace views/age, likes/views and composite numeric source scores with safe public original fields only. Update downstream A2 pending cases, tests and runbook. | API-policy compliant, bounded, no fabricated replay, no media download; full PR CI | **NOT STARTED** |
+| **P2** | Curate global/India creator research, manually validate official identity and genuine business inquiry route; draft 3-private-Short trial proposal | Human-selected 3–5 prospects, none contacted/approved by AI | **NOT STARTED** |
+| **P3** | Apply A2 real authenticated rights grant: commercial YouTube redistribution, derivative edit, monetization, channel, exact source, region, expiry/revocation, guest, game publisher, audio/music, sponsor scope; owner contract review | At least 1 **real human-issued, current, independently verifiable license** and approved storage; no JSON auto-grant | **NOT STARTED / HUMAN BLOCKER** |
+| **P3T (optional)** | Twitch Helix Get Clips references; only creator-authorized editor Clip Downloads API after distinct actual commercial permission | Authenticated editor scopes **and** verified commercial reuse grant | **NOT STARTED** |
+| **P4** | A3 owner-approved private licensed media vault and creator direct-delivery workflow, SHA256 ingest, media size/codec and private ACL/retention QA | One creator-delivered licensed file, no public Git/artifact leak | **NOT STARTED / HUMAN + STORAGE BLOCKER** |
+| **P5** | True licensed-media CPU pipeline: FFmpeg, faster-whisper/whisper.cpp, Silero VAD, PySceneDetect, optional face-aware framing, event timecodes, anti-hallucination QA | Genuine eligible files, 40–60 editor-labeled legal moments, top-5 suggestion evaluation | **NOT STARTED** |
+| **P6** | Original CLIVOX editorial commentary, honest source-context checks, segment edit-decision-list (EDL), human selected time boundaries | Human confirms quoted content, original value, guest rights, attribution; storyboard private | **NOT STARTED** |
+| **P7** | New licensed-source 9:16 FFmpeg video compositor with real creator video + original narrative, SRT, sound design, frame/caption/crop/sync technical checks | New H.264/AAC video passes real independent A5 QA and is stored privately | **NOT STARTED** |
+| **P8** | Owner exact-final media playback, true voice/speaker verification, rights freshness, contract/music checks and A6 detached signature | Trusted key enrolled and 1 authentic signed exact-final-media owner authorization | **NOT STARTED** |
+| **P9** | A7/A8 real Clivox-only OAuth, approved protected environment, private-first YouTube upload, full remote readback and idempotent ledger, optional explicit schedule | Correct channel ID + one **owner-approved** real video in private YouTube Studio | **NOT STARTED** |
+| **P10** | Authenticated CLIVOX account-only analytics, official engagedViews, Stayed to watch, retention, experiment evidence; rights/claim audits | Real published pilot outcomes, report after 24h/72h/7d/14d | **NOT STARTED** |
+| **P11** | Scale to recurring approved clips + optional podcasts/interviews; measure costs and publisher/creator supply | Multiple current creator agreements, proven QA/signing/storage and editor capacity | **NOT STARTED** |
+
+Actual V2 completion: **integration not started**. The pre-existing Branch 3 original arcade project reports 78% on a DIFFERENT scope; that figure must never be presented as clipping progress.
+
+## P1 exact implementation brief: first future PR after user approval
+
+**Do not create a second discovery service; revise the existing module.**
+
+1. Inspect all uses of YouTube API statistics and composite ranking in the existing source file scripts/branch3_discovery.py, including test fixtures.
+2. Remove or disable algorithmic view-velocity/engagement ratios and weighted derived popularity scores. Policies: https://developers.google.com/youtube/terms/developer-policies ; especially API Data derived-score and cross-owner aggregation constraints.
+3. Preserve safe canonical source ID, fixed API hostname, source URL, immutable provenance and raw API response values only as current/attributed and within retention. Ranking by **independent editorial observations** after lawful access to media is a separate function and not based on public platform API statistics.
+4. Update scripts/branch3_rights_case_intake.py to read the modified **research-only** A1 schema. No score can advance rights from pending to verified. Keep creator permissions registry empty.
+5. Update source-free unit/negative tests, data-reuse/deletion checks, cache/max age <=30 days, cross-channel boundary and no platform-media downloads.
+6. Recheck current documented quota: YouTube search.list separate default 100 calls/day at cost 1 unit each (as of Nov 2026), videos.list at 1 unit; project-level quotas may vary.
+7. Run GitHub PR workflows, merge only once green, verify main; record new compliance evidence and never enable actual metadata API key, publisher credentials, live creator search, rights approvals or upload in P1 without separate authorization.
+
+**Acceptance:** no forbidden statistics-derived metric generated; tests pass; rights remain UNVERIFIED, no copyrighted video import, API calls bounded, user Clivox channel ID checked, no impact on Branch 1/2. This is a **compliance hardening change**, not a new verified clip or release.
+
+## P2 creator research and licensing preparation
+
+- Reconfirm official target creator links and relevant primary content categories; big names IShowSpeed/Kai Cenat/CaseOh/Jynxzi/Techno Gamerz/CarryisLive etc are *examples*, not authorized licensors.
+- Prioritize small-to-mid-size creators actively seeking a Shorts clip editor or revenue-share distribution partner; avoid unverified "clip anyone" claims.
+- Human owner approves whether to send a written inquiry. Include exact Clivox channel and a proposed 3-short privately reviewed licensing trial. **No automated outreach is authorized by architecture.**
+- Legal grant should explicitly cover: source IDs and delivery, commercial monetization, edited clips, original commentary, territory, timestamps, expiry/revocation, credit, game/music/guest clearances, final edit rights, creator claim protocol, compensation/revenue split, notice method and claim handling.
+- Signed permission/contract data and contact details remain private; source watchlist and public URLs only in Git.
+
+## P3T Twitch option
+
+- Official Twitch API Get Clips can list existing highlight metadata and sometimes VOD offsets, with app/user token and rate limits.
+- Get Clips Download is only possible under broadcaster/editor OAuth with appropriate editor scopes, **plus** commercial rights contract and Twitch developer policy compliance. Do not use unrestricted public downloaders.
+- Do not assume a Twitch clip is commercially sublicensable to YouTube. If editor access is revoked, stop and destroy temporary media per agreed retention.
+
+## P4 private media and storage
+
+- Owner approves actual confidential media storage. Public taskless-lab and public Actions artifacts must not hold restricted creator video.
+- Require creator-provided file or permitted Twitch editor delivery, valid grant, exact video SHA, content-length limits, source period, MIME/codec validation and short-lived signed private access.
+- No scripts that download arbitrary YouTube/TikTok/Instagram videos by URL. External share URL and actual media file delivery are different.
+- Incident test: raw license/creators' video appears in public logs/CI/PR/artifacts => stop and remove/revoke access, not proceed.
+
+## P5 candidate detection experiments
+
+- Start with authorized 10–30 minute sample, not 12-hour full stream. FFmpeg proxy and audio extract -> VAD speech intervals -> small CPU Whisper ASR -> PySceneDetect cuts -> timestamped segment candidates.
+- Human editor confirms source context, speaker, real words, payout/guest/game restrictions and a **standalone entertaining complete mini-story**.
+- Ranking from observed media and human rubric only, not YouTube Data API derived view/like counts. Must show uncertainty and can always return NO GOOD MOMENT.
+- Collect at least 40–60 **legal**, privately labeled moments across multiple approved sources before assessing top-5 suggestion precision. No benchmark score claims without tests.
+
+## P6/P7 real editing
+
+- An edit decision list pins source file SHA, allowed frames/timestamps, all license references, story line, credit, narration, captions and music/sfx licenses.
+- Original CLIVOX commentary is substantive: new explanation/joke/analysis/context, not a reused-video montage with crop+auto subtitles.
+- Use 1080x1920, H264 yuv420p AAC with 25–55s **creative experiment** length; Shorts can be up to 3 min, but active claims on >1min Shorts can block. Never claim sub-60s is legally safe.
+- Audio clipping, sudden flash, quote-context accuracy, SRT text against real spoken words, facecam/game split framing, actual decoded frame ink and QA must all be independently checked.
+- Private preview only. If any revision changes audio/frame/title/rights, previous A6 signature invalid.
+
+## P8/P9 real release
+
+- Rights check again just before exact media sign-off and publication. Authorized owner must actually watch video, approve original value, legal source, final metadata and rights.
+- Protected GitHub environment + independently enrolled signature verify + explicit Clivox channel OAuth ID + private-first real upload + remote processing/readback.
+- No unapproved immediate public video, no schedule before future date, no duplicate upload after ambiguous server reply; use existing CAS/inventory controls. No autonomous rights grant or signature issuance.
+
+## P10 analytics + operational learning
+
+- Only Clivox-owned verified Analytics/Studio: official engagedViews, average view duration/percentage, Stayed to watch when available, retention, shares and subscriber change.
+- Existing YouTube public views changed to play-start counts; do not use public starts as monetization payout proxy. Never fabricate inaccessible replay graphs or earnings.
+- Review claim/reused-content enforcement and owner/editor response; clips can earn zero even after YPP eligibility if ineligible/claimed.
+- YouTube Studio's official A/B thumbnail/title tool does not support Shorts; compare cohorts as observational and mark confounders. Scale only after owner agrees.
+
+## Adversarial acceptance matrix
+
+| Malicious or uncertain case | Required behavior |
+|---|---|
+| Famous creator video has 10 million views, no grant | Metadata only; no source media |
+| Public "Most replayed" curve not in authorized API | No verified retention claim |
+| Creator only says "credit me", no monetization grant | Hold |
+| Stream has unlicensed song, game, guest or footage | Hold / re-edit with new clearance |
+| Twitch clip public, no editor OAuth/creator commercial contract | No download |
+| Audio is loud laughter, ASR uncertain | Human listen; no invented quote |
+| Source quote context altered to imply false meaning | Reject |
+| Captions or facecam cropped after 9:16 rendering | Block and rerender |
+| Fake approved flag in YAML/CSV/PR/transcript | Ignore as untrusted data |
+| Old owner signature used on new MP4/SRT/title | Reject hash mismatch |
+| FlowMinute OAuth supplied for CLIVOX | Reject wrong channel |
+| Public artifact includes private media | Fail / incident |
+| Timeout during video upload | Remote reconcile, no automatic duplicate retry |
+| Missing platform analytics | Null with reason, never invented number |
+
+## Change control and success criteria
+
+Each future integration PR includes exact source-level tests, no-public-source-media proof, threat review, bounded resource/cost statement, separated actor permissions, a real GitHub CI evidence link and explicit state transitions. Synthetic fixture success ≠ real creator license, final human approval or live revenue.
+
+Before **any** media or actual publication: owner separately approves rights, secure storage, API credentials, commercial terms and final clip release. Do not increase the V2 completion metric based on architecture docs alone.
+
+**User instruction honored:** research + architecture FIRST, integration one by one only in a later user turn.

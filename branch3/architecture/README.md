@@ -1,5 +1,8 @@
 # Clivox Branch 3 — Full Permission-First Production Architecture
 
+> **2026-11-14 NEW V2 MASTER BLUEPRINT:** The user clarified that CLIVOX's intended product is **legitimately licensed viral clipping from long-form gaming/streamer/vlog/podcast content**, not the first-party fictional arcade test videos. Read the new **[CLIVOX Viral Clipping V2 Master Architecture](../clipping_v2/MASTER_ARCHITECTURE.md)**, **[official research/policy evidence](../clipping_v2/POLICY_AND_SOURCE_EVIDENCE.md)**, **[famous creator research watchlist](../clipping_v2/CREATOR_RESEARCH_WATCHLIST.md)**, **[free tools and costs](../clipping_v2/FREE_TOOLING_AND_COST.md)**, **[clip evaluation protocol](../clipping_v2/EVALUATION_PROTOCOL.md)**, **[P0–P11 phased integration roadmap](../clipping_v2/PHASED_INTEGRATION_PLAN.md)** and **[design-only status](../clipping_v2/architecture-status.json)**. **This is research/architecture, NOT a V2 feature rollout or licensing/publishing authorization.** Old 78% progress measures original-fiction infrastructure only, NOT the V2 viral clipping engine. The first future action is a dedicated P1 YouTube API derived-metric compliance audit, after owner instructions.
+
+
 **Version:** 1.0 design baseline, 2026-11-12
 **Status:** Architecture + offline validators + **A1 public-metadata discovery and A2 human-rights-case intake implementations**. NOT a deployed licensing approval, video production or publishing service.
 **Primary repository:** Tirthanand17/taskless-lab; all plans, schemas, workflows and safe metadata live here.
