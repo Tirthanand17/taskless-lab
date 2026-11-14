@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P5_SYNTHETIC_ONLY_CANDIDATE_ENGINEERING_PENDING_CI_P2_P3_P4_REAL_RIGHTS_BLOCKED",
+  "status": "P5_SYNTHETIC_ACOUSTIC_SCENE_QA_VERIFIED_MAIN_REAL_CREATOR_RIGHTS_AND_P4_MEDIA_P5_ASR_PENDING",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -90,10 +90,11 @@
     {
       "id": "P5",
       "name": "Licensed source event ASR VAD and scene detection",
-      "state": "SYNTHETIC_ONLY_RMS_LUMA_CANDIDATES_CODE_PENDING_CI_REAL_SOURCE_BLOCKED",
+      "state": "SYNTHETIC_RMS_LUMA_SIGNAL_TIME_WINDOW_QA_VERIFIED_MAIN_REAL_CREATOR_SOURCE_ASR_VAD_EVALUATION_BLOCKED",
       "requires_owner": "Actual rights granted media",
       "synthetic_technical_candidate_extraction_implemented": true,
-      "real_creator_source_access_authorized": false
+      "real_creator_source_access_authorized": false,
+      "main_ci_run_id": 43585035896
     },
     {
       "id": "P6",
@@ -243,6 +244,17 @@
   "p5_ci_workflow": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml",
   "p5_synthetic_preflight_script": "scripts/branch3_v2_p5_synthetic_moment_proposals.py",
   "p5_runbook": "branch3/clipping_v2/P5_SYNTHETIC_SIGNAL_CANDIDATE_QA.md",
-  "p5_synthetic_ci_verified_on_main": false,
-  "p5_real_milestone_complete": false
+  "p5_synthetic_ci_verified_on_main": true,
+  "p5_real_milestone_complete": false,
+  "p5_feature_pr_url": "https://github.com/Tirthanand17/taskless-lab/pull/212",
+  "p5_feature_pr_checks_passed": 4,
+  "p5_feature_pr_workflow_run_id": 43584918825,
+  "p5_feature_pr_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43584918825",
+  "p5_feature_main_commit_sha": "6544666f93d52673d2e8bdcdda6447adac23f263",
+  "p5_main_synthetic_workflow_run_id": 43585035896,
+  "p5_main_synthetic_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43585035896",
+  "p5_main_p4_regression_workflow_run_id": 43585035920,
+  "p5_main_p4_regression_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43585035920",
+  "p5_main_content_quality_workflow_run_id": 43585036042,
+  "p5_main_content_quality_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43585036042"
 }
