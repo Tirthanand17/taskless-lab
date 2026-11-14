@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P5_SYNTHETIC_ACOUSTIC_SCENE_QA_VERIFIED_MAIN_REAL_CREATOR_RIGHTS_AND_P4_MEDIA_P5_ASR_PENDING",
+  "status": "P5_SYNTHETIC_EDITOR_REFERENCE_EVALUATION_ENGINEERING_PENDING_CI_REAL_RIGHTS_P4_P5_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -90,7 +90,7 @@
     {
       "id": "P5",
       "name": "Licensed source event ASR VAD and scene detection",
-      "state": "SYNTHETIC_RMS_LUMA_SIGNAL_TIME_WINDOW_QA_VERIFIED_MAIN_REAL_CREATOR_SOURCE_ASR_VAD_EVALUATION_BLOCKED",
+      "state": "SYNTHETIC_SIGNAL_MAIN_VERIFIED_EDITORIAL_REFERENCE_EVALUATOR_PENDING_CI_REAL_RIGHTS_AND_MEDIA_BLOCKED",
       "requires_owner": "Actual rights granted media",
       "synthetic_technical_candidate_extraction_implemented": true,
       "real_creator_source_access_authorized": false,
@@ -256,5 +256,13 @@
   "p5_main_p4_regression_workflow_run_id": 43585035920,
   "p5_main_p4_regression_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43585035920",
   "p5_main_content_quality_workflow_run_id": 43585036042,
-  "p5_main_content_quality_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43585036042"
+  "p5_main_content_quality_workflow_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43585036042",
+  "p5_source_free_editorial_reference_evaluator_implemented_pending_ci": true,
+  "p5_synthetic_evaluator_ci_verified_on_main": false,
+  "p5_synthetic_evaluator_script": "scripts/branch3_v2_p5_synthetic_editorial_evaluation.py",
+  "p5_synthetic_evaluator_test": "scripts/test_branch3_v2_p5_synthetic_editorial_evaluation.py",
+  "p5_synthetic_evaluator_runbook": "branch3/clipping_v2/P5_SYNTHETIC_REFERENCE_EVALUATION.md",
+  "p5_real_editorial_precision_estimated": false,
+  "p5_synthetic_golden_reference_is_real_human_label": false,
+  "p5_real_human_labels_count": 0
 }
