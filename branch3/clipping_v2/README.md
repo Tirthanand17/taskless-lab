@@ -12,7 +12,7 @@
 6. [Phased Integration Plan](PHASED_INTEGRATION_PLAN.md): ordered P0–P11, human blockers, exact future P1 API policy remediation and tests.
 7. [Architecture Status (JSON)](architecture-status.json): machine-readable, fail-closed **NOT STARTED** V2 status, separate from the older original-fiction engineering percentage.
 
-## P2 public creator partnership groundwork — code in review
+## P2 creator prospect research tooling — verified, human selection pending
 
 The first [P2 creator prospect research intake](P2_CREATOR_PROSPECT_INTAKE.md)
 uses [five creator-branded public business references](prospects/public-business-pages-2026-11-14.json)
@@ -24,10 +24,7 @@ for a human owner to inspect. The dedicated GitHub Action
 downloads footage. **No legal identity, contact deliverability, owner
 shortlist selection or commercial rights have yet been verified.**
 
-P2's engineering implementation is under PR/CI review; the actual human
-selection/rights milestone is still open. Therefore the **verified overall
-roadmap remains 2/12 (17%)**, separate from the old 78% source-free
-fictional media engineering estimate.
+P2 engineering is merged in [PR #206](https://github.com/Tirthanand17/taskless-lab/pull/206) with **4/4 passing PR checks**; the [actual main no-contact generator run #43579381280](https://github.com/Tirthanand17/taskless-lab/actions/runs/43579381280) **passed**. The actual human owner must still verify creator identities/business routes and select which 3–5 to approach. Therefore the **verified overall roadmap remains 2/12 (17%)**, separate from the old 78% source-free fictional media engineering estimate.
 
 ## P1 verified and the next workstream
 
