@@ -7,6 +7,8 @@ on:
       - 'scripts/test_branch3_v2_p5_synthetic_moment_proposals.py'
       - 'scripts/branch3_v2_p5_synthetic_editorial_evaluation.py'
       - 'scripts/test_branch3_v2_p5_synthetic_editorial_evaluation.py'
+      - 'scripts/branch3_v2_p5_longform_local_signal_planner.py'
+      - 'scripts/test_branch3_v2_p5_longform_local_signal_planner.py'
       - 'scripts/branch3_v2_p6_synthetic_storyboard.py'
       - 'scripts/test_branch3_v2_p6_synthetic_storyboard.py'
       - 'scripts/branch3_v2_p7_synthetic_vertical_renderer.py'
@@ -44,6 +46,8 @@ on:
       - 'scripts/test_branch3_v2_p5_synthetic_moment_proposals.py'
       - 'scripts/branch3_v2_p5_synthetic_editorial_evaluation.py'
       - 'scripts/test_branch3_v2_p5_synthetic_editorial_evaluation.py'
+      - 'scripts/branch3_v2_p5_longform_local_signal_planner.py'
+      - 'scripts/test_branch3_v2_p5_longform_local_signal_planner.py'
       - 'scripts/branch3_v2_p6_synthetic_storyboard.py'
       - 'scripts/test_branch3_v2_p6_synthetic_storyboard.py'
       - 'scripts/branch3_v2_p7_synthetic_vertical_renderer.py'
@@ -113,6 +117,8 @@ jobs:
           test "$PUBLISH_ENABLED" = false
           python -B -m scripts.branch3_v2_p5_synthetic_moment_proposals --mode closed
           python -B -m scripts.branch3_v2_p5_synthetic_editorial_evaluation --mode closed
+          python -B -m scripts.branch3_v2_p5_longform_local_signal_planner --mode closed
+          python -B -m scripts.branch3_v2_p5_longform_local_signal_planner --mode synthetic
           python -B -m scripts.branch3_v2_p6_synthetic_storyboard --mode closed
           python -B -m scripts.branch3_v2_p7_synthetic_vertical_renderer --mode closed
           python -B -m scripts.branch3_v2_p8_synthetic_unsigned_review --mode closed
@@ -127,6 +133,7 @@ jobs:
             scripts.test_branch3_v2_p7_synthetic_vertical_renderer \
             scripts.test_branch3_v2_p6_synthetic_storyboard \
             scripts.test_branch3_v2_p5_synthetic_editorial_evaluation \
+            scripts.test_branch3_v2_p5_longform_local_signal_planner \
             scripts.test_branch3_v2_p5_synthetic_moment_proposals \
             scripts.test_branch3_v2_p4_synthetic_handoff_preflight
       - name: Install Ubuntu FFmpeg for generated color/sine signal ONLY
