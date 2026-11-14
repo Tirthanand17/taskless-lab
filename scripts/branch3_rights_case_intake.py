@@ -7,7 +7,7 @@ contracts accepted, no creator approval, no video downloads and no uploads.
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 from pathlib import Path
@@ -43,6 +43,13 @@ BLOCKING_FIELDS = (
     "youtube_upload_authorized",
 )
 MAX_CASES = 30
+PROHIBITED_DERIVED_DATA_FIELDS = frozenset({
+    "research_priority_score_0_to_100", "research_priority_score_only",
+    "score_components", "source_age_hours", "source_duration_seconds",
+    "views_per_hour", "observed_engagement_ratio", "velocity_component",
+    "engagement_component", "recency_component", "relevance_component",
+    "most_replayed_timestamp", "youtube_retention_peak",
+})
 
 
 class RightsIntakeBlocked(ValueError):
@@ -73,6 +80,13 @@ def build_rights_cases(discovery: object, *, generated_at_utc: str) -> dict:
     require(discovery.get("all_candidates_permission_unverified") is True
             and discovery.get("release_or_media_acquisition_allowed") is False
             and discovery.get("youtube_api_write_calls") == 0, "SOURCE_RIGHTS_NOT_DENIED")
+    require(discovery.get("disallowed_api_data_derived_scores_generated") is False
+            and discovery.get("cross_owner_statistics_aggregated") is False,
+            "NO_DERIVED_API_METRICS_OR_CROSS_OWNER_AGGREGATION")
+    require(discovery.get("non_authorized_api_data_retention_days") == 7,
+            "SHORT_LIVED_API_DATA_REQUIRED")
+    require(not (PROHIBITED_DERIVED_DATA_FIELDS & discovery.keys()),
+            "REPORT_CONTAINS_DERIVED_DATA")
     require(type(generated_at_utc) is str and generated_at_utc.endswith("Z")
             and len(generated_at_utc) <= 35, "INVALID_REVIEW_TIME")
     try:
@@ -80,6 +94,23 @@ def build_rights_cases(discovery: object, *, generated_at_utc: str) -> dict:
         require(dt.tzinfo is not None, "INVALID_REVIEW_TIME")
     except ValueError:
         raise RightsIntakeBlocked("CLIVOX_A2_DENIED_INVALID_REVIEW_TIME") from None
+    # The artifact is seven-day temporary public API data. A2 must not
+    # silently issue a case from stale/forged reporting timestamps.
+    try:
+        retrieved = datetime.fromisoformat(
+            discovery["retrieved_at_utc"].replace("Z", "+00:00")
+        )
+        expires = datetime.fromisoformat(
+            discovery["non_authorized_api_data_expires_at_utc"].replace("Z", "+00:00")
+        )
+        require(retrieved.tzinfo is not None and expires.tzinfo is not None
+                and retrieved.utcoffset() is not None
+                and expires.utcoffset() is not None
+                and expires == retrieved + timedelta(days=7)
+                and retrieved <= dt <= expires,
+                "EXPIRED_OR_FORGED_API_DATA_TTL")
+    except (KeyError, TypeError, ValueError, AttributeError):
+        raise RightsIntakeBlocked("CLIVOX_A2_DENIED_INVALID_API_DATA_TTL") from None
     candidates = discovery.get("candidates")
     require(type(candidates) is list and len(candidates) <= MAX_CASES, "TOO_MANY_CANDIDATES")
     seen: set[str] = set()
@@ -96,8 +127,20 @@ def build_rights_cases(discovery: object, *, generated_at_utc: str) -> dict:
         require(c.get("sourcing_status") == "RESEARCH_ONLY_PUBLIC_METADATA"
                 and c.get("permission_state") == "UNVERIFIED", "UNVERIFIED_REQUIRED")
         require(all(c.get(k) is False for k in BLOCKING_FIELDS), "UNAUTHORIZED_CLIP_FLAG")
-        score = c.get("research_priority_score_0_to_100")
-        require(type(score) is int and 0 <= score <= 100, "BAD_RESEARCH_SCORE")
+        require(not (PROHIBITED_DERIVED_DATA_FIELDS & c.keys()),
+                "DERIVED_API_METRICS_ARE_NOT_RIGHTS_EVIDENCE")
+        stats = c.get("public_stats")
+        require(type(stats) is dict and set(stats) == {"views", "likes", "comments"}
+                and all(v is None or (type(v) is int and 0 <= v < 10**20)
+                        for v in stats.values()),
+                "UNTRUSTED_RAW_API_STATISTICS")
+        require(type(c.get("source_published_utc")) is str
+                and c["source_published_utc"].endswith("Z")
+                and (c.get("source_duration_iso8601") is None
+                     or (type(c["source_duration_iso8601"]) is str
+                         and c["source_duration_iso8601"].startswith("P")
+                         and len(c["source_duration_iso8601"]) <= 50)),
+                "RAW_SOURCE_REFERENCE_REQUIRED")
         title = c.get("source_title")
         require(type(title) is str and 1 <= len(title) <= 160, "BAD_SOURCE_TITLE")
         cases.append({
@@ -108,7 +151,6 @@ def build_rights_cases(discovery: object, *, generated_at_utc: str) -> dict:
             "source_url": c["source_url"],
             "source_title": title,
             "source_category": discovery.get("category"),
-            "research_priority_score_only": score,
             "case_state": "AWAITING_REAL_RIGHTS_HOLDER_VERIFICATION",
             "human_rights_reviewer_assigned": False,
             "actual_grant_document_available": False,
@@ -132,13 +174,18 @@ def build_rights_cases(discovery: object, *, generated_at_utc: str) -> dict:
     source_sha = hashlib.sha256(
         json.dumps(discovery, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
-    cases.sort(key=lambda x: (-x["research_priority_score_only"], x["source_video_id"]))
+    # Reference lists are not comparative YouTube popularity leaderboards.
+    cases.sort(key=lambda x: x["source_video_id"])
     return {
         "schema_version": 1,
         "stage": "A2_RIGHTS_REVIEW_INTAKE_ONLY",
         "target_channel_id": CLIVOX_ID,
         "generated_at_utc": generated_at_utc,
         "source_report_sha256": source_sha,
+        "non_authorized_api_data_expires_at_utc": discovery[
+            "non_authorized_api_data_expires_at_utc"
+        ],
+        "api_derived_scores_or_cross_owner_aggregations_used": False,
         "is_synthetic_fixture": synthetic,
         "creator_permission_grants_issued_by_this_workflow": 0,
         "media_downloads": 0,
