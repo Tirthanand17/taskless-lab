@@ -15,7 +15,7 @@ from scripts.branch3_original_arcade_pilots import (
 from scripts.branch3_original_arcade_qa import (
     OriginalQARejected, check_caption_draft, validate_episode_report,
     visible_caption_safezone_qa,
-    cue_samples_by_beat,
+    cue_samples_by_beat, srt_seconds,
 )
 
 
