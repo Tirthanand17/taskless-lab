@@ -1,6 +1,6 @@
 # CLIVOX V2 P1 — API-Derived Metrics Remediation (Integration #1)
 
-**Date:** 2026-11-14. **Stage:** code integration; require actual PR + merged-main CI before calling phase complete. **No creator-footage access, licensing or YouTube publication.**
+**Date:** 2026-11-14. **Stage: P1 code VERIFIED (synthetic, offline)** — [PR #204](https://github.com/Tirthanand17/taskless-lab/pull/204) passed **24/24** workflows and merged to main at `2d5de10a744b2313129169b801c71d15aa02d2d6`. The dedicated [merged-main P1 proof #43577935757](https://github.com/Tirthanand17/taskless-lab/actions/runs/43577935757) **SUCCEEDED** with no Google API key, live YouTube metadata queries, media source, license or uploader credentials. **No creator-footage access, licensing or YouTube publication.**
 
 ## What changed
 
@@ -25,6 +25,10 @@
 - Updated \`.github/workflows/branch3-clivox-a1-discovery.yml\` existing manually dispatched workflow to assert score-free shape and source expiry, including A2 no-derived-score contract.
 - Updated adversarial tests for A1, A2 and A123: absent API statistics, invalid/old scores, forged retention, altered rights flags, key leakage, wrong channel and old synthetic fixture compatibility.
 - Existing A1 interactive live-query modes still require a separate restricted metadata API key; this PR **does not configure one**.
+
+## Verified integration result / distinct progress tracking
+
+The P1 source/rights/provenance integration now has a passing synthetic GitHub proof on the merged `main` commit. Update the V2 **roadmap** completion as **2/12 nonoptional phases = 17%**, with **10/12 remaining = 83%**. This is an unweighted planning checkpoint measure including P0 research; it does **not** mean that 17% of a production-ready clipper or creator licensing workflow is operating. Actual real licensed clips, media vault and live publication remain zero. The previous Branch 3 78% original-fiction engineering estimate is unrelated.
 
 ## What has NOT happened
 
