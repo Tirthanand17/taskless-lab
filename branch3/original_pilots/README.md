@@ -4,6 +4,29 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## A5 per-caption acoustic activity in the real mixed WAV (review only)
+
+Technical QA previously checked each **scene's** earliest and latest speech
+activity against the scene's draft SRT bounds. Its **39 individual subtitle
+cues** were not independently checked for audible activity; a muted middle
+caption could slip through if an utterance remained audible at both edges.
+
+The postmix speech auditor now subtracts only the renderer's known original
+procedural ambience, samples the actual final PCM in 20 ms windows, and
+requires nontrivial residual speech-like activity in **every distinct cue**.
+It rejects a silent caption inside an otherwise audible scene, missing/cross-
+scene cue coverage, and original tone-bed-only cues. GitHub's original arcade
+workflow asserts **8 + 8 + 23** audio-cue checks in addition to the existing
+39 real video-frame caption presence checks. The per-cue report is part of
+the exact-file A6 technical hash and never grants approval.
+
+**Limits:** A non-silent voice-like waveform is not speech recognition,
+phoneme or word-level alignment, transcript accuracy, human listening,
+narration quality, a commercial audio/voice license, or publication rights.
+A signal can be present underneath the wrong text. All review checkboxes
+stay false; the exact final master still requires complete human playback
+and separately authenticated owner release before any YouTube operation.
+
 ## A5 every-cue encoded-frame subtitle QA (39 draft cues, review-only)
 
 The previous all-beat frame QA sampled only one SRT cue in each storyboard
