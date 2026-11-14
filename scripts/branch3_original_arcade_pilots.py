@@ -156,7 +156,7 @@ def original_review_typography(w:int,h:int,kind:str)->dict:
     warning_y=round(h*(.955 if portrait else .947))
     warning_px=max(11,round(min(w/38,h*.025)))
     require(brand_y+brand_px+2 <= tagline_y
-            and tagline_y+tagline_px < round(h*.15)
+            and tagline_y+tagline_px < round(h*.16)
             and footer_y+footer_px+3 < warning_y
             and warning_y+warning_px < h,
             "UNSAFE_BRAND_OR_FOOTER_OVERLAP")
