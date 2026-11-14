@@ -17,6 +17,7 @@ from scripts.branch3_v2_p2p3_pilot_owner_review import (
     CHANNEL, compile_owner_pilot_packet, load_public_route_audit,
 )
 from scripts.branch3_v2_p2p3_owner_decision_matrix import build_matrix
+from scripts.branch3_v2_p2p3_pilot_owner_review import ID_ORDER, FIRST
 from scripts.branch3_v2_p4_synthetic_handoff_preflight import actual_closed_boundary
 from scripts.branch3_a3_private_vault_readback import fixture_report
 
@@ -59,9 +60,22 @@ def build_handoff_hold(*, owner_matrix: dict, storage_gate: dict,
             and owner_matrix.get("youtube_uploads") == 0,
             "P2P3_CANNOT_RELEASE")
     rows = owner_matrix.get("rows")
-    require(type(rows) is list and len(rows) == 5, "RESEARCH_ROW_COUNT")
-    for row in rows:
+    require(type(rows) is list and len(rows) == len(ID_ORDER),
+            "RESEARCH_ROW_COUNT")
+    require(owner_matrix.get("schema_version") == 1
+            and type(owner_matrix.get("schema_version")) is int
+            and owner_matrix.get("research_first_only") == list(FIRST)
+            and all(type(owner_matrix.get(key)) is str
+                    and len(owner_matrix[key]) == 64
+                    and all(c in "0123456789abcdef" for c in owner_matrix[key])
+                    for key in ("watchlist_sha256", "route_audit_sha256")),
+            "PROSPECT_PROVENANCE_OR_PRIORITY")
+    for idx, row in enumerate(rows):
         require(type(row) is dict
+                and row.get("prospect_id") == ID_ORDER[idx]
+                and row.get("owner_review_priority") ==
+                    ("REVIEW_FIRST_NOT_APPROVED" if idx < len(FIRST)
+                     else "DEFER_OR_FORMAT_ONLY")
                 and row.get("status") ==
                     "BLOCKED_PENDING_HUMAN_SELECTION_IDENTITY_AND_COMMERCIAL_GRANT"
                 and type(row.get("pending_rights_questions")) is int
