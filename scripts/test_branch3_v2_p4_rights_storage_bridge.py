@@ -69,7 +69,7 @@ class RightsStorageBridgeTests(unittest.TestCase):
     def test_creator_identity_order_priority_and_hash_forgery_denied(self):
         for field, value in (
             ("research_first_only", ["caseoh_format"]),
-            ("watchlist_sha256", "0" * 64),
+            ("watchlist_sha256", "0" * 63),
             ("route_audit_sha256", "INVALID"),
             ("schema_version", True),
         ):
