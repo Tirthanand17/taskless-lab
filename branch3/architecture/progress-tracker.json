@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 76,
-  "overall_estimated_remaining_percent": 24,
+  "overall_estimated_completion_percent": 77,
+  "overall_estimated_remaining_percent": 23,
   "milestone_count": 11,
   "milestones": [
     {
@@ -47,9 +47,9 @@
     {
       "id": "A5",
       "name": "Video renderer and AV quality assurance",
-      "completion_pct": 80,
+      "completion_pct": 84,
       "status": "partial",
-      "evidence": "Source-free original arcade 2 Shorts + 108s real H264/AAC GitHub renders, actual independent FFprobe/sha A6 unsigned owner handoffs, offline HTML5 review gallery and NEW in-repo measured-post-tempo-synthetic-speech-window SRT cues with FFmpeg libass high-contrast mobile caption overlays. These overlays/editable SRT are DRAFT, no phoneme alignment/human final QA or license review. A5 real media CI pending merge/automatic full re-render."
+      "evidence": "Completed original-only 2 Shorts (36s each) and 108s landscape video, full-resolution GitHub Actions real render success run 43555814059 (7d ~24.4MB original-only artifact). Independent FFprobe/H264/AAC/SRT SHA QA, A6 exact-media packets, ALL-false owner checklists, offline HTML gallery and new encoded-frame lower-safezone caption-pixel QA all passed. Assistant directly downloaded artifact and inspected multiple actual frames from both Shorts and long; corrected portrait caption visibility, long header and footer separation, and final silent CTA. No owner playback/speech-sync, commercial rights, signed release or YouTube upload."
     },
     {
       "id": "A6",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "76% remains an engineering estimate. Actual frame inspection of run 43554270709 revealed portrait captions off screen and oversized long-video overlays despite technically passing H264/AAC QA. This repair applies native libass units and independent MP4 safezone text detection; corrected full-sized render and owner visual playback must pass before using any new A6 artifact. No final human word alignment, commercial voice/asset approval, owner signing, production OAuth or publishing. A9 0%; Branch 1/2 paused.",
+  "disclaimer": "77% is a planning estimate for engineering only, NOT production/virality or upload readiness. Full source-free videos technically rendered and assistant visually inspected on successful main run 43555814059; draft captions improved and visible, but no verified real owner/editor acceptance, final word-accurate speech alignment, audio/voice/tool commercial rights approval, A6 signed release, production durable cross-run upload writer or Clivox OAuth. A9 0% published, publishing disabled, Branches 1 and 2 paused.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -318,7 +318,13 @@
     "ass_native_caption_scale_and_margin_correction_code_implemented": true,
     "landscape_brand_tagline_footer_overlap_guard_implemented": true,
     "actual_decoded_frame_caption_safezone_qa_implemented": true,
-    "corrected_full_resolution_automatic_render_verified": false
+    "corrected_full_resolution_automatic_render_verified": true,
+    "corrected_full_resolution_automatic_render_id": 43555814059,
+    "corrected_full_resolution_automatic_render_artifact_id": 14098650686,
+    "corrected_full_resolution_artifact_size_bytes": 24421489,
+    "corrected_real_mp4_safezone_caption_qa_passed_for_all_three": true,
+    "assistant_frame_visual_inspection_of_both_shorts_and_long_done": true,
+    "owner_final_audio_caption_and_commercial_rights_review_passed": false
   },
   "a6_original_owner_handoff": {
     "stage": "A6_EXACT_REAL_VIDEO_ORIGINAL_OWNER_REVIEW_PACKET_QUARANTINE",
@@ -497,6 +503,14 @@
     "native_ass_virtual_unit_font_and_vertical_margin_fixed_in_code": true,
     "long_brand_and_footer_layout_overlap_fixed_in_code": true,
     "real_decoded_frame_caption_safezone_assertion_in_QA": true,
-    "new_full_resolution_corrected_video_visual_audit_passed": false
+    "new_full_resolution_corrected_video_visual_audit_passed": true,
+    "latest_full_resolution_corrected_review_run_id": 43555814059,
+    "corrected_safezone_caption_qa_all_3_passed": true,
+    "both_portrait_subtitle_visible_at_sampled_frames": true,
+    "landscape_heading_not_overlapped_at_sampled_frames": true,
+    "landscape_clivox_brand_footer_separated_at_sampled_frames": true,
+    "outro_final_single_word_no_longer_held_to_end": true,
+    "actual_owner_word_level_alignment_verification_completed": false,
+    "owner_accepted_video_release": false
   }
 }
