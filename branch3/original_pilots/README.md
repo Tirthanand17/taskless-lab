@@ -27,6 +27,14 @@ All scripts, metadata, vector drawings and synthesized procedural sound effects 
 
 To view the videos, open the workflow run's **Artifacts** section, download `clivox-original-arcade-review-<run-id>`, and review each `original-review-preview.mp4` by episode directory. All files exist only in GitHub's hosted runner/artifact, **not on a user's laptop or in repository history**.
 
+## Open the videos easily: offline CLIVOX reviewer gallery
+
+After a new original render completes, download and **extract** the `clivox-original-arcade-review-<run-id>` ZIP from GitHub Actions and open `CLIVOX-REVIEW-START-HERE.html` in a desktop browser. Its dark, responsive CLIVOX-styled cards embed **local** MP4 controls for each episode and link the exact draft SRT file. It lists the exact MP4 SHA-256 digest and five pending owner checks, without ever claiming that you approved the video. There is **no JavaScript, external CDN, cookie, tracking, OAuth, YouTube link or upload control**. Do not open the HTML without extracting the video folders, because relative playback links will not resolve inside an unopened ZIP.
+
+The gallery is constructed only after rerunning the actual A5 media FFprobe/QA, A6 video/WAV/SRT/metadata digest checks and unsigned worksheet verification; any changed video, subtitle, misleading metadata, or forged review flag fails closed. It is a local **viewing interface**, not a formal recorded approval/signature; the owner must still inspect every clip, voice, caption and copyright/licensing condition.
+
+**Verified main automatic full 3-video run:** [GitHub run 43551704973](https://github.com/Tirthanand17/taskless-lab/actions/runs/43551704973) completed successfully with all real video/unsigned form QA and a 25 MB review artifact. That historical run predates this new gallery feature; a subsequent merge of gallery support will automatically generate a new full-resolution three-video artifact with the HTML included.
+
 ## New unsigned exact-video human editorial checklist
 
 Every future three-video render produces an `owner-editorial-review-UNSIGNED.json` per episode in its seven-day GitHub review artifact. The form is bound to the exact real video, audio, subtitle, metadata and A6 handoff digest, but **all five review flags are false** until a human actually watches and checks the video. A new independent **read-only verifier** immediately reopens the finished full review package, re-runs FFprobe/A5 media QA and checks every unsigned form against its rebuilt A6 digest, without signing, uploading or changing media. It does **not** approve the draft synthetic narration or SRT timing; a change to the actual final audio or captions requires new hashes and review. [Owner-only editorial attestation guide](../release/ORIGINAL_EDITORIAL_OWNER_ATTESTATION.md) explains the optional offline signature math without a production key or publishing permission.
