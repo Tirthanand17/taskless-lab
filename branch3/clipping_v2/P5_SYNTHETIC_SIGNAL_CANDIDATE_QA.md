@@ -37,3 +37,7 @@
 - [Merged-main P5 acoustic/scene QA #43585035896](https://github.com/Tirthanand17/taskless-lab/actions/runs/43585035896) **success**; the runner verified both scene transitions and acoustic RMS rise without ASR, lyrics, source media, copyright grants or uploader.
 - [Merged-main P4 regression #43585035920](https://github.com/Tirthanand17/taskless-lab/actions/runs/43585035920) and [main Content Quality Gate #43585036042](https://github.com/Tirthanand17/taskless-lab/actions/runs/43585036042) **success**.
 - All output remains synthetic-only with zero actual approved creator media, zero legal grant, zero YouTube upload and no measured viral performance. Real P5 phase and roadmap **2/12 = 17%** are intentionally unchanged.
+
+## Next technical integration: synthetic golden-event evaluation
+
+The [P5 source-free reference evaluation harness](P5_SYNTHETIC_REFERENCE_EVALUATION.md) consumes the ephemeral generated detector output, calculates strictly synthetic overlap/false-positive/missed-event counts, and explicitly refuses any real human-label or creator-rights assertion. It adds source-separated held-out test contracts; these are *not* actual licensed creator-source benchmark outcomes.

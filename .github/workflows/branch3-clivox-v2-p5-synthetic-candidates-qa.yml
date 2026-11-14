@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/branch3_v2_p5_synthetic_moment_proposals.py'
       - 'scripts/test_branch3_v2_p5_synthetic_moment_proposals.py'
+      - 'scripts/branch3_v2_p5_synthetic_editorial_evaluation.py'
+      - 'scripts/test_branch3_v2_p5_synthetic_editorial_evaluation.py'
       - '.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml'
       - 'branch3/clipping_v2/P5_*'
       - 'branch3/clipping_v2/architecture-status.json'
@@ -13,6 +15,8 @@ on:
     paths:
       - 'scripts/branch3_v2_p5_synthetic_moment_proposals.py'
       - 'scripts/test_branch3_v2_p5_synthetic_moment_proposals.py'
+      - 'scripts/branch3_v2_p5_synthetic_editorial_evaluation.py'
+      - 'scripts/test_branch3_v2_p5_synthetic_editorial_evaluation.py'
       - '.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml'
       - 'branch3/clipping_v2/P5_*'
       - 'branch3/clipping_v2/architecture-status.json'
@@ -54,7 +58,9 @@ jobs:
           test "$CLIVOX_YOUTUBE_UPLOAD_ENABLED" = false
           test "$PUBLISH_ENABLED" = false
           python -B -m scripts.branch3_v2_p5_synthetic_moment_proposals --mode closed
+          python -B -m scripts.branch3_v2_p5_synthetic_editorial_evaluation --mode closed
           python -B -m unittest -v \
+            scripts.test_branch3_v2_p5_synthetic_editorial_evaluation \
             scripts.test_branch3_v2_p5_synthetic_moment_proposals \
             scripts.test_branch3_v2_p4_synthetic_handoff_preflight
       - name: Install Ubuntu FFmpeg for generated color/sine signal ONLY
@@ -122,6 +128,37 @@ jobs:
           assert any("VIDEO_LUMA_CUT" in r["evidence_kinds"] for r in rows)
           assert any("ACOUSTIC_RMS_RISE" in r["evidence_kinds"] for r in rows)
           print("CLIVOX_V2_P5_REAL_GENERATED_SIGNAL_QA_PASS_NO_CREATOR_MEDIA_NO_VIRAL_PREDICTIONS")
+          PY
+      - name: Compare measured synthetic candidate against generated golden timecodes (no real labels)
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_v2_p5_synthetic_editorial_evaluation \
+            --mode synthetic \
+            --scratch "$RUNNER_TEMP/clivox-p5-synthetic" \
+            --report-file quarantined-signals-only.json \
+            > "$RUNNER_TEMP/clivox-p5-synthetic/synthetic-evaluation-only.json"
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          filename = Path(os.environ["RUNNER_TEMP"]) / "clivox-p5-synthetic/synthetic-evaluation-only.json"
+          packet = json.loads(filename.read_text("utf-8"))
+          assert packet["stage"] == "CLIVOX_V2_P5_SYNTHETIC_REFERENCE_EVALUATION_ONLY"
+          assert packet["channel_id"] == "UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert packet["test_sources"] == 1
+          assert packet["actual_human_editor_labels"] == 0
+          assert packet["real_creator_sources"] == 0
+          assert packet["real_creator_licenses"] == 0
+          assert packet["training_performed"] is False
+          assert packet["real_world_precision_recall_validated"] is False
+          assert packet["viral_performance_prediction"] is None
+          assert packet["p5_real_milestone_complete"] is False
+          assert packet["media_access_or_youtube_upload_authorized"] is False
+          assert packet["aggregate_real_creator_api_statistics_computed"] is False
+          reference = packet["synthetic_test_metrics"][0]
+          assert reference["reference_events"] == 1
+          assert reference["matched_events"] == 1
+          assert reference["missed_reference_events"] == 0
+          print("CLIVOX_V2_P5_GENERATED_SIGNAL_TO_SYNTHETIC_GOLDEN_QA_PASS_NO_LIVE_ACCURACY_CLAIMS")
           PY
       - name: No media or candidate artifact uploaded publicly
         run: |

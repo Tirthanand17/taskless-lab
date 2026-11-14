@@ -1,6 +1,6 @@
 # CLIVOX V2 — Moment Evaluation, Originality & Experimental Learning
 
-**Planning only.** A model can rank human-reviewed moments in licensed footage; it cannot measure the private replay graph of another creator, predict virality deterministically, self-license a clip or fabricate engagement.
+**Real creator evaluation remains planning-only.** The [separate synthetic source-free golden-event evaluation harness](P5_SYNTHETIC_REFERENCE_EVALUATION.md) tests only the wiring and time-window metrics, not human-editor agreement or production detection quality. A model can rank human-reviewed moments in licensed footage; it cannot measure the private replay graph of another creator, predict virality deterministically, self-license a clip or fabricate engagement.
 
 ## 1. Three independent decision gates (do not merge into one numeric score)
 
