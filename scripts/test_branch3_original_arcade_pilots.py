@@ -10,6 +10,7 @@ import unittest
 from scripts.branch3_original_arcade_pilots import (
     CATALOG, ArcadeDenied, validate_catalog, render_size,
     draw_scene, draft_srt, sha, encode_video,
+    original_review_typography, native_ass_caption_style,
 )
 from scripts.branch3_original_arcade_qa import (
     OriginalQARejected, check_caption_draft, validate_episode_report,
@@ -240,6 +241,49 @@ class OriginalPilotQATests(unittest.TestCase):
         self.assertEqual(render_size("long","full"),(1920,1080,30))
         with self.assertRaises(ArcadeDenied):
             render_size("copyrighted", "preview")
+
+    def test_caption_virtual_units_cannot_escape_portrait_or_cover_landscape_heading(self):
+        for kind in ("short","long"):
+            s=native_ass_caption_style(kind)
+            self.assertIn("FontName=DejaVu Sans",s)
+            self.assertIn("Alignment=2",s)
+            self.assertIn("Outline=",s)
+            self.assertIn("MarginL=28",s)
+            self.assertIn("MarginR=28",s)
+            parts=dict(x.split("=",1) for x in s.split(","))
+            # SRT-to-libass coordinates are 384x288 virtual units.
+            # The previous pixel-based MarginV=345 pushed 9:16 text
+            # completely off screen, while MarginV=172 floated landscape
+            # text over the headline. Detect regression in pure tests.
+            self.assertLessEqual(int(parts["MarginV"]),70)
+            self.assertGreaterEqual(int(parts["MarginV"]),40)
+            self.assertLessEqual(int(parts["FontSize"]),12)
+            self.assertGreaterEqual(int(parts["FontSize"]),7)
+            self.assertEqual(int(parts["MarginV"]),
+                             50 if kind=="short" else 55)
+            self.assertEqual(int(parts["FontSize"]),
+                             8 if kind=="short" else 11)
+        with self.assertRaises(ArcadeDenied):
+            native_ass_caption_style("copyrighted")
+
+    def test_brand_and_footer_safe_geometry_for_9_16_and_16_9(self):
+        for kind in ("short","long"):
+            for mode in ("preview","full"):
+                w,h,_=render_size(kind,mode)
+                v=original_review_typography(w,h,kind)
+                with self.subTest(kind=kind,mode=mode):
+                    self.assertLess(v["brand_y"]+v["brand_font_px"],
+                                    v["tagline_y"])
+                    self.assertLess(v["tagline_y"]+v["tagline_font_px"],
+                                    round(h*.16))
+                    self.assertLess(v["footer_y"]+v["footer_font_px"],
+                                    v["warning_y"])
+                    self.assertLess(v["warning_y"]+v["warning_font_px"],h)
+                    if kind=="long":
+                        self.assertLess(v["brand_font_px"],80)
+                        self.assertLess(v["warning_font_px"],32)
+        with self.assertRaises(ArcadeDenied):
+            original_review_typography(1920,1080,"unknown")
 
     def test_pillow_scene_is_new_original_procedural_art(self):
         try:
