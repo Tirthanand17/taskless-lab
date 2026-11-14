@@ -12,6 +12,10 @@
 6. [Phased Integration Plan](PHASED_INTEGRATION_PLAN.md): ordered P0–P11, human blockers, exact future P1 API policy remediation and tests.
 7. [Architecture Status (JSON)](architecture-status.json): machine-readable, fail-closed **NOT STARTED** V2 status, separate from the older original-fiction engineering percentage.
 
+## P3 licensing scope questions — implementation under CI
+
+The new [P3 commercial rights scope quarantine](P3_LICENSING_SCOPE_INTAKE.md) generates strictly **unsigned** requests for commercial YouTube redistribution and checks 30 terms/rights issues per public prospect. It reuses existing A2 no-grant policy, authentic pending-case validation and two **synthetic, unlinked** source references. It never asserts that a source video belongs to a prospect and never grants download, editing or upload permission. A real rights-holder's authenticated commercial license, durable revocation evidence, owner-signed approval and secure contract/media vault remain outstanding. **The phase roadmap remains 17%** until actual milestones pass.
+
 ## P2 creator prospect research tooling — verified, human selection pending
 
 The first [P2 creator prospect research intake](P2_CREATOR_PROSPECT_INTAKE.md)
