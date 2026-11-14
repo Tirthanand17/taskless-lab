@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "project": "CLIVOX_VIRAL_CLIPPING_V2",
+  "research_snapshot_date_utc": "2026-11-14",
+  "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
+  "handle": "@ClivoxPulse",
+  "status": "ARCHITECTURE_DRAFT_ONLY_AWAIT_USER_REVIEW",
+  "public_repo": "Tirthanand17/taskless-lab",
+  "flowminute_branch1_unchanged": true,
+  "flowminute_branch2_unchanged": true,
+  "old_branch3_synthetic_progress_is_not_v2_clipping_progress": true,
+  "clipping_engine_implementation_completed_phases": [],
+  "clipping_engine_implementation_not_started": true,
+  "clipping_engine_overall_completion_percentage": null,
+  "old_architecture_synthetic_engineering_completion_estimate_percent": 78,
+  "confirmed_creator_commercial_grants": 0,
+  "confirmed_rights_cleared_source_files": 0,
+  "clivox_actual_licensed_creator_clips_uploaded": 0,
+  "clivox_live_uploads_enabled": false,
+  "youtube_media_download_enabled": false,
+  "creator_outreach_sent": false,
+  "owner_commercial_reuse_authorization_verified": false,
+  "private_licensed_media_storage_ready": false,
+  "actual_human_source_clip_review_completed": false,
+  "actual_owner_exact_media_release_signed": false,
+  "clivox_channel_oauth_write_enabled": false,
+  "default_publication_state": "BLOCKED",
+  "v2_priority_first_integration": "P1_A1_YOUTUBE_API_DERIVED_METRIC_COMPLIANCE_REMEDIATION",
+  "preexisting_reusable_modules": [
+    "scripts/branch3_discovery.py",
+    "scripts/branch3_rights_case_intake.py",
+    "scripts/branch3_original_arcade_pilots.py",
+    "scripts/branch3_original_arcade_qa.py",
+    "scripts/branch3_a5_cue_correction_intake.py",
+    "scripts/branch3_a5_private_revision_preview.py",
+    "scripts/branch3_a5_revision_sandbox.py"
+  ],
+  "p1_critical_compatibility_risk": "Existing A1 view velocity / engagement ratio / composite derived score appears inconsistent with Nov-2026 YouTube API Developer Policies. Require scoped remediation before live integration.",
+  "phase_plan": [
+    {
+      "id": "P0",
+      "name": "Research and architecture",
+      "state": "DRAFT_DOCUMENTED_NOT_REVIEW_APPROVED",
+      "requires_owner": "Review plan before engineering"
+    },
+    {
+      "id": "P1",
+      "name": "Existing discovery API compliance repair",
+      "state": "NOT_STARTED",
+      "requires_owner": "Separate integration request"
+    },
+    {
+      "id": "P2",
+      "name": "Creator research and licensing outreach proposal",
+      "state": "NOT_STARTED",
+      "requires_owner": "Explicit outreach action approval"
+    },
+    {
+      "id": "P3",
+      "name": "Authenticated commercial rights grants",
+      "state": "NOT_STARTED",
+      "requires_owner": "Verified actual rights holder and contract"
+    },
+    {
+      "id": "P3T",
+      "name": "Optional authorized Twitch editor metadata and clip API",
+      "state": "NOT_STARTED",
+      "requires_owner": "Editor authorization plus commercial rights"
+    },
+    {
+      "id": "P4",
+      "name": "Approved private media storage and creator source delivery",
+      "state": "NOT_STARTED",
+      "requires_owner": "Owner approves source handoff and private vault"
+    },
+    {
+      "id": "P5",
+      "name": "Licensed source event ASR VAD and scene detection",
+      "state": "NOT_STARTED",
+      "requires_owner": "Actual rights granted media"
+    },
+    {
+      "id": "P6",
+      "name": "Original CLIVOX commentary and human-selected moments",
+      "state": "NOT_STARTED",
+      "requires_owner": "Human editor approval"
+    },
+    {
+      "id": "P7",
+      "name": "Rights-cleared clip renderer and final QA",
+      "state": "NOT_STARTED",
+      "requires_owner": "Actual legal source and private render"
+    },
+    {
+      "id": "P8",
+      "name": "Human exact-media rights review and signed release",
+      "state": "NOT_STARTED",
+      "requires_owner": "Independently enrolled owner signature"
+    },
+    {
+      "id": "P9",
+      "name": "Controlled private-first Clivox YouTube pilot",
+      "state": "NOT_STARTED",
+      "requires_owner": "Separate explicit final video upload approval"
+    },
+    {
+      "id": "P10",
+      "name": "Own-channel analytics and experiments",
+      "state": "NOT_STARTED",
+      "requires_owner": "Real authorized CLIVOX Analytics"
+    },
+    {
+      "id": "P11",
+      "name": "Scaled recurring creator partnerships",
+      "state": "NOT_STARTED",
+      "requires_owner": "Verified costs and continuing rights"
+    }
+  ],
+  "published_media_or_scheduled_youtube_actions_performed_by_this_architecture_change": 0,
+  "primary_design_docs": [
+    "branch3/clipping_v2/MASTER_ARCHITECTURE.md",
+    "branch3/clipping_v2/POLICY_AND_SOURCE_EVIDENCE.md",
+    "branch3/clipping_v2/CREATOR_RESEARCH_WATCHLIST.md",
+    "branch3/clipping_v2/FREE_TOOLING_AND_COST.md",
+    "branch3/clipping_v2/EVALUATION_PROTOCOL.md",
+    "branch3/clipping_v2/PHASED_INTEGRATION_PLAN.md"
+  ]
+}
