@@ -472,7 +472,13 @@
     "new_art_geometry_reserved_above_caption_lower_third": true,
     "icon_geometry_4_aspect_resolution_modes_bounded": true,
     "artwork_safezone_final_full_video_audit_passed": false,
-    "actual_google_upload_enabled": false
+    "actual_google_upload_enabled": false,
+    "portrait_illustration_does_not_reach_subtitles_verified_in_real_contact_sheet": true,
+    "landscape_illustration_upper_headline_collision_detected_in_real_review": true,
+    "landscape_icon_top_min_fraction": 0.43,
+    "landscape_art_headline_safe_geom_code": true,
+    "landscape_art_heading_clearance_real_full_run_verified": false,
+    "actual_youtube_upload_enabled": false
   },
   "a10_owner_analytics_readonly": {
     "fixed_channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
