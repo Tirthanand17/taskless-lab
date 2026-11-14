@@ -14,7 +14,7 @@ from pathlib import Path
 import re
 
 from scripts.branch3_v2_p5_synthetic_moment_proposals import (
-    CHANNEL, MAX_CANDIDATES, _probe_closed,
+    CHANNEL, MAX_CANDIDATES, P5Denied, _probe_closed,
 )
 
 MAX_SOURCES = 12
@@ -274,7 +274,7 @@ def main() -> None:
             result = assess_generated_p5_packet(
                 _read_temp_report(args.scratch, args.report_file))
         print(json.dumps(result, sort_keys=True))
-    except (P5EvaluationDenied, ValueError, OSError, KeyError, TypeError):
+    except (P5EvaluationDenied, P5Denied, ValueError, OSError, KeyError, TypeError):
         raise SystemExit("CLIVOX_P5_EVAL_BLOCKED_NO_REAL_MEDIA_NO_RELEASE") from None
 
 
