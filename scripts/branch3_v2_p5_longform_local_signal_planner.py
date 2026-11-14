@@ -99,7 +99,10 @@ def plan_longform_candidates(doc: object) -> dict:
         span = min(36000, duration)
         start = min(max(0, when - 8000), duration - span)
         end = start + span
-        if clips and start < clips[-1]["end_ms"] + 2500:
+        # Only fold evidence into a candidate that actually CONTAINS
+        # the event. Comparing the proposed clip starts used to drop later
+        # events that were outside the previous clip's end time.
+        if clips and clips[-1]["start_ms"] <= when <= clips[-1]["end_ms"]:
             evidence = clips[-1]["evidence_kinds"]
             clips[-1]["evidence_kinds"] = sorted(set(evidence + [kind]))
             continue
