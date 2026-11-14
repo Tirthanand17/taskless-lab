@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P7_SOURCE_FREE_VERTICAL_MP4_RENDER_QA_UNDER_CI_REAL_LICENSED_MEDIA_PRIVATE_VAULT_AND_RELEASE_BLOCKED",
+  "status": "P7_SYNTHETIC_ORIGINAL_9_16_MP4_QA_VERIFIED_ON_MAIN_REAL_CREATOR_LICENSE_MEDIA_RENDER_AND_RELEASE_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -109,10 +109,11 @@
     {
       "id": "P7",
       "name": "Rights-cleared clip renderer and final QA",
-      "state": "SYNTHETIC_ONLY_VERTICAL_H264_AAC_RENDER_QA_PENDING_CI_REAL_CREATOR_RIGHTS_AND_OWNER_RELEASE_BLOCKED",
+      "state": "SYNTHETIC_GENERATED_VERTICAL_H264_AAC_MP4_TIMING_AND_CAPTION_QA_VERIFIED_MAIN_REAL_RIGHTS_SOURCE_EDITOR_AND_OWNER_RELEASE_BLOCKED",
       "requires_owner": "Actual legal source and private render",
       "synthetic_technical_renderer_script": "scripts/branch3_v2_p7_synthetic_vertical_renderer.py",
-      "ephemeral_ci": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml"
+      "ephemeral_ci": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml",
+      "synthetic_preview_main_ci_run_id": 43590313799
     },
     {
       "id": "P8",
@@ -304,8 +305,8 @@
   "p6_main_qa_run_id": 43588374057,
   "p6_main_p4_regression_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43588373983",
   "p6_main_content_quality_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43588374020",
-  "p7_source_free_9_16_render_implemented_pending_ci": true,
-  "p7_source_free_9_16_render_verified_on_main": false,
+  "p7_source_free_9_16_render_implemented_pending_ci": false,
+  "p7_source_free_9_16_render_verified_on_main": true,
   "p7_real_licensed_clip_rendered": 0,
   "p7_original_synthetic_preview_resolution": "270x480",
   "p7_synthetic_preview_duration_ms": 6000,
@@ -318,5 +319,15 @@
   "p7_real_milestone_complete": false,
   "p7_script": "scripts/branch3_v2_p7_synthetic_vertical_renderer.py",
   "p7_tests": "scripts/test_branch3_v2_p7_synthetic_vertical_renderer.py",
-  "p7_runbook": "branch3/clipping_v2/P7_SYNTHETIC_VERTICAL_RENDER_QA.md"
+  "p7_runbook": "branch3/clipping_v2/P7_SYNTHETIC_VERTICAL_RENDER_QA.md",
+  "p7_feature_pr_url": "https://github.com/Tirthanand17/taskless-lab/pull/218",
+  "p7_feature_pr_checks_passed": 4,
+  "p7_feature_pr_qa_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43590210618",
+  "p7_feature_main_commit_sha": "34d4d7abd30169ce237ebbaa009fae5226e1cb11",
+  "p7_main_generated_vertical_qa_run_id": 43590313799,
+  "p7_main_generated_vertical_qa_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43590313799",
+  "p7_main_p4_regression_run_id": 43590313795,
+  "p7_main_p4_regression_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43590313795",
+  "p7_main_content_quality_run_id": 43590313796,
+  "p7_main_content_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43590313796"
 }
