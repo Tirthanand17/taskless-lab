@@ -75,7 +75,7 @@
           "WHAT THE MODE DISABLES",
           "FORWARD COPY",
           "DOWNLOAD",
-          "The mode can disable forwarding, copying, printing, and downloading options inside Gmail. That discourages accidental sharing."
+          "Confidential Mode blocks some forward, copy, print, and download options. These restrictions discourage accidental sharing, but cannot prevent a screenshot."
         ],
         [
           "THE SCREENSHOT CATCH",
