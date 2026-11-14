@@ -24,6 +24,10 @@ A separate owner-controlled GitHub **private control-metadata repository** now e
 
 [Clivox's separate owner-only dual-read-only Analytics adapter](a10/OWNER_ANALYTICS_READONLY_SETUP.md) now verifies the exact Clivox channel identity before a bounded 50-video nonmonetary report read. The `clivox-analytics-readonly` GitHub environment is **really created, main-only and owner-review protected with zero secrets**. Google owner consent and real metrics **are not configured**; no upload credential, private video identifier, posting decision or schedule can be reused or changed.
 
+## Final landscape art clearance (under actual-video QA)
+
+Frame review of the newest 2 Shorts + 108s episode found the Shorts fixed, but some **landscape** graphics encroached upon the orange subheadline. The revised landscape layout now reserves a strict 0–43% heading region, a compact middle art panel and the lower-third subtitle region. Human owner review, synthetic voice and legal asset rights remain pending; uploaded YouTube videos remain zero.
+
 ## Original artwork now kept clear of caption lower thirds
 
 All-scene contact sheets from [successful GH render 43557461327](https://github.com/Tirthanand17/taskless-lab/actions/runs/43557461327) revealed the door and portal drawings physically overlapping subtitles even though automated caption pixels were present. Renderer layout now reserves a stricter middle illustration slot so the bottom third remains readable. This is a visual layout improvement, not claim of final graphics, professional voice, owner signed-release or more YouTube views.
