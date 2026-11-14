@@ -4,13 +4,15 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "ARCHITECTURE_DRAFT_ONLY_AWAIT_USER_REVIEW",
+  "status": "P1_PUBLIC_API_DISCOVERY_COMPLIANCE_INTEGRATION_PENDING_CI",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
   "old_branch3_synthetic_progress_is_not_v2_clipping_progress": true,
-  "clipping_engine_implementation_completed_phases": [],
-  "clipping_engine_implementation_not_started": true,
+  "clipping_engine_implementation_completed_phases": [
+    "P0"
+  ],
+  "clipping_engine_implementation_not_started": false,
   "clipping_engine_overall_completion_percentage": null,
   "old_architecture_synthetic_engineering_completion_estimate_percent": 78,
   "confirmed_creator_commercial_grants": 0,
@@ -40,13 +42,13 @@
     {
       "id": "P0",
       "name": "Research and architecture",
-      "state": "DRAFT_DOCUMENTED_NOT_REVIEW_APPROVED",
+      "state": "COMPLETE_ARCHITECTURE_DOCS_MERGED_PR203",
       "requires_owner": "Review plan before engineering"
     },
     {
       "id": "P1",
       "name": "Existing discovery API compliance repair",
-      "state": "NOT_STARTED",
+      "state": "IMPLEMENTED_PENDING_PR_AND_MAIN_CI",
       "requires_owner": "Separate integration request"
     },
     {
@@ -124,5 +126,15 @@
     "branch3/clipping_v2/FREE_TOOLING_AND_COST.md",
     "branch3/clipping_v2/EVALUATION_PROTOCOL.md",
     "branch3/clipping_v2/PHASED_INTEGRATION_PLAN.md"
-  ]
+  ],
+  "roadmap_nonoptional_phases_total": 12,
+  "roadmap_confirmed_completed_phases": 1,
+  "roadmap_estimated_progress_percent": 8,
+  "p1_code_implemented_pending_ci": true,
+  "p1_old_public_api_derived_engagement_rank_removed": true,
+  "p1_a2_and_a123_source_contract_updated": true,
+  "p1_source_data_retention_days": 7,
+  "p1_real_metadata_api_key_authenticated": false,
+  "p1_live_public_discovery_completed": false,
+  "p1_first_licensed_creator_clips_produced": 0
 }
