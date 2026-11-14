@@ -8,6 +8,8 @@
 
 Each unsigned worksheet includes the hashes of the exact handoff, video, audio, subtitle and metadata, plus five explicit review fields. **Every review field defaults to false** and the review timestamp is empty. The workflow never creates a private key, supplies a public-key fingerprint, forges a review attestation, uploads to YouTube or marks the video as approved.
 
+After generating the unsigned worksheet, the workflow now runs `python -B -m scripts.branch3_a6_original_review_signature --mode verify --selection all --directory <absolute-review-folder>`, which reopens **every actual MP4, WAV and SRT**, rebuilds technical QA and A6 metadata hashes, then rejects any edited or forged checkbox/worksheet. The operation is read-only and still returns all permission flags false. The `main` push path for renderer or A6 source changes automatically regenerates all three **full-resolution reviewer masters**; the pull request path continues to produce only a preview Short.
+
 The same module provides an **offline Ed25519 cryptographic verifier** for a detached signature on a domain-separated, canonical signed review claim. Tests generate ephemeral **test-only** Ed25519 keys to exercise the verifier, then discard them. Production keys are not stored in this project, in workflow output, or in GitHub Actions test fixtures.
 
 ## Owner's real-world human editorial requirements

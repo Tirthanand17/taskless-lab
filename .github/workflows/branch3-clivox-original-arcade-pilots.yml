@@ -1,6 +1,19 @@
 name: Branch 3 Clivox Original Arcade 2 Shorts + Long REVIEW Renders
 
 on:
+  # Any accepted change to this first-party creative source/renderer on main
+  # creates a fresh full-resolution 3-episode REVIEW artifact. This workflow
+  # has no YouTube OAuth, no source downloads and no publishing permission.
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/branch3-clivox-original-arcade-pilots.yml'
+      - 'scripts/branch3_original_arcade_pilots.py'
+      - 'scripts/branch3_original_arcade_qa.py'
+      - 'scripts/branch3_a6_original_handoff.py'
+      - 'scripts/branch3_a6_original_review_signature.py'
+      - 'branch3/original_pilots/arcade_trio.json'
   pull_request:
     paths:
       - 'scripts/branch3_original_arcade_pilots.py'
@@ -49,8 +62,8 @@ jobs:
       CLIVOX_CREATOR_MEDIA_DOWNLOAD_ENABLED: 'false'
       CLIVOX_YOUTUBE_WRITE_ENABLED: 'false'
       CLIVOX_AUTHOR_SIGNED_RELEASE_ENABLED: 'false'
-      SELECTED_MODE: ${{ inputs.render_mode || 'preview' }}
-      SELECTED_EPISODES: ${{ inputs.selection || 'one' }}
+      SELECTED_MODE: ${{ github.event_name == 'push' && 'full' || inputs.render_mode || 'preview' }}
+      SELECTED_EPISODES: ${{ github.event_name == 'push' && 'all' || inputs.selection || 'one' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -92,6 +105,21 @@ jobs:
           set -euo pipefail
           python -B -m scripts.branch3_a6_original_review_signature --mode unsigned --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original" > "$RUNNER_TEMP/clivox-owner-editorial-unsigned-result.json"
           python -B -c 'import json,os,pathlib; d=pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-original"; forms=list(d.glob("*/owner-editorial-review-UNSIGNED.json")); assert len(forms)==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1); assert all(all(v is False for v in json.loads(p.read_text())["owner_review_checks"].values()) and json.loads(p.read_text())["owner_review_completed_at_utc"] is None and json.loads(p.read_text())["action"]=="EDITORIAL_REVIEW_CLAIM_ONLY_NO_UPLOAD" for p in forms); print("CLIVOX_A6_ALL_UNSIGNED_REVIEW_CHECKLISTS_BOUND_TO_ACTUAL_MEDIA_NO_OWNER_SIGNING")'
+      - name: Reverify exact rendered full review package and unsigned owner forms, with no mutation
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_a6_original_review_signature --mode verify --selection "$SELECTED_EPISODES" --directory "$RUNNER_TEMP/clivox-original" > "$RUNNER_TEMP/clivox-original-owner-review-verified.json"
+          python -B -c 'import json,os,pathlib; d=json.loads((pathlib.Path(os.environ["RUNNER_TEMP"])/"clivox-original-owner-review-verified.json").read_text()); assert d["episode_count"]==(3 if os.environ["SELECTED_EPISODES"]=="all" else 1) and d["all_episode_video_audio_caption_metadata_and_qa_hashes_recomputed"] and d["unsigned_checklist_files_matched_exact_media"] and d["actual_owner_signature_keys_loaded"]==0 and d["actual_human_video_approvals_verified"]==0 and not d["youtube_upload_authorized"] and not d["youtube_schedule_authorized"] and not d["youtube_publish_authorized"]; print("CLIVOX_A6_EXACT_REVIEW_PACK_VERIFIED_NO_OWNER_APPROVAL_OR_YOUTUBE")'
+      - name: Assert main push builds all 3 FULL resolution reviewer masters, never publication
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            test "$GITHUB_REF" = "refs/heads/main"
+            test "$SELECTED_EPISODES" = "all"
+            test "$SELECTED_MODE" = "full"
+          fi
+          test "$PUBLISH_ENABLED" = "false"
+          test "$CLIVOX_YOUTUBE_WRITE_ENABLED" = "false"
       - name: Upload only author-owned new graphics/fiction/TTS reviewer files (7 days)
         uses: actions/upload-artifact@v4
         with:

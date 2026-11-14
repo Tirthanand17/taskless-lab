@@ -24,6 +24,10 @@ A separate owner-controlled GitHub **private control-metadata repository** now e
 
 [Clivox's separate owner-only dual-read-only Analytics adapter](a10/OWNER_ANALYTICS_READONLY_SETUP.md) now verifies the exact Clivox channel identity before a bounded 50-video nonmonetary report read. The `clivox-analytics-readonly` GitHub environment is **really created, main-only and owner-review protected with zero secrets**. Google owner consent and real metrics **are not configured**; no upload credential, private video identifier, posting decision or schedule can be reused or changed.
 
+## Automatic full-resolution original reviewer pack on main (NO PUBLISH)
+
+Changes to the original arcade renderer, A6 review bridge or its GitHub workflow now generate **all 3 full-resolution** original-only videos automatically on `main` after code review/merge. For each, a read-only second pass recomputes actual media QA, exact video/WAV/SRT/metadata hashes and the **unsigned** checklist; never forges human review, signs a release, reaches Google or publishes. This makes the editor-ready review pack reproducible without Desktop Commander while preserving no-upload locks.
+
 ## A6 exact-video editorial checklist and signature verifier (not a real approval)
 
 [Original CLIVOX owner editorial attestation guide](release/ORIGINAL_EDITORIAL_OWNER_ATTESTATION.md) adds per-MP4 **unsigned** human-review checklists to the original render artifact, cryptographically tied to exact audio, captions, metadata and A6 packet. The detached Ed25519 verification code is tested with throwaway keys, but a real CLIVOX signer is not enrolled and **no owner has signed a video, checked commercial sound/voice rights or authorized YouTube**.
