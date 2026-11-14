@@ -8,11 +8,15 @@ on:
       - '.github/workflows/branch3-clivox-cue-correction-intake.yml'
       - 'scripts/branch3_a5_cue_correction_intake.py'
       - 'scripts/test_branch3_a5_cue_correction_intake.py'
+      - 'scripts/branch3_a5_private_revision_preview.py'
+      - 'scripts/test_branch3_a5_private_revision_preview.py'
   pull_request:
     paths:
       - '.github/workflows/branch3-clivox-cue-correction-intake.yml'
       - 'scripts/branch3_a5_cue_correction_intake.py'
       - 'scripts/test_branch3_a5_cue_correction_intake.py'
+      - 'scripts/branch3_a5_private_revision_preview.py'
+      - 'scripts/test_branch3_a5_private_revision_preview.py'
       - 'scripts/branch3_a5_cue_review_worksheet.py'
       - 'scripts/test_branch3_a5_cue_review_worksheet.py'
       - 'branch3/original_pilots/arcade_trio.json'
@@ -41,11 +45,27 @@ jobs:
       - name: Syntax-check correction intake and exact-file worksheet
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch3_a5_cue_correction_intake.py scripts/test_branch3_a5_cue_correction_intake.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py
+          python -B -m py_compile scripts/branch3_a5_cue_correction_intake.py scripts/test_branch3_a5_cue_correction_intake.py scripts/branch3_a5_cue_review_worksheet.py scripts/test_branch3_a5_cue_review_worksheet.py scripts/branch3_a5_private_revision_preview.py scripts/test_branch3_a5_private_revision_preview.py
       - name: Run synthetic 39-cue intake, forgery and privacy tests
         run: |
           set -euo pipefail
-          python -B -m unittest -v scripts.test_branch3_a5_cue_correction_intake scripts.test_branch3_a5_cue_review_worksheet
+          python -B -m unittest -v scripts.test_branch3_a5_cue_correction_intake scripts.test_branch3_a5_cue_review_worksheet scripts.test_branch3_a5_private_revision_preview
+      - name: Confirm preview never writes to catalog or automates media release
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.branch3_a6_original_handoff import CATALOG
+          from scripts.branch3_original_arcade_pilots import validate_catalog
+          d=json.loads(CATALOG.read_text('utf-8'))
+          episodes=validate_catalog(d)
+          assert len(episodes)==3
+          assert d['human_editorial_review_completed'] is False
+          assert d['owner_signed_release_completed'] is False
+          assert d['upload_schedule_or_publish_authorized'] is False
+          print('CLIVOX_SYNTHETIC_PRIVATE_PREVIEW_NO_REAL_REVIEW_OR_SOURCE_MUTATION')
+          PY
       - name: Confirm no real owner review, media, secrets or Google access
         run: |
           set -euo pipefail
