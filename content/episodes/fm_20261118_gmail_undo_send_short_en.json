@@ -1,0 +1,51 @@
+{
+  "id": "fm_20261118_gmail_undo_send_short_en",
+  "renderer": "manifest_v2",
+  "type": "short",
+  "language": "en",
+  "title": "Gmail Undo Send: Change This 5-Second Setting #Shorts",
+  "description": "Sent an email too quickly? Gmail lets you set an Undo Send cancellation period of up to 30 seconds. Find the setting before you need it.\n\nOriginal diagrams and synthetic English narration; not a real account or software screen capture. Official source: https://support.google.com/mail/answer/2819488 #FlowMinuteLab #TechTips",
+  "tags": [
+    "Gmail",
+    "Undo Send",
+    "Gmail settings",
+    "Email mistakes",
+    "Tech tips",
+    "Shorts"
+  ],
+  "source_links": [
+    "https://support.google.com/mail/answer/2819488"
+  ],
+  "scenes": [
+    {
+      "title": "SENT TO THE WRONG PERSON?",
+      "narration": "Wrong recipient? Gmail shows Undo briefly after sending. It cancels the send window, not an email you can recall much later."
+    },
+    {
+      "title": "THE FIVE SECOND TRAP",
+      "narration": "On desktop, the cancellation period can be five, ten, twenty, or thirty seconds. Five disappears quickly."
+    },
+    {
+      "title": "OPEN GMAIL SETTINGS",
+      "narration": "Open Gmail Settings, then See all settings. Under General, find the Undo Send cancellation period."
+    },
+    {
+      "title": "CHANGE THE WINDOW",
+      "narration": "Choose thirty seconds and save changes. Send yourself a harmless test email to rehearse the action."
+    },
+    {
+      "title": "AFTER YOU HIT SEND",
+      "narration": "When Message sent appears, click Undo before time runs out. Once it disappears, do not assume you can retract delivery."
+    }
+  ],
+  "illustrative_original_video": true,
+  "synthetic_voice": "Kokoro ONNX original generated English educational voice",
+  "not_a_real_app_screen_recording": true,
+  "original_demo": true,
+  "no_real_private_identifiers": true,
+  "requested_date_ist": "2026-11-18",
+  "proposed_time_ist": "11:00",
+  "owner_exact_media_release_signoff_observed": false,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false
+}
