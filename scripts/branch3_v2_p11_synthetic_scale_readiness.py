@@ -115,7 +115,7 @@ def require(ok: bool, reason: str) -> None:
 
 
 def read_synthetic_fixture(path: Path = FIXTURE) -> dict:
-    require(type(path) is Path and path == FIXTURE
+    require(isinstance(path, Path) and path == FIXTURE
             and path.is_file() and not path.is_symlink()
             and 0 < path.stat().st_size <= 12000,
             "ONLY_FIXED_OFFLINE_WEEKLY_FIXTURE")
