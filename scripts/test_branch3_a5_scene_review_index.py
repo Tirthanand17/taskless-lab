@@ -67,12 +67,15 @@ class SceneReviewIndexTests(unittest.TestCase):
         crossed = content.replace(
             f"{clock(0)} --> {clock(3)}",
             f"{clock(0)} --> {clock(4)}"
+        ).replace(
+            f"{clock(3)} --> {clock(10)}",
+            f"{clock(4)} --> {clock(10)}"
         )
         with self.assertRaisesRegex(
             SceneReviewIndexDenied, "SCENE_WITHOUT_CAPTIONS"
         ):
             self.build(ep, srt=crossed)
-        missing = "\n".join(content.split("\n\n")[:-1])
+        missing = "\n\n".join(content.strip().split("\n\n")[:-1]) + "\n"
         with self.assertRaises(Exception):
             self.build(ep, srt=missing)
 
