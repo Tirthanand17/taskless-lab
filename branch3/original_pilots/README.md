@@ -4,6 +4,41 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## A5 exact-media caption correction worksheet (human action; not approval)
+
+After per-cue audio and video engineering gates, the missing step is HUMAN
+correction of the **words actually spoken**, pronunciation, pacing, and
+subtitle presentation. The offline owner gallery now includes a dedicated
+**timecoded caption link** for every draft SRT cue plus one editable
+\`narration-caption-corrections-UNREVIEWED.csv\` in each episode folder.
+These CSVs have **8 + 8 + 23 = 39 unreviewed rows**. They carry the episode,
+cue/scene number, cue start and end, complete draft caption, and exact SHA-256
+of the MP4, mixed audio WAV, and editable SRT source. The cue links use local
+relative MP4 media fragments; no online video or script is needed.
+
+After extracting the ZIP, open \`CLIVOX-REVIEW-START-HERE.html\` and listen to
+each cue **and all complete MP4s**, checking the actual spoken words,
+pronunciation, subtitle timing, legibility and final audio mix. In a copy
+of the CSV, record proposed changes in the provided columns. All assessment
+columns begin at \`NOT_REVIEWED\`; a filled CSV is **an issue log**, *never*
+a signed owner attestation or release. Keep owner notes private; do not commit
+the edited CSV to the public repository, do not copy previous positive review
+claims and do not publish preview masters.
+
+Any actual narration, timing, graphics, or metadata change requires editing
+the original screenplay/cue source, regenerating the WAV/SRT/MP4, passing
+the independent 39-cue real-media checks again, and issuing **new unsigned
+A6 exact-file handoffs**. No authorizer consumes the correction CSV and no
+CSV value grants permission to upload, schedule or publish. The owner must
+still separately authenticate final commercial rights and sign a trusted
+release of the *specific revised hash* through the independent release path.
+
+The worksheet builder rejects media hashes that changed since A6 handoff,
+mismatched script versus draft SRT, remote paths, media symlinks, and
+already-existing/symlink worksheet files; HTML is escaped and CSV formula
+injection is neutralized. Automated tests prove these boundaries but **do not
+verify natural speech or actual spoken word accuracy**.
+
 ## A5 per-caption acoustic activity in the real mixed WAV (review only)
 
 Technical QA previously checked each **scene's** earliest and latest speech
