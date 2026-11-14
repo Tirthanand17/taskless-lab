@@ -4,6 +4,39 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## Latest A5 quarantined revision real-render technical proof
+
+On merged [PR #201](https://github.com/Tirthanand17/taskless-lab/pull/201),
+the new sandbox-only revision renderer runs a proposed human-edit **preview
+only** through existing original-only TTS, draft SRT, H.264 encoding,
+actual decoded video caption checks and independent postmix speech-activity
+QA. It validates the entire unchanged original SHA-bound A6 review packet
+before preparing an altered in-memory scene script, then checks the
+original catalog and original MP4/WAV/SRT bytes stayed identical.
+
+The subsequent **real full-resolution main
+[run #43572351509](https://github.com/Tirthanand17/taskless-lab/actions/runs/43572351509)
+completed SUCCESS** on commit
+`ad676254eb05c5635caaa84547aa1e5a83e45966`.
+The 2 x 36s first-party Shorts and one 108s long original master passed
+the established **39 decoded MP4 subtitle cues and 39 recovered mixed
+WAV speech-like cue activity checks**, plus all A6 unsigned checks,
+23 scene snapshots and 39 timestamped correction worksheets. After
+that, CI created a **clearly synthetic, not-owner** replacement phrase
+in its private temp directory and rendered a new, different Short MP4,
+WAV and SRT. It passed the new independent per-cue encoded-frame and
+mixed-PCM QA for the changed script. The sandbox video, synthetic editor
+CSV and technical report were **not uploaded** as a reviewer artifact
+and **no A6 signature or release packet** was created for the rehearsal.
+
+The current seven-day original-owner artifact is
+`clivox-original-arcade-review-43572351509`,
+ID **14105256591**, **23,784,101 bytes**, expiring
+**2026-11-21 at 07:47:46 UTC**. This artifact remains fully **UNREVIEWED**
+by the human owner. The synthetic rehearsal is a CI-only proof, not a
+word-accurate transcript check, final video approval, rights license or
+real YouTube upload. Prior run 43569161922 is historical.
+
 ## Verified real-media private editorial correction intake (no owner decision)
 
 The new source-only [private correction intake runbook](PRIVATE_CUE_CORRECTION_INTAKE.md)
@@ -194,7 +227,7 @@ The renderer now applies **bounded, native-ASS subtitle font/margin values** and
 
 ## Latest verified three-video spoken-boundary review master
 
-**Use [GitHub Actions run 43569161922](https://github.com/Tirthanand17/taskless-lab/actions/runs/43569161922) as the current original CLIVOX owner review package.** The automatic `main` render completed successfully with two 1080×1920 Shorts, one 1920×1080 108-second long episode, all-beat frame-caption QA, sound energy/clipping tests, full A6 exact-hash handoffs, three unsigned owner checklists, and offline HTML5 video gallery. Its seven-day review artifact is ~23.8 MB.
+**Use [GitHub Actions run 43572351509](https://github.com/Tirthanand17/taskless-lab/actions/runs/43572351509) as the current original CLIVOX owner review package.** The automatic `main` render completed successfully with two 1080×1920 Shorts, one 1920×1080 108-second long episode, all-beat frame-caption QA, sound energy/clipping tests, full A6 exact-hash handoffs, three unsigned owner checklists, and offline HTML5 video gallery. Its seven-day review artifact is ~23.8 MB.
 
 The **current merged full-resolution main run 43566364655**, after PR #194, completed SUCCESS on SHA `2942e126943a1a63e7c4e2693d769e30602d470d`. The actual 2 Shorts and 108-second landscape review masters were checked at **8 + 8 + 23 = 39 subtitle-cue midpoints** in encoded H.264 frames and for **39 recovered postmix synthetic-speech activity windows**, after subtracting CLIVOX's deterministic original tone/sting bed. Both independent checks passed in the run's explicitly asserted source-free A5 technical QA. The A6 exact-media SHA and all-false owner attestation forms were independently reverified, and the offline 23-scene review gallery and contact sheets generated successfully. GitHub artifact **14102826491**, **23,779,184 bytes**, expires around **2026-11-21 06:31 UTC**. These cues have not been manually listened to or proven word-accurate; no valid owner release, licensing or YouTube upload exists. Sign only a separately human-reviewed and correctly finalized exact-video release, not an old or technical-only hash.
 
