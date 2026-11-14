@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P2_PUBLIC_PROSPECT_INTAKE_IMPLEMENTED_PENDING_PR_MAIN_CI_AND_OWNER_REVIEW",
+  "status": "P2_PUBLIC_PROSPECT_INTAKE_ENGINEERING_VERIFIED_HUMAN_OWNER_SHORTLIST_PENDING",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -57,9 +57,10 @@
     {
       "id": "P2",
       "name": "Creator research and licensing outreach proposal",
-      "state": "ENGINEERING_IMPLEMENTED_PENDING_CI_AND_OWNER_SHORTLIST_REVIEW",
+      "state": "ENGINEERING_MAIN_CI_VERIFIED_OWNER_SHORTLIST_NOT_YET_ACCEPTED",
       "requires_owner": "Explicit outreach action approval",
-      "human_owner_prospect_selection_completed": false
+      "human_owner_prospect_selection_completed": false,
+      "engineering_main_ci_run_id": 43579381280
     },
     {
       "id": "P3",
@@ -167,5 +168,16 @@
   "p2_new_workflow": ".github/workflows/branch3-clivox-v2-p2-prospect-intake.yml",
   "p2_input": "branch3/clipping_v2/prospects/public-business-pages-2026-11-14.json",
   "p2_runbook": "branch3/clipping_v2/P2_CREATOR_PROSPECT_INTAKE.md",
-  "p2_ci_status": "PENDING_PR_AND_MAIN_VERIFICATION"
+  "p2_ci_status": "VERIFIED_MAIN_OFFLINE_NO_CONTACT_NO_MEDIA_NO_SECRETS",
+  "p2_main_verified_github_actions_run_id": 43579381280,
+  "p2_main_verified_github_actions_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43579381280",
+  "p2_merged_feature_pr_url": "https://github.com/Tirthanand17/taskless-lab/pull/206",
+  "p2_main_commit_sha": "466af9e159863e2ef778531acd3c0c3a9856e686",
+  "p2_pr_ci_workflows_passed": 4,
+  "p2_no_real_outreach_sent_verified_in_ci": true,
+  "p2_no_creator_rights_granted_verified_in_ci": true,
+  "p2_all_unsent_proposal_drafts_verified_in_ci": true,
+  "p2_public_research_prospects_owner_selected": 0,
+  "p2_engineering_offline_implementation_complete": true,
+  "p2_milestone_human_acceptance_complete": false
 }
