@@ -95,6 +95,27 @@ class OfflineOwnerReviewGalleryTests(unittest.TestCase):
         self.assertIn("Human review required",html)
         self.assertIn("not word-aligned",html)
 
+    def test_offline_gallery_includes_only_local_all_beat_contact_sheet(self):
+        folder=self.directory/self.episodes[0]["id"]
+        sheet=folder/"original-beat-review-contact-sheet.jpg"
+        sheet.write_bytes(b"synthetic-test-only-jpeg-placeholder"*100)
+        with self.proof():
+            result=make_gallery(self.directory,selection="one")
+        self.assertTrue(result["only_relative_local_mp4_srt_links"])
+        html=(self.directory/OUTPUT).read_text("utf-8")
+        self.assertIn(self.episodes[0]["id"]+"/"+sheet.name,html)
+        self.assertIn('loading="lazy"',html)
+        self.assertIn("Save all-beat visual contact sheet",html)
+        self.assertNotIn("https://",html)
+        self.assertNotIn("<script",html)
+        (self.directory/OUTPUT).unlink()
+        sheet.unlink()
+        sheet.symlink_to(folder/"narration-timing-draft.srt")
+        with self.proof(),self.assertRaisesRegex(
+            GalleryBlocked,"UNSAFE_CONTACT_SHEET"
+        ):
+            make_gallery(self.directory,selection="one")
+
     def test_single_short_card_only_for_fast_pr_preview(self):
         with self.proof():
             out=make_gallery(self.directory,selection="one")
