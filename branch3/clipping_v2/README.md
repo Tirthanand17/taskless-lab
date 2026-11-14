@@ -53,3 +53,7 @@ P2 engineering is merged in [PR #206](https://github.com/Tirthanand17/taskless-l
 ## P5 source-free candidate reference evaluator (main CI verified)
 
 [P5 synthetic reference evaluator](P5_SYNTHETIC_REFERENCE_EVALUATION.md) connects actual generated-scene/acoustic detector JSON to **generated synthetic golden events**. The test detects matched time windows, misses and false positives, rejects forged licenses, fabricated text/platform analytics, and never calls a real human-labeled result validated. It is not real creator-source processing, quality/retention estimation or publishing readiness. Verified in [feature PR #214](https://github.com/Tirthanand17/taskless-lab/pull/214) and [merged-main synthetic evaluator CI #43586169756](https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169756), with P4 and main quality regressions green. Real phase progress stays **2/12 = 17%**.
+
+## P6 original CLIVOX narrative draft and 9:16 EDL (CI pending)
+
+[P6 source-free original written storyboard](P6_SYNTHETIC_ORIGINAL_STORYBOARD.md) now consumes synthetic-only P5 acoustic/visual candidate evidence to draft a fixed six-second hook/event/commentary-payoff EDL with an explicit 1080x1920 target canvas. The story refers only to self-generated black/white/tone signals, never real creator footage, actual quotes, rights or a published Short; **no audio/video rendered and no release authorization**. CI pending, and the genuine P6 human-edited, creator-licensed milestone remains blocked. V2 progress **2/12 = 17%**.

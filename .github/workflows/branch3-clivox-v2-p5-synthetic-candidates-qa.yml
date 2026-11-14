@@ -1,4 +1,4 @@
-name: CLIVOX V2 P5 Synthetic Acoustic/Scene Candidate QA (NO CREATOR SOURCE)
+name: CLIVOX V2 P5/P6 Synthetic Signal to Original Storyboard QA (NO CREATOR SOURCE)
 
 on:
   pull_request:
@@ -7,6 +7,9 @@ on:
       - 'scripts/test_branch3_v2_p5_synthetic_moment_proposals.py'
       - 'scripts/branch3_v2_p5_synthetic_editorial_evaluation.py'
       - 'scripts/test_branch3_v2_p5_synthetic_editorial_evaluation.py'
+      - 'scripts/branch3_v2_p6_synthetic_storyboard.py'
+      - 'scripts/test_branch3_v2_p6_synthetic_storyboard.py'
+      - 'branch3/clipping_v2/P6_*'
       - '.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml'
       - 'branch3/clipping_v2/P5_*'
       - 'branch3/clipping_v2/architecture-status.json'
@@ -17,6 +20,9 @@ on:
       - 'scripts/test_branch3_v2_p5_synthetic_moment_proposals.py'
       - 'scripts/branch3_v2_p5_synthetic_editorial_evaluation.py'
       - 'scripts/test_branch3_v2_p5_synthetic_editorial_evaluation.py'
+      - 'scripts/branch3_v2_p6_synthetic_storyboard.py'
+      - 'scripts/test_branch3_v2_p6_synthetic_storyboard.py'
+      - 'branch3/clipping_v2/P6_*'
       - '.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml'
       - 'branch3/clipping_v2/P5_*'
       - 'branch3/clipping_v2/architecture-status.json'
@@ -59,7 +65,9 @@ jobs:
           test "$PUBLISH_ENABLED" = false
           python -B -m scripts.branch3_v2_p5_synthetic_moment_proposals --mode closed
           python -B -m scripts.branch3_v2_p5_synthetic_editorial_evaluation --mode closed
+          python -B -m scripts.branch3_v2_p6_synthetic_storyboard --mode closed
           python -B -m unittest -v \
+            scripts.test_branch3_v2_p6_synthetic_storyboard \
             scripts.test_branch3_v2_p5_synthetic_editorial_evaluation \
             scripts.test_branch3_v2_p5_synthetic_moment_proposals \
             scripts.test_branch3_v2_p4_synthetic_handoff_preflight
@@ -159,6 +167,53 @@ jobs:
           assert reference["matched_events"] == 1
           assert reference["missed_reference_events"] == 0
           print("CLIVOX_V2_P5_GENERATED_SIGNAL_TO_SYNTHETIC_GOLDEN_QA_PASS_NO_LIVE_ACCURACY_CLAIMS")
+          PY
+      - name: Create source-free original CLIVOX editorial EDL draft from measured P5 signals
+        run: |
+          set -euo pipefail
+          python -B -m scripts.branch3_v2_p6_synthetic_storyboard \
+            --mode synthetic \
+            --scratch "$RUNNER_TEMP/clivox-p5-synthetic" \
+            --report-file quarantined-signals-only.json \
+            > "$RUNNER_TEMP/clivox-p5-synthetic/synthetic-edl-draft-only.json"
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path(os.environ["RUNNER_TEMP"]) / "clivox-p5-synthetic/synthetic-edl-draft-only.json"
+          data = json.loads(path.read_text("utf-8"))
+          assert data["stage"] == "CLIVOX_V2_P6_SYNTHETIC_ORIGINAL_STORYBOARD_DRAFT"
+          assert data["channel_id"] == "UCfPEvy0SefE_5nNlYlY_CyQ"
+          assert data["synthetic_fixture_only"] is True
+          assert data["draft_canvas"] == {
+              "width": 1080, "height": 1920,
+              "rendered": False, "visual_cropping_validated": False}
+          assert data["draft_duration_ms"] == 6000
+          assert data["source_duration_ms"] == 6000
+          assert data["candidate_reference"]["validated_real_editorial_selection"] is False
+          assert data["real_creator_source_files"] == 0
+          assert data["creator_commercial_reuse_grants"] == 0
+          assert data["real_source_dialogue_verified"] is False
+          assert data["real_editorial_context_confirmed"] is False
+          assert data["human_editor_approved"] is False
+          assert data["owner_final_media_approved"] is False
+          assert data["licensed_clip_used"] is False
+          assert data["video_rendered"] is False
+          assert data["audio_rendered"] is False
+          assert data["youtube_uploads"] == 0
+          assert data["youtube_publish_authorized"] is False
+          shots = data["draft_shots"]
+          assert len(shots) == 3
+          assert [(x["target_start_ms"], x["target_end_ms"]) for x in shots] == [
+              (0, 2000), (2000, 3000), (3000, 6000)]
+          assert [s["source_visual"] for s in shots] == [
+              "SELF_GENERATED_BLACK", "SELF_GENERATED_WHITE_WITH_TONE", "SELF_GENERATED_BLACK"]
+          assert all(s["requires_human_review"] and not s["creator_dialogue_used"]
+                     and not s["licensed_media_inserted"] and not s["publisher_clearance_verified"]
+                     for s in shots)
+          assert "A sudden cut still needs context." == shots[2]["original_clivox_overlay"]
+          from scripts.branch3_v2_p6_synthetic_storyboard import validate_storyboard
+          validate_storyboard(data)
+          print("CLIVOX_V2_P6_SYNTHETIC_EDL_HOOK_CUE_PAYOFF_PASS_NO_LICENSE_NO_REAL_VIDEO_NO_UPLOAD")
           PY
       - name: No media or candidate artifact uploaded publicly
         run: |
