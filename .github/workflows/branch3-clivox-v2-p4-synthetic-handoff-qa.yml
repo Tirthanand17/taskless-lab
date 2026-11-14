@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/branch3_v2_p4_synthetic_handoff_preflight.py'
       - 'scripts/test_branch3_v2_p4_synthetic_handoff_preflight.py'
+      - 'scripts/branch3_v2_p4_private_master_technical_qa.py'
+      - 'scripts/test_branch3_v2_p4_private_master_technical_qa.py'
       - 'scripts/branch3_v2_p4_rights_storage_bridge.py'
       - 'scripts/test_branch3_v2_p4_rights_storage_bridge.py'
       - '.github/workflows/branch3-clivox-v2-p4-synthetic-handoff-qa.yml'
@@ -15,6 +17,8 @@ on:
     paths:
       - 'scripts/branch3_v2_p4_synthetic_handoff_preflight.py'
       - 'scripts/test_branch3_v2_p4_synthetic_handoff_preflight.py'
+      - 'scripts/branch3_v2_p4_private_master_technical_qa.py'
+      - 'scripts/test_branch3_v2_p4_private_master_technical_qa.py'
       - 'scripts/branch3_v2_p4_rights_storage_bridge.py'
       - 'scripts/test_branch3_v2_p4_rights_storage_bridge.py'
       - '.github/workflows/branch3-clivox-v2-p4-synthetic-handoff-qa.yml'
@@ -65,6 +69,7 @@ jobs:
           set -euo pipefail
           python -B -m unittest -v \
             scripts.test_branch3_v2_p4_synthetic_handoff_preflight \
+            scripts.test_branch3_v2_p4_private_master_technical_qa \
             scripts.test_branch3_v2_p4_rights_storage_bridge \
             scripts.test_branch3_media_storage_preflight
       - name: Verify real P2/P3 rights-to-P4 handoff remains BLOCKED
@@ -112,6 +117,33 @@ jobs:
             --scratch "$RUNNER_TEMP/clivox-v2-p4" \
             --fixture-file self_generated.mp4 \
             --sha256 "$TEST_SHA" --bytes "$TEST_BYTES"
+      - name: Verify 12-second generated local master using P4 private technical primitive
+        run: |
+          set -euo pipefail
+          mkdir -m 700 "$RUNNER_TEMP/clivox-v2-master-fixture"
+          ffmpeg -hide_banner -loglevel error -nostdin -y \
+            -f lavfi -i testsrc2=size=320x240:rate=15 \
+            -f lavfi -i sine=frequency=440:sample_rate=48000 \
+            -t 12 -threads:v 1 -c:v libx264 -pix_fmt yuv420p \
+            -c:a aac -shortest "$RUNNER_TEMP/clivox-v2-master-fixture/master_offlinefixture.mp4"
+          python -B - <<'PY'
+          from pathlib import Path
+          import hashlib, os
+          from scripts.branch3_v2_p4_private_master_technical_qa import inspect_local_master
+          root=Path(os.environ["RUNNER_TEMP"]) / "clivox-v2-master-fixture"
+          media=root / "master_offlinefixture.mp4"
+          report=inspect_local_master(
+              scratch=root, basename=media.name,
+              expected_sha256=hashlib.sha256(media.read_bytes()).hexdigest(),
+              expected_bytes=media.stat().st_size
+          )
+          assert report["technical_hash_and_probe_passed"] is True
+          assert report["creator_commercial_license_authenticated"] is False
+          assert report["source_ingest_authorized"] is False
+          assert report["youtube_upload_authorized"] is False
+          assert report["p4_real_milestone_complete"] is False
+          print("CLIVOX_P4_ORIGINAL_LAVFI_MASTER_TECHNICAL_QA_ONLY_NO_LICENSE_OR_WRITES")
+          PY
       - name: No media artifacts or credentials leave this ephemeral job
         run: |
           echo "P4 technical fixture inspected in runner temp only."
