@@ -119,6 +119,48 @@ def cue_samples_by_beat(
     return samples
 
 
+def cue_samples_all_cues(
+    content:str, beats:list[dict], duration:int
+)->list[dict]:
+    """Select midpoint of EVERY draft SRT cue in its own storyboard beat.
+
+    The contact sheet deliberately shows one frame per beat, but encoded
+    subtitle QA must also catch a late cue that disappears after the first
+    visible cue in that same beat. This is pixel visibility, NOT OCR or ASR.
+    """
+    # Reuse the existing contiguous storyboard/coverage validator. This
+    # also guarantees each beat has at least one qualifying subtitle cue.
+    beat_points=cue_samples_by_beat(content,beats,duration)
+    require(len(beat_points)==len(beats),"ALL_CUES_BEAT_COVERAGE")
+    chunks=re.split(r"\n\s*\n",content.strip())
+    require(1<=len(chunks)<=70,"ALL_CUES_COUNT")
+    points=[]
+    previous_end=0.0
+    for cue_index,chunk in enumerate(chunks):
+        match=TIMING.fullmatch(chunk)
+        require(match is not None and int(match[1])==cue_index+1,
+                "ALL_CUES_SEQUENCE")
+        start,end=srt_seconds(match[2]),srt_seconds(match[3])
+        require(0<=start<end<=duration+.002 and
+                start>=previous_end-.002,"ALL_CUES_TIMING")
+        previous_end=end
+        matching=[
+            i for i,beat in enumerate(beats)
+            if start>=beat["start_s"]-.003 and
+               end<=beat["end_s"]+.003
+        ]
+        require(len(matching)==1,
+                "CUE_CROSSES_SCENE_"+str(cue_index))
+        points.append({
+            "cue_index":cue_index,
+            "beat_index":matching[0],
+            "time_s":round((start+end)/2,3),
+        })
+    require(len({x["beat_index"] for x in points})==len(beats),
+            "ALL_CUES_SCENE_COVERAGE")
+    return points
+
+
 def decode_actual_frame(video:Path,time_s:float):
     """Read a single video frame with bounded FFmpeg output, no temp files."""
     from PIL import Image
@@ -145,12 +187,11 @@ def decode_actual_frame(video:Path,time_s:float):
 def visible_caption_safezone_qa(
     video:Path,srt:str,beats:list[dict]|None=None
 )->dict:
-    """Inspect EVERY storyboard beat in real encoded MP4.
+    """Inspect EVERY SRT cue in the actual encoded MP4, not just each beat.
 
-    Only the lower-middle caption region is tested for visible white glyphs.
-    The source-free arcade vector art has no white text in that region; a
-    displaced/missing libass subtitle fails. Sampled frames cannot certify
-    aesthetics, truthful speech, word alignment or actual owner approval.
+    The lower-middle safe region is tested for visible caption-like white ink.
+    Source-free original artwork is deliberately cleared from that region.
+    Pixel visibility does NOT authenticate transcript words or owner review.
     """
     require(type(srt) is str,"SRT_SOURCE_TYPE")
     sections=re.split(r"\n\s*\n",srt.strip())
@@ -164,7 +205,7 @@ def visible_caption_safezone_qa(
     else:
         require(type(beats) is list and 1<=len(beats)<=20,
                 "VISUAL_BEAT_LIST")
-        samples=cue_samples_by_beat(srt,beats,beats[-1]["end_s"])
+        samples=cue_samples_all_cues(srt,beats,beats[-1]["end_s"])
     result_samples=[]
     for sample in samples:
         im=decode_actual_frame(video,sample["time_s"])
@@ -177,9 +218,11 @@ def visible_caption_safezone_qa(
         min_white=max(35,round(w*h*.00010))
         require(white>=min_white,
                 "BURNED_CAPTION_MISSING_OR_OFFSCREEN_BEAT_"+
-                    str(sample["beat_index"]))
+                    str(sample["beat_index"])+"_CUE_"+
+                    str(sample.get("cue_index",0)))
         result_samples.append({
             "beat_index":sample["beat_index"],
+            "cue_index":sample.get("cue_index",0),
             "time_s":sample["time_s"],
             "white_text_pixel_count":white,
             "minimum_required_pixels":min_white,
@@ -187,8 +230,10 @@ def visible_caption_safezone_qa(
     return {
         "first_voice_cue_visible_in_safe_zone":True,
         "every_storyboard_beat_caption_visible_in_safe_zone":True,
+        "every_draft_caption_cue_visible_in_safe_zone":True,
         "actual_encoded_frames_checked":len(result_samples),
-        "storyboard_beat_count":len(result_samples),
+        "draft_caption_cue_count":len(result_samples),
+        "storyboard_beat_count":len(beats) if beats is not None else 1,
         "white_text_pixel_count_in_safe_zone":min(
             x["white_text_pixel_count"] for x in result_samples
         ),
