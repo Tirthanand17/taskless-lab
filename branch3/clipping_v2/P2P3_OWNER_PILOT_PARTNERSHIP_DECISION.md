@@ -87,3 +87,11 @@ python -B -m scripts.branch3_v2_p2p3_pilot_owner_review --mode review \
 ~~~
 
 **Milestones:** P2 still requires a real human-approved shortlist and contact verification; P3 requires actual signed rights grants and private evidence; neither phase is accepted by CI. **Overall V2 remains 2/12 real checkpoints = 17%, zero licensed assets, zero contacts, zero uploads.** FlowMinute B1/B2 untouched.
+
+## GitHub technical evidence verified on 2026-11-14
+
+- [Implementation PR #228](https://github.com/Tirthanand17/taskless-lab/pull/228) merged after **5/5 PR checks passed**; earlier validation field-name error in first CI run was corrected before merge. [P2/P3 route + licensing quarantine PR QA #43597829474](https://github.com/Tirthanand17/taskless-lab/actions/runs/43597829474) **success**.
+- Implementation merge SHA `84bcbbc2efd0b6bf87bd330d0f0d53f44bdaf5e4`; independent [P2/P3 fresh public-route to owner pilot review with zero contact/license/main QA #43597991010](https://github.com/Tirthanand17/taskless-lab/actions/runs/43597991010) **success**.
+- [P4 media integrity #43597991066](https://github.com/Tirthanand17/taskless-lab/actions/runs/43597991066), [P5–P11 source-free regressions #43597991043](https://github.com/Tirthanand17/taskless-lab/actions/runs/43597991043), and [Content Quality Gate #43597991013](https://github.com/Tirthanand17/taskless-lab/actions/runs/43597991013) **success** on the same merged-main commit.
+- Verified public-route research is a dated **website observation**, NOT independent legal license authority. None of the five prospects has been contacted, selected by the owner, authenticated as a specific video rightsholder, granted reuse rights or supplied source media. Report contains no recipient addresses and no videos. P2/P3 real milestone status is **not complete**; overall **2/12 = 17%**.
+
