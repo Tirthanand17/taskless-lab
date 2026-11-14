@@ -16,7 +16,7 @@ from scripts.branch3_original_arcade_pilots import (
 from scripts.branch3_original_arcade_qa import (
     OriginalQARejected, check_caption_draft, validate_episode_report,
     visible_caption_safezone_qa,
-    cue_samples_by_beat, srt_seconds,
+    cue_samples_by_beat, cue_samples_all_cues, srt_seconds,
 )
 
 
@@ -419,13 +419,87 @@ class OriginalPilotQATests(unittest.TestCase):
                 Path("synthetic-mocked.mp4"),
                 subtitles(episode),episode["beats"]
             )
-            self.assertEqual(got["actual_encoded_frames_checked"],5)
+            self.assertEqual(got["actual_encoded_frames_checked"],8)
+            self.assertEqual(got["storyboard_beat_count"],5)
+            self.assertEqual(got["draft_caption_cue_count"],8)
             self.assertTrue(
                 got["every_storyboard_beat_caption_visible_in_safe_zone"]
             )
-            self.assertEqual(len(got["per_beat_samples"]),5)
-            self.assertEqual(decode.call_count,5)
+            self.assertTrue(
+                got["every_draft_caption_cue_visible_in_safe_zone"]
+            )
+            self.assertEqual(len(got["per_beat_samples"]),8)
+            self.assertEqual(decode.call_count,8)
             self.assertFalse(got["caption_layout_human_approved"])
+
+
+    def test_actual_encoded_caption_qa_samples_every_cue_not_just_scene_open(self):
+        all_expected=[8,8,23]
+        for episode,expected in zip(sample()["episodes"],all_expected):
+            cues=cue_samples_all_cues(
+                subtitles(episode),episode["beats"],episode["duration_seconds"]
+            )
+            self.assertEqual(len(cues),expected)
+            self.assertEqual({x["cue_index"] for x in cues},set(range(expected)))
+            self.assertEqual({x["beat_index"] for x in cues},
+                             set(range(len(episode["beats"]))))
+            for cue in cues:
+                beat=episode["beats"][cue["beat_index"]]
+                self.assertLessEqual(beat["start_s"],cue["time_s"])
+                self.assertLessEqual(cue["time_s"],beat["end_s"])
+        # Every scene in Short 1 has a valid first caption, but removing
+        # or shifting its second cue must now fail before frame sampling.
+        ep=sample()["episodes"][0]
+        original=subtitles(ep)
+        sections=original.strip().split("\n\n")
+        self.assertGreaterEqual(len(sections),8)
+        missing_second="\n\n".join(
+            f"{i}\n"+section.split("\n",1)[1]
+            for i,section in enumerate(
+                [section for n,section in enumerate(sections) if n!=2],1
+            )
+        )+"\n"
+        cues=cue_samples_all_cues(
+            missing_second,ep["beats"],ep["duration_seconds"]
+        )
+        self.assertEqual(len(cues),7)
+        self.assertEqual({x["beat_index"] for x in cues},set(range(5)))
+        # But exact SRT-to-storyboard equivalence in the owner index rejects
+        # silent deletion of a later sentence.
+        from scripts.branch3_a5_scene_review_index import (
+            make_scene_review_index, SceneReviewIndexDenied
+        )
+        with self.assertRaises(SceneReviewIndexDenied):
+            make_scene_review_index(
+                ep,missing_second,
+                ep["id"]+"/original-review-preview.mp4"
+            )
+
+    def test_later_caption_missing_from_real_frame_fails_even_if_beat_starts_good(self):
+        try:
+            from PIL import Image,ImageDraw
+        except ModuleNotFoundError:
+            self.skipTest("Pillow available in dedicated media CI")
+        from unittest.mock import patch
+        episode=sample()["episodes"][0]
+        content=subtitles(episode)
+        good=Image.new("RGB",(540,960),(10,18,32))
+        ImageDraw.Draw(good).rectangle(
+            (120,745,370,775),fill=(240,242,249)
+        )
+        bad=Image.new("RGB",(540,960),(10,18,32))
+        # Beat 2 has TWO distinct cues. Its first one is visible; only
+        # the second vanishes. Previous one-frame-per-beat QA missed this.
+        frames=[good,good,bad,*([good]*5)]
+        with patch("scripts.branch3_original_arcade_qa.decode_actual_frame",
+                   side_effect=frames) as decoder:
+            with self.assertRaisesRegex(
+                OriginalQARejected,"BURNED_CAPTION_MISSING_OR_OFFSCREEN_BEAT_1_CUE_2"
+            ):
+                visible_caption_safezone_qa(
+                    Path("synthetic-mocked.mp4"),content,episode["beats"]
+                )
+            self.assertEqual(decoder.call_count,3)
 
     def test_pillow_scene_is_new_original_procedural_art(self):
         try:
