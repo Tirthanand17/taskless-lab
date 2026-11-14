@@ -66,6 +66,30 @@ class RightsStorageBridgeTests(unittest.TestCase):
             with self.subTest(field=field), self.assertRaises(HandoffDenied):
                 build_handoff_hold(**d)
 
+    def test_creator_identity_order_priority_and_hash_forgery_denied(self):
+        for field, value in (
+            ("research_first_only", ["caseoh_format"]),
+            ("watchlist_sha256", "0" * 64),
+            ("route_audit_sha256", "INVALID"),
+            ("schema_version", True),
+        ):
+            d = fixture()
+            d["owner_matrix"][field] = value
+            with self.subTest(field=field), self.assertRaises(HandoffDenied):
+                build_handoff_hold(**d)
+        for field, value in (
+            ("prospect_id", "ankitt_ps5"),
+            ("owner_review_priority", "REVIEW_FIRST_NOT_APPROVED"),
+        ):
+            d = fixture()
+            d["owner_matrix"]["rows"][4][field] = value
+            with self.subTest(field=field), self.assertRaises(HandoffDenied):
+                build_handoff_hold(**d)
+        d = fixture()
+        d["owner_matrix"]["rows"].reverse()
+        with self.assertRaises(HandoffDenied):
+            build_handoff_hold(**d)
+
     def test_forged_vault_or_p4_policy_never_unlocks_ingest(self):
         for field, value in (
             ("private_vault_activated", True),
