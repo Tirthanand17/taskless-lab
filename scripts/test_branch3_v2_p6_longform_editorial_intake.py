@@ -2,10 +2,12 @@
 import copy
 import json
 import unittest
+from unittest.mock import patch
 
 from scripts.branch3_v2_p5_longform_local_signal_planner import (
     plan_longform_candidates, synthetic_demo,
 )
+from scripts.branch3_v2_p5_synthetic_moment_proposals import P5Denied
 from scripts.branch3_v2_p6_longform_editorial_intake import (
     CHECKS, EditorialIntakeDenied, HOLD,
     build_unreviewed_editorial_intake, production_editorial_approval,
@@ -116,6 +118,34 @@ class LongformEditorialIntakeTests(unittest.TestCase):
         altered["new_creator_license"] = True
         with self.assertRaises(EditorialIntakeDenied):
             verify_candidate_binding(d, altered)
+
+    def test_python_boolean_integer_equality_cannot_launder_authorization(self):
+        measures, report = fixture()
+        for field, value in (
+            ("creator_license_authenticated", 0),
+            ("youtube_upload_authorized", 0),
+            ("transcript_and_quote_verified", 0),
+            ("viral_probability", False),
+        ):
+            forged = copy.deepcopy(report)
+            forged["candidates"][0][field] = value
+            with self.subTest(field=field), self.assertRaises(EditorialIntakeDenied):
+                verify_candidate_binding(measures, forged)
+        forged = copy.deepcopy(report)
+        forged["candidate_count"] = 3.0
+        with self.assertRaises(EditorialIntakeDenied):
+            verify_candidate_binding(measures, forged)
+
+    def test_changed_upstream_p4_rights_policy_stops_editorial_bridge(self):
+        measures, report = fixture()
+        with patch(
+            "scripts.branch3_v2_p6_longform_editorial_intake._probe_closed",
+            side_effect=P5Denied("REAL_MEDIA_SWITCH_SHOULD_NOT_OPEN"),
+        ):
+            with self.assertRaises(EditorialIntakeDenied):
+                build_unreviewed_editorial_intake(
+                    measurements=measures, report=report
+                )
 
     def test_measurements_change_after_plan_invalidates_all_cards(self):
         d, p5 = fixture()
