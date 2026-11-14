@@ -214,8 +214,7 @@ jobs:
       - name: Generate ephemeral rights decision matrix with all gates closed
         run: |
           set -euo pipefail
-          python -B -m scripts.branch3_v2_p2p3_owner_decision_matrix \\
-            --out "$RUNNER_TEMP/clivox-p2p3-owner-review/clivox-v2-p2p3-owner-decision-matrix-HOLD.json"
+          python -B -m scripts.branch3_v2_p2p3_owner_decision_matrix --out "$RUNNER_TEMP/clivox-p2p3-owner-review/clivox-v2-p2p3-owner-decision-matrix-HOLD.json"
           python -B - <<'PY'
           import json, os
           from pathlib import Path
