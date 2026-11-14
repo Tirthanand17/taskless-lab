@@ -111,6 +111,52 @@ normal review. After any approved source edit, rerender from scratch and
 obtain **new exact-media A6 hashes and a genuinely reviewed owner release**.
 Do not commit raw private reviewer notes or the generated JSON to GitHub.
 
+## Next stage: quarantined original-only revision render (review simulation)
+
+The A5 `scripts.branch3_a5_revision_sandbox` command is a non-production
+simulation of the actual editing workflow. It re-runs the private exact-media
+correction intake and independent unsigned A6 verification, reconstructs the
+in-memory candidate scene dialogue, invokes the existing original-only
+renderer with **no catalog write**, and independently decodes the new H.264
+caption frames and analyzes the new mixed audio cues.
+
+The original reviewed MP4/WAV/SRT and public catalog are verified unchanged
+both before and after render. The output must be an **existing, empty,
+non-symlink private directory**, disjoint from the extracted original
+review pack and the public repository. It is a candidate only; its generated
+files are never allowed to reuse old A6 owner handoffs or signed releases.
+
+Run this **only after** an authentic reviewer has given a private corrected
+CSV, and only with a separate, empty directory:
+
+```bash
+python -B -m scripts.branch3_a5_revision_sandbox \
+  --review-root "/private/clivox-extracted-artifact" \
+  --selection all \
+  --episode-id "clivox_original_door_choice_s01" \
+  --edited-csv "/private/clivox-edited-short01.csv" \
+  --output-root "/private/clivox-new-quarantined-sandbox" \
+  --mode preview
+```
+
+A successful sandbox creates only an unapproved private MP4, synthetic
+WAV, draft SRT, scene graphics, independent technical QA, and a private
+technical report (output JSON mode 0600 on POSIX). It does **not** issue
+A6 owner sign-offs or automatically accept any proposed dialogue. The
+output flags human acceptance, sound/tool rights and all YouTube operations
+as false, regardless of whether technical QA passed.
+
+The source-free GitHub Action uses a **distinct, labeled synthetic-only
+dialogue change** created in the temporary runner from the unchanged
+review worksheet; it renders and checks a genuinely different MP4/WAV/SRT
+with independent cue frame/audio QA, but does **not** upload the rehearsal
+media or put its private issue notes into PRs/artifacts. This is reproducible
+**technical proof only**, not a claim of a human correction, improved
+audience engagement or a newly approved owner master. If any of the future
+real corrections cause narration overflow, poor captions, missing audio,
+changed cue counts or unsafe layout, the sandbox fails and the human
+editor must revise the candidate and retry offline.
+
 ## Security and integration rules
 
 - Always re-runs the full A6 **read-only** exact-media verification on the
