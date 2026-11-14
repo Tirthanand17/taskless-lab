@@ -283,13 +283,20 @@ class OriginalPilotQATests(unittest.TestCase):
                 w,h,_=render_size(kind,mode)
                 g=original_art_clearance_geometry(w,h,kind)
                 with self.subTest(kind=kind,mode=mode):
-                    self.assertGreaterEqual(g["top"],round(h*.33))
+                    self.assertGreaterEqual(
+                        g["top"],round(h*(.33 if kind=="short" else .43))
+                    )
                     self.assertLessEqual(g["bottom"],round(h*.755))
+                    if kind=="long":
+                        # Full contact-sheet audit found old icons touching
+                        # the orange title/subheading at the 0.35-0.42h area.
+                        self.assertLessEqual(g["radius"],round(h*.13))
+                        self.assertGreaterEqual(g["top"],round(h*.43))
                     self.assertEqual(g["center_x"],w//2)
                     self.assertLessEqual(
                         g["bottom"],g["caption_reserved_below"]
                     )
-                    self.assertGreater(g["radius"],70)
+                    self.assertGreater(g["radius"],50)
                     self.assertLess(g["radius"],w*.35)
         with self.assertRaises(ArcadeDenied):
             original_art_clearance_geometry(1080,1920,"borrowed_game")

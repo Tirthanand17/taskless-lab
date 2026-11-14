@@ -4,6 +4,10 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## Landscape headline-art clearance — second visual QA correction
+
+The later full-resolution run [43558270457](https://github.com/Tirthanand17/taskless-lab/actions/runs/43558270457) confirmed the **two Shorts' illustrated controls are now visibly separated from spoken captions**, but its landscape contact sheet still showed parts of door/portal art touching orange subheadlines. The landscape geometry now reserves an additional upper safe region: icon graphics begin **below 43% of frame height** and finish before the lower caption zone. The Short geometry remains unchanged. This does not improve the synthetic voice or guarantee audience retention; another real video render and visual check are required before owner approval.
+
 ## Illustration clearance fix discovered by all-beat contact sheet
 
 The first verified all-beat review artifact, [GitHub run 43557461327](https://github.com/Tirthanand17/taskless-lab/actions/runs/43557461327), confirmed 5 + 5 + 13 caption frames and provided a JPEG contact sheet per episode. Inspecting these **real MP4-derived** visual summaries exposed large portal rings and doors intruding into the same lower-screen area as spoken subtitles. They were technically visible but not visually separated.
