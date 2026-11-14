@@ -4,7 +4,7 @@
   "research_snapshot_date_utc": "2026-11-14",
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "handle": "@ClivoxPulse",
-  "status": "P5_SYNTHETIC_EDITOR_REFERENCE_EVALUATION_VERIFIED_ON_MAIN_REAL_RIGHTS_P4_SOURCE_P5_HUMAN_LABELS_BLOCKED",
+  "status": "P6_SYNTHETIC_ORIGINAL_STORYBOARD_EDL_UNDER_CI_REAL_CREATOR_RIGHTS_AND_HUMAN_EDITORIAL_BLOCKED",
   "public_repo": "Tirthanand17/taskless-lab",
   "flowminute_branch1_unchanged": true,
   "flowminute_branch2_unchanged": true,
@@ -100,8 +100,10 @@
     {
       "id": "P6",
       "name": "Original CLIVOX commentary and human-selected moments",
-      "state": "NOT_STARTED",
-      "requires_owner": "Human editor approval"
+      "state": "SYNTHETIC_ONLY_ORIGINAL_EDL_PROTOTYPE_PENDING_CI_REAL_RIGHTS_EDITOR_APPROVAL_BLOCKED",
+      "requires_owner": "Human editor approval",
+      "synthetic_fixture_draft_script": "scripts/branch3_v2_p6_synthetic_storyboard.py",
+      "read_only_workflow": ".github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml"
     },
     {
       "id": "P7",
@@ -276,5 +278,19 @@
   "p5_evaluator_main_p4_regression_run_id": 43586169769,
   "p5_evaluator_main_p4_regression_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169769",
   "p5_evaluator_main_quality_run_id": 43586169748,
-  "p5_evaluator_main_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169748"
+  "p5_evaluator_main_quality_run_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43586169748",
+  "p6_source_free_original_storyboard_implemented_pending_ci": true,
+  "p6_source_free_original_storyboard_verified_on_main": false,
+  "p6_p5_to_storyboard_ci_integration_implemented": true,
+  "p6_original_9_16_written_edl_produced_in_offline_fixture_only": true,
+  "p6_script": "scripts/branch3_v2_p6_synthetic_storyboard.py",
+  "p6_tests": "scripts/test_branch3_v2_p6_synthetic_storyboard.py",
+  "p6_runbook": "branch3/clipping_v2/P6_SYNTHETIC_ORIGINAL_STORYBOARD.md",
+  "p6_real_creator_source_media_used": 0,
+  "p6_real_human_editor_verified": false,
+  "p6_real_original_transformative_story_approved": false,
+  "p6_creator_dialogue_claims_verified": false,
+  "p6_actual_video_rendered": false,
+  "p6_youtube_uploads": 0,
+  "p6_real_milestone_complete": false
 }
