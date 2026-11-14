@@ -34,10 +34,17 @@ The three EDL rows are source-aligned, ordered, nonoverlapping and span exactly 
 - Existing \`.github/workflows/branch3-clivox-v2-p5-synthetic-candidates-qa.yml\` now also runs P6 closed gate and tests; after P5 real measured synthetic media extraction and evaluator, runs P6 CLI and checks the original written EDL and no-release flags. No artifact upload.
 - Closed mode: \`python -B -m scripts.branch3_v2_p6_synthetic_storyboard --mode closed\`.
 - Synthetic-only runner mode: \`python -B -m scripts.branch3_v2_p6_synthetic_storyboard --mode synthetic --scratch "$RUNNER_TEMP/clivox-p5-synthetic" --report-file quarantined-signals-only.json\`.
-- Do **not** claim completion, verified CI or exact production storyboard quality until workflows succeed.
+- Technical QA is **verified** on GitHub PR and merged main only. This is **not** actual human/editor-reviewed, source-licensed or production-quality storyboard approval.
 
 ## Actual P6 and later acceptance
 
 Requires real P2 owner-confirmed creator partner identity and partnership selection; independently authenticated, current signed commercial redistribution/license scope and third-party music/guest/game clearances under P3; real P4 owner-approved audited private media store and creator-supplied file; meaningful P5 licensed-source events with validated ASR/VAD/scene analysis and **40–60 genuinely human-labeled legal moments**; P6 actual context-accurate and original transformative commentary and signed editor decisions, quoted source checks and guest rights; P7 real compositor and QA; P8 exact-final owner release signature; P9 protected CLIVOX-only OAuth/private-first upload.
 
 **Roadmap status:** unchanged **2/12 = 17%** real milestones despite technical P6 QA. V2 commercial clipping and YouTube publication remain blocked. FlowMinute Branch 1/2 not touched.
+
+## Verified integration evidence — 2026-11-14
+
+- [Feature PR #216](https://github.com/Tirthanand17/taskless-lab/pull/216) merged with **4/4 green checks**; [PR P5→P6 generated signal-to-EDL QA #43588237485](https://github.com/Tirthanand17/taskless-lab/actions/runs/43588237485) succeeded.
+- First merged-main implementation SHA: `a91e071b4c6bb3ae17d09dd2a138db06446ea9ab`; dedicated [P5/P6 original written EDL QA #43588374057](https://github.com/Tirthanand17/taskless-lab/actions/runs/43588374057) **success**, including actual generated audio/video test fixture and exact 3-shot 9:16 written plan validation.
+- [Merged-main P4 media integrity #43588373983](https://github.com/Tirthanand17/taskless-lab/actions/runs/43588373983) and [Content Quality Gate #43588374020](https://github.com/Tirthanand17/taskless-lab/actions/runs/43588374020) **success**.
+- No original creator file, commercial grant, approved clip, human editorial release, new video or YouTube publish resulted. Real P6 milestone still incomplete, **2/12 = 17%**.
