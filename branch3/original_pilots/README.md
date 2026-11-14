@@ -4,6 +4,12 @@
 
 CLIVOX can create first-party material without borrowing a gaming streamer, another creator's reaction, Rockstar/Take-Two footage, podcast extracts, commercial audio or a game logo. This pack demonstrates that path and provides a concrete review artifact beyond the older source-free placeholder benchmark.
 
+## A5 narration-window subtitles and on-screen reading improvements
+
+The renderer previously spread subtitle cues across **whole screenplay beats**, even when its synthetic narration finished earlier. It now measures the **actual generated 48 kHz post-tempo voice PCM interval per beat** and assigns the editable SRT's cue windows within that interval, distributing estimated cue timing by text length. It also embeds those clearly marked **draft** subtitles into the review MP4 with safe-margin, high-contrast text, while keeping a separately editable SRT in the GitHub artifact.
+
+This is an engineering improvement in speech-window timing, **not** word-by-word forced alignment or an audio transcription audit. No operator has verified the precise word timestamps or voice quality, and the last episode's final subtitle may linger to the end as a CTA. A human must listen with the captions visible and correct misread/misaligned speech before signing any exact-video release. Any new render replaces the exact MP4/WAV/SRT hashes and requires a **new A6 owner review**. FFmpeg's [subtitle overlay](https://ffmpeg.org/ffmpeg-filters.html#subtitles-1) uses the `libass` library, installed in the ephemeral GitHub Actions renderer. On-screen text is consistent with [YouTube Shorts editing tips](https://support.google.com/youtube/answer/13380879), but is not evidence of additional audience retention or virality.
+
 ## Original program concept
 
 **Series:** The Impossible Arcade — entirely imaginary gaming puzzles presented as interactive fiction, not footage of a real game.

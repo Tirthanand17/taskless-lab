@@ -110,7 +110,10 @@ def validate_episode_report(episode:dict,manifest:dict,
         require(manifest.get(key) is False,"FALSE_CLEARANCE_"+key)
     for key in ("original_script_and_vector_art",
                 "tts_voice_synthetic_not_human_recording",
-                "srt_is_draft_not_forced_aligned"):
+                "srt_is_draft_not_forced_aligned",
+                "srt_measured_synthesized_pcm_speech_windows",
+                "srt_word_timing_is_estimated_not_forced_aligned",
+                "draft_captions_burned_into_review_mp4"):
         require(manifest.get(key) is True,"FALSE_ORIGINALITY_"+key)
     require(manifest.get("actual_external_api_calls")==0,
             "UNTRUSTED_EXTERNAL_CALL")
@@ -172,6 +175,9 @@ def validate_episode_report(episode:dict,manifest:dict,
         "actual_ffprobe_checks_passed":True,
         "resolution":f"{expected[0]}x{expected[1]}",
         "audio_is_synthetic_narration_and_procedural_ambience":True,
+        "draft_caption_speech_window_derived_from_synthesized_pcm":True,
+        "draft_captions_burned_in_mobile_review_mp4":True,
+        "human_word_alignment_verified":False,
         "captions":caption_report,
         "human_editorial_video_review_completed":False,
         "owner_final_asset_signature_exists":False,

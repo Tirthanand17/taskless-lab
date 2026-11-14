@@ -5,8 +5,8 @@
   "channel_id": "UCfPEvy0SefE_5nNlYlY_CyQ",
   "scope": "A0_to_A10_full_autonomous_clipping_product",
   "methodology": "Equal weight for 11 work packages A0–A10; each completion percentage is an engineering-planning estimate rather than verified end-to-end throughput. Public YouTube channel creation and branding are included in A0.",
-  "overall_estimated_completion_percent": 75,
-  "overall_estimated_remaining_percent": 25,
+  "overall_estimated_completion_percent": 76,
+  "overall_estimated_remaining_percent": 24,
   "milestone_count": 11,
   "milestones": [
     {
@@ -47,9 +47,9 @@
     {
       "id": "A5",
       "name": "Video renderer and AV quality assurance",
-      "completion_pct": 75,
+      "completion_pct": 80,
       "status": "partial",
-      "evidence": "Actual GitHub source-free full-resolution 2 Shorts + 108s arcade episode, independently FFprobe/H264/AAC/MP4/WAV/SRT/metadata and owner unsigned checklist verified on main push run 43551704973 (25 MB, all steps passed). New portable OFFLINE HTML5 review gallery creates local video player cards from rehashed exact original media, includes draft SRT and unapproved checklist, no network/browser scripts. Human playback, final voice/SRT sync, asset licensing/rights and A6 signature still pending."
+      "evidence": "Source-free original arcade 2 Shorts + 108s real H264/AAC GitHub renders, actual independent FFprobe/sha A6 unsigned owner handoffs, offline HTML5 review gallery and NEW in-repo measured-post-tempo-synthetic-speech-window SRT cues with FFmpeg libass high-contrast mobile caption overlays. These overlays/editable SRT are DRAFT, no phoneme alignment/human final QA or license review. A5 real media CI pending merge/automatic full re-render."
     },
     {
       "id": "A6",
@@ -105,7 +105,7 @@
     "A8 global private-ledger CAS and A7/A8 full-bounded Google owner inventory reader are implemented in code only; no actual live owner OAuth, durable cross-run ledger, trusted anchor or authenticated inventory reconciliation exists",
     "A10 uses invented future-dated synthetic fixtures; real authenticated Clivox analytics, validated Studio exports and eligible published samples do not exist"
   ],
-  "disclaimer": "75% remains a conservative engineering/planning estimate, not launch readiness. The source-free 3 original arcade full-resolution MP4s with 3 unsigned checklists were actually rendered on main in verified run 43551704973; optional offline HTML gallery can simplify owner viewing but cannot approve voice/captions, rights, key enrollment, durable global upload controller, Google OAuth or publishing. No owner release or A9 upload. Branches 1 and 2 paused.",
+  "disclaimer": "76% is an engineering/planning estimate only. Original first-party review videos now have draft subtitle timing calculated from actual PCM speech-window length and burned-in mobile captions. Final word-level sync, voice quality, all-asset commercial licensing, signed final A6 owner approval, production uploader and OAuth remain unverified. No videos have been published or scheduled by these workflows; A9 remains 0%, Branch 1/2 paused.",
   "integrated_rehearsal": {
     "status": "MERGED_PR161_2026_11_13_CI_GREEN_SOURCE_FREE_NO_YOUTUBE",
     "chain": [
@@ -307,7 +307,12 @@
     "verified_main_push_artifact_bytes": 25324834,
     "offline_html5_owner_gallery_code_implemented": true,
     "owner_review_completed": false,
-    "synthetic_voice_and_draft_srt_still_require_review": true
+    "synthetic_voice_and_draft_srt_still_require_review": true,
+    "srt_timed_from_measured_post_synthesis_pcm_segments_implemented": true,
+    "editable_srt_and_burned_in_review_video_captions_implemented": true,
+    "draft_captions_automatically_word_aligned": false,
+    "captions_and_soundtrack_editor_review_required": true,
+    "caption_upgrade_full_resolution_main_push_rerender_verified": false
   },
   "a6_original_owner_handoff": {
     "stage": "A6_EXACT_REAL_VIDEO_ORIGINAL_OWNER_REVIEW_PACKET_QUARANTINE",
@@ -465,5 +470,21 @@
     "real_signature_enrolled": false,
     "actual_rights_of_synthetic_audio_tool_commercial_use_verified": false,
     "actual_google_uploads_or_schedules": 0
+  },
+  "a5_voice_caption_upgrade": {
+    "stage": "A5_MEASURED_SYNTHETIC_SPEECH_WINDOW_CAPTIONS_REVIEW_ONLY",
+    "video_renderer": "scripts/branch3_original_arcade_pilots.py",
+    "independent_media_qa": "scripts/branch3_original_arcade_qa.py",
+    "adversarial_tests": "scripts/test_branch3_original_arcade_pilots.py",
+    "media_overlay": "ffmpeg subtitles filter via libass, safe margin and high-contrast style",
+    "real_pcm_sample_based_beat_window_timing": true,
+    "caption_text_chunk_timing_exact_word_forced_alignment": false,
+    "editable_srt_kept": true,
+    "original_mp4_captions_burned_in_for_human_review": true,
+    "production_capable_final_narration_reviewed": false,
+    "actual_owner_editorial_and_rights_review_complete": false,
+    "new_full_resolution_render_verified": false,
+    "owner_new_exact_media_signature_issued": false,
+    "authorized_youtube_uploads": 0
   }
 }

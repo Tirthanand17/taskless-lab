@@ -24,6 +24,10 @@ A separate owner-controlled GitHub **private control-metadata repository** now e
 
 [Clivox's separate owner-only dual-read-only Analytics adapter](a10/OWNER_ANALYTICS_READONLY_SETUP.md) now verifies the exact Clivox channel identity before a bounded 50-video nonmonetary report read. The `clivox-analytics-readonly` GitHub environment is **really created, main-only and owner-review protected with zero secrets**. Google owner consent and real metrics **are not configured**; no upload credential, private video identifier, posting decision or schedule can be reused or changed.
 
+## Speech-window-timed visible subtitles (review-only)
+
+The original-first renderer now measures each actual synthesized narration PCM region before drafting subtitle timing, rather than allocating cue duration to the entire beat. It also burns mobile-readable high-contrast captions into the MP4 review file and retains the editable SRT. **This is not forced word alignment or a final owner-approved voice/caption edit.** Real rendering/FFprobe QA, owner re-review and a new digest-bound A6 packet are mandatory.
+
 ## Offline CLIVOX video playback gallery for owner review
 
 The [original arcade gallery guide](original_pilots/README.md) describes a no-network `CLIVOX-REVIEW-START-HERE.html` file included with fresh GitHub review artifacts. It gives the owner a local MP4 player for the two Shorts and 108-second episode, linked draft captions, exact SHA-256 and the five still-incomplete review requirements. Neither the page nor its tests grant permission to upload, monetize or sign.

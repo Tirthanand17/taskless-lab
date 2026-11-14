@@ -262,13 +262,14 @@ def draw_scene(beat:dict,*,ep:dict,index:int,out:Path,mode:str)->None:
     im.save(out,optimize=True)
 
 
-def write_audio(ep:dict,out:Path)->Path:
+def write_audio(ep:dict,out:Path)->tuple[Path,list[tuple[float,float]]]:
     require(shutil.which("espeak-ng") is not None
             and shutil.which("ffmpeg") is not None,
             "SPEECH_AND_FFMPEG_REQUIRED")
     sr=48000
     total=ep["duration_seconds"]*sr
     voice=array("h",[0])*total
+    voice_regions=[]
     for n,beat in enumerate(ep["beats"]):
         raw=out/f"narration-raw-{n:02}.wav"
         converted=out/f"narration-48k-{n:02}.wav"
@@ -310,6 +311,10 @@ def write_audio(ep:dict,out:Path)->Path:
             sped.unlink(missing_ok=True)
         require(len(pcm)<=max_samples,"VOICE_OVERFLOW_AFTER_TIME_CORRECTION")
         off=int((beat["start_s"]+.08)*sr)
+        # These bounds are measured from actual post-atempo TTS PCM samples,
+        # not from the screenplay beat length or an invented speech transcript.
+        # Word/phoneme boundaries within this span remain estimates.
+        voice_regions.append((off/sr,(off+len(pcm))/sr))
         for j,value in enumerate(pcm):
             voice[off+j]=int(value*.70)
         raw.unlink(missing_ok=True)
@@ -337,7 +342,7 @@ def write_audio(ep:dict,out:Path)->Path:
         audio.setsampwidth(2)
         audio.setframerate(sr)
         audio.writeframes(voice.tobytes())
-    return destination
+    return destination,voice_regions
 
 
 def stamp(seconds:float)->str:
@@ -348,10 +353,23 @@ def stamp(seconds:float)->str:
     return f"{hours:02}:{mins:02}:{secs:02},{millis:03}"
 
 
-def draft_srt(ep:dict,path:Path)->None:
+def draft_srt(
+    ep:dict,path:Path,
+    voice_regions:list[tuple[float,float]]|None=None
+)->None:
+    """Draft captions weighted within post-tempo synthesized speech intervals.
+
+    Unlike previous beat-length distribution, real rendered narration segments
+    determine the active cue window. Individual word timing is an estimate:
+    neither a forced alignment nor human subtitle/voice approval is claimed.
+    A final-episode CTA can remain visible through the last frame.
+    """
+    require(voice_regions is None or
+            (type(voice_regions) is list and
+             len(voice_regions)==len(ep["beats"])),"VOICE_REGIONS_COUNT")
     cue_lines=[]
     cue_number=0
-    for beat in ep["beats"]:
+    for index,beat in enumerate(ep["beats"]):
         words=beat["spoken"].split(" ")
         chunks=[]
         line=[]
@@ -366,13 +384,35 @@ def draft_srt(ep:dict,path:Path)->None:
             chunks.append(" ".join(line))
         lines=["\n".join(chunks[j:j+2])
                for j in range(0,len(chunks),2)]
-        duration=beat["end_s"]-beat["start_s"]
+        if voice_regions is None:
+            speech_start=float(beat["start_s"])
+            speech_end=float(beat["end_s"])
+            # Backward-compatible dummy SRT for no-audio unit tests.
+            weights=[1]*len(lines)
+        else:
+            speech_start,speech_end=voice_regions[index]
+            require(
+                type(speech_start) in (float,int) and
+                type(speech_end) in (float,int) and
+                beat["start_s"]<=speech_start<
+                speech_end<=beat["end_s"]-.025 and
+                speech_end-speech_start>=.30,
+                "VOICE_REGION_OUTSIDE_BEAT")
+            # A cue of 16 characters should receive more of the measured
+            # speech time than a cue of 3 characters. This is still DRAFT.
+            weights=[max(1,len(txt.replace("\n"," "))) for txt in lines]
+        elapsed=0
+        total_weight=sum(weights)
         for j,txt in enumerate(lines):
             cue_number+=1
-            start=beat["start_s"]+duration*j/len(lines)
-            end=beat["start_s"]+duration*(j+1)/len(lines)
-            require(all(len(x)<=36 for x in txt.split("\n")),
-                    "SUBTITLE_WIDTH")
+            start=speech_start+(speech_end-speech_start)*elapsed/total_weight
+            elapsed+=weights[j]
+            end=speech_start+(speech_end-speech_start)*elapsed/total_weight
+            if voice_regions is not None and j==len(lines)-1 and index==len(ep["beats"])-1:
+                end=float(ep["duration_seconds"])
+            require(end-start>=.055 and
+                    all(len(x)<=36 for x in txt.split("\n")),
+                    "SUBTITLE_WIDTH_OR_DURATION")
             cue_lines.append(
                 f"{cue_number}\n{stamp(start)} --> {stamp(end)}\n{txt}\n"
             )
@@ -380,9 +420,13 @@ def draft_srt(ep:dict,path:Path)->None:
 
 
 def encode_video(ep:dict,scenes:list[Path],audio:Path,output:Path,
-                 mode:str)->None:
+                 mode:str,*,captions:Path)->None:
     w,h,fps=render_size(ep["format"],mode)
     require(len(scenes)==len(ep["beats"]),"SCENE_FILES_COUNT")
+    require(captions.is_absolute() and captions.is_file()
+            and not captions.is_symlink()
+            and re.fullmatch(r"[a-zA-Z0-9_./-]+",str(captions)) is not None,
+            "SAFE_LOCAL_CAPTION_PATH_ONLY")
     cmd=["ffmpeg","-hide_banner","-nostdin","-loglevel","error","-y"]
     for scene in scenes:
         cmd+=["-i",str(scene)]
@@ -399,7 +443,23 @@ def encode_video(ep:dict,scenes:list[Path],audio:Path,output:Path,
         )
         video_tracks.append(f"[{track}]")
     filters.append("".join(video_tracks)+
-                   f"concat=n={len(video_tracks)}:v=1:a=0[outv]")
+                   f"concat=n={len(video_tracks)}:v=1:a=0[precap]")
+    # Burn *draft* captions into the offline review MP4 as well as supplying
+    # editable SRT: Shorts viewers can evaluate the text without enabling
+    # a separate subtitle stream. Do not interpret as final speech alignment.
+    font_size=(25 if mode=="full" else 16) if ep["format"]=="short" else (
+        37 if mode=="full" else 21
+    )
+    margin_v=round(h*(.18 if ep["format"]=="short" else .16))
+    caption_style=(
+        f"FontName=DejaVu Sans,FontSize={font_size},Bold=1,"
+        "PrimaryColour=&H00FFFFFF,OutlineColour=&H00101925,"
+        f"BorderStyle=1,Outline=2,Shadow=1,Alignment=2,MarginV={margin_v}"
+    )
+    filters.append(
+        f"[precap]subtitles=filename='{captions}':"
+        f"force_style='{caption_style}',format=yuv420p[outv]"
+    )
     cmd+=["-filter_complex",";".join(filters),"-map","[outv]",
           "-map",f"{len(scenes)}:a:0",
           "-c:v","libx264","-pix_fmt","yuv420p",
@@ -423,11 +483,11 @@ def render_episode(ep:dict,folder:Path,mode:str)->dict:
         image=folder/f"scene-{i:02}.png"
         draw_scene(b,ep=ep,index=i,out=image,mode=mode)
         shots.append(image)
-    audio=write_audio(ep,folder)
+    audio,voice_regions=write_audio(ep,folder)
     captions=folder/"narration-timing-draft.srt"
-    draft_srt(ep,captions)
+    draft_srt(ep,captions,voice_regions=voice_regions)
     mp4=folder/"original-review-preview.mp4"
-    encode_video(ep,shots,audio,mp4,mode)
+    encode_video(ep,shots,audio,mp4,mode,captions=captions)
     w,h,fps=render_size(ep["format"],mode)
     manifest={
         "schema_version":1,"channel_id":CHANNEL,
@@ -442,6 +502,9 @@ def render_episode(ep:dict,folder:Path,mode:str)->dict:
         "original_script_and_vector_art":True,
         "tts_voice_synthetic_not_human_recording":True,
         "srt_is_draft_not_forced_aligned":True,
+        "srt_measured_synthesized_pcm_speech_windows":True,
+        "srt_word_timing_is_estimated_not_forced_aligned":True,
+        "draft_captions_burned_into_review_mp4":True,
         "video_file":mp4.name,"video_sha256":sha(mp4),
         "video_bytes":mp4.stat().st_size,
         "audio_file":audio.name,"audio_sha256":sha(audio),

@@ -83,6 +83,7 @@ jobs:
           command -v ffprobe
           command -v ffmpeg
           command -v espeak-ng
+          ffmpeg -hide_banner -filters | grep -E ' subtitles '
       - name: Independent original-rights, scene, caption and technical-QA tests
         run: |
           set -euo pipefail
