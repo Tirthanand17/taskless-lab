@@ -1,0 +1,417 @@
+"""Source-free, actual LibreOffice Calc and Chrome demonstration recording.
+
+Uses real desktop applications on isolated GitHub Actions runners with dummy
+data. Never interacts with a real user's profile, YouTube or third-party media.
+The output is a silent, review-only pilot, NOT a publishable video.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+
+from autopilot.branch1_recovery import RecoveryRefused, validate_creative
+
+ROOT = Path(__file__).resolve().parents[1]
+PLAN_DIR = ROOT/"content/recovery_pilot"
+APPS = {
+    "calc": ("LibreOffice Calc", "fm_pilot_calc_trim_short_en",
+             "real_calc_trim_short.json", "uno_calc_actual"),
+    "chrome": ("Chromium browser", "fm_pilot_chrome_notifications_short_en",
+               "real_chrome_notifications_short.json", "selenium_chrome_settings_actual"),
+}
+STATUS = "REAL_FIRST_PARTY_APP_REVIEW_ONLY_NO_RELEASE"
+RECEIPT = "REAL_APP_SOURCE_HASH_BOUND_UNAPPROVED.json"
+CAPTURE = "ACTUAL_REAL_APPLICATION_CAPTURE.mp4"
+PREVIEW = "PROOF_FIRST_SILENT_REVIEW_ONLY.mp4"
+WIDTH, HEIGHT = 720, 1280
+
+def need(condition, error):
+    if not condition:
+        raise RecoveryRefused(error)
+
+def sha(path: Path) -> str:
+    h=hashlib.sha256()
+    with path.open("rb") as f:
+        for data in iter(lambda:f.read(1024*1024), b""):
+            h.update(data)
+    return h.hexdigest()
+
+def invoke(args, *, timeout=90):
+    return subprocess.run(args, check=True, capture_output=True,
+                          text=True, timeout=timeout)
+
+def validate_main_only(env, app):
+    need(app in APPS, "UNKNOWN_APP")
+    need(env.get("GITHUB_ACTIONS")=="true"
+         and env.get("GITHUB_REPOSITORY")=="Tirthanand17/taskless-lab"
+         and env.get("GITHUB_REF")=="refs/heads/main"
+         and env.get("PUBLISH_ENABLED")=="false"
+         and env.get("FLOWMINUTE_ENABLE_PUBLISH")=="0"
+         and env.get("FLOWMINUTE_ALLOW_LAPTOP")=="0",
+         "NO_REAL_RUN_OUTSIDE_NONPUBLISHING_GITHUB_MAIN")
+
+def plan(app):
+    need(app in APPS, "UNKNOWN_APP")
+    application, eid, filename, _=APPS[app]
+    brief=json.loads((PLAN_DIR/filename).read_text("utf8"))
+    proof=validate_creative(brief)
+    need(brief["demo"]["application"]==application
+         and brief["episode_id"]==eid
+         and brief["duration_seconds"]==11
+         and proof["owner_approval"] is False,
+         "PLANNED_APP_OR_REVIEW_STATUS_MISMATCH")
+    return brief,proof
+
+def put(path, data):
+    path.write_text(json.dumps(data,sort_keys=True,indent=2)+"\n",encoding="utf8")
+
+def wait_for(path, proc, timeout=32):
+    until=time.monotonic()+timeout
+    while time.monotonic()<until:
+        if path.is_file():
+            return
+        need(proc.poll() is None, "APPLICATION_WORKER_FAILED_BEFORE_READY")
+        time.sleep(.15)
+    raise RecoveryRefused("APPLICATION_WORKER_NEVER_BECAME_READY")
+
+def calc_worker(out):
+    # This worker runs under /usr/bin/python3 (Ubuntu python3-uno).
+    import uno  # third-party system LibreOffice UNO integration
+    local=uno.getComponentContext()
+    resolver=local.ServiceManager.createInstanceWithContext(
+        "com.sun.star.bridge.UnoUrlResolver",local)
+    ctx=None
+    for _ in range(80):
+        try:
+            ctx=resolver.resolve(
+                "uno:socket,host=127.0.0.1,port=2002;urp;StarOffice.ComponentContext")
+            break
+        except Exception:
+            time.sleep(.2)
+    need(ctx is not None, "REAL_CALC_UNO_NOT_CONNECTED")
+    desktop=ctx.ServiceManager.createInstanceWithContext(
+        "com.sun.star.frame.Desktop",ctx)
+    doc=desktop.loadComponentFromURL("private:factory/scalc","_blank",0,())
+    need(doc is not None, "CALC_DOCUMENT_NOT_ACTUALLY_OPEN")
+    try:
+        sheet=doc.Sheets.getByIndex(0)
+        sheet.getCellRangeByName("A1").String="REAL CALC - TEXT CLEANUP"
+        sheet.getCellRangeByName("A2").String="  Invoice"
+        sheet.getCellRangeByName("A3").String="Invoice"
+        sheet.getCellRangeByName("B1").String="COMPARISON"
+        sheet.getCellRangeByName("B2").Formula="=A2=A3"
+        sheet.getCellRangeByName("D1").String="SOURCE: SYNTHETIC ONLY"
+        sheet.Columns.getByIndex(0).Width=7000
+        sheet.Columns.getByIndex(1).Width=5000
+        sheet.Columns.getByIndex(3).Width=7000
+        controller=doc.getCurrentController()
+        controller.ZoomValue=170
+        controller.select(sheet.getCellRangeByName("B2"))
+        wrong=sheet.getCellRangeByName("B2").Value
+        need(wrong==0, "CALC_BEFORE_NOT_FALSE")
+        (out/"stage_before").write_text("UNO_CALC_REAL_BEFORE\n","utf8")
+        time.sleep(1.5)
+        sheet.getCellRangeByName("A5").String="TRIM REMOVES LEADING SPACES"
+        sheet.getCellRangeByName("B3").Formula="=TRIM(A2)=TRIM(A3)"
+        controller.select(sheet.getCellRangeByName("B3"))
+        corrected=sheet.getCellRangeByName("B3").Value
+        need(corrected==1, "CALC_TRIM_DID_NOT_EVALUATE_TRUE")
+        doc.calculateAll()
+        need(sheet.getCellRangeByName("B2").Value==0
+             and sheet.getCellRangeByName("B3").Value==1,
+             "CALC_COMPARISON_NOT_REPRODUCIBLE")
+        doc.storeAsURL((out/"ACTUAL_CALC_VALIDATED.ods").resolve().as_uri(),())
+        put(out/"application_observation.json",{
+            "application":"LibreOffice Calc",
+            "before_formula":"=A2=A3","before_boolean":False,
+            "after_formula":"=TRIM(A2)=TRIM(A3)","after_boolean":True,
+            "source_fixture_only":True,"real_uno_calculation":True,
+            "youtube_uploads":0,
+        })
+        (out/"stage_after").write_text("UNO_CALC_REAL_AFTER\n","utf8")
+        time.sleep(9)
+    finally:
+        doc.close(True)
+
+def chrome_worker(out):
+    # Never opens a personal browser profile. This navigates REAL Chrome
+    # settings, but does NOT modify real notification permissions.
+    from selenium import webdriver
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.support.ui import WebDriverWait
+    options=Options()
+    binary=shutil.which("google-chrome") or shutil.which("google-chrome-stable")
+    need(binary is not None, "CHROME_STABLE_NOT_INSTALLED")
+    options.binary_location=binary
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-first-run")
+    options.add_argument("--no-default-browser-check")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-background-networking")
+    options.add_argument("--disable-sync")
+    options.add_argument("--window-size=720,1280")
+    options.add_argument("--user-data-dir="+str((out/"browser_private_profile").resolve()))
+    driver=webdriver.Chrome(options=options)
+    try:
+        driver.set_window_size(720,1280)
+        driver.get("chrome://settings/")
+        WebDriverWait(driver,20).until(
+            lambda d: d.execute_script("return !!document.querySelector('settings-ui')"))
+        need(driver.current_url.startswith("chrome://settings"),
+             "CHROME_SETTINGS_NOT_REAL")
+        (out/"stage_before").write_text("ACTUAL_CHROME_SETTINGS\n","utf8")
+        time.sleep(1.5)
+        driver.get("chrome://settings/content/notifications")
+        WebDriverWait(driver,20).until(
+            lambda d: (d.current_url.startswith("chrome://settings/content/notifications")
+                       and d.execute_script("return !!document.querySelector('settings-ui')")))
+        need(driver.current_url=="chrome://settings/content/notifications",
+             "CHROME_NOTIFICATIONS_PAGE_NOT_REAL")
+        put(out/"application_observation.json",{
+            "application":"Chromium browser",
+            "before_url":"chrome://settings/",
+            "after_url":driver.current_url,
+            "real_settings_ui_element":True,
+            "permissions_changed":False,
+            "personal_profile_used":False,
+            "youtube_uploads":0,
+        })
+        (out/"stage_after").write_text("ACTUAL_CHROME_NOTIFICATIONS\n","utf8")
+        time.sleep(9)
+    finally:
+        driver.quit()
+
+def decoded_frame_hash(capture, t):
+    p=subprocess.run([
+        "ffmpeg","-nostdin","-hide_banner","-loglevel","error",
+        "-ss",str(t),"-i",str(capture),"-frames:v","1",
+        "-vcodec","png","-f","image2pipe","-"],
+        check=True,capture_output=True,timeout=35)
+    need(p.stdout.startswith(b"\x89PNG") and len(p.stdout)>1000,
+         "ACTUAL_DECODED_FRAME_ABSENT")
+    return hashlib.sha256(p.stdout).hexdigest()
+
+def inspect_media(capture):
+    data=json.loads(invoke([
+        "ffprobe","-v","error","-select_streams","v:0",
+        "-show_entries","stream=codec_name,width,height,duration",
+        "-of","json",str(capture)],timeout=15).stdout)
+    streams=data["streams"]
+    need(len(streams)==1 and streams[0]["codec_name"]=="h264"
+         and streams[0]["width"]==WIDTH and streams[0]["height"]==HEIGHT
+         and 9.5<=float(streams[0]["duration"])<=10.5,
+         "REAL_APP_SOURCE_VIDEO_NOT_EXPECTED_GEOMETRY")
+    invoke(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
+            "-xerror","-i",str(capture),"-f","null","-"],timeout=50)
+    need(decoded_frame_hash(capture,1.0)!=decoded_frame_hash(capture,7.0),
+         "SAME_STILL_FRAME_BEFORE_AFTER")
+
+def capture(app,out):
+    validate_main_only(os.environ,app)
+    brief,creative=plan(app)
+    need(not out.exists(), "REFUSE_OVERWRITE")
+    for name in ("Xvfb","ffmpeg","ffprobe"):
+        need(shutil.which(name), "REQUIRED_OPEN_SOURCE_TOOL_MISSING_"+name)
+    out.mkdir(mode=0o700,parents=True)
+    display=":94"
+    need(not Path("/tmp/.X11-unix/X94").exists(),
+         "CAPTURE_DISPLAY_ALREADY_EXISTS")
+    xvfb=subprocess.Popen([
+        "Xvfb",display,"-screen","0",f"{WIDTH}x{HEIGHT}x24","-nolisten","tcp"],
+        stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    office=None
+    worker=None
+    try:
+        for _ in range(40):
+            if Path("/tmp/.X11-unix/X94").exists():break
+            need(xvfb.poll() is None,"XVFB_CRASHED")
+            time.sleep(.15)
+        need(Path("/tmp/.X11-unix/X94").exists(),"XVFB_NO_X11_SOCKET")
+        env={**os.environ,"DISPLAY":display}
+        if app=="calc":
+            need(shutil.which("libreoffice"),"LIBREOFFICE_NOT_INSTALLED")
+            need(Path("/usr/bin/python3").is_file(),"SYSTEM_PYTHON_FOR_UNO_NOT_FOUND")
+            office=subprocess.Popen([
+                "libreoffice","--calc","--nologo","--norestore",
+                "--nodefault","--accept=socket,host=127.0.0.1,port=2002;urp;StarOffice.ServiceManager"],
+                env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        interpreter="/usr/bin/python3" if app=="calc" else sys.executable
+        worker=subprocess.Popen([
+            interpreter,"-m","autopilot.branch1_real_app_capture",
+            "--worker",app,"--out",str(out.resolve())],
+            env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+        wait_for(out/"stage_before",worker)
+        source=out/CAPTURE
+        invoke(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
+                "-f","x11grab","-video_size",f"{WIDTH}x{HEIGHT}",
+                "-framerate","12","-i",f"{display}.0","-t","10",
+                "-an","-c:v","libx264","-threads","2","-preset","ultrafast",
+                "-crf","21","-pix_fmt","yuv420p","-movflags",
+                "+faststart",str(source)],timeout=70)
+        wait_for(out/"stage_after",worker)
+        try:
+            _,stderr=worker.communicate(timeout=15)
+        except subprocess.TimeoutExpired:
+            worker.kill()
+            worker.communicate(timeout=10)
+            raise RecoveryRefused("APP_WORKER_TIMED_OUT")
+        need(worker.returncode==0,
+             "REAL_APPLICATION_WORKER_FAILED "+stderr[-500:])
+    finally:
+        if worker and worker.poll() is None:
+            worker.kill()
+            worker.communicate(timeout=5)
+        if office is not None:
+            office.terminate()
+            try:office.wait(timeout=5)
+            except subprocess.TimeoutExpired:office.kill()
+        xvfb.terminate()
+        try:xvfb.wait(timeout=5)
+        except subprocess.TimeoutExpired:xvfb.kill()
+    observation=json.loads((out/"application_observation.json").read_text("utf8"))
+    need(observation["application"]==APPS[app][0]
+         and observation["youtube_uploads"]==0, "SOURCE_APP_ASSERTION_MISMATCH")
+    if app=="calc":
+        need(observation["real_uno_calculation"] is True
+             and observation["before_boolean"] is False
+             and observation["after_boolean"] is True
+             and (out/"ACTUAL_CALC_VALIDATED.ods").is_file(),
+             "CALC_NOT_GENUINELY_EVALUATED")
+    else:
+        need(observation["real_settings_ui_element"] is True
+             and observation["permissions_changed"] is False
+             and observation["personal_profile_used"] is False,
+             "BROWSER_NOT_IN_REAL_UNMODIFIED_SETTINGS")
+    inspect_media(source)
+    preview=out/PREVIEW
+    graph=(
+        "[0:v]trim=start=7:duration=1.5,setpts=PTS-STARTPTS,"
+        "scale=1080:1920:flags=lanczos,format=yuv420p[hook];"
+        "[0:v]trim=start=0:duration=9.5,setpts=PTS-STARTPTS,"
+        "scale=1080:1920:flags=lanczos,format=yuv420p[action];"
+        "[hook][action]concat=n=2:v=1:a=0[v]"
+    )
+    invoke(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
+            "-i",str(source),"-filter_complex",graph,"-map","[v]",
+            "-an","-r","12","-c:v","libx264","-threads","2",
+            "-preset","ultrafast","-crf","25","-pix_fmt","yuv420p",
+            str(preview)],timeout=90)
+    invoke(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
+            "-xerror","-i",str(preview),"-f","null","-"],timeout=55)
+    fixture_source=(out/"ACTUAL_CALC_VALIDATED.ods" if app=="calc"
+                    else out/"application_observation.json")
+    receipt={
+        "schema":"FLOWMINUTE_B1_REAL_APPLICATION_PROOF_V1",
+        "status":STATUS,
+        "app":app,
+        "episode_id":brief["episode_id"],
+        "real_application":APPS[app][0],
+        "capture_method":APPS[app][3],
+        "capture_sha256":sha(source),
+        "capture_bytes":source.stat().st_size,
+        "preview_sha256":sha(preview),
+        "fixture_proof_sha256":sha(fixture_source),
+        "observation_sha256":sha(out/"application_observation.json"),
+        "real_application_executed":True,
+        "first_party_dummy_data":True,
+        "no_personal_accounts":True,
+        "owner_release_approved":False,
+        "youtube_uploads":0,
+        "youtube_schedules":0,
+    }
+    put(out/RECEIPT,receipt)
+    verify_receipt(brief,out)
+    # Browser profile includes transient preferences: never package it.
+    if app=="chrome":
+        shutil.rmtree(out/"browser_private_profile",ignore_errors=True)
+    return {**creative,"capture_status":STATUS,
+            "capture_sha256":receipt["capture_sha256"],
+            "preview_sha256":receipt["preview_sha256"],
+            "youtube_schedules":0}
+
+def verify_receipt(brief,out):
+    validated=validate_creative(brief)
+    app=next((key for key,value in APPS.items()
+              if value[1]==validated["episode_id"]),None)
+    need(app is not None,"UNKNOWN_REAL_APP_BRIEF")
+    path=out/RECEIPT
+    need(path.is_file() and not path.is_symlink()
+         and path.stat().st_size<8192,"NO_BOUND_APP_RECEIPT")
+    data=json.loads(path.read_text("utf8"))
+    require_keys={
+        "schema","status","app","episode_id","real_application",
+        "capture_method","capture_sha256","capture_bytes",
+        "preview_sha256","fixture_proof_sha256","observation_sha256",
+        "real_application_executed","first_party_dummy_data",
+        "no_personal_accounts","owner_release_approved",
+        "youtube_uploads","youtube_schedules",
+    }
+    need(type(data) is dict and set(data)==require_keys,
+         "BOUND_RECEIPT_SCHEMA_INVALID")
+    need(data["schema"]=="FLOWMINUTE_B1_REAL_APPLICATION_PROOF_V1"
+         and data["status"]==STATUS and data["app"]==app
+         and data["episode_id"]==brief["episode_id"]
+         and data["real_application"]==APPS[app][0]
+         and data["capture_method"]==APPS[app][3]
+         and data["real_application_executed"] is True
+         and data["first_party_dummy_data"] is True
+         and data["no_personal_accounts"] is True
+         and data["owner_release_approved"] is False
+         and type(data["youtube_uploads"]) is int
+         and data["youtube_uploads"]==0
+         and type(data["youtube_schedules"]) is int
+         and data["youtube_schedules"]==0,
+         "BOUND_RECEIPT_CANNOT_GRANT_PERMISSION")
+    source=out/CAPTURE
+    preview=out/PREVIEW
+    fixture=(out/"ACTUAL_CALC_VALIDATED.ods" if app=="calc"
+             else out/"application_observation.json")
+    for name,p in (("capture_sha256",source),
+                   ("preview_sha256",preview),
+                   ("fixture_proof_sha256",fixture),
+                   ("observation_sha256",out/"application_observation.json")):
+        need(p.is_file() and not p.is_symlink()
+             and 100<=p.stat().st_size<=100_000_000
+             and type(data[name]) is str and len(data[name])==64
+             and all(c in "0123456789abcdef" for c in data[name])
+             and sha(p)==data[name],
+             "EXACT_MEDIA_OR_RESULT_SHA_MISMATCH_"+name)
+    need(type(data["capture_bytes"]) is int
+         and data["capture_bytes"]==source.stat().st_size,
+         "SOURCE_MP4_SIZE_MISMATCH")
+    observation=json.loads((out/"application_observation.json").read_text("utf8"))
+    need(observation.get("youtube_uploads")==0
+         and observation.get("application")==APPS[app][0],
+         "APP_OBSERVATION_NOT_TRUSTWORTHY")
+    return {"status":"HASH_BOUND_REVIEW_ONLY_NOT_MEDIA_APPROVAL",
+            "episode_id":validated["episode_id"],
+            "app":app,"youtube_uploads":0,"youtube_schedules":0}
+
+def main():
+    p=argparse.ArgumentParser()
+    p.add_argument("--app",choices=sorted(APPS))
+    p.add_argument("--out",type=Path,required=True)
+    p.add_argument("--worker",choices=sorted(APPS))
+    p.add_argument("--verify",action="store_true")
+    a=p.parse_args()
+    if a.worker:
+        if a.worker=="calc":calc_worker(a.out)
+        else:chrome_worker(a.out)
+        return
+    need(bool(a.app),"APP_REQUIRED")
+    brief,_=plan(a.app)
+    if a.verify:
+        print(json.dumps(verify_receipt(brief,a.out),sort_keys=True))
+    else:
+        print(json.dumps(capture(a.app,a.out),sort_keys=True))
+
+if __name__=="__main__":
+    main()
