@@ -39,7 +39,7 @@ STORIES={
             ("BEFORE  /  GENUINE WORKBOOK",
              "This real LibreOffice Calc worksheet has a hidden space before the first value."),
             ("WHY  /  DIRECT MATCH FAILS",
-             "The original cell comparison evaluates false, even though the labels appear the same."),
+             "The original comparison evaluates false, even though the values look alike."),
             ("FIX  /  TRIM BOTH VALUES",
              "Compare both values after applying Trim. Watch the real worksheet calculate the result."),
             ("AFTER  /  CHECK THE RESULT",
@@ -55,7 +55,7 @@ STORIES={
             ("BEFORE  /  OPEN SETTINGS",
              "Open Chrome settings. This recording uses a fresh browser profile with no personal account."),
             ("WHY  /  FIND SITE CONTROLS",
-             "Notification controls are nested, so you may not see them on the first settings page."),
+             "Notification controls are nested. You may not see them on the first settings page."),
             ("ACTION  /  OPEN NOTIFICATIONS",
              "Now the actual browser navigates to its built in notification settings page."),
             ("AFTER  /  VERIFY THE PAGE",
@@ -78,9 +78,11 @@ def execute(cmd,timeout=360):
 def validate_story(app):
     insist(app in APPS and app in STORIES, "UNKNOWN_STORY_APP")
     story=STORIES[app]
-    assert story["voice"]=="af_heart"
-    assert len(story["chapters"])==5 and len(story["source_windows"])==5
-    from autopilot.branch1_nov12_four_review_videos import split_script
+    insist(story["voice"]=="af_heart" and len(story["chapters"])==5
+           and len(story["source_windows"])==5,"VOICE_OR_STORY_SHAPE_NOT_PINNED")
+    from autopilot.branch1_nov12_four_review_videos import (
+        split_script, FourVideoRefused
+    )
     total_words=0
     for name,spoken in story["chapters"]:
         insist(type(name) is str and 10<=len(name)<=45
@@ -89,7 +91,10 @@ def validate_story(app):
         insist(type(spoken) is str and 48<=len(spoken)<=180
                and not any(x in spoken for x in ("{","}","<",">","@","\n")),
                "INVALID_VOICE_NARRATION")
-        split_script(spoken,"short")
+        try:
+            split_script(spoken,"short")
+        except FourVideoRefused:
+            raise RecoveryRefused("INVALID_VOICE_CUE_STRUCTURE") from None
         total_words+=len(spoken.split())
     insist(57<=total_words<=100,"SCRIPT_OUTSIDE_CONCISE_STORY_RANGE")
     for start,seconds in story["source_windows"]:
