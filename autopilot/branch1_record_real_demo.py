@@ -168,6 +168,22 @@ def run(out: Path, brief_path: Path) -> dict:
            "RECORDED_SOFTWARE_VIDEO_INVALID")
     sh(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
         "-xerror", "-i", str(capture), "-f", "null", "-"], timeout=40)
+    # A perfectly encoded static/black frame would not be authentic proof.
+    # Sample actual decoded RGB PNG frames at the before and after stages.
+    def actual_frame_hash(second: float) -> str:
+        output = subprocess.run([
+            "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+            "-ss", str(second), "-i", str(capture), "-frames:v", "1",
+            "-vcodec", "png", "-f", "image2pipe", "-"],
+            check=True, capture_output=True, timeout=30).stdout
+        insist(len(output) > 1000 and output.startswith(b"\x89PNG"),
+               "NO_ACTUAL_FRAME_AT_STAGE")
+        return hashlib.sha256(output).hexdigest()
+
+    before_frame = actual_frame_hash(1.0)
+    after_frame = actual_frame_hash(7.0)
+    insist(before_frame != after_frame,
+           "STATIC_OR_UNCHANGED_DEMONSTRATION_REFUSED")
     # Review-only proof-first edit: show the real AFTER result immediately,
     # then the REAL recorded before/action/result sequence. It deliberately
     # has no voice or music; never package this as an approved YouTube Short.
