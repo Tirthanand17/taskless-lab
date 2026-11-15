@@ -1,0 +1,151 @@
+name: FlowMinute B1 Proof-First Recovery QA (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_recovery.py"
+      - "autopilot/test_branch1_recovery.py"
+      - "autopilot/branch1_record_real_demo.py"
+      - "content/recovery_pilot/**"
+      - "docs/BRANCH1_RETENTION_FIRST_FREE_RECOVERY.md"
+      - ".github/workflows/branch1-retention-first-free-recovery-qa.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: b1-recovery-proof-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  creative_metrics_security:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    name: Proof-first creative, honest metrics and adversarial policy checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate Python source and all fail-closed offline tests
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/branch1_recovery.py \
+            autopilot/branch1_record_real_demo.py \
+            autopilot/test_branch1_recovery.py
+          python -B -m unittest -v autopilot.test_branch1_recovery
+          python -B -m autopilot.branch1_recovery \
+            --creative content/recovery_pilot/real_csv_proof_first_short.json \
+            > /tmp/fm-brief-status.json
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path("/tmp/fm-brief-status.json").read_text())
+          assert p["status"]=="CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED"
+          assert p["owner_approval"] is False
+          assert p["youtube_uploads"] == 0
+          assert p["opening_proof_by_seconds"] <= 2
+          assert p["first_real_action_at_seconds"] <= 3
+          print("REAL_PROOF_REQUIRED_NO_OWNER_APPROVAL_NO_YOUTUBE")
+          PY
+      - name: Assert source cannot silently upload or schedule
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          for name in (
+              "autopilot/branch1_recovery.py",
+              "autopilot/branch1_record_real_demo.py",
+          ):
+              code=Path(name).read_text(encoding="utf8")
+              for forbidden in ("youtube.videos().insert", "status.publishAt",
+                                "studio.youtube.com", "oauth2", "googleapiclient",
+                                "gh workflow run", "publish_youtube("):
+                  assert forbidden not in code, (name, forbidden)
+          print("NO_YOUTUBE_OAUTH_UPLOAD_SCHEDULING_OR_PRIVATE_DATA")
+          PY
+
+  real_terminal_screen_capture:
+    name: Genuine first-party Python software screen capture (review only)
+    needs: [creative_metrics_security]
+    if: >-
+      github.repository == 'Tirthanand17/taskless-lab' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install free original software and direct screen capture
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb xterm ffmpeg fonts-dejavu-core
+      - name: Execute real Python CSV cleanup and screen-record live XTerm
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_record_real_demo \
+            --brief content/recovery_pilot/real_csv_proof_first_short.json \
+            --out /tmp/flowminute-b1-genuine-python-capture
+      - name: Independent SHA-256 and full MP4 decode (not a simulated screenshot)
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_recovery \
+            --creative content/recovery_pilot/real_csv_proof_first_short.json \
+            --capture /tmp/flowminute-b1-genuine-python-capture/ACTUAL_PYTHON_TERMINAL_CAPTURE.mp4 \
+            --capture-receipt /tmp/flowminute-b1-genuine-python-capture/EXACT_REAL_CAPTURE_UNAPPROVED.json \
+            > /tmp/flowminute-b1-recovery-verified.json
+          python -B - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          b=Path("/tmp/flowminute-b1-genuine-python-capture")
+          r=json.loads(Path("/tmp/flowminute-b1-recovery-verified.json").read_text())
+          p=b/"PROOF_FIRST_NO_NARRATION_REVIEW_ONLY.mp4"
+          proof=json.loads((b/"REVIEW_ONLY_NO_UPLOAD.json").read_text())
+          assert r["capture_status"]=="EXACT_HASH_VERIFIED_REVIEW_ONLY"
+          assert r["owner_approval"] is False and r["youtube_uploads"] == 0
+          assert proof["actual_csv_input_rows"]==4
+          assert proof["actual_csv_output_rows"]==3
+          assert proof["proof_first_silent_review_sha256"]==hashlib.sha256(p.read_bytes()).hexdigest()
+          print("GENUINE_SOFTWARE_CAPTURE_HASH_BOUND_UNAPPROVED")
+          PY
+          ffmpeg -nostdin -hide_banner -loglevel error -xerror \
+            -i /tmp/flowminute-b1-genuine-python-capture/PROOF_FIRST_NO_NARRATION_REVIEW_ONLY.mp4 \
+            -f null -
+      - name: Save bounded original review footage, NEVER publish
+        uses: actions/upload-artifact@v4
+        with:
+          name: b1-FIRST-PARTY-REAL-APP-DEMO-REVIEW-ONLY-${{ github.run_id }}
+          path: |
+            /tmp/flowminute-b1-genuine-python-capture/ACTUAL_PYTHON_TERMINAL_CAPTURE.mp4
+            /tmp/flowminute-b1-genuine-python-capture/PROOF_FIRST_NO_NARRATION_REVIEW_ONLY.mp4
+            /tmp/flowminute-b1-genuine-python-capture/EXACT_REAL_CAPTURE_UNAPPROVED.json
+            /tmp/flowminute-b1-genuine-python-capture/REVIEW_ONLY_NO_UPLOAD.json
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 2
+      - name: Clean all generated private runner files
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b1-genuine-python-capture \
+            /tmp/flowminute-b1-recovery-verified.json
+          echo "NO YOUTUBE UPLOAD, NO SCHEDULE, NO PUBLISH, NO LAPTOP DISK"
