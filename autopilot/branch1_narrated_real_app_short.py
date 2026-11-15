@@ -144,7 +144,7 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
         )
         parts.append(f)
     parts.append("".join(f"[v{i}]" for i in range(5))+
-                 "[concat]concat=n=5:v=1:a=0,format=yuv420p")
+                 "concat=n=5:v=1:a=0,format=yuv420p[concat]")
     parts.append(f"[concat]ass={ass.as_posix()},format=yuv420p[video]")
     return ";".join(parts)
 
