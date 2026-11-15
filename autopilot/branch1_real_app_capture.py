@@ -391,6 +391,43 @@ def verify_receipt(brief,out):
     need(observation.get("youtube_uploads")==0
          and observation.get("application")==APPS[app][0],
          "APP_OBSERVATION_NOT_TRUSTWORTHY")
+    # Receipts cannot replace source application observations. Refuse a fake
+    # "success" flag with no observable result or wrong target screen.
+    if app=="calc":
+        need(set(observation)=={
+            "application","before_formula","before_boolean","after_formula",
+            "after_boolean","source_fixture_only","real_uno_calculation",
+            "youtube_uploads"}
+            and observation["before_formula"]=="=A2=A3"
+            and observation["before_boolean"] is False
+            and observation["after_formula"]=="=TRIM(A2)=TRIM(A3)"
+            and observation["after_boolean"] is True
+            and observation["source_fixture_only"] is True
+            and observation["real_uno_calculation"] is True,
+            "REAL_CALC_FORMULA_OBSERVATION_NOT_PROVED")
+        import zipfile
+        need(zipfile.is_zipfile(fixture), "CALC_ODS_NOT_A_REAL_DOCUMENT")
+        with zipfile.ZipFile(fixture) as odf:
+            need("content.xml" in odf.namelist()
+                 and odf.testzip() is None,"CALC_ODS_CONTENT_NOT_VALID")
+    else:
+        need(set(observation)=={
+            "application","before_url","after_url",
+            "real_settings_ui_element","permissions_changed",
+            "personal_profile_used","youtube_uploads"}
+            and observation["before_url"]=="chrome://settings/"
+            and observation["after_url"]==
+                "chrome://settings/content/notifications"
+            and observation["real_settings_ui_element"] is True
+            and observation["permissions_changed"] is False
+            and observation["personal_profile_used"] is False,
+            "REAL_CHROME_SETTINGS_OBSERVATION_NOT_PROVED")
+    for clip in (source,preview):
+        with clip.open("rb") as raw:
+            need(raw.read(12)[4:8]==b"ftyp",
+                 "VIDEO_HEADER_NOT_MP4")
+    need(brief["demo"]["application"]==APPS[app][0],
+         "CREATIVE_APP_SPOOFED")
     return {"status":"HASH_BOUND_REVIEW_ONLY_NOT_MEDIA_APPROVAL",
             "episode_id":validated["episode_id"],
             "app":app,"youtube_uploads":0,"youtube_schedules":0}
