@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_pilot_csv_cleanup_short_en",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 11,
+  "title": "Stop Counting Duplicate CSV Rows: Watch Python Fix the Data",
+  "viewer_problem": "A real CSV file contains a duplicate invoice that changes a report's count.",
+  "viewer_promise": "Watch original Python code remove a duplicated invoice and verify three unique results.",
+  "source_url": "https://docs.python.org/3/library/csv.html",
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0,
+      "end_seconds": 1.6,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Show the actual clean output immediately.",
+      "action_or_result": "Recorded real cleaned CSV, no graphic recreation."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.6,
+      "end_seconds": 3,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Reveal the original input CSV that contains duplicate invoice IDs.",
+      "action_or_result": "Live xterm displays source.csv."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 3,
+      "end_seconds": 4,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Point out that invoice INV-101 occurs twice.",
+      "action_or_result": "Show the two duplicate data rows."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 4,
+      "end_seconds": 6,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Run the actual Python cleanup program in a terminal.",
+      "action_or_result": "Execute python3 clean_csv.py and show stdout."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 6,
+      "end_seconds": 8.5,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Verify the actual output has only three unique invoices.",
+      "action_or_result": "Live terminal prints clean.csv after Python execution."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 8.5,
+      "end_seconds": 11,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Compare four original rows with three unique invoice IDs.",
+      "action_or_result": "Recorded real CSV result stays visible, not a fake claim."
+    }
+  ],
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  }
+}
