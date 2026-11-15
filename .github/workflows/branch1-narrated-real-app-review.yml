@@ -1,0 +1,192 @@
+name: FlowMinute B1 Narrated Real-App Shorts Review (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_narrated_real_app_short.py"
+      - "autopilot/test_branch1_narrated_real_app_short.py"
+      - ".github/workflows/branch1-narrated-real-app-review.yml"
+      - "docs/BRANCH1_NARRATED_REAL_APP_REVIEW.md"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: b1-narrated-real-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  editorial_provenance_and_metadata_tests:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate scripts and reject forged ownership / fake app / unsafe storytelling
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/branch1_narrated_real_app_short.py \
+            autopilot/test_branch1_narrated_real_app_short.py
+          python -B -m unittest -v \
+            autopilot.test_branch1_narrated_real_app_short \
+            autopilot.test_branch1_real_app_capture \
+            autopilot.test_branch1_recovery
+          python -B - <<'PY'
+          from autopilot.branch1_narrated_real_app_short import (
+              validate_story, story_episode
+          )
+          for app in ("calc","chrome"):
+              s=validate_story(app)
+              assert s["real_software_capture_required"]
+              assert s["owner_review_approved"] is False
+              assert s["youtube_uploads"]==0
+              assert story_episode(app)["type"]=="short"
+          print("NARRATION_BOTH_REAL_APPS_BRIEF_ONLY_NO_RELEASE")
+          PY
+      - name: Assert no YouTube integration, owner consent forgery or cloud secrets
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          source=Path("autopilot/branch1_narrated_real_app_short.py").read_text("utf8")
+          for forbidden in ("youtube.videos().insert", "status.publishAt",
+                            "studio.youtube.com", "googleapiclient",
+                            "oauth2", "publish_youtube("):
+              assert forbidden not in source, forbidden
+          assert "owner_final_watch" in source
+          assert "release_signed" in source
+          print("NO_YOUTUBE_KEYS_CHANNEL_WRITES_OR_FALSE_OWNER_CONSENT")
+          PY
+
+  actual_narrated_real_app_media:
+    if: >-
+      github.repository == 'Tirthanand17/taskless-lab' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main'
+    needs: [editorial_provenance_and_metadata_tests]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 58
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [calc, chrome]
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      DEMO_APP: ${{ matrix.app }}
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install authentic first-party screen and original speech toolchain
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            xvfb ffmpeg fonts-dejavu-core \
+            libreoffice-calc python3-uno libsndfile1
+          python -m pip install --disable-pip-version-check --only-binary=:all: \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' 'soundfile>=0.12,<1' \
+            'kokoro-onnx==0.6.1' 'selenium>=4.25,<5'
+          if [ "$DEMO_APP" = chrome ]; then
+            command -v google-chrome || command -v google-chrome-stable
+          else
+            command -v libreoffice
+            /usr/bin/python3 -c 'import uno; print("REAL_UNO_AVAILABLE")'
+          fi
+          ffmpeg -hide_banner -filters | grep -E ' (ass|drawtext|tpad) '
+      - name: Fetch public pinned Kokoro voice assets and verify SHA-256
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/flowminute-b1-pinned-original-speech
+          cd /tmp/flowminute-b1-pinned-original-speech
+          base="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error \
+            --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 240 \
+            -o kokoro-v1.0.int8.onnx "$base/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error \
+            --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 180 \
+            -o voices-v1.0.bin "$base/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+      - name: Capture ACTUAL Calc or Chrome and verify unchanged app provenance
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_real_app_capture \
+            --app "$DEMO_APP" \
+            --out "/tmp/flowminute-actual-$DEMO_APP"
+          python -B -m autopilot.branch1_real_app_capture \
+            --app "$DEMO_APP" --verify \
+            --out "/tmp/flowminute-actual-$DEMO_APP"
+      - name: Produce source-timed Kokoro narration, ASS captions and honest story edit
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_narrated_real_app_short \
+            --app "$DEMO_APP" \
+            --source "/tmp/flowminute-actual-$DEMO_APP" \
+            --out "/tmp/flowminute-b1-narrated-$DEMO_APP" \
+            --model /tmp/flowminute-b1-pinned-original-speech/kokoro-v1.0.int8.onnx \
+            --voices /tmp/flowminute-b1-pinned-original-speech/voices-v1.0.bin
+      - name: Independently verify exact final media hashes, one AV pair and full decode
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_narrated_real_app_short \
+            --app "$DEMO_APP" --verify \
+            --source "/tmp/flowminute-actual-$DEMO_APP" \
+            --out "/tmp/flowminute-b1-narrated-$DEMO_APP"
+          ffmpeg -nostdin -hide_banner -loglevel error -xerror \
+            -i "/tmp/flowminute-b1-narrated-$DEMO_APP/NARRATED_REAL_APP_REVIEW_ONLY.mp4" \
+            -f null -
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          app=os.environ["DEMO_APP"]
+          root=Path(f"/tmp/flowminute-b1-narrated-{app}")
+          r=json.loads((root/"NARRATED_REAL_APP_PROVENANCE_NOT_RELEASE_APPROVED.json").read_text())
+          assert r["owner_final_watch"] is False
+          assert r["release_signed"] is False
+          assert r["youtube_uploads"] == 0 and r["youtube_schedules"] == 0
+          assert r["postencoded_audio_verified"] is True
+          assert r["real_recording_pixel_source"] is True
+          print("FINAL_REAL_APP_NARRATED_H264_AAC_HASH_VERIFIED_UNAPPROVED")
+          PY
+      - name: Save short-lived exact media for HUMAN creative listening and watching
+        uses: actions/upload-artifact@v4
+        with:
+          name: b1-NARRATED-REAL-${{ matrix.app }}-HUMAN-REVIEW-ONLY-${{ github.run_id }}
+          path: |
+            /tmp/flowminute-b1-narrated-${{ matrix.app }}/NARRATED_REAL_APP_REVIEW_ONLY.mp4
+            /tmp/flowminute-b1-narrated-${{ matrix.app }}/ORIGINAL_SOURCE_TIMED_CAPTIONS.srt
+            /tmp/flowminute-b1-narrated-${{ matrix.app }}/NARRATED_REAL_APP_PROVENANCE_NOT_RELEASE_APPROVED.json
+            /tmp/flowminute-actual-${{ matrix.app }}/REAL_APP_SOURCE_HASH_BOUND_UNAPPROVED.json
+            /tmp/flowminute-actual-${{ matrix.app }}/application_observation.json
+          retention-days: 3
+          if-no-files-found: error
+          compression-level: 2
+      - name: Destroy temporary model, source and render data
+        if: always()
+        run: |
+          rm -rf /tmp/flowminute-b1-pinned-original-speech \
+            "/tmp/flowminute-b1-narrated-$DEMO_APP" \
+            "/tmp/flowminute-actual-$DEMO_APP"
+          echo "REVIEW ONLY — NO PERSONAL DATA — NO YOUTUBE UPLOAD OR SCHEDULE — NO PURCHASE"
