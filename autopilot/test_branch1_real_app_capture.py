@@ -104,13 +104,30 @@ class RealAppAdapterTests(unittest.TestCase):
             self.assertEqual(len(set(chapter)),6)
             for item in chapter:
                 self.assertGreaterEqual(len(item),8)
-                self.assertLessEqual(len(item),30)
+                self.assertLessEqual(len(item),18)
                 self.assertNotIn("MICROSOFT EXCEL",item)
                 self.assertNotIn("SUBSCRIBE",item)
-        self.assertIn("B2 FALSE WITHOUT TRIM",FORMULA_WALKTHROUGH[4])
-        self.assertIn("B3 TRUE WITH TRIM",FORMULA_WALKTHROUGH[4])
-        self.assertIn("MEASURE LENGTH A2",FORMULA_WALKTHROUGH[2])
-        self.assertIn("TRIM VALUE A3",FORMULA_WALKTHROUGH[3])
+        self.assertIn("B2 SHOWS FALSE",FORMULA_WALKTHROUGH[4])
+        self.assertIn("B3 SHOWS TRUE",FORMULA_WALKTHROUGH[4])
+        self.assertIn("LEN OF A2",FORMULA_WALKTHROUGH[2])
+        self.assertIn("TRIM INPUT A3",FORMULA_WALKTHROUGH[3])
+
+    def test_calc_actual_sheet_labels_fit_without_hiding_worksheet_evidence(self):
+        # A real-source readability regression check; screenshots still
+        # require an independent phone-size human/vision review.
+        import re
+        source=(Path(__file__).parent/"branch1_real_app_capture.py").read_text("utf8")
+        labels=re.findall(r'lambda: cell\\("A1","([^"]+)"\\)',source)
+        self.assertEqual(len(labels),4)
+        self.assertTrue(all(len(label)<=18 for label in labels))
+        self.assertIn('sheet.getCellRangeByName("A1").String="RESULT: TRUE"',source)
+        self.assertIn('sheet.Columns.getByIndex(0).Width=4400',source)
+        self.assertIn('sheet.Columns.getByIndex(1).Width=4200',source)
+        for outdated in ("RESULT: TWO TEXT LABELS NOW MATCH",
+                         "BEFORE: ALMOST IDENTICAL TEXT",
+                         "CAUSE: EXTRA SPACES CHANGE MATCH",
+                         "AFTER: REAL FORMULA RETURNS TRUE"):
+            self.assertNotIn(outdated,source)
 
     def test_real_five_chapter_storyboard_requires_running_recorder(self):
         with tempfile.TemporaryDirectory() as tmp:
