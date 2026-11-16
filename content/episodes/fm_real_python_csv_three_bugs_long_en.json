@@ -202,7 +202,6 @@
   "actual_subtitle_cue_count": 44,
   "exact_original_mp4_sha256": "1a20dedf886f3228445ed718e1f2e93a7e38cd74abf8aeb211540e32b6683f42",
   "exact_original_srt_sha256": "b4b317c8d1d9883294e9ebb32b23c6790a4cdb891be9bbd560fd459baa132a0e",
-  "exact_actual_frame_cover_sha256": "0d9126ca4ada6f04676c2d813361107cfeed52323b644dcfb7c17dec117892f1",
   "reviewed_mp4_duration_seconds": 214.833,
   "source_captured_and_narrated": true,
   "first_party_fictional_invoice_data": true,
