@@ -1,0 +1,222 @@
+{
+  "id": "fm_real_python_csv_three_bugs_long_en",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "renderer": "real_python_terminal_capture_v1",
+  "type": "long",
+  "language": "en",
+  "title": "Why Your CSV Total Is Wrong: 3 Data-Cleaning Bugs in Python",
+  "description": "An 8-row fictional invoice CSV gives the wrong total when repeated invoices and hidden spaces are ignored. Watch actual Python running in a terminal as we inspect duplicate invoice IDs, normalize whitespace, use Decimal for accurate money calculations, save the cleaned CSV, and verify the output. Our fictional example changes the naive $2,656.25 total to $1,430.75 for six unique invoices. Check your own business rules before removing duplicate records; some repeated invoice keys can be legitimate. Original first-party demonstration and synthetic English narration, with no customer data or third-party footage.\n\nPython csv documentation: https://docs.python.org/3/library/csv.html\nPython decimal documentation: https://docs.python.org/3/library/decimal.html\n\n#Python #DataCleaning #FlowMinuteLab",
+  "tags": [
+    "Python CSV cleanup",
+    "Python data cleaning",
+    "Fix CSV duplicate totals",
+    "Python Decimal",
+    "Hidden whitespace CSV",
+    "Duplicate invoice keys",
+    "CSV tutorial",
+    "Data cleaning for beginners",
+    "FlowMinute Lab"
+  ],
+  "source_links": [
+    "https://docs.python.org/3/library/csv.html",
+    "https://docs.python.org/3/library/decimal.html"
+  ],
+  "captions": [
+    {
+      "start": 0,
+      "end": 2.319
+    },
+    {
+      "start": 2.379,
+      "end": 7.721
+    },
+    {
+      "start": 7.781,
+      "end": 10.331
+    },
+    {
+      "start": 10.391,
+      "end": 14.859
+    },
+    {
+      "start": 14.919,
+      "end": 17.97
+    },
+    {
+      "start": 18.18,
+      "end": 22.372
+    },
+    {
+      "start": 22.432,
+      "end": 30.131
+    },
+    {
+      "start": 30.191,
+      "end": 35.1
+    },
+    {
+      "start": 35.31,
+      "end": 37.287
+    },
+    {
+      "start": 37.347,
+      "end": 45.027
+    },
+    {
+      "start": 45.087,
+      "end": 48.895
+    },
+    {
+      "start": 48.955,
+      "end": 52.539
+    },
+    {
+      "start": 52.749,
+      "end": 56.375
+    },
+    {
+      "start": 56.435,
+      "end": 59.68
+    },
+    {
+      "start": 59.74,
+      "end": 66.865
+    },
+    {
+      "start": 66.925,
+      "end": 70.405
+    },
+    {
+      "start": 70.615,
+      "end": 74.689
+    },
+    {
+      "start": 74.749,
+      "end": 80.754
+    },
+    {
+      "start": 80.814,
+      "end": 87.49
+    },
+    {
+      "start": 87.7,
+      "end": 92.521
+    },
+    {
+      "start": 92.581,
+      "end": 97.274
+    },
+    {
+      "start": 97.334,
+      "end": 104.138
+    },
+    {
+      "start": 104.348,
+      "end": 107.922
+    },
+    {
+      "start": 107.982,
+      "end": 112.898
+    },
+    {
+      "start": 112.958,
+      "end": 116.096
+    },
+    {
+      "start": 116.156,
+      "end": 121.643
+    },
+    {
+      "start": 121.853,
+      "end": 127.292
+    },
+    {
+      "start": 127.352,
+      "end": 130.758
+    },
+    {
+      "start": 130.818,
+      "end": 138.476
+    },
+    {
+      "start": 138.536,
+      "end": 139.855
+    },
+    {
+      "start": 140.065,
+      "end": 144.331
+    },
+    {
+      "start": 144.391,
+      "end": 150.854
+    },
+    {
+      "start": 150.914,
+      "end": 158.412
+    },
+    {
+      "start": 158.622,
+      "end": 163.165
+    },
+    {
+      "start": 163.225,
+      "end": 168.195
+    },
+    {
+      "start": 168.255,
+      "end": 173
+    },
+    {
+      "start": 173.06,
+      "end": 175.109
+    },
+    {
+      "start": 175.319,
+      "end": 179.851
+    },
+    {
+      "start": 179.911,
+      "end": 187.879
+    },
+    {
+      "start": 187.939,
+      "end": 193.911
+    },
+    {
+      "start": 194.121,
+      "end": 200.817
+    },
+    {
+      "start": 200.877,
+      "end": 208.258
+    },
+    {
+      "start": 208.318,
+      "end": 211.425
+    },
+    {
+      "start": 211.485,
+      "end": 214.601
+    }
+  ],
+  "actual_subtitle_cue_count": 44,
+  "exact_original_mp4_sha256": "1a20dedf886f3228445ed718e1f2e93a7e38cd74abf8aeb211540e32b6683f42",
+  "exact_original_srt_sha256": "b4b317c8d1d9883294e9ebb32b23c6790a4cdb891be9bbd560fd459baa132a0e",
+  "exact_actual_frame_cover_sha256": "0d9126ca4ada6f04676c2d813361107cfeed52323b644dcfb7c17dec117892f1",
+  "reviewed_mp4_duration_seconds": 214.833,
+  "source_captured_and_narrated": true,
+  "first_party_fictional_invoice_data": true,
+  "raw_row_count": 8,
+  "deduplicated_row_count": 6,
+  "raw_total_usd": "2656.25",
+  "unique_total_usd": "1430.75",
+  "published_before": false,
+  "owner_video_chat_approval_observed": true,
+  "owner_full_voice_captions_rights_facts_release_signed": false,
+  "actual_youtube_upload_id": null,
+  "actual_youtube_publish_at_utc": null,
+  "youtube_uploaded": false,
+  "youtube_scheduled": false,
+  "original_github_preservation_run": 43898583072,
+  "original_github_preservation_artifact_id": 14240127005
+}
