@@ -33,6 +33,12 @@ def need(ok:bool,reason:str):
 def validate(metadata:dict,review:dict)->dict:
     need(type(metadata) is dict and type(review) is dict,
          "MISSING_REAL_RELEASE_METADATA")
+    # The existing publisher scans all string fields for private phone numbers.
+    # One real thumbnail SHA contains 9 consecutive decimal digits, making the
+    # opaque hash look like a phone number. Keep it in the immutable private
+    # artifact's independently verified receipt, not in the public metadata.
+    need("exact_actual_frame_cover_sha256" not in metadata,
+         "THUMBNAIL_SHA_MUST_STAY_IN_VERIFIED_PRIVATE_MEDIA_RECEIPT")
     need(metadata.get("id")==review.get("episode_id")==
          "fm_real_python_csv_three_bugs_long_en"
          and metadata.get("channel_id")==CHANNEL
