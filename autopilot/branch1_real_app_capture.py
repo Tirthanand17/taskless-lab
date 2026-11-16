@@ -316,6 +316,7 @@ def chrome_worker(out):
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.common.action_chains import ActionChains
+    from selenium.common.exceptions import TimeoutException
     options=Options()
     binary=shutil.which("google-chrome") or shutil.which("google-chrome-stable")
     need(binary is not None,"CHROME_STABLE_NOT_INSTALLED")
@@ -453,6 +454,15 @@ def chrome_worker(out):
                 raise RecoveryRefused("UNKNOWN_CHROME_STORY_OPERATION")
 
         visit(notification)
+        # settings-ui exists before the nested notification radio group and
+        # its asynchronously loaded preference are necessarily ready. Wait
+        # for Chrome's actual selected value, not a synthetic/fake setting.
+        try:
+            WebDriverWait(driver,20).until(
+                lambda d: selected_option() in ("ask","block"))
+        except TimeoutException as exc:
+            raise RecoveryRefused(
+                "CHROME_REAL_NOTIFICATION_DEFAULT_NEVER_LOADED") from exc
         need(selected_option() in ("ask","block"),
              "CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE")
         # Show actual blocked payoff first; the final disposable profile
