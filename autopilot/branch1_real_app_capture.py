@@ -327,11 +327,11 @@ def inspect_media(capture):
     streams=data["streams"]
     need(len(streams)==1 and streams[0]["codec_name"]=="h264"
          and streams[0]["width"]==WIDTH and streams[0]["height"]==HEIGHT
-         and 9.5<=float(streams[0]["duration"])<=10.5,
+         and 47.5<=float(streams[0]["duration"])<=48.5,
          "REAL_APP_SOURCE_VIDEO_NOT_EXPECTED_GEOMETRY")
     invoke(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
             "-xerror","-i",str(capture),"-f","null","-"],timeout=50)
-    need(decoded_frame_hash(capture,1.0)!=decoded_frame_hash(capture,7.0),
+    need(decoded_frame_hash(capture,1.0)!=decoded_frame_hash(capture,40.0),
          "SAME_STILL_FRAME_BEFORE_AFTER")
 
 def capture(app,out):
@@ -370,21 +370,40 @@ def capture(app,out):
             env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
         wait_for(out/"stage_before",worker)
         source=out/CAPTURE
-        invoke(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
-                "-f","x11grab","-video_size",f"{WIDTH}x{HEIGHT}",
-                "-framerate","12","-i",f"{display}.0","-t","10",
-                "-an","-c:v","libx264","-threads","2","-preset","ultrafast",
-                "-crf","21","-pix_fmt","yuv420p","-movflags",
-                "+faststart",str(source)],timeout=70)
-        wait_for(out/"stage_after",worker)
+        recorder=subprocess.Popen(
+            ["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
+             "-f","x11grab","-video_size",f"{WIDTH}x{HEIGHT}",
+             "-framerate","12","-i",f"{display}.0","-t","48",
+             "-an","-c:v","libx264","-threads","2","-preset","ultrafast",
+             "-crf","21","-pix_fmt","yuv420p","-movflags",
+             "+faststart",str(source)],
+            stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         try:
-            _,stderr=worker.communicate(timeout=15)
-        except subprocess.TimeoutExpired:
-            worker.kill()
-            worker.communicate(timeout=10)
-            raise RecoveryRefused("APP_WORKER_TIMED_OUT")
-        need(worker.returncode==0,
-             "REAL_APPLICATION_WORKER_FAILED "+stderr[-500:])
+            time.sleep(.75)
+            need(recorder.poll() is None,"SCREEN_RECORDING_QUIT_BEFORE_ACTIONS")
+            (out/"capture_started").write_text(
+                "RECORDING_STARTED_BEFORE_APPLICATION_INTERACTIONS\n","utf8")
+            try:
+                _,stderr=worker.communicate(timeout=78)
+            except subprocess.TimeoutExpired:
+                worker.kill()
+                worker.communicate(timeout=10)
+                raise RecoveryRefused("LONG_REAL_APP_WORKER_TIMED_OUT")
+            need(worker.returncode==0,
+                 "REAL_APPLICATION_WORKER_FAILED "+stderr[-500:])
+            _,error=recorder.communicate(timeout=65)
+            need(recorder.returncode==0,
+                 "LONG_REAL_SCREEN_RECORDING_FAILED "+
+                 error.decode("utf8","replace")[-500:])
+        finally:
+            if recorder.poll() is None:
+                recorder.terminate()
+                recorder.communicate(timeout=10)
+        for chapter in range(5):
+            need((out/f"real_stage_{chapter}").is_file(),
+                 "Genuine_app_stage_not_completed_"+str(chapter))
+        need((out/"stage_after").is_file(),
+             "MISSING_REAL_APPLICATION_RESULT")
     finally:
         if worker and worker.poll() is None:
             worker.kill()
@@ -413,7 +432,7 @@ def capture(app,out):
     inspect_media(source)
     preview=out/PREVIEW
     graph=(
-        "[0:v]trim=start=7:duration=1.5,setpts=PTS-STARTPTS,"
+        "[0:v]trim=start=40:duration=1.5,setpts=PTS-STARTPTS,"
         "scale=1080:1920:flags=lanczos,format=yuv420p[hook];"
         "[0:v]trim=start=0:duration=9.5,setpts=PTS-STARTPTS,"
         "scale=1080:1920:flags=lanczos,format=yuv420p[action];"
