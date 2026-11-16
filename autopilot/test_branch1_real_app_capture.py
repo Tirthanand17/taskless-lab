@@ -46,6 +46,8 @@ def demo_observation(app):
         "real_settings_ui_element": True,
         "permissions_changed": False,
         "personal_profile_used": False,
+        "temporary_profile_default_toggled": True,
+        "demo_notification_default_final": "block",
         "youtube_uploads": 0,
     }
 
@@ -129,25 +131,28 @@ class RealAppAdapterTests(unittest.TestCase):
                          "AFTER: REAL FORMULA RETURNS TRUE"):
             self.assertNotIn(outdated,source)
 
-    def test_chrome_single_forward_route_replaces_thirty_page_flips(self):
+    def test_chrome_single_route_and_real_disposable_radio_changes(self):
         chapters=CHROME_GUIDED_OPERATIONS
         self.assertEqual(len(chapters),5)
-        for chapter in chapters:
-            self.assertEqual(len(chapter),6)
-            self.assertTrue(all(action in (
-                "home","privacy","site","notifications",
-                "down","up","top") for action in chapter))
-        routes=[operation for chapter in chapters
-                for operation in chapter
-                if operation in ("home","privacy","site","notifications")]
-        self.assertEqual(routes,["home","privacy","site","notifications"])
-        self.assertTrue(all(operation not in (
-            "home","privacy","site") for operation in chapters[4]))
-        self.assertGreaterEqual(sum(
-            operation in ("down","up","top")
-            for chapter in chapters for operation in chapter),20)
+        self.assertTrue(all(len(chapter)==6 for chapter in chapters))
+        allowed={"home","privacy","site","notifications",
+                 "down","up","top","inspect","ask","block","focus_block"}
+        self.assertTrue(all(op in allowed for chapter in chapters
+                            for op in chapter))
+        route=[op for chapter in chapters for op in chapter
+               if op in ("home","privacy","site","notifications")]
+        self.assertEqual(route,["home","privacy","site","notifications"])
+        selected=[op for chapter in chapters for op in chapter
+                  if op in ("ask","block")]
+        self.assertEqual(selected,["ask","block","ask","block"])
         self.assertNotIn("toggle",str(chapters).lower())
-        self.assertNotIn("http:",str(chapters).lower())
+        self.assertNotIn("https:",str(chapters).lower())
+        observation=demo_observation("chrome")
+        self.assertTrue(observation["temporary_profile_default_toggled"])
+        self.assertFalse(observation["personal_profile_used"])
+        self.assertFalse(observation["permissions_changed"])
+        self.assertEqual(observation["demo_notification_default_final"],"block")
+
 
     def test_real_five_chapter_storyboard_requires_running_recorder(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -285,6 +290,8 @@ class RealAppAdapterTests(unittest.TestCase):
                          "after_url":"https://fake-settings.invalid"},
                         {**demo_observation(app),"permissions_changed":True},
                         {**demo_observation(app),"personal_profile_used":True},
+                        {**demo_observation(app),"temporary_profile_default_toggled":False},
+                        {**demo_observation(app),"demo_notification_default_final":"ask"},
                     ]
                 for obs in observations:
                     with self.subTest(app=app,observation=obs):
