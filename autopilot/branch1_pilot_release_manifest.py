@@ -108,8 +108,8 @@ def validate(data:dict)->dict:
              and 30<=len(row["pinned_comment_draft"])<=300
              and type(row["mobile_cover_brief"]) is str
              and len(row["mobile_cover_brief"])>=50
-             and "real" in row["mobile_cover_brief"].lower()
-             or "genuine" in row["mobile_cover_brief"].lower(),
+             and ("real" in row["mobile_cover_brief"].lower()
+                  or "genuine" in row["mobile_cover_brief"].lower()),
              "MISSING_FIRST_PARTY_MOBILE_PRESENTATION")
         flags=row["approval"]
         need(type(flags) is dict and set(flags)==APPROVAL_FIELDS
