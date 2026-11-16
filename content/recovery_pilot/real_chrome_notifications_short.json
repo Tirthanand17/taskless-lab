@@ -3,7 +3,7 @@
   "episode_id": "fm_pilot_chrome_notifications_short_en",
   "format": "short",
   "series": "privacy_browser",
-  "duration_seconds": 11,
+  "duration_seconds": 22,
   "title": "Block New Chrome Notification Requests | Real Settings Demo",
   "viewer_problem": "Chrome websites can interrupt browsing with repeated notification permission requests.",
   "viewer_promise": "Show genuine Chrome Settings and click the real Block default option in an isolated disposable demo profile, leaving real user settings untouched.",
@@ -20,39 +20,39 @@
     {
       "role": "demonstration",
       "start_seconds": 1.5,
-      "end_seconds": 2.9,
+      "end_seconds": 3,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Show the original live application and the user's problem.",
       "action_or_result": "Chrome's real top-level chrome://settings page is shown in a fresh browser profile."
     },
     {
       "role": "cause",
-      "start_seconds": 2.9,
-      "end_seconds": 4,
+      "start_seconds": 3,
+      "end_seconds": 6,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Expose why the original result is misleading or hidden.",
       "action_or_result": "Permission details are nested and not visible on the main Settings screen."
     },
     {
       "role": "fix",
-      "start_seconds": 4,
-      "end_seconds": 6.3,
+      "start_seconds": 6,
+      "end_seconds": 11,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Perform the real operation in the software.",
       "action_or_result": "Use Selenium's real browser click to change the temporary-profile default notification permission option to Block."
     },
     {
       "role": "payoff",
-      "start_seconds": 6.3,
-      "end_seconds": 8.8,
+      "start_seconds": 11,
+      "end_seconds": 17,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Verify the resulting application state without simulated images.",
       "action_or_result": "Read back Chrome's actual selected Block option, rather than declaring success from a mock screen."
     },
     {
       "role": "takeaway",
-      "start_seconds": 8.8,
-      "end_seconds": 11,
+      "start_seconds": 17,
+      "end_seconds": 22,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Leave a concrete, qualified takeaway visible on the actual screen.",
       "action_or_result": "Explain that only the throwaway demo profile changes, that the user should choose the right setting for their own browser, and that no account data is accessed."
