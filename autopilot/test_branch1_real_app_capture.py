@@ -140,6 +140,35 @@ class RealAppAdapterTests(unittest.TestCase):
             for n in range(5):
                 self.assertTrue((root/f"real_stage_{n}").is_file())
 
+    def test_genuine_app_steps_extend_across_entire_visible_chapter(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            (root/"capture_started").write_text("RECORDING_IS_RUNNING","utf8")
+            clock=[0.0]
+            events=[]
+            def monotonic():
+                return clock[0]
+            def sleep(seconds):
+                clock[0]+=max(0.0,float(seconds))
+            chapters=[
+                [(lambda chapter=ch,step=step:
+                    events.append((chapter,step,clock[0])))
+                 for step in range(6)]
+                for ch in range(5)
+            ]
+            with patch("autopilot.branch1_real_app_capture.time.monotonic",monotonic):
+                with patch("autopilot.branch1_real_app_capture.time.sleep",sleep):
+                    perform_real_storyboard(root,chapters)
+            self.assertEqual(len(events),30)
+            for chapter in range(5):
+                real=[event[2] for event in events if event[0]==chapter]
+                self.assertGreaterEqual(real[-1]-real[0],7.4)
+                self.assertLessEqual(real[-1]-real[0],7.6)
+                self.assertLess(real[-1],chapter*9.0+8.5)
+                for prev,nxt in zip(real,real[1:]):
+                    self.assertAlmostEqual(nxt-prev,1.5,delta=.15)
+            self.assertGreaterEqual(clock[0],46)
+
     def test_main_only_never_auto_run_with_privileged_or_laptop_context(self):
         for app in APPS:
             validate_main_only(good_env(),app)
