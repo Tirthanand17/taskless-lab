@@ -125,6 +125,7 @@ jobs:
             /usr/bin/python3 -c 'import uno; print("REAL_UNO_AVAILABLE")'
           fi
           ffmpeg -hide_banner -filters | grep -E ' (ass|drawtext|tpad) '
+          ffmpeg -hide_banner -filters | grep -E ' alimiter '
       - name: Fetch public pinned Kokoro voice assets and verify SHA-256
         run: |
           set -euo pipefail
