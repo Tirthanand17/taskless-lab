@@ -205,7 +205,35 @@ def calc_worker(out):
                 lambda: select("B3"),
             ],
         ]
-        perform_real_storyboard(out,actions)
+        # Each original screen action includes a focused, meaningful Calc
+        # selection/highlight. The previous recording changed tiny cells
+        # while 75.5% of the app area stayed visually unchanged; a genuine
+        # spreadsheet must visibly direct attention to current evidence.
+        focus_areas=(
+            ("A2:C3","A2:B3","B3:C4","A2:C3","B3:C4","A2:C4"),
+            ("A2:C3","B2:C4","A2:C4","A2:A3","A2:C3","A2:C4"),
+            ("A2:C4","B2:C5","A2:C6","C5:C6","A2:C6","A2:C4"),
+            ("A2:C4","B3:C5","B3:C5","A2:C4","A2:C5","B3:C5"),
+            ("A2:C4","B2:C4","A2:C4","A2:C5","A2:C4","B3:C5"),
+        )
+        chapter_accents=(0xC4E8D7,0xF7DDC8,0xF8D2CB,0xD6E8F9,0xB8E9CB)
+        def focus(chapter,step,original):
+            original()
+            # Real workbook cell background; not a screen overlay or
+            # invented depiction of Calc. Palette is deliberately soft.
+            sheet.getCellRangeByName("A2:C13").CellBackColor=(
+                0xEDF5FD if step%2==0 else 0xFFF9EF
+            )
+            area=focus_areas[chapter][step]
+            sheet.getCellRangeByName(area).CellBackColor=chapter_accents[chapter]
+            controller.select(sheet.getCellRangeByName(area))
+        guided=[
+            [(lambda ch=chapter,st=step,original=operation:
+               focus(ch,st,original))
+             for step,operation in enumerate(row)]
+            for chapter,row in enumerate(actions)
+        ]
+        perform_real_storyboard(out,guided)
         doc.calculateAll()
         need(sheet.getCellRangeByName("B2").Value==0
              and sheet.getCellRangeByName("B3").Value==1,
