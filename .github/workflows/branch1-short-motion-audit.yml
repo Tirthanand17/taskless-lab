@@ -1,0 +1,146 @@
+name: FlowMinute B1 Real Shorts Pixel Motion Review (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_short_motion_audit.py"
+      - "autopilot/test_branch1_short_motion_audit.py"
+      - ".github/workflows/branch1-short-motion-audit.yml"
+      - "docs/BRANCH1_REAL_SHORTS_MOTION_SCREEN.md"
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Successful main narrated real-app workflow run; no new video creation"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: b1-motion-check-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  synthetic_source_only_safety_checks:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile and unit-test screen activity against untrusted or static frames
+        run: |
+          set -euo pipefail
+          python -B -m py_compile autopilot/branch1_short_motion_audit.py \
+            autopilot/test_branch1_short_motion_audit.py
+          python -B -m unittest -v \
+            autopilot.test_branch1_short_motion_audit \
+            autopilot.test_branch1_narrated_real_app_short
+      - name: Assert read-only no-publish behavior
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          from pathlib import Path
+          code=Path("autopilot/branch1_short_motion_audit.py").read_text()
+          for forbidden in ("youtube.videos().insert", "studio.youtube.com",
+                            "googleapiclient","status.publishAt","gh run download"):
+              assert forbidden not in code
+          print("PIXEL_AUDIT_OFFLINE_NO_UPLOAD_NO_OAUTH")
+          PY
+
+  inspect_exact_successful_narrated_artifacts:
+    if: >-
+      github.repository == 'Tirthanand17/taskless-lab' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main'
+    needs: [synthetic_source_only_safety_checks]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [calc, chrome]
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      GH_TOKEN: ${{ github.token }}
+      RUN_ID: ${{ inputs.source_run_id }}
+      REVIEW_APP: ${{ matrix.app }}
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Require trusted exact main-branch source successful workflow
+        run: |
+          set -euo pipefail
+          [[ "$RUN_ID" =~ ^[0-9]{7,14}$ ]]
+          gh run view "$RUN_ID" -R Tirthanand17/taskless-lab \
+            --json conclusion,event,headBranch,workflowName \
+            > /tmp/b1-motion-trusted-run.json
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("/tmp/b1-motion-trusted-run.json").read_text())
+          assert r["conclusion"]=="success"
+          assert r["event"]=="workflow_dispatch"
+          assert r["headBranch"]=="main"
+          assert r["workflowName"]=="FlowMinute B1 Narrated Real-App Shorts Review (NO YOUTUBE)"
+          print("EXACT_MAIN_ONLY_NARRATED_SOURCE_RUN_VERIFIED")
+          PY
+      - name: Download only the narrowly named owner-unapproved video artifact
+        run: |
+          set -euo pipefail
+          mkdir -p "/tmp/b1-motion-source-$REVIEW_APP"
+          gh run download "$RUN_ID" -R Tirthanand17/taskless-lab \
+            -n "b1-NARRATED-REAL-$REVIEW_APP-HUMAN-REVIEW-ONLY-$RUN_ID" \
+            -D "/tmp/b1-motion-source-$REVIEW_APP"
+          test -s "/tmp/b1-motion-source-$REVIEW_APP/NARRATED_REAL_APP_REVIEW_ONLY.mp4"
+          test -s "/tmp/b1-motion-source-$REVIEW_APP/NARRATED_REAL_APP_PROVENANCE_NOT_RELEASE_APPROVED.json"
+      - name: Screen for frozen app pixels and extract real contact frames
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_short_motion_audit \
+            --mp4 "/tmp/b1-motion-source-$REVIEW_APP/NARRATED_REAL_APP_REVIEW_ONLY.mp4" \
+            --receipt "/tmp/b1-motion-source-$REVIEW_APP/NARRATED_REAL_APP_PROVENANCE_NOT_RELEASE_APPROVED.json" \
+            --out "/tmp/b1-motion-result-$REVIEW_APP"
+      - name: Upload critical evidence even when stillness requires creative reshoot
+        uses: actions/upload-artifact@v4
+        with:
+          name: b1-PIXEL-ACTIVITY-${{ matrix.app }}-NO-RELEASE-${{ github.run_id }}
+          path: |
+            /tmp/b1-motion-result-${{ matrix.app }}/REAL_VISUAL_CREATIVE_REVIEW.json
+            /tmp/b1-motion-result-${{ matrix.app }}/REAL_MOBILE_REVIEW_*.png
+          if-no-files-found: error
+          retention-days: 3
+      - name: Make excessive frozen footage an actual creative QA failure
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(f"/tmp/b1-motion-result-{os.environ['REVIEW_APP']}/REAL_VISUAL_CREATIVE_REVIEW.json")
+          r=json.loads(p.read_text())
+          assert r["youtube_uploads"]==0 and r["youtube_schedules"]==0
+          assert r["owner_review_complete"] is False
+          if r["visual_screening"]["high_risk_static_pacing"]:
+              print("CREATIVE_RESHOOT_NEEDED:",",".join(r["visual_screening"]["reasons"]))
+              raise SystemExit(1)
+          print("PIXEL_MOTION_GATE_PASSED_HUMAN_WATCH_STILL_REQUIRED")
+          PY
+      - name: Delete all reviewed media from ephemeral runner
+        if: always()
+        run: |
+          rm -rf "/tmp/b1-motion-source-$REVIEW_APP" "/tmp/b1-motion-result-$REVIEW_APP" \
+            /tmp/b1-motion-trusted-run.json
+          echo "NO NEW VIDEOS, NO UPLOADS, NO SCHEDULES, NO STORED USER DATA"
