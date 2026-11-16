@@ -171,12 +171,12 @@ def calc_worker(out):
         sheet.getCellRangeByName("B2").Formula="=A2=A3"
         sheet.getCellRangeByName("B3").Formula="=TRIM(A2)=TRIM(A3)"
         sheet.getCellRangeByName("D1").String="FICTIONAL DATA ONLY"
-        sheet.Columns.getByIndex(0).Width=4400
-        sheet.Columns.getByIndex(1).Width=4200
+        sheet.Columns.getByIndex(0).Width=3900
+        sheet.Columns.getByIndex(1).Width=3700
         sheet.Columns.getByIndex(2).Width=4000
         sheet.Columns.getByIndex(3).Width=6100
         controller=doc.getCurrentController()
-        controller.ZoomValue=185
+        controller.ZoomValue=155
         controller.select(sheet.getCellRangeByName("B3"))
         need(sheet.getCellRangeByName("B2").Value==0,
              "CALC_BEFORE_NOT_FALSE")
@@ -338,9 +338,9 @@ def chrome_worker(out):
     need(count==12 and len(rows)==780,"BAD_DUMMY_LOG_FIXTURE")
     html='''<!doctype html><html lang="en"><meta charset="utf-8">
     <title>Original fictional browser log demo</title>
-    <style>body{margin:12px;background:#0a192a;color:#f2f5fa;font:21px/1.48 monospace;}
+    <style>body{margin:12px;background:#0a192a;color:#f2f5fa;font:28px/1.42 monospace;}
     header{padding:16px 9px;background:#183a52;color:#fff;font:20px/1.5 sans-serif;}
-    .line{padding:7px 6px;border-bottom:1px solid #263a4d;white-space:nowrap;}
+    .line{padding:9px 7px;border-bottom:1px solid #263a4d;white-space:nowrap;}
     .issue{background:#623029;color:#fff;font-weight:700;}</style>
     <header>FICTIONAL LOG / 780 ROWS<br>Local file. No real account data.</header>
     <main>'''+''.join(rows)+'</main></html>'
