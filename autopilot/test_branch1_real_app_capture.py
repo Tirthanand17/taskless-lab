@@ -170,6 +170,16 @@ class RealAppAdapterTests(unittest.TestCase):
         self.assertIn('"48" if app=="calc" else "26"',source)
         self.assertIn('for chapter in range(5 if app=="calc" else 3)',source)
         self.assertIn("CHROME_ORIGINAL_LOG_CONTENT_NOT_VERIFIED",source)
+        self.assertIn("NATIVE_X11_KEYBOARD_TOOL_MISSING",source)
+        self.assertIn('os.environ.get("DISPLAY")==":94"',source)
+        self.assertIn('"xdotool","windowfocus","--sync"',source)
+        self.assertIn('"xdotool","key","--clearmodifiers"',source)
+        self.assertIn('"xdotool","type","--clearmodifiers"',source)
+        self.assertNotIn('ActionChains(driver).key_down(Keys.CONTROL).send_keys("f")',source)
+        for workflow in ("branch1-real-calc-chrome-demo-qa.yml",
+                         "branch1-narrated-real-app-review.yml"):
+            text=(Path(__file__).parent.parent/".github"/"workflows"/workflow).read_text("utf8")
+            self.assertIn("xvfb ffmpeg xdotool fonts-dejavu-core",text)
         self.assertIn("REAL_CHROME_FIND_OBSERVATION_NOT_PROVED",source)
         self.assertNotIn("CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE",source)
         self.assertNotIn("selenium_chrome_settings_actual",source)

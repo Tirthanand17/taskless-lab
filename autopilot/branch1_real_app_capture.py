@@ -347,6 +347,10 @@ def chrome_worker(out):
     fixture=out/"ORIGINAL_DUMMY_FIND_LOG.html"
     fixture.write_text(html,encoding="utf8")
     need(fixture.stat().st_size>30000,"DUMMY_BROWSER_LOG_NOT_CREATED")
+    need(shutil.which("xdotool") is not None,
+         "NATIVE_X11_KEYBOARD_TOOL_MISSING")
+    need(os.environ.get("DISPLAY")==":94",
+         "REAL_BROWSER_FIND_REQUIRES_ISOLATED_XVFB_DISPLAY")
     driver=webdriver.Chrome(options=options)
     actions_done=[]
     positions=[]
@@ -363,20 +367,43 @@ def chrome_worker(out):
         need(driver.execute_script(
             "return document.querySelectorAll('.issue').length")==12,
             "CHROME_DUMMY_ERROR_LINES_NOT_GENUINE")
+        # WebDriver key events often land in the web document rather than
+        # Chrome's own toolbar (observed main run #43850614421). Focus the
+        # actual X11 Chrome window and send native XTest keystrokes.
+        found=subprocess.run(
+            ["xdotool","search","--onlyvisible","--name",
+             "Original fictional browser log demo"],
+            capture_output=True,text=True,timeout=8)
+        need(found.returncode==0 and found.stdout.strip(),
+             "CHROME_REAL_BROWSER_WINDOW_NOT_FOUND")
+        chrome_window=found.stdout.strip().splitlines()[-1].strip()
+        focused=subprocess.run(
+            ["xdotool","windowfocus","--sync",chrome_window],
+            capture_output=True,text=True,timeout=8)
+        need(focused.returncode==0,
+             "CHROME_REAL_BROWSER_WINDOW_NOT_FOCUSABLE")
+        def xkey(key):
+            result=subprocess.run(
+                ["xdotool","key","--clearmodifiers",key],
+                capture_output=True,text=True,timeout=8)
+            need(result.returncode==0,
+                 "CHROME_NATIVE_FIND_KEY_EVENT_FAILED")
         def position():
             return int(driver.execute_script("return Math.round(window.scrollY)"))
         def act(command):
             if command=="open_find":
-                ActionChains(driver).key_down(Keys.CONTROL).send_keys("f").key_up(
-                    Keys.CONTROL).send_keys("ERROR").perform()
+                xkey("ctrl+f")
+                typed=subprocess.run(
+                    ["xdotool","type","--clearmodifiers","--delay","55","ERROR"],
+                    capture_output=True,text=True,timeout=8)
+                need(typed.returncode==0,
+                     "CHROME_NATIVE_FIND_INPUT_FAILED")
             elif command=="find_next":
-                ActionChains(driver).key_down(Keys.CONTROL).send_keys("g").key_up(
-                    Keys.CONTROL).perform()
+                xkey("ctrl+g")
             elif command=="close_find":
-                ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+                xkey("Escape")
             elif command=="home":
-                ActionChains(driver).key_down(Keys.CONTROL).send_keys(
-                    Keys.HOME).key_up(Keys.CONTROL).perform()
+                xkey("ctrl+Home")
             elif command=="scroll_down":
                 # Genuine scroll in a long log demonstrates the manual
                 # alternative, not fabricated motion or page-flip loops.
