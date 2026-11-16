@@ -12,7 +12,9 @@ from autopilot.branch1_narrated_real_app_short import STORIES
 class RealActionCoverageTests(unittest.TestCase):
     def test_existing_ten_second_source_is_unfit_for_real_voice(self):
         for app in ("calc","chrome"):
-            report=requirement_plan(STORIES[app]["source_windows"],
+            historical_ten_second_windows=(
+                (7.2,2.0),(.1,1.7),(1.25,2.0),(2.0,2.3),(6.0,3.5))
+            report=requirement_plan(historical_ten_second_windows,
                                     [6.,5.,5.,5.,6.])
             self.assertFalse(report["internal_screen_coverage_pass"])
             self.assertGreater(report["predicted_frozen_fraction"],.45)
@@ -21,8 +23,12 @@ class RealActionCoverageTests(unittest.TestCase):
             self.assertEqual(report["youtube_schedules"],0)
             with self.assertRaisesRegex(RealActionCoverageRefused,
                                         "NO_PROLONGED_STATIC_GUI"):
-                require_coverage(STORIES[app]["source_windows"],
+                require_coverage(historical_ten_second_windows,
                                  [6.,5.,5.,5.,6.])
+            new_report=require_coverage(
+                STORIES[app]["source_windows"],[6.,5.,5.,5.,6.])
+            self.assertTrue(new_report["internal_screen_coverage_pass"])
+            self.assertEqual(new_report["necessary_frozen_seconds"],0)
 
     def test_real_extended_source_with_synchronized_voice_can_pass(self):
         windows=((0,5.5),(5.5,5.0),(10.5,5.0),(15.5,5.0),(20.5,5.5))

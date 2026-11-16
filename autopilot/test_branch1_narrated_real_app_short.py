@@ -36,7 +36,7 @@ class NarratedRealAppTests(unittest.TestCase):
             for label,bad in (
                 ("unsupported voice",{"voice":"unlicensed_voice"}),
                 ("fake intro",{"chapters":(("FAKE <LOGIN>","A"*90),)+STORIES[app]["chapters"][1:]}),
-                ("obscene long shot",{"source_windows":((9.0,2.0),)+STORIES[app]["source_windows"][1:]}),
+                ("obscene long shot",{"source_windows":((49.0,2.0),)+STORIES[app]["source_windows"][1:]}),
                 ("short title",{"chapters":(("X","A"*100),)+STORIES[app]["chapters"][1:]}),
                 ("massive phrase",{"chapters":STORIES[app]["chapters"][:2]+
                     (("FAKE STORY", "An enormously long invented sentence " * 14),)+
@@ -54,18 +54,15 @@ class NarratedRealAppTests(unittest.TestCase):
             ass.write_text("[Script Info]\nScriptType: v4.00+\n","utf8")
             from autopilot.branch1_real_action_coverage_gate import RealActionCoverageRefused
             for app in APPS:
-                # The existing authentic *ten-second* source is proven too
-                # static; video_graph MUST refuse it, rather than silently
-                # produce another technically valid frozen Short.
-                with self.assertRaises(RealActionCoverageRefused):
-                    video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
-                # Prove that a FUTURE 5-chapter, genuinely long source
-                # timeline can still construct the edit graph.
+                # The *historical* 10-second footage is refused and the
+                # new source windows claim only genuine 48s app activity.
                 with patch.dict(STORIES[app],{
-                    "source_windows":((0.,5.5),(5.5,5.),(10.5,5.),
-                                      (15.5,5.),(20.5,5.5))
+                    "source_windows":((7.2,2.0),(.1,1.7),(1.25,2.0),
+                                      (2.0,2.3),(6.0,3.5))
                 }):
-                    graph=video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
+                    with self.assertRaises(RealActionCoverageRefused):
+                        video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
+                graph=video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
                 self.assertIn("[0:v]split=5[s0][s1][s2][s3][s4]",graph)
                 self.assertIn("[v0][v1][v2][v3][v4]concat=n=5",graph)
                 self.assertIn("[concat]ass=",graph)
