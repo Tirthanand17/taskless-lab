@@ -23,8 +23,8 @@ PLAN_DIR = ROOT/"content/recovery_pilot"
 APPS = {
     "calc": ("LibreOffice Calc", "fm_pilot_calc_trim_short_en",
              "real_calc_trim_short.json", "uno_calc_actual"),
-    "chrome": ("Chromium browser", "fm_pilot_chrome_notifications_short_en",
-               "real_chrome_notifications_short.json", "selenium_chrome_settings_actual"),
+    "chrome": ("Chromium browser", "fm_pilot_chrome_log_find_short_en",
+               "real_chrome_log_find_short.json", "selenium_chrome_find_real_local_log"),
 }
 STATUS = "REAL_FIRST_PARTY_APP_REVIEW_ONLY_NO_RELEASE"
 RECEIPT = "REAL_APP_SOURCE_HASH_BOUND_UNAPPROVED.json"
@@ -46,17 +46,15 @@ FORMULA_WALKTHROUGH=(
              "CHECK BOTH","SELECT B3","RESULT VERIFIED"),
         )
 
-# Deliberate, one-way first-party Chrome settings journey. Each row is
-# six real browser operations across one nine-second recording chapter.
-# No permission toggle, third-party site or alternating page loops.
-# Only three viewer-meaningful chapters: proof/route, site setting, real result.
-# No final nine-second still-screen chapter or looping settings navigation.
+# A genuine Chrome Find-in-page exercise on a generated fictional long log.
+# The first view is a native browser Find result; next-match jumps and the
+# manual-scroll comparison are pedagogical, not fake app UI. The superseded
+# notification-settings pilot remains quarantined in the project record.
 CHROME_GUIDED_OPERATIONS=(
-    ("focus_block","home","privacy"),
-    ("site","down","notifications"),
-    ("ask","block","focus_block"),
+    ("find_next","find_next","find_next","find_next","close_find","home"),
+    ("scroll_down","scroll_down","scroll_down","scroll_down","scroll_down","scroll_down"),
+    ("open_find","find_next","find_next","find_next","find_next","find_next"),
 )
-
 
 def need(condition, error):
     if not condition:
