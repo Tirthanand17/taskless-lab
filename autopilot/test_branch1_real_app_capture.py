@@ -154,6 +154,16 @@ class RealAppAdapterTests(unittest.TestCase):
         self.assertEqual(observation["demo_notification_default_final"],"block")
 
 
+    def test_chrome_startup_waits_for_real_loaded_default_preference(self):
+        # Source contract only: physical Chrome capture must still pass on
+        # GitHub main before any media is described as verified.
+        source=(Path(__file__).parent/"branch1_real_app_capture.py").read_text("utf8")
+        self.assertIn('WebDriverWait(driver,20).until(',source)
+        self.assertIn('lambda d: selected_option() in ("ask","block")',source)
+        self.assertIn('CHROME_REAL_NOTIFICATION_DEFAULT_NEVER_LOADED',source)
+        self.assertIn('CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE',source)
+        self.assertNotIn('selected_option() or "ask"',source)
+
     def test_real_five_chapter_storyboard_requires_running_recorder(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
