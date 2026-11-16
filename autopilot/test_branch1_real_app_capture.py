@@ -4,6 +4,8 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -12,7 +14,7 @@ from unittest.mock import patch
 
 from autopilot.branch1_real_app_capture import (
     APPS, STATUS, CAPTURE, PREVIEW, RECEIPT, plan,
-    validate_main_only, verify_receipt, perform_real_storyboard,
+    validate_main_only, verify_receipt, perform_real_storyboard, wait_for,
     FORMULA_WALKTHROUGH, CHROME_GUIDED_OPERATIONS,
 )
 from autopilot.branch1_recovery import RecoveryRefused, validate_creative
@@ -181,6 +183,26 @@ class RealAppAdapterTests(unittest.TestCase):
             self.assertGreaterEqual(clock[0],76.0)
             for n in range(5):
                 self.assertTrue((root/f"real_stage_{n}").is_file())
+
+    def test_failed_worker_before_ready_surfaces_bounded_actual_error(self):
+        # This is only a local process-failure diagnostic, not simulated
+        # evidence that Chrome or any browser was successfully operated.
+        with tempfile.TemporaryDirectory() as tmp:
+            child = subprocess.Popen(
+                [sys.executable, "-c",
+                 "import sys; print('RecoveryRefused: REAL_CHROME_NOT_READY',"
+                 "file=sys.stderr); sys.exit(2)"],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            with self.assertRaisesRegex(
+                    RecoveryRefused, "REAL_CHROME_NOT_READY"):
+                wait_for(Path(tmp)/"stage_before", child, timeout=3)
+            self.assertEqual(child.returncode, 2)
+
+    def test_chrome_waits_for_actual_notification_pref_not_outer_shell(self):
+        code=(Path(__file__).parent/"branch1_real_app_capture.py").read_text("utf8")
+        self.assertIn("WebDriverWait(driver,20).until(", code)
+        self.assertIn('lambda d: selected_option() in ("ask","block")', code)
+        self.assertIn("CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE",code)
 
     def test_genuine_app_steps_extend_across_entire_visible_chapter(self):
         with tempfile.TemporaryDirectory() as tmp:
