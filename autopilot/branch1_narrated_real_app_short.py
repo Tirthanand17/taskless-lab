@@ -35,7 +35,7 @@ STORIES={
         "voice":"af_heart",
         "chapters":(
             ("PROOF  /  REAL CALC RESULT",
-             "Two spreadsheet labels look identical. But their comparison fails. Watch the fix."),
+             "The direct match is false. Trim makes it true. Watch real Calc show why."),
             ("BEFORE  /  GENUINE WORKBOOK",
              "This real LibreOffice Calc worksheet has a hidden space before the first value."),
             ("WHY  /  DIRECT MATCH FAILS",
@@ -175,8 +175,8 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
                 f"scale=1080:690:flags=bicubic,setsar=1[upper{i}]"
             )
             parts.append(
-                f"[appdetail{i}]crop=420:230:300:50,"
-                f"scale=1080:591:flags=bicubic,setsar=1[lower{i}]"
+                f"[appdetail{i}]crop=440:220:240:75,"
+                f"scale=1080:540:flags=bicubic,setsar=1[lower{i}]"
             )
             parts.append(
                 f"color=c=0x081827:size=1080x1920:rate=24:"
@@ -196,7 +196,7 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
             # No software UI pixels are generated or altered.
             parts.append(
                 base+
-                "crop=600:1067:60:70,"
+                "crop=600:1067:15:70,"
                 "scale=1080:1920:flags=bicubic,setsar=1,"
                 f"format=yuv420p[focused{i}]"
             )
