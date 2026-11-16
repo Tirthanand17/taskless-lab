@@ -34,16 +34,16 @@ WIDTH, HEIGHT = 720, 1280
 
 # Each label corresponds to an actual first-party Calc operation.
 FORMULA_WALKTHROUGH=(
-            ("SHOW VERIFIED MATCH","TRIM MATCH IS TRUE","CHECK CELL B3",
-             "EXTRA SPACES REMOVED","TRUE RESULT HIGHLIGHT","COMPARE BOTH CELLS"),
-            ("INPUT VALUES SIDE BY SIDE","REMOVE CLEAN MATCH","ORIGINAL INPUTS",
-             "A2 BEGINS WITH SPACES","A3 HAS NO EXTRA SPACE","INSPECT BOTH INPUTS"),
-            ("COMPARE ORIGINAL TEXT","DIRECT MATCH IS FALSE","MEASURE LENGTH A2",
-             "MEASURE LENGTH A3","LENGTHS ARE DIFFERENT","SEE SPACING CAUSE"),
-            ("CLEAN BOTH TEXT FIELDS","TRIM VALUE A2","TRIM VALUE A3",
-             "COMPARE TRIMMED TEXT","CHECK NEW FORMULA","MATCH RETURNS TRUE"),
-            ("VERIFY FINAL RESULT","B2 FALSE WITHOUT TRIM","B3 TRUE WITH TRIM",
-             "COMPARE TWO FORMULAS","SELECT FINAL RESULT","END WITH TRUE RESULT"),
+            ("SHOW TRUE RESULT","TRIM MATCH TRUE","CHECK CELL B3",
+             "EXTRA SPACES","TRUE HIGHLIGHT","COMPARE A2 A3"),
+            ("BEFORE INPUTS","CLEAR B3 MATCH","INSPECT A2 A3",
+             "A2 HAS SPACES","A3 IS CLEAN","CHECK VALUES"),
+            ("COMPARE RAW","DIRECT IS FALSE","LEN OF A2",
+             "LEN OF A3","LENGTHS DIFFER","WHY IT FAILS"),
+            ("CLEAN BOTH","TRIM INPUT A2","TRIM INPUT A3",
+             "TRIM BOTH","CHECK FORMULA","MATCH NOW TRUE"),
+            ("FINAL RESULT","B2 SHOWS FALSE","B3 SHOWS TRUE",
+             "CHECK BOTH","SELECT B3","RESULT VERIFIED"),
         )
 
 def need(condition, error):
@@ -145,16 +145,16 @@ def calc_worker(out):
     need(doc is not None,"CALC_DOCUMENT_NOT_ACTUALLY_OPEN")
     try:
         sheet=doc.Sheets.getByIndex(0)
-        sheet.getCellRangeByName("A1").String="RESULT: TWO TEXT LABELS NOW MATCH"
+        sheet.getCellRangeByName("A1").String="RESULT: TRUE"
         sheet.getCellRangeByName("A2").String="  Invoice"
         sheet.getCellRangeByName("A3").String="Invoice"
-        sheet.getCellRangeByName("B1").String="LIVE CALC TEST"
+        sheet.getCellRangeByName("B1").String="COMPARE TEXT"
         sheet.getCellRangeByName("B2").Formula="=A2=A3"
         sheet.getCellRangeByName("B3").Formula="=TRIM(A2)=TRIM(A3)"
         sheet.getCellRangeByName("D1").String="FICTIONAL DATA ONLY"
-        sheet.Columns.getByIndex(0).Width=6700
-        sheet.Columns.getByIndex(1).Width=5800
-        sheet.Columns.getByIndex(2).Width=6400
+        sheet.Columns.getByIndex(0).Width=4400
+        sheet.Columns.getByIndex(1).Width=4200
+        sheet.Columns.getByIndex(2).Width=4000
         sheet.Columns.getByIndex(3).Width=6100
         controller=doc.getCurrentController()
         controller.ZoomValue=185
@@ -182,23 +182,23 @@ def calc_worker(out):
         # highlighting or genuine selection. No simulated UI pixels.
         actions=[
             [
-                lambda: cell("C1","PROOF: CLEANED MATCH = TRUE"),
+                lambda: cell("C1","TRIM RETURNS TRUE"),
                 lambda: color("A2:C3",0xE4F7EE),
                 lambda: select("B3"),
-                lambda: cell("C2","TRIM REMOVES EXTRA SPACES"),
+                lambda: cell("C2","EXTRA SPACES"),
                 lambda: color("B3:C3",0xB7E9CB),
                 lambda: select("A2:B3"),
             ],
             [
-                lambda: cell("A1","BEFORE: ALMOST IDENTICAL TEXT"),
+                lambda: cell("A1","BEFORE: INPUTS"),
                 lambda: formula("B3",""),
                 lambda: color("A2:C3",0xFFF1E6),
                 lambda: select("A2"),
-                lambda: cell("C2","FIRST TEXT STARTS WITH SPACES"),
+                lambda: cell("C2","A2 HAS SPACES"),
                 lambda: select("A3"),
             ],
             [
-                lambda: cell("A1","CAUSE: EXTRA SPACES CHANGE MATCH"),
+                lambda: cell("A1","CAUSE: SPACES"),
                 lambda: formula("B2","=A2=A3"),
                 lambda: formula("C5","=LEN(A2)"),
                 lambda: formula("C6","=LEN(A3)"),
@@ -206,7 +206,7 @@ def calc_worker(out):
                 lambda: color("A2:B2",0xFACCC5),
             ],
             [
-                lambda: cell("A1","FIX: CLEAN BOTH TEXT VALUES"),
+                lambda: cell("A1","FIX: TRIM"),
                 lambda: formula("B3","=TRIM(A2)"),
                 lambda: formula("B4","=TRIM(A3)"),
                 lambda: formula("B3","=TRIM(A2)=TRIM(A3)"),
@@ -214,10 +214,10 @@ def calc_worker(out):
                 lambda: select("B3"),
             ],
             [
-                lambda: cell("A1","AFTER: REAL FORMULA RETURNS TRUE"),
+                lambda: cell("A1","AFTER: TRUE"),
                 lambda: color("B2",0xF7CCCC),
                 lambda: color("B3",0xA7E4C4),
-                lambda: cell("C2","FALSE BEFORE; TRUE AFTER TRIM"),
+                lambda: cell("C2","FALSE TO TRUE"),
                 lambda: select("A2:C3"),
                 lambda: select("B3"),
             ],
