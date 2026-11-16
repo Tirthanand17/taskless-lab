@@ -31,19 +31,18 @@ class NarratedRealAppTests(unittest.TestCase):
                 self.assertEqual(len(ep["scenes"]),5 if app=="calc" else 3)
                 self.assertTrue(ep["real_software_evidence"])
 
-    def test_chrome_words_teach_a_real_forward_settings_route(self):
+    def test_chrome_words_teach_genuine_find_on_fictional_local_data(self):
         chapters=STORIES["chrome"]["chapters"]
         combined=" ".join(spoken for _,spoken in chapters)
-        self.assertIn("Privacy and security",combined)
-        self.assertIn("Site settings",combined)
-        self.assertIn("Notifications",combined)
-        self.assertIn("Don't allow sites to send notifications",combined)
-        self.assertIn("throwaway demo profile",combined)
-        self.assertIn("never your own settings",combined)
-        self.assertIn("block option",combined)
-        self.assertNotIn("changes no permissions",combined)
-        self.assertNotIn("clicking Allow",combined)
-        self.assertNotIn("Turn notifications off",combined)
+        self.assertIn("real Chrome Find",combined)
+        self.assertIn("fictional local data",combined)
+        self.assertIn("Scrolling this much text",combined)
+        self.assertIn("Control F",combined)
+        self.assertIn("Control G",combined)
+        self.assertIn("ERROR",combined)
+        self.assertIn("real matches",combined)
+        self.assertNotIn("notification",combined.lower())
+        self.assertNotIn("throwaway demo profile",combined)
         self.assertEqual(validate_story("chrome")["chapters"],3)
 
     def test_story_refuses_fabrication_and_overlong_narration(self):
@@ -103,7 +102,7 @@ class NarratedRealAppTests(unittest.TestCase):
             self.assertEqual(calc.count("overlay=x=0:y=190"),5)
             self.assertEqual(calc.count("overlay=x=0:y=900"),5)
             self.assertNotIn("crop=600:1067",calc)
-            self.assertEqual(chrome.count("crop=600:1067:15:70"),3)
+            self.assertEqual(chrome.count("crop=675:1200:20:50"),3)
             self.assertNotIn("overlay=",chrome)
             for app,graph in (("calc",calc),("chrome",chrome)):
                 self.assertIn(f"concat=n={5 if app=='calc' else 3}:v=1:a=0",graph)
@@ -120,9 +119,9 @@ class NarratedRealAppTests(unittest.TestCase):
             calc=video_graph("calc",[6.,5.,5.,5.,6.],captions,root)
             chrome=video_graph("chrome",[6.,6.,7.],captions,root)
             self.assertEqual(calc.count("crop=440:220:240:75"),5)
-            self.assertEqual(chrome.count("crop=600:1067:15:70"),3)
+            self.assertEqual(chrome.count("crop=675:1200:20:50"),3)
             self.assertEqual(calc.count("scale=1080:540"),5)
-            self.assertNotIn("crop=600:1067:60:70",chrome)
+            self.assertNotIn("crop=600:1067:15:70",chrome)
             self.assertIn("The direct match is false",STORIES["calc"]["chapters"][0][1])
             self.assertIn("Trim makes it true",STORIES["calc"]["chapters"][0][1])
             self.assertNotIn("fake",STORIES["calc"]["chapters"][0][1].lower())

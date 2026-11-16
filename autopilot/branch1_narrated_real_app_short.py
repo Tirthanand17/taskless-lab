@@ -50,12 +50,12 @@ STORIES={
     "chrome":{
         "voice":"af_heart",
         "chapters":(
-            ("PROOF  /  REAL CHROME",
-             "Chrome sites asking for notifications? Here is the blocked setting in our test browser. Open Settings, then Privacy and security."),
-            ("ROUTE  /  SITE SETTINGS",
-             "In Site settings, find Notifications. Watch the real Chrome menu, not an invented interface."),
-            ("FIX  /  BLOCK REQUESTS",
-             "Select Don't allow sites to send notifications. The block option is selected in our throwaway demo profile, never your own settings.")
+            ("PROOF  /  FIND REAL ERROR",
+             "Found an error in a seven hundred eighty line log using real Chrome Find. This is only fictional local data."),
+            ("BEFORE  /  TOO MANY ROWS",
+             "Scrolling this much text takes time. Watch the real document move as we look through the lines."),
+            ("FIX  /  CHROME FIND",
+             "Press Control F, type ERROR, then Control G for the next match. Chrome highlights the real matches inside this local file.")
         ),
         "source_windows":((0.0,7.85),(8.0,7.85),(16.0,7.85))
 
@@ -196,7 +196,7 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
             # No software UI pixels are generated or altered.
             parts.append(
                 base+
-                "crop=600:1067:15:70,"
+                "crop=675:1200:20:50,"
                 "scale=1080:1920:flags=bicubic,setsar=1,"
                 f"format=yuv420p[focused{i}]"
             )

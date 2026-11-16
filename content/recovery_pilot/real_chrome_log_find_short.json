@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_pilot_chrome_log_find_short_en",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 22,
+  "title": "Find Errors in a 780-Line Log Using Chrome Ctrl+F | Real Demo",
+  "viewer_problem": "A long fictional diagnostic log takes time to inspect by scrolling line by line.",
+  "viewer_promise": "Search an original 780-row local log using Chrome's genuine native Ctrl+F and next-match navigation; no account or uploads involved.",
+  "source_url": "https://support.google.com/chrome/answer/95440",
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0,
+      "end_seconds": 1.5,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Open on the real found ERROR match, using Chrome's built-in Find on an original fictional local log.",
+      "action_or_result": "Chrome's own Find highlights a real ERROR in an original 780-line dummy file."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.5,
+      "end_seconds": 3,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Show genuine search result jumps and the long file rather than screenshots.",
+      "action_or_result": "Native Chrome next-match navigation moves to different spaced ERROR rows."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 3,
+      "end_seconds": 6,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Compare manual scrolling on the same real fictional file.",
+      "action_or_result": "Scrolling the real document illustrates why finding a problem manually is slower."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 6,
+      "end_seconds": 11,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Use browser's own keyboard Find and next-match controls.",
+      "action_or_result": "Press actual Ctrl+F and Ctrl+G using the real browser, then watch matches change."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 11,
+      "end_seconds": 17,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Verify several distinct actual ERROR line positions, not painted text.",
+      "action_or_result": "Real Chrome jumps between multiple pre-generated fictional error lines."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 17,
+      "end_seconds": 22,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Explain search is local to the open page and does not edit or upload data.",
+      "action_or_result": "The sample page is fictional, local-only and first-party; no personal account is used."
+    }
+  ],
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Chromium browser",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  }
+}

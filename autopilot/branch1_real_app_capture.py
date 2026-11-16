@@ -23,8 +23,8 @@ PLAN_DIR = ROOT/"content/recovery_pilot"
 APPS = {
     "calc": ("LibreOffice Calc", "fm_pilot_calc_trim_short_en",
              "real_calc_trim_short.json", "uno_calc_actual"),
-    "chrome": ("Chromium browser", "fm_pilot_chrome_notifications_short_en",
-               "real_chrome_notifications_short.json", "selenium_chrome_settings_actual"),
+    "chrome": ("Chromium browser", "fm_pilot_chrome_log_find_short_en",
+               "real_chrome_log_find_short.json", "selenium_chrome_find_real_local_log"),
 }
 STATUS = "REAL_FIRST_PARTY_APP_REVIEW_ONLY_NO_RELEASE"
 RECEIPT = "REAL_APP_SOURCE_HASH_BOUND_UNAPPROVED.json"
@@ -46,17 +46,15 @@ FORMULA_WALKTHROUGH=(
              "CHECK BOTH","SELECT B3","RESULT VERIFIED"),
         )
 
-# Deliberate, one-way first-party Chrome settings journey. Each row is
-# six real browser operations across one nine-second recording chapter.
-# No permission toggle, third-party site or alternating page loops.
-# Only three viewer-meaningful chapters: proof/route, site setting, real result.
-# No final nine-second still-screen chapter or looping settings navigation.
+# A genuine Chrome Find-in-page exercise on a generated fictional long log.
+# The first view is a native browser Find result; next-match jumps and the
+# manual-scroll comparison are pedagogical, not fake app UI. The superseded
+# notification-settings pilot remains quarantined in the project record.
 CHROME_GUIDED_OPERATIONS=(
-    ("focus_block","home","privacy"),
-    ("site","down","notifications"),
-    ("ask","block","focus_block"),
+    ("find_next","find_next","find_next","find_next","close_find","home"),
+    ("scroll_down","scroll_down","scroll_down","scroll_down","scroll_down","scroll_down"),
+    ("open_find","find_next","find_next","find_next","find_next","find_next"),
 )
-
 
 def need(condition, error):
     if not condition:
@@ -302,17 +300,18 @@ def calc_worker(out):
 
 
 def chrome_worker(out):
-    """Real Chrome notification default control in an isolated demo profile.
+    """Genuine Chrome native Find on an original 780-line fictional log.
 
-    The temporary Chrome profile is created inside a GitHub Actions runner,
-    never a user's browser. Only this disposable profile's default option
-    is clicked, by Selenium in the actual Chrome UI.
+    Supersedes the static Chrome notification-radio pilot, which repeatedly
+    failed real-video motion audits. Only isolated first-party log data is
+    displayed; the browser and its keyboard Find behavior are real.
     """
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.common.action_chains import ActionChains
-    from selenium.common.exceptions import TimeoutException
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.support.ui import WebDriverWait
+
     options=Options()
     binary=shutil.which("google-chrome") or shutil.which("google-chrome-stable")
     need(binary is not None,"CHROME_STABLE_NOT_INSTALLED")
@@ -323,178 +322,108 @@ def chrome_worker(out):
                 "--window-size=720,1280"):
         options.add_argument(arg)
     profile=(out/"browser_private_profile").resolve()
-    need(profile.is_relative_to(out.resolve())
-         and not profile.exists(), "REFUSE_EXISTING_BROWSER_PROFILE")
+    need(profile.is_relative_to(out.resolve()) and not profile.exists(),
+         "REFUSE_EXISTING_BROWSER_PROFILE")
     options.add_argument("--user-data-dir="+str(profile))
+
+    rows=[]
+    count=0
+    for i in range(1,781):
+        bad=(i%61==0)
+        count+=int(bad)
+        message=("ERROR: fictional test-step failed" if bad
+                 else "INFO: fictional test-step finished")
+        rows.append('<div class="line '+('issue' if bad else 'normal')
+                    +'">Line '+f'{i:04d}'+' '+message+'</div>')
+    need(count==12 and len(rows)==780,"BAD_DUMMY_LOG_FIXTURE")
+    html='''<!doctype html><html lang="en"><meta charset="utf-8">
+    <title>Original fictional browser log demo</title>
+    <style>body{margin:12px;background:#0a192a;color:#f2f5fa;font:21px/1.48 monospace;}
+    header{padding:16px 9px;background:#183a52;color:#fff;font:20px/1.5 sans-serif;}
+    .line{padding:7px 6px;border-bottom:1px solid #263a4d;white-space:nowrap;}
+    .issue{background:#623029;color:#fff;font-weight:700;}</style>
+    <header>FICTIONAL LOG / 780 ROWS<br>Local file. No real account data.</header>
+    <main>'''+''.join(rows)+'</main></html>'
+    fixture=out/"ORIGINAL_DUMMY_FIND_LOG.html"
+    fixture.write_text(html,encoding="utf8")
+    need(fixture.stat().st_size>30000,"DUMMY_BROWSER_LOG_NOT_CREATED")
     driver=webdriver.Chrome(options=options)
-    home="chrome://settings/"
-    site="chrome://settings/content"
-    privacy="chrome://settings/privacy"
-    notification="chrome://settings/content/notifications"
-    history=[]
-    toggle_history=[]
+    actions_done=[]
+    positions=[]
     try:
         driver.set_window_size(720,1280)
-        def visit(uri):
-            need(uri in (home,site,privacy,notification),
-                 "DISALLOWED_EXTERNAL_OR_USER_BROWSER_URI")
-            driver.get(uri)
-            WebDriverWait(driver,20).until(
-                lambda d: d.current_url.rstrip("/") == uri.rstrip("/")
-                and d.execute_script(
-                    "return !!document.querySelector('settings-ui')"))
-            need(driver.current_url.startswith("chrome://settings"),
-                 "CHROME_DID_NOT_OPEN_REAL_SETTINGS")
-            history.append(uri)
-
-        # Chrome settings are nested in real Web Components. Resolve the
-        # actual radio-button element, not a copied HTML or synthetic UI.
-        find_control_js = """
-            const seen = new Set();
-            function find(root,selector) {
-                if (!root || seen.has(root)) return null;
-                seen.add(root);
-                const direct=root.querySelector(selector);
-                if (direct) return direct;
-                for (const item of root.querySelectorAll('*')) {
-                    if (item.shadowRoot) {
-                        const hit=find(item.shadowRoot,selector);
-                        if (hit) return hit;
-                    }
-                }
-                return null;
-            }
-            const group=find(document,'settings-category-default-radio-group#notificationDefaultRadioGroup');
-            if (!group) return null;
-            const control=group.shadowRoot?.querySelector('#'+arguments[0]+'RadioOption');
-            return control || null;
-        """
-        get_option_js = """
-            const seen = new Set();
-            function find(root) {
-                if (!root || seen.has(root)) return null;
-                seen.add(root);
-                const direct=root.querySelector('settings-category-default-radio-group#notificationDefaultRadioGroup');
-                if (direct) return direct;
-                for(const item of root.querySelectorAll('*')) {
-                    if(item.shadowRoot) {
-                        const hit=find(item.shadowRoot);
-                        if(hit) return hit;
-                    }
-                }
-                return null;
-            }
-            const group=find(document);
-            return group ? String(group.selectedValue || '').toLowerCase() : '';
-        """
-        def selected_option():
-            need(driver.current_url==notification,
-                 "NOT_ON_REAL_NOTIFICATION_DEFAULT_PAGE")
-            return driver.execute_script(get_option_js)
-        def toggle(to):
-            need(to in ("ask","block"),"ONLY_REAL_ASK_AND_BLOCK_CHOICES")
-            need(driver.current_url==notification,
-                 "NO_TOGGLE_OUTSIDE_DISPOSABLE_CHROME_SETTINGS")
-            option=WebDriverWait(driver,15).until(
-                lambda d: d.execute_script(find_control_js,to))
-            # A genuine WebDriver pointer click on Chrome's internal radio.
-            ActionChains(driver).move_to_element(option).click().perform()
-            WebDriverWait(driver,12).until(
-                lambda d: selected_option()==to)
-            need(selected_option()==to,"CHROME_REAL_RADIO_NOT_CHANGED")
-            toggle_history.append(to)
-        def focus_block():
-            need(driver.current_url==notification,
-                 "FOCUS_ONLY_ON_REAL_NOTIFICATION_PAGE")
-            option=WebDriverWait(driver,15).until(
-                lambda d: d.execute_script(find_control_js,"block"))
-            ActionChains(driver).move_to_element(option).perform()
-        def browse(action):
-            if action in {"home":home,"privacy":privacy,"site":site,
-                          "notifications":notification}:
-                visit({"home":home,"privacy":privacy,"site":site,
-                       "notifications":notification}[action])
-            elif action in ("ask","block"):
-                toggle(action)
-            elif action=="focus_block":
-                focus_block()
-            elif action in ("down","up","top","inspect"):
-                need(driver.current_url.startswith("chrome://settings"),
-                     "BROWSER_LEFT_FIRST_PARTY_SETTINGS")
-                delta={"down":330,"up":-330,"top":-10000,
-                       "inspect":480}[action]
-                result=driver.execute_script(
-                    """
-                    const seen=new Set(),candidates=[];
-                    function scan(root) {
-                        if (!root||seen.has(root)) return;
-                        seen.add(root);
-                        for (const el of root.querySelectorAll('*')) {
-                            if(el.shadowRoot)scan(el.shadowRoot);
-                            if(el.clientHeight>150 && el.clientWidth>200 &&
-                               el.scrollHeight>el.clientHeight+24)
-                                candidates.push(el);
-                        }
-                    }
-                    scan(document);
-                    candidates.sort((a,b)=>
-                        b.clientHeight*b.clientWidth-a.clientHeight*a.clientWidth);
-                    const target=candidates[0] || document.scrollingElement;
-                    if(!target)return false;
-                    const before=target.scrollTop;
-                    target.scrollTop=arguments[0]<-1000?0:before+arguments[0];
-                    return Math.abs(target.scrollTop-before)>2;
-                    """,delta)
-                need(type(result) is bool,"INVALID_ACTUAL_CHROME_SCROLL")
+        file_uri=fixture.resolve().as_uri()
+        need(file_uri.startswith("file:///") and fixture.is_relative_to(out),
+             "CHROME_MUST_USE_FIRST_PARTY_LOCAL_DATA")
+        driver.get(file_uri)
+        WebDriverWait(driver,20).until(
+            lambda d: d.current_url.startswith("file:///")
+            and d.execute_script(
+                "return document.querySelectorAll('.line').length")==780)
+        need(driver.execute_script(
+            "return document.querySelectorAll('.issue').length")==12,
+            "CHROME_DUMMY_ERROR_LINES_NOT_GENUINE")
+        def position():
+            return int(driver.execute_script("return Math.round(window.scrollY)"))
+        def act(command):
+            if command=="open_find":
+                ActionChains(driver).key_down(Keys.CONTROL).send_keys("f").key_up(
+                    Keys.CONTROL).send_keys("ERROR").perform()
+            elif command=="find_next":
+                ActionChains(driver).key_down(Keys.CONTROL).send_keys("g").key_up(
+                    Keys.CONTROL).perform()
+            elif command=="close_find":
+                ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+            elif command=="home":
+                ActionChains(driver).key_down(Keys.CONTROL).send_keys(
+                    Keys.HOME).key_up(Keys.CONTROL).perform()
+            elif command=="scroll_down":
+                # Genuine scroll in a long log demonstrates the manual
+                # alternative, not fabricated motion or page-flip loops.
+                driver.execute_script(
+                    "window.scrollBy({top:1700,behavior:'smooth'})")
+                time.sleep(.55)
             else:
-                raise RecoveryRefused("UNKNOWN_CHROME_STORY_OPERATION")
+                raise RecoveryRefused("UNKNOWN_REAL_BROWSER_FIND_ACTION")
+            time.sleep(.15)
+            positions.append(position())
+            actions_done.append(command)
 
-        visit(notification)
-        # settings-ui exists before the nested notification radio group and
-        # its asynchronously loaded preference are necessarily ready. Wait
-        # for Chrome's actual selected value, not a synthetic/fake setting.
-        try:
-            WebDriverWait(driver,20).until(
-                lambda d: selected_option() in ("ask","block"))
-        except TimeoutException as exc:
-            raise RecoveryRefused(
-                "CHROME_REAL_NOTIFICATION_DEFAULT_NEVER_LOADED") from exc
-        need(selected_option() in ("ask","block"),
-             "CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE")
-        # Show actual blocked payoff first; the final disposable profile
-        # is destroyed by the runner after recording.
-        toggle("block")
-        need(selected_option()=="block",
-             "REAL_PROOF_FIRST_BLOCK_SETTING_MISSING")
+        # The first recording frame already shows a real found ERROR.
+        act("open_find")
+        WebDriverWait(driver,8).until(lambda d: position()>350)
+        need(position()>350,"CHROME_NATIVE_FIND_DID_NOT_REACH_REAL_MATCH")
         (out/"stage_before").write_text(
-            "DISPOSABLE_PROFILE_REAL_CHROME_BLOCK_STATE_READY\n","utf8")
+            "REAL_CHROME_FIND_ERROR_IN_ORIGINAL_LOG_READY\n","utf8")
         actions=[
-            [(lambda action=action:browse(action)) for action in chapter]
+            [(lambda op=op:act(op)) for op in chapter]
             for chapter in CHROME_GUIDED_OPERATIONS
         ]
         perform_real_storyboard(out,actions,
                                 seconds_per_chapter=8.0,total_seconds=25.0)
-        need(history==[notification,home,privacy,site,notification]
-             and driver.current_url==notification,
-             "CHROME_MUST_FOLLOW_ONE_WAY_GENUINE_SETTINGS_PATH")
-        need(toggle_history.count("ask")>=1
-             and toggle_history.count("block")>=2
-             and selected_option()=="block",
-             "CHROME_REAL_BEFORE_AFTER_RADIOS_NOT_VERIFIED")
+        expected=tuple(op for chapter in CHROME_GUIDED_OPERATIONS
+                       for op in chapter)
+        need(tuple(actions_done[1:])==expected,
+             "CHROME_FIND_ACTIONS_NOT_EXECUTED_IN_ORDER")
+        unique_areas=len(set(y//250 for y in positions))
+        need(unique_areas>=7,"CHROME_FIND_NEVER_MOVED_THROUGH_REAL_LOG")
+        need(driver.current_url.startswith("file:///")
+             and driver.current_url.split("/")[-1]=="ORIGINAL_DUMMY_FIND_LOG.html",
+             "CHROME_LEFT_ORIGINAL_LOCAL_DATA")
         put(out/"application_observation.json",{
             "application":"Chromium browser",
-            "before_url":"chrome://settings/",
-            "after_url":driver.current_url,
-            "real_settings_ui_element":True,
-            # No real user's Chrome profile, account, or permission changed.
+            "real_browser_find_used":True,
+            "sample_log_rows":780,
+            "sample_error_matches":12,
+            "observed_unique_scroll_areas":unique_areas,
+            "first_party_fictional_file":True,
+            "external_site_used":False,
             "permissions_changed":False,
             "personal_profile_used":False,
-            "temporary_profile_default_toggled":True,
-            "demo_notification_default_final":"block",
             "youtube_uploads":0,
         })
         (out/"stage_after").write_text(
-            "REAL_CHROME_TEMPORARY_NOTIFICATION_SETTING_CONFIRMED\n","utf8")
+            "REAL_CHROME_NATIVE_FIND_AND_LOG_NAVIGATION_VERIFIED\n","utf8")
     finally:
         driver.quit()
 
@@ -621,16 +550,19 @@ def capture(app,out):
              and (out/"ACTUAL_CALC_VALIDATED.ods").is_file(),
              "CALC_NOT_GENUINELY_EVALUATED")
     else:
-        need(observation["real_settings_ui_element"] is True
+        need(observation["real_browser_find_used"] is True
+             and observation["sample_log_rows"]==780
+             and observation["sample_error_matches"]==12
+             and observation["observed_unique_scroll_areas"]>=7
+             and observation["first_party_fictional_file"] is True
+             and observation["external_site_used"] is False
              and observation["permissions_changed"] is False
-             and observation["personal_profile_used"] is False
-             and observation["temporary_profile_default_toggled"] is True
-             and observation["demo_notification_default_final"]=="block",
-             "BROWSER_DEMO_TEMPORARY_SETTING_NOT_GENUINELY_VERIFIED")
+             and observation["personal_profile_used"] is False,
+             "CHROME_FIND_LOCAL_DATA_NOT_GENUINELY_VERIFIED")
     inspect_media(source,app)
     preview=out/PREVIEW
     graph=(
-        f"[0:v]trim=start={40 if app=='calc' else 20}:duration=1.5,setpts=PTS-STARTPTS,"
+        f"[0:v]trim=start={40 if app=='calc' else 1}:duration=1.5,setpts=PTS-STARTPTS,"
         "scale=1080:1920:flags=lanczos,format=yuv420p[hook];"
         "[0:v]trim=start=0:duration=9.5,setpts=PTS-STARTPTS,"
         "scale=1080:1920:flags=lanczos,format=yuv420p[action];"
@@ -644,7 +576,7 @@ def capture(app,out):
     invoke(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
             "-xerror","-i",str(preview),"-f","null","-"],timeout=55)
     fixture_source=(out/"ACTUAL_CALC_VALIDATED.ods" if app=="calc"
-                    else out/"application_observation.json")
+                    else out/"ORIGINAL_DUMMY_FIND_LOG.html")
     receipt={
         "schema":"FLOWMINUTE_B1_REAL_APPLICATION_PROOF_V1",
         "status":STATUS,
@@ -710,7 +642,7 @@ def verify_receipt(brief,out):
     source=out/CAPTURE
     preview=out/PREVIEW
     fixture=(out/"ACTUAL_CALC_VALIDATED.ods" if app=="calc"
-             else out/"application_observation.json")
+             else out/"ORIGINAL_DUMMY_FIND_LOG.html")
     for name,p in (("capture_sha256",source),
                    ("preview_sha256",preview),
                    ("fixture_proof_sha256",fixture),
@@ -749,19 +681,30 @@ def verify_receipt(brief,out):
                  and odf.testzip() is None,"CALC_ODS_CONTENT_NOT_VALID")
     else:
         need(set(observation)=={
-            "application","before_url","after_url",
-            "real_settings_ui_element","permissions_changed",
-            "personal_profile_used","temporary_profile_default_toggled",
-            "demo_notification_default_final","youtube_uploads"}
-            and observation["before_url"]=="chrome://settings/"
-            and observation["after_url"]==
-                "chrome://settings/content/notifications"
-            and observation["real_settings_ui_element"] is True
+            "application","real_browser_find_used",
+            "sample_log_rows","sample_error_matches",
+            "observed_unique_scroll_areas","first_party_fictional_file",
+            "external_site_used","permissions_changed",
+            "personal_profile_used","youtube_uploads"}
+            and observation["real_browser_find_used"] is True
+            and observation["sample_log_rows"]==780
+            and observation["sample_error_matches"]==12
+            and type(observation["observed_unique_scroll_areas"]) is int
+            and observation["observed_unique_scroll_areas"]>=7
+            and observation["first_party_fictional_file"] is True
+            and observation["external_site_used"] is False
             and observation["permissions_changed"] is False
-            and observation["personal_profile_used"] is False
-            and observation["temporary_profile_default_toggled"] is True
-            and observation["demo_notification_default_final"]=="block",
-            "REAL_CHROME_SETTINGS_OBSERVATION_NOT_PROVED")
+            and observation["personal_profile_used"] is False,
+            "REAL_CHROME_FIND_OBSERVATION_NOT_PROVED")
+        doc=out/"ORIGINAL_DUMMY_FIND_LOG.html"
+        need(doc.is_file() and not doc.is_symlink()
+             and 30000<=doc.stat().st_size<=250000,
+             "CHROME_ORIGINAL_DUMMY_LOG_MISSING")
+        text=doc.read_text(encoding="utf8")
+        need(text.count('class="line ')==780
+             and text.count("ERROR: fictional test-step failed")==12
+             and "FICTIONAL LOG / 780 ROWS" in text,
+             "CHROME_ORIGINAL_LOG_CONTENT_NOT_VERIFIED")
     for clip in (source,preview):
         with clip.open("rb") as raw:
             need(raw.read(12)[4:8]==b"ftyp",
