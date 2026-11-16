@@ -51,15 +51,15 @@ STORIES={
         "voice":"af_heart",
         "chapters":(
             ("PROOF  /  REAL CHROME SETTINGS",
-             "Want to find Chrome notification permissions? This is the real settings screen."),
+             "Chrome site notifications live here. You can review them without changing anything."),
             ("BEFORE  /  OPEN SETTINGS",
-             "Open Chrome settings. This recording uses a fresh browser profile with no personal account."),
+             "Open Settings, then Privacy and security. Find Site settings under the privacy controls."),
             ("WHY  /  FIND SITE CONTROLS",
-             "Notification controls are nested. You may not see them on the first settings page."),
+             "Inside Site settings, locate Notifications. This is where notification requests and site permissions are managed."),
             ("ACTION  /  OPEN NOTIFICATIONS",
-             "Now the actual browser navigates to its built in notification settings page."),
+             "Open Notifications to inspect the default behavior. Check the lists for allowed or blocked sites."),
             ("AFTER  /  VERIFY THE PAGE",
-             "These are real Chrome permissions controls. No settings were changed in this demonstration.")
+             "Review the sites shown here. This demo changes no permissions. Check each setting before you block a site.")
         ),
         "source_windows":((.8,8.5),(9.8,8.5),(18.8,8.5),(27.8,8.5),(36.8,8.5))
     }
