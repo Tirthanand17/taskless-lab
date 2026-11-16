@@ -81,6 +81,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Install free FFmpeg and FFprobe for independent video analysis
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          command -v ffprobe
+          command -v ffmpeg
       - name: Require trusted exact main-branch source successful workflow
         run: |
           set -euo pipefail
