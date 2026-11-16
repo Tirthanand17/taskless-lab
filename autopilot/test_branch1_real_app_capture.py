@@ -8,10 +8,11 @@ from pathlib import Path
 import tempfile
 import unittest
 import zipfile
+from unittest.mock import patch
 
 from autopilot.branch1_real_app_capture import (
     APPS, STATUS, CAPTURE, PREVIEW, RECEIPT, plan,
-    validate_main_only, verify_receipt,
+    validate_main_only, verify_receipt, perform_real_storyboard,
 )
 from autopilot.branch1_recovery import RecoveryRefused, validate_creative
 
@@ -94,6 +95,34 @@ class RealAppAdapterTests(unittest.TestCase):
                 self.assertFalse(proof["owner_approval"])
                 self.assertEqual(proof["youtube_uploads"],0)
                 self.assertEqual(len(b["beats"]),6)
+
+    def test_real_five_chapter_storyboard_requires_running_recorder(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            clock=[0.0]
+            seen=[]
+            def monotonic():
+                return clock[0]
+            def sleep(seconds):
+                clock[0]+=max(0.0,float(seconds))
+            chapters=[
+                [(lambda chapter=i,step=j:seen.append((chapter,step)))
+                 for j in range(6)]
+                for i in range(5)
+            ]
+            with patch("autopilot.branch1_real_app_capture.time.monotonic",monotonic):
+                with patch("autopilot.branch1_real_app_capture.time.sleep",sleep):
+                    with self.assertRaises(RecoveryRefused):
+                        perform_real_storyboard(root,chapters)
+                    self.assertEqual(seen,[])
+                    (root/"capture_started").write_text("RUNNING\n","utf8")
+                    perform_real_storyboard(root,chapters)
+            self.assertEqual(len(seen),30)
+            self.assertEqual(seen[0],(0,0))
+            self.assertEqual(seen[-1],(4,5))
+            self.assertGreaterEqual(clock[0],76.0)
+            for n in range(5):
+                self.assertTrue((root/f"real_stage_{n}").is_file())
 
     def test_main_only_never_auto_run_with_privileged_or_laptop_context(self):
         for app in APPS:
