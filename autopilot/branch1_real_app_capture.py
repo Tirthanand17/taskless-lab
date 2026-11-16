@@ -576,7 +576,7 @@ def capture(app,out):
     invoke(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
             "-xerror","-i",str(preview),"-f","null","-"],timeout=55)
     fixture_source=(out/"ACTUAL_CALC_VALIDATED.ods" if app=="calc"
-                    else out/"application_observation.json")
+                    else out/"ORIGINAL_DUMMY_FIND_LOG.html")
     receipt={
         "schema":"FLOWMINUTE_B1_REAL_APPLICATION_PROOF_V1",
         "status":STATUS,
@@ -642,7 +642,7 @@ def verify_receipt(brief,out):
     source=out/CAPTURE
     preview=out/PREVIEW
     fixture=(out/"ACTUAL_CALC_VALIDATED.ods" if app=="calc"
-             else out/"application_observation.json")
+             else out/"ORIGINAL_DUMMY_FIND_LOG.html")
     for name,p in (("capture_sha256",source),
                    ("preview_sha256",preview),
                    ("fixture_proof_sha256",fixture),
@@ -681,19 +681,30 @@ def verify_receipt(brief,out):
                  and odf.testzip() is None,"CALC_ODS_CONTENT_NOT_VALID")
     else:
         need(set(observation)=={
-            "application","before_url","after_url",
-            "real_settings_ui_element","permissions_changed",
-            "personal_profile_used","temporary_profile_default_toggled",
-            "demo_notification_default_final","youtube_uploads"}
-            and observation["before_url"]=="chrome://settings/"
-            and observation["after_url"]==
-                "chrome://settings/content/notifications"
-            and observation["real_settings_ui_element"] is True
+            "application","real_browser_find_used",
+            "sample_log_rows","sample_error_matches",
+            "observed_unique_scroll_areas","first_party_fictional_file",
+            "external_site_used","permissions_changed",
+            "personal_profile_used","youtube_uploads"}
+            and observation["real_browser_find_used"] is True
+            and observation["sample_log_rows"]==780
+            and observation["sample_error_matches"]==12
+            and type(observation["observed_unique_scroll_areas"]) is int
+            and observation["observed_unique_scroll_areas"]>=7
+            and observation["first_party_fictional_file"] is True
+            and observation["external_site_used"] is False
             and observation["permissions_changed"] is False
-            and observation["personal_profile_used"] is False
-            and observation["temporary_profile_default_toggled"] is True
-            and observation["demo_notification_default_final"]=="block",
-            "REAL_CHROME_SETTINGS_OBSERVATION_NOT_PROVED")
+            and observation["personal_profile_used"] is False,
+            "REAL_CHROME_FIND_OBSERVATION_NOT_PROVED")
+        doc=out/"ORIGINAL_DUMMY_FIND_LOG.html"
+        need(doc.is_file() and not doc.is_symlink()
+             and 30000<=doc.stat().st_size<=250000,
+             "CHROME_ORIGINAL_DUMMY_LOG_MISSING")
+        text=doc.read_text(encoding="utf8")
+        need(text.count('class="line ')==780
+             and text.count("ERROR: fictional test-step failed")==12
+             and "FICTIONAL LOG / 780 ROWS" in text,
+             "CHROME_ORIGINAL_LOG_CONTENT_NOT_VERIFIED")
     for clip in (source,preview):
         with clip.open("rb") as raw:
             need(raw.read(12)[4:8]==b"ftyp",
