@@ -53,7 +53,7 @@ STORIES={
             ("PROOF  /  BLOCK NOTIFICATION PROMPTS",
              "Chrome notification requests can be stopped here. Watch this real blocked setting in action."),
             ("BEFORE  /  OPEN SETTINGS",
-             "Start in Chrome Settings. Open Privacy and security, then move to Site settings to find notification permissions."),
+             "Start in Chrome Settings. Open Privacy and security. Then choose Site settings."),
             ("WHY  /  FIND NOTIFICATION CONTROL",
              "Scroll through Site settings and look for Notifications. This controls which sites can request permission to notify you."),
             ("ACTION  /  CHOOSE BLOCK",
