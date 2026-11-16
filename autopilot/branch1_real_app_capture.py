@@ -108,7 +108,19 @@ def wait_for(path, proc, timeout=32):
     while time.monotonic()<until:
         if path.is_file():
             return
-        need(proc.poll() is None, "APPLICATION_WORKER_FAILED_BEFORE_READY")
+        if proc.poll() is not None:
+            # The child failed before it could write its readiness marker.
+            # Preserve one bounded exception summary instead of masking the
+            # cause behind a generic readiness failure in GitHub Actions.
+            _, stderr = proc.communicate(timeout=3)
+            lines = [line.strip() for line in stderr.splitlines() if line.strip()]
+            diagnostic = next((
+                line for line in reversed(lines)
+                if "Error:" in line or "Exception:" in line
+                or "RecoveryRefused:" in line
+            ), "child exited without a Python exception")
+            raise RecoveryRefused(
+                "APPLICATION_WORKER_FAILED_BEFORE_READY: " + diagnostic[:300])
         time.sleep(.15)
     raise RecoveryRefused("APPLICATION_WORKER_NEVER_BECAME_READY")
 
@@ -445,6 +457,11 @@ def chrome_worker(out):
                 raise RecoveryRefused("UNKNOWN_CHROME_STORY_OPERATION")
 
         visit(notification)
+        # The outer settings-ui element loads before its nested site-settings
+        # Web Components and their asynchronous preference value are ready.
+        # Wait for the actual Chrome-backed value; never synthesize a default.
+        WebDriverWait(driver,20).until(
+            lambda d: selected_option() in ("ask","block"))
         need(selected_option() in ("ask","block"),
              "CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE")
         # Show actual blocked payoff first; the final disposable profile
