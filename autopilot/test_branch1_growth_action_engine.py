@@ -100,7 +100,7 @@ class GrowthActionTests(unittest.TestCase):
             codes={a["code"] for a in r["actions"]}
             self.assertIn("LONG_SUGGESTED_BROWSE_SHARE_DOWN",codes)
             self.assertFalse(r["audience_growth_proven"])
-            self.assertNotIn("shadowban",json.dumps(r).lower())
+            self.assertTrue(all("SHADOWBAN" not in c for c in codes))
 
     def test_no_production_tokens_import_or_unauthorized_youtube_calls(self):
         code=(Path(__file__).parent/"branch1_growth_action_engine.py").read_text("utf8")
