@@ -40,15 +40,16 @@ def demo_observation(app):
             "youtube_uploads": 0,
         }
     return {
-        "application": "Chromium browser",
-        "before_url": "chrome://settings/",
-        "after_url": "chrome://settings/content/notifications",
-        "real_settings_ui_element": True,
-        "permissions_changed": False,
-        "personal_profile_used": False,
-        "temporary_profile_default_toggled": True,
-        "demo_notification_default_final": "block",
-        "youtube_uploads": 0,
+        "application":"Chromium browser",
+        "real_browser_find_used":True,
+        "sample_log_rows":780,
+        "sample_error_matches":12,
+        "observed_unique_scroll_areas":8,
+        "first_party_fictional_file":True,
+        "external_site_used":False,
+        "permissions_changed":False,
+        "personal_profile_used":False,
+        "youtube_uploads":0,
     }
 
 def fake_receipt(app,out):
@@ -62,6 +63,14 @@ def fake_receipt(app,out):
         with zipfile.ZipFile(fixture,"w") as zipped:
             zipped.writestr("content.xml", "<office:document/>")
             zipped.writestr("mimetype","application/vnd.oasis.opendocument.spreadsheet")
+    else:
+        fixture=out/"ORIGINAL_DUMMY_FIND_LOG.html"
+        lines=[
+            '<div class="line normal">Line %04d INFO: fictional test-step finished</div>' % i
+            if i%61 else
+            '<div class="line issue">Line %04d ERROR: fictional test-step failed</div>' % i
+            for i in range(1,781)]
+        fixture.write_text("FICTIONAL LOG / 780 ROWS\n"+"".join(lines),"utf8")
     for name in (CAPTURE,PREVIEW):
         (out/name).write_bytes(b"\x00\x00\x00\x18ftypisom"+b"X"*38000)
     digest=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
