@@ -375,8 +375,13 @@ def render(out,model,voices):
     # Retain the honest real terminal. The source is landscape 16:9.
     final=out/FINAL
     filtergraph=(
-        f"[0:v]scale=1920:1080:flags=lanczos,"
-        f"drawbox=x=0:y=780:w=iw:h=300:color=0x081827@0.94:t=fill,"
+        # Zoom into the ACTUALLY RECORDED terminal data area. The first
+        # physical long review was mechanically valid but made 80% of
+        # screen real-estate empty desktop. Never draw a simulated app.
+        f"[0:v]crop=1120:500:0:0,"
+        f"scale=1920:858:flags=lanczos,"
+        f"pad=1920:1080:0:0:color=0x081827,"
+        f"drawbox=x=0:y=840:w=iw:h=240:color=0x081827@0.94:t=fill,"
         f"ass={ass.as_posix()},format=yuv420p[v]"
     )
     cmd(["ffmpeg","-nostdin","-hide_banner","-y","-loglevel","error",

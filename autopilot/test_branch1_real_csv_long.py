@@ -98,6 +98,16 @@ class RealPythonLongPilotTests(unittest.TestCase):
             self.assertIn("1430.75",stage_content(0,1,data)[1])
             self.assertIn("1225.50",stage_content(9,3,data)[1])
 
+    def test_16_by_9_lesson_uses_real_source_zoom_not_empty_desktop(self):
+        code=(Path(__file__).parent/"branch1_real_csv_long.py").read_text("utf8")
+        self.assertIn("crop=1120:500:0:0",code)
+        self.assertIn("scale=1920:858:flags=lanczos",code)
+        self.assertIn("pad=1920:1080:0:0:color=0x081827",code)
+        self.assertIn("drawbox=x=0:y=840:w=iw:h=240:color=0x081827@0.94",code)
+        self.assertNotIn("scale=1920:1080:flags=lanczos",code)
+        self.assertIn('source=folder/SOURCE',code)
+        self.assertIn('"x11grab"',code)
+
     def test_capture_never_runs_on_laptop_or_approves_youtube(self):
         with TemporaryDirectory() as t:
             out=Path(t)/"original"
