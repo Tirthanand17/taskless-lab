@@ -5,6 +5,8 @@ on:
     paths:
       - "autopilot/branch1_narrated_real_app_short.py"
       - "autopilot/test_branch1_narrated_real_app_short.py"
+      - "autopilot/branch1_real_action_coverage_gate.py"
+      - "autopilot/test_branch1_real_action_coverage_gate.py"
       - ".github/workflows/branch1-narrated-real-app-review.yml"
       - "docs/BRANCH1_NARRATED_REAL_APP_REVIEW.md"
   workflow_dispatch: {}
@@ -38,9 +40,12 @@ jobs:
           set -euo pipefail
           python -B -m py_compile \
             autopilot/branch1_narrated_real_app_short.py \
-            autopilot/test_branch1_narrated_real_app_short.py
+            autopilot/test_branch1_narrated_real_app_short.py \
+            autopilot/branch1_real_action_coverage_gate.py \
+            autopilot/test_branch1_real_action_coverage_gate.py
           python -B -m unittest -v \
             autopilot.test_branch1_narrated_real_app_short \
+            autopilot.test_branch1_real_action_coverage_gate \
             autopilot.test_branch1_real_app_capture \
             autopilot.test_branch1_recovery
           python -B - <<'PY'
