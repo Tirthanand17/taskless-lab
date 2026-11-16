@@ -117,7 +117,7 @@ class RealAppAdapterTests(unittest.TestCase):
         # require an independent phone-size human/vision review.
         import re
         source=(Path(__file__).parent/"branch1_real_app_capture.py").read_text("utf8")
-        labels=re.findall(r'lambda: cell\\("A1","([^"]+)"\\)',source)
+        labels=re.findall(r'lambda: cell\("A1","([^"]+)"\)',source)
         self.assertEqual(len(labels),4)
         self.assertTrue(all(len(label)<=18 for label in labels))
         self.assertIn('sheet.getCellRangeByName("A1").String="RESULT: TRUE"',source)
