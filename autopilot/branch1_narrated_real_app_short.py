@@ -124,6 +124,24 @@ def chapter_asset(out:Path,index:int,label:str) -> Path:
     dest.write_text(label+"\n",encoding="utf8")
     return dest
 
+def authentic_source_speed(window_seconds:float,voice_seconds:float)->float:
+    """Retiming must use EVERY recorded software action, not repeated frames.
+
+    The maximum 2.1x playback bound is an internal readability safeguard,
+    not a YouTube recommendation threshold. Time compression changes the
+    presentation speed of genuine app actions; it does not invent action.
+    """
+    insist(type(window_seconds) in (int,float)
+           and type(voice_seconds) in (int,float)
+           and math.isfinite(window_seconds) and math.isfinite(voice_seconds)
+           and 2.0<=window_seconds<=9.0
+           and 2.5<=voice_seconds<=11.0,
+           "INVALID_GENUINE_APP_TIMEBASE")
+    speed=window_seconds/voice_seconds
+    insist(.75<=speed<=2.1,"GENUINE_ACTION_SPEED_OUTSIDE_LEGIBILITY_LIMIT")
+    return speed
+
+
 def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
     """Keep actual recorded pixels for all 5 chapters. No fabricated app UI."""
     windows=STORIES[app]["source_windows"]
@@ -139,10 +157,15 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
         # Both panels are from the SAME genuine, timestamped app video.
         # The Calc top half shows the actual data; the bottom is an enlarged
         # crop of the actual formula/results area. No simulated spreadsheet.
+        speed=authentic_source_speed(window,secs)
         base=(
             f"[s{i}]trim=start={start:.3f}:duration={window:.3f},"
-            "setpts=PTS-STARTPTS,fps=24,"
-            "tpad=stop_mode=clone:stop_duration=12,"
+            # Preserve every frame of the real app's source window.
+            # A 8.5s action segment with 5.0s voice plays at 1.7x,
+            # rather than discarding the last 3.5s of genuine actions.
+            f"setpts={1.0/speed:.8f}*(PTS-STARTPTS),fps=24,"
+            # The existing coverage gate still refuses excessive holds.
+            "tpad=stop_mode=clone:stop_duration=1.25,"
             f"trim=duration={secs:.6f},setpts=PTS-STARTPTS,"
         )
         if app=="calc":
