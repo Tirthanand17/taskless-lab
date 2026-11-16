@@ -140,55 +140,39 @@ class RealAppAdapterTests(unittest.TestCase):
                          "AFTER: REAL FORMULA RETURNS TRUE"):
             self.assertNotIn(outdated,source)
 
-    def test_chrome_single_route_and_real_disposable_radio_changes(self):
+    def test_chrome_native_find_on_original_data_not_repeated_radio_setting(self):
         chapters=CHROME_GUIDED_OPERATIONS
         self.assertEqual(len(chapters),3)
-        self.assertTrue(all(2<=len(chapter)<=3 for chapter in chapters))
-        allowed={"home","privacy","site","notifications",
-                 "down","up","top","inspect","ask","block","focus_block"}
-        self.assertTrue(all(op in allowed for chapter in chapters
-                            for op in chapter))
-        route=[op for chapter in chapters for op in chapter
-               if op in ("home","privacy","site","notifications")]
-        self.assertEqual(route,["home","privacy","site","notifications"])
-        selected=[op for chapter in chapters for op in chapter
-                  if op in ("ask","block")]
-        self.assertEqual(selected,["ask","block"])
-        self.assertNotIn("toggle",str(chapters).lower())
+        self.assertTrue(all(len(chapter)==6 for chapter in chapters))
+        allowed={"find_next","close_find","home","scroll_down","open_find"}
+        self.assertTrue(all(op in allowed for ch in chapters for op in ch))
+        self.assertEqual(chapters[0][-2:],("close_find","home"))
+        self.assertEqual(chapters[1],("scroll_down",)*6)
+        self.assertEqual(chapters[2][0],"open_find")
+        self.assertEqual(chapters[2][1:],("find_next",)*5)
+        self.assertNotIn("notifications",str(chapters).lower())
         self.assertNotIn("https:",str(chapters).lower())
         observation=demo_observation("chrome")
-        self.assertTrue(observation["temporary_profile_default_toggled"])
+        self.assertTrue(observation["real_browser_find_used"])
+        self.assertEqual(observation["sample_log_rows"],780)
+        self.assertEqual(observation["sample_error_matches"],12)
+        self.assertTrue(observation["first_party_fictional_file"])
+        self.assertFalse(observation["external_site_used"])
         self.assertFalse(observation["personal_profile_used"])
-        self.assertFalse(observation["permissions_changed"])
-        self.assertEqual(observation["demo_notification_default_final"],"block")
 
-    def test_chrome_storyboard_removes_static_duplicate_tail(self):
-        from autopilot.branch1_real_app_capture import perform_real_storyboard
-        steps=[op for chapter in CHROME_GUIDED_OPERATIONS for op in chapter]
-        self.assertEqual(len(CHROME_GUIDED_OPERATIONS),3)
-        self.assertEqual(steps.count("notifications"),1)
-        self.assertEqual(steps.count("ask"),1)
-        self.assertEqual(steps.count("block"),1)
-        self.assertEqual(steps[-2:],["block","focus_block"])
-        self.assertNotIn(("inspect","top","focus_block"),CHROME_GUIDED_OPERATIONS)
-        self.assertFalse(any(chapter.count("down")>1 or chapter.count("top")>1
-                             for chapter in CHROME_GUIDED_OPERATIONS))
+    def test_chrome_real_find_source_and_runner_only(self):
         source=(Path(__file__).parent/"branch1_real_app_capture.py").read_text("utf8")
+        self.assertIn("CHROME_NATIVE_FIND_DID_NOT_REACH_REAL_MATCH",source)
+        self.assertIn("CHROME_FIND_NEVER_MOVED_THROUGH_REAL_LOG",source)
+        self.assertIn('file_uri.startswith("file:///")',source)
+        self.assertIn("ORIGINAL_DUMMY_FIND_LOG.html",source)
         self.assertIn('seconds_per_chapter=8.0,total_seconds=25.0',source)
         self.assertIn('"48" if app=="calc" else "26"',source)
         self.assertIn('for chapter in range(5 if app=="calc" else 3)',source)
-
-
-    def test_chrome_startup_waits_for_real_loaded_default_preference(self):
-        # Source contract only: physical Chrome capture must still pass on
-        # GitHub main before any media is described as verified.
-        source=(Path(__file__).parent/"branch1_real_app_capture.py").read_text("utf8")
-        self.assertIn('WebDriverWait(driver,20).until(',source)
-        self.assertIn('lambda d: selected_option() in ("ask","block")',source)
-        self.assertIn('CHROME_REAL_NOTIFICATION_DEFAULT_NEVER_LOADED',source)
-        self.assertIn('CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE',source)
-        self.assertNotIn('selected_option() or "ask"',source)
-        self.assertIn('timeout=60 if app=="chrome" else 32',source)
+        self.assertIn("CHROME_ORIGINAL_LOG_CONTENT_NOT_VERIFIED",source)
+        self.assertIn("REAL_CHROME_FIND_OBSERVATION_NOT_PROVED",source)
+        self.assertNotIn("CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE",source)
+        self.assertNotIn("selenium_chrome_settings_actual",source)
 
     def test_real_five_chapter_storyboard_requires_running_recorder(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -335,12 +319,14 @@ class RealAppAdapterTests(unittest.TestCase):
                     ]
                 else:
                     observations += [
-                        {**demo_observation(app),
-                         "after_url":"https://fake-settings.invalid"},
+                        {**demo_observation(app),"real_browser_find_used":False},
+                        {**demo_observation(app),"sample_log_rows":779},
+                        {**demo_observation(app),"sample_error_matches":11},
+                        {**demo_observation(app),"observed_unique_scroll_areas":2},
+                        {**demo_observation(app),"first_party_fictional_file":False},
+                        {**demo_observation(app),"external_site_used":True},
                         {**demo_observation(app),"permissions_changed":True},
                         {**demo_observation(app),"personal_profile_used":True},
-                        {**demo_observation(app),"temporary_profile_default_toggled":False},
-                        {**demo_observation(app),"demo_notification_default_final":"ask"},
                     ]
                 for obs in observations:
                     with self.subTest(app=app,observation=obs):
@@ -348,8 +334,6 @@ class RealAppAdapterTests(unittest.TestCase):
                         path.write_text(json.dumps(obs),"utf8")
                         new={**original,"observation_sha256":
                              hashlib.sha256(path.read_bytes()).hexdigest()}
-                        if app=="chrome":
-                            new["fixture_proof_sha256"]=new["observation_sha256"]
                         (out/RECEIPT).write_text(json.dumps(new),"utf8")
                         with self.assertRaises(RecoveryRefused):
                             verify_receipt(b,out)
