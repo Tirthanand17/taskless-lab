@@ -31,6 +31,18 @@ class NarratedRealAppTests(unittest.TestCase):
                 self.assertEqual(len(ep["scenes"]),5)
                 self.assertTrue(ep["real_software_evidence"])
 
+    def test_chrome_words_teach_a_real_forward_settings_route(self):
+        chapters=STORIES["chrome"]["chapters"]
+        combined=" ".join(spoken for _,spoken in chapters)
+        self.assertIn("Privacy and security",combined)
+        self.assertIn("Site settings",combined)
+        self.assertIn("Notifications",combined)
+        self.assertIn("allowed or blocked sites",combined)
+        self.assertIn("changes no permissions",combined)
+        self.assertNotIn("clicking Allow",combined)
+        self.assertNotIn("Turn notifications off",combined)
+        self.assertEqual(validate_story("chrome")["chapters"],5)
+
     def test_story_refuses_fabrication_and_overlong_narration(self):
         for app in sorted(APPS):
             for label,bad in (
