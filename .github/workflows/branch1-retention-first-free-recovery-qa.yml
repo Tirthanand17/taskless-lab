@@ -5,6 +5,8 @@ on:
     paths:
       - "autopilot/branch1_recovery.py"
       - "autopilot/test_branch1_recovery.py"
+      - "autopilot/branch1_nine_cause_diagnosis.py"
+      - "autopilot/test_branch1_nine_cause_diagnosis.py"
       - "autopilot/branch1_record_real_demo.py"
       - "content/recovery_pilot/**"
       - "docs/BRANCH1_RETENTION_FIRST_FREE_RECOVERY.md"
@@ -42,7 +44,11 @@ jobs:
             autopilot/branch1_recovery.py \
             autopilot/branch1_record_real_demo.py \
             autopilot/test_branch1_recovery.py
-          python -B -m unittest -v autopilot.test_branch1_recovery
+            autopilot/branch1_nine_cause_diagnosis.py \
+            autopilot/test_branch1_nine_cause_diagnosis.py
+          python -B -m unittest -v \
+            autopilot.test_branch1_recovery \
+            autopilot.test_branch1_nine_cause_diagnosis
           python -B -m autopilot.branch1_recovery \
             --creative content/recovery_pilot/real_csv_proof_first_short.json \
             > /tmp/fm-brief-status.json
@@ -65,6 +71,7 @@ jobs:
           for name in (
               "autopilot/branch1_recovery.py",
               "autopilot/branch1_record_real_demo.py",
+              "autopilot/branch1_nine_cause_diagnosis.py",
           ):
               code=Path(name).read_text(encoding="utf8")
               for forbidden in ("youtube.videos().insert", "status.publishAt",
