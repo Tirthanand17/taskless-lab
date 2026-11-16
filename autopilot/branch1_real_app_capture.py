@@ -108,7 +108,15 @@ def wait_for(path, proc, timeout=32):
     while time.monotonic()<until:
         if path.is_file():
             return
-        need(proc.poll() is None, "APPLICATION_WORKER_FAILED_BEFORE_READY")
+        if proc.poll() is not None:
+            # A Chrome/LibreOffice worker can exit before stage_before.
+            # Its original Python traceback is essential to distinguish
+            # a real vendor UI failure from an FFmpeg/runner failure.
+            diagnostic=(proc.stderr.read() if proc.stderr else "")
+            diagnostic=diagnostic[-1800:].replace("\\x00","")
+            raise RecoveryRefused(
+                "APPLICATION_WORKER_FAILED_BEFORE_READY_EXIT_"
+                +str(proc.returncode)+": "+diagnostic)
         time.sleep(.15)
     raise RecoveryRefused("APPLICATION_WORKER_NEVER_BECAME_READY")
 
