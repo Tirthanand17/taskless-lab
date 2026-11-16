@@ -133,8 +133,8 @@ class RealAppAdapterTests(unittest.TestCase):
 
     def test_chrome_single_route_and_real_disposable_radio_changes(self):
         chapters=CHROME_GUIDED_OPERATIONS
-        self.assertEqual(len(chapters),5)
-        self.assertTrue(all(len(chapter)==6 for chapter in chapters))
+        self.assertEqual(len(chapters),3)
+        self.assertTrue(all(2<=len(chapter)<=3 for chapter in chapters))
         allowed={"home","privacy","site","notifications",
                  "down","up","top","inspect","ask","block","focus_block"}
         self.assertTrue(all(op in allowed for chapter in chapters
@@ -144,7 +144,7 @@ class RealAppAdapterTests(unittest.TestCase):
         self.assertEqual(route,["home","privacy","site","notifications"])
         selected=[op for chapter in chapters for op in chapter
                   if op in ("ask","block")]
-        self.assertEqual(selected,["ask","block","ask","block"])
+        self.assertEqual(selected,["ask","block"])
         self.assertNotIn("toggle",str(chapters).lower())
         self.assertNotIn("https:",str(chapters).lower())
         observation=demo_observation("chrome")
@@ -152,6 +152,22 @@ class RealAppAdapterTests(unittest.TestCase):
         self.assertFalse(observation["personal_profile_used"])
         self.assertFalse(observation["permissions_changed"])
         self.assertEqual(observation["demo_notification_default_final"],"block")
+
+    def test_chrome_storyboard_removes_static_duplicate_tail(self):
+        from autopilot.branch1_real_app_capture import perform_real_storyboard
+        steps=[op for chapter in CHROME_GUIDED_OPERATIONS for op in chapter]
+        self.assertEqual(len(CHROME_GUIDED_OPERATIONS),3)
+        self.assertEqual(steps.count("notifications"),1)
+        self.assertEqual(steps.count("ask"),1)
+        self.assertEqual(steps.count("block"),1)
+        self.assertEqual(steps[-2:],["block","focus_block"])
+        self.assertNotIn(("inspect","top","focus_block"),CHROME_GUIDED_OPERATIONS)
+        self.assertFalse(any(chapter.count("down")>1 or chapter.count("top")>1
+                             for chapter in CHROME_GUIDED_OPERATIONS))
+        source=(Path(__file__).parent/"branch1_real_app_capture.py").read_text("utf8")
+        self.assertIn('seconds_per_chapter=8.0,total_seconds=25.0',source)
+        self.assertIn('"48" if app=="calc" else "26"',source)
+        self.assertIn('for chapter in range(5 if app=="calc" else 3)',source)
 
 
     def test_chrome_startup_waits_for_real_loaded_default_preference(self):
