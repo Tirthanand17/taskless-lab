@@ -1,0 +1,123 @@
+name: FlowMinute B1 Preserve Exact Python Long (PRIVATE REVIEW, NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "scripts/branch1_preserve_long_review.py"
+      - "scripts/test_branch1_preserve_long_review.py"
+      - ".github/workflows/branch1-preserve-exact-long-review.yml"
+  workflow_dispatch:
+    inputs:
+      confirm_private_long_preservation:
+        description: "Preserve only source run 43880108409 exact MP4/SRT in non-public GitHub Actions artifacts; NO YOUTUBE"
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: b1-private-preserve-python-long-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source_only_security_tests:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Synthetic no-upload source tests and binary identity guards
+        run: |
+          set -euo pipefail
+          python -B -m py_compile scripts/branch1_preserve_long_review.py scripts/test_branch1_preserve_long_review.py
+          python -B -m unittest -v scripts.test_branch1_preserve_long_review
+
+  preserve_exact_private_review:
+    needs: [source_only_security_tests]
+    if: >-
+      github.repository == 'Tirthanand17/taskless-lab' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.confirm_private_long_preservation == true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      PYTHONDONTWRITEBYTECODE: "1"
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install FFmpeg for a genuine filmed thumbnail, no AI replacement
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Verify source run is the exact successful main workflow
+        run: |
+          set -euo pipefail
+          gh run view 43880108409 --repo "$GITHUB_REPOSITORY" \
+            --json headBranch,headSha,event,conclusion,workflowName > /tmp/b1-source-run.json
+          python -B - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("/tmp/b1-source-run.json").read_text("utf8"))
+          assert d["headBranch"]=="main"
+          assert d["headSha"]=="dcc8213286640d7e91f708b3dcdc4822b77419a9"
+          assert d["event"]=="workflow_dispatch"
+          assert d["conclusion"]=="success"
+          assert d["workflowName"]=="FlowMinute B1 Real Python Long-Form QA (NO YOUTUBE)"
+          print("EXACT_REAL_MAIN_NO_YOUTUBE_SOURCE_RUN_CONFIRMED")
+          PY
+      - name: Fetch the owner-approved example without altering video or captions
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/b1-long-source
+          gh run download 43880108409 --repo "$GITHUB_REPOSITORY" \
+            --name b1-REAL-PYTHON-LONG-OWNER-REVIEW-ONLY-43880108409 \
+            --dir /tmp/b1-long-source
+          python -B -m scripts.branch1_preserve_long_review \
+            --source /tmp/b1-long-source \
+            --output /tmp/b1-long-private-review
+          ffmpeg -nostdin -hide_banner -loglevel error -xerror \
+            -i /tmp/b1-long-private-review/REAL_PYTHON_LONG_NARRATED_REVIEW_ONLY.mp4 \
+            -f null -
+          echo "EXACT_FILE_SIGNED_SOURCE_PRESERVED_PRIVATE_REVIEW_NO_CHANNEL_MUTATION"
+      - name: Preserve exact original bytes in a private GitHub Actions artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: b1-HASH-LOCKED-PYTHON-LONG-PRIVATE-REVIEW-${{ github.run_id }}
+          retention-days: 30
+          compression-level: 2
+          if-no-files-found: error
+          path: |
+            /tmp/b1-long-private-review/REAL_PYTHON_LONG_NARRATED_REVIEW_ONLY.mp4
+            /tmp/b1-long-private-review/ORIGINAL_SOURCE_TIMED_CAPTIONS.srt
+            /tmp/b1-long-private-review/REAL_RECORDED_PYTHON_TOTALS_COVER_REVIEW_ONLY.png
+            /tmp/b1-long-private-review/ORIGINAL_LONG_MEDIA_RECEIPT_NO_RELEASE.json
+            /tmp/b1-long-private-review/LONG_SOURCE_PIXEL_SCREEN_REVIEW_ONLY.json
+            /tmp/b1-long-private-review/REAL_PYTHON_LONG_PRIVATE_REVIEW_BUNDLE.json
+      - name: Always erase temporary media in ephemeral runner
+        if: always()
+        run: |
+          rm -rf /tmp/b1-long-source /tmp/b1-long-private-review /tmp/b1-source-run.json
+          echo "NO YOUTUBE UPLOAD, NO PUBLIC GITHUB RELEASE, NO LAPTOP MEDIA, NO PUBLISH SIGNATURE"
