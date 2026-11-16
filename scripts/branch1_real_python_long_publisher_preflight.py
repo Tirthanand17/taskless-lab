@@ -56,14 +56,13 @@ def validate(metadata:dict,review:dict)->dict:
          and metadata.get("raw_total_usd")==review["source_data"]["naive_usd"]=="2656.25"
          and metadata.get("unique_total_usd")==review["source_data"]["clean_usd"]=="1430.75",
          "MISREPRESENTED_OR_UNVERIFIED_EXECUTED_CSV")
+    description=metadata.get("description")
     need(metadata.get("source_links")==list(EXPECTED_DOCS)
-         and metadata.get("description")==(
-             metadata["description"] if
-             all(x in metadata["description"] for x in (
-                 "fictional", "$2,656.25", "$1,430.75",
-                 "Decimal", *EXPECTED_DOCS))
-             else None)
-         and "customer data" in metadata["description"],
+         and type(description) is str
+         and all(x in description for x in (
+             "fictional", "$2,656.25", "$1,430.75",
+             "Decimal", *EXPECTED_DOCS))
+         and "customer data" in description,
          "MISLEADING_DESCRIPTION_OR_MISSING_OFFICIAL_SOURCES")
     cues=metadata.get("captions")
     need(type(cues) is list and len(cues)==EXPECTED_CUE_COUNT,
