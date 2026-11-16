@@ -371,7 +371,7 @@ def render(app:str,source_folder:Path,out:Path,model:Path,voices:Path):
         execute(["ffmpeg","-nostdin","-hide_banner","-y","-loglevel","error",
                  "-i",str(video),"-map","0:v:0","-map","0:a:0",
                  "-c:v","copy","-af",
-                 "loudnorm=I=-18:TP=-2.5:LRA=11:linear=false:print_format=none",
+                 AUDIO_REMASTER_FILTER,
                  "-ar","48000","-c:a","aac","-b:a","128k",
                  "-movflags","+faststart",str(fixed)],timeout=180)
         mastering=verify_exact_encoded_master("ffmpeg",fixed,sha(fixed),total)
