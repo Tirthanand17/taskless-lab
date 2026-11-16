@@ -1,0 +1,148 @@
+name: FlowMinute B1 Real Python Long-Form QA (NO YOUTUBE)
+
+on:
+  pull_request:
+    paths:
+      - "autopilot/branch1_real_csv_long.py"
+      - "autopilot/branch1_real_csv_long_motion.py"
+      - "autopilot/test_branch1_real_csv_long.py"
+      - ".github/workflows/branch1-real-python-long-review.yml"
+      - "docs/BRANCH1_REAL_PYTHON_LONG_FORM.md"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: b1-real-long-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  original_script_and_security_tests:
+    if: github.repository == 'Tirthanand17/taskless-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Prove executable original data cleanup and refuse fake media
+        run: |
+          set -euo pipefail
+          python -B -m py_compile \
+            autopilot/branch1_real_csv_long.py \
+            autopilot/branch1_real_csv_long_motion.py \
+            autopilot/test_branch1_real_csv_long.py
+          python -B -m unittest -v autopilot.test_branch1_real_csv_long
+          python -B - <<'PY'
+          from pathlib import Path
+          for name in ("autopilot/branch1_real_csv_long.py",
+                       "autopilot/branch1_real_csv_long_motion.py"):
+              text=Path(name).read_text("utf8")
+              for term in ("youtube.videos().insert", "status.publishAt",
+                           "googleapiclient", "oauth2", "publish_youtube(",
+                           "studio.youtube.com"):
+                  assert term not in text, (name,term)
+          print("ORIGINAL_LIVE_DATA_LONG_STORY_TESTED_NO_YOUTUBE")
+          PY
+
+  original_live_real_python_video:
+    needs: [original_script_and_security_tests]
+    if: >-
+      github.repository == 'Tirthanand17/taskless-lab' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 58
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      PUBLISH_ENABLED: "false"
+      FLOWMINUTE_ENABLE_PUBLISH: "0"
+      FLOWMINUTE_ALLOW_LAPTOP: "0"
+      MODEL_SHA256: ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c
+      VOICES_SHA256: bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install genuine terminal runner and original speech toolchain
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb xterm ffmpeg fonts-dejavu-core libsndfile1
+          python -m pip install --disable-pip-version-check --only-binary=:all: \
+            'Pillow>=11,<13' 'numpy>=1.26,<3' 'soundfile>=0.12,<1' \
+            'kokoro-onnx==0.6.1'
+          ffmpeg -hide_banner -filters | grep -E ' (ass|drawtext|tpad) '
+          ffmpeg -hide_banner -filters | grep -E ' alimiter '
+      - name: Fetch SHA-pinned public original Kokoro speech files
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/b1-long-pinned-voice
+          cd /tmp/b1-long-pinned-voice
+          base="https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1"
+          curl --fail --location --silent --show-error \
+            --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 240 \
+            -o kokoro-v1.0.int8.onnx "$base/kokoro-v1.0.int8.onnx"
+          curl --fail --location --silent --show-error \
+            --retry 3 --retry-delay 7 --connect-timeout 20 --max-time 180 \
+            -o voices-v1.0.bin "$base/voices-v1.0.bin"
+          printf '%s  %s\n' "$MODEL_SHA256" kokoro-v1.0.int8.onnx | sha256sum --check --strict
+          printf '%s  %s\n' "$VOICES_SHA256" voices-v1.0.bin | sha256sum --check --strict
+      - name: Actually execute 12 Python CSV steps and record landscape XTerm
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_real_csv_long \
+            --out /tmp/b1-real-python-long \
+            --model /tmp/b1-long-pinned-voice/kokoro-v1.0.int8.onnx \
+            --voices /tmp/b1-long-pinned-voice/voices-v1.0.bin
+      - name: Independently re-decode real final media and screen its genuine source
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_real_csv_long_motion \
+            --out /tmp/b1-real-python-long
+          python -B - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path("/tmp/b1-real-python-long")
+          data=json.loads((p/"ORIGINAL_LONG_MEDIA_RECEIPT_NO_RELEASE.json").read_text("utf8"))
+          audit=json.loads((p/"LONG_SOURCE_PIXEL_SCREEN_REVIEW_ONLY.json").read_text("utf8"))
+          assert data["owner_watched"] is False
+          assert data["rights_signed"] is False
+          assert data["publishing_authorized"] is False
+          assert audit["static_screen_risk"] is False
+          assert data["youtube_uploads"] == data["youtube_schedules"] == 0
+          assert audit["youtube_uploads"] == audit["youtube_schedules"] == 0
+          assert data["final_sha256"]==audit["final_sha256"]
+          print("ACTUAL_ORIGINAL_LONG_AV_AND_PIXEL_SCREEN_PASSED_STILL_NO_RELEASE")
+          PY
+      - name: Save brief-lived genuine long-form review media only
+        uses: actions/upload-artifact@v4
+        with:
+          name: b1-REAL-PYTHON-LONG-OWNER-REVIEW-ONLY-${{ github.run_id }}
+          retention-days: 3
+          if-no-files-found: error
+          compression-level: 2
+          path: |
+            /tmp/b1-real-python-long/REAL_PYTHON_LONG_NARRATED_REVIEW_ONLY.mp4
+            /tmp/b1-real-python-long/ORIGINAL_SOURCE_TIMED_CAPTIONS.srt
+            /tmp/b1-real-python-long/ORIGINAL_LONG_MEDIA_RECEIPT_NO_RELEASE.json
+            /tmp/b1-real-python-long/LONG_SOURCE_PIXEL_SCREEN_REVIEW_ONLY.json
+            /tmp/b1-real-python-long/REAL_LONG_FRAME_*.png
+      - name: Destroy source and model data on ephemeral runner
+        if: always()
+        run: |
+          rm -rf /tmp/b1-real-python-long /tmp/b1-long-pinned-voice
+          echo "NO YOUTUBE UPLOAD - NO SCHEDULE - NO OWNER SIGNOFF - NO LAPTOP MEDIA"
