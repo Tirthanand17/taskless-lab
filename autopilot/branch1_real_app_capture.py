@@ -601,8 +601,10 @@ def capture(app,out):
     else:
         need(observation["real_settings_ui_element"] is True
              and observation["permissions_changed"] is False
-             and observation["personal_profile_used"] is False,
-             "BROWSER_NOT_IN_REAL_UNMODIFIED_SETTINGS")
+             and observation["personal_profile_used"] is False
+             and observation["temporary_profile_default_toggled"] is True
+             and observation["demo_notification_default_final"]=="block",
+             "BROWSER_DEMO_TEMPORARY_SETTING_NOT_GENUINELY_VERIFIED")
     inspect_media(source)
     preview=out/PREVIEW
     graph=(
@@ -727,13 +729,16 @@ def verify_receipt(brief,out):
         need(set(observation)=={
             "application","before_url","after_url",
             "real_settings_ui_element","permissions_changed",
-            "personal_profile_used","youtube_uploads"}
+            "personal_profile_used","temporary_profile_default_toggled",
+            "demo_notification_default_final","youtube_uploads"}
             and observation["before_url"]=="chrome://settings/"
             and observation["after_url"]==
                 "chrome://settings/content/notifications"
             and observation["real_settings_ui_element"] is True
             and observation["permissions_changed"] is False
-            and observation["personal_profile_used"] is False,
+            and observation["personal_profile_used"] is False
+            and observation["temporary_profile_default_toggled"] is True
+            and observation["demo_notification_default_final"]=="block",
             "REAL_CHROME_SETTINGS_OBSERVATION_NOT_PROVED")
     for clip in (source,preview):
         with clip.open("rb") as raw:
