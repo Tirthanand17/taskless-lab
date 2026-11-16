@@ -13,7 +13,7 @@ from unittest.mock import patch
 from autopilot.branch1_real_app_capture import (
     APPS, STATUS, CAPTURE, PREVIEW, RECEIPT, plan,
     validate_main_only, verify_receipt, perform_real_storyboard,
-    FORMULA_WALKTHROUGH,
+    FORMULA_WALKTHROUGH, CHROME_GUIDED_OPERATIONS,
 )
 from autopilot.branch1_recovery import RecoveryRefused, validate_creative
 
@@ -128,6 +128,26 @@ class RealAppAdapterTests(unittest.TestCase):
                          "CAUSE: EXTRA SPACES CHANGE MATCH",
                          "AFTER: REAL FORMULA RETURNS TRUE"):
             self.assertNotIn(outdated,source)
+
+    def test_chrome_single_forward_route_replaces_thirty_page_flips(self):
+        chapters=CHROME_GUIDED_OPERATIONS
+        self.assertEqual(len(chapters),5)
+        for chapter in chapters:
+            self.assertEqual(len(chapter),6)
+            self.assertTrue(all(action in (
+                "home","privacy","site","notifications",
+                "down","up","top") for action in chapter))
+        routes=[operation for chapter in chapters
+                for operation in chapter
+                if operation in ("home","privacy","site","notifications")]
+        self.assertEqual(routes,["home","privacy","site","notifications"])
+        self.assertTrue(all(operation not in (
+            "home","privacy","site") for operation in chapters[4]))
+        self.assertGreaterEqual(sum(
+            operation in ("down","up","top")
+            for chapter in chapters for operation in chapter),20)
+        self.assertNotIn("toggle",str(chapters).lower())
+        self.assertNotIn("http:",str(chapters).lower())
 
     def test_real_five_chapter_storyboard_requires_running_recorder(self):
         with tempfile.TemporaryDirectory() as tmp:
