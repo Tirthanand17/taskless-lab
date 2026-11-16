@@ -50,11 +50,16 @@ FORMULA_WALKTHROUGH=(
 # six real browser operations across one nine-second recording chapter.
 # No permission toggle, third-party site or alternating page loops.
 CHROME_GUIDED_OPERATIONS=(
-    ("top","down","down","up","down","top"),
+    # A genuine before/after in a throwaway profile, not mock settings.
+    ("focus_block","ask","block","inspect","top","inspect"),
+    # Coherent navigation; internal page visits only.
     ("home","top","privacy","down","site","top"),
-    ("top","down","down","up","down","top"),
-    ("notifications","top","down","down","up","top"),
+    # Review where Notifications appears under actual Site settings.
     ("down","down","up","down","up","top"),
+    # Live default-setting selection in the real Notifications screen.
+    ("notifications","ask","block","focus_block","inspect","top"),
+    # Verify the real resulting blocked setting and exception lists.
+    ("inspect","top","focus_block","inspect","top","focus_block"),
 )
 
 
@@ -293,29 +298,36 @@ def calc_worker(out):
 
 
 def chrome_worker(out):
-    """Navigate the ACTUAL Chrome settings UI without changing permissions."""
+    """Real Chrome notification default control in an isolated demo profile.
+
+    The temporary Chrome profile is created inside a GitHub Actions runner,
+    never a user's browser. Only this disposable profile's default option
+    is clicked, by Selenium in the actual Chrome UI.
+    """
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.common.action_chains import ActionChains
     options=Options()
     binary=shutil.which("google-chrome") or shutil.which("google-chrome-stable")
     need(binary is not None,"CHROME_STABLE_NOT_INSTALLED")
     options.binary_location=binary
-    for arg in (
-        "--no-sandbox","--disable-dev-shm-usage","--no-first-run",
-        "--no-default-browser-check","--disable-extensions",
-        "--disable-background-networking","--disable-sync",
-        "--window-size=720,1280",
-    ):
+    for arg in ("--no-sandbox","--disable-dev-shm-usage","--no-first-run",
+                "--no-default-browser-check","--disable-extensions",
+                "--disable-background-networking","--disable-sync",
+                "--window-size=720,1280"):
         options.add_argument(arg)
-    options.add_argument(
-        "--user-data-dir="+str((out/"browser_private_profile").resolve()))
+    profile=(out/"browser_private_profile").resolve()
+    need(profile.is_relative_to(out.resolve())
+         and not profile.exists(), "REFUSE_EXISTING_BROWSER_PROFILE")
+    options.add_argument("--user-data-dir="+str(profile))
     driver=webdriver.Chrome(options=options)
     home="chrome://settings/"
     site="chrome://settings/content"
     privacy="chrome://settings/privacy"
     notification="chrome://settings/content/notifications"
     history=[]
+    toggle_history=[]
     try:
         driver.set_window_size(720,1280)
         def visit(uri):
@@ -329,57 +341,119 @@ def chrome_worker(out):
             need(driver.current_url.startswith("chrome://settings"),
                  "CHROME_DID_NOT_OPEN_REAL_SETTINGS")
             history.append(uri)
-        visit(notification)
-        (out/"stage_before").write_text(
-            "ACTUAL_CHROME_NOTIFICATIONS_VISIBLE_BEFORE_CAPTURE\n","utf8")
-        # The path starts at the real Notifications proof, then moves
-        # once through Settings -> Privacy and security -> Site settings
-        # -> Notifications. Scrolling the actual browser surfaces context;
-        # it does not mutate permissions or claim fake click interactions.
-        routes={
-            "home":home, "privacy":privacy,
-            "site":site,"notifications":notification,
-        }
-        scroll_deltas={"down":320,"up":-320,"top":-10000}
-        scroll_effects=[0]
-        def browse(action):
-            if action in routes:
-                visit(routes[action])
-                return
-            need(action in scroll_deltas,
-                 "CHROME_UNEXPECTED_STORY_ACTION")
-            need(driver.current_url.startswith("chrome://settings"),
-                 "BROWSER_LEFT_FIRST_PARTY_SETTINGS")
-            result=driver.execute_script(
-                """
-                const settings=document.querySelector('settings-ui');
-                if (!settings) return {ok:false};
-                const candidates=[];
-                const seen=new Set();
-                function collect(root) {
-                    if (!root || seen.has(root)) return;
-                    seen.add(root);
-                    for (const element of root.querySelectorAll('*')) {
-                        if (element.shadowRoot) collect(element.shadowRoot);
-                        if (element.clientHeight>150 && element.clientWidth>250 &&
-                            element.scrollHeight>element.clientHeight+24)
-                            candidates.push(element);
+
+        # Chrome settings are nested in real Web Components. Resolve the
+        # actual radio-button element, not a copied HTML or synthetic UI.
+        find_control_js = """
+            const seen = new Set();
+            function find(root,selector) {
+                if (!root || seen.has(root)) return null;
+                seen.add(root);
+                const direct=root.querySelector(selector);
+                if (direct) return direct;
+                for (const item of root.querySelectorAll('*')) {
+                    if (item.shadowRoot) {
+                        const hit=find(item.shadowRoot,selector);
+                        if (hit) return hit;
                     }
                 }
-                collect(document);
-                candidates.sort((a,b)=>
-                    b.clientWidth*b.clientHeight-a.clientWidth*a.clientHeight);
-                const target=candidates[0] || document.scrollingElement;
-                if (!target) return {ok:true,changed:false};
-                const old=target.scrollTop;
-                target.scrollTop=(arguments[0] < -1000)
-                    ? 0 : old+arguments[0];
-                return {ok:true,changed:Math.abs(target.scrollTop-old)>2};
-                """,scroll_deltas[action])
-            need(type(result) is dict and result.get("ok") is True,
-                 "CHROME_SETTINGS_NOT_A_REAL_PAGE")
-            if result.get("changed") is True:
-                scroll_effects[0]+=1
+                return null;
+            }
+            const group=find(document,'settings-category-default-radio-group#notificationDefaultRadioGroup');
+            if (!group) return null;
+            const control=group.shadowRoot?.querySelector('#'+arguments[0]+'RadioOption');
+            return control || null;
+        """
+        get_option_js = """
+            const seen = new Set();
+            function find(root) {
+                if (!root || seen.has(root)) return null;
+                seen.add(root);
+                const direct=root.querySelector('settings-category-default-radio-group#notificationDefaultRadioGroup');
+                if (direct) return direct;
+                for(const item of root.querySelectorAll('*')) {
+                    if(item.shadowRoot) {
+                        const hit=find(item.shadowRoot);
+                        if(hit) return hit;
+                    }
+                }
+                return null;
+            }
+            const group=find(document);
+            return group ? String(group.selectedValue || '').toLowerCase() : '';
+        """
+        def selected_option():
+            need(driver.current_url==notification,
+                 "NOT_ON_REAL_NOTIFICATION_DEFAULT_PAGE")
+            return driver.execute_script(get_option_js)
+        def toggle(to):
+            need(to in ("ask","block"),"ONLY_REAL_ASK_AND_BLOCK_CHOICES")
+            need(driver.current_url==notification,
+                 "NO_TOGGLE_OUTSIDE_DISPOSABLE_CHROME_SETTINGS")
+            option=WebDriverWait(driver,15).until(
+                lambda d: d.execute_script(find_control_js,to))
+            # A genuine WebDriver pointer click on Chrome's internal radio.
+            ActionChains(driver).move_to_element(option).click().perform()
+            WebDriverWait(driver,12).until(
+                lambda d: selected_option()==to)
+            need(selected_option()==to,"CHROME_REAL_RADIO_NOT_CHANGED")
+            toggle_history.append(to)
+        def focus_block():
+            need(driver.current_url==notification,
+                 "FOCUS_ONLY_ON_REAL_NOTIFICATION_PAGE")
+            option=WebDriverWait(driver,15).until(
+                lambda d: d.execute_script(find_control_js,"block"))
+            ActionChains(driver).move_to_element(option).perform()
+        def browse(action):
+            if action in {"home":home,"privacy":privacy,"site":site,
+                          "notifications":notification}:
+                visit({"home":home,"privacy":privacy,"site":site,
+                       "notifications":notification}[action])
+            elif action in ("ask","block"):
+                toggle(action)
+            elif action=="focus_block":
+                focus_block()
+            elif action in ("down","up","top","inspect"):
+                need(driver.current_url.startswith("chrome://settings"),
+                     "BROWSER_LEFT_FIRST_PARTY_SETTINGS")
+                delta={"down":330,"up":-330,"top":-10000,
+                       "inspect":480}[action]
+                result=driver.execute_script(
+                    """
+                    const seen=new Set(),candidates=[];
+                    function scan(root) {
+                        if (!root||seen.has(root)) return;
+                        seen.add(root);
+                        for (const el of root.querySelectorAll('*')) {
+                            if(el.shadowRoot)scan(el.shadowRoot);
+                            if(el.clientHeight>150 && el.clientWidth>200 &&
+                               el.scrollHeight>el.clientHeight+24)
+                                candidates.push(el);
+                        }
+                    }
+                    scan(document);
+                    candidates.sort((a,b)=>
+                        b.clientHeight*b.clientWidth-a.clientHeight*a.clientWidth);
+                    const target=candidates[0] || document.scrollingElement;
+                    if(!target)return false;
+                    const before=target.scrollTop;
+                    target.scrollTop=arguments[0]<-1000?0:before+arguments[0];
+                    return Math.abs(target.scrollTop-before)>2;
+                    """,delta)
+                need(type(result) is bool,"INVALID_ACTUAL_CHROME_SCROLL")
+            else:
+                raise RecoveryRefused("UNKNOWN_CHROME_STORY_OPERATION")
+
+        visit(notification)
+        need(selected_option() in ("ask","block"),
+             "CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE")
+        # Show actual blocked payoff first; the final disposable profile
+        # is destroyed by the runner after recording.
+        toggle("block")
+        need(selected_option()=="block",
+             "REAL_PROOF_FIRST_BLOCK_SETTING_MISSING")
+        (out/"stage_before").write_text(
+            "DISPOSABLE_PROFILE_REAL_CHROME_BLOCK_STATE_READY\n","utf8")
         actions=[
             [(lambda action=action:browse(action)) for action in chapter]
             for chapter in CHROME_GUIDED_OPERATIONS
@@ -388,24 +462,26 @@ def chrome_worker(out):
         need(history==[notification,home,privacy,site,notification]
              and driver.current_url==notification,
              "CHROME_MUST_FOLLOW_ONE_WAY_GENUINE_SETTINGS_PATH")
-        # Unlike the previous 30-page flip experiment, the result
-        # is a brief, comprehensible four-page route and on-page review.
-        need(scroll_effects[0]>=2,
-             "CHROME_NEEDS_GENUINE_VISIBLE_ON_PAGE_REVIEW")
+        need(toggle_history.count("ask")>=2
+             and toggle_history.count("block")>=3
+             and selected_option()=="block",
+             "CHROME_REAL_BEFORE_AFTER_RADIOS_NOT_VERIFIED")
         put(out/"application_observation.json",{
             "application":"Chromium browser",
             "before_url":"chrome://settings/",
             "after_url":driver.current_url,
             "real_settings_ui_element":True,
+            # No real user's Chrome profile, account, or permission changed.
             "permissions_changed":False,
             "personal_profile_used":False,
+            "temporary_profile_default_toggled":True,
+            "demo_notification_default_final":"block",
             "youtube_uploads":0,
         })
         (out/"stage_after").write_text(
-            "FIVE_REAL_CHROME_APPLICATION_CHAPTERS_COMPLETED\n","utf8")
+            "REAL_CHROME_TEMPORARY_NOTIFICATION_SETTING_CONFIRMED\n","utf8")
     finally:
         driver.quit()
-
 
 def decoded_frame_hash(capture, t):
     p=subprocess.run([
