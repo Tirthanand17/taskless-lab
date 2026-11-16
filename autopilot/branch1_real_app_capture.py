@@ -81,9 +81,35 @@ def wait_for(path, proc, timeout=32):
         time.sleep(.15)
     raise RecoveryRefused("APPLICATION_WORKER_NEVER_BECAME_READY")
 
+def perform_real_storyboard(out, actions):
+    """Six actual application interactions per nine-second source chapter.
+
+    The recorder creates capture_started only AFTER recording is running.
+    A monotonically timed scenario prevents racing ahead during startup.
+    """
+    until=time.monotonic()+30
+    while not (out/"capture_started").is_file():
+        need(time.monotonic()<until,"REAL_APP_CAPTURE_NEVER_STARTED")
+        time.sleep(.08)
+    started=time.monotonic()
+    need(len(actions)==5 and all(len(a)==6 for a in actions),
+         "REAL_UI_ACTION_PLAN_MISMATCH")
+    for chapter,operations in enumerate(actions):
+        for index,operation in enumerate(operations):
+            scheduled=started+chapter*9.0+index*1.0+.1
+            while time.monotonic()<scheduled:
+                time.sleep(min(.10,scheduled-time.monotonic()))
+            operation()
+        (out/f"real_stage_{chapter}").write_text(
+            f"REAL_APP_CHAPTER_{chapter}_EXECUTED\n","utf8")
+    left=started+46-time.monotonic()
+    if left>0:
+        time.sleep(left)
+
+
 def calc_worker(out):
-    # This worker runs under /usr/bin/python3 (Ubuntu python3-uno).
-    import uno  # third-party system LibreOffice UNO integration
+    """Genuinely evaluate formulas and progressively demonstrate in Calc."""
+    import uno
     local=uno.getComponentContext()
     resolver=local.ServiceManager.createInstanceWithContext(
         "com.sun.star.bridge.UnoUrlResolver",local)
@@ -95,38 +121,98 @@ def calc_worker(out):
             break
         except Exception:
             time.sleep(.2)
-    need(ctx is not None, "REAL_CALC_UNO_NOT_CONNECTED")
+    need(ctx is not None,"REAL_CALC_UNO_NOT_CONNECTED")
     desktop=ctx.ServiceManager.createInstanceWithContext(
         "com.sun.star.frame.Desktop",ctx)
     doc=desktop.loadComponentFromURL("private:factory/scalc","_blank",0,())
-    need(doc is not None, "CALC_DOCUMENT_NOT_ACTUALLY_OPEN")
+    need(doc is not None,"CALC_DOCUMENT_NOT_ACTUALLY_OPEN")
     try:
         sheet=doc.Sheets.getByIndex(0)
-        sheet.getCellRangeByName("A1").String="REAL CALC - TEXT CLEANUP"
+        sheet.getCellRangeByName("A1").String="RESULT: TWO TEXT LABELS NOW MATCH"
         sheet.getCellRangeByName("A2").String="  Invoice"
         sheet.getCellRangeByName("A3").String="Invoice"
-        sheet.getCellRangeByName("B1").String="COMPARISON"
+        sheet.getCellRangeByName("B1").String="LIVE CALC TEST"
         sheet.getCellRangeByName("B2").Formula="=A2=A3"
-        sheet.getCellRangeByName("D1").String="SOURCE: SYNTHETIC ONLY"
-        sheet.Columns.getByIndex(0).Width=7000
-        sheet.Columns.getByIndex(1).Width=5000
-        sheet.Columns.getByIndex(3).Width=7000
-        controller=doc.getCurrentController()
-        controller.ZoomValue=170
-        controller.select(sheet.getCellRangeByName("B2"))
-        wrong=sheet.getCellRangeByName("B2").Value
-        need(wrong==0, "CALC_BEFORE_NOT_FALSE")
-        (out/"stage_before").write_text("UNO_CALC_REAL_BEFORE\n","utf8")
-        time.sleep(1.5)
-        sheet.getCellRangeByName("A5").String="TRIM REMOVES LEADING SPACES"
         sheet.getCellRangeByName("B3").Formula="=TRIM(A2)=TRIM(A3)"
+        sheet.getCellRangeByName("D1").String="FICTIONAL DATA ONLY"
+        sheet.Columns.getByIndex(0).Width=6700
+        sheet.Columns.getByIndex(1).Width=5800
+        sheet.Columns.getByIndex(2).Width=6400
+        sheet.Columns.getByIndex(3).Width=6100
+        controller=doc.getCurrentController()
+        controller.ZoomValue=185
         controller.select(sheet.getCellRangeByName("B3"))
-        corrected=sheet.getCellRangeByName("B3").Value
-        need(corrected==1, "CALC_TRIM_DID_NOT_EVALUATE_TRUE")
+        need(sheet.getCellRangeByName("B2").Value==0,
+             "CALC_BEFORE_NOT_FALSE")
+        need(sheet.getCellRangeByName("B3").Value==1,
+             "CALC_INITIAL_TRUE_NOT_REAL")
+        (out/"stage_before").write_text(
+            "ACTUAL_CALC_TRUE_RESULT_READY_FOR_PROOF_FIRST_CAPTURE\n","utf8")
+
+        def cell(key,value):
+            sheet.getCellRangeByName(key).String=value
+
+        def formula(key,value):
+            sheet.getCellRangeByName(key).Formula=value
+
+        def select(key):
+            controller.select(sheet.getCellRangeByName(key))
+
+        def color(key,value):
+            sheet.getCellRangeByName(key).CellBackColor=value
+
+        # Every event changes the ORIGINAL LibreOffice worksheet, formula,
+        # highlighting or genuine selection. No simulated UI pixels.
+        actions=[
+            [
+                lambda: cell("C1","PROOF: CLEANED MATCH = TRUE"),
+                lambda: color("A2:C3",0xE4F7EE),
+                lambda: select("B3"),
+                lambda: cell("C2","TRIM REMOVES EXTRA SPACES"),
+                lambda: color("B3:C3",0xB7E9CB),
+                lambda: select("A2:B3"),
+            ],
+            [
+                lambda: cell("A1","BEFORE: ALMOST IDENTICAL TEXT"),
+                lambda: formula("B3",""),
+                lambda: color("A2:C3",0xFFF1E6),
+                lambda: select("A2"),
+                lambda: cell("C2","FIRST TEXT STARTS WITH SPACES"),
+                lambda: select("A3"),
+            ],
+            [
+                lambda: cell("A1","CAUSE: EXTRA SPACES CHANGE MATCH"),
+                lambda: formula("B2","=A2=A3"),
+                lambda: formula("C5","=LEN(A2)"),
+                lambda: formula("C6","=LEN(A3)"),
+                lambda: select("C5:C6"),
+                lambda: color("A2:B2",0xFACCC5),
+            ],
+            [
+                lambda: cell("A1","FIX: CLEAN BOTH TEXT VALUES"),
+                lambda: formula("B3","=TRIM(A2)"),
+                lambda: formula("B4","=TRIM(A3)"),
+                lambda: formula("B3","=TRIM(A2)=TRIM(A3)"),
+                lambda: color("A2:C4",0xCFF4E3),
+                lambda: select("B3"),
+            ],
+            [
+                lambda: cell("A1","AFTER: REAL FORMULA RETURNS TRUE"),
+                lambda: color("B2",0xF7CCCC),
+                lambda: color("B3",0xA7E4C4),
+                lambda: cell("C2","FALSE BEFORE; TRUE AFTER TRIM"),
+                lambda: select("A2:C3"),
+                lambda: select("B3"),
+            ],
+        ]
+        perform_real_storyboard(out,actions)
         doc.calculateAll()
         need(sheet.getCellRangeByName("B2").Value==0
              and sheet.getCellRangeByName("B3").Value==1,
              "CALC_COMPARISON_NOT_REPRODUCIBLE")
+        need(sheet.getCellRangeByName("C5").Value >
+             sheet.getCellRangeByName("C6").Value,
+             "REAL_CALC_TEXT_LENGTH_DIFFERENCE_NOT_PROVED")
         doc.storeAsURL((out/"ACTUAL_CALC_VALIDATED.ods").resolve().as_uri(),())
         put(out/"application_observation.json",{
             "application":"LibreOffice Calc",
@@ -135,46 +221,79 @@ def calc_worker(out):
             "source_fixture_only":True,"real_uno_calculation":True,
             "youtube_uploads":0,
         })
-        (out/"stage_after").write_text("UNO_CALC_REAL_AFTER\n","utf8")
-        time.sleep(9)
+        (out/"stage_after").write_text(
+            "FIVE_ACTUAL_CALC_APPLICATION_CHAPTERS_COMPLETED\n","utf8")
     finally:
         doc.close(True)
 
+
 def chrome_worker(out):
-    # Never opens a personal browser profile. This navigates REAL Chrome
-    # settings, but does NOT modify real notification permissions.
+    """Navigate the ACTUAL Chrome settings UI without changing permissions."""
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.support.ui import WebDriverWait
     options=Options()
     binary=shutil.which("google-chrome") or shutil.which("google-chrome-stable")
-    need(binary is not None, "CHROME_STABLE_NOT_INSTALLED")
+    need(binary is not None,"CHROME_STABLE_NOT_INSTALLED")
     options.binary_location=binary
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--no-first-run")
-    options.add_argument("--no-default-browser-check")
-    options.add_argument("--disable-extensions")
-    options.add_argument("--disable-background-networking")
-    options.add_argument("--disable-sync")
-    options.add_argument("--window-size=720,1280")
-    options.add_argument("--user-data-dir="+str((out/"browser_private_profile").resolve()))
+    for arg in (
+        "--no-sandbox","--disable-dev-shm-usage","--no-first-run",
+        "--no-default-browser-check","--disable-extensions",
+        "--disable-background-networking","--disable-sync",
+        "--window-size=720,1280",
+    ):
+        options.add_argument(arg)
+    options.add_argument(
+        "--user-data-dir="+str((out/"browser_private_profile").resolve()))
     driver=webdriver.Chrome(options=options)
+    home="chrome://settings/"
+    site="chrome://settings/content"
+    privacy="chrome://settings/privacy"
+    notification="chrome://settings/content/notifications"
+    history=[]
     try:
         driver.set_window_size(720,1280)
-        driver.get("chrome://settings/")
-        WebDriverWait(driver,20).until(
-            lambda d: d.execute_script("return !!document.querySelector('settings-ui')"))
-        need(driver.current_url.startswith("chrome://settings"),
-             "CHROME_SETTINGS_NOT_REAL")
-        (out/"stage_before").write_text("ACTUAL_CHROME_SETTINGS\n","utf8")
-        time.sleep(1.5)
-        driver.get("chrome://settings/content/notifications")
-        WebDriverWait(driver,20).until(
-            lambda d: (d.current_url.startswith("chrome://settings/content/notifications")
-                       and d.execute_script("return !!document.querySelector('settings-ui')")))
-        need(driver.current_url=="chrome://settings/content/notifications",
-             "CHROME_NOTIFICATIONS_PAGE_NOT_REAL")
+        def visit(uri):
+            need(uri in (home,site,privacy,notification),
+                 "DISALLOWED_EXTERNAL_OR_USER_BROWSER_URI")
+            driver.get(uri)
+            WebDriverWait(driver,20).until(
+                lambda d: d.current_url.rstrip("/") == uri.rstrip("/")
+                and d.execute_script(
+                    "return !!document.querySelector('settings-ui')"))
+            need(driver.current_url.startswith("chrome://settings"),
+                 "CHROME_DID_NOT_OPEN_REAL_SETTINGS")
+            history.append(uri)
+        visit(notification)
+        (out/"stage_before").write_text(
+            "ACTUAL_CHROME_NOTIFICATIONS_VISIBLE_BEFORE_CAPTURE\n","utf8")
+        # Real navigation through the browser's built-in pages. No fake UI,
+        # personal account, external domain or permission toggles.
+        actions=[
+            [lambda:visit(site),lambda:visit(notification),
+             lambda:visit(site),lambda:visit(notification),
+             lambda:visit(site),lambda:visit(notification)],
+            [lambda:visit(home),lambda:visit(privacy),
+             lambda:visit(home),lambda:visit(privacy),
+             lambda:visit(home),lambda:visit(privacy)],
+            [lambda:visit(site),lambda:visit(privacy),
+             lambda:visit(site),lambda:visit(notification),
+             lambda:visit(site),lambda:visit(notification)],
+            [lambda:visit(site),lambda:visit(notification),
+             lambda:visit(site),lambda:visit(notification),
+             lambda:visit(site),lambda:visit(notification)],
+            [lambda:visit(site),lambda:visit(notification),
+             lambda:visit(site),lambda:visit(notification),
+             lambda:visit(site),lambda:visit(notification)],
+        ]
+        perform_real_storyboard(out,actions)
+        need(history[0]==notification
+             and history[-1]==notification
+             and home in history and privacy in history
+             and site in history
+             and len(history)>=30
+             and driver.current_url==notification,
+             "CHROME_STORYBOARD_NOT_ACTUALLY_NAVIGATED")
         put(out/"application_observation.json",{
             "application":"Chromium browser",
             "before_url":"chrome://settings/",
@@ -184,10 +303,11 @@ def chrome_worker(out):
             "personal_profile_used":False,
             "youtube_uploads":0,
         })
-        (out/"stage_after").write_text("ACTUAL_CHROME_NOTIFICATIONS\n","utf8")
-        time.sleep(9)
+        (out/"stage_after").write_text(
+            "FIVE_REAL_CHROME_APPLICATION_CHAPTERS_COMPLETED\n","utf8")
     finally:
         driver.quit()
+
 
 def decoded_frame_hash(capture, t):
     p=subprocess.run([
