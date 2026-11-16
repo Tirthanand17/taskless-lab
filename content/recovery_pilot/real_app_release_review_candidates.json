@@ -1,0 +1,82 @@
+{
+  "schema": "FLOWMINUTE_B1_REAL_APPS_PILOT_CANDIDATES_V1",
+  "report_date": "2026-11-16",
+  "status": "CREATIVE_REVIEW_REQUIRED_NO_YOUTUBE",
+  "series_name": "Real Data Fixes",
+  "language": "en",
+  "channel": "FlowMinute Lab",
+  "source_main_narrated_run": 43861126654,
+  "source_independent_motion_run": 43861505657,
+  "owner_full_watch_and_listen_complete": false,
+  "release_signed": false,
+  "youtube_uploads": 0,
+  "youtube_schedules": 0,
+  "auto_publish_enabled": false,
+  "baseline_reference_not_a_target": {
+    "short_stayed_to_watch_pct": 21.2,
+    "long_average_view_duration_seconds": 58,
+    "long_impressions_ctr_pct": 4.8
+  },
+  "measurement_windows_hours": [
+    24,
+    72,
+    168
+  ],
+  "measurement_fields": [
+    "shown_in_feed",
+    "stayed_to_watch_pct",
+    "engaged_views",
+    "average_view_duration_seconds",
+    "subscribers_gained",
+    "traffic_sources",
+    "retention_3s_pct"
+  ],
+  "candidates": [
+    {
+      "app": "calc",
+      "episode_id": "fm_pilot_calc_trim_short_en",
+      "filename": "NARRATED_REAL_APP_REVIEW_ONLY.mp4",
+      "actual_seconds": 26.542,
+      "sha256": "09db1b1c86542b5b1bd0ced964c316afad22eca197b5efac286febf698636cc8",
+      "review_artifact": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43861126654/artifacts/14222929339",
+      "platform_title": "Two Cells Look Equal but Don't Match? Try TRIM in Calc",
+      "factual_description": "Two spreadsheet cells can look the same but compare FALSE because of a leading space. Watch a real LibreOffice Calc worksheet use TRIM to return TRUE. This demonstration uses fictional data and contains no personal information. Official help: https://help.libreoffice.org/",
+      "hashtags": [
+        "#DataCleaning",
+        "#LibreOffice",
+        "#Shorts"
+      ],
+      "pinned_comment_draft": "What real data problem should we demonstrate next: extra spaces, duplicates, or dates? Follow Real Data Fixes for short, practical demonstrations.",
+      "mobile_cover_brief": "Choose a real recorded frame where the sheet's FALSE and TRUE comparison are readable; no invented before/after graphics.",
+      "approval": {
+        "owner_watched_exact_mp4": false,
+        "facts_reviewed": false,
+        "rights_reviewed": false,
+        "release_signed": false
+      }
+    },
+    {
+      "app": "chrome",
+      "episode_id": "fm_pilot_chrome_log_find_short_en",
+      "filename": "NARRATED_REAL_APP_REVIEW_ONLY.mp4",
+      "actual_seconds": 20.507,
+      "sha256": "372d93eddd1b552063f6364d334fd889ad1d78cf8f64d2c47c3f10d63246e2ed",
+      "review_artifact": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43861126654/artifacts/14223012938",
+      "platform_title": "Find Errors Fast in a 780-Line Log (Chrome Ctrl+F)",
+      "factual_description": "Use Chrome's native Find to locate ERROR in a long page and Ctrl+G to visit the next match. This original demo uses a fictional, local 780-line log containing 12 sample errors. No external website, personal account or user browser setting is involved. Official help: https://support.google.com/chrome/answer/95440",
+      "hashtags": [
+        "#ChromeTips",
+        "#DataWorkflow",
+        "#Shorts"
+      ],
+      "pinned_comment_draft": "For a long log, would you rather search ERROR or scroll manually? More first-party, real-software data fixes are in this series.",
+      "mobile_cover_brief": "Choose the genuine recorded Chrome Find bar showing ERROR and a highlighted fictional error line; no fabricated website screenshot.",
+      "approval": {
+        "owner_watched_exact_mp4": false,
+        "facts_reviewed": false,
+        "rights_reviewed": false,
+        "release_signed": false
+      }
+    }
+  ]
+}
