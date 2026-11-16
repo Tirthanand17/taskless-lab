@@ -345,8 +345,8 @@ def render(app:str,source_folder:Path,out:Path,model:Path,voices:Path):
     graph=video_graph(app,durations,ass,out)
     video=out/OUT_MP4
     from autopilot.verified_aac_mastering_b4g5 import (
-        AUDIO_MASTERING_FILTER,verify_exact_encoded_master,
-        EncodedMasteringRefused,
+        AUDIO_MASTERING_FILTER,AUDIO_REMASTER_FILTER,
+        verify_exact_encoded_master,EncodedMasteringRefused,
     )
     execute(["ffmpeg","-nostdin","-hide_banner","-y","-loglevel","error",
              "-i",str(src),"-i",str(wav),
