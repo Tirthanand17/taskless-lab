@@ -29,7 +29,7 @@ RECEIPT="ORIGINAL_LONG_MEDIA_RECEIPT_NO_RELEASE.json"
 # A single continuous problem to solve; no repeated generic productivity slides.
 STORY=(
  ("PROOF FIRST / WRONG TOTAL",
-  "This original CSV says eight rows add up to two thousand six hundred fifty six dollars and twenty five cents. But the genuinely cleaned file has six invoices worth one thousand four hundred thirty dollars and seventy five cents. Let us find each mistake using real Python."),
+  "This real CSV has eight rows. A naive sum counts two thousand six hundred fifty six dollars and twenty five cents. The corrected file has six invoices. Its total is one thousand four hundred thirty dollars and seventy five cents. Let us find each mistake using real Python."),
  ("SEE THE ORIGINAL DATA",
   "Here is the actual fictional source CSV, not a mock spreadsheet. Two invoice identifiers contain repeated records, one identifier begins with spaces, and amounts use commas. Notice how a human can overlook the differences even when the file looks ordinary."),
  ("BUG ONE / HIDDEN SPACES",
@@ -159,12 +159,21 @@ def verify_story():
     need(len(STORY)==12 and len(RAW_ROWS)==8,"LONG_STORY_INCOMPLETE")
     words=sum(len(spoken.split()) for _,spoken in STORY)
     need(360<=words<=640,"REAL_LONG_TUTORIAL_NOT_SUBSTANTIVE")
+    from autopilot.branch1_nov12_four_review_videos import (
+        split_script,FourVideoRefused
+    )
     for title,spoken in STORY:
         need(type(title) is str and re.fullmatch("[A-Z0-9 /]+",title)
              and 14<=len(title)<=50
              and type(spoken) is str and 140<=len(spoken)<=520
              and not any(x in spoken for x in ("{","}","<",">","@")),
              "UNSAFE_STORY_AND_VOICE")
+        try:
+            cues=split_script(spoken,"long")
+        except FourVideoRefused:
+            raise LongPilotRefused("TTS_CAPTION_CUE_NOT_PHYSICALLY_READABLE") from None
+        need(bool(cues) and all(len(part)>=8 for part in cues),
+             "TTS_CAPTION_CUE_NOT_PHYSICALLY_READABLE")
     return {"scenes":12,"words":words,"real_python_required":True,
             "youtube_release_approved":False}
 
