@@ -163,6 +163,7 @@ class RealAppAdapterTests(unittest.TestCase):
         self.assertIn('CHROME_REAL_NOTIFICATION_DEFAULT_NEVER_LOADED',source)
         self.assertIn('CHROME_ORIGINAL_NOTIFICATION_DEFAULT_NOT_READABLE',source)
         self.assertNotIn('selected_option() or "ask"',source)
+        self.assertIn('timeout=60 if app=="chrome" else 32',source)
 
     def test_real_five_chapter_storyboard_requires_running_recorder(self):
         with tempfile.TemporaryDirectory() as tmp:
