@@ -43,7 +43,7 @@ jobs:
           python -B -m py_compile \
             autopilot/branch1_recovery.py \
             autopilot/branch1_record_real_demo.py \
-            autopilot/test_branch1_recovery.py
+            autopilot/test_branch1_recovery.py \
             autopilot/branch1_nine_cause_diagnosis.py \
             autopilot/test_branch1_nine_cause_diagnosis.py
           python -B -m unittest -v \
