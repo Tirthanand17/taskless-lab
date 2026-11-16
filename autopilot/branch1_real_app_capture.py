@@ -110,7 +110,10 @@ def perform_real_storyboard(out, actions):
          "REAL_UI_ACTION_PLAN_MISMATCH")
     for chapter,operations in enumerate(actions):
         for index,operation in enumerate(operations):
-            scheduled=started+chapter*9.0+index*1.0+.1
+            # Six genuine actions must span the whole nine-second chapter,
+            # rather than clustering in the first 5 seconds and leaving
+            # four seconds of inert app pixels under ongoing narration.
+            scheduled=started+chapter*9.0+index*1.5+.1
             while time.monotonic()<scheduled:
                 time.sleep(min(.10,scheduled-time.monotonic()))
             operation()
