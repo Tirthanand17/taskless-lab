@@ -211,6 +211,19 @@ class RealAppAdapterTests(unittest.TestCase):
                     self.assertAlmostEqual(nxt-prev,1.5,delta=.15)
             self.assertGreaterEqual(clock[0],46)
 
+    def test_early_real_application_failure_reports_bounded_python_traceback(self):
+        from autopilot.branch1_real_app_capture import wait_for
+        from io import StringIO
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as d:
+            proc=SimpleNamespace(
+                poll=lambda: 7,
+                returncode=7,
+                stderr=StringIO("Traceback: REAL_CHROME_RADIO_NOT_FOUND"))
+            with self.assertRaisesRegex(RecoveryRefused,
+                    "REAL_CHROME_RADIO_NOT_FOUND"):
+                wait_for(Path(d)/"never_created_before_capture",proc,timeout=1)
+
     def test_main_only_never_auto_run_with_privileged_or_laptop_context(self):
         for app in APPS:
             validate_main_only(good_env(),app)
