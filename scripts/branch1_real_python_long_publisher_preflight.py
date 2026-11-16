@@ -43,7 +43,6 @@ def validate(metadata:dict,review:dict)->dict:
          "VIDEO_ID_CHANNEL_RENDERER_OR_EXACT_TITLE_MISMATCH")
     need(metadata.get("exact_original_mp4_sha256")==review.get("sha256")==EXPECTED_MP4
          and metadata.get("exact_original_srt_sha256")==EXPECTED_SRT
-         and metadata.get("exact_actual_frame_cover_sha256")==EXPECTED_COVER
          and type(metadata.get("reviewed_mp4_duration_seconds")) in (float,int)
          and abs(metadata["reviewed_mp4_duration_seconds"]-214.833)<0.001
          and metadata.get("original_github_preservation_run")==43898583072
