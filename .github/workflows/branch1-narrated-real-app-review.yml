@@ -5,6 +5,8 @@ on:
     paths:
       - "autopilot/branch1_narrated_real_app_short.py"
       - "autopilot/test_branch1_narrated_real_app_short.py"
+      - "autopilot/test_branch1_inrun_motion_gate_contract.py"
+      - "autopilot/branch1_short_motion_audit.py"
       - "autopilot/branch1_real_action_coverage_gate.py"
       - "autopilot/test_branch1_real_action_coverage_gate.py"
       - ".github/workflows/branch1-narrated-real-app-review.yml"
@@ -41,10 +43,13 @@ jobs:
           python -B -m py_compile \
             autopilot/branch1_narrated_real_app_short.py \
             autopilot/test_branch1_narrated_real_app_short.py \
+            autopilot/test_branch1_inrun_motion_gate_contract.py \
+            autopilot/branch1_short_motion_audit.py \
             autopilot/branch1_real_action_coverage_gate.py \
             autopilot/test_branch1_real_action_coverage_gate.py
           python -B -m unittest -v \
             autopilot.test_branch1_narrated_real_app_short \
+            autopilot.test_branch1_inrun_motion_gate_contract \
             autopilot.test_branch1_real_action_coverage_gate \
             autopilot.test_branch1_real_app_capture \
             autopilot.test_branch1_recovery
@@ -175,6 +180,14 @@ jobs:
           assert r["real_recording_pixel_source"] is True
           print("FINAL_REAL_APP_NARRATED_H264_AAC_HASH_VERIFIED_UNAPPROVED")
           PY
+      - name: Independently measure exact finished video source pixels before archiving
+        run: |
+          set -euo pipefail
+          python -B -m autopilot.branch1_short_motion_audit \
+            --mp4 "/tmp/flowminute-b1-narrated-$DEMO_APP/NARRATED_REAL_APP_REVIEW_ONLY.mp4" \
+            --receipt "/tmp/flowminute-b1-narrated-$DEMO_APP/NARRATED_REAL_APP_PROVENANCE_NOT_RELEASE_APPROVED.json" \
+            --out "/tmp/flowminute-b1-direct-pixel-$DEMO_APP"
+          echo "HASH_BOUND_REAL_APPLICATION_PIXEL_MEASUREMENT_NOT_RELEASE"
       - name: Save short-lived exact media for HUMAN creative listening and watching
         uses: actions/upload-artifact@v4
         with:
@@ -185,13 +198,35 @@ jobs:
             /tmp/flowminute-b1-narrated-${{ matrix.app }}/NARRATED_REAL_APP_PROVENANCE_NOT_RELEASE_APPROVED.json
             /tmp/flowminute-actual-${{ matrix.app }}/REAL_APP_SOURCE_HASH_BOUND_UNAPPROVED.json
             /tmp/flowminute-actual-${{ matrix.app }}/application_observation.json
+            /tmp/flowminute-b1-direct-pixel-${{ matrix.app }}/REAL_VISUAL_CREATIVE_REVIEW.json
+            /tmp/flowminute-b1-direct-pixel-${{ matrix.app }}/REAL_MOBILE_REVIEW_*.png
           retention-days: 3
           if-no-files-found: error
           compression-level: 2
+      - name: Refuse creative release when exact source app pixels are static
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          app=os.environ["DEMO_APP"]
+          path=Path(f"/tmp/flowminute-b1-direct-pixel-{app}/REAL_VISUAL_CREATIVE_REVIEW.json")
+          report=json.loads(path.read_text("utf8"))
+          assert report["app"]==app
+          assert report["owner_review_complete"] is False
+          assert report["publish_or_schedule_authorized"] is False
+          assert report["youtube_uploads"]==0 and report["youtube_schedules"]==0
+          if report["visual_screening"]["high_risk_static_pacing"]:
+              print("REVIEW_CLIP_REJECTED_REAL_PIXELS",
+                    ",".join(report["visual_screening"]["reasons"]))
+              raise SystemExit(1)
+          print("REAL_PIXEL_SCREEN_PASSED_OWNER_WATCH_STILL_REQUIRED",app)
+          PY
       - name: Destroy temporary model, source and render data
         if: always()
         run: |
           rm -rf /tmp/flowminute-b1-pinned-original-speech \
             "/tmp/flowminute-b1-narrated-$DEMO_APP" \
-            "/tmp/flowminute-actual-$DEMO_APP"
+            "/tmp/flowminute-actual-$DEMO_APP" \
+            "/tmp/flowminute-b1-direct-pixel-$DEMO_APP"
           echo "REVIEW ONLY — NO PERSONAL DATA — NO YOUTUBE UPLOAD OR SCHEDULE — NO PURCHASE"
