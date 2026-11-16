@@ -136,22 +136,56 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
     for i,((start,window),secs) in enumerate(zip(windows,durations)):
         insist(2.5<=secs<=11.0,"CHAPTER_PACING_TOO_SLOW_OR_TOO_FAST")
         label=chapter_asset(folder,i,STORIES[app]["chapters"][i][0])
-        # Each 9s chapter is an ACTUAL 48s recorded application sequence;
-        # no template animations can be used to replace missing real activity.
-        f=(
+        # Both panels are from the SAME genuine, timestamped app video.
+        # The Calc top half shows the actual data; the bottom is an enlarged
+        # crop of the actual formula/results area. No simulated spreadsheet.
+        base=(
             f"[s{i}]trim=start={start:.3f}:duration={window:.3f},"
-            f"setpts=PTS-STARTPTS,scale={VIDEO_W}:{VIDEO_H}:flags=bicubic,"
-            f"setsar=1,fps={FPS},"
+            "setpts=PTS-STARTPTS,fps=24,"
             "tpad=stop_mode=clone:stop_duration=12,"
             f"trim=duration={secs:.6f},setpts=PTS-STARTPTS,"
-            "drawbox=x=0:y=0:w=iw:h=127:color=0x081827@0.86:t=fill,"
+        )
+        if app=="calc":
+            parts.append(base+f"split=2[appmain{i}][appdetail{i}]")
+            parts.append(
+                f"[appmain{i}]crop=720:460:0:0,"
+                f"scale=1080:690:flags=bicubic,setsar=1[upper{i}]"
+            )
+            parts.append(
+                f"[appdetail{i}]crop=420:230:300:50,"
+                f"scale=1080:591:flags=bicubic,setsar=1[lower{i}]"
+            )
+            parts.append(
+                f"color=c=0x081827:size=1080x1920:rate=24:"
+                f"d={secs:.6f}[canvas{i}]"
+            )
+            parts.append(
+                f"[canvas{i}][upper{i}]overlay=x=0:y=190:"
+                f"shortest=1[withupper{i}]"
+            )
+            parts.append(
+                f"[withupper{i}][lower{i}]overlay=x=0:y=900:"
+                f"shortest=1[focused{i}]"
+            )
+        else:
+            # Crop the true Chrome settings viewport to cut irrelevant
+            # testing chrome and enlarge readable permission text on phone.
+            # No software UI pixels are generated or altered.
+            parts.append(
+                base+
+                "crop=600:1067:60:70,"
+                "scale=1080:1920:flags=bicubic,setsar=1,"
+                f"format=yuv420p[focused{i}]"
+            )
+        parts.append(
+            f"[focused{i}]"
+            "drawbox=x=0:y=0:w=iw:h=127:color=0x081827@0.90:t=fill,"
             f"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
             f"textfile={label.as_posix()}:fontcolor=white:fontsize=37:"
             "x=51:y=43,"
-            "drawbox=x=0:y=1540:w=iw:h=380:color=0x071827@0.24:t=fill,"
+            "drawbox=x=0:y=1540:w=iw:h=380:color=0x071827@0.36:t=fill,"
             f"format=yuv420p[v{i}]"
         )
-        parts.append(f)
     parts.append("".join(f"[v{i}]" for i in range(5))+
                  "concat=n=5:v=1:a=0,format=yuv420p[concat]")
     parts.append(f"[concat]ass={ass.as_posix()},format=yuv420p[video]")
