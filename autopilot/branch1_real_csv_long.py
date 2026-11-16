@@ -138,6 +138,23 @@ def read_and_clean(source):
             "raw_total":str(raw_total),"clean_total":str(total),
             "difference":str(raw_total-total)}
 
+def save_clean_and_recheck(folder,data):
+    target=folder/"clean_fictional.csv"
+    need(not target.exists(),"REFUSE_OVERWRITING_CLEAN_OUTPUT")
+    source=folder/"source_fictional.csv"
+    before=sha(source)
+    with target.open("w",newline="",encoding="utf8") as f:
+        writer=csv.DictWriter(f,fieldnames=["invoice","amount","status"])
+        writer.writeheader()
+        writer.writerows(data["clean"])
+    with target.open("r",newline="",encoding="utf8") as f:
+        reader=csv.DictReader(f)
+        saved=list(reader)
+    amount=sum((Decimal(x["amount"]) for x in saved),Decimal(0))
+    need(saved==data["clean"] and len(saved)==6 and amount==CLEAN_TOTAL
+         and sha(source)==before,"REAL_CLEAN_CSV_RELOAD_FAILED")
+    return target
+
 def verify_story():
     need(len(STORY)==12 and len(RAW_ROWS)==8,"LONG_STORY_INCOMPLETE")
     words=sum(len(spoken.split()) for _,spoken in STORY)
@@ -210,7 +227,8 @@ def stage_content(idx,part,data):
     return title,chunks[idx][part]
 
 def render_stage_runner(folder,clock):
-    need(os.environ.get("DISPLAY")==":93","XTERM_NOT_EPHEMERAL_XVFB")
+    need(os.environ.get("DISPLAY")==":93" and os.environ.get("GITHUB_ACTIONS")=="true",
+         "XTERM_NOT_EPHEMERAL_GITHUB_XVFB")
     data=read_and_clean(folder/"source_fictional.csv")
     durations=json.loads(clock.read_text("utf8"))
     need(type(durations) is list and len(durations)==len(STORY)
@@ -220,6 +238,8 @@ def render_stage_runner(folder,clock):
     for i,seconds in enumerate(durations):
         title=STORY[i][0]
         for part in range(4):
+            if i==10 and part==0:
+                save_clean_and_recheck(folder,data)
             if part==0:
                 print("\033[2J\033[H",end="",flush=True)
                 print("FLOWMINUTE LAB  /  ORIGINAL LIVE PYTHON",flush=True)
@@ -228,7 +248,7 @@ def render_stage_runner(folder,clock):
                 print(title,flush=True)
                 print("-"*73,flush=True)
             title,line=stage_content(i,part,data)
-            print("  > python data_check.py --stage",i,"--check",part+1,flush=True)
+            print("  > real Python stage_content(",i,",",part,")",flush=True)
             print("  ",line,"\n",flush=True)
             time.sleep(seconds/4)
         (folder/f"STAGE_{i:02}.proof").write_text(
@@ -337,7 +357,7 @@ def render(out,model,voices):
     final=out/FINAL
     filtergraph=(
         f"[0:v]scale=1920:1080:flags=lanczos,"
-        f"drawbox=x=0:y=920:w=iw:h=160:color=0x081827@0.92:t=fill,"
+        f"drawbox=x=0:y=780:w=iw:h=300:color=0x081827@0.94:t=fill,"
         f"ass={ass.as_posix()},format=yuv420p[v]"
     )
     cmd(["ffmpeg","-nostdin","-hide_banner","-y","-loglevel","error",
