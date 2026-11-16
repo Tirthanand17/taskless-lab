@@ -46,6 +46,18 @@ FORMULA_WALKTHROUGH=(
              "CHECK BOTH","SELECT B3","RESULT VERIFIED"),
         )
 
+# Deliberate, one-way first-party Chrome settings journey. Each row is
+# six real browser operations across one nine-second recording chapter.
+# No permission toggle, third-party site or alternating page loops.
+CHROME_GUIDED_OPERATIONS=(
+    ("top","down","down","up","down","top"),
+    ("home","top","privacy","down","site","top"),
+    ("top","down","down","up","down","top"),
+    ("notifications","top","down","down","up","top"),
+    ("down","down","up","down","up","top"),
+)
+
+
 def need(condition, error):
     if not condition:
         raise RecoveryRefused(error)
@@ -320,33 +332,66 @@ def chrome_worker(out):
         visit(notification)
         (out/"stage_before").write_text(
             "ACTUAL_CHROME_NOTIFICATIONS_VISIBLE_BEFORE_CAPTURE\n","utf8")
-        # Real navigation through the browser's built-in pages. No fake UI,
-        # personal account, external domain or permission toggles.
+        # The path starts at the real Notifications proof, then moves
+        # once through Settings -> Privacy and security -> Site settings
+        # -> Notifications. Scrolling the actual browser surfaces context;
+        # it does not mutate permissions or claim fake click interactions.
+        routes={
+            "home":home, "privacy":privacy,
+            "site":site,"notifications":notification,
+        }
+        scroll_deltas={"down":320,"up":-320,"top":-10000}
+        scroll_effects=[0]
+        def browse(action):
+            if action in routes:
+                visit(routes[action])
+                return
+            need(action in scroll_deltas,
+                 "CHROME_UNEXPECTED_STORY_ACTION")
+            need(driver.current_url.startswith("chrome://settings"),
+                 "BROWSER_LEFT_FIRST_PARTY_SETTINGS")
+            result=driver.execute_script(
+                """
+                const settings=document.querySelector('settings-ui');
+                if (!settings) return {ok:false};
+                const candidates=[];
+                const seen=new Set();
+                function collect(root) {
+                    if (!root || seen.has(root)) return;
+                    seen.add(root);
+                    for (const element of root.querySelectorAll('*')) {
+                        if (element.shadowRoot) collect(element.shadowRoot);
+                        if (element.clientHeight>150 && element.clientWidth>250 &&
+                            element.scrollHeight>element.clientHeight+24)
+                            candidates.push(element);
+                    }
+                }
+                collect(document);
+                candidates.sort((a,b)=>
+                    b.clientWidth*b.clientHeight-a.clientWidth*a.clientHeight);
+                const target=candidates[0] || document.scrollingElement;
+                if (!target) return {ok:true,changed:false};
+                const old=target.scrollTop;
+                target.scrollTop=(arguments[0] < -1000)
+                    ? 0 : old+arguments[0];
+                return {ok:true,changed:Math.abs(target.scrollTop-old)>2};
+                """,scroll_deltas[action])
+            need(type(result) is dict and result.get("ok") is True,
+                 "CHROME_SETTINGS_NOT_A_REAL_PAGE")
+            if result.get("changed") is True:
+                scroll_effects[0]+=1
         actions=[
-            [lambda:visit(site),lambda:visit(notification),
-             lambda:visit(site),lambda:visit(notification),
-             lambda:visit(site),lambda:visit(notification)],
-            [lambda:visit(home),lambda:visit(privacy),
-             lambda:visit(home),lambda:visit(privacy),
-             lambda:visit(home),lambda:visit(privacy)],
-            [lambda:visit(site),lambda:visit(privacy),
-             lambda:visit(site),lambda:visit(notification),
-             lambda:visit(site),lambda:visit(notification)],
-            [lambda:visit(site),lambda:visit(notification),
-             lambda:visit(site),lambda:visit(notification),
-             lambda:visit(site),lambda:visit(notification)],
-            [lambda:visit(site),lambda:visit(notification),
-             lambda:visit(site),lambda:visit(notification),
-             lambda:visit(site),lambda:visit(notification)],
+            [(lambda action=action:browse(action)) for action in chapter]
+            for chapter in CHROME_GUIDED_OPERATIONS
         ]
         perform_real_storyboard(out,actions)
-        need(history[0]==notification
-             and history[-1]==notification
-             and home in history and privacy in history
-             and site in history
-             and len(history)>=30
+        need(history==[notification,home,privacy,site,notification]
              and driver.current_url==notification,
-             "CHROME_STORYBOARD_NOT_ACTUALLY_NAVIGATED")
+             "CHROME_MUST_FOLLOW_ONE_WAY_GENUINE_SETTINGS_PATH")
+        # Unlike the previous 30-page flip experiment, the result
+        # is a brief, comprehensible four-page route and on-page review.
+        need(scroll_effects[0]>=2,
+             "CHROME_NEEDS_GENUINE_VISIBLE_ON_PAGE_REVIEW")
         put(out/"application_observation.json",{
             "application":"Chromium browser",
             "before_url":"chrome://settings/",
