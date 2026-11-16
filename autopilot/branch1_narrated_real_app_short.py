@@ -191,13 +191,15 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
                 f"shortest=1[focused{i}]"
             )
         else:
-            # Crop the true Chrome settings viewport to cut irrelevant
-            # testing chrome and enlarge readable permission text on phone.
-            # No software UI pixels are generated or altered.
+            # Reserve a REAL 152px title margin so the heading never masks
+            # Chrome's own native Find toolbar at the top of the browser.
+            # Retain true recorded application pixels, original 675:1080
+            # geometry and 1.6x scale; no fabricated interface or animation.
             parts.append(
                 base+
-                "crop=675:1200:20:50,"
-                "scale=1080:1920:flags=bicubic,setsar=1,"
+                "crop=675:1080:20:0,"
+                "scale=1080:1728:flags=bicubic,setsar=1,"
+                "pad=1080:1920:0:152:color=0x081827,"
                 f"format=yuv420p[focused{i}]"
             )
         parts.append(

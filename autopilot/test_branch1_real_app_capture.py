@@ -132,8 +132,8 @@ class RealAppAdapterTests(unittest.TestCase):
         self.assertEqual(len(labels),4)
         self.assertTrue(all(len(label)<=18 for label in labels))
         self.assertIn('sheet.getCellRangeByName("A1").String="RESULT: TRUE"',source)
-        self.assertIn('sheet.Columns.getByIndex(0).Width=4400',source)
-        self.assertIn('sheet.Columns.getByIndex(1).Width=4200',source)
+        self.assertIn('sheet.Columns.getByIndex(0).Width=3900',source)
+        self.assertIn('sheet.Columns.getByIndex(1).Width=3700',source)
         for outdated in ("RESULT: TWO TEXT LABELS NOW MATCH",
                          "BEFORE: ALMOST IDENTICAL TEXT",
                          "CAUSE: EXTRA SPACES CHANGE MATCH",
@@ -163,6 +163,9 @@ class RealAppAdapterTests(unittest.TestCase):
     def test_chrome_real_find_source_and_runner_only(self):
         source=(Path(__file__).parent/"branch1_real_app_capture.py").read_text("utf8")
         self.assertIn("CHROME_NATIVE_FIND_DID_NOT_REACH_REAL_MATCH",source)
+        self.assertIn("font:28px/1.42 monospace;",source)
+        self.assertIn("controller.ZoomValue=155",source)
+        self.assertNotIn("controller.ZoomValue=185",source)
         self.assertIn("CHROME_FIND_NEVER_MOVED_THROUGH_REAL_LOG",source)
         self.assertIn('file_uri.startswith("file:///")',source)
         self.assertIn("ORIGINAL_DUMMY_FIND_LOG.html",source)
