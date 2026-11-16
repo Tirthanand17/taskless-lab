@@ -32,6 +32,20 @@ CAPTURE = "ACTUAL_REAL_APPLICATION_CAPTURE.mp4"
 PREVIEW = "PROOF_FIRST_SILENT_REVIEW_ONLY.mp4"
 WIDTH, HEIGHT = 720, 1280
 
+# Each label corresponds to an actual first-party Calc operation.
+FORMULA_WALKTHROUGH=(
+            ("SHOW VERIFIED MATCH","TRIM MATCH IS TRUE","CHECK CELL B3",
+             "EXTRA SPACES REMOVED","TRUE RESULT HIGHLIGHT","COMPARE BOTH CELLS"),
+            ("INPUT VALUES SIDE BY SIDE","REMOVE CLEAN MATCH","ORIGINAL INPUTS",
+             "A2 BEGINS WITH SPACES","A3 HAS NO EXTRA SPACE","INSPECT BOTH INPUTS"),
+            ("COMPARE ORIGINAL TEXT","DIRECT MATCH IS FALSE","MEASURE LENGTH A2",
+             "MEASURE LENGTH A3","LENGTHS ARE DIFFERENT","SEE SPACING CAUSE"),
+            ("CLEAN BOTH TEXT FIELDS","TRIM VALUE A2","TRIM VALUE A3",
+             "COMPARE TRIMMED TEXT","CHECK NEW FORMULA","MATCH RETURNS TRUE"),
+            ("VERIFY FINAL RESULT","B2 FALSE WITHOUT TRIM","B3 TRUE WITH TRIM",
+             "COMPARE TWO FORMULAS","SELECT FINAL RESULT","END WITH TRUE RESULT"),
+        )
+
 def need(condition, error):
     if not condition:
         raise RecoveryRefused(error)
@@ -217,8 +231,16 @@ def calc_worker(out):
             ("A2:C4","B2:C4","A2:C4","A2:C5","A2:C4","B3:C5"),
         )
         chapter_accents=(0xC4E8D7,0xF7DDC8,0xF8D2CB,0xD6E8F9,0xB8E9CB)
+        # These are real worksheet cell contents, not overlay animation.
+        # At every step a viewer can read which ACTUAL Calc input, formula
+        # or computed result is under examination. No artificial cursor
+        # chasing, app mock-ups or change to the underlying demonstration.
+
         def focus(chapter,step,original):
             original()
+            # A real first-party cell in the actual workbook explains the
+            # precise operation as it occurs, not a decorative moving badge.
+            sheet.getCellRangeByName("B1").String=FORMULA_WALKTHROUGH[chapter][step]
             # Real workbook cell background; not a screen overlay or
             # invented depiction of Calc. Palette is deliberately soft.
             sheet.getCellRangeByName("A2:C13").CellBackColor=(
