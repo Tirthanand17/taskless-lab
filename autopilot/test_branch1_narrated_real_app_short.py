@@ -74,6 +74,28 @@ class NarratedRealAppTests(unittest.TestCase):
                 for i in range(5):
                     self.assertTrue((folder/f"ORIGINAL_CHAPTER_{i:02}.txt").is_file())
 
+    def test_real_application_mobile_framing_does_not_fabricate_ui(self):
+        with tempfile.TemporaryDirectory() as temp:
+            folder=Path(temp)
+            ass=folder/OUT_ASS
+            ass.write_text("[Script Info]\nScriptType: v4.00+\n","utf8")
+            calc=video_graph("calc",[6.,5.,5.,5.,6.],ass,folder)
+            chrome=video_graph("chrome",[6.,5.,5.,5.,6.],ass,folder)
+            self.assertEqual(calc.count("crop=720:460:0:0"),5)
+            self.assertEqual(calc.count("crop=420:230:300:50"),5)
+            self.assertEqual(calc.count("color=c=0x081827"),5)
+            self.assertEqual(calc.count("overlay=x=0:y=190"),5)
+            self.assertEqual(calc.count("overlay=x=0:y=900"),5)
+            self.assertNotIn("crop=600:1067",calc)
+            self.assertEqual(chrome.count("crop=600:1067:60:70"),5)
+            self.assertNotIn("overlay=",chrome)
+            for graph in (calc,chrome):
+                self.assertIn("concat=n=5:v=1:a=0",graph)
+                self.assertIn("[concat]ass=",graph)
+                self.assertNotIn("movie=",graph)
+                self.assertNotIn("image=",graph)
+                self.assertEqual(graph.count("drawtext="),5)
+
     def test_reject_untrusted_graphics_labels(self):
         with tempfile.TemporaryDirectory() as tmp:
             for unsafe in ("x:danger","<HTML>","PERSON@EMAIL","", "a"*300):
