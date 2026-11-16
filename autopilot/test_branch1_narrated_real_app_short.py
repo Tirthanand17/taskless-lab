@@ -11,7 +11,7 @@ from unittest.mock import patch
 from autopilot.branch1_narrated_real_app_short import (
     APPS,OUT_ASS,OUT_MP4,OUT_RECEIPT,STATUS,STORIES,OUT_SRT,
     chapter_asset,story_episode,validate_story,video_graph,validate_output,
-    render,probe
+    render,probe,authentic_source_speed
 )
 from autopilot.branch1_recovery import RecoveryRefused
 from autopilot.branch1_real_app_capture import CAPTURE, RECEIPT
@@ -95,6 +95,29 @@ class NarratedRealAppTests(unittest.TestCase):
                 self.assertNotIn("movie=",graph)
                 self.assertNotIn("image=",graph)
                 self.assertEqual(graph.count("drawtext="),5)
+
+    def test_retime_all_recorded_actions_instead_of_discarding_late_frames(self):
+        from autopilot.branch1_recovery import RecoveryRefused
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp)
+            ass=folder/OUT_ASS
+            ass.write_text("[Script Info]\\nScriptType: v4.00+\\n","utf8")
+            for app in APPS:
+                graph=video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
+                # 8.5 seconds of genuine application footage are retimed
+                # to voice duration; none of the later actions are cut.
+                self.assertIn("setpts=0.70588235*(PTS-STARTPTS)",graph)
+                self.assertIn("setpts=0.58823529*(PTS-STARTPTS)",graph)
+                self.assertEqual(graph.count("stop_duration=1.25"),5)
+                self.assertNotIn("stop_duration=12",graph)
+                self.assertEqual(graph.count("fps=24"),5)
+        self.assertAlmostEqual(authentic_source_speed(8.5,5.0),1.7)
+        for bad_window,bad_voice in ((8.5,2.6),(8.5,12.0),
+                                     (float("nan"),5),(-1,5),
+                                     (8.5,False),(8.5,0)):
+            with self.subTest(window=bad_window,voice=bad_voice):
+                with self.assertRaises(RecoveryRefused):
+                    authentic_source_speed(bad_window,bad_voice)
 
     def test_reject_untrusted_graphics_labels(self):
         with tempfile.TemporaryDirectory() as tmp:
