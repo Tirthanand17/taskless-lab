@@ -3,7 +3,7 @@
   "episode_id": "fm_pilot_calc_trim_short_en",
   "format": "short",
   "series": "excel_sheets",
-  "duration_seconds": 11,
+  "duration_seconds": 27,
   "title": "A Hidden Space Breaks Your Spreadsheet Match: Real Calc Demo",
   "viewer_problem": "Leading spaces make two visually similar spreadsheet strings compare unequal.",
   "viewer_promise": "Real LibreOffice Calc evaluates the incorrect comparison, then evaluates TRIM to prove the correction.",
@@ -20,39 +20,39 @@
     {
       "role": "demonstration",
       "start_seconds": 1.5,
-      "end_seconds": 2.9,
+      "end_seconds": 3,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Show the original live application and the user's problem.",
       "action_or_result": "Live Calc A2 and A3 contain original strings with hidden leading spaces."
     },
     {
       "role": "cause",
-      "start_seconds": 2.9,
-      "end_seconds": 4,
+      "start_seconds": 3,
+      "end_seconds": 7,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Expose why the original result is misleading or hidden.",
       "action_or_result": "B2 evaluates FALSE for =A2=A3 despite similar visible text."
     },
     {
       "role": "fix",
-      "start_seconds": 4,
-      "end_seconds": 6.3,
+      "start_seconds": 7,
+      "end_seconds": 13,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Perform the real operation in the software.",
       "action_or_result": "Actual UNO-controlled Calc cell B3 evaluates =TRIM(A2)=TRIM(A3)."
     },
     {
       "role": "payoff",
-      "start_seconds": 6.3,
-      "end_seconds": 8.8,
+      "start_seconds": 13,
+      "end_seconds": 20,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Verify the resulting application state without simulated images.",
       "action_or_result": "Calc computes both FALSE and TRUE while a real worksheet is visible."
     },
     {
       "role": "takeaway",
-      "start_seconds": 8.8,
-      "end_seconds": 11,
+      "start_seconds": 20,
+      "end_seconds": 27,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Leave a concrete, qualified takeaway visible on the actual screen.",
       "action_or_result": "TRIM comparison is useful for leading spaces; use the real app, not a fake screen."
