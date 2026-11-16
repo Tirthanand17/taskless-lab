@@ -105,8 +105,23 @@ jobs:
           gh run download "$RUN_ID" -R Tirthanand17/taskless-lab \
             -n "b1-NARRATED-REAL-$REVIEW_APP-HUMAN-REVIEW-ONLY-$RUN_ID" \
             -D "/tmp/b1-motion-source-$REVIEW_APP"
-          test -s "/tmp/b1-motion-source-$REVIEW_APP/NARRATED_REAL_APP_REVIEW_ONLY.mp4"
-          test -s "/tmp/b1-motion-source-$REVIEW_APP/NARRATED_REAL_APP_PROVENANCE_NOT_RELEASE_APPROVED.json"
+          # actions/upload-artifact was given paths from TWO /tmp folders.
+          # Its ZIP preserves their common relative folder; do not assume
+          # that either the MP4 or receipt is at the archive root.
+          ROOT="/tmp/b1-motion-source-$REVIEW_APP"
+          mapfile -t VIDEOS < <(find "$ROOT" -maxdepth 3 -type f \
+            -name 'NARRATED_REAL_APP_REVIEW_ONLY.mp4')
+          mapfile -t RECEIPTS < <(find "$ROOT" -maxdepth 3 -type f \
+            -name 'NARRATED_REAL_APP_PROVENANCE_NOT_RELEASE_APPROVED.json')
+          [[ "${#VIDEOS[@]}" -eq 1 && "${#RECEIPTS[@]}" -eq 1 ]]
+          [[ "$(dirname "${VIDEOS[0]}")" == "$(dirname "${RECEIPTS[0]}")" ]]
+          test -s "${VIDEOS[0]}"
+          test -s "${RECEIPTS[0]}"
+          if [[ "${VIDEOS[0]}" != "$ROOT/NARRATED_REAL_APP_REVIEW_ONLY.mp4" ]]; then
+            cp -- "${VIDEOS[0]}" "$ROOT/NARRATED_REAL_APP_REVIEW_ONLY.mp4"
+            cp -- "${RECEIPTS[0]}" "$ROOT/NARRATED_REAL_APP_PROVENANCE_NOT_RELEASE_APPROVED.json"
+          fi
+          echo "EXACT_NARRATED_FILE_AND_RECEIPT_NORMALIZED_FROM_TRUSTED_ARTIFACT"
       - name: Screen for frozen app pixels and extract real contact frames
         run: |
           set -euo pipefail
