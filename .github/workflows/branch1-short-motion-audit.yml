@@ -5,8 +5,12 @@ on:
     paths:
       - "autopilot/branch1_short_motion_audit.py"
       - "autopilot/test_branch1_short_motion_audit.py"
+      - "autopilot/test_branch1_motion_autotrigger_contract.py"
       - ".github/workflows/branch1-short-motion-audit.yml"
       - "docs/BRANCH1_REAL_SHORTS_MOTION_SCREEN.md"
+  workflow_run:
+    workflows: ["FlowMinute B1 Narrated Real-App Shorts Review (NO YOUTUBE)"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       source_run_id:
@@ -42,9 +46,11 @@ jobs:
         run: |
           set -euo pipefail
           python -B -m py_compile autopilot/branch1_short_motion_audit.py \
-            autopilot/test_branch1_short_motion_audit.py
+            autopilot/test_branch1_short_motion_audit.py \
+            autopilot/test_branch1_motion_autotrigger_contract.py
           python -B -m unittest -v \
             autopilot.test_branch1_short_motion_audit \
+            autopilot.test_branch1_motion_autotrigger_contract \
             autopilot.test_branch1_narrated_real_app_short
       - name: Assert read-only no-publish behavior
         run: |
@@ -59,10 +65,17 @@ jobs:
           PY
 
   inspect_exact_successful_narrated_artifacts:
+    # workflow_run is a completion event, not a publish approval. Only a
+    # successful main manual narrated run may supply signed review artifacts.
     if: >-
       github.repository == 'Tirthanand17/taskless-lab' &&
-      github.event_name == 'workflow_dispatch' &&
-      github.ref == 'refs/heads/main'
+      github.ref == 'refs/heads/main' &&
+      ((github.event_name == 'workflow_dispatch') ||
+       (github.event_name == 'workflow_run' &&
+        github.event.workflow_run.event == 'workflow_dispatch' &&
+        github.event.workflow_run.head_branch == 'main' &&
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.name == 'FlowMinute B1 Narrated Real-App Shorts Review (NO YOUTUBE)'))
     needs: [synthetic_source_only_safety_checks]
     runs-on: ubuntu-24.04
     timeout-minutes: 25
@@ -73,7 +86,7 @@ jobs:
     env:
       PYTHONDONTWRITEBYTECODE: "1"
       GH_TOKEN: ${{ github.token }}
-      RUN_ID: ${{ inputs.source_run_id }}
+      RUN_ID: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || inputs.source_run_id }}
       REVIEW_APP: ${{ matrix.app }}
       PUBLISH_ENABLED: "false"
       FLOWMINUTE_ENABLE_PUBLISH: "0"
