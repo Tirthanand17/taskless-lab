@@ -1,0 +1,74 @@
+{
+  "schema": "FLOWMINUTE_B1_REAL_PYTHON_LONG_REVIEW_V1",
+  "status": "EXACT_LONG_MEDIA_REVIEW_ONLY_NO_YOUTUBE",
+  "audience": "English beginner data-cleaning workflows",
+  "series": "Real Data Fixes",
+  "pilot_phase": "first_coherent_calc_short_plus_python_long",
+  "title": "Why Your CSV Total Is Wrong: 3 Data-Cleaning Bugs in Python",
+  "description": "A fictional 8-row invoice CSV gives the wrong total if duplicate invoices are counted twice. Watch original Python code inspect hidden spaces, normalize invoice IDs, verify duplicates and use Decimal for accurate cents. Our sample calculates $2,656.25 before cleaning and $1,430.75 after removing two verified duplicates. This is fictional demonstration data, not financial advice or customer records. Verify duplicate business rules for your own files. Python documentation: https://docs.python.org/3/library/csv.html and https://docs.python.org/3/library/decimal.html",
+  "keywords": [
+    "Python",
+    "CSV",
+    "data cleaning",
+    "duplicate invoices",
+    "Decimal"
+  ],
+  "cover": "Choose an unmodified actual recorded Python terminal frame showing $2656.25 before and $1430.75 after; identify both totals as fictional sample data, no invented screen.",
+  "chapters": [
+    {
+      "start_seconds": 0,
+      "label": "Why the CSV total is wrong"
+    },
+    {
+      "start_seconds": 32,
+      "label": "Hidden spaces and repeated invoice IDs"
+    },
+    {
+      "start_seconds": 72,
+      "label": "Parse money with Decimal"
+    },
+    {
+      "start_seconds": 115,
+      "label": "Normalize, deduplicate and verify"
+    },
+    {
+      "start_seconds": 170,
+      "label": "Save and check the cleaned file"
+    }
+  ],
+  "episode_id": "fm_real_python_csv_three_bugs_long_en",
+  "app": "python_terminal",
+  "file": "REAL_PYTHON_LONG_NARRATED_REVIEW_ONLY.mp4",
+  "seconds": 214.833,
+  "sha256": "1a20dedf886f3228445ed718e1f2e93a7e38cd74abf8aeb211540e32b6683f42",
+  "run_id": 43880108409,
+  "artifact_id": 14232431513,
+  "artifact_url": "https://github.com/Tirthanand17/taskless-lab/actions/runs/43880108409/artifacts/14232431513",
+  "source_data": {
+    "fictional": true,
+    "raw_rows": 8,
+    "clean_rows": 6,
+    "naive_usd": "2656.25",
+    "clean_usd": "1430.75",
+    "duplicate_count": 2
+  },
+  "QA": {
+    "h264_aac_verified": true,
+    "measured_duration_seconds": 214.833,
+    "lufs": -18.08,
+    "true_peak_dbtp": -1.4,
+    "static_source_pair_share": 0.338,
+    "longest_frozen_seconds": 6,
+    "first_three_seconds_source_moving": true,
+    "owner_full_watch_listen": false
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "facts_reviewed": false,
+    "rights_reviewed": false,
+    "publishing_authorized": false
+  },
+  "youtube_uploads": 0,
+  "youtube_schedules": 0,
+  "audience_growth_proven": false
+}
