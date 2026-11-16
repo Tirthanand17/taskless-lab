@@ -45,7 +45,7 @@ STORIES={
             ("AFTER  /  CHECK THE RESULT",
              "Now the cleaned comparison evaluates true. Inspect text spacing before matching data.")
         ),
-        "source_windows":((7.2,2.0),(.1,1.7),(1.25,2.0),(2.0,2.3),(6.0,3.5))
+        "source_windows":((.8,8.5),(9.8,8.5),(18.8,8.5),(27.8,8.5),(36.8,8.5))
     },
     "chrome":{
         "voice":"af_heart",
@@ -61,7 +61,7 @@ STORIES={
             ("AFTER  /  VERIFY THE PAGE",
              "These are real Chrome permissions controls. No settings were changed in this demonstration.")
         ),
-        "source_windows":((7.2,2.0),(.1,1.7),(1.25,2.0),(2.0,2.3),(6.0,3.5))
+        "source_windows":((.8,8.5),(9.8,8.5),(18.8,8.5),(27.8,8.5),(36.8,8.5))
     }
 }
 HEX=re.compile(r"^[0-9a-f]{64}$")
@@ -98,8 +98,8 @@ def validate_story(app):
         total_words+=len(spoken.split())
     insist(57<=total_words<=100,"SCRIPT_OUTSIDE_CONCISE_STORY_RANGE")
     for start,seconds in story["source_windows"]:
-        insist(0<=start<=8 and .75<=seconds<=4
-               and start+seconds<=10,"UNSUPPORTED_REAL_FOOTAGE_WINDOW")
+        insist(0<=start<=39 and 2.0<=seconds<=9
+               and start+seconds<=47.5,"UNSUPPORTED_REAL_FOOTAGE_WINDOW")
     return {"app":app,"chapters":len(story["chapters"]),
             "words":total_words,"voice":story["voice"],
             "real_software_capture_required":True,
@@ -136,9 +136,8 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
     for i,((start,window),secs) in enumerate(zip(windows,durations)):
         insist(2.5<=secs<=11.0,"CHAPTER_PACING_TOO_SLOW_OR_TOO_FAST")
         label=chapter_asset(folder,i,STORIES[app]["chapters"][i][0])
-        # A 10s recording cannot cover 25s voice without holding authentic
-        # pixels; this review preview intentionally avoids invented motions.
-        # Human visual review must reject excessive static pauses later.
+        # Each 9s chapter is an ACTUAL 48s recorded application sequence;
+        # no template animations can be used to replace missing real activity.
         f=(
             f"[s{i}]trim=start={start:.3f}:duration={window:.3f},"
             f"setpts=PTS-STARTPTS,scale={VIDEO_W}:{VIDEO_H}:flags=bicubic,"
