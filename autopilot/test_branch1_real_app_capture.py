@@ -110,7 +110,7 @@ class RealAppAdapterTests(unittest.TestCase):
         self.assertIn("B2 FALSE WITHOUT TRIM",FORMULA_WALKTHROUGH[4])
         self.assertIn("B3 TRUE WITH TRIM",FORMULA_WALKTHROUGH[4])
         self.assertIn("MEASURE LENGTH A2",FORMULA_WALKTHROUGH[2])
-        self.assertIn("TRIM A3",FORMULA_WALKTHROUGH[3])
+        self.assertIn("TRIM VALUE A3",FORMULA_WALKTHROUGH[3])
 
     def test_real_five_chapter_storyboard_requires_running_recorder(self):
         with tempfile.TemporaryDirectory() as tmp:
