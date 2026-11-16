@@ -132,8 +132,8 @@ class RealAppAdapterTests(unittest.TestCase):
         self.assertEqual(len(labels),4)
         self.assertTrue(all(len(label)<=18 for label in labels))
         self.assertIn('sheet.getCellRangeByName("A1").String="RESULT: TRUE"',source)
-        self.assertIn('sheet.Columns.getByIndex(0).Width=4400',source)
-        self.assertIn('sheet.Columns.getByIndex(1).Width=4200',source)
+        self.assertIn('sheet.Columns.getByIndex(0).Width=3900',source)
+        self.assertIn('sheet.Columns.getByIndex(1).Width=3700',source)
         for outdated in ("RESULT: TWO TEXT LABELS NOW MATCH",
                          "BEFORE: ALMOST IDENTICAL TEXT",
                          "CAUSE: EXTRA SPACES CHANGE MATCH",
