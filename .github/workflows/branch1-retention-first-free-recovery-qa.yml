@@ -7,6 +7,8 @@ on:
       - "autopilot/test_branch1_recovery.py"
       - "autopilot/branch1_nine_cause_diagnosis.py"
       - "autopilot/test_branch1_nine_cause_diagnosis.py"
+      - "autopilot/branch1_age_matched_learning.py"
+      - "autopilot/test_branch1_age_matched_learning.py"
       - "autopilot/branch1_pilot_release_manifest.py"
       - "autopilot/test_branch1_pilot_release_manifest.py"
       - "autopilot/branch1_record_real_demo.py"
@@ -48,11 +50,14 @@ jobs:
             autopilot/test_branch1_recovery.py \
             autopilot/branch1_nine_cause_diagnosis.py \
             autopilot/test_branch1_nine_cause_diagnosis.py \
+            autopilot/branch1_age_matched_learning.py \
+            autopilot/test_branch1_age_matched_learning.py \
             autopilot/branch1_pilot_release_manifest.py \
             autopilot/test_branch1_pilot_release_manifest.py
           python -B -m unittest -v \
             autopilot.test_branch1_recovery \
             autopilot.test_branch1_nine_cause_diagnosis \
+            autopilot.test_branch1_age_matched_learning \
             autopilot.test_branch1_pilot_release_manifest
           python -B -m autopilot.branch1_recovery \
             --creative content/recovery_pilot/real_csv_proof_first_short.json \
@@ -77,6 +82,7 @@ jobs:
               "autopilot/branch1_recovery.py",
               "autopilot/branch1_record_real_demo.py",
               "autopilot/branch1_nine_cause_diagnosis.py",
+              "autopilot/branch1_age_matched_learning.py",
               "autopilot/branch1_pilot_release_manifest.py",
           ):
               code=Path(name).read_text(encoding="utf8")
