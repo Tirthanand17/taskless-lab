@@ -208,7 +208,7 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
             f"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
             f"textfile={label.as_posix()}:fontcolor=white:fontsize=37:"
             "x=51:y=43,"
-            "drawbox=x=0:y=1540:w=iw:h=380:color=0x071827@0.36:t=fill,"
+            "drawbox=x=0:y=1540:w=iw:h=380:color=0x071827@0.92:t=fill,"
             f"format=yuv420p[v{i}]"
         )
     parts.append("".join(f"[v{i}]" for i in range(count))+
