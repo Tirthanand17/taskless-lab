@@ -4,9 +4,9 @@
   "format": "short",
   "series": "privacy_browser",
   "duration_seconds": 11,
-  "title": "Where Chrome Notification Permissions Actually Live",
-  "viewer_problem": "Unwanted site notifications often come from a browser permission setting.",
-  "viewer_promise": "Show a real isolated Chrome instance navigating from settings to the actual Notifications settings page, without changing permissions.",
+  "title": "Block New Chrome Notification Requests | Real Settings Demo",
+  "viewer_problem": "Chrome websites can interrupt browsing with repeated notification permission requests.",
+  "viewer_promise": "Show genuine Chrome Settings and click the real Block default option in an isolated disposable demo profile, leaving real user settings untouched.",
   "source_url": "https://support.google.com/chrome/answer/3220216",
   "beats": [
     {
@@ -15,7 +15,7 @@
       "end_seconds": 1.5,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Open on the real solved result from the same exact recording.",
-      "action_or_result": "Actual Chrome Notifications settings screen appears first from recorded browser."
+      "action_or_result": "Open with the real blocked notification default option selected in a disposable Chrome profile."
     },
     {
       "role": "demonstration",
@@ -39,7 +39,7 @@
       "end_seconds": 6.3,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Perform the real operation in the software.",
-      "action_or_result": "Actual Chrome navigates to chrome://settings/content/notifications."
+      "action_or_result": "Use Selenium's real browser click to change the temporary-profile default notification permission option to Block."
     },
     {
       "role": "payoff",
@@ -47,7 +47,7 @@
       "end_seconds": 8.8,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Verify the resulting application state without simulated images.",
-      "action_or_result": "Browser confirms the real notifications settings URL and built-in settings UI."
+      "action_or_result": "Read back Chrome's actual selected Block option, rather than declaring success from a mock screen."
     },
     {
       "role": "takeaway",
@@ -55,7 +55,7 @@
       "end_seconds": 11,
       "visual_evidence": "actual_executed_software_frame",
       "spoken_purpose": "Leave a concrete, qualified takeaway visible on the actual screen.",
-      "action_or_result": "Review site permissions in Chrome; this demo does not disable any setting."
+      "action_or_result": "Explain that only the throwaway demo profile changes, that the user should choose the right setting for their own browser, and that no account data is accessed."
     }
   ],
   "demo": {
