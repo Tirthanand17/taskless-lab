@@ -560,7 +560,11 @@ def capture(app,out):
             interpreter,"-m","autopilot.branch1_real_app_capture",
             "--worker",app,"--out",str(out.resolve())],
             env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
-        wait_for(out/"stage_before",worker)
+        # Chrome first loads its actual settings page, then the nested real
+        # radio preference (bounded by an additional 20-second UI wait).
+        # Permit that truthful live startup without weakening any media gate.
+        wait_for(out/"stage_before",worker,
+                 timeout=60 if app=="chrome" else 32)
         source=out/CAPTURE
         recorder=subprocess.Popen(
             ["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
