@@ -163,6 +163,9 @@ class RealAppAdapterTests(unittest.TestCase):
     def test_chrome_real_find_source_and_runner_only(self):
         source=(Path(__file__).parent/"branch1_real_app_capture.py").read_text("utf8")
         self.assertIn("CHROME_NATIVE_FIND_DID_NOT_REACH_REAL_MATCH",source)
+        self.assertIn("font:28px/1.42 monospace;",source)
+        self.assertIn("controller.ZoomValue=155",source)
+        self.assertNotIn("controller.ZoomValue=185",source)
         self.assertIn("CHROME_FIND_NEVER_MOVED_THROUGH_REAL_LOG",source)
         self.assertIn('file_uri.startswith("file:///")',source)
         self.assertIn("ORIGINAL_DUMMY_FIND_LOG.html",source)
