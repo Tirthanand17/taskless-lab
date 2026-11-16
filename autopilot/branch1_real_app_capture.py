@@ -316,6 +316,7 @@ def chrome_worker(out):
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.common.action_chains import ActionChains
+    from selenium.webdriver.common.keys import Keys
     from selenium.common.exceptions import TimeoutException
     options=Options()
     binary=shutil.which("google-chrome") or shutil.which("google-chrome-stable")
@@ -454,6 +455,20 @@ def chrome_worker(out):
                 raise RecoveryRefused("UNKNOWN_CHROME_STORY_OPERATION")
 
         visit(notification)
+        # Real browser keyboard zoom improves mobile readability without
+        # repainting or synthesizing Chrome's UI. Verify actual CSS viewport
+        # width decreases rather than assuming an inert key combination.
+        before_width=driver.execute_script("return window.innerWidth")
+        need(type(before_width) is int and before_width>=350,
+             "CHROME_VIEWPORT_NOT_MEASURABLE")
+        for _ in range(3):
+            ActionChains(driver).key_down(Keys.CONTROL).send_keys(
+                Keys.ADD).key_up(Keys.CONTROL).perform()
+            time.sleep(.15)
+        after_width=driver.execute_script("return window.innerWidth")
+        need(type(after_width) is int and
+             0.5*before_width<=after_width<=0.92*before_width,
+             "GENUINE_CHROME_BROWSER_ZOOM_NOT_APPLIED")
         # settings-ui exists before the nested notification radio group and
         # its asynchronously loaded preference are necessarily ready. Wait
         # for Chrome's actual selected value, not a synthetic/fake setting.
