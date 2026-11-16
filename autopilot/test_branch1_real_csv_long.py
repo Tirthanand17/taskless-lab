@@ -26,6 +26,23 @@ class RealPythonLongPilotTests(unittest.TestCase):
         self.assertNotIn("viral", " ".join(scene[1] for scene in STORY).lower())
         self.assertEqual(len(RAW_ROWS),8)
 
+    def test_actual_long_tts_caption_split_cannot_leave_a_one_word_cue(self):
+        from autopilot.branch1_nov12_four_review_videos import split_script
+        for title,spoken in STORY:
+            cues=split_script(spoken,"long")
+            self.assertTrue(all(8<=len(cue)<=114 for cue in cues))
+            self.assertEqual(" ".join(cues)," ".join(spoken.split()))
+        # The exact first physical attempt #43876156866 was rejected
+        # when a sentence split left a tiny terminal cue "cents.".
+        broken=("This original CSV says eight rows add up to two thousand six hundred fifty "
+                "six dollars and twenty five cents. But the genuinely cleaned file has six "
+                "invoices worth one thousand four hundred thirty dollars and seventy five "
+                "cents. Let us find each mistake using real Python.")
+        with patch("autopilot.branch1_real_csv_long.STORY",
+                   ((STORY[0][0],broken),)+STORY[1:]):
+            with self.assertRaises(LongPilotRefused):
+                verify_story()
+
     def test_actual_decimal_cleaning_and_file_reimport(self):
         with TemporaryDirectory() as t:
             root=Path(t)
