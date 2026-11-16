@@ -127,6 +127,11 @@ def chapter_asset(out:Path,index:int,label:str) -> Path:
 def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
     """Keep actual recorded pixels for all 5 chapters. No fabricated app UI."""
     windows=STORIES[app]["source_windows"]
+    # Refuse the old 10-second pilot when chapter speech needs extended
+    # cloned holds. All app pixels must come from an adequately long REAL
+    # software recording, not cosmetic caption/animation movement.
+    from autopilot.branch1_real_action_coverage_gate import require_coverage
+    require_coverage(windows,durations)
     parts=["[0:v]split=5"+ "".join(f"[s{i}]" for i in range(5))]
     for i,((start,window),secs) in enumerate(zip(windows,durations)):
         insist(2.5<=secs<=11.0,"CHAPTER_PACING_TOO_SLOW_OR_TOO_FAST")

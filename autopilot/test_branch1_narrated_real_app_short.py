@@ -52,8 +52,20 @@ class NarratedRealAppTests(unittest.TestCase):
             folder=Path(tmp)
             ass=folder/OUT_ASS
             ass.write_text("[Script Info]\nScriptType: v4.00+\n","utf8")
+            from autopilot.branch1_real_action_coverage_gate import RealActionCoverageRefused
             for app in APPS:
-                graph=video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
+                # The existing authentic *ten-second* source is proven too
+                # static; video_graph MUST refuse it, rather than silently
+                # produce another technically valid frozen Short.
+                with self.assertRaises(RealActionCoverageRefused):
+                    video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
+                # Prove that a FUTURE 5-chapter, genuinely long source
+                # timeline can still construct the edit graph.
+                with patch.dict(STORIES[app],{
+                    "source_windows":((0.,5.5),(5.5,5.),(10.5,5.),
+                                      (15.5,5.),(20.5,5.5))
+                }):
+                    graph=video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
                 self.assertIn("[0:v]split=5[s0][s1][s2][s3][s4]",graph)
                 self.assertIn("[v0][v1][v2][v3][v4]concat=n=5",graph)
                 self.assertIn("[concat]ass=",graph)
