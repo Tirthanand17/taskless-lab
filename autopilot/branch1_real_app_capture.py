@@ -49,17 +49,12 @@ FORMULA_WALKTHROUGH=(
 # Deliberate, one-way first-party Chrome settings journey. Each row is
 # six real browser operations across one nine-second recording chapter.
 # No permission toggle, third-party site or alternating page loops.
+# Only three viewer-meaningful chapters: proof/route, site setting, real result.
+# No final nine-second still-screen chapter or looping settings navigation.
 CHROME_GUIDED_OPERATIONS=(
-    # A genuine before/after in a throwaway profile, not mock settings.
-    ("focus_block","ask","block","inspect","top","inspect"),
-    # Coherent navigation; internal page visits only.
-    ("home","top","privacy","down","site","top"),
-    # Review where Notifications appears under actual Site settings.
-    ("down","down","up","down","up","top"),
-    # Live default-setting selection in the real Notifications screen.
-    ("notifications","ask","block","focus_block","inspect","top"),
-    # Verify the real resulting blocked setting and exception lists.
-    ("inspect","top","focus_block","inspect","top","focus_block"),
+    ("focus_block","home","privacy"),
+    ("site","down","notifications"),
+    ("ask","block","focus_block"),
 )
 
 
@@ -95,7 +90,7 @@ def plan(app):
     proof=validate_creative(brief)
     need(brief["demo"]["application"]==application
          and brief["episode_id"]==eid
-         and brief["duration_seconds"]==11
+         and brief["duration_seconds"]==(27 if app=="calc" else 22)
          and proof["owner_approval"] is False,
          "PLANNED_APP_OR_REVIEW_STATUS_MISMATCH")
     return brief,proof
@@ -120,7 +115,7 @@ def wait_for(path, proc, timeout=32):
         time.sleep(.15)
     raise RecoveryRefused("APPLICATION_WORKER_NEVER_BECAME_READY")
 
-def perform_real_storyboard(out, actions):
+def perform_real_storyboard(out, actions, *, seconds_per_chapter=9.0, total_seconds=46.0):
     """Six actual application interactions per nine-second source chapter.
 
     The recorder creates capture_started only AFTER recording is running.
@@ -131,20 +126,21 @@ def perform_real_storyboard(out, actions):
         need(time.monotonic()<until,"REAL_APP_CAPTURE_NEVER_STARTED")
         time.sleep(.08)
     started=time.monotonic()
-    need(len(actions)==5 and all(len(a)==6 for a in actions),
+    need(len(actions) in (3,5) and all(2<=len(a)<=6 for a in actions),
          "REAL_UI_ACTION_PLAN_MISMATCH")
     for chapter,operations in enumerate(actions):
         for index,operation in enumerate(operations):
             # Six genuine actions must span the whole nine-second chapter,
             # rather than clustering in the first 5 seconds and leaving
             # four seconds of inert app pixels under ongoing narration.
-            scheduled=started+chapter*9.0+index*1.5+.1
+            scheduled=(started+chapter*seconds_per_chapter
+                       +index*(seconds_per_chapter/len(operations))+.1)
             while time.monotonic()<scheduled:
                 time.sleep(min(.10,scheduled-time.monotonic()))
             operation()
         (out/f"real_stage_{chapter}").write_text(
             f"REAL_APP_CHAPTER_{chapter}_EXECUTED\n","utf8")
-    left=started+46-time.monotonic()
+    left=started+total_seconds-time.monotonic()
     if left>0:
         time.sleep(left)
 
@@ -476,12 +472,13 @@ def chrome_worker(out):
             [(lambda action=action:browse(action)) for action in chapter]
             for chapter in CHROME_GUIDED_OPERATIONS
         ]
-        perform_real_storyboard(out,actions)
+        perform_real_storyboard(out,actions,
+                                seconds_per_chapter=8.0,total_seconds=25.0)
         need(history==[notification,home,privacy,site,notification]
              and driver.current_url==notification,
              "CHROME_MUST_FOLLOW_ONE_WAY_GENUINE_SETTINGS_PATH")
-        need(toggle_history.count("ask")>=2
-             and toggle_history.count("block")>=3
+        need(toggle_history.count("ask")>=1
+             and toggle_history.count("block")>=2
              and selected_option()=="block",
              "CHROME_REAL_BEFORE_AFTER_RADIOS_NOT_VERIFIED")
         put(out/"application_observation.json",{
@@ -511,7 +508,7 @@ def decoded_frame_hash(capture, t):
          "ACTUAL_DECODED_FRAME_ABSENT")
     return hashlib.sha256(p.stdout).hexdigest()
 
-def inspect_media(capture):
+def inspect_media(capture,app):
     data=json.loads(invoke([
         "ffprobe","-v","error","-select_streams","v:0",
         "-show_entries","stream=codec_name,width,height,duration",
@@ -519,11 +516,13 @@ def inspect_media(capture):
     streams=data["streams"]
     need(len(streams)==1 and streams[0]["codec_name"]=="h264"
          and streams[0]["width"]==WIDTH and streams[0]["height"]==HEIGHT
-         and 47.5<=float(streams[0]["duration"])<=48.5,
+         and (47.5<=float(streams[0]["duration"])<=48.5
+              if app=="calc" else 25.5<=float(streams[0]["duration"])<=26.5),
          "REAL_APP_SOURCE_VIDEO_NOT_EXPECTED_GEOMETRY")
     invoke(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
             "-xerror","-i",str(capture),"-f","null","-"],timeout=50)
-    need(decoded_frame_hash(capture,1.0)!=decoded_frame_hash(capture,40.0),
+    need(decoded_frame_hash(capture,1.0)!=decoded_frame_hash(
+             capture,40.0 if app=="calc" else 20.0),
          "SAME_STILL_FRAME_BEFORE_AFTER")
 
 def capture(app,out):
@@ -569,7 +568,8 @@ def capture(app,out):
         recorder=subprocess.Popen(
             ["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
              "-f","x11grab","-video_size",f"{WIDTH}x{HEIGHT}",
-             "-framerate","12","-i",f"{display}.0","-t","48",
+             "-framerate","12","-i",f"{display}.0","-t",
+             "48" if app=="calc" else "26",
              "-an","-c:v","libx264","-threads","2","-preset","ultrafast",
              "-crf","21","-pix_fmt","yuv420p","-movflags",
              "+faststart",str(source)],
@@ -595,7 +595,7 @@ def capture(app,out):
             if recorder.poll() is None:
                 recorder.terminate()
                 recorder.communicate(timeout=10)
-        for chapter in range(5):
+        for chapter in range(5 if app=="calc" else 3):
             need((out/f"real_stage_{chapter}").is_file(),
                  "Genuine_app_stage_not_completed_"+str(chapter))
         need((out/"stage_after").is_file(),
@@ -627,10 +627,10 @@ def capture(app,out):
              and observation["temporary_profile_default_toggled"] is True
              and observation["demo_notification_default_final"]=="block",
              "BROWSER_DEMO_TEMPORARY_SETTING_NOT_GENUINELY_VERIFIED")
-    inspect_media(source)
+    inspect_media(source,app)
     preview=out/PREVIEW
     graph=(
-        "[0:v]trim=start=40:duration=1.5,setpts=PTS-STARTPTS,"
+        f"[0:v]trim=start={40 if app=='calc' else 20}:duration=1.5,setpts=PTS-STARTPTS,"
         "scale=1080:1920:flags=lanczos,format=yuv420p[hook];"
         "[0:v]trim=start=0:duration=9.5,setpts=PTS-STARTPTS,"
         "scale=1080:1920:flags=lanczos,format=yuv420p[action];"
