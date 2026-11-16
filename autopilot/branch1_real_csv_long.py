@@ -237,7 +237,15 @@ def render_stage_runner(folder,clock):
          "SOURCE_AND_SPEECH_CLOCK_NOT_ALIGNED")
     for i,seconds in enumerate(durations):
         title=STORY[i][0]
+        started=time.monotonic()
+        # In the opening, show proof and a second genuine calculation
+        # within three seconds; no inert logo or synthetic result overlay.
+        offsets=((0.,1.1,2.3,max(3.5,seconds*.57)) if i==0 else
+                 (0.,seconds*.24,seconds*.48,seconds*.72))
         for part in range(4):
+            intended=started+offsets[part]
+            while time.monotonic()<intended:
+                time.sleep(min(.08,intended-time.monotonic()))
             if i==10 and part==0:
                 save_clean_and_recheck(folder,data)
             if part==0:
@@ -250,7 +258,9 @@ def render_stage_runner(folder,clock):
             title,line=stage_content(i,part,data)
             print("  > real Python stage_content(",i,",",part,")",flush=True)
             print("  ",line,"\n",flush=True)
-            time.sleep(seconds/4)
+        until=started+seconds
+        while time.monotonic()<until:
+            time.sleep(min(.08,until-time.monotonic()))
         (folder/f"STAGE_{i:02}.proof").write_text(
             f"ACTUAL_PYTHON_STAGE_{i}_COMPLETE\n","utf8")
     print("\nREAL_PYTHON_EXECUTION_FINISHED",flush=True)
