@@ -5,6 +5,9 @@ on:
     paths:
       - "scripts/branch1_preserve_long_review.py"
       - "scripts/test_branch1_preserve_long_review.py"
+      - "scripts/branch1_real_python_long_publisher_preflight.py"
+      - "scripts/test_branch1_real_python_long_publisher_preflight.py"
+      - "content/episodes/fm_real_python_csv_three_bugs_long_en.json"
       - ".github/workflows/branch1-preserve-exact-long-review.yml"
   workflow_dispatch:
     inputs:
@@ -42,8 +45,15 @@ jobs:
       - name: Synthetic no-upload source tests and binary identity guards
         run: |
           set -euo pipefail
-          python -B -m py_compile scripts/branch1_preserve_long_review.py scripts/test_branch1_preserve_long_review.py
-          python -B -m unittest -v scripts.test_branch1_preserve_long_review
+          python -B -m py_compile \
+            scripts/branch1_preserve_long_review.py \
+            scripts/test_branch1_preserve_long_review.py \
+            scripts/branch1_real_python_long_publisher_preflight.py \
+            scripts/test_branch1_real_python_long_publisher_preflight.py
+          python -B -m unittest -v \
+            scripts.test_branch1_preserve_long_review \
+            scripts.test_branch1_real_python_long_publisher_preflight
+          python -B -m scripts.branch1_real_python_long_publisher_preflight
 
   preserve_exact_private_review:
     needs: [source_only_security_tests]
