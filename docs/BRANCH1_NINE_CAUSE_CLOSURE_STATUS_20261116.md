@@ -6,7 +6,7 @@ The target is returning viewers, qualified watch time and subscriber conversion,
 
 - Real-app capture, H.264/AAC source checks, source hash receipts, actual-pixel motion checks, and fail-closed release safeguards are implemented. See PR #260.
 - Source-only unit tests confirm controls are present. A successful source-only test is **not** a successful watched video, a public upload or an improvement in viewers.
-- The last real exact-media audit #43840999906 passed Calc at 44.2% near-static app pixels and rejected Chrome at 81.5%, longest near-freeze 11.5s. A new main-only narrated run is required before deciding whether the shorter Chrome storyboard works.
+- The first independently audited shortened Chrome pilot in main narration run [43846333905](https://github.com/Tirthanand17/taskless-lab/actions/runs/43846333905), pixel audit [43847139330](https://github.com/Tirthanand17/taskless-lab/actions/runs/43847139330), **still FAILS**: 22.604s final, 84.1% near-static app pixels, longest 3.5s, no real source change within first three seconds. This is a smaller but still unwatchable static tutorial, not a recovery. **Do not schedule Chrome.** The sister Calc video passes unchanged internal pixel gates at 44.2%, longest 0.5s, first-three-second change; it still needs human creative/factual approval.
 - Historic Studio observation: 21.2% Shorts stayed to watch, 58s long average duration and 4.8% long-video-only CTR. These are reference observations, **not** universal YouTube thresholds.
 - Private Studio 24/72-hour/7-day results for newly approved recovery content are not available. No engineering artifact can supply them.
 
@@ -48,7 +48,7 @@ The output deliberately contains **no video IDs, private audience identifiers, e
 
 ## Next release boundary
 
-1. Complete the shorter Chrome physical render and run the *independent exact-file* pixel audit unchanged.
+1. Quarantine the failed Chrome pilot. Design a different user-meaningful genuine native-app demonstration instead of adding motion just to pass a pixel threshold; rerun independent exact-file QA after a new true reshoot.
 2. Watch and listen to the entire finished Chrome and Calc videos on a phone-size screen; check genuine action timing, readability and correct software claims.
 3. Approve exact factual, original, accessible assets. Only separately authorized YouTube releases may enter a small controlled one-series experiment, not a 3/day quota.
 4. Gather qualified post-publication Studio readings at about 24h, 72h and seven days, compare same ages and formats, deliberately change one factor per test.
