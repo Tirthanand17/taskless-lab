@@ -82,12 +82,12 @@ class NarratedRealAppTests(unittest.TestCase):
             calc=video_graph("calc",[6.,5.,5.,5.,6.],ass,folder)
             chrome=video_graph("chrome",[6.,5.,5.,5.,6.],ass,folder)
             self.assertEqual(calc.count("crop=720:460:0:0"),5)
-            self.assertEqual(calc.count("crop=420:230:300:50"),5)
+            self.assertEqual(calc.count("crop=440:220:240:75"),5)
             self.assertEqual(calc.count("color=c=0x081827"),5)
             self.assertEqual(calc.count("overlay=x=0:y=190"),5)
             self.assertEqual(calc.count("overlay=x=0:y=900"),5)
             self.assertNotIn("crop=600:1067",calc)
-            self.assertEqual(chrome.count("crop=600:1067:60:70"),5)
+            self.assertEqual(chrome.count("crop=600:1067:15:70"),5)
             self.assertNotIn("overlay=",chrome)
             for graph in (calc,chrome):
                 self.assertIn("concat=n=5:v=1:a=0",graph)
@@ -95,6 +95,21 @@ class NarratedRealAppTests(unittest.TestCase):
                 self.assertNotIn("movie=",graph)
                 self.assertNotIn("image=",graph)
                 self.assertEqual(graph.count("drawtext="),5)
+
+    def test_mobile_crop_and_first_spoken_claim_match_real_result(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            captions=root/OUT_ASS
+            captions.write_text("[Script Info]\\nScriptType: v4.00+\\n","utf8")
+            calc=video_graph("calc",[6.,5.,5.,5.,6.],captions,root)
+            chrome=video_graph("chrome",[6.,5.,5.,5.,6.],captions,root)
+            self.assertEqual(calc.count("crop=440:220:240:75"),5)
+            self.assertEqual(chrome.count("crop=600:1067:15:70"),5)
+            self.assertEqual(calc.count("scale=1080:540"),5)
+            self.assertNotIn("crop=600:1067:60:70",chrome)
+            self.assertIn("The direct match is false",STORIES["calc"]["chapters"][0][1])
+            self.assertIn("Trim makes it true",STORIES["calc"]["chapters"][0][1])
+            self.assertNotIn("fake",STORIES["calc"]["chapters"][0][1].lower())
 
     def test_retime_all_recorded_actions_instead_of_discarding_late_frames(self):
         from autopilot.branch1_recovery import RecoveryRefused
