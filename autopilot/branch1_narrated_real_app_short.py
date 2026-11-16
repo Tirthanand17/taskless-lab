@@ -50,18 +50,15 @@ STORIES={
     "chrome":{
         "voice":"af_heart",
         "chapters":(
-            ("PROOF  /  BLOCK NOTIFICATION PROMPTS",
-             "Chrome notification requests can be stopped here. Watch this real blocked setting in action."),
-            ("BEFORE  /  OPEN SETTINGS",
-             "Start in Chrome Settings. Open Privacy and security. Then choose Site settings."),
-            ("WHY  /  FIND NOTIFICATION CONTROL",
-             "Scroll through Site settings and look for Notifications. This controls which sites can request permission to notify you."),
-            ("ACTION  /  CHOOSE BLOCK",
-             "Choose Don't allow sites to send notifications. We click the real browser control inside a throwaway demo profile."),
-            ("AFTER  /  BLOCK CONFIRMED",
-             "The selected block option stops new permission prompts. This changes only our temporary test browser, never your own settings.")
+            ("PROOF  /  REAL CHROME",
+             "Chrome sites asking for notifications? Here is the blocked setting in our test browser. Open Settings, then Privacy and security."),
+            ("ROUTE  /  SITE SETTINGS",
+             "In Site settings, find Notifications. Watch the real Chrome menu, not an invented interface."),
+            ("FIX  /  BLOCK REQUESTS",
+             "Select Don't allow sites to send notifications. The block option is selected in our throwaway demo profile, never your own settings.")
         ),
-        "source_windows":((.8,8.5),(9.8,8.5),(18.8,8.5),(27.8,8.5),(36.8,8.5))
+        "source_windows":((0.0,7.85),(8.0,7.85),(16.0,7.85))
+
     }
 }
 HEX=re.compile(r"^[0-9a-f]{64}$")
@@ -78,8 +75,9 @@ def execute(cmd,timeout=360):
 def validate_story(app):
     insist(app in APPS and app in STORIES, "UNKNOWN_STORY_APP")
     story=STORIES[app]
-    insist(story["voice"]=="af_heart" and len(story["chapters"])==5
-           and len(story["source_windows"])==5,"VOICE_OR_STORY_SHAPE_NOT_PINNED")
+    insist(story["voice"]=="af_heart" and len(story["chapters"])==(5 if app=="calc" else 3)
+           and len(story["source_windows"])==(5 if app=="calc" else 3),
+           "VOICE_OR_STORY_SHAPE_NOT_PINNED")
     from autopilot.branch1_nov12_four_review_videos import (
         split_script, FourVideoRefused
     )
@@ -96,7 +94,8 @@ def validate_story(app):
         except FourVideoRefused:
             raise RecoveryRefused("INVALID_VOICE_CUE_STRUCTURE") from None
         total_words+=len(spoken.split())
-    insist(57<=total_words<=100,"SCRIPT_OUTSIDE_CONCISE_STORY_RANGE")
+    insist((57<=total_words<=100 if app=="calc" else 42<=total_words<=80),
+           "SCRIPT_OUTSIDE_CONCISE_STORY_RANGE")
     for start,seconds in story["source_windows"]:
         insist(0<=start<=39 and 2.0<=seconds<=9
                and start+seconds<=47.5,"UNSUPPORTED_REAL_FOOTAGE_WINDOW")
@@ -150,7 +149,8 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
     # software recording, not cosmetic caption/animation movement.
     from autopilot.branch1_real_action_coverage_gate import require_coverage
     require_coverage(windows,durations)
-    parts=["[0:v]split=5"+ "".join(f"[s{i}]" for i in range(5))]
+    count=len(windows)
+    parts=[f"[0:v]split={count}"+ "".join(f"[s{i}]" for i in range(count))]
     for i,((start,window),secs) in enumerate(zip(windows,durations)):
         insist(2.5<=secs<=11.0,"CHAPTER_PACING_TOO_SLOW_OR_TOO_FAST")
         label=chapter_asset(folder,i,STORIES[app]["chapters"][i][0])
@@ -209,8 +209,8 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
             "drawbox=x=0:y=1540:w=iw:h=380:color=0x071827@0.36:t=fill,"
             f"format=yuv420p[v{i}]"
         )
-    parts.append("".join(f"[v{i}]" for i in range(5))+
-                 "concat=n=5:v=1:a=0,format=yuv420p[concat]")
+    parts.append("".join(f"[v{i}]" for i in range(count))+
+                 f"concat=n={count}:v=1:a=0,format=yuv420p[concat]")
     parts.append(f"[concat]ass={ass.as_posix()},format=yuv420p[video]")
     return ";".join(parts)
 
@@ -229,7 +229,7 @@ def probe(mp4:Path):
            and v[0].get("height")==VIDEO_H,
            "FINAL_H264_AAC_OR_DIMENSIONS_MISSING")
     duration=float(data["format"]["duration"])
-    insist(20<=duration<=64 and math.isfinite(duration),
+    insist(16<=duration<=64 and math.isfinite(duration),
            "FINAL_AV_DURATION_BAD")
     return duration
 
@@ -288,9 +288,11 @@ def validate_output(app:str,source_folder:Path,out:Path):
            and type(receipt["narrated_mp4_bytes"]) is int
            and receipt["narrated_mp4_bytes"]==(out/OUT_MP4).stat().st_size
            and type(receipt["duration_seconds"]) in (int,float)
-           and 20<=receipt["duration_seconds"]<=64
+           and 16<=receipt["duration_seconds"]<=64
            and receipt["spoken_words"]==validate_story(app)["words"],
            "VOICE_SOURCE_OR_METADATA_NOT_BOUND")
+    insist(abs(receipt["duration_seconds"]-brief["duration_seconds"])<=3,
+           "EDITORIAL_BRIEF_RUNTIME_MISMATCH")
     actual=probe(out/OUT_MP4)
     insist(abs(actual-receipt["duration_seconds"])<=.5,
            "AUDIO_VIDEO_CLOCK_DRIFT")
@@ -327,10 +329,13 @@ def render(app:str,source_folder:Path,out:Path,model:Path,voices:Path):
     )
     voice=Kokoro(str(model),str(voices))
     wav,durations,cues,total=synthesize(voice,story_episode(app),out)
-    insist(20<=total<=64 and len(durations)==5
+    insist(16<=total<=64
+           and len(durations)==(5 if app=="calc" else 3)
            and len(cues)>=5
            and abs(sum(durations)-total)<.08,
            "VOICE_REAL_CLOCK_OR_CHAPTERS_MISSING")
+    insist(abs(total-brief["duration_seconds"])<=3,
+           "ACTUAL_SPOKEN_RUNTIME_NOT_MATCHING_CREATIVE_BRIEF")
     ass,srt=cues_to_files(cues,"short",out)
     src=source_folder/CAPTURE
     execute(["ffmpeg","-nostdin","-hide_banner","-loglevel","error",
