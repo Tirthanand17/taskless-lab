@@ -17,6 +17,28 @@ from autopilot.branch1_recovery import RecoveryRefused
 from autopilot.branch1_real_app_capture import CAPTURE, RECEIPT
 
 class NarratedRealAppTests(unittest.TestCase):
+    def test_single_remaster_retry_limits_peak_without_softening_release_gate(self):
+        from autopilot.verified_aac_mastering_b4g5 import (
+            AUDIO_MASTERING_FILTER,AUDIO_REMASTER_FILTER,
+            ACCEPTED_INTEGRATED_LUFS_MIN,ACCEPTED_INTEGRATED_LUFS_MAX,
+            ACCEPTED_TRUE_PEAK_DBTP_MAX,
+        )
+        self.assertIn("loudnorm=I=-18",AUDIO_MASTERING_FILTER)
+        self.assertIn("loudnorm=I=-18:TP=-4",AUDIO_REMASTER_FILTER)
+        self.assertIn("alimiter=limit=0.70:level=false",AUDIO_REMASTER_FILTER)
+        layout=(Path(__file__).parent/"branch1_narrated_real_app_short.py").read_text("utf8")
+        self.assertIn("drawbox=x=0:y=1540:w=iw:h=380:color=0x071827@0.92:t=fill",layout)
+        self.assertNotIn("color=0x071827@0.36:t=fill",layout)
+        self.assertEqual(ACCEPTED_INTEGRATED_LUFS_MIN,-20.5)
+        self.assertEqual(ACCEPTED_INTEGRATED_LUFS_MAX,-15.5)
+        self.assertEqual(ACCEPTED_TRUE_PEAK_DBTP_MAX,-1.0)
+        src=(Path(__file__).parent/"branch1_narrated_real_app_short.py").read_text("utf8")
+        self.assertIn('AUDIO_REMASTER_FILTER,',src)
+        self.assertIn('fixed=out/"REMASTER_ONCE.mp4"',src)
+        self.assertIn('verify_exact_encoded_master("ffmpeg",fixed,sha(fixed),total)',src)
+        self.assertIn("fixed.replace(video)",src)
+        self.assertNotIn('loudnorm=I=-18:TP=-2.5:LRA=11',src)
+
     def test_both_real_app_voices_are_bounded_and_source_authored(self):
         for app in sorted(APPS):
             with self.subTest(app=app):

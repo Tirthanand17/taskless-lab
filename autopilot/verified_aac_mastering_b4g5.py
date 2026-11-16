@@ -33,6 +33,15 @@ AUDIO_ENCODE_HZ = 48000
 AUDIO_MASTERING_FILTER = (
     "loudnorm=I=-18:TP=-1.5:LRA=11:linear=false:print_format=none"
 )
+# Optional, *one-shot* original-narration fallback, after exact AAC
+# verification rejects the initial master. Native AAC encoding sometimes
+# overshoots loudnorm's true-peak target even when the pre-encode PCM did not.
+# The output remains independently decoded and checked at the original
+# -20.5..-15.5 LUFS / <=-1 dBTP bands. No extra third-party sounds.
+AUDIO_REMASTER_FILTER = (
+    "loudnorm=I=-18:TP=-4:LRA=11:linear=false:print_format=none,"
+    "alimiter=limit=0.70:level=false"
+)
 MEASUREMENT_FILTER = "loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json"
 # These are fail-closed engineering acceptance bands, not a platform standard.
 ACCEPTED_INTEGRATED_LUFS_MIN = -20.5

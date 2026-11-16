@@ -208,7 +208,7 @@ def video_graph(app:str,durations:list[float],ass:Path,folder:Path):
             f"drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:"
             f"textfile={label.as_posix()}:fontcolor=white:fontsize=37:"
             "x=51:y=43,"
-            "drawbox=x=0:y=1540:w=iw:h=380:color=0x071827@0.36:t=fill,"
+            "drawbox=x=0:y=1540:w=iw:h=380:color=0x071827@0.92:t=fill,"
             f"format=yuv420p[v{i}]"
         )
     parts.append("".join(f"[v{i}]" for i in range(count))+
@@ -345,8 +345,8 @@ def render(app:str,source_folder:Path,out:Path,model:Path,voices:Path):
     graph=video_graph(app,durations,ass,out)
     video=out/OUT_MP4
     from autopilot.verified_aac_mastering_b4g5 import (
-        AUDIO_MASTERING_FILTER,verify_exact_encoded_master,
-        EncodedMasteringRefused,
+        AUDIO_MASTERING_FILTER,AUDIO_REMASTER_FILTER,
+        verify_exact_encoded_master,EncodedMasteringRefused,
     )
     execute(["ffmpeg","-nostdin","-hide_banner","-y","-loglevel","error",
              "-i",str(src),"-i",str(wav),
@@ -371,7 +371,7 @@ def render(app:str,source_folder:Path,out:Path,model:Path,voices:Path):
         execute(["ffmpeg","-nostdin","-hide_banner","-y","-loglevel","error",
                  "-i",str(video),"-map","0:v:0","-map","0:a:0",
                  "-c:v","copy","-af",
-                 "loudnorm=I=-18:TP=-2.5:LRA=11:linear=false:print_format=none",
+                 AUDIO_REMASTER_FILTER,
                  "-ar","48000","-c:a","aac","-b:a","128k",
                  "-movflags","+faststart",str(fixed)],timeout=180)
         mastering=verify_exact_encoded_master("ffmpeg",fixed,sha(fixed),total)
