@@ -26,7 +26,8 @@ class RealActionCoverageTests(unittest.TestCase):
                 require_coverage(historical_ten_second_windows,
                                  [6.,5.,5.,5.,6.])
             new_report=require_coverage(
-                STORIES[app]["source_windows"],[6.,5.,5.,5.,6.])
+                STORIES[app]["source_windows"],
+                [6.,5.,5.,5.,6.] if app=="calc" else [6.,6.,7.])
             self.assertTrue(new_report["internal_screen_coverage_pass"])
             self.assertEqual(new_report["necessary_frozen_seconds"],0)
 

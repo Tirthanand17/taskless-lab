@@ -21,14 +21,14 @@ class NarratedRealAppTests(unittest.TestCase):
         for app in sorted(APPS):
             with self.subTest(app=app):
                 summary=validate_story(app)
-                self.assertEqual(summary["chapters"],5)
+                self.assertEqual(summary["chapters"],5 if app=="calc" else 3)
                 self.assertEqual(summary["voice"],"af_heart")
                 self.assertTrue(summary["real_software_capture_required"])
                 self.assertFalse(summary["owner_review_approved"])
                 self.assertEqual(summary["youtube_uploads"],0)
                 ep=story_episode(app)
                 self.assertEqual(ep["type"],"short")
-                self.assertEqual(len(ep["scenes"]),5)
+                self.assertEqual(len(ep["scenes"]),5 if app=="calc" else 3)
                 self.assertTrue(ep["real_software_evidence"])
 
     def test_chrome_words_teach_a_real_forward_settings_route(self):
@@ -44,7 +44,7 @@ class NarratedRealAppTests(unittest.TestCase):
         self.assertNotIn("changes no permissions",combined)
         self.assertNotIn("clicking Allow",combined)
         self.assertNotIn("Turn notifications off",combined)
-        self.assertEqual(validate_story("chrome")["chapters"],5)
+        self.assertEqual(validate_story("chrome")["chapters"],3)
 
     def test_story_refuses_fabrication_and_overlong_narration(self):
         for app in sorted(APPS):
@@ -77,15 +77,16 @@ class NarratedRealAppTests(unittest.TestCase):
                 }):
                     with self.assertRaises(RealActionCoverageRefused):
                         video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
-                graph=video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
-                self.assertIn("[0:v]split=5[s0][s1][s2][s3][s4]",graph)
-                self.assertIn("[v0][v1][v2][v3][v4]concat=n=5",graph)
+                graph=video_graph(app,[6.,5.,5.,5.,6.] if app=="calc" else [6.,6.,7.],ass,folder)
+                count=5 if app=="calc" else 3
+                self.assertIn(f"[0:v]split={count}",graph)
+                self.assertIn(f"concat=n={count}",graph)
                 self.assertIn("[concat]ass=",graph)
                 self.assertIn("PROOF",graph if False else "PROOF")
                 self.assertNotIn("image=",graph)
-                self.assertEqual(graph.count("drawtext="),5)
-                self.assertEqual(graph.count("tpad="),5)
-                self.assertEqual(graph.count("trim=start="),5)
+                self.assertEqual(graph.count("drawtext="),count)
+                self.assertEqual(graph.count("tpad="),count)
+                self.assertEqual(graph.count("trim=start="),count)
                 for i in range(5):
                     self.assertTrue((folder/f"ORIGINAL_CHAPTER_{i:02}.txt").is_file())
 
@@ -95,21 +96,21 @@ class NarratedRealAppTests(unittest.TestCase):
             ass=folder/OUT_ASS
             ass.write_text("[Script Info]\nScriptType: v4.00+\n","utf8")
             calc=video_graph("calc",[6.,5.,5.,5.,6.],ass,folder)
-            chrome=video_graph("chrome",[6.,5.,5.,5.,6.],ass,folder)
+            chrome=video_graph("chrome",[6.,6.,7.],ass,folder)
             self.assertEqual(calc.count("crop=720:460:0:0"),5)
             self.assertEqual(calc.count("crop=440:220:240:75"),5)
             self.assertEqual(calc.count("color=c=0x081827"),5)
             self.assertEqual(calc.count("overlay=x=0:y=190"),5)
             self.assertEqual(calc.count("overlay=x=0:y=900"),5)
             self.assertNotIn("crop=600:1067",calc)
-            self.assertEqual(chrome.count("crop=600:1067:15:70"),5)
+            self.assertEqual(chrome.count("crop=600:1067:15:70"),3)
             self.assertNotIn("overlay=",chrome)
-            for graph in (calc,chrome):
-                self.assertIn("concat=n=5:v=1:a=0",graph)
+            for app,graph in (("calc",calc),("chrome",chrome)):
+                self.assertIn(f"concat=n={5 if app=='calc' else 3}:v=1:a=0",graph)
                 self.assertIn("[concat]ass=",graph)
                 self.assertNotIn("movie=",graph)
                 self.assertNotIn("image=",graph)
-                self.assertEqual(graph.count("drawtext="),5)
+                self.assertEqual(graph.count("drawtext="),5 if app=="calc" else 3)
 
     def test_mobile_crop_and_first_spoken_claim_match_real_result(self):
         with tempfile.TemporaryDirectory() as d:
@@ -117,9 +118,9 @@ class NarratedRealAppTests(unittest.TestCase):
             captions=root/OUT_ASS
             captions.write_text("[Script Info]\\nScriptType: v4.00+\\n","utf8")
             calc=video_graph("calc",[6.,5.,5.,5.,6.],captions,root)
-            chrome=video_graph("chrome",[6.,5.,5.,5.,6.],captions,root)
+            chrome=video_graph("chrome",[6.,6.,7.],captions,root)
             self.assertEqual(calc.count("crop=440:220:240:75"),5)
-            self.assertEqual(chrome.count("crop=600:1067:15:70"),5)
+            self.assertEqual(chrome.count("crop=600:1067:15:70"),3)
             self.assertEqual(calc.count("scale=1080:540"),5)
             self.assertNotIn("crop=600:1067:60:70",chrome)
             self.assertIn("The direct match is false",STORIES["calc"]["chapters"][0][1])
@@ -133,14 +134,17 @@ class NarratedRealAppTests(unittest.TestCase):
             ass=folder/OUT_ASS
             ass.write_text("[Script Info]\\nScriptType: v4.00+\\n","utf8")
             for app in APPS:
-                graph=video_graph(app,[6.,5.,5.,5.,6.],ass,folder)
+                graph=video_graph(app,[6.,5.,5.,5.,6.] if app=="calc" else [6.,6.,7.],ass,folder)
                 # 8.5 seconds of genuine application footage are retimed
                 # to voice duration; none of the later actions are cut.
-                self.assertIn("setpts=0.70588235*(PTS-STARTPTS)",graph)
-                self.assertIn("setpts=0.58823529*(PTS-STARTPTS)",graph)
-                self.assertEqual(graph.count("stop_duration=1.25"),5)
+                if app=="calc":
+                    self.assertIn("setpts=0.70588235*(PTS-STARTPTS)",graph)
+                    self.assertIn("setpts=0.58823529*(PTS-STARTPTS)",graph)
+                else:
+                    self.assertIn("setpts=0.76433121*(PTS-STARTPTS)",graph)
+                self.assertEqual(graph.count("stop_duration=1.25"),5 if app=="calc" else 3)
                 self.assertNotIn("stop_duration=12",graph)
-                self.assertEqual(graph.count("fps=24"),5)
+                self.assertEqual(graph.count("fps=24"),5 if app=="calc" else 3)
         self.assertAlmostEqual(authentic_source_speed(8.5,5.0),1.7)
         for bad_window,bad_voice in ((8.5,2.6),(8.5,12.0),
                                      (float("nan"),5),(-1,5),
@@ -148,6 +152,15 @@ class NarratedRealAppTests(unittest.TestCase):
             with self.subTest(window=bad_window,voice=bad_voice):
                 with self.assertRaises(RecoveryRefused):
                     authentic_source_speed(bad_window,bad_voice)
+
+    def test_editorial_brief_matches_realistic_speech_runtime(self):
+        from autopilot.branch1_real_app_capture import plan
+        self.assertEqual(plan("calc")[0]["duration_seconds"],27)
+        self.assertEqual(plan("chrome")[0]["duration_seconds"],22)
+        self.assertEqual(len(STORIES["chrome"]["source_windows"]),3)
+        source=(Path(__file__).parent/"branch1_narrated_real_app_short.py").read_text("utf8")
+        self.assertIn("EDITORIAL_BRIEF_RUNTIME_MISMATCH",source)
+        self.assertIn("ACTUAL_SPOKEN_RUNTIME_NOT_MATCHING_CREATIVE_BRIEF",source)
 
     def test_reject_untrusted_graphics_labels(self):
         with tempfile.TemporaryDirectory() as tmp:
