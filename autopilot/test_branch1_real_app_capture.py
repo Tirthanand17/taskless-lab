@@ -13,6 +13,7 @@ from unittest.mock import patch
 from autopilot.branch1_real_app_capture import (
     APPS, STATUS, CAPTURE, PREVIEW, RECEIPT, plan,
     validate_main_only, verify_receipt, perform_real_storyboard,
+    FORMULA_WALKTHROUGH,
 )
 from autopilot.branch1_recovery import RecoveryRefused, validate_creative
 
@@ -95,6 +96,21 @@ class RealAppAdapterTests(unittest.TestCase):
                 self.assertFalse(proof["owner_approval"])
                 self.assertEqual(proof["youtube_uploads"],0)
                 self.assertEqual(len(b["beats"]),6)
+
+    def test_real_calc_formula_steps_are_distinct_and_factually_limited(self):
+        self.assertEqual(len(FORMULA_WALKTHROUGH),5)
+        for chapter in FORMULA_WALKTHROUGH:
+            self.assertEqual(len(chapter),6)
+            self.assertEqual(len(set(chapter)),6)
+            for item in chapter:
+                self.assertGreaterEqual(len(item),8)
+                self.assertLessEqual(len(item),30)
+                self.assertNotIn("MICROSOFT EXCEL",item)
+                self.assertNotIn("SUBSCRIBE",item)
+        self.assertIn("B2 FALSE WITHOUT TRIM",FORMULA_WALKTHROUGH[4])
+        self.assertIn("B3 TRUE WITH TRIM",FORMULA_WALKTHROUGH[4])
+        self.assertIn("MEASURE LENGTH A2",FORMULA_WALKTHROUGH[2])
+        self.assertIn("TRIM A3",FORMULA_WALKTHROUGH[3])
 
     def test_real_five_chapter_storyboard_requires_running_recorder(self):
         with tempfile.TemporaryDirectory() as tmp:
