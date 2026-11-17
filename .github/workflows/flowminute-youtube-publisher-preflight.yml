@@ -3,6 +3,9 @@ name: FLOWMINUTE YouTube Publisher Preflight Unit Tests (no secrets)
 on:
   push:
     paths:
+      - "scripts/known_youtube_upload_fence.py"
+      - "scripts/test_known_youtube_upload_fence.py"
+      - "state/known_youtube_uploads.json"
       - "scripts/publish_youtube.py"
       - "scripts/test_publish_youtube_preflight.py"
       - "scripts/github_youtube_attempt_fence_b4e9.py"
@@ -26,6 +29,9 @@ on:
       - "state/scheduled/fm_20261102_agent_permissions_*.json"
   pull_request:
     paths:
+      - "scripts/known_youtube_upload_fence.py"
+      - "scripts/test_known_youtube_upload_fence.py"
+      - "state/known_youtube_uploads.json"
       - "scripts/publish_youtube.py"
       - "scripts/test_publish_youtube_preflight.py"
       - "scripts/github_youtube_attempt_fence_b4e9.py"
@@ -77,8 +83,8 @@ jobs:
       - name: Compile source and run no-network caption/approval/schedule tests
         run: |
           set -euo pipefail
-          python -m py_compile scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py scripts/github_youtube_attempt_fence_b4e9.py scripts/test_github_youtube_attempt_fence_b4e9.py scripts/validate_publish_dispatch_b4f0.py scripts/test_validate_publish_dispatch_b4f0.py scripts/owner_signed_release_b4f1.py scripts/test_owner_signed_release_b4f1.py scripts/owner_youtube_readback_b4f2.py scripts/test_owner_youtube_readback_b4f2.py scripts/reconcile_pending_youtube_b4f3.py scripts/youtube_pending_checkpoint_b4f3.py scripts/test_reconcile_pending_youtube_b4f3.py scripts/youtube_owner_live_readonly_audit_b4f6.py scripts/test_youtube_owner_live_readonly_audit_b4f6.py
-          python -m unittest scripts.test_publish_youtube_preflight scripts.test_github_youtube_attempt_fence_b4e9 scripts.test_validate_publish_dispatch_b4f0 scripts.test_owner_signed_release_b4f1 scripts.test_owner_youtube_readback_b4f2 scripts.test_reconcile_pending_youtube_b4f3 scripts.test_youtube_owner_live_readonly_audit_b4f6 -v
+          python -m py_compile scripts/known_youtube_upload_fence.py scripts/test_known_youtube_upload_fence.py scripts/publish_youtube.py scripts/test_publish_youtube_preflight.py scripts/github_youtube_attempt_fence_b4e9.py scripts/test_github_youtube_attempt_fence_b4e9.py scripts/validate_publish_dispatch_b4f0.py scripts/test_validate_publish_dispatch_b4f0.py scripts/owner_signed_release_b4f1.py scripts/test_owner_signed_release_b4f1.py scripts/owner_youtube_readback_b4f2.py scripts/test_owner_youtube_readback_b4f2.py scripts/reconcile_pending_youtube_b4f3.py scripts/youtube_pending_checkpoint_b4f3.py scripts/test_reconcile_pending_youtube_b4f3.py scripts/youtube_owner_live_readonly_audit_b4f6.py scripts/test_youtube_owner_live_readonly_audit_b4f6.py
+          python -m unittest scripts.test_known_youtube_upload_fence scripts.test_publish_youtube_preflight scripts.test_github_youtube_attempt_fence_b4e9 scripts.test_validate_publish_dispatch_b4f0 scripts.test_owner_signed_release_b4f1 scripts.test_owner_youtube_readback_b4f2 scripts.test_reconcile_pending_youtube_b4f3 scripts.test_youtube_owner_live_readonly_audit_b4f6 -v
       - name: Confirm completed owner releases have matching immutable authenticated schedule receipts
         run: |
           set -euo pipefail
