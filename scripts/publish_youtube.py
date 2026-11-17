@@ -150,6 +150,27 @@ def main():
         raise SystemExit("PUBLISH_ENABLED is not true; publishing remains disabled")
 
     root=Path(__file__).resolve().parents[1]
+
+    # Owner Studio may have uploaded the exact asset via GUI while its
+    # immutable, pre-upload episode JSON still says youtube_uploaded=false.
+    # Block that known MP4/episode BEFORE importing OAuth, downloading
+    # anything else, or issuing the first remote YouTube write.
+    from scripts.known_youtube_upload_fence import (
+        KnownUploadRejected, refuse_if_already_uploaded,
+    )
+    try:
+        refuse_if_already_uploaded(
+            root=root,
+            episode_path=args.episode,
+            mp4_sha256=args.expected_sha256,
+            channel_id=args.expected_channel_id,
+        )
+    except KnownUploadRejected:
+        raise SystemExit(
+            "Already known uploaded in owner Studio or unsafe known-upload ledger; "
+            "refuse duplicate without external YouTube operations"
+        ) from None
+
     meta=json.loads((root/args.episode).read_text(encoding="utf-8"))
     video_path=root/args.video
     caption_path=root/args.captions

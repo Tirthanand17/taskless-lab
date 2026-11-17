@@ -1,0 +1,17 @@
+{
+  "schema": "FLOWMINUTE_OWNER_STUDIO_KNOWN_UPLOADS_V1",
+  "channel_id": "UCCcL9Q_jqVq6LJmnYUSAFZA",
+  "records": [
+    {
+      "episode_id": "fm_real_python_csv_three_bugs_long_en",
+      "episode_path": "content/episodes/fm_real_python_csv_three_bugs_long_en.json",
+      "video_sha256": "1a20dedf886f3228445ed718e1f2e93a7e38cd74abf8aeb211540e32b6683f42",
+      "youtube_video_id": "ZanfCnmTegA",
+      "scheduled_publish_at_utc": "2026-11-19T10:30:00Z",
+      "status_at_verification": "scheduled",
+      "verified_source": "owner_youtube_studio_confirmation_and_independent_content_readback",
+      "verified_date": "2026-11-16"
+    }
+  ],
+  "instructions": "This is a fail-closed preventive duplicate ledger, not a substitute for Google API reauthorization or a signed owner release. Never re-upload a known episode or hash. Reconcile by actual Studio video ID if a prior attempt is ambiguous."
+}

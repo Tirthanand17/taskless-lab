@@ -89,6 +89,14 @@ jobs:
           set -euo pipefail
           python -m scripts.validate_publish_dispatch_b4f0 dispatch
 
+      - name: Refuse any exact MP4 or episode already uploaded through owner Studio
+        run: |
+          set -euo pipefail
+          python -m scripts.known_youtube_upload_fence \
+            --episode "$FM_EPISODE" \
+            --sha256 "$FM_VIDEO_SHA256" \
+            --channel-id "UCCcL9Q_jqVq6LJmnYUSAFZA"
+
       - name: Download only a successful main-branch render artifact
         env:
           GH_TOKEN: ${{ github.token }}
