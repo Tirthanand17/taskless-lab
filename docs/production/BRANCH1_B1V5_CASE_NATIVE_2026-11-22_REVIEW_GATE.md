@@ -44,3 +44,19 @@ The owner Windows workspace also now contains three episode JSONs and three exac
 All six JSONs and `stage_b1v5_publisher_manifests.py` are included in the **40-file** offline owner-review ZIP `FlowMinute_Nov22_B1V5_3Videos_REVIEW_ONLY.zip`. The zip was checked for no duplicate members, corrupt entries or approved release flags; archive SHA256 = `639adf000b02a7eb4de78fe550dc958e64406615a9f8d5a0622e0a3cc7f8930e`.
 
 The existing `scripts/youtube_publisher.py prepare <manifest>` was actually invoked with all three templates and each **correctly refused** with `qa_approved must be explicitly true`. No approval flags were changed; `qa_approved=false`, `captions_reviewed=false`, `owner_exact_hash_approved=false` and `synthetic_media=null` are retained. The release UTC instants are the previously requested proposed slots, not YouTube schedules and must be updated before validation if they have become past. No API mutation and no browser/Studio claim.
+
+
+## 2026-11-22 11:00+ IST — Owner instructed to continue scheduling; still blocked
+
+The owner requested proceeding to the three YouTube release schedules. This authorizes continuation of the *workflow*, but does not produce the missing exact-media human-listening/rights signoff or renew a revoked OAuth credential.
+
+- At 11:00 IST, the existing Windows Desktop Commander device `Nirala` was still connected, but **monthly remote command quota was exhausted**; the remote connector refused any new command. Do not retry/reconnect to bypass its quota.
+- Previously authenticated publisher OAuth refresh returned `invalid_grant`. Google's documented recovery is secure owner sign-in and consent for new tokens, not repurposing existing Gmail cookies or storing credentials in source. Thus no direct YouTube API channel inventory, upload, captions or private schedule can currently run.
+- Connected vidIQ identity had been verified for the correct channel, but the paid-credit actions needed for owner upload/schedule readback were unavailable until 2026-12-02.
+- Connected Metricool brand **does not have any social network connected**, per current connector response. User connection location: `https://app.metricool.com/brands/connections?blogId=7197146`. This would be an alternate app workflow, not an authorized replacement for the requested *direct* YouTube API pipeline.
+- The prior proposed `2026-11-22 11:00 IST` slot has passed. Never send the corresponding past UTC timestamp to `status.publishAt`: YouTube documentation says that may make the video immediately public. Select a fresh date/time only after approved, authenticated read-only inventory and final-media checks, with safe processing lead time.
+- Do not alter exact SHA manifests or change `qa_approved=false`, `owner_exact_hash_approved=false`, `captions_reviewed=false` without genuine full review and explicit approval. Do not claim scheduling from the GitHub commit alone.
+
+**Release status after this attempt: 0 uploads, 0 schedules, 0 YouTube Studio checks for all three November 22 candidates.**
+
+The next actual execution requires (1) owner full-playback/rights signoff for the three exact hashes documented above; (2) secure Google YouTube publisher OAuth reauthorization to the channel; (3) an operational uploader connection/runtime (or explicitly authorized equivalent); then (4) no-duplicate owner API inventory, private upload, SRT/thumbnail attachment, future UTC scheduling, readback and Studio verification.
