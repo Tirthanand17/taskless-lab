@@ -80,6 +80,8 @@ python -B -m branch3.clipping_v2.research_20261122.benchmark --speech --output .
 
 ## Full production pipeline and where this test fits
 
+The deployment design covers worker placement, event contracts, queue recovery, private-first release, operating cost and rollout criteria. [Clivox automation architecture](AUTOMATION_ARCHITECTURE.md)
+
 | Stage | Technology and output | What releases the next step |
 | --- | --- | --- |
 | Find and qualify a partner | Existing P1–P3 prospect and rights intake. Public metadata can identify candidates. A creator supplies a source master through the approved private system. | Authenticated rights for exact source, platforms, commercial use, duration and included third-party material. Use YouTube Studio or Takeout to export owned uploads. [Owner exports](https://support.google.com/youtube/answer/56100) |
