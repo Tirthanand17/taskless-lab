@@ -1,0 +1,34 @@
+name: Clivox synthetic clipping benchmark
+on:
+  pull_request:
+    paths:
+      - 'branch3/clipping_v2/research_20261122/**'
+      - '.github/workflows/branch3-clivox-clipping-benchmark.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'branch3/clipping_v2/research_20261122/**'
+      - '.github/workflows/branch3-clivox-clipping-benchmark.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check FFmpeg
+        run: |
+          if ! command -v ffmpeg || ! command -v ffprobe; then
+            sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+          fi
+      - name: Verify Branch 3 planning and synthetic media
+        run: |
+          python -B -m unittest -q scripts.test_branch3_v2_p5_longform_local_signal_planner scripts.test_branch3_v2_p6_longform_editorial_intake
+          python -B -m branch3.clipping_v2.research_20261122.benchmark
