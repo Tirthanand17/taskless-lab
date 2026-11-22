@@ -31,3 +31,16 @@
 **Overall:** Media created 3/3; automated technical QA 3/3; editorial approval 0/3; direct YouTube API authorization not available; YouTube uploads 0/3; Studio verification 0/3. Neither the earlier B1v4 preview nor these B1v5 candidates were published in this continuation.
 
 **No credentials, tokens, unpublished media binaries or customer data were committed to GitHub.**
+
+
+## Existing API publisher integration — fail-closed proof
+
+The owner Windows workspace also now contains three episode JSONs and three exact-SHA release manifest templates in `nov22-branch1-recovery/`:
+
+- `fm_20261122_csv_leading_zeros_short_en.release_LOCKED.json`
+- `fm_20261122_safe_csv_orders_long_en.release_LOCKED.json`
+- `fm_20261122_merge_duplicate_keys_short_en.release_LOCKED.json`
+
+All six JSONs and `stage_b1v5_publisher_manifests.py` are included in the **40-file** offline owner-review ZIP `FlowMinute_Nov22_B1V5_3Videos_REVIEW_ONLY.zip`. The zip was checked for no duplicate members, corrupt entries or approved release flags; archive SHA256 = `639adf000b02a7eb4de78fe550dc958e64406615a9f8d5a0622e0a3cc7f8930e`.
+
+The existing `scripts/youtube_publisher.py prepare <manifest>` was actually invoked with all three templates and each **correctly refused** with `qa_approved must be explicitly true`. No approval flags were changed; `qa_approved=false`, `captions_reviewed=false`, `owner_exact_hash_approved=false` and `synthetic_media=null` are retained. The release UTC instants are the previously requested proposed slots, not YouTube schedules and must be updated before validation if they have become past. No API mutation and no browser/Studio claim.
