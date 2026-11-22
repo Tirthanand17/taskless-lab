@@ -31,7 +31,7 @@ flowchart TD
 | --- | --- |
 | GitHub controller | Keep code, schemas, pinned model/tool versions, synthetic fixtures and redacted CI results in the existing public Branch 3 repository. A passing PR validates the software. An approved deployment pins the reviewed commit on the private worker. PR code has no path to its credentials. Hosted Actions are used for software testing. [GitHub Actions terms](https://docs.github.com/en/site-policy/github-terms/github-terms-for-additional-products-and-features) |
 | Private worker | Start with one owner-controlled machine running Python, faster-whisper base INT8, FFmpeg with libass, and FFprobe. Use a supervised background service and a periodic intake scan that catches missed delivery events after a restart. Process one master at a time. Private content stays in the approved encrypted storage boundary. [faster-whisper implementation](https://github.com/SYSTRAN/faster-whisper) |
-| Operational state | Use a local SQLite database for repeatable compute jobs and completion events. Keep masters, proxies, captions and renders in encrypted storage under immutable object versions with a digest. Store leases and job identifiers in the database. Backup with a consistent database snapshot and a matching manifest of object versions. A single host fits SQLite WAL's same-host constraint. [Compute schema](compute_queue.sql) · [SQLite WAL](https://www.sqlite.org/wal.html) |
+| Operational state | Use a local SQLite database for repeatable compute jobs and completion events. Keep masters, proxies, captions and renders in encrypted storage under immutable object versions with a digest. Store leases and job identifiers in the database. Backup with a consistent database snapshot and a matching manifest of object versions. A single host fits SQLite WAL's same-host constraint. [Compute schema](#reference-compute-schema) · [SQLite WAL](https://www.sqlite.org/wal.html) |
 | Review and release | Use a private review surface. Show source context, edits, captions and final playback. Store decisions, signer identity and exact digests privately. The protected release process alone can request a channel write. It uses the project’s A2 revocation authority, A6 owner signature, A7 channel check and A8 attempt ledger. A worker queue row conveys compute status only. [Release preflight](../P9_PRIVATE_FIRST_SOURCE_FREE_PREFLIGHT.md) |
 | Analytics and finance | A separate read-only identity retrieves available Clivox metrics. A private business record tracks the service fee or campaign settlement, labour, storage and compute. Only redacted engineering summaries go to public CI. [Existing analytics setup](../../a10/OWNER_ANALYTICS_READONLY_SETUP.md) |
 
@@ -62,7 +62,7 @@ After activation, intake detects new deliveries and the queue drives work immedi
 
 Three events define the handoffs between people and software. A **master-delivered event** references a private object version, episode ID, expected digest and grant version. An **editor-decision event** identifies the candidate, reviewer, source interval and immutable EDL digest. An **owner-release event** references the signed manifest, destination and action. A later schedule decision additionally binds the verified remote video ID and UTC slot. Private documents and credentials travel through protected storage; event payloads carry only the references needed by the receiving role.
 
-For each compute stage, hash a canonical representation of the input manifest, approved source scope, relevant stage parameters and tool/model revision. Enqueue the stage under its unique pair of stage and input digest. New EDL inputs change the render key while permitting reuse of an unchanged transcript within its grant. Validate current rights before private reads and before committing results. [Reference compute schema](compute_queue.sql)
+For each compute stage, hash a canonical representation of the input manifest, approved source scope, relevant stage parameters and tool/model revision. Enqueue the stage under its unique pair of stage and input digest. New EDL inputs change the render key while permitting reuse of an unchanged transcript within its grant. Validate current rights before private reads and before committing results. [Reference compute schema](#reference-compute-schema)
 
 1. Claim one available job in a short SQLite write transaction. Set a lease expiry, increment the generation and return it to the worker. Expired running jobs can be reclaimed with a higher generation. Use the database clock for claim, heartbeat and completion.
 2. Write output to a per-attempt temporary location, validate it and seal an immutable object version. In one short transaction, mark the job done only if its generation still owns an unexpired lease, and insert its completion event. A stale worker discards its attempt. Garbage collection can reclaim unreferenced objects after the applicable retention window.
@@ -91,3 +91,37 @@ For each compute stage, hash a canonical representation of the input manifest, a
 For an illustrative 60-minute episode, suppose CPU transcription runs at 0.5 times source duration and other machine work takes 10 minutes. That consumes 40 worker-minutes per episode. Four available worker-hours fit six such episodes before downtime. If the editor has 60 minutes and spends 20 minutes per episode, editorial capacity is three episodes. Buying GPU time in that scenario leaves effective throughput at three. Measure both times on the actual licensed material before buying a GPU, hosted model or clipping subscription. Upgrade the bottleneck with the largest measured reduction in cost per accepted edit.
 
 **Operator view.** Display the oldest job age, worker heartbeat, available storage, time spent waiting for review, held rights cases, unresolved uploads, missed slots and cost per accepted edit. On-call attention goes first to a revocation affecting a scheduled video or an uncertain upload. Review ranking changes on held-out episodes using the top-three acceptance rate and edit time. Compare published outcomes within the same channel, format and upload age. A weekly report can suggest an experiment; promotion of a new ranking version requires review of those results. [Research and cost model](README.md#pilot-and-spending-decision) · [Clivox capacity plan](../P11_SYNTHETIC_SCALE_RIGHTS_AND_CAPACITY.md)
+
+## Reference compute schema
+
+This SQLite definition covers the five repeatable media stages. The private dispatcher handles human decisions and remote-release receipts through the existing controller.
+
+```sql
+-- Reference schema for repeatable media computation on a single private worker host.
+-- Application opens the database on local encrypted storage and enables foreign keys per connection.
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE compute_job (
+    id INTEGER PRIMARY KEY,
+    stage TEXT NOT NULL CHECK (stage IN ('inspect', 'transcribe', 'propose', 'render', 'verify')),
+    input_digest TEXT NOT NULL CHECK (length(input_digest) = 64 AND input_digest NOT GLOB '*[^0-9a-f]*'),
+    state TEXT NOT NULL DEFAULT 'ready' CHECK (state IN ('ready', 'running', 'done', 'held')),
+    available_at INTEGER NOT NULL DEFAULT 0,
+    lease_generation INTEGER NOT NULL DEFAULT 0 CHECK (lease_generation >= 0),
+    lease_until INTEGER,
+    result_digest TEXT CHECK (result_digest IS NULL OR
+        (length(result_digest) = 64 AND result_digest NOT GLOB '*[^0-9a-f]*')),
+    CHECK ((state = 'running') = (lease_until IS NOT NULL)),
+    CHECK ((state = 'done') = (result_digest IS NOT NULL)),
+    UNIQUE (stage, input_digest)
+);
+
+CREATE INDEX compute_job_ready ON compute_job (state, available_at, id);
+
+-- The private dispatcher consumes one completion per job. A repeated delivery may occur
+-- between enqueue and acknowledgement. The next compute job has its own stable unique key.
+CREATE TABLE compute_completion (
+    job_id INTEGER PRIMARY KEY REFERENCES compute_job (id),
+    delivered_at INTEGER
+);
+```
