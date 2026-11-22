@@ -234,6 +234,7 @@ SCENES={'short1':5,'short2':5,'long':10}
 # Boundaries sourced from word-timed exact narration; SRT checked before render.
 # No guessed dynamic synchronization after speech ends.
 SEGMENT_START={'short1':[0,6.0,11.0,16.4,22.0],
+               'short2':[0,5.8,11.7,17.8,23.2],
                'long':[0,8.4,14.0,31.0,45.4,57.0,66.0,75.0,86.0,99.8]}
 
 def verify_srt(path,video_duration):
@@ -306,11 +307,7 @@ def render_one(root,episode):
     voice_secs=ffprobe_duration(ffmpeg,voice);total=voice_secs+0.8
     cues,lastcue=verify_srt(srt,total)
     imgs,board,thumbnail=asset_prep(root,episode)
-    starts=SEGMENT_START[episode] if episode!='short2' else None
-    if not starts:
-        # Once the new Short2 voice is generated, use the measured final audio length
-        # to build 5 evenly bounded, semantically staged shots.
-        starts=[round(i*(voice_secs/5),3) for i in range(5)]
+    starts=SEGMENT_START[episode]
     if starts[-1]>=total-1 or len(starts)!=len(imgs):raise ValueError('Invalid editorial timeline')
     ends=starts[1:]+[total]
     fc=root/f'{episode}_native_frames.ffconcat'
