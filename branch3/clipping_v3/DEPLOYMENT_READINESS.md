@@ -7,6 +7,8 @@
 python -B -m unittest -v scripts.test_branch3_v3_multimodal_candidates scripts.test_branch3_v3_private_queue scripts.test_branch3_v2_p5_longform_local_signal_planner scripts.test_branch3_v2_p6_longform_editorial_intake
 python -B -m scripts.branch3_v3_multimodal_candidates --synthetic
 python -B -m scripts.branch3_v3_generated_media_smoke
+python -B -m unittest -v scripts.test_branch3_v3_transcript_context scripts.test_branch3_v3_editorial_draft scripts.test_branch3_v3_subject_crop_plan
+python -B -m scripts.branch3_v3_vertical_render_smoke
 ```
 
 The generated-media smoke writes an original 80s test pattern/tone to a temporary directory, encodes and decodes real MP4, measures audio RMS and sampled frame differences, identifies a scene cut and compares V2/V3 proposals. It accepts no source argument. Frame difference is not optical flow. Semantic features are absent, not invented. No external assets or outputs retained. The queue is a repeatable-computation journal only; caller-supplied SQLite connection must be private. It is not yet a worker dispatcher; no media paths, upload jobs or legal approvals are stored. Tests cover persistence, lease recovery, stale workers, retries and dedupe.
@@ -16,11 +18,11 @@ The generated-media smoke writes an original 80s test pattern/tone to a temporar
 | ID | Required checkpoint | State at this commit |
 |---|---|---|
 | 1 | Comparative research/master architecture | Documented |
-| 2 | Numeric multimodal planner and V2 regression | Earlier PR #283 head 5e965c7 dedicated QA passed, new head recheck required |
-| 3 | Decoded-media feature smoke | Implemented, new CI pending; not full real-media extractor |
-| 4 | Durable compute queue | Implemented, new CI pending; dispatcher/backup restore not yet proven |
-| 5 | Speech/semantic and word-boundary extraction integrated | Pending; separate PR #282 benchmark exists |
-| 6 | Smart layouts/crop paths, original commentary, captions/audio, packaging and independent final QA | Pending V3 integration |
+| 2 | Numeric multimodal planner and V2 regression | Dedicated V3 CI passed at 77b4c04; latest head recheck required |
+| 3 | Decoded-media feature smoke | Dedicated V3 CI passed at 77b4c04; not full real-media extractor |
+| 4 | Durable compute queue | Dedicated V3 CI passed at 77b4c04; dispatcher/backup restore not yet proven |
+| 5 | Speech/semantic and word-boundary extraction integrated | Fixture unit tests passed in CI at 77b4c04; cached Faster Whisper base INT8 generated-speech test passed on Windows, 29.02s, 61 timed words, 6 segments; real-source ASR acceptance pending |
+| 6 | Smart layouts/crop paths, original commentary, captions/audio, packaging and independent final QA | Partial: editorial draft, caption timings, 1080x1920 fit/stack fixture render and decoded audio/caption QA; crop-path planner unit tests passed. Automatic subject detection, actual dynamic crop rendering, original commentary and final packaging still pending |
 | 7 | Deployable worker with bounded resource use, private filesystem, dependency/model pins and verified backup/restore | Pending |
 | 8 | Real scoped creator rights, delivered source and private storage | Blocked on genuine evidence |
 | 9 | Held-out real-media comparison, actual editor acceptance and first 3 reviewed private clips | Pending |
@@ -40,3 +42,10 @@ After a genuine creator grant and approved worker exist, use existing V2 P4 and 
 ## Next engineering tasks
 
 Integrate or port validated parts of PR #282 after code/CI review; build actual ASR/VAD and motion adapter with consistent source timebase; repair clip boundaries against words and scene context; connect queue to bounded compute dispatcher; add crop/layout and editorial EDL; verify independent render and packaging QA. Preserve all existing permissions and FlowMinute tracks.
+
+## Verified staging evidence (2026-11-24)
+
+- PR #283 commit 77b4c04424f43a1997c9c0fb4f0febf2dba68961: dedicated CI run 45356922091 and channel QA 45356922100 succeeded; repository Content Quality Gate 45356922136 failed at the FFmpeg installation step, not an observed test failure. Do not mark full CI green.
+- Local Windows detached-worktree test of exact commit 37b43e0aad6ccd06a11fce4d0435bdf89fe04247 succeeded (exit 0). Two generated 24-second 1080x1920 H.264/AAC outputs, fit and game_facecam_stack, decoded caption pixels and audio/video timing checked; peak 6524 PCM16 for both. Synthetic tone and generated caption text, not spoken words or licensed gameplay. Temporary files cleaned. No real media retained, published or processed.
+- Three new crop-plan tests passed locally on files fetched from branch at commit a6d6834812d00d292bdbc905fafd3a8e815ac60b. Subject boxes are input observations, not actual detections; ambiguity, rapid motion and inadequate coverage cause full-frame fit. Render integration and interpolation verification remain pending.
+- Five of eleven staging checkpoint-specific validations have evidence. Checkpoint 6 is partial; production activation remains blocked. No change to V2 real milestone count or legal gates. No automatic spend or publishing.
