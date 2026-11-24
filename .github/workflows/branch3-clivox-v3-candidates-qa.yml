@@ -10,6 +10,8 @@ on:
       - 'scripts/test_branch3_v3_private_queue.py'
       - 'scripts/branch3_v3_transcript_context.py'
       - 'scripts/test_branch3_v3_transcript_context.py'
+      - 'scripts/branch3_v3_editorial_draft.py'
+      - 'scripts/test_branch3_v3_editorial_draft.py'
       - 'scripts/branch3_v2_p5_*'
       - 'scripts/branch3_v2_p4_*'
       - 'branch3/clipping_v3/**'
@@ -36,7 +38,7 @@ jobs:
       - name: Run candidate tests and existing V2 regression
         run: |
           set -euo pipefail
-          python -B -m unittest -v scripts.test_branch3_v3_multimodal_candidates scripts.test_branch3_v3_private_queue scripts.test_branch3_v3_transcript_context scripts.test_branch3_v2_p5_longform_local_signal_planner scripts.test_branch3_v2_p6_longform_editorial_intake
+          python -B -m unittest -v scripts.test_branch3_v3_multimodal_candidates scripts.test_branch3_v3_private_queue scripts.test_branch3_v3_transcript_context scripts.test_branch3_v3_editorial_draft scripts.test_branch3_v2_p5_longform_local_signal_planner scripts.test_branch3_v2_p6_longform_editorial_intake
           python -B -m scripts.branch3_v3_multimodal_candidates --synthetic > "$RUNNER_TEMP/clivox-v3-fixture.json"
           python -B - <<'PY'
           import json, os
