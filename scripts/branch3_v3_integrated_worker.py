@@ -16,7 +16,8 @@ import time
 from pathlib import Path
 
 from scripts.branch3_v3_private_queue import ComputeQueue
-from scripts.branch3_v3_generated_media_smoke import fixture, measure_generated
+from scripts.branch3_v3_generated_media_smoke import fixture
+from scripts.branch3_v3_local_proxy import measure_local_proxy
 from scripts.branch3_v3_transcript_context import (
     fixture_rows, synthesize_generated, transcribe_generated, combine_observations,
 )
@@ -183,9 +184,7 @@ def pipeline(actual_speech=False):
             source=folder/"speech-source.mp4"
         sha=file_digest(source)
         def inspect():
-            d=measure_generated(source)
-            d["profile"]="dialogue"
-            return d
+            return measure_local_proxy(source.resolve(),"dialogue")
         measurements=stage(folder,"inspect",sha,inspect)
         rows=stage(folder,"transcribe",[sha,actual_speech],
                    lambda:transcribe_generated(source,80000) if actual_speech else fixture_rows())
