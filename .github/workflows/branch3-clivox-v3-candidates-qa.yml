@@ -1,0 +1,57 @@
+name: CLIVOX V3 multimodal candidate QA (source-free)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/branch3_v3_*.py'
+      - 'scripts/test_branch3_v3_*.py'
+      - 'scripts/branch3_v2_p5_*'
+      - 'scripts/branch3_v2_p4_*'
+      - 'branch3/clipping_v3/**'
+      - '.github/workflows/branch3-clivox-v3-candidates-qa.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-fixture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PUBLISH_ENABLED: 'false'
+      CLIVOX_YOUTUBE_UPLOAD_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run candidate tests and existing V2 regression
+        run: |
+          set -euo pipefail
+          python -B -m unittest -v scripts.test_branch3_v3_multimodal_candidates scripts.test_branch3_v3_private_queue scripts.test_branch3_v3_transcript_context scripts.test_branch3_v3_editorial_draft scripts.test_branch3_v3_subject_crop_plan scripts.test_branch3_v3_editor_benchmark scripts.test_branch3_v2_p5_longform_local_signal_planner scripts.test_branch3_v2_p6_longform_editorial_intake
+          python -B -m scripts.branch3_v3_multimodal_candidates --synthetic > "$RUNNER_TEMP/clivox-v3-fixture.json"
+          python -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          report = json.loads((Path(os.environ["RUNNER_TEMP"]) / "clivox-v3-fixture.json").read_text())
+          assert report["fixture_only"] is True
+          assert report["baseline_candidates"] == 1
+          assert report["multimodal_candidates"] == 2
+          assert report["report"]["youtube_upload_authorized"] is False
+          assert report["report"]["real_milestone_complete"] is False
+          print("Source-free fixture comparison passed")
+          PY
+      - name: Install FFmpeg and test decoded generated media
+        run: |
+          set -euo pipefail
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null || ! test -r /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf; then
+            timeout 120s sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 update -qq
+            timeout 180s sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 install -y -qq --no-install-recommends ffmpeg fonts-dejavu-core
+          fi
+          python -B -m scripts.branch3_v3_generated_media_smoke
+          python -B -m scripts.branch3_v3_vertical_render_smoke
+          python -B -m scripts.branch3_v3_integrated_worker
+          python -B -m scripts.branch3_v3_dynamic_crop_smoke
