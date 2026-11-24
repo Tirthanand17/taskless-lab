@@ -15,6 +15,7 @@ on:
       - 'scripts/branch3_v3_vertical_render_smoke.py'
       - 'scripts/branch3_v3_subject_crop_plan.py'
       - 'scripts/test_branch3_v3_subject_crop_plan.py'
+      - 'scripts/branch3_v3_integrated_worker.py'
       - 'scripts/branch3_v2_p5_*'
       - 'scripts/branch3_v2_p4_*'
       - 'branch3/clipping_v3/**'
@@ -26,7 +27,7 @@ permissions:
 jobs:
   candidate-fixture:
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 15
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       PUBLISH_ENABLED: 'false'
@@ -57,7 +58,10 @@ jobs:
       - name: Install FFmpeg and test decoded generated media
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq --no-install-recommends ffmpeg fonts-dejavu-core
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null || ! test -r /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf; then
+            timeout 120s sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 update -qq
+            timeout 180s sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 install -y -qq --no-install-recommends ffmpeg fonts-dejavu-core
+          fi
           python -B -m scripts.branch3_v3_generated_media_smoke
           python -B -m scripts.branch3_v3_vertical_render_smoke
+          python -B -m scripts.branch3_v3_integrated_worker
