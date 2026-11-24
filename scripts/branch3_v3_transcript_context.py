@@ -122,10 +122,8 @@ def fixture_rows():
     return out
 
 
-def generated_speech_smoke():
-    """Use only generated speech, offline cached model; no new model download."""
-    from faster_whisper import WhisperModel
-    from huggingface_hub import snapshot_download
+def synthesize_generated(wav):
+    """Fixed original test script only; no external voice cloning or source."""
     import os
     sentence = ("Why does a microphone sound different across the room? "
                 "The microphone records your voice and the reflections from the walls. "
@@ -133,44 +131,56 @@ def generated_speech_smoke():
                 "Try the same sentence twice and listen to the difference. "
                 "The quieter room often matters more than an expensive microphone. "
                 "That simple comparison is a good place to start.")
+    exe = shutil.which("espeak-ng") or shutil.which("espeak")
+    if exe:
+        subprocess.run([exe, "-v", "en", "-s", "145", "-w", str(wav), sentence], check=True, timeout=60)
+    elif os.name == "nt":
+        cmd = ("Add-Type -AssemblyName System.Speech; "
+               "$v=New-Object System.Speech.Synthesis.SpeechSynthesizer; $v.Rate=-2; "
+               "$v.SetOutputToWaveFile($env:CLIVOX_TEST_WAV); "
+               "$v.Speak($env:CLIVOX_TEST_TEXT); $v.Dispose()")
+        subprocess.run(["powershell.exe","-NoProfile","-Command",cmd], check=True, timeout=60,
+                       env={**os.environ,"CLIVOX_TEST_WAV":str(wav),"CLIVOX_TEST_TEXT":sentence})
+    else:
+        raise RuntimeError("No local speech synthesizer")
+
+
+def transcribe_generated(media, duration):
+    """Internal fixture adapter; not an authorized production input interface."""
+    from faster_whisper import WhisperModel
+    from huggingface_hub import snapshot_download
+    weights = snapshot_download("Systran/faster-whisper-base", revision=MODEL, local_files_only=True)
+    model = WhisperModel(weights,device="cpu",compute_type="int8",cpu_threads=4,local_files_only=True)
+    segments, _ = model.transcribe(str(media), language="en", vad_filter=True, beam_size=3, word_timestamps=True)
+    rows, previous = [], 0
+    for s in segments:
+        a,b = max(previous,round(s.start*1000)), min(duration,round(s.end*1000))
+        if a >= b or not s.text.strip():
+            continue
+        words, end = [], a
+        for w in s.words or []:
+            u,v = max(end,round(w.start*1000)),min(b,round(w.end*1000))
+            if u < v and w.word.strip():
+                words.append({"start_ms":u,"end_ms":v,"text":w.word.strip()})
+                end = v
+        rows.append({"start_ms":a,"end_ms":b,"text":s.text.strip(),"words":words})
+        previous=b
+    validate(rows, duration)
+    return rows
+
+
+def generated_speech_smoke():
     with tempfile.TemporaryDirectory(prefix="clivox-v3-asr-") as d:
         wav = Path(d)/"generated.wav"
-        exe = shutil.which("espeak-ng") or shutil.which("espeak")
-        if exe:
-            subprocess.run([exe, "-v", "en", "-s", "145", "-w", str(wav), sentence], check=True, timeout=60)
-        elif os.name == "nt":
-            cmd = ("Add-Type -AssemblyName System.Speech; "
-                   "$v=New-Object System.Speech.Synthesis.SpeechSynthesizer; $v.Rate=-2; "
-                   "$v.SetOutputToWaveFile($env:CLIVOX_TEST_WAV); "
-                   "$v.Speak($env:CLIVOX_TEST_TEXT); $v.Dispose()")
-            subprocess.run(["powershell.exe","-NoProfile","-Command",cmd], check=True, timeout=60,
-                           env={**os.environ,"CLIVOX_TEST_WAV":str(wav),"CLIVOX_TEST_TEXT":sentence})
-        else:
-            raise RuntimeError("No local speech synthesizer")
+        synthesize_generated(wav)
         with wave.open(str(wav)) as f:
             duration = math.ceil(f.getnframes()*1000/f.getframerate())
-        weights = snapshot_download("Systran/faster-whisper-base", revision=MODEL, local_files_only=True)
-        model = WhisperModel(weights,device="cpu",compute_type="int8",cpu_threads=4,local_files_only=True)
-        segments, _ = model.transcribe(str(wav), language="en", vad_filter=True, beam_size=3, word_timestamps=True)
-        rows, previous = [], 0
-        for s in segments:
-            a,b = max(previous,round(s.start*1000)), min(duration,round(s.end*1000))
-            if a >= b or not s.text.strip():
-                continue
-            words, end = [], a
-            for w in s.words or []:
-                u,v = max(end,round(w.start*1000)),min(b,round(w.end*1000))
-                if u < v and w.word.strip():
-                    words.append({"start_ms":u,"end_ms":v,"text":w.word.strip()})
-                    end = v
-            rows.append({"start_ms":a,"end_ms":b,"text":s.text.strip(),"words":words})
-            previous=b
-        choices=propose_transcript(rows,duration)
+        rows = transcribe_generated(wav, duration)
+        choices = propose_transcript(rows,duration)
         need(bool(rows and choices),"GENERATED_ASR_NO_PROPOSAL")
         return {"generated_speech_only":True,"asr":"faster-whisper-base-int8",
                 "duration_ms":duration,"segments":len(rows),"words":sum(len(r["words"]) for r in rows),
                 "proposals":len(choices),"production_ready":False,"youtube_upload_authorized":False}
-
 
 
 def combine_observations(measurements, rows):
