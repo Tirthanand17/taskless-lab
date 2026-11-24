@@ -44,6 +44,22 @@ class TranscriptContextTests(unittest.TestCase):
             row["text"]=row["text"].rstrip(".?")
         self.assertEqual(propose_transcript(rows,80000),[])
 
+    def test_combined_dialogue_preserves_context_and_denies_forgery(self):
+        from scripts.branch3_v3_multimodal_candidates import demo
+        from scripts.branch3_v3_transcript_context import combine_observations
+        d = demo("dialogue")
+        d["semantic_events_ms"] = None
+        report = combine_observations(d, fixture_rows())
+        self.assertEqual(report["semantic_proposal_count"], 2)
+        self.assertEqual([(x["start_ms"],x["end_ms"]) for x in report["candidates"]],
+                         [(0,24000),(50000,74000)])
+        self.assertFalse(report["youtube_upload_authorized"])
+        for c in report["candidates"]:
+            self.assertTrue(all(c["start_ms"] <= e["time_ms"] < c["end_ms"] for e in c["evidence"]))
+        d["semantic_events_ms"] = [1000]
+        with self.assertRaises(ValueError):
+            combine_observations(d, fixture_rows())
+
 
 if __name__ == "__main__":
     unittest.main()
