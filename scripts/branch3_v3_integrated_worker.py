@@ -107,7 +107,7 @@ def render(folder, source, plan, actual_speech):
         "tpad=stop_mode=clone:stop_duration=1,ass=captions.ass")
     run(["ffmpeg","-v","error","-nostdin","-protocol_whitelist","file",
          "-ss",str(start/1000),"-i",source.name,"-t",str(duration),
-         "-map","0:v:0","-map","0:a:0","-vf",vf,"-af","alimiter=limit=0.8:level=false",
+         "-map","0:v:0","-map","0:a:0","-vf",vf,"-af","aresample=48000,volume=0.60,alimiter=limit=0.65:level=false:latency=1",
          "-c:v","libx264","-threads:v","2","-preset","ultrafast","-crf","23",
          "-pix_fmt","yuv420p","-c:a","aac","-ar","48000","-ac","1",
          "-movflags","+faststart","preview.mp4"],folder)
@@ -146,7 +146,8 @@ def verify(folder, rendered):
              "-f","s16le","pipe:1"],folder,900000)
     pcm=array.array("h");pcm.frombytes(raw)
     if sys.byteorder!="little":pcm.byteswap()
-    need(len(pcm)>8000 and 200<max(abs(x) for x in pcm)<32000,"AUDIO_LEVEL")
+    peak=max((abs(x) for x in pcm),default=0)
+    need(len(pcm)>8000 and 200<peak<32000,f"AUDIO_LEVEL_samples_{len(pcm)}_peak_{peak}")
     return {"decoded":True,"caption_pixels_verified":True,"audio_peak_pcm16":max(abs(x) for x in pcm),
             "preview_sha256":rendered["preview_sha256"],"human_review_required":True}
 
