@@ -172,6 +172,45 @@ def generated_speech_smoke():
                 "proposals":len(choices),"production_ready":False,"youtube_upload_authorized":False}
 
 
+
+def combine_observations(measurements, rows):
+    """Recompute source-free semantic anchors and refine without losing event evidence."""
+    import hashlib
+    from scripts.branch3_v3_multimodal_candidates import validate as validate_features, propose, canonical
+    validate_features(measurements)
+    need(measurements["semantic_events_ms"] is None, "SEMANTIC_MUST_BE_RECOMPUTED")
+    duration = measurements["duration_ms"]
+    semantic = propose_transcript(rows, duration)
+    doc = dict(measurements, semantic_events_ms=sorted({p["semantic_event_ms"] for p in semantic}))
+    report = propose(doc)
+    selected, rejected = [], 0
+    for candidate in report["candidates"]:
+        refined = refine_candidate(candidate, rows, duration)
+        item = dict(candidate)
+        if refined is not None and all(refined["start_ms"] <= e["time_ms"] < refined["end_ms"]
+                                      for e in candidate["evidence"]):
+            item.update(start_ms=refined["start_ms"], end_ms=refined["end_ms"],
+                        transcript_segment_range=[refined["first_segment"], refined["last_segment"]],
+                        context_state="UNVERIFIED_TRANSCRIPT_BOUNDARIES")
+        elif doc["profile"] == "dialogue":
+            rejected += 1
+            continue
+        else:
+            item.update(transcript_segment_range=None, context_state="HUMAN_CONTEXT_REQUIRED")
+        if any(item["start_ms"] < c["end_ms"] and item["end_ms"] > c["start_ms"] for c in selected):
+            rejected += 1
+            continue
+        item["quote_verified"] = False
+        selected.append(item)
+    return {"stage":"V3_UNAPPROVED_COMBINED_CANDIDATES",
+            "transcript_observation_digest_not_media_or_rights":hashlib.sha256(canonical(rows)).hexdigest(),
+            "measurement_digest":report["measurement_sha256_not_media_or_license"],
+            "semantic_proposal_count":len(semantic), "rejected_context_or_overlap":rejected,
+            "candidates":selected, "creator_rights_verified":False,
+            "human_editor_approved":False, "ready_to_render":False,
+            "youtube_upload_authorized":False, "viral_probability":None}
+
+
 if __name__ == "__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--generated-speech",action="store_true")
