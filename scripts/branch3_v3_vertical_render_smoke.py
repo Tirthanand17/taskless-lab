@@ -42,7 +42,8 @@ def ass_time(ms):
     return f"{cs//360000}:{cs//6000%60:02}:{cs//100%60:02}.{cs%100:02}"
 
 
-def caption_ass(cues):
+def caption_ass(cues, duration_ms=24000):
+    need(type(duration_ms) is int and 0 < duration_ms <= 55000, "CAPTION_DURATION")
     header = """[Script Info]
 ScriptType: v4.00+
 PlayResX: 1080
@@ -60,7 +61,7 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
         need(type(text) is str and 0 < len(text) <= 42
              and not any(ch in text for ch in "{}\\\r\n"), "CAPTION_TEXT")
         a,b = c["start_ms"],c["end_ms"]
-        need(type(a) is int and type(b) is int and 0 <= a < b <= 24000, "CAPTION_TIME")
+        need(type(a) is int and type(b) is int and 0 <= a < b <= duration_ms, "CAPTION_TIME")
         if b//10 > a//10:
             lines.append(f"Dialogue: 0,{ass_time(a)},{ass_time(b)},Caption,,0,0,0,,{text}\n")
     return "".join(lines)
