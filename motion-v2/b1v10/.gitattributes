@@ -1,1 +1,7 @@
 smoke.tsx -text
+design.json text eol=lf
+visual-system.tsx text eol=lf
+design-demo.tsx text eol=lf
+verify_design_tokens.py text eol=lf
+render_design_review.cjs text eol=lf
+verify_design_review.py text eol=lf

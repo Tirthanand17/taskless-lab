@@ -20,7 +20,7 @@ Status: isolated, review-only development. Baseline: main 7f4ef63. Recovered loc
 | 02 | Remotion runtime 4.0.534 and CLI verified locally | Verified |
 | 03 | Native HD 9:16 animated benchmark, 90 decoded frames | Verified; SMOKE_QA.json |
 | 04 | Native HD 16:9 animated benchmark, 90 decoded frames | Verified; DUAL_MOTION_QA.json (90 frames at 30 FPS) |
-| 05 | Reusable visual tokens, typography, safe-area layout and scene primitives | Pending |
+| 05 | Reusable visual tokens, typography, safe-area layout and scene primitives | Verified; DESIGN_REVIEW_QA.json (four native stills; layout/contrast checks) |
 | 06 | Storyboard and research/evidence template for differentiated topics | Pending |
 | 07 | Meaningful transitions, camera, asset rights and sharpness checks | Pending |
 | 08 | Preferred narration and real listening review, aligned captions | Pending |

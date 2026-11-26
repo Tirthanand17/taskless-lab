@@ -1,0 +1,103 @@
+{
+  "version": "0.2.0",
+  "fps": 30,
+  "colors": {
+    "background": "#09131F",
+    "panel": "#132536",
+    "panelLight": "#1B3448",
+    "ink": "#F3F7FC",
+    "muted": "#B7CBDD",
+    "cyan": "#72E3ED",
+    "lime": "#D1FA83",
+    "edge": "#45627A"
+  },
+  "font": "Segoe UI, Arial, sans-serif",
+  "formats": {
+    "vertical": {
+      "width": 1080,
+      "height": 1920,
+      "safe": {
+        "x": 72,
+        "y": 190,
+        "w": 824,
+        "h": 1370
+      },
+      "regions": {
+        "header": {
+          "x": 72,
+          "y": 190,
+          "w": 824,
+          "h": 226
+        },
+        "hero": {
+          "x": 72,
+          "y": 440,
+          "w": 824,
+          "h": 606
+        },
+        "proof": {
+          "x": 72,
+          "y": 1070,
+          "w": 824,
+          "h": 300
+        },
+        "caption": {
+          "x": 72,
+          "y": 1394,
+          "w": 824,
+          "h": 166
+        }
+      },
+      "type": {
+        "kicker": 25,
+        "title": 64,
+        "body": 36,
+        "small": 26,
+        "caption": 38
+      }
+    },
+    "landscape": {
+      "width": 1920,
+      "height": 1080,
+      "safe": {
+        "x": 96,
+        "y": 80,
+        "w": 1728,
+        "h": 896
+      },
+      "regions": {
+        "header": {
+          "x": 96,
+          "y": 80,
+          "w": 1728,
+          "h": 190
+        },
+        "hero": {
+          "x": 96,
+          "y": 294,
+          "w": 1000,
+          "h": 510
+        },
+        "proof": {
+          "x": 1120,
+          "y": 294,
+          "w": 704,
+          "h": 510
+        },
+        "caption": {
+          "x": 96,
+          "y": 828,
+          "w": 1728,
+          "h": 148
+        }
+      },
+      "type": {
+        "kicker": 26,
+        "title": 72,
+        "body": 36,
+        "small": 27,
+        "caption": 40
+      }
+    }
+  }
+}

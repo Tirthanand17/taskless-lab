@@ -1,0 +1,56 @@
+{
+  "version": "0.2.0",
+  "source_sha256": {
+    "design.json": "959af12fef651e187a4e5670856808808004b27d74391e8396473c3f3cd2ba6a",
+    "visual-system.tsx": "752651cdec7b29cb1ae4ad8f0af134ec14700e34bc671cc0488e8cfca6bc297e",
+    "design-demo.tsx": "2ab9e5a2461b7c43a872311892df03bfab6e80a110fd4575ffc6c9ec21e2973a",
+    "verify_design_tokens.py": "bd3cdde6a295de8fb64a76319f5f3cc85e9a0a64da8da53af97ab077f77d1e54",
+    "render_design_review.cjs": "83ccc7f9e016b0dbb021060bfedc0d9c7785ba463276bac4b1f70400b807d333"
+  },
+  "stills": [
+    {
+      "file": "vertical-15.png",
+      "frame": 15,
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "sha256": "0750d3a8609e7a78c135c860f8cc03d9be3b482d4be3175ce44148f9129701fc"
+    },
+    {
+      "file": "vertical-75.png",
+      "frame": 75,
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "sha256": "237d181a1fe951a90b8a477de23ff75e30dcca618694eefc7e4a27972450d3e6"
+    },
+    {
+      "file": "landscape-15.png",
+      "frame": 15,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "sha256": "8932a749fcd353877573dd84d739a4fa511dff7923724bbafc0388443639c26f"
+    },
+    {
+      "file": "landscape-75.png",
+      "frame": 75,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "sha256": "73c5d98c910837c3519919725ef1a4e0eb38976840a20477cad0f681b6cff0e5"
+    }
+  ],
+  "contact_sha256": "09629c3f0589ff9918973e40581b5823e19fb692c6b3031c29c6b9f09aa14375",
+  "native_png_decode_pass": true,
+  "distinct_sampled_states": true,
+  "review_only": true,
+  "full_playback_verified": false,
+  "narration_verified": false,
+  "human_visual_approval": false,
+  "release_authorized": false
+}
