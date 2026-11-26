@@ -1,0 +1,10 @@
+{
+  "encoded_sha256": "854a087460c36f761189c84c63d8a7cb266046a730792d980795ac58f2a27baf",
+  "recognized": "What happens when you change just one byte? Here are two tiny files. One contains the letter A. The other contains the letter B. Compute a hash for each file. Even this small change gives us two different fingerprints. Compare the result with a trusted hash. A match helps check integrity, but it does not prove the file is safe.",
+  "expected_token_similarity": 1.0,
+  "prior_raw_asr_token_similarity": 0.9833,
+  "exact_expected_match": true,
+  "human_listening_approved": false,
+  "release_authorized": false,
+  "screen_pass": true
+}

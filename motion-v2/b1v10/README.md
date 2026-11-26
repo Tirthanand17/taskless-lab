@@ -84,3 +84,19 @@ node b1v10/render_narration_preview.cjs C:\path\to\caption-preview
 ```
 
 Committed preview fixtures include the exact observed raw and corrected captions and QA reports; the locally generated WAV and preview images remain on the workstation. Do not publish the preview or modify existing scheduled videos. The preferred synthetic voice is a candidate baseline; it is not a human recording.
+
+## v0.6.0 — narration-first original sound design
+
+Owner said the v0.5.0 voice is good for now and requested it be kept (current project conversation). Preserve the exact reviewed narration SHA-256; this is voice acceptance for the current development sample, not approval of later audio mixes, video synchronization, or publication. The earlier raw ASR report remains unchanged.
+
+sound_mix.py reuses the existing original procedural micro-effects from autopilot/polished_sound_design_v2.py. Four accents are anchored to observed words and rounded to exact 30-fps frame/sample coordinates for later visual integration. A quiet original non-melodic tonal bed ducks under speech using a smoothed RMS envelope. No third-party audio recordings, music downloads or paid services. The original narration samples remain the unmodified voice stem. This is a restrained ambient texture, not a full cinematic music composition.
+
+The actual 19.3667-second mix preserves all 929600 samples, including after AAC encoding and decoding. FFmpeg measures integrated loudness and true peak; the encoded speech is independently transcribed using the existing offline Whisper base model. The numerical screening thresholds are engineering defaults, not evidence of perceived sound quality or viewer retention. Visual event alignment, subjective mix listening, final rights and publication approval remain pending.
+
+Reproduce using the existing local v0.5.0 WAV and FFmpeg:
+```powershell
+python motion-v2/b1v10/sound_mix.py --narration C:\path\to\narration.wav --output C:\path\to\new-mix --ffmpeg C:\path\to\ffmpeg.exe
+python motion-v2/b1v10/verify_encoded_speech.py C:\path\to\new-mix
+python -m unittest discover -s motion-v2/b1v10 -p "test_*.py" -v
+```
+Audio files remain local; only QA reports and code are committed. The next full Short must use the same frame-bound event plan and independently verify rendered synchronization and review the final mix.

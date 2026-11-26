@@ -1,0 +1,78 @@
+{
+  "version": "0.6.0",
+  "narration_sha256": "25f6429a25acb56aca92b0e52f3c72e315364ae5142b9c0136760020aa0e9b9c",
+  "narration_unchanged": true,
+  "source_samples": 929600,
+  "mix_samples": 929600,
+  "decoded_aac_samples": 929600,
+  "aac_padding_samples": 0,
+  "duration_seconds": 19.366666666666667,
+  "sample_rate": 48000,
+  "events": [
+    {
+      "scene": "proof",
+      "anchor": "a",
+      "effect": "soft_tick",
+      "frame": 156,
+      "sample": 249600
+    },
+    {
+      "scene": "proof",
+      "anchor": "b",
+      "effect": "soft_ping",
+      "frame": 214,
+      "sample": 342400
+    },
+    {
+      "scene": "explain",
+      "anchor": "fingerprints",
+      "effect": "reveal_pulse",
+      "frame": 354,
+      "sample": 566400
+    },
+    {
+      "scene": "payoff",
+      "anchor": "trusted",
+      "effect": "soft_sweep",
+      "frame": 417,
+      "sample": 667200
+    }
+  ],
+  "voice_over_background_db": 33.42,
+  "ambient_gain_during_active_speech_floor": 0.28,
+  "ambient_gain_min": 0.28,
+  "voice_over_bed_db": 33.97,
+  "mix_pcm_energy": {
+    "peak_dbfs": -1.97,
+    "rms_dbfs": -17.06,
+    "clipped_samples": 0
+  },
+  "decoded_aac_energy": {
+    "peak_dbfs": -1.96,
+    "rms_dbfs": -17.06,
+    "clipped_samples": 0
+  },
+  "encoded_loudness": {
+    "input_i": -16.86,
+    "input_tp": -1.96,
+    "input_lra": 1.5
+  },
+  "artifacts_sha256": {
+    "mix.wav": "d601a6768cf86c665bcb293f0e464bc5d03c6fc6f113aa6108a7cd57c8c05a3c",
+    "ambient.wav": "339bdcaecb25aaca16c390d1bab76166ac8762219a7cf4d614d4376a25f88d78",
+    "effects.wav": "8f3cf0c92afc497e0c0a11442876bacbd9039a01ca396f7a86520376a4d787df",
+    "mix.m4a": "854a087460c36f761189c84c63d8a7cb266046a730792d980795ac58f2a27baf",
+    "decoded.wav": "184c90902412d2e898da5c84e3b93bd9d57baf1dab43cfb0ff2efe577b6156d9"
+  },
+  "source_sha256": {
+    "sound_mix.py": "9f66a3bc6d786ac8d14000a8be62c79c775c03f10d847dee882eae1500968ddb",
+    "NARRATION_REVIEW_QA.json": "0ec695cfd7b94d374ce95a9f925e9f788efbb8280df4f674a4af7589bd6b9b66",
+    "CAPTION_CORRECTION_QA.json": "5b37d145d60482203c349885e2a18e5fec3254bf08262302b1e4848dd67b0b7e",
+    "word_captions_review.json": "b66ccf64ee91e3d40944b9198bbbbbfcb95f25922ff21e11ec3ed461ad0bd724"
+  },
+  "effects_source": "existing original oscillator/noise recipes; no external audio",
+  "third_party_audio_samples": 0,
+  "planned_visual_events_not_rendered": true,
+  "human_mix_listening_approved": false,
+  "release_authorized": false
+}

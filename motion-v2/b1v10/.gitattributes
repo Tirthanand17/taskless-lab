@@ -24,3 +24,8 @@ word_captions.json -text
 word_captions_review.json -text
 captions_review.srt -text
 CAPTION_PREVIEW_QA.json -text
+sound_mix.py -text
+test_sound_mix.py -text
+verify_encoded_speech.py -text
+SOUND_MIX_QA.json -text
+ENCODED_SPEECH_QA.json -text
