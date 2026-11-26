@@ -42,3 +42,9 @@ Publish useful, original short-form videos that solve one repetitive-work proble
 **Fix It in 45 Seconds** — small spreadsheet/data problems with a visible before/after.
 
 See [CONTENT_PLAN.md](CONTENT_PLAN.md) and [MONETIZATION.md](MONETIZATION.md).
+
+## B1v10 — Premium Motion Graphics Engine (development v0.1.0)
+
+**[Versioned requirements and architecture](docs/production/BRANCH1_B1V10_PREMIUM_MOTION_REQUIREMENTS.md)** · **[Development status / resume point](autopilot/b1v10/STATUS.md)** · [Dependency review](autopilot/b1v10/DEPENDENCIES.md).
+
+Branch 1 creative upgrade: original narration-driven 2.5D/3D graphics, native HD, reusable assets, realistic licensed sound, rigorous QA and performance feedback. Development only until acceptance gates pass. Preserve B1v9 and earlier schedules, Branch 2 and the adopted editorial/listening policies. Read the B1v10 status before continuing; implement sequentially and record verified results. No new automated publishing or billing.
