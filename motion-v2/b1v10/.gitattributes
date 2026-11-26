@@ -60,3 +60,6 @@ REAL_PROOF_LONG_QA.json -text
 focus_short.py -text
 test_focus_short.py -text
 FOCUS_SHORT_QA.json -text
+focus_long.py -text
+test_focus_long.py -text
+FOCUS_LONG_QA.json -text

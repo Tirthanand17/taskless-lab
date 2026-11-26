@@ -182,3 +182,15 @@ Run with the exact original v0.7 Short and RC2 capture:
 python focus_short.py --capture C:\path\to\ACTUAL_SHA256_CONSOLE.mp4 --pilot C:\path\to\original-short.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 See FOCUS_SHORT_QA.json. No publisher changes or upload authorization.
+
+## RC4 phase 2 — focused long-video evidence and readability
+
+The original v0.8 and RC3 exports remain intact. The RC4 alternate uses the original narrated v0.8 pilot with eight focused evidence inserts drawn directly from the recorded RC3 console video. Each insert pairs a held, magnified capture frame with a large native-typography outcome and plain-language interpretation. Magnification ranges from 1.63x to 2x; it improves display size, not underlying capture detail. The original explanatory diagrams remain between inserts. The earlier opening screen disclosed the first bad revision; RC4 restores the original opening and shows only the recorded endpoint line during setup. The decisive code-change crop appears in the result scene. The captured images are held excerpts, not continuous terminal playback.
+
+Actual export: 1920x1080, 30 fps, 3360 frames, 112 seconds. Full AV decode passed; 5376000 decoded PCM samples identical to the v0.8 pilot, zero clipped samples, -16.66 LUFS and -1.82 dBTP. Eight sampled crop comparisons have mean grayscale error below 1.09. Ten representative 480px-wide previews inspected. Existing captions are retained and remain relatively small on phones. Full playback, semantic cue alignment, raw ASR pronunciation review, reference parity, and subjective mobile acceptance remain open. No retention improvement is claimed.
+
+Reproduction from motion-v2/b1v10:
+```powershell
+python focus_long.py --capture C:\path\to\ACTUAL_GIT_CONSOLE.mp4 --pilot C:\path\to\original-long.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+See FOCUS_LONG_QA.json. Both existing pilots now have an initial creative-polish alternate; the second Short, production validator integration, daily workflow and final release acceptance remain pending. Review only; no publisher or schedule changes.

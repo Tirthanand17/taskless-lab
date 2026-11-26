@@ -48,3 +48,7 @@ Actual Git console excerpts integrated into the long pilot and verified: GIT_CAP
 ## RC4 follow-up
 
 Mobile-focused hybrid Short rendered and verified (FOCUS_SHORT_QA.json). Five focused real-evidence panels with staged reveal timing. Long-video creative pass and owner playback remain pending.
+
+## RC4 phase 2 follow-up
+
+Long-video focused evidence alternate rendered and verified (FOCUS_LONG_QA.json); both pilots have initial creative-polish variants. Full subjective acceptance remains open. Next: second complete Short, production validator and daily workflow integration.

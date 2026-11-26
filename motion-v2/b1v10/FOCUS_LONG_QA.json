@@ -1,0 +1,236 @@
+{
+  "version": "1.0.0-rc4",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 30.0,
+  "frames": 3360,
+  "duration_seconds": 112.0,
+  "audio_samples": 5376000,
+  "pcm_identical": true,
+  "audio_energy": {
+    "peak_dbfs": -1.83,
+    "rms_dbfs": -16.71,
+    "clipped_samples": 0
+  },
+  "loudness": {
+    "input_i": -16.66,
+    "input_tp": -1.82,
+    "input_lra": 2.0
+  },
+  "capture_sha256": "54a0ab89962c6ef297c6272eb6e6039e3fc2580523d3d85345b86eca06c739fa",
+  "prior_pilot_sha256": "605ab54246284b9ac77d7c207141896379a406450588d41029608e2d67123723",
+  "mp4_sha256": "0a782902a6c34b9527320488a24f63fc80021f5aee27e3be32e01258fc864d69",
+  "panels": [
+    {
+      "page": 0,
+      "source_frame": 12,
+      "start_frame": 537,
+      "end_frame": 660,
+      "crop": [
+        0,
+        196,
+        470,
+        38
+      ],
+      "output_roi": [
+        136,
+        513,
+        920,
+        74
+      ],
+      "magnification": 1.9574,
+      "outcome": "0 / 15"
+    },
+    {
+      "page": 1,
+      "source_frame": 36,
+      "start_frame": 932,
+      "end_frame": 1052,
+      "crop": [
+        0,
+        65,
+        440,
+        134
+      ],
+      "output_roi": [
+        156,
+        416,
+        880,
+        268
+      ],
+      "magnification": 2.0,
+      "outcome": "7"
+    },
+    {
+      "page": 2,
+      "source_frame": 60,
+      "start_frame": 1291,
+      "end_frame": 1411,
+      "crop": [
+        0,
+        65,
+        455,
+        196
+      ],
+      "output_roi": [
+        225,
+        390,
+        742,
+        320
+      ],
+      "magnification": 1.6327,
+      "outcome": "PASS / 7"
+    },
+    {
+      "page": 3,
+      "source_frame": 84,
+      "start_frame": 1626,
+      "end_frame": 1746,
+      "crop": [
+        0,
+        65,
+        455,
+        196
+      ],
+      "output_roi": [
+        225,
+        390,
+        742,
+        320
+      ],
+      "magnification": 1.6327,
+      "outcome": "FAIL / 11"
+    },
+    {
+      "page": 4,
+      "source_frame": 108,
+      "start_frame": 1887,
+      "end_frame": 1976,
+      "crop": [
+        0,
+        65,
+        455,
+        196
+      ],
+      "output_roi": [
+        225,
+        390,
+        742,
+        320
+      ],
+      "magnification": 1.6327,
+      "outcome": "PASS / 9"
+    },
+    {
+      "page": 5,
+      "source_frame": 132,
+      "start_frame": 2065,
+      "end_frame": 2155,
+      "crop": [
+        0,
+        65,
+        455,
+        196
+      ],
+      "output_roi": [
+        225,
+        390,
+        742,
+        320
+      ],
+      "magnification": 1.6327,
+      "outcome": "PASS / 10"
+    },
+    {
+      "page": 6,
+      "source_frame": 156,
+      "start_frame": 2155,
+      "end_frame": 2305,
+      "crop": [
+        0,
+        198,
+        340,
+        101
+      ],
+      "output_roi": [
+        256,
+        449,
+        680,
+        202
+      ],
+      "magnification": 2.0,
+      "outcome": "REVISION 11"
+    },
+    {
+      "page": 7,
+      "source_frame": 180,
+      "start_frame": 3200,
+      "end_frame": 3320,
+      "crop": [
+        0,
+        65,
+        330,
+        134
+      ],
+      "output_roi": [
+        266,
+        416,
+        660,
+        268
+      ],
+      "magnification": 2.0,
+      "outcome": "RESET"
+    }
+  ],
+  "observed_crops": [
+    {
+      "page": 0,
+      "frame": 598,
+      "mean_gray_error": 1.0835
+    },
+    {
+      "page": 1,
+      "frame": 992,
+      "mean_gray_error": 1.0218
+    },
+    {
+      "page": 2,
+      "frame": 1351,
+      "mean_gray_error": 1.037
+    },
+    {
+      "page": 3,
+      "frame": 1686,
+      "mean_gray_error": 1.0338
+    },
+    {
+      "page": 4,
+      "frame": 1931,
+      "mean_gray_error": 1.0372
+    },
+    {
+      "page": 5,
+      "frame": 2110,
+      "mean_gray_error": 1.0402
+    },
+    {
+      "page": 6,
+      "frame": 2230,
+      "mean_gray_error": 1.0253
+    },
+    {
+      "page": 7,
+      "frame": 3260,
+      "mean_gray_error": 1.0139
+    }
+  ],
+  "phone_preview_width": 480,
+  "contact_sha256": "80c0bb40410240c42ac11509ae44e4193d64ab00a105ca38910f604786d895cf",
+  "full_decode_pass": true,
+  "opening_capture_spoiler_removed": true,
+  "capture_mode": "held cropped frames from actual recorded console",
+  "human_mobile_approved": false,
+  "release_authorized": false
+}
