@@ -46,3 +46,21 @@ python motion-v2/b1v10/editorial_handoff.py motion-v2/b1v10/editorial_fixture.js
 The optional receipt must be a local object with rows containing titles; it is treated as supplied history, not authenticated channel proof. The adapter scans existing episode JSON titles, blocks normalized exact and high-overlap title matches, enforces distinct topic families in the daily trio, and leaves slots empty instead of forcing duplicates. It verifies review-date recency relative to the plan date, HTTPS source metadata, evidence references, early proof, distinct topic families and timed storyboard structure. It does not authenticate source contents, rights, semantic originality or full channel history. Output is exclusive-create and review only. Recheck sources and live channel inventory for a new production date; do not simply update a date field.
 
 The report includes reproducible Python float/Decimal and SHA-256 calculations and a clearly marked simulated linear-history bisect demonstration. The scenes bind to candidate/source and demo identifiers, not independently approved final narration. The visual-zone hints refer to v0.2.0 design primitives; actual video assets and scene rendering remain future milestones. No scheduled or published video was modified. Manual topic scoring, fixture choices and duration estimates are editorial defaults.
+
+## v0.4.0 — camera, transitions and asset screening (milestone 07)
+
+- motion-primitives.tsx provides bounded, eased 2.5D perspective camera movement, an explanatory reveal, and a localized focus light. It moves the hero art, not the caption or headline. No perpetual spinner, decorative repeating loop, external 3D model or new paid dependency.
+- motion-benchmark.tsx consumes the previously executed SHA-256 A/B example from EDITORIAL_REVIEW_QA.json. The native-HD vertical three-second test shows identical bytes, a changed byte, two actual digest prefixes and the integrity takeaway. This is an original code-drawn SVG/CSS illustration, not recorded application footage or a complete Short.
+- motion_quality.py validates a supplied raster asset's exact hash, declared provenance/rights evidence, sufficient source pixel dimensions and a Laplacian edge-detail threshold (25). It does not establish license authenticity; a record remains review-only. Flat intentional graphics may need alternative human inspection; artificially sharpened or upscaled images can evade this heuristic. Native vector art does not require raster upscaling.
+- The benchmark checks all 90 decoded frames plus a full FFmpeg decode. Motion checks the hero region only (not changing captions), screens near-static intervals of 0.75 seconds or more and near-repeat fractions of 80% or more at lags 12/15/20/30 frames. This is a bounded review heuristic, not universal loop detection, and valid intentional holds or repetitive instructional demonstrations may need documented review.
+- Eight offline tests cover good raster input, hash tampering, missing rights metadata, undersized raster, flat edge detail, frozen frames, repeated sequences and a changing non-repeating sequence. Four sampled frames were visually inspected as a contact sheet. No full human playback or publication approval is recorded.
+
+Reproduce from motion-v2 with the existing local Remotion runtime:
+
+```powershell
+python -m unittest discover -s b1v10 -p test_motion_quality.py -v
+node b1v10/render_motion_review.cjs C:\path\to\motion-review
+python b1v10/motion_quality.py C:\path\to\motion-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+
+The hash-linked MOTION_REVIEW_QA.json records the actual vertical render; the MP4 and contact sheet remain local. Landscape reuse of the new camera primitives and integration with complete rendered scenes require pilot validation. Benchmark thresholds and camera bounds are project defaults, not measured audience preferences. The existing publisher and historical videos remain unchanged.

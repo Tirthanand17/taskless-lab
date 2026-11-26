@@ -1,0 +1,75 @@
+{
+  "version": "0.4.0",
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30.0,
+  "decoded_frames": 90,
+  "duration_seconds": 3.0,
+  "mp4_sha256": "aa4c093715e8ebfffc59bfadb1209b63833bcfd02f83e101f98663db9d5cfb45",
+  "contact_sha256": "ff9f99e54a1fa648fdf24f4ff8676ddc8d1231068c42c6970355281bf3f26a5d",
+  "source_sha256": {
+    "motion-primitives.tsx": "39ba247f7ace69c012d19440eaceb9344aa01b3f4bf6c0f438bbe4beeb9cb172",
+    "motion-benchmark.tsx": "a7b6a9c80feb75591a0e32067b4990e9cc5e1c1c9255506d5af3934218915d15",
+    "render_motion_review.cjs": "60738e87dd05f133db5040aec21295a15eb57410b9dcc340107676a25610669b",
+    "motion_quality.py": "873d2dc471ade4a5c39a6ed4bc486a3352c9089796a316cf6f22872671294d9a",
+    "test_motion_quality.py": "7fb19d5d16cbb8483da2f6f0a9019ba914dfc93e3aa83e6c664a63fc3401fbf8",
+    "EDITORIAL_REVIEW_QA.json": "a7fa5f30d896112b6ab33cd578df7b11a2fe324ffabd160f07b3ef300a14a31a",
+    "design.json": "959af12fef651e187a4e5670856808808004b27d74391e8396473c3f3cd2ba6a",
+    "visual-system.tsx": "752651cdec7b29cb1ae4ad8f0af134ec14700e34bc671cc0488e8cfca6bc297e"
+  },
+  "source_hash_mode": "LF-normalized text",
+  "source_raw_sha256": {
+    "motion-primitives.tsx": "39ba247f7ace69c012d19440eaceb9344aa01b3f4bf6c0f438bbe4beeb9cb172",
+    "motion-benchmark.tsx": "a7b6a9c80feb75591a0e32067b4990e9cc5e1c1c9255506d5af3934218915d15",
+    "render_motion_review.cjs": "60738e87dd05f133db5040aec21295a15eb57410b9dcc340107676a25610669b",
+    "motion_quality.py": "873d2dc471ade4a5c39a6ed4bc486a3352c9089796a316cf6f22872671294d9a",
+    "test_motion_quality.py": "7fb19d5d16cbb8483da2f6f0a9019ba914dfc93e3aa83e6c664a63fc3401fbf8",
+    "EDITORIAL_REVIEW_QA.json": "54b732ea74ebb385ba917487a74d8efe31e1289cb02e7bdd18f2e7195d2dd575",
+    "design.json": "959af12fef651e187a4e5670856808808004b27d74391e8396473c3f3cd2ba6a",
+    "visual-system.tsx": "752651cdec7b29cb1ae4ad8f0af134ec14700e34bc671cc0488e8cfca6bc297e"
+  },
+  "decode_pass": true,
+  "hero_roi": [
+    72,
+    440,
+    824,
+    606
+  ],
+  "motion": {
+    "frames": 90,
+    "mean_delta": 0.5312,
+    "max_near_static_seconds": 0.4,
+    "loop_candidates": [
+      {
+        "lag_frames": 12,
+        "near_repeat_fraction": 0.0128
+      },
+      {
+        "lag_frames": 15,
+        "near_repeat_fraction": 0.0
+      },
+      {
+        "lag_frames": 20,
+        "near_repeat_fraction": 0.0
+      },
+      {
+        "lag_frames": 30,
+        "near_repeat_fraction": 0.0
+      }
+    ],
+    "freeze_review_hold": false,
+    "repeat_review_hold": false
+  },
+  "roi_edge_variance_samples": [
+    251.235,
+    307.728,
+    299.832,
+    301.852
+  ],
+  "asset_mode": "original code-drawn SVG and CSS, no external raster assets in benchmark",
+  "rights_review_approved": false,
+  "human_full_playback_approved": false,
+  "release_authorized": false
+}

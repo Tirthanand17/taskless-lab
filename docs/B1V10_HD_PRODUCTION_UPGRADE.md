@@ -22,7 +22,7 @@ Status: isolated, review-only development. Baseline: main 7f4ef63. Recovered loc
 | 04 | Native HD 16:9 animated benchmark, 90 decoded frames | Verified; DUAL_MOTION_QA.json (90 frames at 30 FPS) |
 | 05 | Reusable visual tokens, typography, safe-area layout and scene primitives | Verified; DESIGN_REVIEW_QA.json (four native stills; layout/contrast checks) |
 | 06 | Storyboard and research/evidence template for differentiated topics | Verified; EDITORIAL_REVIEW_QA.json (three official-source-linked review storyboards; 10 offline tests) |
-| 07 | Meaningful transitions, camera, asset rights and sharpness checks | Pending |
+| 07 | Meaningful transitions, camera, asset rights and sharpness checks | Verified benchmark and screening primitives; MOTION_REVIEW_QA.json (90 native-HD vertical frames; 8 offline tests; rights approval and full pilot review remain pending) |
 | 08 | Preferred narration and real listening review, aligned captions | Pending |
 | 09 | Licensed sound design, intelligibility and mix QC | Pending |
 | 10 | Complete original Short, visual and full playback review | Pending |
