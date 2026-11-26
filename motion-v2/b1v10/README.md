@@ -124,3 +124,19 @@ python long_narration.py --assets C:\path\to\kokoro-assets --ffmpeg C:\path\to\f
 python render_long_pilot.py --audio C:\path\to\new-audio --demo C:\path\to\new-demo\GIT_BISECT_DEMO.json --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 Evidence reports are committed; MP4 and intermediate media remain local. No publication or changes to existing YouTube schedules.
+
+## v1.0.0-rc1 — final readiness audit, not a production release
+
+The final readiness checker validates the exact local Short and long pilot hashes, existing decode evidence, native resolution, frame/sample clocks, absence of clipped samples and rejection of unsigned media by the existing publisher approval function. It checks that tracked changes from the B1v10 baseline are confined to the isolated development directory and the version tracker. This does not re-run full subjective playback or make the illustrative pilots comply with the existing real-software capture requirement.
+
+Historical regression: 50 of 51 native offline tests passed on the workstation. The real symlink test could not be executed because Windows denied symlink creation (WinError 1314). A separate mocked symlink rejection check exercised the unchanged production validator successfully; this is not a substitute for the real filesystem test on a capable runner. All 45 B1v10 offline tests passed. No Windows permissions, existing publisher code, publishing workflows, production branches or schedules were modified.
+
+The release stays at REVIEW_ONLY_HOLD. The exact owner-approved voice is retained as a preference, not a final-media approval. Remaining work: full playback and mobile review of both exact videos, pronunciation/mix review (long raw hook ASR failed even though corrected caption tokens match the script), factual and rights clearance, actual recorded software proof to satisfy the historical Branch 1 gate, second Short, fresh source and channel duplicate checks, and integration into the existing approval/publisher path. No approval is synthesized.
+
+After approved future publication, use the existing private Studio analytics workflow at 24, 72 and 168 hours. Compare separate age-matched Short and long-video cohorts, retaining missing metrics as missing; baseline values are historical observations only. No live metrics or performance improvements are claimed here.
+
+Reproduce with the existing local media and a new output path:
+```powershell
+python motion-v2/b1v10/final_readiness.py --short C:\path\to\short.mp4 --long C:\path\to\long.mp4 --output C:\path\to\new-readiness.json
+```
+This is a release candidate for the development toolkit, not a daily production release. Technical audit implementation is complete; milestone 12 acceptance remains open.

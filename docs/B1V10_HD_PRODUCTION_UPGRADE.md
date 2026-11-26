@@ -27,7 +27,7 @@ Status: isolated, review-only development. Baseline: main 7f4ef63. Recovered loc
 | 09 | Licensed sound design, intelligibility and mix QC | Technical implementation verified: SOUND_MIX_QA.json, ENCODED_SPEECH_QA.json; subjective mix listening and full AV review pending |
 | 10 | Complete original Short, visual and full playback review | Rendered and technical QA verified; SHORT_PILOT_QA.json (581 frames; representative-frame inspection); owner playback pending |
 | 11 | Complete long-form pilot, full playback review | Rendered and technical QA verified: LONG_PILOT_QA.json (3360 frames; 112 seconds; actual Git test); playback and raw ASR review pending |
-| 12 | Owner acceptance, historical workflow regression and performance review plan | Pending |
+| 12 | Owner acceptance, historical workflow regression and performance review plan | RC1 audit implemented; FINAL_READINESS_QA.json; owner acceptance, actual capture gate, daily production integration and real symlink regression pending |
 
 ## Runtime licensing
 

@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0-rc1",
+  "status": "REVIEW_ONLY_HOLD",
+  "pilots": [
+    {
+      "kind": "short",
+      "sha256": "750006d628c9df2d80a474f7be99d11e308d6d029cfac59ecfcd209782dfc0ec",
+      "frames": 581,
+      "duration_seconds": 19.366666666666667,
+      "file_identity_verified": true,
+      "historical_decode_evidence_verified": true,
+      "publisher_unsigned_media_rejected": true
+    },
+    {
+      "kind": "long",
+      "sha256": "605ab54246284b9ac77d7c207141896379a406450588d41029608e2d67123723",
+      "frames": 3360,
+      "duration_seconds": 112.0,
+      "file_identity_verified": true,
+      "historical_decode_evidence_verified": true,
+      "publisher_unsigned_media_rejected": true
+    }
+  ],
+  "long_corrected_tokens_match_script": true,
+  "long_raw_asr_screen_pass": false,
+  "regression": {
+    "historical_total": 51,
+    "historical_native_passed": 50,
+    "real_symlink_test_executed": false,
+    "mock_symlink_rejection_passed": true,
+    "b1v10_passed": 45,
+    "historical_code_unchanged": true
+  },
+  "blockers": [
+    "Owner full playback of exact Short and long MP4, mobile visual review and final mix listening",
+    "Long hook raw ASR failed; corrected captions are not pronunciation evidence",
+    "Independent factual and rights clearance for exact finished files",
+    "Existing proof-first policy requires recorded real software action; current pilots are explanatory illustrations of executed results",
+    "Second Short and fresh daily research/inventory check are missing",
+    "No live Studio cohort or measured retention improvement; no production integration/approval manifest"
+  ],
+  "performance_review": {
+    "windows_hours": [
+      24,
+      72,
+      168
+    ],
+    "short_metrics": [
+      "shown_in_feed",
+      "stayed_to_watch_pct",
+      "engaged_views",
+      "average_view_duration_seconds",
+      "retention_3s_pct",
+      "subscribers_gained"
+    ],
+    "long_metrics": [
+      "impressions",
+      "impressions_ctr_pct",
+      "average_view_duration_seconds",
+      "retention_30s_pct",
+      "subscribers_gained"
+    ],
+    "method": "existing autopilot.branch1_recovery and branch1_age_matched_learning; compare format and age matched cohorts at 60-84 hours; minimum 5 videos per cohort and existing exposure thresholds",
+    "missing_data": "blank, never zero-filled",
+    "baseline": "historical repo observation only: 21.2% stayed to watch, 58s long AVD, 4.8% long CTR",
+    "live_metrics_collected": false,
+    "no_virality_guarantee": true
+  },
+  "daily_target": {
+    "shorts": 2,
+    "longs": 1
+  },
+  "rendered_pilot_count": {
+    "shorts": 1,
+    "longs": 1
+  },
+  "production_integration_ready": false,
+  "release_authorized": false,
+  "youtube_mutations": 0
+}

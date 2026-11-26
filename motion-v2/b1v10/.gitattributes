@@ -42,3 +42,6 @@ LONG_NARRATION_QA.json -text
 LONG_PILOT_QA.json -text
 LONG_CAPTION_REVIEW.json -text
 test_long_pilot_evidence.py -text
+final_readiness.py -text
+test_final_readiness.py -text
+FINAL_READINESS_QA.json -text
