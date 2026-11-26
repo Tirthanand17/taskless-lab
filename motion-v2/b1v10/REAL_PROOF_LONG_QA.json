@@ -1,0 +1,132 @@
+{
+  "version": "1.0.0-rc3",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 30.0,
+  "frames": 3360,
+  "duration_seconds": 112.0,
+  "audio_samples": 5376000,
+  "pcm_identical_to_prior_pilot": true,
+  "audio_energy": {
+    "peak_dbfs": -1.83,
+    "rms_dbfs": -16.71,
+    "clipped_samples": 0
+  },
+  "encoded_loudness": {
+    "input_i": -16.66,
+    "input_tp": -1.82,
+    "input_lra": 2.0
+  },
+  "capture_sha256": "54a0ab89962c6ef297c6272eb6e6039e3fc2580523d3d85345b86eca06c739fa",
+  "prior_mp4_sha256": "605ab54246284b9ac77d7c207141896379a406450588d41029608e2d67123723",
+  "mp4_sha256": "0f3cc526dd4d024b4fb3cd0e0c005d23f5e7761644ec572ca009ed4ccf5ab50c",
+  "capture_dimensions": [
+    870,
+    494
+  ],
+  "embedded_dimensions": [
+    870,
+    494
+  ],
+  "excerpts": [
+    {
+      "page": 0,
+      "start_frame": 0,
+      "end_frame": 90
+    },
+    {
+      "page": 1,
+      "start_frame": 932,
+      "end_frame": 1052
+    },
+    {
+      "page": 2,
+      "start_frame": 1291,
+      "end_frame": 1411
+    },
+    {
+      "page": 3,
+      "start_frame": 1626,
+      "end_frame": 1746
+    },
+    {
+      "page": 4,
+      "start_frame": 1887,
+      "end_frame": 1976
+    },
+    {
+      "page": 5,
+      "start_frame": 2065,
+      "end_frame": 2155
+    },
+    {
+      "page": 6,
+      "start_frame": 2155,
+      "end_frame": 2305
+    },
+    {
+      "page": 7,
+      "start_frame": 3200,
+      "end_frame": 3320
+    }
+  ],
+  "excerpt_seconds": 29.966666666666665,
+  "observed_overlay_matches": [
+    {
+      "page": 0,
+      "frame": 30,
+      "mean_gray_error": 0.0689,
+      "next_best_error": 5.8656
+    },
+    {
+      "page": 1,
+      "frame": 962,
+      "mean_gray_error": 0.0579,
+      "next_best_error": 3.3824
+    },
+    {
+      "page": 2,
+      "frame": 1321,
+      "mean_gray_error": 0.0666,
+      "next_best_error": 0.2867
+    },
+    {
+      "page": 3,
+      "frame": 1656,
+      "mean_gray_error": 0.0634,
+      "next_best_error": 2.1445
+    },
+    {
+      "page": 4,
+      "frame": 1917,
+      "mean_gray_error": 0.0646,
+      "next_best_error": 0.2831
+    },
+    {
+      "page": 5,
+      "frame": 2095,
+      "mean_gray_error": 0.0696,
+      "next_best_error": 2.934
+    },
+    {
+      "page": 6,
+      "frame": 2185,
+      "mean_gray_error": 0.0631,
+      "next_best_error": 5.9588
+    },
+    {
+      "page": 7,
+      "frame": 3230,
+      "mean_gray_error": 0.0437,
+      "next_best_error": 3.377
+    }
+  ],
+  "full_decode_pass": true,
+  "contact_sha256": "6c54f711fad706a6a516e5883a0048e1d15f55ae9846029a478bbcd4a3f664db",
+  "legacy_capture_validator_pass": false,
+  "creative_policy_full_pass": false,
+  "human_playback_approved": false,
+  "release_authorized": false
+}

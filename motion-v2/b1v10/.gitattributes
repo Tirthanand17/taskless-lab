@@ -51,3 +51,9 @@ integrate_real_short.py -text
 test_real_proof.py -text
 REAL_CAPTURE_QA.json -text
 REAL_PROOF_SHORT_QA.json -text
+git_console_demo.py -text
+capture_git_console.py -text
+integrate_real_long.py -text
+test_real_git_proof.py -text
+GIT_CAPTURE_QA.json -text
+REAL_PROOF_LONG_QA.json -text

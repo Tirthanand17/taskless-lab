@@ -155,3 +155,18 @@ python capture_sha256_console.py --out C:\path\to\new-capture --ffmpeg C:\path\t
 python integrate_real_short.py --capture C:\path\to\new-capture --pilot C:\path\to\original-short.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 The capture requires an interactive Windows session, classic console window and Pillow with HWND capture support. Reports are committed, local media stays on the workstation.
+
+## v1.0.0-rc3 — real Git console footage in long pilot
+
+Re-executed the actual Git bisect experiment in an isolated local clone of the exact original 16 commits. The observed revision sequence is 7, 11, 9, 10, and the same first bad commit is identified; reset was verified. Eight distinct console pages were recorded via the dedicated HWND-only capture path at 870x494, 12 fps, 192 frames. Page handshakes omit the command execution wait between pages; the video contains live result screens, not an uninterrupted realtime recording. No personal input or production repo mutation.
+
+The long pilot embeds eight selected excerpts at native capture dimensions without upscaling, alongside existing explanatory diagrams and captions. Reading holds extend captured frames to 29.9667 seconds in the 112-second output. Actual final media: 1920x1080, 30 fps, 3360 decoded frames, 5376000 decoded PCM samples identical to the prior pilot, -16.66 LUFS, -1.82 dBTP and zero clipped samples. Full FFmpeg decode passed; eight sampled overlay regions match the corresponding source pages with mean grayscale error below 0.07 and lower error than any other page. Ten representative frames inspected. The initial run reached report creation but failed on a missing loudness import; fixed and reverified the existing encode using --verify-existing. This is a technical capture integration, not full subjective playback, proof of exact semantic word sync, or owner release approval.
+
+Mobile legibility remains limited by small terminal text at phone scale. The next creative pass should selectively crop/reframe actual evidence and preserve large original explanatory text rather than merely enlarging low-resolution footage. Existing Linux receipt validation and full creative policy have not passed; the Windows method is explicitly different. Long narration raw ASR and full playback reviews remain outstanding, as do the second Short and daily workflow integration. No publishing or schedule mutations.
+
+Reproduce from motion-v2/b1v10 with the original disposable demo repository and local FFmpeg:
+```powershell
+python capture_git_console.py --out C:\path\to\new-capture --repo C:\path\to\demo-repo --evidence GIT_BISECT_DEMO.json --ffmpeg C:\path\to\ffmpeg.exe
+python integrate_real_long.py --capture C:\path\to\new-capture --pilot C:\path\to\original-long.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+To independently recheck an existing output directory, append --verify-existing to the second command. The media is retained locally and evidence reports are committed.

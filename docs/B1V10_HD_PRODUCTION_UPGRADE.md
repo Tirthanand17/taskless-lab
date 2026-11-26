@@ -40,3 +40,7 @@ See motion-v2/b1v10/README.md. The three-second benchmark is an illustration onl
 ## RC2 follow-up
 
 Actual Windows console footage integrated into the Short; see REAL_CAPTURE_QA.json and REAL_PROOF_SHORT_QA.json. Legacy validator and full creative approval remain blocked. Long-form actual capture and daily production integration remain open.
+
+## RC3 follow-up
+
+Actual Git console excerpts integrated into the long pilot and verified: GIT_CAPTURE_QA.json and REAL_PROOF_LONG_QA.json. Both original pilots now have actual-capture variants. Creative/mobile review, full playback, legacy receipt compatibility, second Short and daily integration remain open.

@@ -1,0 +1,131 @@
+{
+  "version": "1.0.0-rc3",
+  "capture_method": "windows_classic_console_window_only_live",
+  "dimensions": [
+    870,
+    494
+  ],
+  "fps": 12,
+  "decoded_frames": 192,
+  "capture_sha256": "54a0ab89962c6ef297c6272eb6e6039e3fc2580523d3d85345b86eca06c739fa",
+  "original_git_evidence_sha256": "e43189fd28a0c21ada76be684a9fe17a309050a50ca089cff9c17d84de1a4239",
+  "actual_git_result": {
+    "commits": [
+      "3e039e133557631ccefe22b7c32d0ae4e3dd0296",
+      "d83d8f25abe0341011cd957477b9dc0925cf48bb",
+      "1219059d0af518d7f67f28e684549256813cae6d",
+      "cd0eccd0e868c1fe592ea17c16d3cf89f48ddb83",
+      "56ce327cde900bf1f02cc1271b653da9f9d481cd",
+      "96815fb831e8091c7261605134887fec6e79ac45",
+      "016b82b30db725ac69bdaa98e25da5bbcc591e87",
+      "fc1c64d626bd066c1ccbe3a0baaa73a8017903d4",
+      "ac25099cdccecb1f7593a782f5b7496571249fcd",
+      "874c9d996426d23c726d1d3e4154a2d55a6f707d",
+      "2ebe79441b01e13fff02f20061468b8c9ab33f92",
+      "fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34",
+      "e42e0fba992aaa550a8dfa9cbd1e9a81b62b9ab9",
+      "836fb22cc173e21d9b968e64f6cb2f850d54e53e",
+      "8e3f795a4f1331d5875d0cda7e8a9219af809096",
+      "d9ef9371a813c86d069525cdb387358e0954f373"
+    ],
+    "steps": [
+      {
+        "revision": 7,
+        "commit": "fc1c64d626bd066c1ccbe3a0baaa73a8017903d4",
+        "exit_code": 0,
+        "classification": "good",
+        "git_output": "Bisecting: 3 revisions left to test after this (roughly 2 steps)\n[fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34] Revision 11"
+      },
+      {
+        "revision": 11,
+        "commit": "fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34",
+        "exit_code": 1,
+        "classification": "bad",
+        "git_output": "Bisecting: 1 revision left to test after this (roughly 1 step)\n[874c9d996426d23c726d1d3e4154a2d55a6f707d] Revision 9"
+      },
+      {
+        "revision": 9,
+        "commit": "874c9d996426d23c726d1d3e4154a2d55a6f707d",
+        "exit_code": 0,
+        "classification": "good",
+        "git_output": "Bisecting: 0 revisions left to test after this (roughly 0 steps)\n[2ebe79441b01e13fff02f20061468b8c9ab33f92] Revision 10"
+      },
+      {
+        "revision": 10,
+        "commit": "2ebe79441b01e13fff02f20061468b8c9ab33f92",
+        "exit_code": 0,
+        "classification": "good",
+        "git_output": "fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34 is the first bad commit\ncommit fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34\nAuthor: FlowMinute Demo <demo@example.invalid>\nDate:   Fri Nov 27 00:40:30 2026 +0530\n\n    Revision 11\n\n example.py | 4 ++--\n 1 file changed, 2 insertions(+), 2 deletions(-)"
+      }
+    ],
+    "first_bad": 11,
+    "first_bad_commit": "fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34",
+    "reset_completed": true,
+    "diff": "diff --git a/example.py b/example.py\nindex 7366351..66d4cb5 100644\n--- a/example.py\n+++ b/example.py\n@@ -1 +1 @@\n-REVISION = 10\n+REVISION = 11\n@@ -3 +3 @@ def answer():\n-    return 42\n+    return 41"
+  },
+  "pages": [
+    {
+      "page": 0,
+      "start_frame": 0,
+      "end_frame": 24,
+      "sample_sha256": "39a2126efc0cf1de69a4e048df17899111472200b6dd23b0661dbb78344789d4"
+    },
+    {
+      "page": 1,
+      "start_frame": 24,
+      "end_frame": 48,
+      "sample_sha256": "2eeeae9cc3211342d5cfbf26a48b293c7cfc7686d69cbddccc36cf0df31070ea"
+    },
+    {
+      "page": 2,
+      "start_frame": 48,
+      "end_frame": 72,
+      "sample_sha256": "75d7663f74c8e95fb5fcaa2c6944134fe43a1f3f31537919a3ecd22f340369da"
+    },
+    {
+      "page": 3,
+      "start_frame": 72,
+      "end_frame": 96,
+      "sample_sha256": "42695e3ee5f2b7a0329a3a5e75e9b93f75510a66156d8227cc3066570952e1dd"
+    },
+    {
+      "page": 4,
+      "start_frame": 96,
+      "end_frame": 120,
+      "sample_sha256": "08a7a7450d01fa7c9028fbbf3a6760e6a61866549384eba8e934dcbf8183f789"
+    },
+    {
+      "page": 5,
+      "start_frame": 120,
+      "end_frame": 144,
+      "sample_sha256": "039a6451d321204274f600fa4d0ad5c65557b1fe4643d80bfc9cf7bc7db4c693"
+    },
+    {
+      "page": 6,
+      "start_frame": 144,
+      "end_frame": 168,
+      "sample_sha256": "ac16dcc9c48c16e495305e673fcd53690cb3b8dd8fdf282254647b6e41fd61fe"
+    },
+    {
+      "page": 7,
+      "start_frame": 168,
+      "end_frame": 192,
+      "sample_sha256": "9216c8263280d18aabf69a39b433cb9538a3e9ad1a63c77666976612db3aab0b"
+    }
+  ],
+  "page_deltas": [
+    6.6941875,
+    6.5438125,
+    2.105875,
+    2.1001875,
+    3.3511875,
+    7.064125,
+    5.7383125
+  ],
+  "source_sha256": {
+    "git_console_demo.py": "af230a63db5ab71670413e2659f080ea7cc0c748d9eed630b73cfd8e78c0a0ab",
+    "capture_git_console.py": "15ddc6bb930c9184485dd999a7b4b1b806cec92ca3020ad3e033d774e0e5309f"
+  },
+  "release_authorized": false,
+  "legacy_xvfb_receipt_compatible": false
+}
