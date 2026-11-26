@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0-rc2",
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30.0,
+  "frames": 581,
+  "duration_seconds": 19.366666666666667,
+  "capture_sha256": "716e98a3305934033c3e0511c3c648988017998b04ca32f8ba47323f34c98ec0",
+  "previous_pilot_sha256": "750006d628c9df2d80a474f7be99d11e308d6d029cfac59ecfcd209782dfc0ec",
+  "mp4_sha256": "aef46a725e8e61dcf88f9b6f07d984eb48d043c163aa28dfa1abe17014e5408f",
+  "capture_source_dimensions": [
+    870,
+    692
+  ],
+  "embedded_dimensions": [
+    720,
+    572
+  ],
+  "source_state_change_frames": [
+    25,
+    49,
+    73
+  ],
+  "target_scene_boundaries": [
+    0,
+    71,
+    232,
+    383,
+    581
+  ],
+  "capture_time_remapped": true,
+  "audio_samples": 929600,
+  "pcm_identical_to_prior_pilot": true,
+  "audio_energy": {
+    "peak_dbfs": -1.96,
+    "rms_dbfs": -17.06,
+    "clipped_samples": 0
+  },
+  "encoded_loudness": {
+    "input_i": -16.86,
+    "input_tp": -1.96,
+    "input_lra": 1.5
+  },
+  "full_decode_pass": true,
+  "contact_sha256": "54c0e35094c200de53cf9fa3ac1f16bd5586d6e567a651a5a76ada2668ad164d",
+  "legacy_capture_validator_pass": false,
+  "creative_policy_full_pass": false,
+  "owner_full_playback_approved": false,
+  "release_authorized": false
+}

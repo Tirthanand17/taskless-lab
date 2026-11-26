@@ -140,3 +140,18 @@ Reproduce with the existing local media and a new output path:
 python motion-v2/b1v10/final_readiness.py --short C:\path\to\short.mp4 --long C:\path\to\long.mp4 --output C:\path\to\new-readiness.json
 ```
 This is a release candidate for the development toolkit, not a daily production release. Technical audit implementation is complete; milestone 12 acceptance remains open.
+
+## v1.0.0-rc2 — actual Windows console proof integrated into Short
+
+Recorded a dedicated classic Windows console window executing Python hashlib on two locally generated one-byte files, A and B. Only the uniquely titled console window was captured via Pillow HWND capture, never the desktop. The second capture enlarged its font to produce 870x692 actual pixels; 120 recorded frames at 12 fps, three measured state changes and both full SHA-256 digests verified. The initial 522x420 capture was superseded. No third-party footage or private input.
+
+The original v0.7.0 MP4 remains untouched. The RC2 integration downsizes the live capture to 720x572, maps the observed three state changes (source frames 25/49/73) to the four audio-derived scenes, and retains the existing headline, proof panel, captions and audio. Time remapping and duplicated frames for reading holds are disclosed; this is not real-time footage at 30 fps. Actual output is 1080x1920, 581 frames, 19.3667 seconds, 929600 identical decoded PCM samples, -16.86 LUFS and zero clipped samples. Initial exports were rejected for 1856 missing audio samples and a one-frame shortfall; separate silent encoding, stream-copy muxing and overlay EOF handling fixed those defects. Eight representative frames were inspected. Full terminal text remains relatively small on mobile, and the original motion-art quality is reduced in favor of proof; selective crop and visual storytelling require further polish.
+
+The historical validator accepts only its exact xvfb_xterm_ffmpeg_live receipt. The Windows receipt is NOT represented as that receipt. The legacy capture validator and full creative policy (including an explicit fix beat) have not passed. This is a review-only capture integration, not an approval or publishing path. Long-form real footage, second Short, creative review, factual/rights clearance and daily production integration remain pending. No changes to the existing publisher or schedules.
+
+Local reproduction from motion-v2/b1v10, using unique new output paths and existing FFmpeg:
+```powershell
+python capture_sha256_console.py --out C:\path\to\new-capture --ffmpeg C:\path\to\ffmpeg.exe
+python integrate_real_short.py --capture C:\path\to\new-capture --pilot C:\path\to\original-short.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+The capture requires an interactive Windows session, classic console window and Pillow with HWND capture support. Reports are committed, local media stays on the workstation.

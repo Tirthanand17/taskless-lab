@@ -45,3 +45,9 @@ test_long_pilot_evidence.py -text
 final_readiness.py -text
 test_final_readiness.py -text
 FINAL_READINESS_QA.json -text
+sha256_console_demo.py -text
+capture_sha256_console.py -text
+integrate_real_short.py -text
+test_real_proof.py -text
+REAL_CAPTURE_QA.json -text
+REAL_PROOF_SHORT_QA.json -text

@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0-rc2",
+  "capture_method": "windows_classic_console_window_only_live",
+  "capture_sha256": "716e98a3305934033c3e0511c3c648988017998b04ca32f8ba47323f34c98ec0",
+  "dimensions": [
+    870,
+    692
+  ],
+  "fps": 12,
+  "decoded_frames": 120,
+  "observed_state_changes": 3,
+  "actual_result": {
+    "input_a_hex": "41",
+    "input_b_hex": "42",
+    "sha256_a": "559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+    "sha256_b": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+    "equal": false,
+    "expected_a_match": true,
+    "expected_b_match": false
+  },
+  "fixture_sha256": {
+    "A.bin": "559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+    "B.bin": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c"
+  },
+  "source_sha256": "4a08914a3794c7da5aa7c58fde980a15cd3ed69aba907fee68ac925fca7dba93",
+  "private_data": false,
+  "release_authorized": false,
+  "legacy_xvfb_receipt_compatible": false,
+  "inspection_frames": [
+    0,
+    35,
+    65,
+    95,
+    119
+  ]
+}

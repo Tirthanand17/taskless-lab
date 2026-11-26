@@ -36,3 +36,7 @@ Official Remotion pricing and FAQ checked 2026-11-26: individuals and qualifying
 ## Evidence and reproduction
 
 See motion-v2/b1v10/README.md. The three-second benchmark is an illustration only, with no audio and no approval. The original smoke source and report are preserved. Neither the storage-capacity illustration nor its benchmark outputs are new publication candidates. A landscape still is not a landscape motion pass. Do not treat technical motion as evidence of viewer retention or production parity.
+
+## RC2 follow-up
+
+Actual Windows console footage integrated into the Short; see REAL_CAPTURE_QA.json and REAL_PROOF_SHORT_QA.json. Legacy validator and full creative approval remain blocked. Long-form actual capture and daily production integration remain open.
