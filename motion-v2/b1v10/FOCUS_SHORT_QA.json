@@ -1,0 +1,138 @@
+{
+  "version": "1.0.0-rc4",
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30.0,
+  "frames": 581,
+  "audio_samples": 929600,
+  "pcm_identical": true,
+  "audio_energy": {
+    "peak_dbfs": -1.96,
+    "rms_dbfs": -17.06,
+    "clipped_samples": 0
+  },
+  "loudness": {
+    "input_i": -16.86,
+    "input_tp": -1.96,
+    "input_lra": 1.5
+  },
+  "capture_sha256": "716e98a3305934033c3e0511c3c648988017998b04ca32f8ba47323f34c98ec0",
+  "prior_pilot_sha256": "750006d628c9df2d80a474f7be99d11e308d6d029cfac59ecfcd209782dfc0ec",
+  "mp4_sha256": "38db6f4f402c05b3f0121efbc74afc6682caa0a9b4d43764cf33da0a2646d37a",
+  "panels": [
+    {
+      "crop": [
+        0,
+        232,
+        310,
+        34
+      ],
+      "display": [
+        620,
+        68
+      ],
+      "start": 156,
+      "end": 214,
+      "scale": 2.0,
+      "label": "REAL CAPTURE / FILE A"
+    },
+    {
+      "crop": [
+        0,
+        232,
+        310,
+        66
+      ],
+      "display": [
+        620,
+        132
+      ],
+      "start": 214,
+      "end": 232,
+      "scale": 2.0,
+      "label": "REAL CAPTURE / INPUT BYTES"
+    },
+    {
+      "crop": [
+        0,
+        364,
+        560,
+        66
+      ],
+      "display": [
+        756,
+        90
+      ],
+      "start": 282,
+      "end": 354,
+      "scale": 1.35,
+      "label": "REAL CAPTURE / HASH A"
+    },
+    {
+      "crop": [
+        0,
+        364,
+        560,
+        132
+      ],
+      "display": [
+        756,
+        178
+      ],
+      "start": 354,
+      "end": 383,
+      "scale": 1.35,
+      "label": "REAL CAPTURE / FULL HASHES"
+    },
+    {
+      "crop": [
+        0,
+        562,
+        410,
+        68
+      ],
+      "display": [
+        738,
+        122
+      ],
+      "start": 417,
+      "end": 581,
+      "scale": 1.8,
+      "label": "REAL CAPTURE / MATCH CHECK"
+    }
+  ],
+  "observed_crops": [
+    {
+      "panel": 0,
+      "frame": 185,
+      "mean_gray_error": 4.118
+    },
+    {
+      "panel": 1,
+      "frame": 223,
+      "mean_gray_error": 4.138
+    },
+    {
+      "panel": 2,
+      "frame": 318,
+      "mean_gray_error": 1.39
+    },
+    {
+      "panel": 3,
+      "frame": 368,
+      "mean_gray_error": 1.198
+    },
+    {
+      "panel": 4,
+      "frame": 499,
+      "mean_gray_error": 8.732
+    }
+  ],
+  "phone_preview_width": 360,
+  "contact_sha256": "2a45e0ded65beb7e5c1578ad28a059f727edad70271632d85d59717a46be348a",
+  "full_decode_pass": true,
+  "human_mobile_approved": false,
+  "release_authorized": false
+}

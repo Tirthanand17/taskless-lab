@@ -170,3 +170,15 @@ python capture_git_console.py --out C:\path\to\new-capture --repo C:\path\to\dem
 python integrate_real_long.py --capture C:\path\to\new-capture --pilot C:\path\to\original-long.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 To independently recheck an existing output directory, append --verify-existing to the second command. The media is retained locally and evidence reports are committed.
+
+## RC4 — mobile-focused hybrid Short (first creative pass)
+
+The RC2 terminal-heavy Short is retained. This alternate uses the v0.7 animated hero and real captured evidence from the RC2 source, cropped to five panels. Magnification of 1.35x to 2x is intentional for readability and does not add source detail. Evidence appears in stages: A, both inputs, hash A, both hashes, and the match result. Four reveal starts follow the existing sound-event frames; hash A follows the original animation's first digest reveal. The hook remains the original animated illustration. No voice or audio change.
+
+Verified final 1080x1920 export: 581 frames, 929600 identical PCM samples, zero clipping, five sampled recorded crop matches, six visually inspected 360-pixel-wide previews. The initial three-panel variant disclosed results ahead of the animated reveal and was superseded. The full-hash panel remains dense and its reading time is short; the second input reveal is also brief. No claim of full mobile playback, cinematic reference parity, human acceptance or improved retention. Long-video creative polish is still pending. This is a review candidate, not a release.
+
+Run with the exact original v0.7 Short and RC2 capture:
+```powershell
+python focus_short.py --capture C:\path\to\ACTUAL_SHA256_CONSOLE.mp4 --pilot C:\path\to\original-short.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+See FOCUS_SHORT_QA.json. No publisher changes or upload authorization.

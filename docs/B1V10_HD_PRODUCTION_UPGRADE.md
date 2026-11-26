@@ -44,3 +44,7 @@ Actual Windows console footage integrated into the Short; see REAL_CAPTURE_QA.js
 ## RC3 follow-up
 
 Actual Git console excerpts integrated into the long pilot and verified: GIT_CAPTURE_QA.json and REAL_PROOF_LONG_QA.json. Both original pilots now have actual-capture variants. Creative/mobile review, full playback, legacy receipt compatibility, second Short and daily integration remain open.
+
+## RC4 follow-up
+
+Mobile-focused hybrid Short rendered and verified (FOCUS_SHORT_QA.json). Five focused real-evidence panels with staged reveal timing. Long-video creative pass and owner playback remain pending.

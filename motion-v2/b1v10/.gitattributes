@@ -57,3 +57,6 @@ integrate_real_long.py -text
 test_real_git_proof.py -text
 GIT_CAPTURE_QA.json -text
 REAL_PROOF_LONG_QA.json -text
+focus_short.py -text
+test_focus_short.py -text
+FOCUS_SHORT_QA.json -text
