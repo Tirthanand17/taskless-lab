@@ -25,7 +25,7 @@ Status: isolated, review-only development. Baseline: main 7f4ef63. Recovered loc
 | 07 | Meaningful transitions, camera, asset rights and sharpness checks | Verified benchmark and screening primitives; MOTION_REVIEW_QA.json (90 native-HD vertical frames; 8 offline tests; rights approval and full pilot review remain pending) |
 | 08 | Preferred narration and real listening review, aligned captions | Technical implementation verified: NARRATION_REVIEW_QA.json, CAPTION_CORRECTION_QA.json, CAPTION_PREVIEW_QA.json; owner accepted current voice for now; full AV review pending |
 | 09 | Licensed sound design, intelligibility and mix QC | Technical implementation verified: SOUND_MIX_QA.json, ENCODED_SPEECH_QA.json; subjective mix listening and full AV review pending |
-| 10 | Complete original Short, visual and full playback review | Pending |
+| 10 | Complete original Short, visual and full playback review | Rendered and technical QA verified; SHORT_PILOT_QA.json (581 frames; representative-frame inspection); owner playback pending |
 | 11 | Complete long-form pilot, full playback review | Pending |
 | 12 | Owner acceptance, historical workflow regression and performance review plan | Pending |
 

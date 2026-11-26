@@ -100,3 +100,11 @@ python motion-v2/b1v10/verify_encoded_speech.py C:\path\to\new-mix
 python -m unittest discover -s motion-v2/b1v10 -p "test_*.py" -v
 ```
 Audio files remain local; only QA reports and code are committed. The next full Short must use the same frame-bound event plan and independently verify rendered synchronization and review the final mix.
+
+## v0.7.0 — integrated SHA-256 Short pilot
+
+The first complete review-only pilot combines native 1080x1920 Remotion motion graphics, actual SHA-256 example values, the existing accepted voice, original sound mix and observed word captions. The four scenes use exact audio-derived frame boundaries and all four planned sound events produce measured visual changes at their target frames. No external imagery or music was added.
+
+Local reproduction (existing dependencies and v0.6.0 audio required): copy the pilot source and its imported dependencies into the existing installed Remotion workspace, then run node render_short_pilot.cjs short-review-v070. From this repository's motion-v2/b1v10 directory run python verify_short_pilot.py <review-directory> --mix <v0.6.0 mix.m4a> --ffmpeg <ffmpeg.exe>. The verifier muxes without audio re-encoding, checks full decode, compares actual decoded PCM (not WAV metadata), measures loudness and hero-region motion, and produces SHORT_PILOT_QA.json and a 20-frame contact sheet.
+
+Actual pilot: 581 frames at 30 fps, 19.3667 seconds; 929600 audio samples identical to the reviewed encoded mix after decode; -16.86 LUFS, -1.96 dBTP, no clipped samples. All four scenes clear the existing freeze/repetition screening heuristics. Representative frames inspected, not a claim of full subjective playback. The full-length hash reveal is animated and the final example labels a matching prefix rather than implying that prefix equality proves integrity. All 64 characters must be compared. The layout retains conservative Shorts UI margins; full phone playback and sound listening remain owner review tasks. The final MP4 and contact sheet are local artifacts, not committed media or approved releases.

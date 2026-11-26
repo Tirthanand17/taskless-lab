@@ -29,3 +29,7 @@ test_sound_mix.py -text
 verify_encoded_speech.py -text
 SOUND_MIX_QA.json -text
 ENCODED_SPEECH_QA.json -text
+short-pilot.tsx -text
+render_short_pilot.cjs -text
+verify_short_pilot.py -text
+SHORT_PILOT_QA.json -text

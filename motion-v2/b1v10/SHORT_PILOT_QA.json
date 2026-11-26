@@ -1,0 +1,198 @@
+{
+  "version": "0.7.0",
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30.0,
+  "decoded_frames": 581,
+  "duration_seconds": 19.366666666666667,
+  "audio_samples": 929600,
+  "audio_identical_to_mix_decode": true,
+  "full_av_decode_pass": true,
+  "loudness": {
+    "input_i": -16.86,
+    "input_tp": -1.96,
+    "input_lra": 1.5
+  },
+  "audio_energy": {
+    "peak_dbfs": -1.96,
+    "rms_dbfs": -17.06,
+    "clipped_samples": 0
+  },
+  "scene_motion": [
+    {
+      "scene": "hook",
+      "frames": 71,
+      "mean_delta": 0.666,
+      "max_near_static_seconds": 0.167,
+      "loop_candidates": [
+        {
+          "lag_frames": 12,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 15,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 20,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 30,
+          "near_repeat_fraction": 0.0
+        }
+      ],
+      "freeze_review_hold": false,
+      "repeat_review_hold": false
+    },
+    {
+      "scene": "proof",
+      "frames": 161,
+      "mean_delta": 0.3272,
+      "max_near_static_seconds": 0.7,
+      "loop_candidates": [
+        {
+          "lag_frames": 12,
+          "near_repeat_fraction": 0.0134
+        },
+        {
+          "lag_frames": 15,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 20,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 30,
+          "near_repeat_fraction": 0.0
+        }
+      ],
+      "freeze_review_hold": false,
+      "repeat_review_hold": false
+    },
+    {
+      "scene": "explain",
+      "frames": 151,
+      "mean_delta": 0.6405,
+      "max_near_static_seconds": 0.267,
+      "loop_candidates": [
+        {
+          "lag_frames": 12,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 15,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 20,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 30,
+          "near_repeat_fraction": 0.0
+        }
+      ],
+      "freeze_review_hold": false,
+      "repeat_review_hold": false
+    },
+    {
+      "scene": "payoff",
+      "frames": 198,
+      "mean_delta": 0.382,
+      "max_near_static_seconds": 0.667,
+      "loop_candidates": [
+        {
+          "lag_frames": 12,
+          "near_repeat_fraction": 0.0269
+        },
+        {
+          "lag_frames": 15,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 20,
+          "near_repeat_fraction": 0.0
+        },
+        {
+          "lag_frames": 30,
+          "near_repeat_fraction": 0.0
+        }
+      ],
+      "freeze_review_hold": false,
+      "repeat_review_hold": false
+    }
+  ],
+  "planned_event_frame_observations": [
+    {
+      "scene": "proof",
+      "anchor": "a",
+      "effect": "soft_tick",
+      "frame": 156,
+      "sample": 249600,
+      "hero_frame_delta": 2.8178
+    },
+    {
+      "scene": "proof",
+      "anchor": "b",
+      "effect": "soft_ping",
+      "frame": 214,
+      "sample": 342400,
+      "hero_frame_delta": 3.4147
+    },
+    {
+      "scene": "explain",
+      "anchor": "fingerprints",
+      "effect": "reveal_pulse",
+      "frame": 354,
+      "sample": 566400,
+      "hero_frame_delta": 1.6855
+    },
+    {
+      "scene": "payoff",
+      "anchor": "trusted",
+      "effect": "soft_sweep",
+      "frame": 417,
+      "sample": 667200,
+      "hero_frame_delta": 1.2207
+    }
+  ],
+  "contact_frames": [
+    0,
+    24,
+    60,
+    71,
+    155,
+    156,
+    180,
+    213,
+    214,
+    230,
+    232,
+    300,
+    353,
+    354,
+    382,
+    383,
+    416,
+    417,
+    500,
+    580
+  ],
+  "contact_sha256": "e70e620b231471521d9f6cedee9866e9c58559b048e044bac0cc0814ce190d06",
+  "mp4_sha256": "750006d628c9df2d80a474f7be99d11e308d6d029cfac59ecfcd209782dfc0ec",
+  "source_sha256": {
+    "short-pilot.tsx": "a024367c9105246a859725d3379780a747cfd9608f1ca692437efe4bd079875c",
+    "render_short_pilot.cjs": "0ef88d7ee8bd78e51385e77c75a89f75779795bf2d7fce3e2b28b66572daa2a8",
+    "verify_short_pilot.py": "53788b86796e0ec11e94af06082fd450c3558a411ead782f10004ba8bd98c57f",
+    "SOUND_MIX_QA.json": "16805a30418c9470d66997a16b09edcfd8c263aaa2ec7e4f283fec9f43b536f9",
+    "NARRATION_REVIEW_QA.json": "0ec695cfd7b94d374ce95a9f925e9f788efbb8280df4f674a4af7589bd6b9b66",
+    "word_captions_review.json": "b66ccf64ee91e3d40944b9198bbbbbfcb95f25922ff21e11ec3ed461ad0bd724"
+  },
+  "owner_full_video_approved": false,
+  "human_mix_listening_approved": false,
+  "release_authorized": false
+}
