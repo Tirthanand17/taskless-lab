@@ -31,3 +31,18 @@ python b1v10/verify_design_review.py C:\path\to\design-review
 ```
 
 The renderer and verifier use existing Remotion 4.0.534 / Pillow. The local PNGs and contact sheet are review artifacts; commit only the evidence report. Later milestones must cover real-device overlay checks, topic research, transition quality, asset rights, complete narration/audio, and full playback. Creative parity with the reference reels is not established.
+
+## v0.3.0 — evidence-linked editorial handoff (milestone 06)
+
+This local review-only adapter reuses the existing daily editorial board's subject tokenization. It complements rather than replaces autopilot/source_locked_script_briefs.py and the seven-day research history guard. It does not fetch live trends or call paid providers. The first three evergreen examples were researched against official Python and Git documentation on 2026-11-27; the original claims are paraphrases. The ranking is a manually assigned 0–5 score across the eight existing production criteria (40 points total), not estimated views, search volume or measured audience demand.
+
+Run from the repository root:
+
+```powershell
+python -m unittest discover -s motion-v2/b1v10 -p test_editorial_handoff.py -v
+python motion-v2/b1v10/editorial_handoff.py motion-v2/b1v10/editorial_fixture.json C:\path\to\new-review.json --receipt C:\path\to\NOV27_RELEASE_RECEIPTS.json
+```
+
+The optional receipt must be a local object with rows containing titles; it is treated as supplied history, not authenticated channel proof. The adapter scans existing episode JSON titles, blocks normalized exact and high-overlap title matches, enforces distinct topic families in the daily trio, and leaves slots empty instead of forcing duplicates. It verifies review-date recency relative to the plan date, HTTPS source metadata, evidence references, early proof, distinct topic families and timed storyboard structure. It does not authenticate source contents, rights, semantic originality or full channel history. Output is exclusive-create and review only. Recheck sources and live channel inventory for a new production date; do not simply update a date field.
+
+The report includes reproducible Python float/Decimal and SHA-256 calculations and a clearly marked simulated linear-history bisect demonstration. The scenes bind to candidate/source and demo identifiers, not independently approved final narration. The visual-zone hints refer to v0.2.0 design primitives; actual video assets and scene rendering remain future milestones. No scheduled or published video was modified. Manual topic scoring, fixture choices and duration estimates are editorial defaults.

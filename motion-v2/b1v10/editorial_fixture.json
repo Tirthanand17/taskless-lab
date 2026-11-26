@@ -1,0 +1,294 @@
+{
+  "schema": "B1V10_EDITORIAL_INPUT_V1",
+  "plan_day": "2026-11-27",
+  "mode": "evergreen_review_fixture",
+  "demand_observed": false,
+  "release_authorized": false,
+  "candidates": [
+    {
+      "id": "float-precision",
+      "title": "Why 0.1 + 0.2 Is Not Exactly 0.3 in Python",
+      "format": "short",
+      "family": "numeric-representation",
+      "angle": "Reveal a surprising result and explain the binary approximation.",
+      "scores": {
+        "freshness": 1,
+        "audience_fit": 5,
+        "demonstrability": 5,
+        "payoff": 5,
+        "curiosity": 5,
+        "evidence": 5,
+        "originality": 4,
+        "effort": 5
+      },
+      "source": {
+        "url": "https://docs.python.org/3/tutorial/floatingpoint.html",
+        "publisher": "Python documentation",
+        "checked": "2026-11-27",
+        "claim": "Many decimal fractions cannot be represented exactly by binary floating point."
+      },
+      "limitation": "Display rounding is not exact arithmetic; decimal arithmetic also has precision limits.",
+      "demo": "float",
+      "scenes": [
+        {
+          "role": "hook",
+          "seconds": 2,
+          "headline": "0.1 + 0.2 = ?",
+          "visual": "Show the expression and pause before revealing output.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "proof",
+          "seconds": 7,
+          "headline": "0.30000000000000004",
+          "visual": "Show actual Python result, labeled as local experiment.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "explain",
+          "seconds": 10,
+          "headline": "Binary approximations",
+          "visual": "Animate fractions on a number line; distinguish input from stored value.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "payoff",
+          "seconds": 8,
+          "headline": "Compare with Decimal",
+          "visual": "Show Decimal strings produce 0.3 in this example; note precision limits.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        }
+      ]
+    },
+    {
+      "id": "git-bisect",
+      "title": "Find the Broken Git Commit Without Checking Every Change",
+      "format": "long",
+      "family": "version-control-debugging",
+      "angle": "Walk through a reproducible good/bad search, then explain limitations.",
+      "scores": {
+        "freshness": 1,
+        "audience_fit": 4,
+        "demonstrability": 5,
+        "payoff": 5,
+        "curiosity": 4,
+        "evidence": 5,
+        "originality": 5,
+        "effort": 3
+      },
+      "source": {
+        "url": "https://git-scm.com/docs/git-bisect",
+        "publisher": "Git documentation",
+        "checked": "2026-11-27",
+        "claim": "Git bisect uses binary search between a known good and bad revision."
+      },
+      "limitation": "The example assumes a linear history and consistent tests; real histories and skipped commits can complicate results.",
+      "demo": "bisect",
+      "scenes": [
+        {
+          "role": "hook",
+          "seconds": 3,
+          "headline": "Which change broke it?",
+          "visual": "Show 16 original numbered commit cards.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "proof",
+          "seconds": 12,
+          "headline": "Known good / known bad",
+          "visual": "Mark endpoints in a simulated history, identify target as hidden.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "explain",
+          "seconds": 18,
+          "headline": "Test the midpoint",
+          "visual": "Highlight the midpoint and show pass/fail.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "explain",
+          "seconds": 18,
+          "headline": "Discard half",
+          "visual": "Show remaining range, retain endpoints.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "explain",
+          "seconds": 18,
+          "headline": "Repeat the test",
+          "visual": "Animate the next interval and decision.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "proof",
+          "seconds": 18,
+          "headline": "First failing commit",
+          "visual": "Reveal the simulated first bad revision with measured test count.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "explain",
+          "seconds": 20,
+          "headline": "Real Git workflow",
+          "visual": "Explain start, good, bad and reset; actual recording still required.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "limitation",
+          "seconds": 16,
+          "headline": "When results are unreliable",
+          "visual": "Explain flaky tests and skipped commits.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "payoff",
+          "seconds": 12,
+          "headline": "Make tests reproducible",
+          "visual": "Give a practical debugging checklist.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        }
+      ]
+    },
+    {
+      "id": "sha256-change",
+      "title": "Change One Byte and Watch the SHA-256 Fingerprint Change",
+      "format": "short",
+      "family": "file-integrity",
+      "angle": "Compare hashes of two tiny original inputs and explain integrity.",
+      "scores": {
+        "freshness": 1,
+        "audience_fit": 4,
+        "demonstrability": 5,
+        "payoff": 5,
+        "curiosity": 5,
+        "evidence": 5,
+        "originality": 5,
+        "effort": 5
+      },
+      "source": {
+        "url": "https://docs.python.org/3/library/hashlib.html",
+        "publisher": "Python documentation",
+        "checked": "2026-11-27",
+        "claim": "Python hashlib provides SHA-256 and a hexadecimal digest representation."
+      },
+      "limitation": "A matching hash only helps establish integrity against a trusted expected digest; it is not proof of authenticity or safety.",
+      "demo": "sha256",
+      "scenes": [
+        {
+          "role": "hook",
+          "seconds": 2,
+          "headline": "One byte changes",
+          "visual": "Show two sample files, A versus B.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "proof",
+          "seconds": 8,
+          "headline": "Two different fingerprints",
+          "visual": "Reveal actual computed SHA-256 digests; use readable groups.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "explain",
+          "seconds": 10,
+          "headline": "Compare with trusted hash",
+          "visual": "Show a comparison check and label expected versus observed.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        },
+        {
+          "role": "payoff",
+          "seconds": 8,
+          "headline": "Integrity is not authenticity",
+          "visual": "Explain why the expected digest needs a trusted source.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture"
+        }
+      ]
+    }
+  ]
+}

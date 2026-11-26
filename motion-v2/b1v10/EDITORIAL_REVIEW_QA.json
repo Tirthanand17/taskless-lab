@@ -1,0 +1,383 @@
+{
+  "schema": "B1V10_EDITORIAL_REVIEW_V1",
+  "version": "0.3.0",
+  "plan_day": "2026-11-27",
+  "input_sha256": "1a604de3c2f86c0ec7077ab4986427cd39201ab3cc53d04f8ba792d1042fc3ab",
+  "historical_title_set_sha256": "1c04ec200e88f2aacc27314ae93cea16181550ccb9d95b0db012c185ef39aa5d",
+  "repo_episode_files_scanned": 79,
+  "distinct_history_titles": 81,
+  "selected": [
+    {
+      "id": "float-precision",
+      "title": "Why 0.1 + 0.2 Is Not Exactly 0.3 in Python",
+      "format": "short",
+      "family": "numeric-representation",
+      "angle": "Reveal a surprising result and explain the binary approximation.",
+      "scores": {
+        "freshness": 1,
+        "audience_fit": 5,
+        "demonstrability": 5,
+        "payoff": 5,
+        "curiosity": 5,
+        "evidence": 5,
+        "originality": 4,
+        "effort": 5
+      },
+      "source": {
+        "url": "https://docs.python.org/3/tutorial/floatingpoint.html",
+        "publisher": "Python documentation",
+        "checked": "2026-11-27",
+        "claim": "Many decimal fractions cannot be represented exactly by binary floating point."
+      },
+      "limitation": "Display rounding is not exact arithmetic; decimal arithmetic also has precision limits.",
+      "demo": "float",
+      "scenes": [
+        {
+          "role": "hook",
+          "seconds": 2,
+          "headline": "0.1 + 0.2 = ?",
+          "visual": "Show the expression and pause before revealing output.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 0,
+          "end": 2
+        },
+        {
+          "role": "proof",
+          "seconds": 7,
+          "headline": "0.30000000000000004",
+          "visual": "Show actual Python result, labeled as local experiment.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 2,
+          "end": 9
+        },
+        {
+          "role": "explain",
+          "seconds": 10,
+          "headline": "Binary approximations",
+          "visual": "Animate fractions on a number line; distinguish input from stored value.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 9,
+          "end": 19
+        },
+        {
+          "role": "payoff",
+          "seconds": 8,
+          "headline": "Compare with Decimal",
+          "visual": "Show Decimal strings produce 0.3 in this example; note precision limits.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 19,
+          "end": 27
+        }
+      ],
+      "score_out_of_40": 35,
+      "duration_seconds": 27,
+      "demo_result": {
+        "expression": "0.1 + 0.2",
+        "float_result": "0.30000000000000004",
+        "decimal_result": "0.3"
+      },
+      "candidate_sha256": "3e81f8e44cf82d98154bff98426df8c7778f9fbd0ad987f9b2e7fe0c64a6fea1"
+    },
+    {
+      "id": "git-bisect",
+      "title": "Find the Broken Git Commit Without Checking Every Change",
+      "format": "long",
+      "family": "version-control-debugging",
+      "angle": "Walk through a reproducible good/bad search, then explain limitations.",
+      "scores": {
+        "freshness": 1,
+        "audience_fit": 4,
+        "demonstrability": 5,
+        "payoff": 5,
+        "curiosity": 4,
+        "evidence": 5,
+        "originality": 5,
+        "effort": 3
+      },
+      "source": {
+        "url": "https://git-scm.com/docs/git-bisect",
+        "publisher": "Git documentation",
+        "checked": "2026-11-27",
+        "claim": "Git bisect uses binary search between a known good and bad revision."
+      },
+      "limitation": "The example assumes a linear history and consistent tests; real histories and skipped commits can complicate results.",
+      "demo": "bisect",
+      "scenes": [
+        {
+          "role": "hook",
+          "seconds": 3,
+          "headline": "Which change broke it?",
+          "visual": "Show 16 original numbered commit cards.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 0,
+          "end": 3
+        },
+        {
+          "role": "proof",
+          "seconds": 12,
+          "headline": "Known good / known bad",
+          "visual": "Mark endpoints in a simulated history, identify target as hidden.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 3,
+          "end": 15
+        },
+        {
+          "role": "explain",
+          "seconds": 18,
+          "headline": "Test the midpoint",
+          "visual": "Highlight the midpoint and show pass/fail.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 15,
+          "end": 33
+        },
+        {
+          "role": "explain",
+          "seconds": 18,
+          "headline": "Discard half",
+          "visual": "Show remaining range, retain endpoints.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 33,
+          "end": 51
+        },
+        {
+          "role": "explain",
+          "seconds": 18,
+          "headline": "Repeat the test",
+          "visual": "Animate the next interval and decision.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 51,
+          "end": 69
+        },
+        {
+          "role": "proof",
+          "seconds": 18,
+          "headline": "First failing commit",
+          "visual": "Reveal the simulated first bad revision with measured test count.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 69,
+          "end": 87
+        },
+        {
+          "role": "explain",
+          "seconds": 20,
+          "headline": "Real Git workflow",
+          "visual": "Explain start, good, bad and reset; actual recording still required.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 87,
+          "end": 107
+        },
+        {
+          "role": "limitation",
+          "seconds": 16,
+          "headline": "When results are unreliable",
+          "visual": "Explain flaky tests and skipped commits.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 107,
+          "end": 123
+        },
+        {
+          "role": "payoff",
+          "seconds": 12,
+          "headline": "Make tests reproducible",
+          "visual": "Give a practical debugging checklist.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 123,
+          "end": 135
+        }
+      ],
+      "score_out_of_40": 32,
+      "duration_seconds": 135,
+      "demo_result": {
+        "mode": "simulated_linear_history",
+        "initial_good": 0,
+        "initial_bad": 15,
+        "first_bad": 11,
+        "midpoint_tests": 4,
+        "steps": [
+          {
+            "revision": 7,
+            "bad": false
+          },
+          {
+            "revision": 11,
+            "bad": true
+          },
+          {
+            "revision": 9,
+            "bad": false
+          },
+          {
+            "revision": 10,
+            "bad": false
+          }
+        ]
+      },
+      "candidate_sha256": "12e8d2470455960b88a94ce922098b89fe92e906b0dde22c01c7ddf3156f638f"
+    },
+    {
+      "id": "sha256-change",
+      "title": "Change One Byte and Watch the SHA-256 Fingerprint Change",
+      "format": "short",
+      "family": "file-integrity",
+      "angle": "Compare hashes of two tiny original inputs and explain integrity.",
+      "scores": {
+        "freshness": 1,
+        "audience_fit": 4,
+        "demonstrability": 5,
+        "payoff": 5,
+        "curiosity": 5,
+        "evidence": 5,
+        "originality": 5,
+        "effort": 5
+      },
+      "source": {
+        "url": "https://docs.python.org/3/library/hashlib.html",
+        "publisher": "Python documentation",
+        "checked": "2026-11-27",
+        "claim": "Python hashlib provides SHA-256 and a hexadecimal digest representation."
+      },
+      "limitation": "A matching hash only helps establish integrity against a trusted expected digest; it is not proof of authenticity or safety.",
+      "demo": "sha256",
+      "scenes": [
+        {
+          "role": "hook",
+          "seconds": 2,
+          "headline": "One byte changes",
+          "visual": "Show two sample files, A versus B.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 0,
+          "end": 2
+        },
+        {
+          "role": "proof",
+          "seconds": 8,
+          "headline": "Two different fingerprints",
+          "visual": "Reveal actual computed SHA-256 digests; use readable groups.",
+          "zone": "hero",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 2,
+          "end": 10
+        },
+        {
+          "role": "explain",
+          "seconds": 10,
+          "headline": "Compare with trusted hash",
+          "visual": "Show a comparison check and label expected versus observed.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 10,
+          "end": 20
+        },
+        {
+          "role": "payoff",
+          "seconds": 8,
+          "headline": "Integrity is not authenticity",
+          "visual": "Explain why the expected digest needs a trusted source.",
+          "zone": "proof",
+          "claim_ids": [
+            "source",
+            "demo"
+          ],
+          "asset_origin": "original_illustration_or_pending_real_capture",
+          "start": 20,
+          "end": 28
+        }
+      ],
+      "score_out_of_40": 35,
+      "duration_seconds": 28,
+      "demo_result": {
+        "input_a": "A",
+        "input_b": "B",
+        "sha256_a": "559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd",
+        "sha256_b": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c"
+      },
+      "candidate_sha256": "c497eb5288ecdda0e7054d3659731be41d1d502432d6e00a8dc76d0283af479f"
+    }
+  ],
+  "rejected": [],
+  "unfilled_slots": 0,
+  "history_complete": false,
+  "live_demand_verified": false,
+  "score_type": "manual editorial heuristic, not measured demand",
+  "source_claims_independently_approved": false,
+  "actual_assets_approved": false,
+  "release_authorized": false
+}
