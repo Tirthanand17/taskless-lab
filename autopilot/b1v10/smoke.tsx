@@ -46,15 +46,16 @@ const Disk:React.FC<{f:number}>=({f})=>{
 };
 const Smoke:React.FC=()=>{
   const f=useCurrentFrame(),{width,height}=useVideoConfig(),v=height>width;
-  const count=128-(128-119.21)*ramp(f,46,80);
+  const converted=f>=56;
+  const reveal=converted?ramp(f,56,72):1;
   return <AbsoluteFill style={{background:'radial-gradient(ellipse at 48% 42%,#183647 0%,#0b1420 62%,#070d15 100%)',color:palette.paper,fontFamily:'Segoe UI, Arial, sans-serif',overflow:'hidden'}}>
     <div style={{position:'absolute',left:v?64:90,top:70,fontWeight:700,fontSize:26,letterSpacing:4,color:palette.cyan}}>FLOWMINUTE LAB / B1V10 • DEV TEST</div>
     <div style={{position:'absolute',left:v?64:90,top:v?172:130,width:v?900:1700,fontSize:v?78:72,lineHeight:1.06,fontWeight:800}}>Same bytes.<br/><span style={{color:palette.lime}}>Different units.</span></div>
     <div style={{position:'absolute',left:v?40:40,top:v?360:280,width:v?960:920,height:v?820:700}}><Disk f={f}/></div>
     <div style={{position:'absolute',left:v?65:1030,top:v?1260:425,width:v?900:800,borderTop:'3px solid '+palette.cyan,paddingTop:25}}>
-      <div style={{fontSize:30,letterSpacing:3,color:palette.muted}}>CALCULATED CAPACITY</div>
-      <div style={{fontSize:v?112:110,fontWeight:800,fontVariantNumeric:'tabular-nums',color:palette.lime}}>{count.toFixed(2)} <span style={{fontSize:54}}>GiB</span></div>
-      <div style={{fontSize:v?34:36,color:palette.paper,lineHeight:1.3}}>128,000,000,000 bytes ÷ 2³⁰<br/>Final result: 119.21 GiB</div>
+      <div style={{fontSize:30,letterSpacing:3,color:palette.muted}}>{converted?'BINARY CAPACITY':'DECIMAL LABEL'}</div>
+      <div style={{fontSize:v?112:110,fontWeight:800,fontVariantNumeric:'tabular-nums',color:palette.lime,opacity:converted?0.35+0.65*reveal:1,transform:`translateY(${converted?18*(1-reveal):0}px)`}}>{converted?'119.21':'128'} <span style={{fontSize:54}}>{converted?'GiB':'GB'}</span></div>
+      <div style={{fontSize:v?34:36,color:palette.paper,lineHeight:1.3}}>128,000,000,000 bytes ÷ 2³⁰<br/>128 GB = approximately 119.21 GiB</div>
       <div style={{marginTop:20,fontSize:26,color:palette.muted}}>Illustration only • before reserved space</div>
     </div>
   </AbsoluteFill>;
