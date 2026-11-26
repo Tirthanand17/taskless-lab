@@ -1,0 +1,55 @@
+1
+00:00:00,000 --> 00:00:01,100
+What happens when you change
+
+2
+00:00:01,100 --> 00:00:01,860
+just one byte?
+
+3
+00:00:02,367 --> 00:00:03,687
+Here are two tiny files.
+
+4
+00:00:04,187 --> 00:00:05,467
+One contains the letter A.
+
+5
+00:00:05,887 --> 00:00:07,127
+The other contains the letter
+
+6
+00:00:07,127 --> 00:00:07,407
+B.
+
+7
+00:00:07,733 --> 00:00:08,873
+Compute a hash for each
+
+8
+00:00:08,873 --> 00:00:10,773
+file. Even this small change
+
+9
+00:00:10,773 --> 00:00:12,233
+gives us two different fingerprints.
+
+10
+00:00:12,767 --> 00:00:13,907
+Compare the result with a
+
+11
+00:00:13,907 --> 00:00:15,867
+trusted hash. A match helps
+
+12
+00:00:15,867 --> 00:00:17,427
+check integrity, but it does
+
+13
+00:00:17,427 --> 00:00:18,547
+not prove the file is
+
+14
+00:00:18,547 --> 00:00:18,827
+safe.

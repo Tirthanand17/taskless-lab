@@ -1,0 +1,35 @@
+{
+  "version": "0.5.0",
+  "candidate_id": "sha256-change",
+  "voice": "af_heart",
+  "language": "en-us",
+  "fps": 30,
+  "sample_rate": 48000,
+  "review_only": true,
+  "scenes": [
+    {
+      "id": "hook",
+      "text": "What happens when you change just one byte?",
+      "speed": 1.02,
+      "pause_ms": 220
+    },
+    {
+      "id": "proof",
+      "text": "Here are two tiny files. One contains the letter A. The other contains the letter B.",
+      "speed": 1.04,
+      "pause_ms": 170
+    },
+    {
+      "id": "explain",
+      "text": "Compute a hash for each file. Even this small change gives us two different fingerprints.",
+      "speed": 1.04,
+      "pause_ms": 190
+    },
+    {
+      "id": "payoff",
+      "text": "Compare the result with a trusted hash. A match helps check integrity, but it does not prove the file is safe.",
+      "speed": 1.02,
+      "pause_ms": 250
+    }
+  ]
+}

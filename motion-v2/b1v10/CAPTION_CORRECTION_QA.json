@@ -1,0 +1,17 @@
+{
+  "raw_report_sha256": "0ec695cfd7b94d374ce95a9f925e9f788efbb8280df4f674a4af7589bd6b9b66",
+  "raw_asr_screen_pass": false,
+  "corrected_word_captions_sha256": "b66ccf64ee91e3d40944b9198bbbbbfcb95f25922ff21e11ec3ed461ad0bd724",
+  "corrected_srt_sha256": "068ccaaa7bddff3b5220da778bbdf0599ac263b06ddfc4a0d85d116d2c1573e0",
+  "correction": {
+    "asr_token": "bite?",
+    "caption_token": "byte?",
+    "start": 1.6,
+    "end": 1.86,
+    "reason": "byte and bite are homophones; correct technical spelling from locked script; pronunciation still requires listening"
+  },
+  "caption_text_matches_script": true,
+  "timings_changed": false,
+  "human_listening_approved": false,
+  "release_authorized": false
+}

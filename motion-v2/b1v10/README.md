@@ -64,3 +64,23 @@ python b1v10/motion_quality.py C:\path\to\motion-review --ffmpeg C:\path\to\ffmp
 ```
 
 The hash-linked MOTION_REVIEW_QA.json records the actual vertical render; the MP4 and contact sheet remain local. Landscape reuse of the new camera primitives and integration with complete rendered scenes require pilot validation. Benchmark thresholds and camera bounds are project defaults, not measured audience preferences. The existing publisher and historical videos remain unchanged.
+
+## v0.5.0 — offline narration and measured word captions (milestone 08, technical implementation)
+
+The existing local Kokoro ONNX model and af_heart voice are reused. No new provider, model download, billing, or voice cloning. The four-scene original SHA-256 explanation uses small phrase-level speed adjustments and explicit short pauses; these are editorial choices, not proof of emotional naturalness.
+
+- narration_review.py produces mono 48 kHz PCM, normalized scene audio, integer-frame scene boundaries at 30 fps, local Whisper base word timestamps, raw ASR captions, SRT and a hash-bound QA report. Scene duration follows speech rather than stretching narration to an arbitrary storyboard estimate.
+- Actual sample: 581 frames / 929,600 samples / 19.3667 seconds, 60 recognized words and 14 caption cues. Three of four raw scene transcripts match the locked script exactly; the first contains the homophone "bite" for "byte." The raw ASR gate remains false.
+- correct_caption_homophone.py permits only that explicitly locked correction. It preserves all observed word timings and the original ASR record. Other mismatches require review. Corrected caption text matches the script; this does not establish pronunciation quality or semantic accuracy of arbitrary ASR corrections.
+- word-caption.tsx uses actual word intervals to highlight the active word, and narration-caption-demo.tsx selects the scene by exact audio-derived frame boundaries. Three native-HD stills were rendered and visually inspected in both orientations. This is a timing preview, not a completed animation or proof of full AV playback synchronization.
+- Human listening approval, actual pronunciation review, rights approval and final audio-video playback remain pending. This milestone is technically implemented but cannot be counted as fully accepted until the mandatory listening and synchronization review clears.
+
+Local reproduction (existing vendor assets and FFmpeg required; output directory must be new):
+```powershell
+python b1v10/narration_review.py --assets C:\path\to\existing-kokoro-assets --ffmpeg C:\path\to\ffmpeg.exe --output C:\path\to\new-review
+python b1v10/correct_caption_homophone.py C:\path\to\new-review
+python -m unittest discover -s b1v10 -p "test_*.py" -v
+node b1v10/render_narration_preview.cjs C:\path\to\caption-preview
+```
+
+Committed preview fixtures include the exact observed raw and corrected captions and QA reports; the locally generated WAV and preview images remain on the workstation. Do not publish the preview or modify existing scheduled videos. The preferred synthetic voice is a candidate baseline; it is not a human recording.

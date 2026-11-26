@@ -10,3 +10,17 @@ motion-benchmark.tsx text eol=lf
 render_motion_review.cjs text eol=lf
 motion_quality.py text eol=lf
 test_motion_quality.py text eol=lf
+narration_spec.json -text
+narration_review.py -text
+correct_caption_homophone.py -text
+test_narration_review.py -text
+test_caption_evidence.py -text
+word-caption.tsx -text
+narration-caption-demo.tsx -text
+render_narration_preview.cjs -text
+NARRATION_REVIEW_QA.json -text
+CAPTION_CORRECTION_QA.json -text
+word_captions.json -text
+word_captions_review.json -text
+captions_review.srt -text
+CAPTION_PREVIEW_QA.json -text

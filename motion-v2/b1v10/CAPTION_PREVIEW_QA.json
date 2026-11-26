@@ -1,0 +1,33 @@
+{
+  "version": "0.5.0",
+  "stills": [
+    {
+      "file": "NarrationVertical-51.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "sha256": "9fb25fa6c16f6e13fe80cbfebb440d0449d72ee0e5768c52d8b72db56dde339a"
+    },
+    {
+      "file": "NarrationLandscape-51.png",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "sha256": "677059a4818e7c2edc1acb8fa77e006ccf87812527de885dc9a869e9260d4437"
+    },
+    {
+      "file": "NarrationVertical-400.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "sha256": "02159a561d49a766c4cf318fb56c15762444410cac687a81ac9bb157394b922a"
+    }
+  ],
+  "contact_sha256": "2c63f1e3c38c93ce0699bb1497638cfa938b5065103d5b158c438578220c7864",
+  "rendered_stills": 3,
+  "full_av_sync_reviewed": false,
+  "release_authorized": false
+}

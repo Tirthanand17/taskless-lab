@@ -1,0 +1,460 @@
+[
+  {
+    "start": 0.0,
+    "end": 1.1,
+    "text": "What happens when you change",
+    "words": [
+      {
+        "word": "What",
+        "start": 0.0,
+        "end": 0.16,
+        "probability": 0.6393085718154907
+      },
+      {
+        "word": "happens",
+        "start": 0.16,
+        "end": 0.46,
+        "probability": 0.9903372526168823
+      },
+      {
+        "word": "when",
+        "start": 0.46,
+        "end": 0.72,
+        "probability": 0.9944800138473511
+      },
+      {
+        "word": "you",
+        "start": 0.72,
+        "end": 0.82,
+        "probability": 0.9969629645347595
+      },
+      {
+        "word": "change",
+        "start": 0.82,
+        "end": 1.1,
+        "probability": 0.9946106672286987
+      }
+    ]
+  },
+  {
+    "start": 1.1,
+    "end": 1.86,
+    "text": "just one byte?",
+    "words": [
+      {
+        "word": "just",
+        "start": 1.1,
+        "end": 1.34,
+        "probability": 0.9877503514289856
+      },
+      {
+        "word": "one",
+        "start": 1.34,
+        "end": 1.6,
+        "probability": 0.9704983234405518
+      },
+      {
+        "word": "byte?",
+        "start": 1.6,
+        "end": 1.86,
+        "probability": 0.5881136655807495
+      }
+    ]
+  },
+  {
+    "start": 2.366667,
+    "end": 3.686667,
+    "text": "Here are two tiny files.",
+    "words": [
+      {
+        "word": "Here",
+        "start": 2.366667,
+        "end": 2.546667,
+        "probability": 0.9434377551078796
+      },
+      {
+        "word": "are",
+        "start": 2.546667,
+        "end": 2.646667,
+        "probability": 0.9933207631111145
+      },
+      {
+        "word": "two",
+        "start": 2.646667,
+        "end": 2.926667,
+        "probability": 0.8177222013473511
+      },
+      {
+        "word": "tiny",
+        "start": 2.926667,
+        "end": 3.286667,
+        "probability": 0.9933401942253113
+      },
+      {
+        "word": "files.",
+        "start": 3.286667,
+        "end": 3.686667,
+        "probability": 0.9925050735473633
+      }
+    ]
+  },
+  {
+    "start": 4.186667,
+    "end": 5.466667,
+    "text": "One contains the letter A.",
+    "words": [
+      {
+        "word": "One",
+        "start": 4.186667,
+        "end": 4.346667,
+        "probability": 0.9674752354621887
+      },
+      {
+        "word": "contains",
+        "start": 4.346667,
+        "end": 4.706667,
+        "probability": 0.9893999695777893
+      },
+      {
+        "word": "the",
+        "start": 4.706667,
+        "end": 4.986667,
+        "probability": 0.9912928938865662
+      },
+      {
+        "word": "letter",
+        "start": 4.986667,
+        "end": 5.186667,
+        "probability": 0.9701750874519348
+      },
+      {
+        "word": "A.",
+        "start": 5.186667,
+        "end": 5.466667,
+        "probability": 0.7872898578643799
+      }
+    ]
+  },
+  {
+    "start": 5.886667,
+    "end": 7.126667,
+    "text": "The other contains the letter",
+    "words": [
+      {
+        "word": "The",
+        "start": 5.886667,
+        "end": 6.026667,
+        "probability": 0.992755115032196
+      },
+      {
+        "word": "other",
+        "start": 6.026667,
+        "end": 6.246667,
+        "probability": 0.9968357682228088
+      },
+      {
+        "word": "contains",
+        "start": 6.246667,
+        "end": 6.626667,
+        "probability": 0.9891064763069153
+      },
+      {
+        "word": "the",
+        "start": 6.626667,
+        "end": 6.946667,
+        "probability": 0.9983447790145874
+      },
+      {
+        "word": "letter",
+        "start": 6.946667,
+        "end": 7.126667,
+        "probability": 0.9963310360908508
+      }
+    ]
+  },
+  {
+    "start": 7.126667,
+    "end": 7.406667,
+    "text": "B.",
+    "words": [
+      {
+        "word": "B.",
+        "start": 7.126667,
+        "end": 7.406667,
+        "probability": 0.9889888167381287
+      }
+    ]
+  },
+  {
+    "start": 7.733333,
+    "end": 8.873333,
+    "text": "Compute a hash for each",
+    "words": [
+      {
+        "word": "Compute",
+        "start": 7.733333,
+        "end": 8.113333,
+        "probability": 0.7958432137966156
+      },
+      {
+        "word": "a",
+        "start": 8.113333,
+        "end": 8.213333,
+        "probability": 0.9756873846054077
+      },
+      {
+        "word": "hash",
+        "start": 8.213333,
+        "end": 8.433333,
+        "probability": 0.9700026512145996
+      },
+      {
+        "word": "for",
+        "start": 8.433333,
+        "end": 8.653333,
+        "probability": 0.9898952841758728
+      },
+      {
+        "word": "each",
+        "start": 8.653333,
+        "end": 8.873333,
+        "probability": 0.9990763664245605
+      }
+    ]
+  },
+  {
+    "start": 8.873333,
+    "end": 10.773333,
+    "text": "file. Even this small change",
+    "words": [
+      {
+        "word": "file.",
+        "start": 8.873333,
+        "end": 9.173333,
+        "probability": 0.9942020773887634
+      },
+      {
+        "word": "Even",
+        "start": 9.693333,
+        "end": 9.893333,
+        "probability": 0.9860849380493164
+      },
+      {
+        "word": "this",
+        "start": 9.893333,
+        "end": 10.113333,
+        "probability": 0.6833289861679077
+      },
+      {
+        "word": "small",
+        "start": 10.113333,
+        "end": 10.333333,
+        "probability": 0.9976175427436829
+      },
+      {
+        "word": "change",
+        "start": 10.333333,
+        "end": 10.773333,
+        "probability": 0.9902550578117371
+      }
+    ]
+  },
+  {
+    "start": 10.773333,
+    "end": 12.233333,
+    "text": "gives us two different fingerprints.",
+    "words": [
+      {
+        "word": "gives",
+        "start": 10.773333,
+        "end": 11.053333,
+        "probability": 0.9844751954078674
+      },
+      {
+        "word": "us",
+        "start": 11.053333,
+        "end": 11.213333,
+        "probability": 0.9957900643348694
+      },
+      {
+        "word": "two",
+        "start": 11.213333,
+        "end": 11.493333,
+        "probability": 0.9397959113121033
+      },
+      {
+        "word": "different",
+        "start": 11.493333,
+        "end": 11.813333,
+        "probability": 0.9990803003311157
+      },
+      {
+        "word": "fingerprints.",
+        "start": 11.813333,
+        "end": 12.233333,
+        "probability": 0.9851369857788086
+      }
+    ]
+  },
+  {
+    "start": 12.766667,
+    "end": 13.906667,
+    "text": "Compare the result with a",
+    "words": [
+      {
+        "word": "Compare",
+        "start": 12.766667,
+        "end": 13.066667,
+        "probability": 0.936774730682373
+      },
+      {
+        "word": "the",
+        "start": 13.066667,
+        "end": 13.246667,
+        "probability": 0.996195912361145
+      },
+      {
+        "word": "result",
+        "start": 13.246667,
+        "end": 13.586667,
+        "probability": 0.9890187978744507
+      },
+      {
+        "word": "with",
+        "start": 13.586667,
+        "end": 13.826667,
+        "probability": 0.9984741806983948
+      },
+      {
+        "word": "a",
+        "start": 13.826667,
+        "end": 13.906667,
+        "probability": 0.8692862391471863
+      }
+    ]
+  },
+  {
+    "start": 13.906667,
+    "end": 15.866667,
+    "text": "trusted hash. A match helps",
+    "words": [
+      {
+        "word": "trusted",
+        "start": 13.906667,
+        "end": 14.226667,
+        "probability": 0.9519892930984497
+      },
+      {
+        "word": "hash.",
+        "start": 14.226667,
+        "end": 14.726667,
+        "probability": 0.979685366153717
+      },
+      {
+        "word": "A",
+        "start": 15.026667,
+        "end": 15.306667,
+        "probability": 0.9653430581092834
+      },
+      {
+        "word": "match",
+        "start": 15.306667,
+        "end": 15.526667,
+        "probability": 0.9344513416290283
+      },
+      {
+        "word": "helps",
+        "start": 15.526667,
+        "end": 15.866667,
+        "probability": 0.9961004257202148
+      }
+    ]
+  },
+  {
+    "start": 15.866667,
+    "end": 17.426667,
+    "text": "check integrity, but it does",
+    "words": [
+      {
+        "word": "check",
+        "start": 15.866667,
+        "end": 16.106667,
+        "probability": 0.9852234125137329
+      },
+      {
+        "word": "integrity,",
+        "start": 16.106667,
+        "end": 16.626667,
+        "probability": 0.9889320135116577
+      },
+      {
+        "word": "but",
+        "start": 17.026667,
+        "end": 17.186667,
+        "probability": 0.9945333003997803
+      },
+      {
+        "word": "it",
+        "start": 17.186667,
+        "end": 17.326667,
+        "probability": 0.9903473854064941
+      },
+      {
+        "word": "does",
+        "start": 17.326667,
+        "end": 17.426667,
+        "probability": 0.9757987260818481
+      }
+    ]
+  },
+  {
+    "start": 17.426667,
+    "end": 18.546667,
+    "text": "not prove the file is",
+    "words": [
+      {
+        "word": "not",
+        "start": 17.426667,
+        "end": 17.606667,
+        "probability": 0.9982659220695496
+      },
+      {
+        "word": "prove",
+        "start": 17.606667,
+        "end": 17.906667,
+        "probability": 0.9912413358688354
+      },
+      {
+        "word": "the",
+        "start": 17.906667,
+        "end": 18.106667,
+        "probability": 0.978325605392456
+      },
+      {
+        "word": "file",
+        "start": 18.106667,
+        "end": 18.346667,
+        "probability": 0.9982098340988159
+      },
+      {
+        "word": "is",
+        "start": 18.346667,
+        "end": 18.546667,
+        "probability": 0.998504638671875
+      }
+    ]
+  },
+  {
+    "start": 18.546667,
+    "end": 18.826667,
+    "text": "safe.",
+    "words": [
+      {
+        "word": "safe.",
+        "start": 18.546667,
+        "end": 18.826667,
+        "probability": 0.9929486513137817
+      }
+    ]
+  }
+]

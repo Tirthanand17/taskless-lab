@@ -1,0 +1,103 @@
+{
+  "version": "0.5.0",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 929600,
+  "duration_seconds": 19.366666666666667,
+  "frames_at_30fps": 581,
+  "narration_sha256": "25f6429a25acb56aca92b0e52f3c72e315364ae5142b9c0136760020aa0e9b9c",
+  "captions_sha256": "c995b862ac94b5e7fd91c55617a98bbee64bf283a537230d3a286cfad1b2fd91",
+  "word_captions_sha256": "466602f30dbca35e8db4582e132043e3a0ca637d38fec16464018596cc89b398",
+  "spec_sha256": "3da977ad3b9fb5023cd6bee7f27d8ee9cd60f0a6a4d95788487331680166e5e0",
+  "script_sha256": "ce9332ce03450049b866642119a3574bf63e9e3d43634f438b4d41834d0b08a2",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 71,
+      "expected": "What happens when you change just one byte?",
+      "recognized": "What happens when you change just one bite?",
+      "token_similarity": 0.875,
+      "exact_token_match": false,
+      "word_count": 8,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.507,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -19.26,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "595658fb69b6cb03e100edffcb5b1155eef5d4d40e63cf14e993d1ef69225339"
+    },
+    {
+      "id": "proof",
+      "start_frame": 71,
+      "end_frame": 232,
+      "expected": "Here are two tiny files. One contains the letter A. The other contains the letter B.",
+      "recognized": "Here are two tiny files. One contains the letter A. The other contains the letter B.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 16,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.327,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -17.12,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "a65aaee8cacacd548675360af6a272b8678370dd19e983ca0a15eec10d89594b"
+    },
+    {
+      "id": "explain",
+      "start_frame": 232,
+      "end_frame": 383,
+      "expected": "Compute a hash for each file. Even this small change gives us two different fingerprints.",
+      "recognized": "Compute a hash for each file. Even this small change gives us two different fingerprints.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 15,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.533,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.99,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "011975453af3faa62ecb1d8a60c286a9e0c640fa7f8c8a6df698ad50fcf59f9b"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 383,
+      "end_frame": 581,
+      "expected": "Compare the result with a trusted hash. A match helps check integrity, but it does not prove the file is safe.",
+      "recognized": "Compare the result with a trusted hash. A match helps check integrity, but it does not prove the file is safe.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 21,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.54,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.48,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "1725e042b196e6f7808a79371d06d5e9af171b3ac74e5466feddabb3c0cdbcc5"
+    }
+  ],
+  "caption_cues": 14,
+  "recognized_words": 60,
+  "all_exact_token_matches": false,
+  "asr_screen_pass": false,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -17.06,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

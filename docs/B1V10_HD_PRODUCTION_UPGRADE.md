@@ -23,7 +23,7 @@ Status: isolated, review-only development. Baseline: main 7f4ef63. Recovered loc
 | 05 | Reusable visual tokens, typography, safe-area layout and scene primitives | Verified; DESIGN_REVIEW_QA.json (four native stills; layout/contrast checks) |
 | 06 | Storyboard and research/evidence template for differentiated topics | Verified; EDITORIAL_REVIEW_QA.json (three official-source-linked review storyboards; 10 offline tests) |
 | 07 | Meaningful transitions, camera, asset rights and sharpness checks | Verified benchmark and screening primitives; MOTION_REVIEW_QA.json (90 native-HD vertical frames; 8 offline tests; rights approval and full pilot review remain pending) |
-| 08 | Preferred narration and real listening review, aligned captions | Pending |
+| 08 | Preferred narration and real listening review, aligned captions | Technical implementation verified: NARRATION_REVIEW_QA.json, CAPTION_CORRECTION_QA.json, CAPTION_PREVIEW_QA.json; human listening and full AV review pending |
 | 09 | Licensed sound design, intelligibility and mix QC | Pending |
 | 10 | Complete original Short, visual and full playback review | Pending |
 | 11 | Complete long-form pilot, full playback review | Pending |
