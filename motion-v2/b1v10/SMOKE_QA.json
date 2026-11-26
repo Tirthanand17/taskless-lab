@@ -1,0 +1,21 @@
+{
+  "version": "0.1.0",
+  "source_sha256": "2f2f5069a68d4d614d218b315382f3e9db5fda89a99a60f5ea2afa9762c2839b",
+  "vertical_sha256": "34f3d8773f7a1b8d35ed002411b4716d951ee0a4bee8a85a2a8ef252682b5a8e",
+  "landscape_sha256": "8214b0a71939b546df4800df5030368596976181e9cf0e0dcc5a055b65cc5ff4",
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30.0,
+  "frames": 90,
+  "duration_seconds": 3.0,
+  "decode_pass": true,
+  "landscape_still_pass": true,
+  "motion_sample_interval_frames": 8,
+  "motion_change_fraction_gt_0_5": 1.0,
+  "sampled_frames": 4,
+  "review_only": true,
+  "audio_present": false,
+  "release_authorized": false
+}
