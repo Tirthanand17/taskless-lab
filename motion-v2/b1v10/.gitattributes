@@ -33,3 +33,12 @@ short-pilot.tsx -text
 render_short_pilot.cjs -text
 verify_short_pilot.py -text
 SHORT_PILOT_QA.json -text
+git_bisect_demo.py -text
+long_narration.py -text
+long_narration_spec.json -text
+render_long_pilot.py -text
+GIT_BISECT_DEMO.json -text
+LONG_NARRATION_QA.json -text
+LONG_PILOT_QA.json -text
+LONG_CAPTION_REVIEW.json -text
+test_long_pilot_evidence.py -text

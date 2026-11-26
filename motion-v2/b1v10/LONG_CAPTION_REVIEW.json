@@ -1,0 +1,2298 @@
+{
+  "corrections": [
+    {
+      "from": "16",
+      "to": "sixteen",
+      "start": 3.76,
+      "end": 4.16
+    },
+    {
+      "from": "Get Bys act",
+      "to": "Git bisect",
+      "start": 8.7,
+      "end": 9.24,
+      "note": "technical spelling; merged observed adjacent intervals"
+    },
+    {
+      "from": "16",
+      "to": "sixteen",
+      "start": 15.166667,
+      "end": 15.626667
+    },
+    {
+      "from": "get",
+      "to": "Git",
+      "start": 38.833333,
+      "end": 39.073333
+    },
+    {
+      "from": "get",
+      "to": "Git",
+      "start": 102.64,
+      "end": 102.82
+    }
+  ],
+  "cues": [
+    {
+      "start": 0.0,
+      "end": 2.18,
+      "text": "A project worked yesterday. Now",
+      "words": [
+        {
+          "word": "A",
+          "start": 0.0,
+          "end": 0.08,
+          "probability": 0.6601023077964783
+        },
+        {
+          "word": "project",
+          "start": 0.08,
+          "end": 0.46,
+          "probability": 0.9776819348335266
+        },
+        {
+          "word": "worked",
+          "start": 0.46,
+          "end": 0.84,
+          "probability": 0.9967327117919922
+        },
+        {
+          "word": "yesterday.",
+          "start": 0.84,
+          "end": 1.36,
+          "probability": 0.992717981338501
+        },
+        {
+          "word": "Now",
+          "start": 1.96,
+          "end": 2.18,
+          "probability": 0.9944873452186584
+        }
+      ]
+    },
+    {
+      "start": 2.18,
+      "end": 4.16,
+      "text": "a test fails. If sixteen",
+      "words": [
+        {
+          "word": "a",
+          "start": 2.18,
+          "end": 2.4,
+          "probability": 0.6744891405105591
+        },
+        {
+          "word": "test",
+          "start": 2.4,
+          "end": 2.66,
+          "probability": 0.9856890439987183
+        },
+        {
+          "word": "fails.",
+          "start": 2.66,
+          "end": 3.04,
+          "probability": 0.9622235298156738
+        },
+        {
+          "word": "If",
+          "start": 3.62,
+          "end": 3.76,
+          "probability": 0.9889238476753235
+        },
+        {
+          "word": "sixteen",
+          "start": 3.76,
+          "end": 4.16,
+          "probability": 0.689521074295044
+        }
+      ]
+    },
+    {
+      "start": 4.16,
+      "end": 5.56,
+      "text": "revisions are on your list,",
+      "words": [
+        {
+          "word": "revisions",
+          "start": 4.16,
+          "end": 4.66,
+          "probability": 0.9935181140899658
+        },
+        {
+          "word": "are",
+          "start": 4.66,
+          "end": 4.96,
+          "probability": 0.9966699481010437
+        },
+        {
+          "word": "on",
+          "start": 4.96,
+          "end": 5.14,
+          "probability": 0.998359739780426
+        },
+        {
+          "word": "your",
+          "start": 5.14,
+          "end": 5.22,
+          "probability": 0.9954701662063599
+        },
+        {
+          "word": "list,",
+          "start": 5.22,
+          "end": 5.56,
+          "probability": 0.9985553622245789
+        }
+      ]
+    },
+    {
+      "start": 5.92,
+      "end": 6.8,
+      "text": "do you really need to",
+      "words": [
+        {
+          "word": "do",
+          "start": 5.92,
+          "end": 5.98,
+          "probability": 0.991910994052887
+        },
+        {
+          "word": "you",
+          "start": 5.98,
+          "end": 6.1,
+          "probability": 0.9956275224685669
+        },
+        {
+          "word": "really",
+          "start": 6.1,
+          "end": 6.34,
+          "probability": 0.9948605895042419
+        },
+        {
+          "word": "need",
+          "start": 6.34,
+          "end": 6.62,
+          "probability": 0.9977218508720398
+        },
+        {
+          "word": "to",
+          "start": 6.62,
+          "end": 6.8,
+          "probability": 0.9991610050201416
+        }
+      ]
+    },
+    {
+      "start": 6.8,
+      "end": 8.8,
+      "text": "inspect every single one? Git",
+      "words": [
+        {
+          "word": "inspect",
+          "start": 6.8,
+          "end": 7.18,
+          "probability": 0.9981392621994019
+        },
+        {
+          "word": "every",
+          "start": 7.18,
+          "end": 7.58,
+          "probability": 0.9942328333854675
+        },
+        {
+          "word": "single",
+          "start": 7.58,
+          "end": 7.88,
+          "probability": 0.9983147382736206
+        },
+        {
+          "word": "one?",
+          "start": 7.88,
+          "end": 8.16,
+          "probability": 0.9977514147758484
+        },
+        {
+          "word": "Git",
+          "start": 8.7,
+          "end": 8.8,
+          "probability": 0.4546854794025421
+        }
+      ]
+    },
+    {
+      "start": 8.8,
+      "end": 10.22,
+      "text": "bisect can help narrow down",
+      "words": [
+        {
+          "word": "bisect",
+          "start": 8.8,
+          "end": 9.24,
+          "probability": 0.3906336650252342
+        },
+        {
+          "word": "can",
+          "start": 9.24,
+          "end": 9.46,
+          "probability": 0.9838941693305969
+        },
+        {
+          "word": "help",
+          "start": 9.46,
+          "end": 9.7,
+          "probability": 0.9990296363830566
+        },
+        {
+          "word": "narrow",
+          "start": 9.7,
+          "end": 9.96,
+          "probability": 0.7484359741210938
+        },
+        {
+          "word": "down",
+          "start": 9.96,
+          "end": 10.22,
+          "probability": 0.9963781237602234
+        }
+      ]
+    },
+    {
+      "start": 10.22,
+      "end": 10.62,
+      "text": "the search.",
+      "words": [
+        {
+          "word": "the",
+          "start": 10.22,
+          "end": 10.38,
+          "probability": 0.9972671270370483
+        },
+        {
+          "word": "search.",
+          "start": 10.38,
+          "end": 10.62,
+          "probability": 0.993911623954773
+        }
+      ]
+    },
+    {
+      "start": 11.166667,
+      "end": 12.826667,
+      "text": "For this demonstration, I created",
+      "words": [
+        {
+          "word": "For",
+          "start": 11.166667,
+          "end": 11.286667,
+          "probability": 0.9535912871360779
+        },
+        {
+          "word": "this",
+          "start": 11.286667,
+          "end": 11.486667,
+          "probability": 0.9989790916442871
+        },
+        {
+          "word": "demonstration,",
+          "start": 11.486667,
+          "end": 12.146667,
+          "probability": 0.997957706451416
+        },
+        {
+          "word": "I",
+          "start": 12.386667,
+          "end": 12.446667,
+          "probability": 0.9981963038444519
+        },
+        {
+          "word": "created",
+          "start": 12.446667,
+          "end": 12.826667,
+          "probability": 0.9957219362258911
+        }
+      ]
+    },
+    {
+      "start": 12.826667,
+      "end": 15.166667,
+      "text": "a small local repository with",
+      "words": [
+        {
+          "word": "a",
+          "start": 12.826667,
+          "end": 13.046667,
+          "probability": 0.9981982111930847
+        },
+        {
+          "word": "small",
+          "start": 13.046667,
+          "end": 13.366667,
+          "probability": 0.9938115477561951
+        },
+        {
+          "word": "local",
+          "start": 13.366667,
+          "end": 13.866667,
+          "probability": 0.9693831205368042
+        },
+        {
+          "word": "repository",
+          "start": 13.866667,
+          "end": 14.526667,
+          "probability": 0.9914463758468628
+        },
+        {
+          "word": "with",
+          "start": 14.526667,
+          "end": 15.166667,
+          "probability": 0.9786385893821716
+        }
+      ]
+    },
+    {
+      "start": 15.166667,
+      "end": 17.666667,
+      "text": "sixteen numbered revisions. Each one",
+      "words": [
+        {
+          "word": "sixteen",
+          "start": 15.166667,
+          "end": 15.626667,
+          "probability": 0.932156503200531
+        },
+        {
+          "word": "numbered",
+          "start": 15.626667,
+          "end": 16.106667,
+          "probability": 0.9896528124809265
+        },
+        {
+          "word": "revisions.",
+          "start": 16.106667,
+          "end": 16.586667,
+          "probability": 0.9942148327827454
+        },
+        {
+          "word": "Each",
+          "start": 17.166667,
+          "end": 17.486667,
+          "probability": 0.9973587393760681
+        },
+        {
+          "word": "one",
+          "start": 17.486667,
+          "end": 17.666667,
+          "probability": 0.9954837560653687
+        }
+      ]
+    },
+    {
+      "start": 17.666667,
+      "end": 19.446667,
+      "text": "contains a tiny program and",
+      "words": [
+        {
+          "word": "contains",
+          "start": 17.666667,
+          "end": 18.046667,
+          "probability": 0.995728075504303
+        },
+        {
+          "word": "a",
+          "start": 18.046667,
+          "end": 18.306667,
+          "probability": 0.9984893798828125
+        },
+        {
+          "word": "tiny",
+          "start": 18.306667,
+          "end": 18.626667,
+          "probability": 0.9692423343658447
+        },
+        {
+          "word": "program",
+          "start": 18.626667,
+          "end": 19.126667,
+          "probability": 0.9887691736221313
+        },
+        {
+          "word": "and",
+          "start": 19.126667,
+          "end": 19.446667,
+          "probability": 0.9693649411201477
+        }
+      ]
+    },
+    {
+      "start": 19.446667,
+      "end": 21.226667,
+      "text": "a test. The first revision",
+      "words": [
+        {
+          "word": "a",
+          "start": 19.446667,
+          "end": 19.566667,
+          "probability": 0.9819813370704651
+        },
+        {
+          "word": "test.",
+          "start": 19.566667,
+          "end": 19.926667,
+          "probability": 0.9964277148246765
+        },
+        {
+          "word": "The",
+          "start": 20.426667,
+          "end": 20.566667,
+          "probability": 0.9963841438293457
+        },
+        {
+          "word": "first",
+          "start": 20.566667,
+          "end": 20.846667,
+          "probability": 0.9976325035095215
+        },
+        {
+          "word": "revision",
+          "start": 20.846667,
+          "end": 21.226667,
+          "probability": 0.9665572047233582
+        }
+      ]
+    },
+    {
+      "start": 21.226667,
+      "end": 23.186667,
+      "text": "passes the test. The last",
+      "words": [
+        {
+          "word": "passes",
+          "start": 21.226667,
+          "end": 21.726667,
+          "probability": 0.9971200227737427
+        },
+        {
+          "word": "the",
+          "start": 21.726667,
+          "end": 21.966667,
+          "probability": 0.9984190464019775
+        },
+        {
+          "word": "test.",
+          "start": 21.966667,
+          "end": 22.326667,
+          "probability": 0.9976963400840759
+        },
+        {
+          "word": "The",
+          "start": 22.806667,
+          "end": 22.906667,
+          "probability": 0.9968026876449585
+        },
+        {
+          "word": "last",
+          "start": 22.906667,
+          "end": 23.186667,
+          "probability": 0.9982155561447144
+        }
+      ]
+    },
+    {
+      "start": 23.186667,
+      "end": 24.226667,
+      "text": "revision fails it.",
+      "words": [
+        {
+          "word": "revision",
+          "start": 23.186667,
+          "end": 23.606667,
+          "probability": 0.9826188087463379
+        },
+        {
+          "word": "fails",
+          "start": 23.606667,
+          "end": 23.906667,
+          "probability": 0.9964145421981812
+        },
+        {
+          "word": "it.",
+          "start": 23.906667,
+          "end": 24.226667,
+          "probability": 0.9611048698425293
+        }
+      ]
+    },
+    {
+      "start": 24.6,
+      "end": 25.72,
+      "text": "We tell Git which revision",
+      "words": [
+        {
+          "word": "We",
+          "start": 24.6,
+          "end": 24.7,
+          "probability": 0.6479926109313965
+        },
+        {
+          "word": "tell",
+          "start": 24.7,
+          "end": 24.9,
+          "probability": 0.9946381449699402
+        },
+        {
+          "word": "Git",
+          "start": 24.9,
+          "end": 25.08,
+          "probability": 0.5845609307289124
+        },
+        {
+          "word": "which",
+          "start": 25.08,
+          "end": 25.36,
+          "probability": 0.9305009841918945
+        },
+        {
+          "word": "revision",
+          "start": 25.36,
+          "end": 25.72,
+          "probability": 0.9671353697776794
+        }
+      ]
+    },
+    {
+      "start": 25.72,
+      "end": 27.48,
+      "text": "is good and which revision",
+      "words": [
+        {
+          "word": "is",
+          "start": 25.72,
+          "end": 26.06,
+          "probability": 0.9989006519317627
+        },
+        {
+          "word": "good",
+          "start": 26.06,
+          "end": 26.32,
+          "probability": 0.9980816841125488
+        },
+        {
+          "word": "and",
+          "start": 26.32,
+          "end": 26.82,
+          "probability": 0.6573628783226013
+        },
+        {
+          "word": "which",
+          "start": 26.82,
+          "end": 27.08,
+          "probability": 0.9989404082298279
+        },
+        {
+          "word": "revision",
+          "start": 27.08,
+          "end": 27.48,
+          "probability": 0.996796190738678
+        }
+      ]
+    },
+    {
+      "start": 27.48,
+      "end": 29.62,
+      "text": "is bad. Git chooses a",
+      "words": [
+        {
+          "word": "is",
+          "start": 27.48,
+          "end": 27.74,
+          "probability": 0.999133288860321
+        },
+        {
+          "word": "bad.",
+          "start": 27.74,
+          "end": 28.1,
+          "probability": 0.9993553757667542
+        },
+        {
+          "word": "Git",
+          "start": 28.62,
+          "end": 28.9,
+          "probability": 0.9516835808753967
+        },
+        {
+          "word": "chooses",
+          "start": 28.9,
+          "end": 29.42,
+          "probability": 0.9895122647285461
+        },
+        {
+          "word": "a",
+          "start": 29.42,
+          "end": 29.62,
+          "probability": 0.9974735379219055
+        }
+      ]
+    },
+    {
+      "start": 29.62,
+      "end": 31.18,
+      "text": "revision between those endpoints.",
+      "words": [
+        {
+          "word": "revision",
+          "start": 29.62,
+          "end": 30.0,
+          "probability": 0.9967420697212219
+        },
+        {
+          "word": "between",
+          "start": 30.0,
+          "end": 30.38,
+          "probability": 0.997914731502533
+        },
+        {
+          "word": "those",
+          "start": 30.38,
+          "end": 30.66,
+          "probability": 0.999083399772644
+        },
+        {
+          "word": "endpoints.",
+          "start": 30.66,
+          "end": 31.18,
+          "probability": 0.7201003581285477
+        }
+      ]
+    },
+    {
+      "start": 31.86,
+      "end": 32.98,
+      "text": "The test is the same",
+      "words": [
+        {
+          "word": "The",
+          "start": 31.86,
+          "end": 31.98,
+          "probability": 0.9970045685768127
+        },
+        {
+          "word": "test",
+          "start": 31.98,
+          "end": 32.34,
+          "probability": 0.9846892356872559
+        },
+        {
+          "word": "is",
+          "start": 32.34,
+          "end": 32.52,
+          "probability": 0.9988974332809448
+        },
+        {
+          "word": "the",
+          "start": 32.52,
+          "end": 32.68,
+          "probability": 0.9960452914237976
+        },
+        {
+          "word": "same",
+          "start": 32.68,
+          "end": 32.98,
+          "probability": 0.9998151659965515
+        }
+      ]
+    },
+    {
+      "start": 32.98,
+      "end": 34.46,
+      "text": "at every step, so we",
+      "words": [
+        {
+          "word": "at",
+          "start": 32.98,
+          "end": 33.18,
+          "probability": 0.9920247793197632
+        },
+        {
+          "word": "every",
+          "start": 33.18,
+          "end": 33.48,
+          "probability": 0.9981434345245361
+        },
+        {
+          "word": "step,",
+          "start": 33.48,
+          "end": 33.82,
+          "probability": 0.999208390712738
+        },
+        {
+          "word": "so",
+          "start": 34.1,
+          "end": 34.32,
+          "probability": 0.9961147308349609
+        },
+        {
+          "word": "we",
+          "start": 34.32,
+          "end": 34.46,
+          "probability": 0.998420238494873
+        }
+      ]
+    },
+    {
+      "start": 34.46,
+      "end": 35.68,
+      "text": "have a consistent way to",
+      "words": [
+        {
+          "word": "have",
+          "start": 34.46,
+          "end": 34.58,
+          "probability": 0.9995075464248657
+        },
+        {
+          "word": "a",
+          "start": 34.58,
+          "end": 34.7,
+          "probability": 0.9984487295150757
+        },
+        {
+          "word": "consistent",
+          "start": 34.7,
+          "end": 35.2,
+          "probability": 0.9975270628929138
+        },
+        {
+          "word": "way",
+          "start": 35.2,
+          "end": 35.5,
+          "probability": 0.999147891998291
+        },
+        {
+          "word": "to",
+          "start": 35.5,
+          "end": 35.68,
+          "probability": 0.9993870258331299
+        }
+      ]
+    },
+    {
+      "start": 35.68,
+      "end": 37.06,
+      "text": "classify each revision.",
+      "words": [
+        {
+          "word": "classify",
+          "start": 35.68,
+          "end": 36.18,
+          "probability": 0.9962448477745056
+        },
+        {
+          "word": "each",
+          "start": 36.18,
+          "end": 36.62,
+          "probability": 0.9991499185562134
+        },
+        {
+          "word": "revision.",
+          "start": 36.62,
+          "end": 37.06,
+          "probability": 0.9954800605773926
+        }
+      ]
+    },
+    {
+      "start": 37.533333,
+      "end": 38.833333,
+      "text": "Here is the first revision",
+      "words": [
+        {
+          "word": "Here",
+          "start": 37.533333,
+          "end": 37.733333,
+          "probability": 0.9693652987480164
+        },
+        {
+          "word": "is",
+          "start": 37.733333,
+          "end": 37.953333,
+          "probability": 0.982624351978302
+        },
+        {
+          "word": "the",
+          "start": 37.953333,
+          "end": 38.073333,
+          "probability": 0.9950703382492065
+        },
+        {
+          "word": "first",
+          "start": 38.073333,
+          "end": 38.433333,
+          "probability": 0.9440582394599915
+        },
+        {
+          "word": "revision",
+          "start": 38.433333,
+          "end": 38.833333,
+          "probability": 0.9858624339103699
+        }
+      ]
+    },
+    {
+      "start": 38.833333,
+      "end": 40.813333,
+      "text": "Git selected. Run the test",
+      "words": [
+        {
+          "word": "Git",
+          "start": 38.833333,
+          "end": 39.073333,
+          "probability": 0.7305265069007874
+        },
+        {
+          "word": "selected.",
+          "start": 39.073333,
+          "end": 39.633333,
+          "probability": 0.9964413046836853
+        },
+        {
+          "word": "Run",
+          "start": 40.173333,
+          "end": 40.293333,
+          "probability": 0.9897292852401733
+        },
+        {
+          "word": "the",
+          "start": 40.293333,
+          "end": 40.453333,
+          "probability": 0.9987047910690308
+        },
+        {
+          "word": "test",
+          "start": 40.453333,
+          "end": 40.813333,
+          "probability": 0.9594204425811768
+        }
+      ]
+    },
+    {
+      "start": 40.813333,
+      "end": 42.713333,
+      "text": "and record the result. A",
+      "words": [
+        {
+          "word": "and",
+          "start": 40.813333,
+          "end": 41.093333,
+          "probability": 0.9391583204269409
+        },
+        {
+          "word": "record",
+          "start": 41.093333,
+          "end": 41.433333,
+          "probability": 0.9960758090019226
+        },
+        {
+          "word": "the",
+          "start": 41.433333,
+          "end": 41.633333,
+          "probability": 0.999261200428009
+        },
+        {
+          "word": "result.",
+          "start": 41.633333,
+          "end": 42.033333,
+          "probability": 0.9902282953262329
+        },
+        {
+          "word": "A",
+          "start": 42.573333,
+          "end": 42.713333,
+          "probability": 0.9925923347473145
+        }
+      ]
+    },
+    {
+      "start": 42.713333,
+      "end": 44.253333,
+      "text": "passing test moves the good",
+      "words": [
+        {
+          "word": "passing",
+          "start": 42.713333,
+          "end": 43.073333,
+          "probability": 0.9559228420257568
+        },
+        {
+          "word": "test",
+          "start": 43.073333,
+          "end": 43.533333,
+          "probability": 0.9965567588806152
+        },
+        {
+          "word": "moves",
+          "start": 43.533333,
+          "end": 43.833333,
+          "probability": 0.988498866558075
+        },
+        {
+          "word": "the",
+          "start": 43.833333,
+          "end": 44.073333,
+          "probability": 0.998717188835144
+        },
+        {
+          "word": "good",
+          "start": 44.073333,
+          "end": 44.253333,
+          "probability": 0.8568217754364014
+        }
+      ]
+    },
+    {
+      "start": 44.253333,
+      "end": 46.493333,
+      "text": "boundary forward. A failing test",
+      "words": [
+        {
+          "word": "boundary",
+          "start": 44.253333,
+          "end": 44.633333,
+          "probability": 0.989841639995575
+        },
+        {
+          "word": "forward.",
+          "start": 44.633333,
+          "end": 45.073333,
+          "probability": 0.9985999464988708
+        },
+        {
+          "word": "A",
+          "start": 45.513333,
+          "end": 45.713333,
+          "probability": 0.996857762336731
+        },
+        {
+          "word": "failing",
+          "start": 45.713333,
+          "end": 46.013333,
+          "probability": 0.9905112385749817
+        },
+        {
+          "word": "test",
+          "start": 46.013333,
+          "end": 46.493333,
+          "probability": 0.9988435506820679
+        }
+      ]
+    },
+    {
+      "start": 46.493333,
+      "end": 48.073333,
+      "text": "moves the bad boundary backward.",
+      "words": [
+        {
+          "word": "moves",
+          "start": 46.493333,
+          "end": 46.833333,
+          "probability": 0.9902258515357971
+        },
+        {
+          "word": "the",
+          "start": 46.833333,
+          "end": 47.033333,
+          "probability": 0.9985406398773193
+        },
+        {
+          "word": "bad",
+          "start": 47.033333,
+          "end": 47.233333,
+          "probability": 0.9961870312690735
+        },
+        {
+          "word": "boundary",
+          "start": 47.233333,
+          "end": 47.633333,
+          "probability": 0.9793210029602051
+        },
+        {
+          "word": "backward.",
+          "start": 47.633333,
+          "end": 48.073333,
+          "probability": 0.993028461933136
+        }
+      ]
+    },
+    {
+      "start": 48.533333,
+      "end": 50.013333,
+      "text": "Now the possible range is",
+      "words": [
+        {
+          "word": "Now",
+          "start": 48.533333,
+          "end": 48.753333,
+          "probability": 0.8887853026390076
+        },
+        {
+          "word": "the",
+          "start": 48.753333,
+          "end": 48.933333,
+          "probability": 0.8422762155532837
+        },
+        {
+          "word": "possible",
+          "start": 48.933333,
+          "end": 49.333333,
+          "probability": 0.965720534324646
+        },
+        {
+          "word": "range",
+          "start": 49.333333,
+          "end": 49.653333,
+          "probability": 0.9980533123016357
+        },
+        {
+          "word": "is",
+          "start": 49.653333,
+          "end": 50.013333,
+          "probability": 0.9973675608634949
+        }
+      ]
+    },
+    {
+      "start": 50.013333,
+      "end": 52.173333,
+      "text": "smaller. Git selects another",
+      "words": [
+        {
+          "word": "smaller.",
+          "start": 50.013333,
+          "end": 50.453333,
+          "probability": 0.9904313683509827
+        },
+        {
+          "word": "Git",
+          "start": 51.213333,
+          "end": 51.353333,
+          "probability": 0.5948388576507568
+        },
+        {
+          "word": "selects",
+          "start": 51.353333,
+          "end": 51.893333,
+          "probability": 0.983185738325119
+        },
+        {
+          "word": "another",
+          "start": 51.893333,
+          "end": 52.173333,
+          "probability": 0.9931073784828186
+        }
+      ]
+    },
+    {
+      "start": 52.173333,
+      "end": 53.953333,
+      "text": "revision, and we run exactly",
+      "words": [
+        {
+          "word": "revision,",
+          "start": 52.173333,
+          "end": 52.633333,
+          "probability": 0.993028461933136
+        },
+        {
+          "word": "and",
+          "start": 53.093333,
+          "end": 53.173333,
+          "probability": 0.9945080876350403
+        },
+        {
+          "word": "we",
+          "start": 53.173333,
+          "end": 53.293333,
+          "probability": 0.9971201419830322
+        },
+        {
+          "word": "run",
+          "start": 53.293333,
+          "end": 53.433333,
+          "probability": 0.9982714653015137
+        },
+        {
+          "word": "exactly",
+          "start": 53.433333,
+          "end": 53.953333,
+          "probability": 0.993248462677002
+        }
+      ]
+    },
+    {
+      "start": 53.953333,
+      "end": 55.873333,
+      "text": "the same test again. We",
+      "words": [
+        {
+          "word": "the",
+          "start": 53.953333,
+          "end": 54.253333,
+          "probability": 0.9985509514808655
+        },
+        {
+          "word": "same",
+          "start": 54.253333,
+          "end": 54.513333,
+          "probability": 0.9996340274810791
+        },
+        {
+          "word": "test",
+          "start": 54.513333,
+          "end": 54.773333,
+          "probability": 0.9936091899871826
+        },
+        {
+          "word": "again.",
+          "start": 54.773333,
+          "end": 55.173333,
+          "probability": 0.9957330822944641
+        },
+        {
+          "word": "We",
+          "start": 55.713333,
+          "end": 55.873333,
+          "probability": 0.9964255690574646
+        }
+      ]
+    },
+    {
+      "start": 55.873333,
+      "end": 56.653333,
+      "text": "do not need to open",
+      "words": [
+        {
+          "word": "do",
+          "start": 55.873333,
+          "end": 55.953333,
+          "probability": 0.9928661584854126
+        },
+        {
+          "word": "not",
+          "start": 55.953333,
+          "end": 56.093333,
+          "probability": 0.9980446100234985
+        },
+        {
+          "word": "need",
+          "start": 56.093333,
+          "end": 56.253333,
+          "probability": 0.9989570379257202
+        },
+        {
+          "word": "to",
+          "start": 56.253333,
+          "end": 56.393333,
+          "probability": 0.9985958933830261
+        },
+        {
+          "word": "open",
+          "start": 56.393333,
+          "end": 56.653333,
+          "probability": 0.9965750575065613
+        }
+      ]
+    },
+    {
+      "start": 56.653333,
+      "end": 58.253333,
+      "text": "every change or guess which",
+      "words": [
+        {
+          "word": "every",
+          "start": 56.653333,
+          "end": 57.013333,
+          "probability": 0.9898905754089355
+        },
+        {
+          "word": "change",
+          "start": 57.013333,
+          "end": 57.353333,
+          "probability": 0.9841837882995605
+        },
+        {
+          "word": "or",
+          "start": 57.353333,
+          "end": 57.653333,
+          "probability": 0.9679747819900513
+        },
+        {
+          "word": "guess",
+          "start": 57.653333,
+          "end": 57.873333,
+          "probability": 0.977084219455719
+        },
+        {
+          "word": "which",
+          "start": 57.873333,
+          "end": 58.253333,
+          "probability": 0.745414137840271
+        }
+      ]
+    },
+    {
+      "start": 58.253333,
+      "end": 59.473333,
+      "text": "line caused the failure.",
+      "words": [
+        {
+          "word": "line",
+          "start": 58.253333,
+          "end": 58.573333,
+          "probability": 0.9904102087020874
+        },
+        {
+          "word": "caused",
+          "start": 58.573333,
+          "end": 58.953333,
+          "probability": 0.919611930847168
+        },
+        {
+          "word": "the",
+          "start": 58.953333,
+          "end": 59.133333,
+          "probability": 0.9963047504425049
+        },
+        {
+          "word": "failure.",
+          "start": 59.133333,
+          "end": 59.473333,
+          "probability": 0.9917588829994202
+        }
+      ]
+    },
+    {
+      "start": 59.9,
+      "end": 61.48,
+      "text": "Repeat the process until the",
+      "words": [
+        {
+          "word": "Repeat",
+          "start": 59.9,
+          "end": 60.16,
+          "probability": 0.652816891670227
+        },
+        {
+          "word": "the",
+          "start": 60.16,
+          "end": 60.34,
+          "probability": 0.9934763312339783
+        },
+        {
+          "word": "process",
+          "start": 60.34,
+          "end": 60.78,
+          "probability": 0.9981845021247864
+        },
+        {
+          "word": "until",
+          "start": 60.78,
+          "end": 61.34,
+          "probability": 0.976596474647522
+        },
+        {
+          "word": "the",
+          "start": 61.34,
+          "end": 61.48,
+          "probability": 0.9930276274681091
+        }
+      ]
+    },
+    {
+      "start": 61.48,
+      "end": 62.96,
+      "text": "good and bad revisions are",
+      "words": [
+        {
+          "word": "good",
+          "start": 61.48,
+          "end": 61.78,
+          "probability": 0.9773403406143188
+        },
+        {
+          "word": "and",
+          "start": 61.78,
+          "end": 62.04,
+          "probability": 0.9893839955329895
+        },
+        {
+          "word": "bad",
+          "start": 62.04,
+          "end": 62.28,
+          "probability": 0.9994565844535828
+        },
+        {
+          "word": "revisions",
+          "start": 62.28,
+          "end": 62.68,
+          "probability": 0.996548980474472
+        },
+        {
+          "word": "are",
+          "start": 62.68,
+          "end": 62.96,
+          "probability": 0.9982272982597351
+        }
+      ]
+    },
+    {
+      "start": 62.96,
+      "end": 64.74,
+      "text": "next to each other. Each",
+      "words": [
+        {
+          "word": "next",
+          "start": 62.96,
+          "end": 63.16,
+          "probability": 0.9934710264205933
+        },
+        {
+          "word": "to",
+          "start": 63.16,
+          "end": 63.42,
+          "probability": 0.9970372915267944
+        },
+        {
+          "word": "each",
+          "start": 63.42,
+          "end": 63.6,
+          "probability": 0.999517560005188
+        },
+        {
+          "word": "other.",
+          "start": 63.6,
+          "end": 63.82,
+          "probability": 0.996803879737854
+        },
+        {
+          "word": "Each",
+          "start": 64.42,
+          "end": 64.74,
+          "probability": 0.9948676824569702
+        }
+      ]
+    },
+    {
+      "start": 64.74,
+      "end": 66.22,
+      "text": "result comes from the actual",
+      "words": [
+        {
+          "word": "result",
+          "start": 64.74,
+          "end": 65.12,
+          "probability": 0.9973899722099304
+        },
+        {
+          "word": "comes",
+          "start": 65.12,
+          "end": 65.46,
+          "probability": 0.9964961409568787
+        },
+        {
+          "word": "from",
+          "start": 65.46,
+          "end": 65.68,
+          "probability": 0.9956269264221191
+        },
+        {
+          "word": "the",
+          "start": 65.68,
+          "end": 65.82,
+          "probability": 0.9955138564109802
+        },
+        {
+          "word": "actual",
+          "start": 65.82,
+          "end": 66.22,
+          "probability": 0.993881344795227
+        }
+      ]
+    },
+    {
+      "start": 66.22,
+      "end": 68.36,
+      "text": "test in our example repository,",
+      "words": [
+        {
+          "word": "test",
+          "start": 66.22,
+          "end": 66.68,
+          "probability": 0.9950999617576599
+        },
+        {
+          "word": "in",
+          "start": 66.68,
+          "end": 66.96,
+          "probability": 0.9590933322906494
+        },
+        {
+          "word": "our",
+          "start": 66.96,
+          "end": 67.1,
+          "probability": 0.9965031147003174
+        },
+        {
+          "word": "example",
+          "start": 67.1,
+          "end": 67.52,
+          "probability": 0.9548422694206238
+        },
+        {
+          "word": "repository,",
+          "start": 67.52,
+          "end": 68.36,
+          "probability": 0.9608389139175415
+        }
+      ]
+    },
+    {
+      "start": 68.78,
+      "end": 69.98,
+      "text": "not a prediction from an",
+      "words": [
+        {
+          "word": "not",
+          "start": 68.78,
+          "end": 69.06,
+          "probability": 0.9818613529205322
+        },
+        {
+          "word": "a",
+          "start": 69.06,
+          "end": 69.18,
+          "probability": 0.9946613907814026
+        },
+        {
+          "word": "prediction",
+          "start": 69.18,
+          "end": 69.58,
+          "probability": 0.998241662979126
+        },
+        {
+          "word": "from",
+          "start": 69.58,
+          "end": 69.84,
+          "probability": 0.9865657687187195
+        },
+        {
+          "word": "an",
+          "start": 69.84,
+          "end": 69.98,
+          "probability": 0.9864485859870911
+        }
+      ]
+    },
+    {
+      "start": 69.98,
+      "end": 71.42,
+      "text": "artificial intelligence model.",
+      "words": [
+        {
+          "word": "artificial",
+          "start": 69.98,
+          "end": 70.4,
+          "probability": 0.8886412382125854
+        },
+        {
+          "word": "intelligence",
+          "start": 70.4,
+          "end": 71.02,
+          "probability": 0.993394672870636
+        },
+        {
+          "word": "model.",
+          "start": 71.02,
+          "end": 71.42,
+          "probability": 0.9990015625953674
+        }
+      ]
+    },
+    {
+      "start": 71.833333,
+      "end": 73.413333,
+      "text": "Git reports the first bad",
+      "words": [
+        {
+          "word": "Git",
+          "start": 71.833333,
+          "end": 72.013333,
+          "probability": 0.7266525626182556
+        },
+        {
+          "word": "reports",
+          "start": 72.013333,
+          "end": 72.513333,
+          "probability": 0.9724099040031433
+        },
+        {
+          "word": "the",
+          "start": 72.513333,
+          "end": 72.813333,
+          "probability": 0.9970464110374451
+        },
+        {
+          "word": "first",
+          "start": 72.813333,
+          "end": 73.193333,
+          "probability": 0.9206863641738892
+        },
+        {
+          "word": "bad",
+          "start": 73.193333,
+          "end": 73.413333,
+          "probability": 0.9082969427108765
+        }
+      ]
+    },
+    {
+      "start": 73.413333,
+      "end": 75.293333,
+      "text": "commit in this controlled history.",
+      "words": [
+        {
+          "word": "commit",
+          "start": 73.413333,
+          "end": 73.793333,
+          "probability": 0.9814987778663635
+        },
+        {
+          "word": "in",
+          "start": 73.793333,
+          "end": 74.053333,
+          "probability": 0.9990116357803345
+        },
+        {
+          "word": "this",
+          "start": 74.053333,
+          "end": 74.213333,
+          "probability": 0.9984094500541687
+        },
+        {
+          "word": "controlled",
+          "start": 74.213333,
+          "end": 74.713333,
+          "probability": 0.9910687208175659
+        },
+        {
+          "word": "history.",
+          "start": 74.713333,
+          "end": 75.293333,
+          "probability": 0.9984459280967712
+        }
+      ]
+    },
+    {
+      "start": 75.813333,
+      "end": 77.713333,
+      "text": "Inspect its changes to understand",
+      "words": [
+        {
+          "word": "Inspect",
+          "start": 75.813333,
+          "end": 76.213333,
+          "probability": 0.9587104320526123
+        },
+        {
+          "word": "its",
+          "start": 76.213333,
+          "end": 76.493333,
+          "probability": 0.9776830077171326
+        },
+        {
+          "word": "changes",
+          "start": 76.493333,
+          "end": 76.933333,
+          "probability": 0.9985466599464417
+        },
+        {
+          "word": "to",
+          "start": 76.933333,
+          "end": 77.213333,
+          "probability": 0.9948464632034302
+        },
+        {
+          "word": "understand",
+          "start": 77.213333,
+          "end": 77.713333,
+          "probability": 0.9985033273696899
+        }
+      ]
+    },
+    {
+      "start": 77.713333,
+      "end": 80.093333,
+      "text": "what happened. This identifies a",
+      "words": [
+        {
+          "word": "what",
+          "start": 77.713333,
+          "end": 78.053333,
+          "probability": 0.9980096220970154
+        },
+        {
+          "word": "happened.",
+          "start": 78.053333,
+          "end": 78.433333,
+          "probability": 0.9982210993766785
+        },
+        {
+          "word": "This",
+          "start": 79.013333,
+          "end": 79.173333,
+          "probability": 0.9973310232162476
+        },
+        {
+          "word": "identifies",
+          "start": 79.173333,
+          "end": 79.793333,
+          "probability": 0.9686678051948547
+        },
+        {
+          "word": "a",
+          "start": 79.793333,
+          "end": 80.093333,
+          "probability": 0.9961076378822327
+        }
+      ]
+    },
+    {
+      "start": 80.093333,
+      "end": 81.953333,
+      "text": "suspect revision. It does not",
+      "words": [
+        {
+          "word": "suspect",
+          "start": 80.093333,
+          "end": 80.493333,
+          "probability": 0.9824120402336121
+        },
+        {
+          "word": "revision.",
+          "start": 80.493333,
+          "end": 80.973333,
+          "probability": 0.9875016212463379
+        },
+        {
+          "word": "It",
+          "start": 81.533333,
+          "end": 81.673333,
+          "probability": 0.9967954754829407
+        },
+        {
+          "word": "does",
+          "start": 81.673333,
+          "end": 81.793333,
+          "probability": 0.9628618955612183
+        },
+        {
+          "word": "not",
+          "start": 81.793333,
+          "end": 81.953333,
+          "probability": 0.9984062314033508
+        }
+      ]
+    },
+    {
+      "start": 81.953333,
+      "end": 83.553333,
+      "text": "automatically tell us how to",
+      "words": [
+        {
+          "word": "automatically",
+          "start": 81.953333,
+          "end": 82.633333,
+          "probability": 0.9989105463027954
+        },
+        {
+          "word": "tell",
+          "start": 82.633333,
+          "end": 82.993333,
+          "probability": 0.9991245865821838
+        },
+        {
+          "word": "us",
+          "start": 82.993333,
+          "end": 83.213333,
+          "probability": 0.9982775449752808
+        },
+        {
+          "word": "how",
+          "start": 83.213333,
+          "end": 83.393333,
+          "probability": 0.9972513318061829
+        },
+        {
+          "word": "to",
+          "start": 83.393333,
+          "end": 83.553333,
+          "probability": 0.9987843632698059
+        }
+      ]
+    },
+    {
+      "start": 83.553333,
+      "end": 84.413333,
+      "text": "repair the program.",
+      "words": [
+        {
+          "word": "repair",
+          "start": 83.553333,
+          "end": 83.833333,
+          "probability": 0.9929721355438232
+        },
+        {
+          "word": "the",
+          "start": 83.833333,
+          "end": 83.993333,
+          "probability": 0.9975998997688293
+        },
+        {
+          "word": "program.",
+          "start": 83.993333,
+          "end": 84.413333,
+          "probability": 0.9948098659515381
+        }
+      ]
+    },
+    {
+      "start": 84.866667,
+      "end": 86.446667,
+      "text": "This example uses a simple",
+      "words": [
+        {
+          "word": "This",
+          "start": 84.866667,
+          "end": 85.046667,
+          "probability": 0.9565717577934265
+        },
+        {
+          "word": "example",
+          "start": 85.046667,
+          "end": 85.486667,
+          "probability": 0.9980200529098511
+        },
+        {
+          "word": "uses",
+          "start": 85.486667,
+          "end": 85.866667,
+          "probability": 0.9985194802284241
+        },
+        {
+          "word": "a",
+          "start": 85.866667,
+          "end": 86.066667,
+          "probability": 0.9982169270515442
+        },
+        {
+          "word": "simple",
+          "start": 86.066667,
+          "end": 86.446667,
+          "probability": 0.9879240989685059
+        }
+      ]
+    },
+    {
+      "start": 86.446667,
+      "end": 88.166667,
+      "text": "linear history and a reliable",
+      "words": [
+        {
+          "word": "linear",
+          "start": 86.446667,
+          "end": 86.706667,
+          "probability": 0.9777512550354004
+        },
+        {
+          "word": "history",
+          "start": 86.706667,
+          "end": 87.126667,
+          "probability": 0.9968589544296265
+        },
+        {
+          "word": "and",
+          "start": 87.126667,
+          "end": 87.646667,
+          "probability": 0.9427651166915894
+        },
+        {
+          "word": "a",
+          "start": 87.646667,
+          "end": 87.746667,
+          "probability": 0.994804322719574
+        },
+        {
+          "word": "reliable",
+          "start": 87.746667,
+          "end": 88.166667,
+          "probability": 0.9898965358734131
+        }
+      ]
+    },
+    {
+      "start": 88.166667,
+      "end": 90.406667,
+      "text": "test. Real projects can have",
+      "words": [
+        {
+          "word": "test.",
+          "start": 88.166667,
+          "end": 88.706667,
+          "probability": 0.9981606602668762
+        },
+        {
+          "word": "Real",
+          "start": 89.186667,
+          "end": 89.526667,
+          "probability": 0.9829828143119812
+        },
+        {
+          "word": "projects",
+          "start": 89.526667,
+          "end": 89.986667,
+          "probability": 0.9932262301445007
+        },
+        {
+          "word": "can",
+          "start": 89.986667,
+          "end": 90.286667,
+          "probability": 0.996042013168335
+        },
+        {
+          "word": "have",
+          "start": 90.286667,
+          "end": 90.406667,
+          "probability": 0.9207541346549988
+        }
+      ]
+    },
+    {
+      "start": 90.406667,
+      "end": 92.766667,
+      "text": "skipped revisions, merge commits, or",
+      "words": [
+        {
+          "word": "skipped",
+          "start": 90.406667,
+          "end": 90.666667,
+          "probability": 0.9938987493515015
+        },
+        {
+          "word": "revisions,",
+          "start": 90.666667,
+          "end": 91.206667,
+          "probability": 0.992382287979126
+        },
+        {
+          "word": "merge",
+          "start": 91.766667,
+          "end": 91.986667,
+          "probability": 0.9562227129936218
+        },
+        {
+          "word": "commits,",
+          "start": 91.986667,
+          "end": 92.266667,
+          "probability": 0.93129563331604
+        },
+        {
+          "word": "or",
+          "start": 92.546667,
+          "end": 92.766667,
+          "probability": 0.9963192939758301
+        }
+      ]
+    },
+    {
+      "start": 92.766667,
+      "end": 94.946667,
+      "text": "flaky tests. If the classification",
+      "words": [
+        {
+          "word": "flaky",
+          "start": 92.766667,
+          "end": 93.126667,
+          "probability": 0.9508995711803436
+        },
+        {
+          "word": "tests.",
+          "start": 93.126667,
+          "end": 93.566667,
+          "probability": 0.9895244240760803
+        },
+        {
+          "word": "If",
+          "start": 94.126667,
+          "end": 94.306667,
+          "probability": 0.9977678060531616
+        },
+        {
+          "word": "the",
+          "start": 94.306667,
+          "end": 94.426667,
+          "probability": 0.9950276017189026
+        },
+        {
+          "word": "classification",
+          "start": 94.426667,
+          "end": 94.946667,
+          "probability": 0.9891811013221741
+        }
+      ]
+    },
+    {
+      "start": 94.946667,
+      "end": 97.266667,
+      "text": "is unreliable, the answer may",
+      "words": [
+        {
+          "word": "is",
+          "start": 94.946667,
+          "end": 95.446667,
+          "probability": 0.9987249970436096
+        },
+        {
+          "word": "unreliable,",
+          "start": 95.446667,
+          "end": 96.186667,
+          "probability": 0.990843673547109
+        },
+        {
+          "word": "the",
+          "start": 96.626667,
+          "end": 96.686667,
+          "probability": 0.9989878535270691
+        },
+        {
+          "word": "answer",
+          "start": 96.686667,
+          "end": 97.026667,
+          "probability": 0.9988918900489807
+        },
+        {
+          "word": "may",
+          "start": 97.026667,
+          "end": 97.266667,
+          "probability": 0.9939438700675964
+        }
+      ]
+    },
+    {
+      "start": 97.266667,
+      "end": 97.726667,
+      "text": "be misleading.",
+      "words": [
+        {
+          "word": "be",
+          "start": 97.266667,
+          "end": 97.386667,
+          "probability": 0.9991375207901001
+        },
+        {
+          "word": "misleading.",
+          "start": 97.386667,
+          "end": 97.726667,
+          "probability": 0.9991946816444397
+        }
+      ]
+    },
+    {
+      "start": 98.3,
+      "end": 99.92,
+      "text": "Start with a reproducible test,",
+      "words": [
+        {
+          "word": "Start",
+          "start": 98.3,
+          "end": 98.54,
+          "probability": 0.9419697523117065
+        },
+        {
+          "word": "with",
+          "start": 98.54,
+          "end": 98.74,
+          "probability": 0.9980316758155823
+        },
+        {
+          "word": "a",
+          "start": 98.74,
+          "end": 98.86,
+          "probability": 0.9938278794288635
+        },
+        {
+          "word": "reproducible",
+          "start": 98.86,
+          "end": 99.42,
+          "probability": 0.9343597888946533
+        },
+        {
+          "word": "test,",
+          "start": 99.42,
+          "end": 99.92,
+          "probability": 0.9962716102600098
+        }
+      ]
+    },
+    {
+      "start": 100.28,
+      "end": 101.34,
+      "text": "mark a known good and",
+      "words": [
+        {
+          "word": "mark",
+          "start": 100.28,
+          "end": 100.4,
+          "probability": 0.969119668006897
+        },
+        {
+          "word": "a",
+          "start": 100.4,
+          "end": 100.52,
+          "probability": 0.941596508026123
+        },
+        {
+          "word": "known",
+          "start": 100.52,
+          "end": 100.72,
+          "probability": 0.9928431510925293
+        },
+        {
+          "word": "good",
+          "start": 100.72,
+          "end": 101.08,
+          "probability": 0.6766651272773743
+        },
+        {
+          "word": "and",
+          "start": 101.08,
+          "end": 101.34,
+          "probability": 0.971278965473175
+        }
+      ]
+    },
+    {
+      "start": 101.34,
+      "end": 102.82,
+      "text": "bad revision, and let Git",
+      "words": [
+        {
+          "word": "bad",
+          "start": 101.34,
+          "end": 101.58,
+          "probability": 0.9991590976715088
+        },
+        {
+          "word": "revision,",
+          "start": 101.58,
+          "end": 101.98,
+          "probability": 0.9848179221153259
+        },
+        {
+          "word": "and",
+          "start": 102.4,
+          "end": 102.46,
+          "probability": 0.9962800145149231
+        },
+        {
+          "word": "let",
+          "start": 102.46,
+          "end": 102.64,
+          "probability": 0.9988505840301514
+        },
+        {
+          "word": "Git",
+          "start": 102.64,
+          "end": 102.82,
+          "probability": 0.8299744129180908
+        }
+      ]
+    },
+    {
+      "start": 102.82,
+      "end": 104.5,
+      "text": "narrow the search. When you",
+      "words": [
+        {
+          "word": "narrow",
+          "start": 102.82,
+          "end": 103.08,
+          "probability": 0.8383983373641968
+        },
+        {
+          "word": "the",
+          "start": 103.08,
+          "end": 103.28,
+          "probability": 0.9668625593185425
+        },
+        {
+          "word": "search.",
+          "start": 103.28,
+          "end": 103.54,
+          "probability": 0.9964941143989563
+        },
+        {
+          "word": "When",
+          "start": 104.22,
+          "end": 104.4,
+          "probability": 0.9958193302154541
+        },
+        {
+          "word": "you",
+          "start": 104.4,
+          "end": 104.5,
+          "probability": 0.9990430474281311
+        }
+      ]
+    },
+    {
+      "start": 104.5,
+      "end": 106.52,
+      "text": "finish, reset the bisect session.",
+      "words": [
+        {
+          "word": "finish,",
+          "start": 104.5,
+          "end": 104.82,
+          "probability": 0.9910304546356201
+        },
+        {
+          "word": "reset",
+          "start": 105.26,
+          "end": 105.5,
+          "probability": 0.9738673567771912
+        },
+        {
+          "word": "the",
+          "start": 105.5,
+          "end": 105.7,
+          "probability": 0.9990276098251343
+        },
+        {
+          "word": "bisect",
+          "start": 105.7,
+          "end": 106.06,
+          "probability": 0.6323559880256653
+        },
+        {
+          "word": "session.",
+          "start": 106.06,
+          "end": 106.52,
+          "probability": 0.9200843572616577
+        }
+      ]
+    },
+    {
+      "start": 107.1,
+      "end": 108.12,
+      "text": "The next step is to",
+      "words": [
+        {
+          "word": "The",
+          "start": 107.1,
+          "end": 107.26,
+          "probability": 0.9962019324302673
+        },
+        {
+          "word": "next",
+          "start": 107.26,
+          "end": 107.46,
+          "probability": 0.9996080994606018
+        },
+        {
+          "word": "step",
+          "start": 107.46,
+          "end": 107.76,
+          "probability": 0.9990310668945312
+        },
+        {
+          "word": "is",
+          "start": 107.76,
+          "end": 107.96,
+          "probability": 0.9964162111282349
+        },
+        {
+          "word": "to",
+          "start": 107.96,
+          "end": 108.12,
+          "probability": 0.9986314177513123
+        }
+      ]
+    },
+    {
+      "start": 108.12,
+      "end": 110.26,
+      "text": "inspect the identified change and",
+      "words": [
+        {
+          "word": "inspect",
+          "start": 108.12,
+          "end": 108.5,
+          "probability": 0.9977396726608276
+        },
+        {
+          "word": "the",
+          "start": 108.5,
+          "end": 108.76,
+          "probability": 0.9984968900680542
+        },
+        {
+          "word": "identified",
+          "start": 108.76,
+          "end": 109.24,
+          "probability": 0.9845955967903137
+        },
+        {
+          "word": "change",
+          "start": 109.24,
+          "end": 109.88,
+          "probability": 0.9949807524681091
+        },
+        {
+          "word": "and",
+          "start": 109.88,
+          "end": 110.26,
+          "probability": 0.8120676279067993
+        }
+      ]
+    },
+    {
+      "start": 110.26,
+      "end": 111.52,
+      "text": "fix the actual cause.",
+      "words": [
+        {
+          "word": "fix",
+          "start": 110.26,
+          "end": 110.56,
+          "probability": 0.9990196228027344
+        },
+        {
+          "word": "the",
+          "start": 110.56,
+          "end": 110.76,
+          "probability": 0.9977461695671082
+        },
+        {
+          "word": "actual",
+          "start": 110.76,
+          "end": 111.16,
+          "probability": 0.997230589389801
+        },
+        {
+          "word": "cause.",
+          "start": 111.16,
+          "end": 111.52,
+          "probability": 0.9951678514480591
+        }
+      ]
+    }
+  ],
+  "release_authorized": false
+}

@@ -1,0 +1,74 @@
+{
+  "version": "0.8.0",
+  "candidate_id": "git-bisect",
+  "voice": "af_heart",
+  "language": "en-us",
+  "fps": 30,
+  "sample_rate": 48000,
+  "review_only": true,
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "One broken change. Which one?",
+      "text": "A project worked yesterday. Now a test fails. If sixteen revisions are on your list, do you really need to inspect every single one? Git bisect can help narrow down the search.",
+      "speed": 1.04,
+      "pause_ms": 220
+    },
+    {
+      "id": "setup",
+      "title": "Build a controlled history",
+      "text": "For this demonstration I created a small local repository with sixteen numbered revisions. Each one contains a tiny program and a test. The first revision passes the test. The last revision fails it.",
+      "speed": 1.04,
+      "pause_ms": 220
+    },
+    {
+      "id": "start",
+      "title": "Mark the endpoints",
+      "text": "We tell Git which revision is good and which revision is bad. Git chooses a revision between those endpoints. The test is the same at every step, so we have a consistent way to classify each revision.",
+      "speed": 1.04,
+      "pause_ms": 220
+    },
+    {
+      "id": "step1",
+      "title": "Test the first midpoint",
+      "text": "Here is the first revision Git selected. Run the test and record the result. A passing test moves the good boundary forward. A failing test moves the bad boundary backward.",
+      "speed": 1.04,
+      "pause_ms": 220
+    },
+    {
+      "id": "step2",
+      "title": "Narrow the search",
+      "text": "Now the possible range is smaller. Git selects another revision and we run exactly the same test again. We do not need to open every change or guess which line caused the failure.",
+      "speed": 1.04,
+      "pause_ms": 220
+    },
+    {
+      "id": "step3",
+      "title": "Repeat with evidence",
+      "text": "Repeat the process until the good and bad revisions are next to each other. Each result comes from the actual test in our example repository, not a prediction from an artificial intelligence model.",
+      "speed": 1.04,
+      "pause_ms": 220
+    },
+    {
+      "id": "result",
+      "title": "The first failing revision",
+      "text": "Git reports the first bad commit in this controlled history. Inspect its changes to understand what happened. This identifies a suspect revision. It does not automatically tell us how to repair the program.",
+      "speed": 1.04,
+      "pause_ms": 220
+    },
+    {
+      "id": "limits",
+      "title": "When the test lies",
+      "text": "This example uses a simple linear history and a reliable test. Real projects can have skipped revisions, merge commits, or flaky tests. If the classification is unreliable, the answer may be misleading.",
+      "speed": 1.04,
+      "pause_ms": 220
+    },
+    {
+      "id": "payoff",
+      "title": "Use it on your next bug",
+      "text": "Start with a reproducible test, mark a known good and bad revision, and let Git narrow the search. When you finish, reset the bisect session. The next step is to inspect the identified change and fix the actual cause.",
+      "speed": 1.04,
+      "pause_ms": 220
+    }
+  ]
+}

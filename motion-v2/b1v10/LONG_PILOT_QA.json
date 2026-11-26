@@ -1,0 +1,229 @@
+{
+  "version": "0.8.0",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 30.0,
+  "frames": 3360,
+  "duration_seconds": 112.0,
+  "audio_samples": 5376000,
+  "audio_energy": {
+    "peak_dbfs": -1.83,
+    "rms_dbfs": -16.71,
+    "clipped_samples": 0
+  },
+  "encoded_loudness": {
+    "input_i": -16.66,
+    "input_tp": -1.82,
+    "input_lra": 2.0
+  },
+  "narration_sha256": "06320ae086612b14ab652081392012518d80be4f14d3f143e831c28c7f449e12",
+  "actual_git_evidence_sha256": "e43189fd28a0c21ada76be684a9fe17a309050a50ca089cff9c17d84de1a4239",
+  "narration_report_sha256": "871c090e72bdc500faff750f9f55a97970309b4d09770e8b87b75a341993815a",
+  "caption_corrections": [
+    {
+      "from": "16",
+      "to": "sixteen",
+      "start": 3.76,
+      "end": 4.16
+    },
+    {
+      "from": "Get Bys act",
+      "to": "Git bisect",
+      "start": 8.7,
+      "end": 9.24,
+      "note": "technical spelling; merged observed adjacent intervals"
+    },
+    {
+      "from": "16",
+      "to": "sixteen",
+      "start": 15.166667,
+      "end": 15.626667
+    },
+    {
+      "from": "get",
+      "to": "Git",
+      "start": 38.833333,
+      "end": 39.073333
+    },
+    {
+      "from": "get",
+      "to": "Git",
+      "start": 102.64,
+      "end": 102.82
+    }
+  ],
+  "raw_asr_screen_pass": false,
+  "visual_states": [
+    {
+      "scene": "hook",
+      "phase": 0,
+      "start_frame": 0,
+      "end_frame": 168,
+      "image": "state-00.png"
+    },
+    {
+      "scene": "hook",
+      "phase": 1,
+      "start_frame": 168,
+      "end_frame": 335,
+      "image": "state-01.png"
+    },
+    {
+      "scene": "setup",
+      "phase": 0,
+      "start_frame": 335,
+      "end_frame": 537,
+      "image": "state-02.png"
+    },
+    {
+      "scene": "setup",
+      "phase": 1,
+      "start_frame": 537,
+      "end_frame": 738,
+      "image": "state-03.png"
+    },
+    {
+      "scene": "start",
+      "phase": 0,
+      "start_frame": 738,
+      "end_frame": 932,
+      "image": "state-04.png"
+    },
+    {
+      "scene": "start",
+      "phase": 1,
+      "start_frame": 932,
+      "end_frame": 1126,
+      "image": "state-05.png"
+    },
+    {
+      "scene": "step1",
+      "phase": 0,
+      "start_frame": 1126,
+      "end_frame": 1291,
+      "image": "state-06.png"
+    },
+    {
+      "scene": "step1",
+      "phase": 1,
+      "start_frame": 1291,
+      "end_frame": 1456,
+      "image": "state-07.png"
+    },
+    {
+      "scene": "step2",
+      "phase": 0,
+      "start_frame": 1456,
+      "end_frame": 1626,
+      "image": "state-08.png"
+    },
+    {
+      "scene": "step2",
+      "phase": 1,
+      "start_frame": 1626,
+      "end_frame": 1797,
+      "image": "state-09.png"
+    },
+    {
+      "scene": "step3",
+      "phase": 0,
+      "start_frame": 1797,
+      "end_frame": 1887,
+      "image": "state-10.png"
+    },
+    {
+      "scene": "step3",
+      "phase": 1,
+      "start_frame": 1887,
+      "end_frame": 1976,
+      "image": "state-11.png"
+    },
+    {
+      "scene": "step3",
+      "phase": 2,
+      "start_frame": 1976,
+      "end_frame": 2065,
+      "image": "state-12.png"
+    },
+    {
+      "scene": "step3",
+      "phase": 3,
+      "start_frame": 2065,
+      "end_frame": 2155,
+      "image": "state-13.png"
+    },
+    {
+      "scene": "result",
+      "phase": 0,
+      "start_frame": 2155,
+      "end_frame": 2546,
+      "image": "state-14.png"
+    },
+    {
+      "scene": "limits",
+      "phase": 0,
+      "start_frame": 2546,
+      "end_frame": 2949,
+      "image": "state-15.png"
+    },
+    {
+      "scene": "payoff",
+      "phase": 0,
+      "start_frame": 2949,
+      "end_frame": 3360,
+      "image": "state-16.png"
+    }
+  ],
+  "planned_sound_events": [
+    {
+      "sample": 859200,
+      "frame": 537,
+      "effect": "soft_ping",
+      "scene": "setup"
+    },
+    {
+      "sample": 1491200,
+      "frame": 932,
+      "effect": "soft_ping",
+      "scene": "start"
+    },
+    {
+      "sample": 2065600,
+      "frame": 1291,
+      "effect": "soft_ping",
+      "scene": "step1"
+    },
+    {
+      "sample": 2601600,
+      "frame": 1626,
+      "effect": "soft_ping",
+      "scene": "step2"
+    },
+    {
+      "sample": 3019200,
+      "frame": 1887,
+      "effect": "soft_ping",
+      "scene": "step3"
+    },
+    {
+      "sample": 3161600,
+      "frame": 1976,
+      "effect": "soft_tick",
+      "scene": "step3"
+    },
+    {
+      "sample": 3304000,
+      "frame": 2065,
+      "effect": "soft_ping",
+      "scene": "step3"
+    }
+  ],
+  "full_decode_pass": true,
+  "contact_sha256": "a301ca01ec39d823a3e77970f3bd83a0f6dce565ded315e9f0ecc334aef5137b",
+  "mp4_sha256": "605ab54246284b9ac77d7c207141896379a406450588d41029608e2d67123723",
+  "render_path": "Pillow native raster + FFmpeg lightweight camera and ASS captions",
+  "full_human_playback_approved": false,
+  "release_authorized": false
+}

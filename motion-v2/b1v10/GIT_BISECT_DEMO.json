@@ -1,0 +1,92 @@
+{
+  "version": "0.8.0",
+  "mode": "actual_disposable_local_git_repository",
+  "git_version": "git version 2.54.0.windows.1",
+  "commits": [
+    "3e039e133557631ccefe22b7c32d0ae4e3dd0296",
+    "d83d8f25abe0341011cd957477b9dc0925cf48bb",
+    "1219059d0af518d7f67f28e684549256813cae6d",
+    "cd0eccd0e868c1fe592ea17c16d3cf89f48ddb83",
+    "56ce327cde900bf1f02cc1271b653da9f9d481cd",
+    "96815fb831e8091c7261605134887fec6e79ac45",
+    "016b82b30db725ac69bdaa98e25da5bbcc591e87",
+    "fc1c64d626bd066c1ccbe3a0baaa73a8017903d4",
+    "ac25099cdccecb1f7593a782f5b7496571249fcd",
+    "874c9d996426d23c726d1d3e4154a2d55a6f707d",
+    "2ebe79441b01e13fff02f20061468b8c9ab33f92",
+    "fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34",
+    "e42e0fba992aaa550a8dfa9cbd1e9a81b62b9ab9",
+    "836fb22cc173e21d9b968e64f6cb2f850d54e53e",
+    "8e3f795a4f1331d5875d0cda7e8a9219af809096",
+    "d9ef9371a813c86d069525cdb387358e0954f373"
+  ],
+  "initial_good": 0,
+  "initial_bad": 15,
+  "first_bad": 11,
+  "first_bad_commit": "fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34",
+  "steps": [
+    {
+      "revision": 7,
+      "commit": "fc1c64d626bd066c1ccbe3a0baaa73a8017903d4",
+      "exit_code": 0,
+      "classification": "good",
+      "range_before": [
+        0,
+        15
+      ],
+      "range_after": [
+        7,
+        15
+      ],
+      "git_output": "Bisecting: 3 revisions left to test after this (roughly 2 steps)\n[fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34] Revision 11"
+    },
+    {
+      "revision": 11,
+      "commit": "fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34",
+      "exit_code": 1,
+      "classification": "bad",
+      "range_before": [
+        7,
+        15
+      ],
+      "range_after": [
+        7,
+        11
+      ],
+      "git_output": "Bisecting: 1 revision left to test after this (roughly 1 step)\n[874c9d996426d23c726d1d3e4154a2d55a6f707d] Revision 9"
+    },
+    {
+      "revision": 9,
+      "commit": "874c9d996426d23c726d1d3e4154a2d55a6f707d",
+      "exit_code": 0,
+      "classification": "good",
+      "range_before": [
+        7,
+        11
+      ],
+      "range_after": [
+        9,
+        11
+      ],
+      "git_output": "Bisecting: 0 revisions left to test after this (roughly 0 steps)\n[2ebe79441b01e13fff02f20061468b8c9ab33f92] Revision 10"
+    },
+    {
+      "revision": 10,
+      "commit": "2ebe79441b01e13fff02f20061468b8c9ab33f92",
+      "exit_code": 0,
+      "classification": "good",
+      "range_before": [
+        9,
+        11
+      ],
+      "range_after": [
+        10,
+        11
+      ],
+      "git_output": "fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34 is the first bad commit\ncommit fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34\nAuthor: FlowMinute Demo <demo@example.invalid>\nDate:   Fri Nov 27 00:40:30 2026 +0530\n\n    Revision 11\n\n example.py | 4 ++--\n 1 file changed, 2 insertions(+), 2 deletions(-)"
+    }
+  ],
+  "diff": "commit fe92f5bf9f3c7106cfe3f4fa90b03385f3dc7a34\nAuthor: FlowMinute Demo <demo@example.invalid>\n\n    Revision 11\n\ndiff --git a/example.py b/example.py\nindex 7366351..66d4cb5 100644\n--- a/example.py\n+++ b/example.py\n@@ -1,3 +1,3 @@\n-REVISION = 10\n+REVISION = 11\n def answer():\n-    return 42\n+    return 41",
+  "reset_completed": true,
+  "release_authorized": false
+}

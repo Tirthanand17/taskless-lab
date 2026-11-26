@@ -1,0 +1,193 @@
+{
+  "version": "0.8.0",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 5376000,
+  "duration_seconds": 112.0,
+  "frames_at_30fps": 3360,
+  "narration_sha256": "06320ae086612b14ab652081392012518d80be4f14d3f143e831c28c7f449e12",
+  "captions_sha256": "b5a377dc9e3296fd52df5b0d9144dbdd6798294dc4612ff9634b9179c730c8dd",
+  "word_captions_sha256": "86742d99e5a8302c288761009b6f4490653a827636791c0c00ba055c4362e2a8",
+  "spec_sha256": "b2dcbeb982fe5545c25cacd143c2c39e9d4209dc4c732d56dea6b983ee5b2c89",
+  "script_sha256": "3f7318acba78a39858a49da243416f282afb02c4e3194e01fd2517da92dd3eeb",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 335,
+      "expected": "A project worked yesterday. Now a test fails. If sixteen revisions are on your list, do you really need to inspect every single one? Git bisect can help narrow down the search.",
+      "recognized": "A project worked yesterday. Now a test fails. If 16 revisions are on your list, do you really need to inspect every single one? Get Bys act can help narrow down the search.",
+      "token_similarity": 0.8923,
+      "exact_token_match": false,
+      "word_count": 33,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.547,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.28,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "cbc46e1af29bcf95c37d588307a27395288a67ea76c4f8c9390fcae4559df025"
+    },
+    {
+      "id": "setup",
+      "start_frame": 335,
+      "end_frame": 738,
+      "expected": "For this demonstration I created a small local repository with sixteen numbered revisions. Each one contains a tiny program and a test. The first revision passes the test. The last revision fails it.",
+      "recognized": "For this demonstration, I created a small local repository with 16 numbered revisions. Each one contains a tiny program and a test. The first revision passes the test. The last revision fails it.",
+      "token_similarity": 0.9697,
+      "exact_token_match": false,
+      "word_count": 33,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.373,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.92,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "93e31971d4e8345d79cf50e9f5f237047b80a3116defca5778060c5fa7f81025"
+    },
+    {
+      "id": "start",
+      "start_frame": 738,
+      "end_frame": 1126,
+      "expected": "We tell Git which revision is good and which revision is bad. Git chooses a revision between those endpoints. The test is the same at every step, so we have a consistent way to classify each revision.",
+      "recognized": "We tell Git which revision is good and which revision is bad. Git chooses a revision between those endpoints. The test is the same at every step, so we have a consistent way to classify each revision.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 37,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.473,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.92,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "1de051ad161242e399f205479ae03120048469e684a37e5f9b63df829340e7bb"
+    },
+    {
+      "id": "step1",
+      "start_frame": 1126,
+      "end_frame": 1456,
+      "expected": "Here is the first revision Git selected. Run the test and record the result. A passing test moves the good boundary forward. A failing test moves the bad boundary backward.",
+      "recognized": "Here is the first revision get selected. Run the test and record the result. A passing test moves the good boundary forward. A failing test moves the bad boundary backward.",
+      "token_similarity": 0.9667,
+      "exact_token_match": false,
+      "word_count": 30,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.46,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.71,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "06eb4d17d80dcbd99253d1aa11e97b07f716e940762a67f1a8f1ca125072006e"
+    },
+    {
+      "id": "step2",
+      "start_frame": 1456,
+      "end_frame": 1797,
+      "expected": "Now the possible range is smaller. Git selects another revision and we run exactly the same test again. We do not need to open every change or guess which line caused the failure.",
+      "recognized": "Now the possible range is smaller. Git selects another revision, and we run exactly the same test again. We do not need to open every change or guess which line caused the failure.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 33,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.427,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.72,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "7d706ca4cd16dd85ea57b8e4a1b1e6ce5a80f9f5d89c2271565e751f750927b1"
+    },
+    {
+      "id": "step3",
+      "start_frame": 1797,
+      "end_frame": 2155,
+      "expected": "Repeat the process until the good and bad revisions are next to each other. Each result comes from the actual test in our example repository, not a prediction from an artificial intelligence model.",
+      "recognized": "Repeat the process until the good and bad revisions are next to each other. Each result comes from the actual test in our example repository, not a prediction from an artificial intelligence model.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 33,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.413,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.76,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "ea1854f25a7b34da004e86e72924a0d4b20c09526be82522dbdafe3d2a3f8977"
+    },
+    {
+      "id": "result",
+      "start_frame": 2155,
+      "end_frame": 2546,
+      "expected": "Git reports the first bad commit in this controlled history. Inspect its changes to understand what happened. This identifies a suspect revision. It does not automatically tell us how to repair the program.",
+      "recognized": "Git reports the first bad commit in this controlled history. Inspect its changes to understand what happened. This identifies a suspect revision. It does not automatically tell us how to repair the program.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 33,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.453,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.23,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "b692759c618e60817f7422a1d4dd26dab0d844d5f48c30c3dfd72ca694e673e7"
+    },
+    {
+      "id": "limits",
+      "start_frame": 2546,
+      "end_frame": 2949,
+      "expected": "This example uses a simple linear history and a reliable test. Real projects can have skipped revisions, merge commits, or flaky tests. If the classification is unreliable, the answer may be misleading.",
+      "recognized": "This example uses a simple linear history and a reliable test. Real projects can have skipped revisions, merge commits, or flaky tests. If the classification is unreliable, the answer may be misleading.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 32,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.573,
+      "energy": {
+        "peak_dbfs": -1.99,
+        "rms_dbfs": -16.71,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "fedd677756695b015f63491fe36e282a113fa8a28343ee9ddcca1d72c4dc5e00"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 2949,
+      "end_frame": 3360,
+      "expected": "Start with a reproducible test, mark a known good and bad revision, and let Git narrow the search. When you finish, reset the bisect session. The next step is to inspect the identified change and fix the actual cause.",
+      "recognized": "Start with a reproducible test, mark a known good and bad revision, and let get narrow the search. When you finish, reset the bisect session. The next step is to inspect the identified change and fix the actual cause.",
+      "token_similarity": 0.9744,
+      "exact_token_match": false,
+      "word_count": 39,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.48,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -17.07,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "fa01c259d203265c34ab1f4d8ca0416e41df5a3cee3f347d2702bacc76620474"
+    }
+  ],
+  "caption_cues": 64,
+  "recognized_words": 303,
+  "all_exact_token_matches": false,
+  "asr_screen_pass": false,
+  "energy": {
+    "peak_dbfs": -1.99,
+    "rms_dbfs": -16.7,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

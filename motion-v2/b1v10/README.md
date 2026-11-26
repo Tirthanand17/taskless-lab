@@ -108,3 +108,19 @@ The first complete review-only pilot combines native 1080x1920 Remotion motion g
 Local reproduction (existing dependencies and v0.6.0 audio required): copy the pilot source and its imported dependencies into the existing installed Remotion workspace, then run node render_short_pilot.cjs short-review-v070. From this repository's motion-v2/b1v10 directory run python verify_short_pilot.py <review-directory> --mix <v0.6.0 mix.m4a> --ffmpeg <ffmpeg.exe>. The verifier muxes without audio re-encoding, checks full decode, compares actual decoded PCM (not WAV metadata), measures loudness and hero-region motion, and produces SHORT_PILOT_QA.json and a 20-frame contact sheet.
 
 Actual pilot: 581 frames at 30 fps, 19.3667 seconds; 929600 audio samples identical to the reviewed encoded mix after decode; -16.86 LUFS, -1.96 dBTP, no clipped samples. All four scenes clear the existing freeze/repetition screening heuristics. Representative frames inspected, not a claim of full subjective playback. The full-length hash reveal is animated and the final example labels a matching prefix rather than implying that prefix equality proves integrity. All 64 characters must be compared. The layout retains conservative Shorts UI margins; full phone playback and sound listening remain owner review tasks. The final MP4 and contact sheet are local artifacts, not committed media or approved releases.
+
+## v0.8.0 — integrated long-form Git bisect pilot
+
+The controlled disposable repository contains 16 actual commits. Git bisect found revision 11 after tests of 7 (good), 11 (bad), 9 (good), and 10 (good). The test is a real Python assertion; the first failing commit changes return 42 to return 41. The bisect session was reset. No production repository was used as the experiment.
+
+The workstation had about 600 MB available RAM at the start. The pilot uses a lighter Pillow native-HD illustration / FFmpeg camera-crop and ASS caption path instead of a full Remotion long-form render. The existing style, Kokoro model, voice, speech-based scene clock and original procedural micro-effects are retained. Seventeen planned visual states illustrate the actual experiment; the image sequence is an original explanatory illustration, not recorded terminal footage. Intra-scene reveal timings are editorial subdivisions of the measured scene boundaries, not independently verified word-level semantic synchronization.
+
+Actual render: 1920x1080, 30 fps, 3360 decoded frames, 112 seconds; 5376000 decoded audio samples, -16.66 LUFS, -1.82 dBTP, zero clipped samples. Nine representative frames inspected. The raw narration ASR screen did not pass for the hook (0.8923); the caption correction record preserves the observed technical spelling / numeral changes, including merging observed adjacent intervals for "Git bisect". This is not proof of pronunciation or subjective audio quality. Full playback, per-scene motion quality, caption listening verification, and release acceptance remain pending.
+
+Reproduction from motion-v2/b1v10 with the existing local assets:
+```powershell
+python git_bisect_demo.py C:\path\to\new-demo
+python long_narration.py --assets C:\path\to\kokoro-assets --ffmpeg C:\path\to\ffmpeg.exe --output C:\path\to\new-audio
+python render_long_pilot.py --audio C:\path\to\new-audio --demo C:\path\to\new-demo\GIT_BISECT_DEMO.json --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+Evidence reports are committed; MP4 and intermediate media remain local. No publication or changes to existing YouTube schedules.
