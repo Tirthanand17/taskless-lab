@@ -106,3 +106,6 @@ test_live_git_rc8.py -text
 RC8_GIT_CAPTURE_QA.json -text
 RC8_GIT_LONG_QA.json -text
 RC8_GIT_CREATIVE_BRIEF.json -text
+review_batch_rc9.py -text
+test_review_batch_rc9.py -text
+RC9_BATCH_QA.json -text

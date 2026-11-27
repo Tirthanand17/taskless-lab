@@ -80,3 +80,7 @@ Continuous actual SHA-256 capture and six-beat review brief verified; see RC8_SH
 ## RC8 phase 3
 
 Continuous Git bisect, actual repair and successful retest integrated and verified; RC8_GIT_LONG_QA.json. All three pilots now pass structured creative brief validation. Legacy capture receipt compatibility, fresh daily generation, subjective quality and release approval remain open.
+
+## RC9 phase 1
+
+Existing Branch 1 validator accepts a distinct Windows continuous capture receipt with evidence binding. All three RC8 pilots independently decoded and passed structured review. RC9_BATCH_QA.json. Publisher unchanged, zero release-ready; fresh daily generation and approval pending.

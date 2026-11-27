@@ -287,3 +287,15 @@ python capture_live_git_rc8.py --out C:\path\to\new-capture --repo C:\path\to\de
 python render_live_git_rc8.py --capture C:\path\to\new-capture --prior C:\path\to\PROOF_FIRST_REVIEW.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 Evidence: RC8_GIT_CAPTURE_QA.json, RC8_GIT_LONG_QA.json, RC8_GIT_CREATIVE_BRIEF.json. Existing publisher and schedules unchanged.
+
+## RC9 phase 1 — production capture validator compatibility
+
+The existing autopilot.branch1_recovery.verify_capture entry point and CLI now support an explicitly distinct FLOWMINUTE_B1_WINDOWS_CONTINUOUS_CAPTURE_V2 receipt, with a required --windows-evidence file. The original Linux branch remains unchanged except that it rejects an extraneous Windows evidence argument. The Windows path binds exact capture bytes/hash, canonical creative brief hash, evidence report hash and source script hashes, checks closed receipt fields, recording scope, clock, sample timing and observed opening changes. These are review identity and log consistency checks, not authenticated provenance or approval. The source evidence must be stored beside the named scripts. The legacy release manifest, publishing and scheduling paths have not been changed. Generic schema support does not mean arbitrary recordings are trusted.
+
+review_batch_rc9.py checks the committed RC8 evidence anchors, calls the existing validator via the new method, independently decodes all three source captures and final MP4s, checks format/sample counts/loudness/clipping, binds the existing creative briefs and verifies that the unsigned publisher approval is rejected. The actual run for 2026-11-28 uses the existing daily slot definitions. All three pass technical and structured creative review; zero release-ready. There were 1087 source frames and 4602 final frames decoded. No new topic research, channel inventory checks, human playback, authenticated provenance, unattended generation, publisher handoff or schedule changes. Earlier RC8 reports retain their historical Linux incompatibility flags; this is a new Windows receipt path, not relabeling them.
+
+Reproduce from motion-v2/b1v10:
+```powershell
+python review_batch_rc9.py --day 2026-11-28 --media-root C:\path\to\b1v10-dev --ffmpeg C:\path\to\ffmpeg.exe --out C:\path\to\new-review
+```
+The individual receipts can be verified from repository root via python -m autopilot.branch1_recovery --creative ... --capture ... --capture-receipt ... --windows-evidence ... . See RC9_BATCH_QA.json. Next: fresh topic research and actual inventory checks, reusable generation pipeline and exact human review before any publishing.

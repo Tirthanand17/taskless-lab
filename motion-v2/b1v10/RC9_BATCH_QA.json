@@ -1,0 +1,208 @@
+{
+  "version": "1.0.0-rc9-phase1",
+  "review_date_ist": "2026-11-28",
+  "status": "TECHNICAL_AND_STRUCTURED_CREATIVE_REVIEW_PASS_HOLD",
+  "slots": [
+    {
+      "slot": "short_am",
+      "reference_local_time": "11:00",
+      "pilot": "sha256",
+      "format": "short",
+      "episode_id": "fm_rc8_sha_live_pilot",
+      "video_sha256": "665c80e056a7949a60a4ae59c6238a617041352902c414c551d68c4899fafb4a",
+      "capture_receipt": {
+        "schema": "FLOWMINUTE_B1_WINDOWS_CONTINUOUS_CAPTURE_V2",
+        "episode_id": "fm_rc8_sha_live_pilot",
+        "capture_method": "windows_classic_console_window_only_live",
+        "capture_sha256": "9b347b5fd0ce8f03b70803de8df85f70c51ed8e9b7ab2f00fe79b10143ead2d8",
+        "capture_bytes": 260303,
+        "brief_sha256": "af253bcafe4b6b4809b3c64e7d97aa8667334b55b7adc61e68802ad8779bbfe5",
+        "evidence_sha256": "4855f425be4f1e2d47ddc9371c84a53698c467150521890f14e650ffddef44c9",
+        "private_data": false,
+        "release_approved": false,
+        "youtube_uploads": 0
+      },
+      "identity": {
+        "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+        "episode_id": "fm_rc8_sha_live_pilot",
+        "format": "short",
+        "series": "python_automation",
+        "duration_seconds": 19.366666666666667,
+        "opening_proof_by_seconds": 1.5,
+        "first_real_action_at_seconds": 1.5,
+        "visible_payoff_at_seconds": 14.7,
+        "narrative_beats": 6,
+        "owner_approval": false,
+        "youtube_uploads": 0,
+        "capture_status": "WINDOWS_EXACT_HASH_VERIFIED_REVIEW_ONLY",
+        "capture_sha256": "9b347b5fd0ce8f03b70803de8df85f70c51ed8e9b7ab2f00fe79b10143ead2d8",
+        "capture_method": "windows_classic_console_window_only_live",
+        "capture_frames": 194,
+        "capture_fps": 10,
+        "capture_dimensions": [
+          870,
+          494
+        ],
+        "measured_log_max_lag_seconds": 0.038,
+        "first_recorded_change_seconds": 0.6,
+        "provenance_authenticated": false
+      },
+      "capture_report_sha256": "4855f425be4f1e2d47ddc9371c84a53698c467150521890f14e650ffddef44c9",
+      "render_report_sha256": "68aa57597db4436ee2ea9ff198117faf380372f9ab9240fe226fba002ec25b4d",
+      "creative_brief_sha256": "8d866916dbd6ff549b38c2dccabb0ed0388a62b5d5a16ec57eec464a3555253e",
+      "capture_decoded_frames": 194,
+      "final_decoded_frames": 581,
+      "audio": {
+        "decoded_samples": 929600,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.86,
+          "input_tp": -1.96,
+          "input_lra": 1.5
+        }
+      },
+      "technical_review_pass": true,
+      "structured_creative_pass": true,
+      "publisher_unsigned_rejected": true,
+      "release_authorized": false,
+      "disposition": "HOLD_NOT_SCHEDULED"
+    },
+    {
+      "slot": "long",
+      "reference_local_time": "16:00",
+      "pilot": "git",
+      "format": "long",
+      "episode_id": "fm_rc8_git_live_pilot",
+      "video_sha256": "cdde3fb915b6a711d3a8721999858cf74097e1275bce9ba7063c63c4ea480d8a",
+      "capture_receipt": {
+        "schema": "FLOWMINUTE_B1_WINDOWS_CONTINUOUS_CAPTURE_V2",
+        "episode_id": "fm_rc8_git_live_pilot",
+        "capture_method": "windows_classic_console_window_only_live",
+        "capture_sha256": "f8ff5eaac316cce7161e16e1e1fdbb7d05d05b47b0cdb1511b84b70afb521fc0",
+        "capture_bytes": 560660,
+        "brief_sha256": "25d591bb42a3209f272990bb3abd3bab0ead915c6c5ed5ee2f9e92fdc336b0b9",
+        "evidence_sha256": "4f0c3b4644716d07287ee119b0d96606f3518d64559fbdd8babf17771bdd8c13",
+        "private_data": false,
+        "release_approved": false,
+        "youtube_uploads": 0
+      },
+      "identity": {
+        "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+        "episode_id": "fm_rc8_git_live_pilot",
+        "format": "long",
+        "series": "python_automation",
+        "duration_seconds": 112.0,
+        "opening_proof_by_seconds": 1.5,
+        "first_real_action_at_seconds": 1.5,
+        "visible_payoff_at_seconds": 82.8,
+        "narrative_beats": 6,
+        "owner_approval": false,
+        "youtube_uploads": 0,
+        "capture_status": "WINDOWS_EXACT_HASH_VERIFIED_REVIEW_ONLY",
+        "capture_sha256": "f8ff5eaac316cce7161e16e1e1fdbb7d05d05b47b0cdb1511b84b70afb521fc0",
+        "capture_method": "windows_classic_console_window_only_live",
+        "capture_frames": 672,
+        "capture_fps": 6,
+        "capture_dimensions": [
+          870,
+          494
+        ],
+        "measured_log_max_lag_seconds": 0.07267,
+        "first_recorded_change_seconds": 0.5,
+        "provenance_authenticated": false
+      },
+      "capture_report_sha256": "4f0c3b4644716d07287ee119b0d96606f3518d64559fbdd8babf17771bdd8c13",
+      "render_report_sha256": "94542ef51313fe95fa9ae3c4f6433b4543ebd7c57b7c81055e020dc0be18d16e",
+      "creative_brief_sha256": "78c4458f184a6ab0f1ba64bf435300ce3c623947ec836f1d645bcdd1f37634bf",
+      "capture_decoded_frames": 672,
+      "final_decoded_frames": 3360,
+      "audio": {
+        "decoded_samples": 5376000,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.66,
+          "input_tp": -1.82,
+          "input_lra": 2.0
+        }
+      },
+      "technical_review_pass": true,
+      "structured_creative_pass": true,
+      "publisher_unsigned_rejected": true,
+      "release_authorized": false,
+      "disposition": "HOLD_NOT_SCHEDULED"
+    },
+    {
+      "slot": "short_pm",
+      "reference_local_time": "20:30",
+      "pilot": "float",
+      "format": "short",
+      "episode_id": "fm_rc8_float_live_pilot",
+      "video_sha256": "f8bb7e7ba4d5abc748e9f60e46f3dd9bd7ba012852440e43ab75dccaccf8fc04",
+      "capture_receipt": {
+        "schema": "FLOWMINUTE_B1_WINDOWS_CONTINUOUS_CAPTURE_V2",
+        "episode_id": "fm_rc8_float_live_pilot",
+        "capture_method": "windows_classic_console_window_only_live",
+        "capture_sha256": "670202d115787b920a59fbfcafb908ce9628ea10caf1fa172023eeb8ad76babb",
+        "capture_bytes": 158458,
+        "brief_sha256": "2f6bb0bcc81550389139c8e5fe65acbeaaa33f06a52d9c3d3feab7e048b0120f",
+        "evidence_sha256": "b55d50f56a9fd8ca8aef62d7f89ef75eebe50505634b8e8ed9b40114f016d8ca",
+        "private_data": false,
+        "release_approved": false,
+        "youtube_uploads": 0
+      },
+      "identity": {
+        "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+        "episode_id": "fm_rc8_float_live_pilot",
+        "format": "short",
+        "series": "python_automation",
+        "duration_seconds": 22.033333333333335,
+        "opening_proof_by_seconds": 1.5,
+        "first_real_action_at_seconds": 1.5,
+        "visible_payoff_at_seconds": 16.8,
+        "narrative_beats": 6,
+        "owner_approval": false,
+        "youtube_uploads": 0,
+        "capture_status": "WINDOWS_EXACT_HASH_VERIFIED_REVIEW_ONLY",
+        "capture_sha256": "670202d115787b920a59fbfcafb908ce9628ea10caf1fa172023eeb8ad76babb",
+        "capture_method": "windows_classic_console_window_only_live",
+        "capture_frames": 221,
+        "capture_fps": 10,
+        "capture_dimensions": [
+          870,
+          494
+        ],
+        "measured_log_max_lag_seconds": 0.046,
+        "first_recorded_change_seconds": 0.6,
+        "provenance_authenticated": false
+      },
+      "capture_report_sha256": "b55d50f56a9fd8ca8aef62d7f89ef75eebe50505634b8e8ed9b40114f016d8ca",
+      "render_report_sha256": "e08fdadc3d605a287c36e4d3ec199e91dc6ff0e712d7c82543a17f7a7d86e91c",
+      "creative_brief_sha256": "19c6d4035a7ecc038b69a44b4969c5407e5f8c8d5a2e3b722e032e498ec6a313",
+      "capture_decoded_frames": 221,
+      "final_decoded_frames": 661,
+      "audio": {
+        "decoded_samples": 1057600,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.73,
+          "input_tp": -1.95,
+          "input_lra": 1.0
+        }
+      },
+      "technical_review_pass": true,
+      "structured_creative_pass": true,
+      "publisher_unsigned_rejected": true,
+      "release_authorized": false,
+      "disposition": "HOLD_NOT_SCHEDULED"
+    }
+  ],
+  "technical_pass_count": 3,
+  "structured_creative_pass_count": 3,
+  "release_ready_count": 0,
+  "inventory_checked_live": false,
+  "fresh_topics_generated": false,
+  "auto_publish_enabled": false,
+  "owner_approval": false,
+  "youtube_uploads": 0,
+  "youtube_schedules": 0
+}

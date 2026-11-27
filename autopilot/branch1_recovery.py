@@ -148,7 +148,7 @@ def validate_creative(brief: dict) -> dict:
         "owner_approval": False, "youtube_uploads": 0,
     }
 
-def verify_capture(brief: dict, capture: Path, receipt: Path) -> dict:
+def verify_capture(brief: dict, capture: Path, receipt: Path, *, windows_evidence: Path | None = None) -> dict:
     """Bound a genuine capture by actual file bytes AND a closed local receipt.
 
     A hash proves file identity, NOT that a screen recording is pedagogically
@@ -160,6 +160,10 @@ def verify_capture(brief: dict, capture: Path, receipt: Path) -> dict:
             and receipt.is_file() and not receipt.is_symlink()
             and receipt.stat().st_size < 8192, "MISSING_EXACT_MEDIA_PROOF")
     r = json.loads(receipt.read_text("utf8"))
+    if type(r) is dict and r.get("schema") == "FLOWMINUTE_B1_WINDOWS_CONTINUOUS_CAPTURE_V2":
+        from autopilot.branch1_windows_capture import verify_windows
+        return {**summary, **verify_windows(brief, capture, r, windows_evidence, require)}
+    require(windows_evidence is None, "WINDOWS_EVIDENCE_WITH_LEGACY_RECEIPT")
     require(type(r) is dict and set(r) == {
         "schema", "status", "episode_id", "capture_sha256",
         "capture_bytes", "fixture_sha256", "capture_method",
@@ -334,11 +338,13 @@ def main():
     cli.add_argument("--creative", type=Path)
     cli.add_argument("--capture", type=Path)
     cli.add_argument("--capture-receipt", type=Path)
+    cli.add_argument("--windows-evidence", type=Path)
     cli.add_argument("--studio-csv", type=Path)
     args = cli.parse_args()
+    require(not args.windows_evidence or (args.creative and args.capture and args.capture_receipt), "WINDOWS_EVIDENCE_REQUIRES_CAPTURE")
     if args.creative:
         brief = json.loads(args.creative.read_text("utf8"))
-        result = (verify_capture(brief, args.capture, args.capture_receipt)
+        result = (verify_capture(brief, args.capture, args.capture_receipt, windows_evidence=args.windows_evidence)
                   if args.capture and args.capture_receipt else
                   validate_creative(brief))
         require(bool(args.capture) == bool(args.capture_receipt),
