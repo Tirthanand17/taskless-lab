@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 1033600,
+  "duration_seconds": 21.533333333333335,
+  "frames_at_30fps": 646,
+  "narration_sha256": "45780b2487a441c808490f7746f96b3137cf195f1d37ad111af1ebfa591cf67c",
+  "captions_sha256": "f83b91a5068197b89f8867bc624b809878d5011d9a5a356b3ce896947a6b7a8e",
+  "word_captions_sha256": "de09874f90d94816d36acc4b3ed5db79e26436f49413605bb798e022303b17c1",
+  "spec_sha256": "c3fa0f72d24a3356a951fad98d006d8b7fbb1d8cea156dfdafcd2f1825d1e6f8",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 44,
+      "expected": "This ZIP opens.",
+      "recognized": "This ZIP opens.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 3,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.427,
+      "energy": {
+        "peak_dbfs": -2.03,
+        "rms_dbfs": -19.09,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "d774ffa92821131390466551f6850c791a010e9ccf275b5a8297926d5f903cdd"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 44,
+      "end_frame": 166,
+      "expected": "But one file inside is damaged. The file list still looks normal.",
+      "recognized": "but one file inside is damaged. The file list still looks normal.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 12,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.427,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.76,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "dff30178f4e30d5c0d7ce7bfdac74b67fc75b53eac93eb015a8d118a70d8147d"
+    },
+    {
+      "id": "cause",
+      "start_frame": 166,
+      "end_frame": 262,
+      "expected": "The file changed, but the saved check value did not.",
+      "recognized": "The file changed, but the saved check value did not.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 10,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.48,
+      "energy": {
+        "peak_dbfs": -2.01,
+        "rms_dbfs": -19.38,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "b65d41a80f53ab718d5fd0d0e7a396eb95b79ae654d2f3ab22bd847e808e7a56"
+    },
+    {
+      "id": "fix",
+      "start_frame": 262,
+      "end_frame": 385,
+      "expected": "Python can test the files inside instead of just listing their names.",
+      "recognized": "Python can test the files inside, instead of just listing their names.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 12,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.48,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.93,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "1121fd33e0b4869bca4310b6bee944134719581090924e605d6f31af2818e0a4"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 385,
+      "end_frame": 520,
+      "expected": "The damaged archive reports the broken file. The intact copy passes.",
+      "recognized": "The damaged archive reports the broken file, the intact copy passes.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 11,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.52,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -17.09,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "503cf0f7e3f706b6610b40bbb68785a1d8a6641a420dc3692d8eec194086a0f9"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 520,
+      "end_frame": 646,
+      "expected": "A checksum check detects corruption, not whether a download is trustworthy.",
+      "recognized": "A checksum check detects corruption, not whether a download is trustworthy.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 11,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.5,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.75,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "9478bc1f9fe18a06e590ec95592fefd9255a3fafcebc42082fd774d1ad497e5d"
+    }
+  ],
+  "caption_cues": 15,
+  "recognized_words": 59,
+  "all_exact_token_matches": true,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -17.31,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

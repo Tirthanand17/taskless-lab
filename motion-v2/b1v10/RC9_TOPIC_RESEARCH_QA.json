@@ -1,0 +1,152 @@
+{
+  "version": "1.0.0-rc9-phase2",
+  "review_date_ist": "2026-11-28",
+  "status": "FRESH_LOCAL_DEMOS_RESEARCH_HANDOFF_HOLD",
+  "historical_manifest_rows": 185,
+  "unreadable_manifests": 0,
+  "inventory_scope": "repository episodes/schedule receipts and local dated episode manifests; not full channel inventory",
+  "live_title_inventory_complete": false,
+  "source_research": "official reference pages manually checked 2026-11-27; no measured demand or trending score",
+  "topics": [
+    {
+      "id": "zip_crc",
+      "episode_id": "fm_20261128_zip_crc_short",
+      "slot": "short_am",
+      "format": "short",
+      "reference_local_time": "11:00",
+      "title": "Your ZIP Opens, But Is the File Inside Corrupted?",
+      "source_url": "https://docs.python.org/3/library/zipfile.html#zipfile.ZipFile.testzip",
+      "editorial_rationale": "Surprising before/after outcome for a familiar file format; visually testable without downloads.",
+      "historical_duplicate_flags": 0,
+      "experiment": {
+        "archive_opens": true,
+        "entries": [
+          "note.txt"
+        ],
+        "broken_testzip": "note.txt",
+        "intact_testzip": null,
+        "changed_payload_bytes": 1,
+        "crc_not_authenticity": true
+      },
+      "experiment_sha256": "1ba7d4848e370f0e7d0b1aaa2646728ff9e64580bb022b84403fcd883362791c",
+      "narration_spec_sha256": "c3fa0f72d24a3356a951fad98d006d8b7fbb1d8cea156dfdafcd2f1825d1e6f8",
+      "release_authorized": false
+    },
+    {
+      "id": "sql_null",
+      "episode_id": "fm_20261128_sql_null_long",
+      "slot": "long",
+      "format": "long",
+      "reference_local_time": "16:00",
+      "title": "Why SQL NOT IN Returns Zero Rows: The NULL Trap",
+      "source_url": "https://www.sqlite.org/lang_expr.html#the_in_and_not_in_operators",
+      "editorial_rationale": "Practical debugging story for data learners; table rows and query results provide a concrete payoff.",
+      "historical_duplicate_flags": 0,
+      "experiment": {
+        "sqlite_version": "3.38.4",
+        "not_in": [],
+        "truth_values": [
+          [
+            1,
+            null
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            null
+          ],
+          [
+            4,
+            null
+          ]
+        ],
+        "not_exists": [
+          [
+            1
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "filtered_not_in": [
+          [
+            1
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "outer_null_included": [
+          [
+            null
+          ],
+          [
+            1
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "explicit_non_null": [
+          [
+            1
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ]
+      },
+      "experiment_sha256": "5a37868409e07866c0e71434496041885f44428ceb60ac5c1df50f0439bb39bf",
+      "narration_spec_sha256": "7faf035c2055bcecccb3011e8df0b7799de843b30210d17269c6e4ca40cd982f",
+      "release_authorized": false
+    },
+    {
+      "id": "path_suffix",
+      "episode_id": "fm_20261128_path_suffix_short",
+      "slot": "short_pm",
+      "format": "short",
+      "reference_local_time": "20:30",
+      "title": "Python with_suffix Does Not Rename Your File",
+      "source_url": "https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.with_suffix",
+      "editorial_rationale": "Small everyday automation error; actual filesystem state gives an obvious before/after.",
+      "historical_duplicate_flags": 0,
+      "experiment": {
+        "original_name": "report.csv",
+        "returned_path": "report.txt",
+        "exists_after_with_suffix": [
+          true,
+          false
+        ],
+        "exists_after_rename": [
+          false,
+          true
+        ],
+        "content_sha256_before": "cd6e636104c893e402c0a353f0d21c75ae3f0bd334af7628ede1be82f81ce894",
+        "content_sha256_after": "cd6e636104c893e402c0a353f0d21c75ae3f0bd334af7628ede1be82f81ce894",
+        "format_unchanged": true
+      },
+      "experiment_sha256": "c6fff7c62119c57baf049db895ef1228f813e2637bba2adec33415e4f2d9a4c4",
+      "narration_spec_sha256": "61297bf67619a6fe381498ac9a7da67f369ae6c1b57fef704405b76279805b3f",
+      "release_authorized": false
+    }
+  ],
+  "topic_bank_sha256": "957afb2221f605df7f98885803360282f2cbd2591457f9d18ec266683da9b61a",
+  "release_ready_count": 0,
+  "youtube_uploads": 0,
+  "youtube_schedules": 0
+}

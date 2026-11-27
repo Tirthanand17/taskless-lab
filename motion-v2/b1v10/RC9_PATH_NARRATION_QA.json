@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 1054400,
+  "duration_seconds": 21.966666666666665,
+  "frames_at_30fps": 659,
+  "narration_sha256": "6022af564771b30060e729e2e77b01c4fb36f03289e09a5a81805575c33b928f",
+  "captions_sha256": "79383211a37b65bc3d625fa77cbb2a1833bf63917555ca2a6679a33c157df7d7",
+  "word_captions_sha256": "08920abb6e8ec574216e9245ed441c1ddd618ba5f06cadfce82b18f121432db2",
+  "spec_sha256": "61297bf67619a6fe381498ac9a7da67f369ae6c1b57fef704405b76279805b3f",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 41,
+      "expected": "Nothing was renamed.",
+      "recognized": "Nothing was renamed.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 3,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.447,
+      "energy": {
+        "peak_dbfs": -2.01,
+        "rms_dbfs": -20.08,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "2bee6011877a3343f949070e628ea13923991ae8cd4ca5449f2783751c8f5143"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 41,
+      "end_frame": 166,
+      "expected": "Changing the suffix gives Python a new path, not a new file on disk.",
+      "recognized": "Changing the suffix gives Python a new path, not a new file on disk.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 14,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.367,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.57,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "9cef72a9a37711cb8f7b42a5e8a7b475b40a39eb543d6347cf4f197e39070490"
+    },
+    {
+      "id": "cause",
+      "start_frame": 166,
+      "end_frame": 269,
+      "expected": "The original file still exists. The new path does not.",
+      "recognized": "The original file still exists. The new path does not.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 10,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.473,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.5,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "1080da8e4422ffd275a96a4dc7ad09f331ba4594fe52f00212b50e3c00b0a0c8"
+    },
+    {
+      "id": "fix",
+      "start_frame": 269,
+      "end_frame": 407,
+      "expected": "To move the file, call rename with the new path. First check the destination.",
+      "recognized": "To move the file, call Rename with the new path. First, check the destination.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 14,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.48,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.69,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "c359918ca4823069e850eb89b4e3016a2ec19249caff5a818956da4c2017af35"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 407,
+      "end_frame": 532,
+      "expected": "Now the original is gone, the new file exists, and its bytes match.",
+      "recognized": "Now the original is gone, the new file exists and its bytes match.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 13,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.487,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.62,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "1aebdc957ee660ae53cefd893e146bc6c827307182980fed301f7dd0fa9b319b"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 532,
+      "end_frame": 659,
+      "expected": "Renaming a file does not convert its contents into another format.",
+      "recognized": "Renaming a file does not convert its contents into another format.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 11,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.473,
+      "energy": {
+        "peak_dbfs": -2.03,
+        "rms_dbfs": -16.83,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "cd76b448d7abac0a131b15d209649edb6587e6f0b6f90e0303388bad4de26393"
+    }
+  ],
+  "caption_cues": 15,
+  "recognized_words": 65,
+  "all_exact_token_matches": true,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -16.8,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

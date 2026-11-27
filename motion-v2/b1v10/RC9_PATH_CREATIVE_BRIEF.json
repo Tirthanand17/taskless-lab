@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_20261128_path_suffix_short",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 21.966666666666665,
+  "title": "Python with_suffix Does Not Rename Your File",
+  "viewer_problem": "Unexpected file operation result",
+  "viewer_promise": "See the actual operation and verify its effect",
+  "source_url": "https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.with_suffix",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.3666666666666667,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Nothing was renamed.",
+      "action_or_result": "Show the actual original file remains."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.3666666666666667,
+      "end_seconds": 5.533333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Changing the suffix gives Python a new path, not a new file on disk.",
+      "action_or_result": "Inspect original and new paths."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 5.533333333333333,
+      "end_seconds": 8.966666666666667,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The original file still exists. The new path does not.",
+      "action_or_result": "Check both paths."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 8.966666666666667,
+      "end_seconds": 13.566666666666666,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "To move the file, call rename with the new path. First check the destination.",
+      "action_or_result": "Rename a disposable file only."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 13.566666666666666,
+      "end_seconds": 17.733333333333334,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Now the original is gone, the new file exists, and its bytes match.",
+      "action_or_result": "Verify file state and content."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 17.733333333333334,
+      "end_seconds": 21.966666666666665,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Renaming a file does not convert its contents into another format.",
+      "action_or_result": "Keep the format warning."
+    }
+  ]
+}

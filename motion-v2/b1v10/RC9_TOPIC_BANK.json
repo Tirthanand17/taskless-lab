@@ -1,0 +1,162 @@
+[
+  {
+    "id": "zip_crc",
+    "slot": "short_am",
+    "format": "short",
+    "title": "Your ZIP Opens, But Is the File Inside Corrupted?",
+    "source_url": "https://docs.python.org/3/library/zipfile.html#zipfile.ZipFile.testzip",
+    "aliases": [
+      "zipfile",
+      "zip archive",
+      "corrupted zip",
+      "zip opens",
+      "crc checksum",
+      "testzip"
+    ],
+    "rationale": "Surprising before/after outcome for a familiar file format; visually testable without downloads.",
+    "scenes": [
+      [
+        "hook",
+        "Broken ZIP?",
+        "This ZIP opens.",
+        "Show the archive still opens."
+      ],
+      [
+        "demonstration",
+        "Hidden corruption",
+        "But one file inside is damaged. The file list still looks normal.",
+        "Run the actual archive integrity check."
+      ],
+      [
+        "cause",
+        "Integrity check",
+        "The file changed, but the saved check value did not.",
+        "Compare intact and altered test archives."
+      ],
+      [
+        "fix",
+        "Test the archive",
+        "Python can test the files inside instead of just listing their names.",
+        "Use the built-in archive integrity test."
+      ],
+      [
+        "payoff",
+        "Found the bad file",
+        "The damaged archive reports the broken file. The intact copy passes.",
+        "Show the measured comparison."
+      ],
+      [
+        "takeaway",
+        "Not authenticity",
+        "A checksum check detects corruption, not whether a download is trustworthy.",
+        "Explain the limit of this test."
+      ]
+    ]
+  },
+  {
+    "id": "sql_null",
+    "slot": "long",
+    "format": "long",
+    "title": "Why SQL NOT IN Returns Zero Rows: The NULL Trap",
+    "source_url": "https://www.sqlite.org/lang_expr.html#the_in_and_not_in_operators",
+    "aliases": [
+      "sql not in",
+      "not exists",
+      "null trap",
+      "sqlite null",
+      "sql null"
+    ],
+    "rationale": "Practical debugging story for data learners; table rows and query results provide a concrete payoff.",
+    "scenes": [
+      [
+        "hook",
+        "Zero rows?",
+        "Four rows. Zero results.",
+        "Run the failing filter."
+      ],
+      [
+        "demonstration",
+        "The missing customers",
+        "Imagine a tiny customer list with four identifiers. A second table contains one blocked customer, and one unknown identifier. We want every customer who is not blocked. This is a local SQLite database, created just for the example. Nothing comes from a real customer account.",
+        "Inspect both source tables."
+      ],
+      [
+        "cause",
+        "Unknown is not false",
+        "The obvious query uses not in, with the second table as its list. But the actual query returns no rows. SQL treats a comparison against null as unknown. For customer one, it knows one is different from two, but it cannot tell whether one matches that unknown value. The condition is not true, so the where clause excludes that row. The same happens for customers three and four.",
+        "Show the per-row truth values."
+      ],
+      [
+        "fix",
+        "Change the question",
+        "Instead of asking whether an identifier is not in that whole list, ask whether a matching blocked row exists. A correlated not exists query checks for a match to the current customer. The null identifier cannot satisfy equality. We can also remove unknown identifiers from the list before using not in, provided that is the intended business rule.",
+        "Execute both alternative filters."
+      ],
+      [
+        "payoff",
+        "Three customers returned",
+        "Now the query returns customers one, three, and four. The blocked customer, two, is absent. Both corrected queries produce the same result for this fixture. We verify the output with an assertion, rather than assuming a successful query is correct.",
+        "Verify exact matching results."
+      ],
+      [
+        "takeaway",
+        "Decide what NULL means",
+        "There is one more detail. If a customer's own identifier is null, not exists may keep that row because no equality match is found. Decide whether unknown customers should be included or filtered out. Test both kinds of null values. Do not change every not in query blindly; choose the expression that matches your data rules.",
+        "Test unknown outer identifiers explicitly."
+      ]
+    ]
+  },
+  {
+    "id": "path_suffix",
+    "slot": "short_pm",
+    "format": "short",
+    "title": "Python with_suffix Does Not Rename Your File",
+    "source_url": "https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.with_suffix",
+    "aliases": [
+      "with_suffix",
+      "pathlib",
+      "file rename",
+      "rename your file",
+      "renaming files"
+    ],
+    "rationale": "Small everyday automation error; actual filesystem state gives an obvious before/after.",
+    "scenes": [
+      [
+        "hook",
+        "File still there?",
+        "Nothing was renamed.",
+        "Show the actual original file remains."
+      ],
+      [
+        "demonstration",
+        "A new path",
+        "Changing the suffix gives Python a new path, not a new file on disk.",
+        "Inspect original and new paths."
+      ],
+      [
+        "cause",
+        "Path versus file",
+        "The original file still exists. The new path does not.",
+        "Check both paths."
+      ],
+      [
+        "fix",
+        "Rename explicitly",
+        "To move the file, call rename with the new path. First check the destination.",
+        "Rename a disposable file only."
+      ],
+      [
+        "payoff",
+        "Verified on disk",
+        "Now the original is gone, the new file exists, and its bytes match.",
+        "Verify file state and content."
+      ],
+      [
+        "takeaway",
+        "Names are not formats",
+        "Renaming a file does not convert its contents into another format.",
+        "Keep the format warning."
+      ]
+    ]
+  }
+]

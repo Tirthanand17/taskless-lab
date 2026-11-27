@@ -299,3 +299,20 @@ Reproduce from motion-v2/b1v10:
 python review_batch_rc9.py --day 2026-11-28 --media-root C:\path\to\b1v10-dev --ffmpeg C:\path\to\ffmpeg.exe --out C:\path\to\new-review
 ```
 The individual receipts can be verified from repository root via python -m autopilot.branch1_recovery --creative ... --capture ... --capture-receipt ... --windows-evidence ... . See RC9_BATCH_QA.json. Next: fresh topic research and actual inventory checks, reusable generation pipeline and exact human review before any publishing.
+
+## RC9 phase 2 — fresh topic research and first new daily Short
+
+Three different original topics selected using official Python zipfile/pathlib and SQLite expression documentation, manually checked 2026-11-27. The free vidIQ account reported 111 public videos, 2,600 views and 6 subscribers; owned upload lookup was refused for exhausted credits (refill December 2). Public yt-dlp video and Shorts listings returned zero rows; not treated as a complete inventory. 185 repository and local dated episode/schedule manifests were screened, no matching title/alias flags, zero unreadable manifests. This is historical duplicate screening, not live uniqueness or demand evidence. Topic selection is editorial judgment, not measured trend ranking. Three isolated experiments passed: ZIP corruption despite successful archive listing, SQL NOT IN with NULL vs NOT EXISTS and filtered NOT IN, and pathlib with_suffix vs actual rename with unchanged contents.
+
+The source-driven topic bank, local experiment receipts and six-beat narration specs are reusable. A new spec-parameterized narration CLI preserves Kokoro af_heart and measured offline ASR timing. The original ZIP cause line scored 0.7273; revised wording passed all six normalized token checks, 21.5333s. Path narration also passed all six, 21.9667s. SQL narration is 102.2667s, raw ASR failed on spoken digits vs numeral tokens and contains not/knot ambiguities; keep the long video on narration hold. No human listening claim.
+
+The path topic now has a real continuous local capture and generated native 1080x1920 30fps review MP4, rather than an RC8 pilot reuse. First capture rejected for low opening pixel change; revised live output includes returned path and original filename, actual file state verified again. Successful capture 132 frames at 6fps, 78ms maximum timing lag, one brief blank refresh logged. Final 659 frames, exact 1054400 decoded audio samples, -16.76 LUFS, -1.97 dBTP and no clipping; sampled real source matches and opening action checks passed, existing creative and Windows receipt validation passed. First render displayed production direction copy, replaced with viewer-facing notes in the second export. Initial contact sheet inspected; final render independently decoded. This is a reusable first-topic rendering path, not yet a general three-video unattended generator: the ZIP and SQL capture adapters and landscape renderer remain to be implemented. No claim of premium visual parity or retention improvement. No YouTube upload, schedule or approval.
+
+Reproduce from motion-v2/b1v10, fresh output directories:
+```powershell
+python daily_topics_rc9.py --day 2026-11-28 --local C:\path\to\existing-local-workspace --out C:\path\to\new-day
+python narration_daily_rc9.py --spec C:\path\to\new-day\path_suffix\narration_spec.json --assets C:\path\to\kokoro-assets --ffmpeg C:\path\to\ffmpeg.exe --output C:\path\to\new-day\path_suffix\audio
+python capture_daily_rc9.py --topic path_suffix --narration C:\path\to\new-day\path_suffix\audio\NARRATION_REVIEW_QA.json --out C:\path\to\new-day\path_suffix\capture --ffmpeg C:\path\to\ffmpeg.exe
+python render_daily_rc9.py --topic path_suffix --day 2026-11-28 --folder C:\path\to\new-day\path_suffix --capture C:\path\to\new-day\path_suffix\capture --out C:\path\to\new-day\path_suffix\render --ffmpeg C:\path\to\ffmpeg.exe
+```
+Evidence: RC9_TOPIC_RESEARCH_QA.json and RC9_PATH_SHORT_QA.json. Media remains local. The other two topics remain unrendered. Live inventory, human review and release approval are mandatory blockers.

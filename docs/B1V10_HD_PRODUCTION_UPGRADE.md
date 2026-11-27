@@ -84,3 +84,7 @@ Continuous Git bisect, actual repair and successful retest integrated and verifi
 ## RC9 phase 1
 
 Existing Branch 1 validator accepts a distinct Windows continuous capture receipt with evidence binding. All three RC8 pilots independently decoded and passed structured review. RC9_BATCH_QA.json. Publisher unchanged, zero release-ready; fresh daily generation and approval pending.
+
+## RC9 phase 2
+
+Three fresh researched topics and actual isolated experiments; historical duplicate screen of 185 manifests. First new path_suffix Short generated and verified. ZIP narration passed, SQL narration held. Remaining capture/render adapters and live inventory pending. No release.

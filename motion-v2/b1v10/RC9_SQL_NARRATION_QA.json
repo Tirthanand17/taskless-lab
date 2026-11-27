@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 4908800,
+  "duration_seconds": 102.26666666666667,
+  "frames_at_30fps": 3068,
+  "narration_sha256": "c9ec57682d483cd34a745d1759b1d2b3615d2fdbddd41857967d60d298f4fb13",
+  "captions_sha256": "9f86f38472460ed51f22e82abb96067de4612df39f2d6b4898338b8851186218",
+  "word_captions_sha256": "e93b68f3731ea34a76511cd58c99da7ca5df140228bc6d511d178266ec0b478d",
+  "spec_sha256": "7faf035c2055bcecccb3011e8df0b7799de843b30210d17269c6e4ca40cd982f",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 58,
+      "expected": "Four rows. Zero results.",
+      "recognized": "4 rows, 0 results.",
+      "token_similarity": 0.5,
+      "exact_token_match": false,
+      "word_count": 4,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.393,
+      "energy": {
+        "peak_dbfs": -2.02,
+        "rms_dbfs": -16.9,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "57be2a18a5b4762b7a43d26249c666618ed78b3cba9e5b258d26a93fa06cbf69"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 58,
+      "end_frame": 621,
+      "expected": "Imagine a tiny customer list with four identifiers. A second table contains one blocked customer, and one unknown identifier. We want every customer who is not blocked. This is a local SQLite database, created just for the example. Nothing comes from a real customer account.",
+      "recognized": "Imagine a tiny customer list with four identifiers. A second table contains one blocked customer and one unknown identifier. We want every customer who is not blocked. This is a local SQLite database created just for the example. Nothing comes from a real customer account.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 45,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.447,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.34,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "a0ea047617d75db01d5f3df3e274651f73613d51356a28b8b9f8aeb273c520af"
+    },
+    {
+      "id": "cause",
+      "start_frame": 621,
+      "end_frame": 1332,
+      "expected": "The obvious query uses not in, with the second table as its list. But the actual query returns no rows. SQL treats a comparison against null as unknown. For customer one, it knows one is different from two, but it cannot tell whether one matches that unknown value. The condition is not true, so the where clause excludes that row. The same happens for customers three and four.",
+      "recognized": "The obvious query use is not in with the second table as its list, but the actual query returns no rows. SQL treats a comparison against null as unknown. For customer one, it knows one is different from two, but it cannot tell whether one matches that unknown value. The condition is not true, so the where clause excludes that row. The same happens for customers 3 and 4.",
+      "token_similarity": 0.9489,
+      "exact_token_match": false,
+      "word_count": 69,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.4,
+      "energy": {
+        "peak_dbfs": -1.99,
+        "rms_dbfs": -16.4,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "05b4bff9d75e5fe107b6a7f431ffbb44fc6a2de2df5a2a801ef58db7d4260a04"
+    },
+    {
+      "id": "fix",
+      "start_frame": 1332,
+      "end_frame": 1971,
+      "expected": "Instead of asking whether an identifier is not in that whole list, ask whether a matching blocked row exists. A correlated not exists query checks for a match to the current customer. The null identifier cannot satisfy equality. We can also remove unknown identifiers from the list before using not in, provided that is the intended business rule.",
+      "recognized": "Instead of asking whether an identifier is not in that whole list, ask whether a matching blocked row exists. A correlated knot exists query checks for a match to the current customer. The null identifier cannot satisfy equality. We can also remove unknown identifiers from the list before using not in, provided that is the intended business rule.",
+      "token_similarity": 0.9828,
+      "exact_token_match": false,
+      "word_count": 58,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.36,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.43,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "e24150aca793bb13fe35d685870173b408166902d72f81a95c880a96999e38cd"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 1971,
+      "end_frame": 2454,
+      "expected": "Now the query returns customers one, three, and four. The blocked customer, two, is absent. Both corrected queries produce the same result for this fixture. We verify the output with an assertion, rather than assuming a successful query is correct.",
+      "recognized": "Now the query returns customers 1, 3, and 4. The blocked customer, 2, is absent. Both corrected queries produce the same result for this fixture. We verify the output with an assertion, rather than assuming a successful query is correct.",
+      "token_similarity": 0.9,
+      "exact_token_match": false,
+      "word_count": 40,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.48,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.74,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "b13b329174ac1d540ef473026a055414ff977abadc5abdfa3162f34164692e22"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 2454,
+      "end_frame": 3068,
+      "expected": "There is one more detail. If a customer's own identifier is null, not exists may keep that row because no equality match is found. Decide whether unknown customers should be included or filtered out. Test both kinds of null values. Do not change every not in query blindly; choose the expression that matches your data rules.",
+      "recognized": "There is one more detail. If a customer's own identifier is null, not exists may keep that row because no equality match is found. Decide whether unknown customers should be included or filtered out. Test both kinds of null values. Do not change every knot in query blindly. Choose the expression that matches your data rules.",
+      "token_similarity": 0.9825,
+      "exact_token_match": false,
+      "word_count": 56,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.487,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.75,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "fd4f1be64bd23baeb38eb1be8b8e851d09d9b67573249032b5acf214945f2277"
+    }
+  ],
+  "caption_cues": 56,
+  "recognized_words": 272,
+  "all_exact_token_matches": false,
+  "asr_screen_pass": false,
+  "energy": {
+    "peak_dbfs": -1.99,
+    "rms_dbfs": -16.52,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}
