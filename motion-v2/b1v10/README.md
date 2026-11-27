@@ -352,3 +352,15 @@ Run the registered-date review workflow from motion-v2/b1v10:
 python run_registered_rc10p2.py --day 2026-11-29 --workspace C:\path\to\new-or-existing-workspace --local C:\path\to\historical-workspace --assets C:\path\to\kokoro-assets --ffmpeg C:\path\to\ffmpeg.exe
 ```
 Optional --only shared_lists, group_runs or outer_join_filter isolates one topic. A completed stage is hash-checked; failed partial stages must be inspected/quarantined before rerun. Reports are review-only. See RC10_1129_TOPIC_QA.json and RC10_SHARED_* and RC10_GROUP_* evidence. No uploads or schedules.
+
+## RC10 phase 3 — second complete registered daily batch
+
+The November 29 LEFT JOIN video now completes the second original daily review batch. All six narration scenes matched normalized script tokens exactly, with 173 recognized words and 37 caption cues; no correction was needed. The actual SQLite demonstration returned one customer after WHERE filtering and all three after moving the paid condition into ON; the final recording verifies both intended queries. Continuous source: 368 frames at 6fps, 26.67ms maximum timing deviation, zero blank frames or retries. Final landscape: 1920x1080, 30fps, 1840 frames, 61.333s, 2944000 decoded audio samples, -16.44 LUFS, -1.95 dBTP, no clipping. Full decode, sampled capture matches, opening changes and the existing creative/Windows receipt validator passed. Ten contact-sheet frames inspected; terminal and captions remain small at phone size, static reading holds remain, and the explanatory note can slightly precede the actual result. Automated token matching is not human listening or release approval.
+
+The registered runner completed all nine stages and was invoked again, revalidating every checkpoint and reproducing the identical batch report hash. Six stages (groupby and SQL) were generated through the runner; three shared-list stages were created earlier in the same workspace and adopted after verification. All three videos use new media relative to November 28, not recycled prior-day pilots. audit_second_batch_rc10.py verifies exact artifacts, checkpoints, unsigned publisher rejection and the absence of topic/video/capture overlap against both November 28 review variants, plus narration hashes against the November 28 original batch. It writes the separate RC10_SECOND_BATCH_QA.json report. Two original daily batches now exist, but new dates still require manual topic registration and executable adapters. No unattended scheduler, automatic discovery, full live inventory or human playback approval has been established. No upload or schedule change.
+
+Reproduce the audit from motion-v2/b1v10:
+```powershell
+python audit_second_batch_rc10.py --workspace C:\path\to\rc10-nov29 --output C:\path\to\new-report.json
+```
+See RC10_1129_BATCH_QA.json and RC10_SECOND_BATCH_QA.json. Existing publisher and historical evidence remain unchanged.

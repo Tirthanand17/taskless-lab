@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_20261129_outer_join_filter_long",
+  "format": "long",
+  "series": "python_automation",
+  "duration_seconds": 61.333333333333336,
+  "title": "SQL LEFT JOIN: Why Your Missing Rows Disappear",
+  "viewer_problem": "Unexpected result from a real software operation",
+  "viewer_promise": "See the actual operation and verify its effect",
+  "source_url": "https://sqlite.org/lang_select.html",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.5333333333333334,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Where did the other rows go?",
+      "action_or_result": "Execute the failing join."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.5333333333333334,
+      "end_seconds": 13.533333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "We have three customers and two orders. One order is paid and the other is pending. We want every customer, along with any paid order they have. The example uses a small local database.",
+      "action_or_result": "Inspect both tables."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 13.533333333333333,
+      "end_seconds": 27.733333333333334,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "A left join keeps unmatched customers, but our filter runs after the join. It keeps only rows with a paid order. The pending order fails that test, and the missing order has no status at all. Both customers disappear.",
+      "action_or_result": "Show rows before and after filtering."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 27.733333333333334,
+      "end_seconds": 38.86666666666667,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Move the paid condition into the join itself. This changes which orders can match a customer. A customer without a matching paid order is still included, with missing order values.",
+      "action_or_result": "Execute the corrected join."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 38.86666666666667,
+      "end_seconds": 49.13333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Now all three customers appear. Only the first has a paid order. The other two have empty order values. We compare the actual rows against the expected result.",
+      "action_or_result": "Verify the resulting rows."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 49.13333333333333,
+      "end_seconds": 61.333333333333336,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The two queries answer different questions. A filter after the join is useful when you only want customers with paid orders. Put the condition in the join when you want to preserve customers without a match.",
+      "action_or_result": "Compare the two intended outcomes."
+    }
+  ]
+}

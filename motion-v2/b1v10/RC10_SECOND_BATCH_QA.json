@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0-rc10-phase3",
+  "day": "2026-11-29",
+  "batch_sha256": "16d50d0125484a1358280443d9b871e16d92fc57c2e2534cb70592c97f7a7563",
+  "runner_sha256": "d1ff958d269e7964b31d8b6f1e15c26eb70e4f778291ec68a3a7463c0b4c7b88",
+  "source_sha256": "f1cb285f1b9641dc72b0a59808c9884ecb19ec216d643d30ac8e57b479f33b9c",
+  "prior_report_sha256": {
+    "RC9_FRESH_BATCH_QA.json": "c40f0b13d53fca2bf414b1b62d6675c186c08afc03e5c345c1b45f4074e91930",
+    "RC10_RUN_QA.json": "3960c63d6e2914a445b3cea34fc2516a1b1699a48d28e047c42d601fc4efa10b"
+  },
+  "slots": [
+    {
+      "topic": "shared_lists",
+      "format": "short",
+      "slot": "short_am",
+      "title": "Why One Python List Change Updates Two Dictionary Keys",
+      "frames": 414,
+      "duration_seconds": 13.8,
+      "video_sha256": "5b9a35977dc17e64eac34ff3550ed0096f3108627a94dd9c481baba3980e5430",
+      "capture_sha256": "0c4159a007c8c79245634aa6e3c145c076c0e61f9e09ec645b0cc31b7c98b651",
+      "render_report_sha256": "142ee93a532c39bedeebc530a31d3f9ed769833d3b71dccd5e0aec752fff4633",
+      "release_authorized": false,
+      "reference_local_time": "11:00",
+      "narration_sha256": "da53677433df406d30cbef402a6c090575be0c416c85d66d0d0b5e88c3b4c888",
+      "execution_modes": {
+        "audio": "adopted_same_date",
+        "capture": "adopted_same_date",
+        "render": "adopted_same_date"
+      },
+      "disposition": "HOLD_NOT_SCHEDULED"
+    },
+    {
+      "topic": "outer_join_filter",
+      "format": "long",
+      "slot": "long",
+      "title": "SQL LEFT JOIN: Why Your Missing Rows Disappear",
+      "frames": 1840,
+      "duration_seconds": 61.333333333333336,
+      "video_sha256": "4ac1f6173175c94af69156be51513e2672f8e07163e63e1e4567ababbdf28ae9",
+      "capture_sha256": "a04aa85f94e59f4abfa23d025d4ef1c5bd46da554a18a71bc8bc8f29cb7e1beb",
+      "render_report_sha256": "3032d86778f2005b2c46ae1bdff0bb734d29c71796b03cd966708b19b4b10b03",
+      "release_authorized": false,
+      "reference_local_time": "16:00",
+      "narration_sha256": "8cbfba36c7aa08cf122e907322ae07ec1a0c3a9763c27ab73d97462745fe9472",
+      "execution_modes": {
+        "audio": "generated",
+        "capture": "generated",
+        "render": "generated"
+      },
+      "disposition": "HOLD_NOT_SCHEDULED"
+    },
+    {
+      "topic": "group_runs",
+      "format": "short",
+      "slot": "short_pm",
+      "title": "Python groupby Does Not Group All Equal Items",
+      "frames": 489,
+      "duration_seconds": 16.3,
+      "video_sha256": "95af6e7ef79febac1c540d222f6cc7270eba42165b4c2d74df8aae0e97bc4858",
+      "capture_sha256": "73cc0a944831e3ff5e01214f42e1952468f05d3bc7a40560bef2828d7a945ac7",
+      "render_report_sha256": "935080e95b497731ed08a3f7d9b94ef3383316ed17caddba9d23a606df146156",
+      "release_authorized": false,
+      "reference_local_time": "20:30",
+      "narration_sha256": "0d65d26bb164dc06d89193b24db6b90eec8b59517a7e95b908bf46cde36b5f22",
+      "execution_modes": {
+        "audio": "generated",
+        "capture": "generated",
+        "render": "generated"
+      },
+      "disposition": "HOLD_NOT_SCHEDULED"
+    }
+  ],
+  "fresh_media_count": 3,
+  "prior_batch_hash_overlap": 0,
+  "verified_stages": 9,
+  "live_inventory_complete": false,
+  "human_playback_approved": false,
+  "unattended_scheduler_verified": false,
+  "release_ready_count": 0,
+  "youtube_uploads": 0,
+  "youtube_schedules": 0
+}

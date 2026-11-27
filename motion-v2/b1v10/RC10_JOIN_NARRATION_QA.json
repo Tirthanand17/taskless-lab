@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 2944000,
+  "duration_seconds": 61.333333333333336,
+  "frames_at_30fps": 1840,
+  "narration_sha256": "8cbfba36c7aa08cf122e907322ae07ec1a0c3a9763c27ab73d97462745fe9472",
+  "captions_sha256": "bca2280281523f895ce60ceb98189683807b54d7c57a4f7dd8ff37e5596cc48b",
+  "word_captions_sha256": "af57f325b32d5b78d67590c71fef25816646066f94552164e0d2d958e55a48f0",
+  "spec_sha256": "6c5db477357fbd4f4e1f85c7e1f8ce1344e2abc13310bb28c6c3384f735dc03a",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 46,
+      "expected": "Where did the other rows go?",
+      "recognized": "Where did the other rows go?",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 6,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.413,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -22.26,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "df53ede8c0d89807a49541af54f17266ab056587a846017bb6821b97544c61e5"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 46,
+      "end_frame": 406,
+      "expected": "We have three customers and two orders. One order is paid and the other is pending. We want every customer, along with any paid order they have. The example uses a small local database.",
+      "recognized": "We have three customers and two orders. One order is paid and the other is pending. We want every customer, along with any paid order they have. The example uses a small local database.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 34,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.62,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.45,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "dd3ea01a9edcf62e287357364debe2481d59eda213e05f84bf91cf8778ca08d7"
+    },
+    {
+      "id": "cause",
+      "start_frame": 406,
+      "end_frame": 832,
+      "expected": "A left join keeps unmatched customers, but our filter runs after the join. It keeps only rows with a paid order. The pending order fails that test, and the missing order has no status at all. Both customers disappear.",
+      "recognized": "A left join keeps unmatched customers, but our filter runs after the join. It keeps only rows with a paid order. The pending order fails that test, and the missing order has no status at all. Both customers disappear.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 39,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.48,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.47,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "d92003aed65d4fd1cff86292af2bb0266adb76a20400a578a4e1d53c378422e1"
+    },
+    {
+      "id": "fix",
+      "start_frame": 832,
+      "end_frame": 1166,
+      "expected": "Move the paid condition into the join itself. This changes which orders can match a customer. A customer without a matching paid order is still included, with missing order values.",
+      "recognized": "Move the paid condition into the join itself. This changes which orders can match a customer. A customer without a matching paid order is still included with missing order values.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 30,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.493,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.17,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "97a79abf2f72626055e2897ce310d9edbcae7fcc0e3c298e7d470c403d4bcc65"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 1166,
+      "end_frame": 1474,
+      "expected": "Now all three customers appear. Only the first has a paid order. The other two have empty order values. We compare the actual rows against the expected result.",
+      "recognized": "Now all three customers appear. Only the first has a paid order. The other two have empty order values. We compare the actual rows against the expected result.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 28,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.507,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.72,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "77167b20baea38597e7004de3f52be79a05eca9f4284825609bb18b75d97ce15"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 1474,
+      "end_frame": 1840,
+      "expected": "The two queries answer different questions. A filter after the join is useful when you only want customers with paid orders. Put the condition in the join when you want to preserve customers without a match.",
+      "recognized": "The two queries answer different questions. A filter after the join is useful when you only want customers with paid orders. Put the condition in the join when you want to preserve customers without a match.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 36,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.4,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.18,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "cc6af25f66ae0ece720be1a8e8c6200451a78957c074c2f22be76d7b7baa1fa6"
+    }
+  ],
+  "caption_cues": 37,
+  "recognized_words": 173,
+  "all_exact_token_matches": true,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -16.47,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

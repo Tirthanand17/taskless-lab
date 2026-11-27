@@ -171,3 +171,12 @@ RC10_GROUP_SHORT_QA.json -text
 RC10_GROUP_CREATIVE_BRIEF.json -text
 RC10_GROUP_CAPTURE_RECEIPT.json -text
 RC10_GROUP_RUN_QA.json -text
+audit_second_batch_rc10.py -text
+test_second_batch_rc10.py -text
+RC10_JOIN_NARRATION_QA.json -text
+RC10_JOIN_CAPTURE_QA.json -text
+RC10_JOIN_LONG_QA.json -text
+RC10_JOIN_CREATIVE_BRIEF.json -text
+RC10_JOIN_CAPTURE_RECEIPT.json -text
+RC10_1129_BATCH_QA.json -text
+RC10_SECOND_BATCH_QA.json -text

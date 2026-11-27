@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0-rc10-phase2",
+  "day": "2026-11-29",
+  "rows": [
+    {
+      "topic": "shared_lists",
+      "format": "short",
+      "slot": "short_am",
+      "title": "Why One Python List Change Updates Two Dictionary Keys",
+      "frames": 414,
+      "duration_seconds": 13.8,
+      "video_sha256": "5b9a35977dc17e64eac34ff3550ed0096f3108627a94dd9c481baba3980e5430",
+      "capture_sha256": "0c4159a007c8c79245634aa6e3c145c076c0e61f9e09ec645b0cc31b7c98b651",
+      "render_report_sha256": "142ee93a532c39bedeebc530a31d3f9ed769833d3b71dccd5e0aec752fff4633",
+      "release_authorized": false
+    },
+    {
+      "topic": "outer_join_filter",
+      "format": "long",
+      "slot": "long",
+      "title": "SQL LEFT JOIN: Why Your Missing Rows Disappear",
+      "frames": 1840,
+      "duration_seconds": 61.333333333333336,
+      "video_sha256": "4ac1f6173175c94af69156be51513e2672f8e07163e63e1e4567ababbdf28ae9",
+      "capture_sha256": "a04aa85f94e59f4abfa23d025d4ef1c5bd46da554a18a71bc8bc8f29cb7e1beb",
+      "render_report_sha256": "3032d86778f2005b2c46ae1bdff0bb734d29c71796b03cd966708b19b4b10b03",
+      "release_authorized": false
+    },
+    {
+      "topic": "group_runs",
+      "format": "short",
+      "slot": "short_pm",
+      "title": "Python groupby Does Not Group All Equal Items",
+      "frames": 489,
+      "duration_seconds": 16.3,
+      "video_sha256": "95af6e7ef79febac1c540d222f6cc7270eba42165b4c2d74df8aae0e97bc4858",
+      "capture_sha256": "73cc0a944831e3ff5e01214f42e1952468f05d3bc7a40560bef2828d7a945ac7",
+      "render_report_sha256": "935080e95b497731ed08a3f7d9b94ef3383316ed17caddba9d23a606df146156",
+      "release_authorized": false
+    }
+  ],
+  "completed_topics": 3,
+  "all_three_complete": true,
+  "live_inventory_complete": false,
+  "release_ready_count": 0,
+  "release_authorized": false
+}
