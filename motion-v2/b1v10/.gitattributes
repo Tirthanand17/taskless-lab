@@ -189,3 +189,7 @@ audit_polish_rc11.py -text
 test_polish_long_rc11.py -text
 RC11_JOIN_LONG_QA.json -text
 RC11_POLISHED_BATCH_QA.json -text
+run_polished_rc12.py -text
+test_run_polished_rc12.py -text
+RC12_REVIEW_QA.json -text
+RC12_SHARED_SHORT_QA.json -text

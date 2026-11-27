@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0-rc11-phase1",
+  "topic": "shared_lists",
+  "prior_sha256": "5b9a35977dc17e64eac34ff3550ed0096f3108627a94dd9c481baba3980e5430",
+  "prior_report_sha256": "142ee93a532c39bedeebc530a31d3f9ed769833d3b71dccd5e0aec752fff4633",
+  "capture_sha256": "0c4159a007c8c79245634aa6e3c145c076c0e61f9e09ec645b0cc31b7c98b651",
+  "source_sha256": "b0f5eb8e61672850234e8d2e93874f1f599dbccd1be003a808d0411849dd7ab7",
+  "video_sha256": "c93c9462e48239b56cfca5c2e5c4d5ba0d63f2ca3d12024e317a48d9ff8c80a2",
+  "caption_ass_sha256": "ee2ebf76e5189738caf0c1f2d1efdd3cb6b8ef3ca3ab95081e617b4373ddc0fc",
+  "caption_font_px": 58,
+  "prior_caption_font_px": 49,
+  "caption_events": 42,
+  "source_crop": [
+    0,
+    60,
+    564,
+    312
+  ],
+  "display_rect": [
+    113,
+    903,
+    742,
+    410
+  ],
+  "prior_source_scale": 1.1647058823529413,
+  "new_source_scale": 1.3156028368794326,
+  "event_starts_frames": [
+    0,
+    15,
+    65,
+    125,
+    185,
+    255,
+    315
+  ],
+  "actual_event_times_seconds": [
+    0.422,
+    2.016,
+    4.0,
+    6.047,
+    8.406,
+    10.484
+  ],
+  "frames": 414,
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30,
+  "audio": {
+    "decoded_samples": 662400,
+    "clipped_samples": 0,
+    "loudness": {
+      "input_i": -18.37,
+      "input_tp": -1.96,
+      "input_lra": 4.1
+    }
+  },
+  "pcm_identical": true,
+  "full_decode_pass": true,
+  "source_checks": [
+    {
+      "frame": 0,
+      "source_frame": 0,
+      "error": 1.0399
+    },
+    {
+      "frame": 20,
+      "source_frame": 4,
+      "error": 1.0212
+    },
+    {
+      "frame": 70,
+      "source_frame": 14,
+      "error": 1.0196
+    },
+    {
+      "frame": 130,
+      "source_frame": 26,
+      "error": 1.0147
+    },
+    {
+      "frame": 190,
+      "source_frame": 38,
+      "error": 1.0217
+    },
+    {
+      "frame": 260,
+      "source_frame": 52,
+      "error": 1.017
+    },
+    {
+      "frame": 320,
+      "source_frame": 64,
+      "error": 1.018
+    }
+  ],
+  "diagram_uses_verified_result": true,
+  "original_brief_unchanged": true,
+  "human_playback_approved": false,
+  "release_authorized": false
+}

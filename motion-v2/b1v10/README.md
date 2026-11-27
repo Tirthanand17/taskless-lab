@@ -388,3 +388,15 @@ python polish_long_rc11.py --folder C:\path\to\rc10-nov29\outer_join_filter --ou
 python audit_polish_rc11.py --workspace C:\path\to\rc10-nov29 --output C:\path\to\new-report.json
 ```
 The audit expects the three polished outputs under their topic folders in polish-rc11. See RC11_JOIN_LONG_QA.json and RC11_POLISHED_BATCH_QA.json. No uploads or schedules.
+
+## RC12 phase 1 — mandatory polish in the registered daily workflow
+
+run_polished_rc12.py invokes the existing registered-date production runner, then requires each topic to complete the RC11 visual-polish stage before creating a separate final review manifest. The final paths point only to polished exports, never the base MP4s. The review binds the base report, actual capture, caption file, polish report, source code, event timing and exact video hash. The outer workspace lock and base stage lock prevent overlapping supported runs; partial polish directories are retained for explicit quarantine and recovery. Existing production and publisher code is unchanged.
+
+Actual November 29 run: nine base stages revalidated; one polish stage regenerated (shared lists, bit-identical to RC11), two explicitly adopted from exact committed RC11 reports (SQL and groupby). All three polished outputs and 2743 previously decoded frames are represented in the review manifest. Actual restart without adoption flags produced the same manifest hash. Tests cover unsupported dates, lock collision, failed partial outputs and exact review evidence. This does not establish unattended scheduling or general-purpose new topic generation: the registered topic bank and topic-specific diagrams remain limited to November 29. No new daily content, live inventory, human approval or release authorization is claimed.
+
+Run from motion-v2/b1v10:
+```powershell
+python run_polished_rc12.py --day 2026-11-29 --workspace C:\path\to\workspace --local C:\path\to\historical-workspace --assets C:\path\to\kokoro-assets --ffmpeg C:\path\to\ffmpeg.exe
+```
+By default all missing polish stages are generated. The tested hybrid run used --adopt-rc11 outer_join_filter --adopt-rc11 group_runs on an existing completed base workspace. Review output: RC12_REVIEW_QA.json. No upload or schedule calls.

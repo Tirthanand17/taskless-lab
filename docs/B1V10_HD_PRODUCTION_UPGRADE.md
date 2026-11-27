@@ -112,3 +112,7 @@ Two polished November 29 vertical exports: larger evidence/captions, event-timed
 ## RC11 phase 2
 
 Landscape visual polish and exact three-video review audit complete. RC11_POLISHED_BATCH_QA.json. Original audio preserved; integration, live inventory and release acceptance remain open.
+
+## RC12 phase 1
+
+Mandatory visual polish integrated into registered daily runner, actual hybrid run and exact restart passed. RC12_REVIEW_QA.json. New topics, live inventory, unattended scheduling and release acceptance remain open.
