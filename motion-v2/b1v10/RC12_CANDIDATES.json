@@ -1,0 +1,282 @@
+[
+  {
+    "id": "strip_chars",
+    "format": "short",
+    "title": "Python strip Can Remove More Than You Expect",
+    "source_url": "https://docs.python.org/3/library/stdtypes.html#str.strip",
+    "aliases": [
+      "str strip",
+      "strip characters",
+      "removeprefix",
+      "strip prefix"
+    ],
+    "score": [
+      5,
+      5,
+      5
+    ],
+    "input": "abcab",
+    "op": "strip_compare",
+    "head": [
+      "Unexpected text",
+      "The original string",
+      "Character set",
+      "Exact prefix",
+      "Compare the results",
+      "Choose the right method"
+    ],
+    "spoken": [
+      "Why did the whole string disappear?",
+      "We only wanted to remove the prefix.",
+      "Strip removes matching characters from both ends.",
+      "Use remove prefix for an exact prefix.",
+      "Now the ending stays intact.",
+      "Choose the method that matches your goal."
+    ],
+    "notes": [
+      "The entire string is removed.",
+      "Original text: abcab",
+      "Strip uses a set of characters.",
+      "Remove only the exact prefix.",
+      "The result is ab.",
+      "A prefix is not a character set."
+    ]
+  },
+  {
+    "id": "bounded_deque",
+    "format": "short",
+    "title": "Keep Only the Latest Three Items With Python deque",
+    "source_url": "https://docs.python.org/3/library/collections.html#collections.deque",
+    "aliases": [
+      "bounded deque",
+      "deque maxlen",
+      "recent three items",
+      "rolling queue"
+    ],
+    "score": [
+      5,
+      4,
+      5
+    ],
+    "input": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "op": "deque_compare",
+    "head": [
+      "Where did one go?",
+      "Four arrivals",
+      "A bounded queue",
+      "Keep the latest",
+      "Three items remain",
+      "Old items drop out"
+    ],
+    "spoken": [
+      "The first item just disappeared.",
+      "Four items arrive in order.",
+      "A bounded queue keeps a fixed number of items.",
+      "Set the maximum length to three.",
+      "The latest three items remain.",
+      "Use this only when dropping old items is acceptable."
+    ],
+    "notes": [
+      "A bounded queue drops the oldest item.",
+      "Four arrivals: one to four.",
+      "The maximum length is three.",
+      "Append to the right.",
+      "The latest three items remain.",
+      "Do not use for lossless storage."
+    ]
+  },
+  {
+    "id": "counter_difference",
+    "format": "short",
+    "title": "Python Counter Subtraction Can Hide Negative Counts",
+    "source_url": "https://docs.python.org/3/library/collections.html#collections.Counter",
+    "aliases": [
+      "counter subtraction",
+      "counter subtract",
+      "negative counts",
+      "collections counter"
+    ],
+    "score": [
+      4,
+      4,
+      4
+    ],
+    "input": [
+      2,
+      5
+    ],
+    "op": "counter_compare",
+    "head": [
+      "Missing deficit?",
+      "Two counts",
+      "Positive only",
+      "Keep the deficit",
+      "Negative result",
+      "Different operations"
+    ],
+    "spoken": [
+      "Where did the deficit go?",
+      "We started with two and removed five.",
+      "The subtraction operator keeps positive counts only.",
+      "Use the subtract method to keep negative counts.",
+      "Now the deficit is visible.",
+      "Choose the operation for your intended result."
+    ],
+    "notes": [
+      "The deficit is missing.",
+      "Two minus five.",
+      "The operator keeps positive results.",
+      "The method retains negative counts.",
+      "A negative count remains.",
+      "Select the correct operation."
+    ]
+  },
+  {
+    "id": "partition_text",
+    "format": "short",
+    "title": "Python partition Splits Only at the First Separator",
+    "source_url": "https://docs.python.org/3/library/stdtypes.html#str.partition",
+    "aliases": [
+      "str partition",
+      "partition separator",
+      "first separator",
+      "string partition"
+    ],
+    "score": [
+      3,
+      4,
+      4
+    ],
+    "input": "a:b:c",
+    "op": "partition_compare",
+    "head": [
+      "Too many pieces?",
+      "Three parts",
+      "Every separator",
+      "Split once",
+      "Keep the remainder",
+      "No separator"
+    ],
+    "spoken": [
+      "This split made too many pieces.",
+      "The string has two separators.",
+      "A regular split divides at both.",
+      "Partition separates at the first match.",
+      "The rest stays together.",
+      "If there is no match, partition still returns three parts."
+    ],
+    "notes": [
+      "Regular split gives three pieces.",
+      "Input has two colons.",
+      "Split uses every match.",
+      "Partition uses the first match.",
+      "The remainder is preserved.",
+      "Missing separators give empty parts."
+    ]
+  },
+  {
+    "id": "count_missing",
+    "format": "long",
+    "title": "SQL COUNT: Why Your Report Misses Rows",
+    "source_url": "https://www.sqlite.org/lang_aggfunc.html",
+    "aliases": [
+      "count null",
+      "count column",
+      "count star",
+      "sql count"
+    ],
+    "score": [
+      5,
+      5,
+      5
+    ],
+    "input": [
+      10,
+      null,
+      20,
+      null
+    ],
+    "op": "count_compare",
+    "head": [
+      "Four rows. Two counted.",
+      "The source values",
+      "Missing values",
+      "Count every row",
+      "Compare the totals",
+      "Choose the measure"
+    ],
+    "spoken": [
+      "Why did the report count only two rows?",
+      "Our small local table contains four records. Two have a number, and two have missing values. We want to count how many records arrived, not just how many contain a number.",
+      "Counting a column counts only values that are not missing. Here, the result is two. The other two records still exist in the table.",
+      "To count every record, use the star form shown on screen. It counts rows, including rows that contain missing values. We can also calculate how many values are missing by subtracting the two counts.",
+      "The actual result is four records, two recorded values and two missing values. We check those results against the original data.",
+      "Both forms are useful. Choose the total row count for records received, and the column count for values recorded. Neither should silently replace the other in a report."
+    ],
+    "notes": [
+      "The column count is two.",
+      "Four records; two missing values.",
+      "Column count skips missing values.",
+      "The star form counts all rows.",
+      "Four total; two recorded; two missing.",
+      "Choose the measure your report needs."
+    ]
+  },
+  {
+    "id": "union_duplicates",
+    "format": "long",
+    "title": "SQL UNION Can Remove Real Transactions",
+    "source_url": "https://www.sqlite.org/lang_select.html",
+    "aliases": [
+      "union all",
+      "sql union",
+      "union duplicate",
+      "compound select"
+    ],
+    "score": [
+      4,
+      5,
+      5
+    ],
+    "input": [
+      [
+        "A",
+        "B"
+      ],
+      [
+        "A",
+        "C"
+      ]
+    ],
+    "op": "union_compare",
+    "head": [
+      "One row vanished",
+      "Two input lists",
+      "Duplicate removal",
+      "Keep every record",
+      "Compare row counts",
+      "Choose your intent"
+    ],
+    "spoken": [
+      "One row vanished when we combined the results.",
+      "Here are two small lists of values. The first has two entries and the second also has two. One value occurs in both. These represent invented records, not real transactions.",
+      "The union operation removes duplicate result rows. That can be exactly what you want for a unique list. But if each row represents a separate event, removing duplicates can change the total.",
+      "Use the all form to preserve every row returned by both queries. We execute the two expressions on the same input and compare the output.",
+      "The unique list contains three rows. The full list contains four rows, including both occurrences of the repeated value. The assertion confirms the difference.",
+      "Choose the operation that matches your data model. If records have distinct identifiers, include those identifiers when needed. Duplicate output values do not always mean duplicate events."
+    ],
+    "notes": [
+      "One duplicate value is removed.",
+      "Two lists of two values.",
+      "UNION removes duplicate result rows.",
+      "UNION ALL retains every row.",
+      "Three unique rows; four total rows.",
+      "Different queries serve different goals."
+    ]
+  }
+]

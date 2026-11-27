@@ -1,0 +1,159 @@
+{
+  "version": "1.0.0-rc12-phase2",
+  "day": "2026-11-30",
+  "candidate_count": 6,
+  "history_rows": 191,
+  "historical_rejections": [],
+  "selected": [
+    {
+      "topic": "strip_chars",
+      "title": "Python strip Can Remove More Than You Expect",
+      "slot": "short_am",
+      "format": "short",
+      "source_url": "https://docs.python.org/3/library/stdtypes.html#str.strip",
+      "editorial_score": 15,
+      "experiment": [
+        {
+          "command": "text.strip('abc')",
+          "result": ""
+        },
+        {
+          "command": "text",
+          "result": "abcab"
+        },
+        {
+          "command": "set('abc')",
+          "result": [
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        {
+          "command": "text.removeprefix('abc')",
+          "result": "ab"
+        },
+        {
+          "command": "strip vs removeprefix",
+          "result": [
+            "",
+            "ab"
+          ]
+        },
+        {
+          "command": "text.endswith('ab')",
+          "result": true
+        }
+      ],
+      "topic_sha256": "59d2379219e44f764205f950fda40a09ee9161b68bb667881ea4c63b14f07f50",
+      "experiment_sha256": "7d32a4b5627d1a5f7edb902a74ef8e715c6eec56a570e835a88223c0d6431010",
+      "spec_sha256": "5a311a646ded72bfcffa5850d65a2cc23c087a2dc478b15c6e046868bb0f94a8"
+    },
+    {
+      "topic": "count_missing",
+      "title": "SQL COUNT: Why Your Report Misses Rows",
+      "slot": "long",
+      "format": "long",
+      "source_url": "https://www.sqlite.org/lang_aggfunc.html",
+      "editorial_score": 15,
+      "experiment": [
+        {
+          "command": "SELECT count(v) FROM t",
+          "result": 2
+        },
+        {
+          "command": "SELECT v FROM t",
+          "result": [
+            10,
+            null,
+            20,
+            null
+          ]
+        },
+        {
+          "command": "SELECT count(v) FROM t",
+          "result": 2
+        },
+        {
+          "command": "SELECT count(*) FROM t",
+          "result": 4
+        },
+        {
+          "command": "total / recorded / missing",
+          "result": [
+            4,
+            2,
+            2
+          ]
+        },
+        {
+          "command": "count(*) = count(v)?",
+          "result": false
+        }
+      ],
+      "topic_sha256": "4238d80c3aa7593b012d7e966a2c175a578326e4282f18003c954c25aae5e2f1",
+      "experiment_sha256": "61bcc4c942ba377fff83594af9e4cfdbbf03617ac59ae846d67b59d0f6f9e612",
+      "spec_sha256": "79564c7e74194bc8b2c7962e1628952f12cd05140bc8d3444e2858392ba92eea"
+    },
+    {
+      "topic": "bounded_deque",
+      "title": "Keep Only the Latest Three Items With Python deque",
+      "slot": "short_pm",
+      "format": "short",
+      "source_url": "https://docs.python.org/3/library/collections.html#collections.deque",
+      "editorial_score": 14,
+      "experiment": [
+        {
+          "command": "deque(..., maxlen=3)",
+          "result": [
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "command": "input",
+          "result": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "command": "queue.maxlen",
+          "result": 3
+        },
+        {
+          "command": "deque([1,2,3], maxlen=3)",
+          "result": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "command": "queue after append(4)",
+          "result": [
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "command": "oldest retained?",
+          "result": false
+        }
+      ],
+      "topic_sha256": "a3d6a1e10997da438be5de649c6f931715f3a416ed1be1324c5bbab0f7d569bc",
+      "experiment_sha256": "e1d455e699c26418754c0b5eb8661beb7eba3f22965e331bf984faf22a23bbc7",
+      "spec_sha256": "caade61f5c5e8010aa5332098e5adfe2fa107fd729097190ac0c30084c5e342c"
+    }
+  ],
+  "bank_sha256": "b41a8aa3b085e96bb50a7d4726cca467af575c28434ad565f25bc21dd263e921",
+  "source_sha256": "ecb1b38f22df8a7c4479d49fb8341084ecdb3d667c91a0913bdf936dd7796d52",
+  "source_review_date": "2026-11-27",
+  "ranking_basis": "editorial judgments: surprise, usefulness, visual clarity; not measured audience demand",
+  "live_inventory_complete": false,
+  "release_authorized": false
+}

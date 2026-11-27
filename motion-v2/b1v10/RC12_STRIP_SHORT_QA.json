@@ -1,0 +1,145 @@
+{
+  "version": "1.0.0-rc12-phase2",
+  "topic": "strip_chars",
+  "episode_id": "fm_20261130_strip_chars_short",
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30,
+  "frames": 415,
+  "duration_seconds": 13.833333333333334,
+  "voice": "af_heart",
+  "audio": {
+    "decoded_samples": 664000,
+    "clipped_samples": 0,
+    "loudness": {
+      "input_i": -19.15,
+      "input_tp": -1.97,
+      "input_lra": 2.1
+    }
+  },
+  "capture_sha256": "58034a569f89098c51dc037d116ce6e2b7b57f6f0e646c3c9d9a75978faae349",
+  "capture_report_sha256": "7276d1a6298045ab388b07f820935f5080a479229715d97c495f225c93382d94",
+  "narration_report_sha256": "10430e3b05efd91fb3b898f79b8a74b5b8edf2bcd8e33b977f09909463ceaf23",
+  "spec_sha256": "5a311a646ded72bfcffa5850d65a2cc23c087a2dc478b15c6e046868bb0f94a8",
+  "mp4_sha256": "c1e8965dddb6bf989e572c77e1b5d75d6bcfa2f635dd44a54108e634f2a6a9c2",
+  "render_source_sha256": "28b17da90f9f272900c20b802a6e9ae0d234a80fb0ba749ee846ed0abfccb332",
+  "topic_sha256": "59d2379219e44f764205f950fda40a09ee9161b68bb667881ea4c63b14f07f50",
+  "design_dependency_sha256": "b0f5eb8e61672850234e8d2e93874f1f599dbccd1be003a808d0411849dd7ab7",
+  "event_starts_frames": [
+    0,
+    18,
+    68,
+    133,
+    223,
+    303,
+    358
+  ],
+  "source_crop": [
+    0,
+    60,
+    444,
+    252
+  ],
+  "display_rect": [
+    118,
+    1992,
+    730,
+    414
+  ],
+  "creative_brief_sha256": "decba500cde818d687b6da9244321714cf576dfa30fc3cec24402ae9ab399478",
+  "receipt_sha256": "97ffcfd40e10a01f18b5ff929bd00723424439cc162ea748c3d05b34593cf4ea",
+  "identity": {
+    "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+    "episode_id": "fm_20261130_strip_chars_short",
+    "format": "short",
+    "series": "python_automation",
+    "duration_seconds": 13.833333333333334,
+    "opening_proof_by_seconds": 1.9,
+    "first_real_action_at_seconds": 1.9,
+    "visible_payoff_at_seconds": 9.666666666666666,
+    "narrative_beats": 6,
+    "owner_approval": false,
+    "youtube_uploads": 0,
+    "capture_status": "WINDOWS_EXACT_HASH_VERIFIED_REVIEW_ONLY",
+    "capture_sha256": "58034a569f89098c51dc037d116ce6e2b7b57f6f0e646c3c9d9a75978faae349",
+    "capture_method": "windows_classic_console_window_only_live",
+    "capture_frames": 83,
+    "capture_fps": 6,
+    "capture_dimensions": [
+      870,
+      494
+    ],
+    "measured_log_max_lag_seconds": 0.04167,
+    "first_recorded_change_seconds": 0.5,
+    "provenance_authenticated": false
+  },
+  "observed": [
+    {
+      "frame": 0,
+      "source_frame": 0,
+      "error": 0.2337
+    },
+    {
+      "frame": 28,
+      "source_frame": 7,
+      "error": 0.2277
+    },
+    {
+      "frame": 30,
+      "source_frame": 7,
+      "error": 0.2267
+    },
+    {
+      "frame": 75,
+      "source_frame": 15,
+      "error": 0.2069
+    },
+    {
+      "frame": 90,
+      "source_frame": 17,
+      "error": 0.2105
+    },
+    {
+      "frame": 167,
+      "source_frame": 34,
+      "error": 0.2143
+    },
+    {
+      "frame": 251,
+      "source_frame": 50,
+      "error": 0.2305
+    },
+    {
+      "frame": 319,
+      "source_frame": 63,
+      "error": 0.2888
+    },
+    {
+      "frame": 381,
+      "source_frame": 77,
+      "error": 0.2927
+    },
+    {
+      "frame": 414,
+      "source_frame": 82,
+      "error": 0.2936
+    }
+  ],
+  "opening_changes": [
+    {
+      "frame": 15,
+      "seconds": 0.5,
+      "delta": 7.6848
+    },
+    {
+      "frame": 65,
+      "seconds": 2.1666666666666665,
+      "delta": 4.6432
+    }
+  ],
+  "full_decode_pass": true,
+  "human_playback_approved": false,
+  "release_authorized": false
+}

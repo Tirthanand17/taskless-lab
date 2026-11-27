@@ -116,3 +116,7 @@ Landscape visual polish and exact three-video review audit complete. RC11_POLISH
 ## RC12 phase 1
 
 Mandatory visual polish integrated into registered daily runner, actual hybrid run and exact restart passed. RC12_REVIEW_QA.json. New topics, live inventory, unattended scheduling and release acceptance remain open.
+
+## RC12 phase 2
+
+Six researched bounded candidates, two disjoint date selections and one newly generated generic Short verified. Finite curated pool; five other media candidates, live inventory, unattended execution and approval remain pending.

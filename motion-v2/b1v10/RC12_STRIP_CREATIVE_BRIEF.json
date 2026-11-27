@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_20261130_strip_chars_short",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 13.833333333333334,
+  "title": "Python strip Can Remove More Than You Expect",
+  "viewer_problem": "Unexpected result from a real software operation",
+  "viewer_promise": "See the actual operation and verify its effect",
+  "source_url": "https://docs.python.org/3/library/stdtypes.html#str.strip",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.9,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Why did the whole string disappear?",
+      "action_or_result": "Inspect hook result."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.9,
+      "end_seconds": 4.1,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "We only wanted to remove the prefix.",
+      "action_or_result": "Inspect demonstration result."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 4.1,
+      "end_seconds": 7.066666666666666,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Strip removes matching characters from both ends.",
+      "action_or_result": "Inspect cause result."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 7.066666666666666,
+      "end_seconds": 9.666666666666666,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Use remove prefix for an exact prefix.",
+      "action_or_result": "Inspect fix result."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 9.666666666666666,
+      "end_seconds": 11.6,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Now the ending stays intact.",
+      "action_or_result": "Inspect payoff result."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 11.6,
+      "end_seconds": 13.833333333333334,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Choose the method that matches your goal.",
+      "action_or_result": "Inspect takeaway result."
+    }
+  ]
+}

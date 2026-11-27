@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 664000,
+  "duration_seconds": 13.833333333333334,
+  "frames_at_30fps": 415,
+  "narration_sha256": "e5b4c0977129250c4770d09ea344f20309acf08fc849875f0d01115f579cb33c",
+  "captions_sha256": "329a5dbd6a6d65aabadf496e79eebc758abfac00558760d35e352e5e028bd6b6",
+  "word_captions_sha256": "ab9279c85a126812f133ea89f361b50a6ac94fb276fb6660a9b92016830f506c",
+  "spec_sha256": "5a311a646ded72bfcffa5850d65a2cc23c087a2dc478b15c6e046868bb0f94a8",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 57,
+      "expected": "Why did the whole string disappear?",
+      "recognized": "Why did the whole string disappear?",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 6,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.44,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -20.63,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "75006a82077f62c0314afec3e476f15e1cfd5afc7bf1d791e77c4c93f134b2e7"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 57,
+      "end_frame": 123,
+      "expected": "We only wanted to remove the prefix.",
+      "recognized": "We only wanted to remove the prefix.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 7,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.52,
+      "energy": {
+        "peak_dbfs": -2.03,
+        "rms_dbfs": -21.37,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "7d5660adc802f6d1b769ebe8935d74a96c939214dd2bedf5fba009ab7c06c33b"
+    },
+    {
+      "id": "cause",
+      "start_frame": 123,
+      "end_frame": 212,
+      "expected": "Strip removes matching characters from both ends.",
+      "recognized": "Strip removes matching characters from both ends.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 7,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.367,
+      "energy": {
+        "peak_dbfs": -2.01,
+        "rms_dbfs": -18.22,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "b026f28c54af9953de9137e888b9ed2d312a8534eff2799450cc433e5bff3214"
+    },
+    {
+      "id": "fix",
+      "start_frame": 212,
+      "end_frame": 290,
+      "expected": "Use remove prefix for an exact prefix.",
+      "recognized": "Use Remove prefix for an exact prefix.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 7,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.52,
+      "energy": {
+        "peak_dbfs": -2.02,
+        "rms_dbfs": -20.25,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "48fcea53dc0a368b34ff413d3a27dd1e6aa75b028a8822aab96c125e2c4741d9"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 290,
+      "end_frame": 348,
+      "expected": "Now the ending stays intact.",
+      "recognized": "Now the ending stays intact.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 5,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.553,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -20.33,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "fd3d326302fa0bf1e86fd429ead28701f28afdffeec07c67c0ba587f799f97ca"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 348,
+      "end_frame": 415,
+      "expected": "Choose the method that matches your goal.",
+      "recognized": "Choose the method that matches your goal.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 7,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.433,
+      "energy": {
+        "peak_dbfs": -2.01,
+        "rms_dbfs": -17.76,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "f82281f2a4432edbd8f0027eb2de3d52b75d77d7d63fe9ab4ec13b67038da3a2"
+    }
+  ],
+  "caption_cues": 11,
+  "recognized_words": 39,
+  "all_exact_token_matches": true,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -19.45,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

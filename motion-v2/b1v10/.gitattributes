@@ -193,3 +193,16 @@ run_polished_rc12.py -text
 test_run_polished_rc12.py -text
 RC12_REVIEW_QA.json -text
 RC12_SHARED_SHORT_QA.json -text
+RC12_CANDIDATES.json -text
+select_topics_rc12.py -text
+live_generic_rc12.py -text
+capture_generic_rc12.py -text
+render_generic_rc12.py -text
+test_candidates_rc12.py -text
+RC12_1130_SELECTION_QA.json -text
+RC12_1201_SELECTION_QA.json -text
+RC12_STRIP_NARRATION_QA.json -text
+RC12_STRIP_CAPTURE_QA.json -text
+RC12_STRIP_SHORT_QA.json -text
+RC12_STRIP_CREATIVE_BRIEF.json -text
+RC12_STRIP_CAPTURE_RECEIPT.json -text

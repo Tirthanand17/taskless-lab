@@ -1,0 +1,173 @@
+{
+  "version": "1.0.0-rc12-phase2",
+  "day": "2026-12-01",
+  "candidate_count": 6,
+  "history_rows": 194,
+  "historical_rejections": [
+    "strip_chars",
+    "bounded_deque",
+    "count_missing"
+  ],
+  "selected": [
+    {
+      "topic": "counter_difference",
+      "title": "Python Counter Subtraction Can Hide Negative Counts",
+      "slot": "short_am",
+      "format": "short",
+      "source_url": "https://docs.python.org/3/library/collections.html#collections.Counter",
+      "editorial_score": 12,
+      "experiment": [
+        {
+          "command": "Counter(a=2)-Counter(a=5)",
+          "result": {}
+        },
+        {
+          "command": "counts",
+          "result": [
+            2,
+            5
+          ]
+        },
+        {
+          "command": "positive count keys",
+          "result": []
+        },
+        {
+          "command": "a.subtract(b)",
+          "result": {
+            "a": -3
+          }
+        },
+        {
+          "command": "operator vs method",
+          "result": [
+            {},
+            {
+              "a": -3
+            }
+          ]
+        },
+        {
+          "command": "negative count kept?",
+          "result": true
+        }
+      ],
+      "topic_sha256": "683de553050e8d074cd9f51cb72ca80bb4caa4848d5ceadd4adc3b74cfc4fcea",
+      "experiment_sha256": "02bbf8a37d2aaf22ccc5d083d44d2ee8ebcb82cc6cd52bc95db1ef3272dc3e15",
+      "spec_sha256": "7315faae937d6bba2ffbd4dfcc58ec2ef03e372f070d2a4ff0e95b2c11c3448e"
+    },
+    {
+      "topic": "union_duplicates",
+      "title": "SQL UNION Can Remove Real Transactions",
+      "slot": "long",
+      "format": "long",
+      "source_url": "https://www.sqlite.org/lang_select.html",
+      "editorial_score": 14,
+      "experiment": [
+        {
+          "command": "SELECT v FROM a UNION SELECT v FROM b",
+          "result": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "command": "source values",
+          "result": [
+            [
+              "A",
+              "B"
+            ],
+            [
+              "A",
+              "C"
+            ]
+          ]
+        },
+        {
+          "command": "unique row count",
+          "result": 3
+        },
+        {
+          "command": "SELECT v FROM a UNION ALL SELECT v FROM b",
+          "result": [
+            "A",
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "command": "unique / all",
+          "result": [
+            3,
+            4
+          ]
+        },
+        {
+          "command": "both lists equal?",
+          "result": false
+        }
+      ],
+      "topic_sha256": "7048f83262db61e61bf8d868cfa84a1e3446cd13ec186ab87097abf4a97f76cb",
+      "experiment_sha256": "e46acacbc3a754a4943b51ad37bbf24a051d02cb6e45e1ff4801fa50ab8a62f6",
+      "spec_sha256": "2c886f0c48660024a36244e7add79c30c1a0ba2873309a8cfbd8c7a815794a71"
+    },
+    {
+      "topic": "partition_text",
+      "title": "Python partition Splits Only at the First Separator",
+      "slot": "short_pm",
+      "format": "short",
+      "source_url": "https://docs.python.org/3/library/stdtypes.html#str.partition",
+      "editorial_score": 11,
+      "experiment": [
+        {
+          "command": "text.split(':')",
+          "result": [
+            "a",
+            "b",
+            "c"
+          ]
+        },
+        {
+          "command": "text",
+          "result": "a:b:c"
+        },
+        {
+          "command": "text.count(':')",
+          "result": 2
+        },
+        {
+          "command": "text.partition(':')",
+          "result": [
+            "a",
+            ":",
+            "b:c"
+          ]
+        },
+        {
+          "command": "partition remainder",
+          "result": "b:c"
+        },
+        {
+          "command": "'abc'.partition(':')",
+          "result": [
+            "abc",
+            "",
+            ""
+          ]
+        }
+      ],
+      "topic_sha256": "c6c284d640fc0ba501e6e32ca7fef5eecdfdff83432f08438a8439c62c0d24e1",
+      "experiment_sha256": "5b3c155ce4c08b7c3327e360de712e3760049fa89ef4ad57cf97c1479b1ff62d",
+      "spec_sha256": "b3f13b197f21f9869e2bad58d65c14a92626531c0575cae23d390f3f47dace93"
+    }
+  ],
+  "bank_sha256": "b41a8aa3b085e96bb50a7d4726cca467af575c28434ad565f25bc21dd263e921",
+  "source_sha256": "ecb1b38f22df8a7c4479d49fb8341084ecdb3d667c91a0913bdf936dd7796d52",
+  "source_review_date": "2026-11-27",
+  "ranking_basis": "editorial judgments: surprise, usefulness, visual clarity; not measured audience demand",
+  "live_inventory_complete": false,
+  "release_authorized": false
+}
