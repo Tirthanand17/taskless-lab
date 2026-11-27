@@ -246,3 +246,16 @@ Reproduce from motion-v2/b1v10 with local RC7 media:
 python daily_review_rc7.py --day 2026-11-28 --media-root C:\path\to\b1v10-dev --ffmpeg C:\path\to\ffmpeg.exe --output C:\path\to\new-report.json
 ```
 See RC7_EDITORIAL_QA.json and RC7_DAILY_REVIEW_QA.json.
+
+## RC8 phase 1 — continuous actual Python recording and six-beat creative brief
+
+A new scripted local Python float experiment records the dedicated classic Windows console continuously (no page handshakes or inserted source stills). It executes the actual arithmetic and comparison expressions, the exact stored fraction and decimal-string alternative. The first 12fps capture was rejected for timing drift; the 10fps retry passed with 221 sampled frames and maximum lag 0.046 seconds. The actual calculation output and equality result change on screen within three seconds. The commands are printed by the controlled demo script, not human keystrokes. Static reading periods are real, not evidence of continuous motion.
+
+The 22.0333-second Short uses the recorded window throughout, with supplemental native graphic notes. Final 1080x1920/30fps export: 661 frames, 1057600 PCM samples identical to RC7, full decode and nine sampled capture-region matches; no audio clipping. The unchanged legacy creative brief validator passed the six roles (hook, demonstration, cause, fix, payoff, takeaway); this validates the structured brief and not subjective creative quality. The hook ends at 1.5s, demonstration starts at 1.5s, and declared payoff at 16.8s. Observed terminal changes are tracked separately. Some annotations slightly anticipate the live output (equality note begins at 1.5s, recorded output follows around 1.8s). The recorded window is downscaled for the vertical layout, and terminal text remains small in 360px previews; nine representative frames inspected, not a full listening/playback approval. The legacy Linux capture receipt remains incompatible; no release or publishing authority. Remaining: other two videos, mobile framing and creative polish, fresh topic and channel inventory, generalized daily production and exact approved handoff.
+
+Reproduce with the existing RC7 float editorial MP4 and offline FFmpeg:
+```powershell
+python capture_live_float_rc8.py --out C:\path\to\new-capture --ffmpeg C:\path\to\ffmpeg.exe
+python render_live_float_rc8.py --capture C:\path\to\new-capture --prior C:\path\to\EDITORIAL_REVIEW.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+Evidence is stored in RC8_LIVE_CAPTURE_QA.json, RC8_LIVE_SHORT_QA.json and RC8_CREATIVE_BRIEF.json. No publisher or schedule changes.

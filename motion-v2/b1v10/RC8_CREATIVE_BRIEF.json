@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_rc8_float_live_pilot",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 22.033333333333335,
+  "title": "Why Python prints extra digits when adding 0.1 and 0.2",
+  "viewer_problem": "Unexpected floating point equality result",
+  "viewer_promise": "See actual calculation, cause and decimal-string alternative",
+  "source_url": "https://docs.python.org/3/tutorial/floatingpoint.html",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.5,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Unexpected extra digits.",
+      "action_or_result": "Show the actual sum."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.5,
+      "end_seconds": 8.6,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Compare the calculated value.",
+      "action_or_result": "Execute the equality test."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 8.6,
+      "end_seconds": 15.733333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Compare stored fraction and 1/10.",
+      "action_or_result": "Inspect the exact stored fraction."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 15.733333333333333,
+      "end_seconds": 16.8,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Use exact decimal inputs.",
+      "action_or_result": "Show the replacement expression."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 16.8,
+      "end_seconds": 19.5,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The decimal sum matches.",
+      "action_or_result": "Compute and verify the decimal result."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 19.5,
+      "end_seconds": 22.033333333333335,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Precision limits still apply.",
+      "action_or_result": "Keep the verified output visible."
+    }
+  ]
+}

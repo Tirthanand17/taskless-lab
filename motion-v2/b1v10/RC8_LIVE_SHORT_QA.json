@@ -1,0 +1,121 @@
+{
+  "version": "1.0.0-rc8",
+  "pilot": "float",
+  "capture_sha256": "670202d115787b920a59fbfcafb908ce9628ea10caf1fa172023eeb8ad76babb",
+  "capture_report_sha256": "b55d50f56a9fd8ca8aef62d7f89ef75eebe50505634b8e8ed9b40114f016d8ca",
+  "prior_sha256": "bdca5b2b1a635e72ab6ed19f8eb579df577928361a6752bdf7bcd9e174617c0c",
+  "mp4_sha256": "f8bb7e7ba4d5abc748e9f60e46f3dd9bd7ba012852440e43ab75dccaccf8fc04",
+  "source_sha256": "90e933ef8db66e377d2b111dd00c2b4eea9e75795fcf97441ae737aec166aeba",
+  "frames": 661,
+  "resolution": [
+    1080,
+    1920
+  ],
+  "audio": {
+    "decoded_samples": 1057600,
+    "clipped_samples": 0,
+    "loudness": {
+      "input_i": -16.73,
+      "input_tp": -1.95,
+      "input_lra": 1.0
+    }
+  },
+  "pcm_identical": true,
+  "full_decode_pass": true,
+  "observed": [
+    {
+      "frame": 0,
+      "source_frame": 0,
+      "error": 0.0758
+    },
+    {
+      "frame": 30,
+      "source_frame": 11,
+      "error": 0.0975
+    },
+    {
+      "frame": 75,
+      "source_frame": 25,
+      "error": 0.1348
+    },
+    {
+      "frame": 300,
+      "source_frame": 101,
+      "error": 0.154
+    },
+    {
+      "frame": 390,
+      "source_frame": 131,
+      "error": 0.1916
+    },
+    {
+      "frame": 490,
+      "source_frame": 162,
+      "error": 0.0919
+    },
+    {
+      "frame": 535,
+      "source_frame": 178,
+      "error": 0.0967
+    },
+    {
+      "frame": 610,
+      "source_frame": 204,
+      "error": 0.1862
+    },
+    {
+      "frame": 660,
+      "source_frame": 220,
+      "error": 0.1874
+    }
+  ],
+  "actual_changes": [
+    {
+      "frame": 18,
+      "seconds": 0.6,
+      "delta": 1.1
+    },
+    {
+      "frame": 54,
+      "seconds": 1.8,
+      "delta": 0.6815
+    },
+    {
+      "frame": 261,
+      "seconds": 8.7,
+      "delta": 3.5706
+    },
+    {
+      "frame": 342,
+      "seconds": 11.4,
+      "delta": 0.8036
+    },
+    {
+      "frame": 474,
+      "seconds": 15.8,
+      "delta": 4.0472
+    },
+    {
+      "frame": 567,
+      "seconds": 18.9,
+      "delta": 2.3615
+    }
+  ],
+  "creative_brief_sha256": "19c6d4035a7ecc038b69a44b4969c5407e5f8c8d5a2e3b722e032e498ec6a313",
+  "creative_schema_result": {
+    "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+    "episode_id": "fm_rc8_float_live_pilot",
+    "format": "short",
+    "series": "python_automation",
+    "duration_seconds": 22.033333333333335,
+    "opening_proof_by_seconds": 1.5,
+    "first_real_action_at_seconds": 1.5,
+    "visible_payoff_at_seconds": 16.8,
+    "narrative_beats": 6,
+    "owner_approval": false,
+    "youtube_uploads": 0
+  },
+  "legacy_capture_receipt_compatible": false,
+  "human_playback_approved": false,
+  "release_authorized": false
+}

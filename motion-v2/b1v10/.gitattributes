@@ -85,3 +85,10 @@ daily_review_rc7.py -text
 test_daily_review_rc7.py -text
 RC7_EDITORIAL_QA.json -text
 RC7_DAILY_REVIEW_QA.json -text
+float_live_demo_rc8.py -text
+capture_live_float_rc8.py -text
+render_live_float_rc8.py -text
+test_live_float_rc8.py -text
+RC8_LIVE_CAPTURE_QA.json -text
+RC8_LIVE_SHORT_QA.json -text
+RC8_CREATIVE_BRIEF.json -text

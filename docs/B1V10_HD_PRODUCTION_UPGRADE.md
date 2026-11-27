@@ -68,3 +68,7 @@ Three opening evidence revisions independently verified (RC7_OPENING_QA.json); p
 ## RC7 phase 2
 
 Corrected Short opening copy and tested local daily review intake of all three exact pilots. RC7_EDITORIAL_QA.json and RC7_DAILY_REVIEW_QA.json. Generic receipt identity screening implemented; legacy approval and real action gate remain open. No unattended daily rendering or YouTube scheduling.
+
+## RC8 phase 1
+
+Continuous actual Python float capture and six-beat review brief validated; see RC8_LIVE_SHORT_QA.json. One of three pilots meets structured creative brief schema; legacy receipt, mobile and playback review, fresh daily topics and release approval remain open.
