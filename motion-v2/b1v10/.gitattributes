@@ -144,3 +144,10 @@ render_daily_rc9p3.py -text
 render_daily_sql_rc9p3.py -text
 fresh_batch_rc9p3.py -text
 test_fresh_batch_rc9p3.py -text
+run_daily_rc10.py -text
+test_run_daily_rc10.py -text
+RC10_RUN_QA.json -text
+RC10_ZIP_CAPTURE_QA.json -text
+RC10_ZIP_SHORT_QA.json -text
+RC10_ZIP_CAPTURE_RECEIPT.json -text
+RC10_ZIP_CREATIVE_BRIEF.json -text

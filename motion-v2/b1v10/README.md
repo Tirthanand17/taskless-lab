@@ -328,3 +328,15 @@ Reproduce the batch check with the local artifact folders:
 python fresh_batch_rc9p3.py --day 2026-11-28 --path C:\path\to\fresh-daily-rc9\path_suffix --zip C:\path\to\fresh-daily-rc9-r2\zip_crc --sql C:\path\to\fresh-daily-rc9-r3\sql_null --output C:\path\to\new-report.json
 ```
 See RC9_FRESH_BATCH_QA.json and linked per-topic reports. This completes the first new three-video review batch, not unattended daily regeneration or live channel uniqueness. The existing historical inventory limitation, subjective playback/rights/facts approval and exact publisher handoff remain. No upload or schedule change.
+
+## RC10 phase 1 — restartable daily review runner
+
+run_daily_rc10.py orchestrates the registered Nov 28 three-topic set through actual fixture execution, spec generation, audio, capture, render and final batch validation. Each stage writes an atomic local journal checkpoint with exact report hash, execution mode and UTC timestamps. A workspace lock prevents simultaneous writers. On resume each completed stage is revalidated rather than relying on the checkpoint alone; incomplete directories are retained and require explicit inspection/quarantine before retry. Stale locks require operator inspection. The code refuses an unregistered date before creating a workspace, so this catalog cannot be automatically relabeled as fresh topics.
+
+Actual hybrid run: all nine stages completed, seven adopted verified artifacts, ZIP capture and render generated automatically. ZIP continuous recording passed at 6 fps with 57.67ms maximum sample lag, no blank frames or grab retries. All three final review artifacts verified and exact unsigned-release rejection retained. An actual second invocation without seed arguments revalidated all nine completed stages and left the batch report hash unchanged. A Nov 29 attempt was refused before creating its workspace. Failure and concurrency behavior tested separately with isolated fixtures. This is a local, explicitly invoked orchestration test, not a scheduled job or a clean all-new three-video run. New topic registration, generalizing the capture adapter, full live channel inventory, human playback and publisher approval remain outstanding. Source files used by the prior RC9 reports are unchanged.
+
+Run from motion-v2/b1v10 with existing Windows dependencies and a new local workspace:
+```powershell
+python run_daily_rc10.py --day 2026-11-28 --workspace C:\path\to\review-workspace --local C:\path\to\historical-workspace --assets C:\path\to\kokoro-assets --ffmpeg C:\path\to\ffmpeg.exe
+```
+To reproduce the hybrid run, supply --seed-root pointing to the original b1v10-dev directory and --seed zip_crc=audio --seed sql_null=render --seed path_suffix=render. To resume, run the same command without seed arguments; a completed stage is reused only if verification succeeds. See RC10_RUN_QA.json and RC10_ZIP_* evidence. No uploads or schedules.

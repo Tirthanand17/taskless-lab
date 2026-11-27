@@ -1,0 +1,176 @@
+{
+  "version": "1.0.0-rc10-phase1",
+  "review_date_ist": "2026-11-28",
+  "slots": [
+    {
+      "slot": "short_am",
+      "reference_local_time": "11:00",
+      "topic": "zip_crc",
+      "episode_id": "fm_20261128_zip_crc_short",
+      "title": "Your ZIP Opens, But Is the File Inside Corrupted?",
+      "format": "short",
+      "duration_seconds": 21.533333333333335,
+      "frames": 646,
+      "video_sha256": "865ae4309c8b117e1b6215a9257337f0637b2814a473b7f3b38531a9b1f3f7bb",
+      "capture_sha256": "d7a3df8c1371e74534a04951a237127dc5906f1d4c3be30e50615d0cdaefb9f9",
+      "render_report_sha256": "0f8857fe7eff0757f2487a13977dedc8c0da81bc624a9ebe964a116d71d638a4",
+      "audio": {
+        "decoded_samples": 1033600,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -17.07,
+          "input_tp": -1.92,
+          "input_lra": 2.0
+        }
+      },
+      "identity": {
+        "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+        "episode_id": "fm_20261128_zip_crc_short",
+        "format": "short",
+        "series": "python_automation",
+        "duration_seconds": 21.533333333333335,
+        "opening_proof_by_seconds": 1.4666666666666666,
+        "first_real_action_at_seconds": 1.4666666666666666,
+        "visible_payoff_at_seconds": 12.833333333333334,
+        "narrative_beats": 6,
+        "owner_approval": false,
+        "youtube_uploads": 0,
+        "capture_status": "WINDOWS_EXACT_HASH_VERIFIED_REVIEW_ONLY",
+        "capture_sha256": "d7a3df8c1371e74534a04951a237127dc5906f1d4c3be30e50615d0cdaefb9f9",
+        "capture_method": "windows_classic_console_window_only_live",
+        "capture_frames": 130,
+        "capture_fps": 6,
+        "capture_dimensions": [
+          870,
+          494
+        ],
+        "measured_log_max_lag_seconds": 0.05767,
+        "first_recorded_change_seconds": 0.5,
+        "provenance_authenticated": false
+      },
+      "technical_review_pass": true,
+      "release_authorized": false,
+      "disposition": "HOLD_NOT_SCHEDULED"
+    },
+    {
+      "slot": "long",
+      "reference_local_time": "16:00",
+      "topic": "sql_null",
+      "episode_id": "fm_20261128_sql_null_long",
+      "title": "Why SQL NOT IN Returns Zero Rows: The NULL Trap",
+      "format": "long",
+      "duration_seconds": 59.3,
+      "frames": 1779,
+      "video_sha256": "d05a8a1011469c6a55a6391142152af6f11a71a8acaa161ac2e91036a6c18d3d",
+      "capture_sha256": "e884a06ea03bc0a16cc7092d839b12843958c11d4dd69d44c26f4aad9f4548fe",
+      "render_report_sha256": "f153cc0880bd121d4a2fcef57181809d0a1c380e3e482015c1f5c6d04f8ebd9e",
+      "audio": {
+        "decoded_samples": 2846400,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.33,
+          "input_tp": -1.94,
+          "input_lra": 2.2
+        }
+      },
+      "identity": {
+        "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+        "episode_id": "fm_20261128_sql_null_long",
+        "format": "long",
+        "series": "python_automation",
+        "duration_seconds": 59.3,
+        "opening_proof_by_seconds": 1.3666666666666667,
+        "first_real_action_at_seconds": 1.3666666666666667,
+        "visible_payoff_at_seconds": 38.6,
+        "narrative_beats": 6,
+        "owner_approval": false,
+        "youtube_uploads": 0,
+        "capture_status": "WINDOWS_EXACT_HASH_VERIFIED_REVIEW_ONLY",
+        "capture_sha256": "e884a06ea03bc0a16cc7092d839b12843958c11d4dd69d44c26f4aad9f4548fe",
+        "capture_method": "windows_classic_console_window_only_live",
+        "capture_frames": 356,
+        "capture_fps": 6,
+        "capture_dimensions": [
+          870,
+          494
+        ],
+        "measured_log_max_lag_seconds": 0.03633,
+        "first_recorded_change_seconds": 0.5,
+        "provenance_authenticated": false
+      },
+      "technical_review_pass": true,
+      "release_authorized": false,
+      "disposition": "HOLD_NOT_SCHEDULED"
+    },
+    {
+      "slot": "short_pm",
+      "reference_local_time": "20:30",
+      "topic": "path_suffix",
+      "episode_id": "fm_20261128_path_suffix_short",
+      "title": "Python with_suffix Does Not Rename Your File",
+      "format": "short",
+      "duration_seconds": 21.966666666666665,
+      "frames": 659,
+      "video_sha256": "a24c132fa752c818325431306907ad42ae424a2e2ced54645770fd4f8dfc7c5a",
+      "capture_sha256": "f6599e9e31ead41a8b18f745d2be1d1d8c97e4c494a0fd1681c374ef090c21fc",
+      "render_report_sha256": "311b88935bd4d238fcf059d8dd610c6bcdc81b43e646606fe1122377cf816dc6",
+      "audio": {
+        "decoded_samples": 1054400,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.76,
+          "input_tp": -1.97,
+          "input_lra": 1.5
+        }
+      },
+      "identity": {
+        "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+        "episode_id": "fm_20261128_path_suffix_short",
+        "format": "short",
+        "series": "python_automation",
+        "duration_seconds": 21.966666666666665,
+        "opening_proof_by_seconds": 1.3666666666666667,
+        "first_real_action_at_seconds": 1.3666666666666667,
+        "visible_payoff_at_seconds": 13.566666666666666,
+        "narrative_beats": 6,
+        "owner_approval": false,
+        "youtube_uploads": 0,
+        "capture_status": "WINDOWS_EXACT_HASH_VERIFIED_REVIEW_ONLY",
+        "capture_sha256": "f6599e9e31ead41a8b18f745d2be1d1d8c97e4c494a0fd1681c374ef090c21fc",
+        "capture_method": "windows_classic_console_window_only_live",
+        "capture_frames": 132,
+        "capture_fps": 6,
+        "capture_dimensions": [
+          870,
+          494
+        ],
+        "measured_log_max_lag_seconds": 0.078,
+        "first_recorded_change_seconds": 0.5,
+        "provenance_authenticated": false
+      },
+      "technical_review_pass": true,
+      "release_authorized": false,
+      "disposition": "HOLD_NOT_SCHEDULED"
+    }
+  ],
+  "fresh_video_count": 3,
+  "technical_review_pass_count": 3,
+  "live_inventory_complete": false,
+  "human_playback_approved": false,
+  "unattended_generation_verified": false,
+  "release_ready_count": 0,
+  "youtube_uploads": 0,
+  "youtube_schedules": 0,
+  "execution_modes": {
+    "zip_crc/audio": "adopted",
+    "zip_crc/capture": "generated",
+    "zip_crc/render": "generated",
+    "sql_null/audio": "adopted",
+    "sql_null/capture": "adopted",
+    "sql_null/render": "adopted",
+    "path_suffix/audio": "adopted",
+    "path_suffix/capture": "adopted",
+    "path_suffix/render": "adopted"
+  },
+  "orchestrator_source_sha256": "696cc39932f82e6a4fa83865aaa7cbebbb3d71d1c668f5450f1903bf26c2dbd1"
+}

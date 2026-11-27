@@ -92,3 +92,7 @@ Three fresh researched topics and actual isolated experiments; historical duplic
 ## RC9 phase 3
 
 First entirely new daily batch generated, two Shorts and one 59.3s landscape video. All three pass technical and structured creative review; RC9_FRESH_BATCH_QA.json. Unattended generation, live inventory, subjective approval and release remain pending.
+
+## RC10 phase 1
+
+Restartable local nine-stage review runner exercised: seven adopted verified stages and two newly generated ZIP stages; actual resume unchanged and unregistered next-day refusal. RC10_RUN_QA.json. New daily topics, unattended scheduling and release acceptance remain open.
