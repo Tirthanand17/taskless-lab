@@ -72,3 +72,7 @@ Corrected Short opening copy and tested local daily review intake of all three e
 ## RC8 phase 1
 
 Continuous actual Python float capture and six-beat review brief validated; see RC8_LIVE_SHORT_QA.json. One of three pilots meets structured creative brief schema; legacy receipt, mobile and playback review, fresh daily topics and release approval remain open.
+
+## RC8 phase 2
+
+Continuous actual SHA-256 capture and six-beat review brief verified; see RC8_SHA_SHORT_QA.json. Both Shorts now pass structured creative brief validation. Continuous long-video proof and all release requirements remain open.

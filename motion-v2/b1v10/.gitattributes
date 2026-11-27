@@ -92,3 +92,10 @@ test_live_float_rc8.py -text
 RC8_LIVE_CAPTURE_QA.json -text
 RC8_LIVE_SHORT_QA.json -text
 RC8_CREATIVE_BRIEF.json -text
+sha_live_demo_rc8.py -text
+capture_live_sha_rc8.py -text
+render_live_sha_rc8.py -text
+test_live_sha_rc8.py -text
+RC8_SHA_CAPTURE_QA.json -text
+RC8_SHA_SHORT_QA.json -text
+RC8_SHA_CREATIVE_BRIEF.json -text

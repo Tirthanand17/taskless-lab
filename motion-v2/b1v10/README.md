@@ -259,3 +259,16 @@ python capture_live_float_rc8.py --out C:\path\to\new-capture --ffmpeg C:\path\t
 python render_live_float_rc8.py --capture C:\path\to\new-capture --prior C:\path\to\EDITORIAL_REVIEW.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 Evidence is stored in RC8_LIVE_CAPTURE_QA.json, RC8_LIVE_SHORT_QA.json and RC8_CREATIVE_BRIEF.json. No publisher or schedule changes.
+
+## RC8 phase 2 — continuous SHA-256 Short
+
+The second Short now has a continuous first-party Windows console recording, without inserted still frames or page handshakes. Two generated one-byte files are hashed and compared to a saved trusted original digest, with actual full 64-character equality comparisons. The opening hash prefixes appear at 0.6 seconds and the first file read at 1.9 seconds in the recorded source. The capture passed at 10 fps, 194 frames, 0.038 seconds maximum sample lag. The final video retains the exact prior RC7 soundtrack and captions, and magnifies a 620x350 crop to 792x448, avoiding the unused right/bottom console area without claiming new source detail.
+
+Final 1080x1920/30fps export: 581 frames, 929600 identical PCM samples, full decode and nine sampled source region comparisons. Six-beat legacy structured creative brief passes (hook 1.5 seconds, demonstration begins 1.5 seconds, actual recorded file read at 1.9 seconds, declared payoff 14.7 seconds). The fix is an integrity verification method rather than a repair operation. Nine phone-width frames inspected. The actual software output is script-driven, not human keystrokes; supporting notes are editorial, and some static space remains during holds. The earlier SHA byte/bite raw ASR ambiguity remains subject to listening review. No legacy Linux capture receipt compatibility, human playback or release approval is claimed. Both Shorts now have valid structured creative briefs; the long video still needs the continuous demonstration treatment. No new topics, unattended daily generation, uploads or schedules.
+
+Reproduce using existing RC7 SHA editorial MP4 and local FFmpeg:
+```powershell
+python capture_live_sha_rc8.py --out C:\path\to\new-capture --ffmpeg C:\path\to\ffmpeg.exe
+python render_live_sha_rc8.py --capture C:\path\to\new-capture --prior C:\path\to\EDITORIAL_REVIEW.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+Evidence: RC8_SHA_CAPTURE_QA.json, RC8_SHA_SHORT_QA.json, RC8_SHA_CREATIVE_BRIEF.json.

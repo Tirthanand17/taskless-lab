@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_rc8_sha_live_pilot",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 19.366666666666667,
+  "title": "How one byte changes a SHA-256 fingerprint",
+  "viewer_problem": "How to check file integrity after a byte changes",
+  "viewer_promise": "Compare two real file hashes against a trusted original",
+  "source_url": "https://docs.python.org/3/library/hashlib.html",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.5,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Watch the hash prefixes.",
+      "action_or_result": "Compute actual hash prefixes."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.5,
+      "end_seconds": 7.733333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Read A.bin and B.bin.",
+      "action_or_result": "Read the generated files."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 7.733333333333333,
+      "end_seconds": 12.766666666666667,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Compute both full digests.",
+      "action_or_result": "Show the full SHA-256 digests."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 12.766666666666667,
+      "end_seconds": 14.7,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Compare against the original.",
+      "action_or_result": "Use the saved original digest."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 14.7,
+      "end_seconds": 17.3,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "All 64 hex digits compared.",
+      "action_or_result": "Compare both files with trusted digest."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 17.3,
+      "end_seconds": 19.366666666666667,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "A match alone cannot prove safety.",
+      "action_or_result": "Keep the observed comparison visible."
+    }
+  ]
+}
