@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_20261128_zip_crc_short",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 21.533333333333335,
+  "title": "Your ZIP Opens, But Is the File Inside Corrupted?",
+  "viewer_problem": "Unexpected result from a real software operation",
+  "viewer_promise": "See the actual operation and verify its effect",
+  "source_url": "https://docs.python.org/3/library/zipfile.html#zipfile.ZipFile.testzip",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.4666666666666666,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "This ZIP opens.",
+      "action_or_result": "Show the archive still opens."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.4666666666666666,
+      "end_seconds": 5.533333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "But one file inside is damaged. The file list still looks normal.",
+      "action_or_result": "Run the actual archive integrity check."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 5.533333333333333,
+      "end_seconds": 8.733333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The file changed, but the saved check value did not.",
+      "action_or_result": "Compare intact and altered test archives."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 8.733333333333333,
+      "end_seconds": 12.833333333333334,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Python can test the files inside instead of just listing their names.",
+      "action_or_result": "Use the built-in archive integrity test."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 12.833333333333334,
+      "end_seconds": 17.333333333333332,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The damaged archive reports the broken file. The intact copy passes.",
+      "action_or_result": "Show the measured comparison."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 17.333333333333332,
+      "end_seconds": 21.533333333333335,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "A checksum check detects corruption, not whether a download is trustworthy.",
+      "action_or_result": "Explain the limit of this test."
+    }
+  ]
+}

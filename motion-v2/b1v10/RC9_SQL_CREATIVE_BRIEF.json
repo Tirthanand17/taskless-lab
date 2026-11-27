@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_20261128_sql_null_long",
+  "format": "long",
+  "series": "python_automation",
+  "duration_seconds": 59.3,
+  "title": "Why SQL NOT IN Returns Zero Rows: The NULL Trap",
+  "viewer_problem": "Unexpected result from a real software operation",
+  "viewer_promise": "See the actual operation and verify its effect",
+  "source_url": "https://www.sqlite.org/lang_expr.html#the_in_and_not_in_operators",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.3666666666666667,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Where are the customers?",
+      "action_or_result": "Run the failing filter."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.3666666666666667,
+      "end_seconds": 14.433333333333334,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Our customer table contains four rows. The blocked table contains customer two and an unknown identifier. We want customers who are not blocked. This is a small local database with invented data.",
+      "action_or_result": "Inspect both source tables."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 14.433333333333334,
+      "end_seconds": 26.233333333333334,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The filter returns no rows. A comparison with a missing value can be unknown. The database keeps only rows where the condition is true. Here, every row is either false or unknown.",
+      "action_or_result": "Show the per-row truth values."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 26.233333333333334,
+      "end_seconds": 38.6,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Instead, check whether a matching blocked row exists. Use the SQL expression shown on screen. Another option is to exclude missing identifiers from the blocked list, if that matches your business rule.",
+      "action_or_result": "Execute both alternative filters."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 38.6,
+      "end_seconds": 46.63333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Both corrected queries return the same three customers. The blocked customer is gone. We check the actual result with an assertion.",
+      "action_or_result": "Verify exact matching results."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 46.63333333333333,
+      "end_seconds": 59.3,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "A missing identifier in the customer table is different. The first corrected query can include that row. Add an explicit check if you want to exclude unknown customers. Choose the rule that fits your data.",
+      "action_or_result": "Test unknown outer identifiers explicitly."
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 2846400,
+  "duration_seconds": 59.3,
+  "frames_at_30fps": 1779,
+  "narration_sha256": "e67d9ef21b491ddf38d158f02b234fc294ac05704b24751c53fb603fe801a991",
+  "captions_sha256": "0a112fca77e76c47b729017eb52f4ab43836e35879f06b072990bcee57e6220b",
+  "word_captions_sha256": "e53cd63230144da996248b85d9f246398681cd4ac87245c997cdbceba55c0a11",
+  "spec_sha256": "c3b97c5d38db73feeed06f3f5009f5a94b0c7b0333a0aada799c0167a8095a41",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 41,
+      "expected": "Where are the customers?",
+      "recognized": "Where are the customers?",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 4,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.507,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -17.05,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "65df37d49ee16beb20fc6767d4704e88785b85909444e9dd5a1d2ff49e679642"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 41,
+      "end_frame": 433,
+      "expected": "Our customer table contains four rows. The blocked table contains customer two and an unknown identifier. We want customers who are not blocked. This is a small local database with invented data.",
+      "recognized": "Our customer table contains four rows. The block table contains customer two and an unknown identifier. We want customers who are not blocked. This is a small local database with invented data.",
+      "token_similarity": 0.9688,
+      "exact_token_match": false,
+      "word_count": 32,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.407,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.06,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "24247baa9d2ffdd9842bfdee6e1c5e9c78aec37ff256dd257ee6fe7ce2392747"
+    },
+    {
+      "id": "cause",
+      "start_frame": 433,
+      "end_frame": 787,
+      "expected": "The filter returns no rows. A comparison with a missing value can be unknown. The database keeps only rows where the condition is true. Here, every row is either false or unknown.",
+      "recognized": "The filter returns no rows. A comparison with a missing value can be unknown. The database keeps only rows where the condition is true. Here, every row is either false or unknown.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 32,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.52,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.71,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "c58204022b79507b7ede5a8c7ab261de3b05df9ea9e201469b57bb861b1d5354"
+    },
+    {
+      "id": "fix",
+      "start_frame": 787,
+      "end_frame": 1158,
+      "expected": "Instead, check whether a matching blocked row exists. Use the SQL expression shown on screen. Another option is to exclude missing identifiers from the blocked list, if that matches your business rule.",
+      "recognized": "Instead, check whether a matching blocked row exists. Use the SQL expression shown on screen. Another option is to exclude missing identifiers from the blocked list if that matches your business rule.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 32,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.367,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.43,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "bcabc6b9c4bb0fea9fb9c78cd47e32f442f312ade0619928b2d9ddf4d6c7a87b"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 1158,
+      "end_frame": 1399,
+      "expected": "Both corrected queries return the same three customers. The blocked customer is gone. We check the actual result with an assertion.",
+      "recognized": "Both corrected queries return the same three customers. The blocked customer is gone. We check the actual result with an assertion.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 21,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.353,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.63,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "fd96a5e4f0501d921e80e6af95ea034544f43cd725be5e28b275c33082aee833"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 1399,
+      "end_frame": 1779,
+      "expected": "A missing identifier in the customer table is different. The first corrected query can include that row. Add an explicit check if you want to exclude unknown customers. Choose the rule that fits your data.",
+      "recognized": "A missing identifier in the customer table is different. The first corrected query can include that row. Add an explicit check if you want to exclude unknown customers. Choose the rule that fits your data.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 35,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.407,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.21,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "e2b3e2d20c0251c464964e225555420139f2653c0adb3c220bc1a19c9fc11281"
+    }
+  ],
+  "caption_cues": 35,
+  "recognized_words": 156,
+  "all_exact_token_matches": false,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -16.39,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

@@ -1,0 +1,1196 @@
+{
+  "raw_caption_sha256": "e53cd63230144da996248b85d9f246398681cd4ac87245c997cdbceba55c0a11",
+  "corrections": [
+    {
+      "from": "block",
+      "to": "blocked",
+      "start": 4.386667,
+      "end": 4.606667
+    }
+  ],
+  "corrected_tokens_match_script": true,
+  "human_listening_approved": false,
+  "cues": [
+    {
+      "start": 0.0,
+      "end": 0.86,
+      "text": "Where are the customers?",
+      "words": [
+        {
+          "word": "Where",
+          "start": 0.0,
+          "end": 0.22,
+          "probability": 0.8325445055961609
+        },
+        {
+          "word": "are",
+          "start": 0.22,
+          "end": 0.36,
+          "probability": 0.9925211071968079
+        },
+        {
+          "word": "the",
+          "start": 0.36,
+          "end": 0.44,
+          "probability": 0.9957386255264282
+        },
+        {
+          "word": "customers?",
+          "start": 0.44,
+          "end": 0.86,
+          "probability": 0.9868549108505249
+        }
+      ]
+    },
+    {
+      "start": 1.366667,
+      "end": 3.246667,
+      "text": "Our customer table contains four",
+      "words": [
+        {
+          "word": "Our",
+          "start": 1.366667,
+          "end": 1.506667,
+          "probability": 0.9517965912818909
+        },
+        {
+          "word": "customer",
+          "start": 1.506667,
+          "end": 1.886667,
+          "probability": 0.8095680475234985
+        },
+        {
+          "word": "table",
+          "start": 1.886667,
+          "end": 2.286667,
+          "probability": 0.9909736514091492
+        },
+        {
+          "word": "contains",
+          "start": 2.286667,
+          "end": 2.686667,
+          "probability": 0.9938713312149048
+        },
+        {
+          "word": "four",
+          "start": 2.686667,
+          "end": 3.246667,
+          "probability": 0.8016158938407898
+        }
+      ]
+    },
+    {
+      "start": 3.246667,
+      "end": 5.566667,
+      "text": "rows. The blocked table contains",
+      "words": [
+        {
+          "word": "rows.",
+          "start": 3.246667,
+          "end": 3.626667,
+          "probability": 0.9952629804611206
+        },
+        {
+          "word": "The",
+          "start": 4.306667,
+          "end": 4.386667,
+          "probability": 0.9959291815757751
+        },
+        {
+          "word": "blocked",
+          "start": 4.386667,
+          "end": 4.606667,
+          "probability": 0.87333083152771
+        },
+        {
+          "word": "table",
+          "start": 4.606667,
+          "end": 5.026667,
+          "probability": 0.9955486059188843
+        },
+        {
+          "word": "contains",
+          "start": 5.026667,
+          "end": 5.566667,
+          "probability": 0.9962460398674011
+        }
+      ]
+    },
+    {
+      "start": 5.566667,
+      "end": 7.386667,
+      "text": "customer two and an unknown",
+      "words": [
+        {
+          "word": "customer",
+          "start": 5.566667,
+          "end": 6.026667,
+          "probability": 0.8592197299003601
+        },
+        {
+          "word": "two",
+          "start": 6.026667,
+          "end": 6.406667,
+          "probability": 0.5736490488052368
+        },
+        {
+          "word": "and",
+          "start": 6.406667,
+          "end": 6.926667,
+          "probability": 0.8736696243286133
+        },
+        {
+          "word": "an",
+          "start": 6.926667,
+          "end": 7.046667,
+          "probability": 0.9842582941055298
+        },
+        {
+          "word": "unknown",
+          "start": 7.046667,
+          "end": 7.386667,
+          "probability": 0.9943776726722717
+        }
+      ]
+    },
+    {
+      "start": 7.386667,
+      "end": 9.846667,
+      "text": "identifier. We want customers who",
+      "words": [
+        {
+          "word": "identifier.",
+          "start": 7.386667,
+          "end": 8.266667,
+          "probability": 0.9955278038978577
+        },
+        {
+          "word": "We",
+          "start": 8.786667,
+          "end": 8.946667,
+          "probability": 0.9964085221290588
+        },
+        {
+          "word": "want",
+          "start": 8.946667,
+          "end": 9.106667,
+          "probability": 0.998302698135376
+        },
+        {
+          "word": "customers",
+          "start": 9.106667,
+          "end": 9.586667,
+          "probability": 0.9975568056106567
+        },
+        {
+          "word": "who",
+          "start": 9.586667,
+          "end": 9.846667,
+          "probability": 0.9955930113792419
+        }
+      ]
+    },
+    {
+      "start": 9.846667,
+      "end": 11.486667,
+      "text": "are not blocked. This is",
+      "words": [
+        {
+          "word": "are",
+          "start": 9.846667,
+          "end": 9.966667,
+          "probability": 0.9958315491676331
+        },
+        {
+          "word": "not",
+          "start": 9.966667,
+          "end": 10.166667,
+          "probability": 0.9976902008056641
+        },
+        {
+          "word": "blocked.",
+          "start": 10.166667,
+          "end": 10.546667,
+          "probability": 0.9848795533180237
+        },
+        {
+          "word": "This",
+          "start": 11.146667,
+          "end": 11.326667,
+          "probability": 0.997564435005188
+        },
+        {
+          "word": "is",
+          "start": 11.326667,
+          "end": 11.486667,
+          "probability": 0.9929678440093994
+        }
+      ]
+    },
+    {
+      "start": 11.486667,
+      "end": 13.206667,
+      "text": "a small local database with",
+      "words": [
+        {
+          "word": "a",
+          "start": 11.486667,
+          "end": 11.606667,
+          "probability": 0.995062530040741
+        },
+        {
+          "word": "small",
+          "start": 11.606667,
+          "end": 11.946667,
+          "probability": 0.9974141120910645
+        },
+        {
+          "word": "local",
+          "start": 11.946667,
+          "end": 12.386667,
+          "probability": 0.7924259305000305
+        },
+        {
+          "word": "database",
+          "start": 12.386667,
+          "end": 12.826667,
+          "probability": 0.9858711361885071
+        },
+        {
+          "word": "with",
+          "start": 12.826667,
+          "end": 13.206667,
+          "probability": 0.9928663969039917
+        }
+      ]
+    },
+    {
+      "start": 13.206667,
+      "end": 14.026667,
+      "text": "invented data.",
+      "words": [
+        {
+          "word": "invented",
+          "start": 13.206667,
+          "end": 13.646667,
+          "probability": 0.9776893854141235
+        },
+        {
+          "word": "data.",
+          "start": 13.646667,
+          "end": 14.026667,
+          "probability": 0.999559223651886
+        }
+      ]
+    },
+    {
+      "start": 14.433333,
+      "end": 15.993333,
+      "text": "The filter returns no rows.",
+      "words": [
+        {
+          "word": "The",
+          "start": 14.433333,
+          "end": 14.513333,
+          "probability": 0.8432329893112183
+        },
+        {
+          "word": "filter",
+          "start": 14.513333,
+          "end": 14.853333,
+          "probability": 0.975085973739624
+        },
+        {
+          "word": "returns",
+          "start": 14.853333,
+          "end": 15.393333,
+          "probability": 0.9968309998512268
+        },
+        {
+          "word": "no",
+          "start": 15.393333,
+          "end": 15.653333,
+          "probability": 0.9387450814247131
+        },
+        {
+          "word": "rows.",
+          "start": 15.653333,
+          "end": 15.993333,
+          "probability": 0.8214216828346252
+        }
+      ]
+    },
+    {
+      "start": 16.553333,
+      "end": 17.693333,
+      "text": "A comparison with a missing",
+      "words": [
+        {
+          "word": "A",
+          "start": 16.553333,
+          "end": 16.653333,
+          "probability": 0.9943950176239014
+        },
+        {
+          "word": "comparison",
+          "start": 16.653333,
+          "end": 17.093333,
+          "probability": 0.9956576824188232
+        },
+        {
+          "word": "with",
+          "start": 17.093333,
+          "end": 17.373333,
+          "probability": 0.9942928552627563
+        },
+        {
+          "word": "a",
+          "start": 17.373333,
+          "end": 17.493333,
+          "probability": 0.9096196293830872
+        },
+        {
+          "word": "missing",
+          "start": 17.493333,
+          "end": 17.693333,
+          "probability": 0.99565589427948
+        }
+      ]
+    },
+    {
+      "start": 17.693333,
+      "end": 19.613333,
+      "text": "value can be unknown. The",
+      "words": [
+        {
+          "word": "value",
+          "start": 17.693333,
+          "end": 18.133333,
+          "probability": 0.994470477104187
+        },
+        {
+          "word": "can",
+          "start": 18.133333,
+          "end": 18.393333,
+          "probability": 0.9970280528068542
+        },
+        {
+          "word": "be",
+          "start": 18.393333,
+          "end": 18.553333,
+          "probability": 0.9991798996925354
+        },
+        {
+          "word": "unknown.",
+          "start": 18.553333,
+          "end": 18.833333,
+          "probability": 0.9952385425567627
+        },
+        {
+          "word": "The",
+          "start": 19.493333,
+          "end": 19.613333,
+          "probability": 0.9962932467460632
+        }
+      ]
+    },
+    {
+      "start": 19.613333,
+      "end": 21.413333,
+      "text": "database keeps only rows where",
+      "words": [
+        {
+          "word": "database",
+          "start": 19.613333,
+          "end": 19.933333,
+          "probability": 0.9833062291145325
+        },
+        {
+          "word": "keeps",
+          "start": 19.933333,
+          "end": 20.333333,
+          "probability": 0.7978960275650024
+        },
+        {
+          "word": "only",
+          "start": 20.333333,
+          "end": 20.733333,
+          "probability": 0.9943354725837708
+        },
+        {
+          "word": "rows",
+          "start": 20.733333,
+          "end": 21.153333,
+          "probability": 0.9960336089134216
+        },
+        {
+          "word": "where",
+          "start": 21.153333,
+          "end": 21.413333,
+          "probability": 0.9615549445152283
+        }
+      ]
+    },
+    {
+      "start": 21.413333,
+      "end": 23.253333,
+      "text": "the condition is true. Here,",
+      "words": [
+        {
+          "word": "the",
+          "start": 21.413333,
+          "end": 21.533333,
+          "probability": 0.9963357448577881
+        },
+        {
+          "word": "condition",
+          "start": 21.533333,
+          "end": 21.853333,
+          "probability": 0.9973920583724976
+        },
+        {
+          "word": "is",
+          "start": 21.853333,
+          "end": 22.133333,
+          "probability": 0.9984690546989441
+        },
+        {
+          "word": "true.",
+          "start": 22.133333,
+          "end": 22.373333,
+          "probability": 0.9972735047340393
+        },
+        {
+          "word": "Here,",
+          "start": 22.993333,
+          "end": 23.253333,
+          "probability": 0.9901086091995239
+        }
+      ]
+    },
+    {
+      "start": 23.673333,
+      "end": 24.933333,
+      "text": "every row is either false",
+      "words": [
+        {
+          "word": "every",
+          "start": 23.673333,
+          "end": 23.893333,
+          "probability": 0.9978085160255432
+        },
+        {
+          "word": "row",
+          "start": 23.893333,
+          "end": 24.193333,
+          "probability": 0.9923334121704102
+        },
+        {
+          "word": "is",
+          "start": 24.193333,
+          "end": 24.453333,
+          "probability": 0.9979887008666992
+        },
+        {
+          "word": "either",
+          "start": 24.453333,
+          "end": 24.633333,
+          "probability": 0.9993844032287598
+        },
+        {
+          "word": "false",
+          "start": 24.633333,
+          "end": 24.933333,
+          "probability": 0.9940891265869141
+        }
+      ]
+    },
+    {
+      "start": 24.933333,
+      "end": 25.713333,
+      "text": "or unknown.",
+      "words": [
+        {
+          "word": "or",
+          "start": 24.933333,
+          "end": 25.313333,
+          "probability": 0.9868751764297485
+        },
+        {
+          "word": "unknown.",
+          "start": 25.313333,
+          "end": 25.713333,
+          "probability": 0.9973284006118774
+        }
+      ]
+    },
+    {
+      "start": 26.233333,
+      "end": 27.853333,
+      "text": "Instead, check whether a matching",
+      "words": [
+        {
+          "word": "Instead,",
+          "start": 26.233333,
+          "end": 26.613333,
+          "probability": 0.9498953819274902
+        },
+        {
+          "word": "check",
+          "start": 27.013333,
+          "end": 27.133333,
+          "probability": 0.9968342185020447
+        },
+        {
+          "word": "whether",
+          "start": 27.133333,
+          "end": 27.393333,
+          "probability": 0.9964770674705505
+        },
+        {
+          "word": "a",
+          "start": 27.393333,
+          "end": 27.573333,
+          "probability": 0.9949718713760376
+        },
+        {
+          "word": "matching",
+          "start": 27.573333,
+          "end": 27.853333,
+          "probability": 0.9881354570388794
+        }
+      ]
+    },
+    {
+      "start": 27.853333,
+      "end": 30.053333,
+      "text": "blocked row exists. Use the",
+      "words": [
+        {
+          "word": "blocked",
+          "start": 27.853333,
+          "end": 28.333333,
+          "probability": 0.7693750858306885
+        },
+        {
+          "word": "row",
+          "start": 28.333333,
+          "end": 28.513333,
+          "probability": 0.9477249979972839
+        },
+        {
+          "word": "exists.",
+          "start": 28.513333,
+          "end": 29.033333,
+          "probability": 0.9938442707061768
+        },
+        {
+          "word": "Use",
+          "start": 29.713333,
+          "end": 29.873333,
+          "probability": 0.9956566095352173
+        },
+        {
+          "word": "the",
+          "start": 29.873333,
+          "end": 30.053333,
+          "probability": 0.994439959526062
+        }
+      ]
+    },
+    {
+      "start": 30.053333,
+      "end": 32.013333,
+      "text": "SQL expression shown on screen.",
+      "words": [
+        {
+          "word": "SQL",
+          "start": 30.053333,
+          "end": 30.473333,
+          "probability": 0.8658827543258667
+        },
+        {
+          "word": "expression",
+          "start": 30.473333,
+          "end": 31.053333,
+          "probability": 0.959135115146637
+        },
+        {
+          "word": "shown",
+          "start": 31.053333,
+          "end": 31.413333,
+          "probability": 0.9784409999847412
+        },
+        {
+          "word": "on",
+          "start": 31.413333,
+          "end": 31.673333,
+          "probability": 0.9989489912986755
+        },
+        {
+          "word": "screen.",
+          "start": 31.673333,
+          "end": 32.013333,
+          "probability": 0.6031262278556824
+        }
+      ]
+    },
+    {
+      "start": 32.693333,
+      "end": 34.413333,
+      "text": "Another option is to exclude",
+      "words": [
+        {
+          "word": "Another",
+          "start": 32.693333,
+          "end": 32.973333,
+          "probability": 0.9948323965072632
+        },
+        {
+          "word": "option",
+          "start": 32.973333,
+          "end": 33.553333,
+          "probability": 0.9969204664230347
+        },
+        {
+          "word": "is",
+          "start": 33.553333,
+          "end": 33.793333,
+          "probability": 0.9965940117835999
+        },
+        {
+          "word": "to",
+          "start": 33.793333,
+          "end": 33.933333,
+          "probability": 0.9982328414916992
+        },
+        {
+          "word": "exclude",
+          "start": 33.933333,
+          "end": 34.413333,
+          "probability": 0.9956383109092712
+        }
+      ]
+    },
+    {
+      "start": 34.413333,
+      "end": 36.133333,
+      "text": "missing identifiers from the blocked",
+      "words": [
+        {
+          "word": "missing",
+          "start": 34.413333,
+          "end": 34.713333,
+          "probability": 0.9943848848342896
+        },
+        {
+          "word": "identifiers",
+          "start": 34.713333,
+          "end": 35.493333,
+          "probability": 0.992633730173111
+        },
+        {
+          "word": "from",
+          "start": 35.493333,
+          "end": 35.713333,
+          "probability": 0.9973582625389099
+        },
+        {
+          "word": "the",
+          "start": 35.713333,
+          "end": 35.853333,
+          "probability": 0.9961830973625183
+        },
+        {
+          "word": "blocked",
+          "start": 35.853333,
+          "end": 36.133333,
+          "probability": 0.5298268795013428
+        }
+      ]
+    },
+    {
+      "start": 36.133333,
+      "end": 37.633333,
+      "text": "list if that matches your",
+      "words": [
+        {
+          "word": "list",
+          "start": 36.133333,
+          "end": 36.513333,
+          "probability": 0.9968488812446594
+        },
+        {
+          "word": "if",
+          "start": 36.513333,
+          "end": 36.953333,
+          "probability": 0.6276845932006836
+        },
+        {
+          "word": "that",
+          "start": 36.953333,
+          "end": 37.113333,
+          "probability": 0.9917355179786682
+        },
+        {
+          "word": "matches",
+          "start": 37.113333,
+          "end": 37.453333,
+          "probability": 0.9960207343101501
+        },
+        {
+          "word": "your",
+          "start": 37.453333,
+          "end": 37.633333,
+          "probability": 0.9900762438774109
+        }
+      ]
+    },
+    {
+      "start": 37.633333,
+      "end": 38.233333,
+      "text": "business rule.",
+      "words": [
+        {
+          "word": "business",
+          "start": 37.633333,
+          "end": 37.913333,
+          "probability": 0.9853951930999756
+        },
+        {
+          "word": "rule.",
+          "start": 37.913333,
+          "end": 38.233333,
+          "probability": 0.9796096682548523
+        }
+      ]
+    },
+    {
+      "start": 38.6,
+      "end": 40.4,
+      "text": "Both corrected queries return the",
+      "words": [
+        {
+          "word": "Both",
+          "start": 38.6,
+          "end": 38.78,
+          "probability": 0.8718938231468201
+        },
+        {
+          "word": "corrected",
+          "start": 38.78,
+          "end": 39.26,
+          "probability": 0.982650101184845
+        },
+        {
+          "word": "queries",
+          "start": 39.26,
+          "end": 39.68,
+          "probability": 0.9018833041191101
+        },
+        {
+          "word": "return",
+          "start": 39.68,
+          "end": 40.16,
+          "probability": 0.9671032428741455
+        },
+        {
+          "word": "the",
+          "start": 40.16,
+          "end": 40.4,
+          "probability": 0.9955639839172363
+        }
+      ]
+    },
+    {
+      "start": 40.4,
+      "end": 42.52,
+      "text": "same three customers. The blocked",
+      "words": [
+        {
+          "word": "same",
+          "start": 40.4,
+          "end": 40.62,
+          "probability": 0.9946200847625732
+        },
+        {
+          "word": "three",
+          "start": 40.62,
+          "end": 40.92,
+          "probability": 0.8764644265174866
+        },
+        {
+          "word": "customers.",
+          "start": 40.92,
+          "end": 41.42,
+          "probability": 0.9899603128433228
+        },
+        {
+          "word": "The",
+          "start": 42.02,
+          "end": 42.2,
+          "probability": 0.996543824672699
+        },
+        {
+          "word": "blocked",
+          "start": 42.2,
+          "end": 42.52,
+          "probability": 0.902234673500061
+        }
+      ]
+    },
+    {
+      "start": 42.52,
+      "end": 44.42,
+      "text": "customer is gone. We check",
+      "words": [
+        {
+          "word": "customer",
+          "start": 42.52,
+          "end": 43.06,
+          "probability": 0.9958969354629517
+        },
+        {
+          "word": "is",
+          "start": 43.06,
+          "end": 43.3,
+          "probability": 0.9939653277397156
+        },
+        {
+          "word": "gone.",
+          "start": 43.3,
+          "end": 43.56,
+          "probability": 0.9735113382339478
+        },
+        {
+          "word": "We",
+          "start": 44.1,
+          "end": 44.22,
+          "probability": 0.9934661984443665
+        },
+        {
+          "word": "check",
+          "start": 44.22,
+          "end": 44.42,
+          "probability": 0.9867416024208069
+        }
+      ]
+    },
+    {
+      "start": 44.42,
+      "end": 45.76,
+      "text": "the actual result with an",
+      "words": [
+        {
+          "word": "the",
+          "start": 44.42,
+          "end": 44.62,
+          "probability": 0.9946712851524353
+        },
+        {
+          "word": "actual",
+          "start": 44.62,
+          "end": 44.98,
+          "probability": 0.9961265921592712
+        },
+        {
+          "word": "result",
+          "start": 44.98,
+          "end": 45.4,
+          "probability": 0.9922171831130981
+        },
+        {
+          "word": "with",
+          "start": 45.4,
+          "end": 45.64,
+          "probability": 0.9687026143074036
+        },
+        {
+          "word": "an",
+          "start": 45.64,
+          "end": 45.76,
+          "probability": 0.9800795912742615
+        }
+      ]
+    },
+    {
+      "start": 45.76,
+      "end": 46.28,
+      "text": "assertion.",
+      "words": [
+        {
+          "word": "assertion.",
+          "start": 45.76,
+          "end": 46.28,
+          "probability": 0.9945545494556427
+        }
+      ]
+    },
+    {
+      "start": 46.633333,
+      "end": 48.073333,
+      "text": "A missing identifier in the",
+      "words": [
+        {
+          "word": "A",
+          "start": 46.633333,
+          "end": 46.733333,
+          "probability": 0.8953699469566345
+        },
+        {
+          "word": "missing",
+          "start": 46.733333,
+          "end": 46.993333,
+          "probability": 0.9206340909004211
+        },
+        {
+          "word": "identifier",
+          "start": 46.993333,
+          "end": 47.733333,
+          "probability": 0.9925185441970825
+        },
+        {
+          "word": "in",
+          "start": 47.733333,
+          "end": 47.993333,
+          "probability": 0.9961024522781372
+        },
+        {
+          "word": "the",
+          "start": 47.993333,
+          "end": 48.073333,
+          "probability": 0.9942275285720825
+        }
+      ]
+    },
+    {
+      "start": 48.073333,
+      "end": 50.373333,
+      "text": "customer table is different. The",
+      "words": [
+        {
+          "word": "customer",
+          "start": 48.073333,
+          "end": 48.413333,
+          "probability": 0.9171244502067566
+        },
+        {
+          "word": "table",
+          "start": 48.413333,
+          "end": 48.853333,
+          "probability": 0.9777637720108032
+        },
+        {
+          "word": "is",
+          "start": 48.853333,
+          "end": 49.253333,
+          "probability": 0.9921680092811584
+        },
+        {
+          "word": "different.",
+          "start": 49.253333,
+          "end": 49.613333,
+          "probability": 0.9988238215446472
+        },
+        {
+          "word": "The",
+          "start": 50.233333,
+          "end": 50.373333,
+          "probability": 0.9971776008605957
+        }
+      ]
+    },
+    {
+      "start": 50.373333,
+      "end": 52.193333,
+      "text": "first corrected query can include",
+      "words": [
+        {
+          "word": "first",
+          "start": 50.373333,
+          "end": 50.633333,
+          "probability": 0.9900500774383545
+        },
+        {
+          "word": "corrected",
+          "start": 50.633333,
+          "end": 51.133333,
+          "probability": 0.9899604320526123
+        },
+        {
+          "word": "query",
+          "start": 51.133333,
+          "end": 51.533333,
+          "probability": 0.9921758770942688
+        },
+        {
+          "word": "can",
+          "start": 51.533333,
+          "end": 51.813333,
+          "probability": 0.9977555871009827
+        },
+        {
+          "word": "include",
+          "start": 51.813333,
+          "end": 52.193333,
+          "probability": 0.9989792108535767
+        }
+      ]
+    },
+    {
+      "start": 52.193333,
+      "end": 53.953333,
+      "text": "that row. Add an explicit",
+      "words": [
+        {
+          "word": "that",
+          "start": 52.193333,
+          "end": 52.413333,
+          "probability": 0.9985477328300476
+        },
+        {
+          "word": "row.",
+          "start": 52.413333,
+          "end": 52.673333,
+          "probability": 0.9889680743217468
+        },
+        {
+          "word": "Add",
+          "start": 53.273333,
+          "end": 53.413333,
+          "probability": 0.9839609861373901
+        },
+        {
+          "word": "an",
+          "start": 53.413333,
+          "end": 53.573333,
+          "probability": 0.9886006712913513
+        },
+        {
+          "word": "explicit",
+          "start": 53.573333,
+          "end": 53.953333,
+          "probability": 0.9984788298606873
+        }
+      ]
+    },
+    {
+      "start": 53.953333,
+      "end": 55.033333,
+      "text": "check if you want to",
+      "words": [
+        {
+          "word": "check",
+          "start": 53.953333,
+          "end": 54.313333,
+          "probability": 0.9874836206436157
+        },
+        {
+          "word": "if",
+          "start": 54.313333,
+          "end": 54.613333,
+          "probability": 0.9780722856521606
+        },
+        {
+          "word": "you",
+          "start": 54.613333,
+          "end": 54.713333,
+          "probability": 0.9971129894256592
+        },
+        {
+          "word": "want",
+          "start": 54.713333,
+          "end": 54.873333,
+          "probability": 0.9988991022109985
+        },
+        {
+          "word": "to",
+          "start": 54.873333,
+          "end": 55.033333,
+          "probability": 0.999347984790802
+        }
+      ]
+    },
+    {
+      "start": 55.033333,
+      "end": 57.473333,
+      "text": "exclude unknown customers. Choose",
+      "words": [
+        {
+          "word": "exclude",
+          "start": 55.033333,
+          "end": 55.393333,
+          "probability": 0.9974445104598999
+        },
+        {
+          "word": "unknown",
+          "start": 55.393333,
+          "end": 55.853333,
+          "probability": 0.9875029921531677
+        },
+        {
+          "word": "customers.",
+          "start": 55.853333,
+          "end": 56.593333,
+          "probability": 0.9978887438774109
+        },
+        {
+          "word": "Choose",
+          "start": 57.173333,
+          "end": 57.473333,
+          "probability": 0.9914319515228271
+        }
+      ]
+    },
+    {
+      "start": 57.473333,
+      "end": 58.613333,
+      "text": "the rule that fits your",
+      "words": [
+        {
+          "word": "the",
+          "start": 57.473333,
+          "end": 57.693333,
+          "probability": 0.9966943264007568
+        },
+        {
+          "word": "rule",
+          "start": 57.693333,
+          "end": 57.933333,
+          "probability": 0.9643409252166748
+        },
+        {
+          "word": "that",
+          "start": 57.933333,
+          "end": 58.193333,
+          "probability": 0.9989445805549622
+        },
+        {
+          "word": "fits",
+          "start": 58.193333,
+          "end": 58.433333,
+          "probability": 0.9947977066040039
+        },
+        {
+          "word": "your",
+          "start": 58.433333,
+          "end": 58.613333,
+          "probability": 0.9937978386878967
+        }
+      ]
+    },
+    {
+      "start": 58.613333,
+      "end": 58.893333,
+      "text": "data.",
+      "words": [
+        {
+          "word": "data.",
+          "start": 58.613333,
+          "end": 58.893333,
+          "probability": 0.9982958436012268
+        }
+      ]
+    }
+  ]
+}

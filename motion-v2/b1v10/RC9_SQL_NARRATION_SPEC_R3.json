@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0-rc9",
+  "candidate_id": "sql_null",
+  "voice": "af_heart",
+  "language": "en-us",
+  "fps": 30,
+  "sample_rate": 48000,
+  "review_only": true,
+  "scenes": [
+    {
+      "id": "hook",
+      "text": "Where are the customers?",
+      "speed": 1.04,
+      "pause_ms": 80
+    },
+    {
+      "id": "demonstration",
+      "text": "Our customer table contains four rows. The blocked table contains customer two and an unknown identifier. We want customers who are not blocked. This is a small local database with invented data.",
+      "speed": 1.03,
+      "pause_ms": 200
+    },
+    {
+      "id": "cause",
+      "text": "The filter returns no rows. A comparison with a missing value can be unknown. The database keeps only rows where the condition is true. Here, every row is either false or unknown.",
+      "speed": 1.03,
+      "pause_ms": 200
+    },
+    {
+      "id": "fix",
+      "text": "Instead, check whether a matching blocked row exists. Use the SQL expression shown on screen. Another option is to exclude missing identifiers from the blocked list, if that matches your business rule.",
+      "speed": 1.03,
+      "pause_ms": 200
+    },
+    {
+      "id": "payoff",
+      "text": "Both corrected queries return the same three customers. The blocked customer is gone. We check the actual result with an assertion.",
+      "speed": 1.03,
+      "pause_ms": 200
+    },
+    {
+      "id": "takeaway",
+      "text": "A missing identifier in the customer table is different. The first corrected query can include that row. Add an explicit check if you want to exclude unknown customers. Choose the rule that fits your data.",
+      "speed": 1.03,
+      "pause_ms": 200
+    }
+  ]
+}

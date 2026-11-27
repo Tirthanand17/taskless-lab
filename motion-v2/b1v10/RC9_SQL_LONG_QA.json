@@ -1,0 +1,123 @@
+{
+  "version": "1.0.0-rc9-phase3",
+  "topic": "sql_null",
+  "episode_id": "fm_20261128_sql_null_long",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 30,
+  "frames": 1779,
+  "duration_seconds": 59.3,
+  "voice": "af_heart",
+  "audio": {
+    "decoded_samples": 2846400,
+    "clipped_samples": 0,
+    "loudness": {
+      "input_i": -16.33,
+      "input_tp": -1.94,
+      "input_lra": 2.2
+    }
+  },
+  "capture_sha256": "e884a06ea03bc0a16cc7092d839b12843958c11d4dd69d44c26f4aad9f4548fe",
+  "capture_report_sha256": "6f3a54e62703833d7b794fba23ed60400e3495913a8487709b9b3e0522129e7d",
+  "narration_report_sha256": "e60ca46ae167653900ee19a05fb0ae3cdb6de25eeeb87cb9ca1e08fdb23301a8",
+  "spec_sha256": "c3b97c5d38db73feeed06f3f5009f5a94b0c7b0333a0aada799c0167a8095a41",
+  "mp4_sha256": "d05a8a1011469c6a55a6391142152af6f11a71a8acaa161ac2e91036a6c18d3d",
+  "render_source_sha256": "0053d0da75dbe40659d6e1bf2b6bb9b3d338a38d357f0cc291a3734efff71013",
+  "creative_brief_sha256": "b33e0a75ea0b1028984d0108f565be3cdf1f5cd91fe840b4ca7fe06e405ffd4a",
+  "receipt_sha256": "6f7b9ed22a7fa04cffefc7491ac6b73d493432bff67246123201de9df1c6b6d2",
+  "identity": {
+    "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+    "episode_id": "fm_20261128_sql_null_long",
+    "format": "long",
+    "series": "python_automation",
+    "duration_seconds": 59.3,
+    "opening_proof_by_seconds": 1.3666666666666667,
+    "first_real_action_at_seconds": 1.3666666666666667,
+    "visible_payoff_at_seconds": 38.6,
+    "narrative_beats": 6,
+    "owner_approval": false,
+    "youtube_uploads": 0,
+    "capture_status": "WINDOWS_EXACT_HASH_VERIFIED_REVIEW_ONLY",
+    "capture_sha256": "e884a06ea03bc0a16cc7092d839b12843958c11d4dd69d44c26f4aad9f4548fe",
+    "capture_method": "windows_classic_console_window_only_live",
+    "capture_frames": 356,
+    "capture_fps": 6,
+    "capture_dimensions": [
+      870,
+      494
+    ],
+    "measured_log_max_lag_seconds": 0.03633,
+    "first_recorded_change_seconds": 0.5,
+    "provenance_authenticated": false
+  },
+  "caption_review_sha256": "ff37ff2d70f6e6806934119d22d6d7ec05a9d0751da48d21191f21c1acd5b389",
+  "observed": [
+    {
+      "frame": 0,
+      "source_frame": 0,
+      "error": 1.4998
+    },
+    {
+      "frame": 20,
+      "source_frame": 3,
+      "error": 2.2317
+    },
+    {
+      "frame": 30,
+      "source_frame": 7,
+      "error": 2.21
+    },
+    {
+      "frame": 75,
+      "source_frame": 14,
+      "error": 1.4303
+    },
+    {
+      "frame": 237,
+      "source_frame": 46,
+      "error": 1.4308
+    },
+    {
+      "frame": 610,
+      "source_frame": 121,
+      "error": 1.527
+    },
+    {
+      "frame": 972,
+      "source_frame": 195,
+      "error": 2.244
+    },
+    {
+      "frame": 1278,
+      "source_frame": 255,
+      "error": 2.0524
+    },
+    {
+      "frame": 1589,
+      "source_frame": 317,
+      "error": 1.747
+    },
+    {
+      "frame": 1778,
+      "source_frame": 355,
+      "error": 1.748
+    }
+  ],
+  "opening_changes": [
+    {
+      "frame": 15,
+      "seconds": 0.5,
+      "delta": 1.3812
+    },
+    {
+      "frame": 65,
+      "seconds": 2.1666666666666665,
+      "delta": 6.0431
+    }
+  ],
+  "full_decode_pass": true,
+  "human_playback_approved": false,
+  "release_authorized": false
+}

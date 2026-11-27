@@ -88,3 +88,7 @@ Existing Branch 1 validator accepts a distinct Windows continuous capture receip
 ## RC9 phase 2
 
 Three fresh researched topics and actual isolated experiments; historical duplicate screen of 185 manifests. First new path_suffix Short generated and verified. ZIP narration passed, SQL narration held. Remaining capture/render adapters and live inventory pending. No release.
+
+## RC9 phase 3
+
+First entirely new daily batch generated, two Shorts and one 59.3s landscape video. All three pass technical and structured creative review; RC9_FRESH_BATCH_QA.json. Unattended generation, live inventory, subjective approval and release remain pending.

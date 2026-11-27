@@ -1,0 +1,53 @@
+{
+  "id": "sql_null",
+  "slot": "long",
+  "format": "long",
+  "title": "Why SQL NOT IN Returns Zero Rows: The NULL Trap",
+  "source_url": "https://www.sqlite.org/lang_expr.html#the_in_and_not_in_operators",
+  "aliases": [
+    "sql not in",
+    "not exists",
+    "null trap",
+    "sqlite null",
+    "sql null"
+  ],
+  "rationale": "Practical debugging story for data learners; table rows and query results provide a concrete payoff.",
+  "scenes": [
+    [
+      "hook",
+      "Zero rows?",
+      "Where are the customers?",
+      "Run the failing filter."
+    ],
+    [
+      "demonstration",
+      "The missing customers",
+      "Our customer table contains four rows. The blocked table contains customer two and an unknown identifier. We want customers who are not blocked. This is a small local database with invented data.",
+      "Inspect both source tables."
+    ],
+    [
+      "cause",
+      "Unknown is not false",
+      "The filter returns no rows. A comparison with a missing value can be unknown. The database keeps only rows where the condition is true. Here, every row is either false or unknown.",
+      "Show the per-row truth values."
+    ],
+    [
+      "fix",
+      "Change the question",
+      "Instead, check whether a matching blocked row exists. Use the SQL expression shown on screen. Another option is to exclude missing identifiers from the blocked list, if that matches your business rule.",
+      "Execute both alternative filters."
+    ],
+    [
+      "payoff",
+      "Three customers returned",
+      "Both corrected queries return the same three customers. The blocked customer is gone. We check the actual result with an assertion.",
+      "Verify exact matching results."
+    ],
+    [
+      "takeaway",
+      "Decide what NULL means",
+      "A missing identifier in the customer table is different. The first corrected query can include that row. Add an explicit check if you want to exclude unknown customers. Choose the rule that fits your data.",
+      "Test unknown outer identifiers explicitly."
+    ]
+  ]
+}

@@ -316,3 +316,15 @@ python capture_daily_rc9.py --topic path_suffix --narration C:\path\to\new-day\p
 python render_daily_rc9.py --topic path_suffix --day 2026-11-28 --folder C:\path\to\new-day\path_suffix --capture C:\path\to\new-day\path_suffix\capture --out C:\path\to\new-day\path_suffix\render --ffmpeg C:\path\to\ffmpeg.exe
 ```
 Evidence: RC9_TOPIC_RESEARCH_QA.json and RC9_PATH_SHORT_QA.json. Media remains local. The other two topics remain unrendered. Live inventory, human review and release approval are mandatory blockers.
+
+## RC9 phase 3 — complete fresh review batch
+
+The ZIP Short and SQL landscape long video now join the previously rendered path_suffix Short. The first-party, disposable ZIP experiment opens the archive, lists note.txt, detects the damaged file, computes the changed CRC, and checks both copies. The SQL experiment executes NOT IN, NOT EXISTS, filtered NOT IN and a separate outer-NULL case; the two corrected filters agree on IDs 1, 3 and 4 in the initial fixture. No customer data is used.
+
+The original SQL narration was held at 102.2667s; a shorter 59.3s script passes the existing ASR screen, with five exact normalized scene matches and one "block" versus "blocked" discrepancy. The corrected caption preserves the observed word interval and matches the revised script; raw ASR remains archived and human listening is still required. The landscape export is classified as long by 16:9 format, despite its shorter duration. ZIP and SQL use new capture/renderer modules so prior hash-bound source evidence is not overwritten. Source captures use 6 fps; ZIP timing deviation 99.33ms and SQL 36.33ms, no blank frames or retries. Both final videos are 30fps with full decode, sampled capture comparisons and audio checks. Reduced-size contact sheets inspected; terminal text remains small and some holds are static. Editorial notes sometimes precede the actual result by a fraction of a second; they are not raw evidence. The three-video batch verification binds the exact media, capture, brief, narration, scripts and receipt reports, rejects duplicates and unsigned releases, and maps to the existing review slots for 2026-11-28 IST. All three fresh videos passed technical review; none is release-ready.
+
+Reproduce the batch check with the local artifact folders:
+```powershell
+python fresh_batch_rc9p3.py --day 2026-11-28 --path C:\path\to\fresh-daily-rc9\path_suffix --zip C:\path\to\fresh-daily-rc9-r2\zip_crc --sql C:\path\to\fresh-daily-rc9-r3\sql_null --output C:\path\to\new-report.json
+```
+See RC9_FRESH_BATCH_QA.json and linked per-topic reports. This completes the first new three-video review batch, not unattended daily regeneration or live channel uniqueness. The existing historical inventory limitation, subjective playback/rights/facts approval and exact publisher handoff remain. No upload or schedule change.
