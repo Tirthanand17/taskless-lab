@@ -1,0 +1,217 @@
+{
+  "version": "1.0.0-rc8",
+  "pilot": "git",
+  "capture_sha256": "f8ff5eaac316cce7161e16e1e1fdbb7d05d05b47b0cdb1511b84b70afb521fc0",
+  "capture_report_sha256": "4f0c3b4644716d07287ee119b0d96606f3518d64559fbdd8babf17771bdd8c13",
+  "prior_sha256": "d7e70e92eb5ac2ab723d3bd1630124690a89a8d9fecd737ce61b0af5c9c2af39",
+  "mp4_sha256": "cdde3fb915b6a711d3a8721999858cf74097e1275bce9ba7063c63c4ea480d8a",
+  "source_sha256": "337d8a2d80b2646cf4ba445dba91260624db26e01fa4043533af5c2d2eb4e6eb",
+  "frames": 3360,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "audio": {
+    "decoded_samples": 5376000,
+    "clipped_samples": 0,
+    "loudness": {
+      "input_i": -16.66,
+      "input_tp": -1.82,
+      "input_lra": 2.0
+    }
+  },
+  "pcm_identical": true,
+  "full_decode_pass": true,
+  "observed": [
+    {
+      "frame": 0,
+      "source_frame": 0,
+      "error": 1.2387
+    },
+    {
+      "frame": 30,
+      "source_frame": 7,
+      "error": 1.6473
+    },
+    {
+      "frame": 75,
+      "source_frame": 16,
+      "error": 1.5433
+    },
+    {
+      "frame": 335,
+      "source_frame": 66,
+      "error": 1.5328
+    },
+    {
+      "frame": 760,
+      "source_frame": 152,
+      "error": 1.0781
+    },
+    {
+      "frame": 1140,
+      "source_frame": 228,
+      "error": 1.9714
+    },
+    {
+      "frame": 1470,
+      "source_frame": 293,
+      "error": 1.9142
+    },
+    {
+      "frame": 1815,
+      "source_frame": 362,
+      "error": 1.9718
+    },
+    {
+      "frame": 2010,
+      "source_frame": 401,
+      "error": 2.012
+    },
+    {
+      "frame": 2175,
+      "source_frame": 436,
+      "error": 2.5056
+    },
+    {
+      "frame": 2400,
+      "source_frame": 479,
+      "error": 1.8584
+    },
+    {
+      "frame": 2510,
+      "source_frame": 501,
+      "error": 2.8091
+    },
+    {
+      "frame": 2980,
+      "source_frame": 596,
+      "error": 2.926
+    },
+    {
+      "frame": 3359,
+      "source_frame": 671,
+      "error": 2.9194
+    }
+  ],
+  "opening_changes": [
+    {
+      "frame": 15,
+      "seconds": 0.5,
+      "delta": 0.9585
+    },
+    {
+      "frame": 60,
+      "seconds": 2.0,
+      "delta": 3.7797
+    }
+  ],
+  "note_panels": [
+    {
+      "event": null,
+      "start_frame": 0,
+      "end_frame": 24,
+      "title": "A broken test"
+    },
+    {
+      "event": "bad_endpoint",
+      "start_frame": 24,
+      "end_frame": 69,
+      "title": "Test failed"
+    },
+    {
+      "event": "good_endpoint",
+      "start_frame": 69,
+      "end_frame": 348,
+      "title": "Known endpoints"
+    },
+    {
+      "event": "setup",
+      "start_frame": 348,
+      "end_frame": 756,
+      "title": "Sixteen revisions"
+    },
+    {
+      "event": "bisect_start",
+      "start_frame": 756,
+      "end_frame": 1143,
+      "title": "Git selects 7"
+    },
+    {
+      "event": "step1",
+      "start_frame": 1143,
+      "end_frame": 1473,
+      "title": "Revision 7: PASS"
+    },
+    {
+      "event": "step2",
+      "start_frame": 1473,
+      "end_frame": 1815,
+      "title": "Revision 11: FAIL"
+    },
+    {
+      "event": "step3",
+      "start_frame": 1815,
+      "end_frame": 1995,
+      "title": "Revision 9: PASS"
+    },
+    {
+      "event": "step4",
+      "start_frame": 1995,
+      "end_frame": 2172,
+      "title": "Revision 10: PASS"
+    },
+    {
+      "event": "identified",
+      "start_frame": 2172,
+      "end_frame": 2397,
+      "title": "First bad: 11"
+    },
+    {
+      "event": "fix",
+      "start_frame": 2397,
+      "end_frame": 2484,
+      "title": "Repair the code"
+    },
+    {
+      "event": "retest",
+      "start_frame": 2484,
+      "end_frame": 2961,
+      "title": "Retest: PASS"
+    },
+    {
+      "event": "takeaway",
+      "start_frame": 2961,
+      "end_frame": 3360,
+      "title": "Use reliable tests"
+    }
+  ],
+  "source_crop": [
+    0,
+    40,
+    820,
+    420
+  ],
+  "display_size": [
+    936,
+    480
+  ],
+  "creative_brief_sha256": "78c4458f184a6ab0f1ba64bf435300ce3c623947ec836f1d645bcdd1f37634bf",
+  "creative_schema_result": {
+    "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+    "episode_id": "fm_rc8_git_live_pilot",
+    "format": "long",
+    "series": "python_automation",
+    "duration_seconds": 112.0,
+    "opening_proof_by_seconds": 1.5,
+    "first_real_action_at_seconds": 1.5,
+    "visible_payoff_at_seconds": 82.8,
+    "narrative_beats": 6,
+    "owner_approval": false,
+    "youtube_uploads": 0
+  },
+  "repair_test_exit": 0,
+  "legacy_capture_receipt_compatible": false,
+  "human_playback_approved": false,
+  "release_authorized": false
+}

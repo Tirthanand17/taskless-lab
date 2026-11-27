@@ -99,3 +99,10 @@ test_live_sha_rc8.py -text
 RC8_SHA_CAPTURE_QA.json -text
 RC8_SHA_SHORT_QA.json -text
 RC8_SHA_CREATIVE_BRIEF.json -text
+git_live_demo_rc8.py -text
+capture_live_git_rc8.py -text
+render_live_git_rc8.py -text
+test_live_git_rc8.py -text
+RC8_GIT_CAPTURE_QA.json -text
+RC8_GIT_LONG_QA.json -text
+RC8_GIT_CREATIVE_BRIEF.json -text

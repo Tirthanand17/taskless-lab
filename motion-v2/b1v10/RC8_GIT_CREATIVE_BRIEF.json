@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_rc8_git_live_pilot",
+  "format": "long",
+  "series": "python_automation",
+  "duration_seconds": 112,
+  "title": "Find the first failing Git commit without checking every revision",
+  "viewer_problem": "Find the regression in a history of changes",
+  "viewer_promise": "See Git bisect locate a real regression and verify a manual repair",
+  "source_url": "https://git-scm.com/docs/git-bisect",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0,
+      "end_seconds": 1.5,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Show the real failing test.",
+      "action_or_result": "Run the failing test."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.5,
+      "end_seconds": 24.7,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Establish reliable endpoints.",
+      "action_or_result": "Check the passing revision."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 24.7,
+      "end_seconds": 79.5,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Use repeated test results to narrow the range.",
+      "action_or_result": "Run bisect and inspect the first bad commit."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 79.5,
+      "end_seconds": 82.8,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The identified commit is a suspect, not an automatic repair.",
+      "action_or_result": "Reset and repair the disposable program."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 82.8,
+      "end_seconds": 98.7,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The result depends on the reliability of the test.",
+      "action_or_result": "Display the successful retest."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 98.7,
+      "end_seconds": 112,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Use a reproducible test and reset the session.",
+      "action_or_result": "Keep the verified example and limits visible."
+    }
+  ]
+}

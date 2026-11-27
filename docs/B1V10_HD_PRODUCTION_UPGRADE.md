@@ -76,3 +76,7 @@ Continuous actual Python float capture and six-beat review brief validated; see 
 ## RC8 phase 2
 
 Continuous actual SHA-256 capture and six-beat review brief verified; see RC8_SHA_SHORT_QA.json. Both Shorts now pass structured creative brief validation. Continuous long-video proof and all release requirements remain open.
+
+## RC8 phase 3
+
+Continuous Git bisect, actual repair and successful retest integrated and verified; RC8_GIT_LONG_QA.json. All three pilots now pass structured creative brief validation. Legacy capture receipt compatibility, fresh daily generation, subjective quality and release approval remain open.

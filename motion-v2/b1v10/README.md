@@ -272,3 +272,18 @@ python capture_live_sha_rc8.py --out C:\path\to\new-capture --ffmpeg C:\path\to\
 python render_live_sha_rc8.py --capture C:\path\to\new-capture --prior C:\path\to\EDITORIAL_REVIEW.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 Evidence: RC8_SHA_CAPTURE_QA.json, RC8_SHA_SHORT_QA.json, RC8_SHA_CREATIVE_BRIEF.json.
+
+## RC8 phase 3 — continuous Git bisect, repair and retest
+
+The 16-commit controlled Git experiment was repeated in an isolated clone. The failing and passing endpoints were actually tested; Git selected revisions 7, 11, 9 and 10, identified revision 11, and reset to revision 15. The example was manually repaired by restoring return 42 in the disposable clone, and the same Python test returned exit code 0. The original fixture remained unchanged. An independent retest also passed in an earlier disposable clone.
+
+The first three capture attempts failed for a transient blank refresh, a Windows HWND capture error, and 391ms timing deviation (350ms limit). The final successful capture reduced the source rate to 6 fps, retained the unchanged timing threshold, logged raw timestamps and bounded window-only retries, and used lighter per-frame screening. Actual continuous capture: 870x494, 672 frames over 112 seconds, maximum deviation 72.67ms, no blank frames or grab retries. The first failed result appears at 0.5s and the passing endpoint at 2.0s. First-bad commit appears at 72.167s, repair at 79.667s and retest at 82.667s. Commands are script-driven, not human keystrokes; reading holds are real.
+
+Final 1920x1080, 30fps, 3360 frames, full decode, 5376000 original PCM samples exactly preserved, -16.66 LUFS, -1.82 dBTP, zero clipping. Fourteen sampled source comparisons passed, with grayscale errors below 3. Thirteen original side-panel states and revision-range illustrations follow completed recorded events; the deliberate result-label delay means the previous result can briefly remain beside the new output. The structured six-beat creative validator passed (declared payoff at 82.8s). This verifies the brief, not human playback or release approval. Fourteen reduced-size frames inspected; terminal and captions remain small on phones and the continuous terminal layout has substantial reading holds. Raw long narration ASR remains unresolved. Both Shorts and long video now pass the structured creative brief schema, but the legacy Linux capture receipt remains incompatible. No fresh topic research, unattended generation or publication is authorized.
+
+Reproduce from motion-v2/b1v10 with the prior disposable demo repo, RC7 long MP4 and local FFmpeg:
+```powershell
+python capture_live_git_rc8.py --out C:\path\to\new-capture --repo C:\path\to\demo-repo --evidence GIT_BISECT_DEMO.json --ffmpeg C:\path\to\ffmpeg.exe
+python render_live_git_rc8.py --capture C:\path\to\new-capture --prior C:\path\to\PROOF_FIRST_REVIEW.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+Evidence: RC8_GIT_CAPTURE_QA.json, RC8_GIT_LONG_QA.json, RC8_GIT_CREATIVE_BRIEF.json. Existing publisher and schedules unchanged.
