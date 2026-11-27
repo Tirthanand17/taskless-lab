@@ -104,3 +104,7 @@ Second registered date and reusable capture/render adapters; two new Shorts prod
 ## RC10 phase 3
 
 Second complete original daily review batch and cross-date audit; all nine stages revalidated, no overlap in prior topic or media identities, no release approval. RC10_SECOND_BATCH_QA.json. Manual topic registration, live inventory, visual polish, unattended scheduling and acceptance remain.
+
+## RC11 phase 1
+
+Two polished November 29 vertical exports: larger evidence/captions, event-timed diagrams, exact original audio retained. RC11_SHARED_SHORT_QA.json and RC11_GROUP_SHORT_QA.json. Long-video polish, new release manifests, live inventory, unattended production and human playback remain open.

@@ -364,3 +364,14 @@ Reproduce the audit from motion-v2/b1v10:
 python audit_second_batch_rc10.py --workspace C:\path\to\rc10-nov29 --output C:\path\to\new-report.json
 ```
 See RC10_1129_BATCH_QA.json and RC10_SECOND_BATCH_QA.json. Existing publisher and historical evidence remain unchanged.
+
+## RC11 phase 1 — evidence-led vertical visual polish
+
+The November 29 shared-list and groupby Shorts now have new native 1080x1920 review exports. Both preserve every decoded audio sample from the previous reviewed MP4, retain the original continuous source capture and use the existing timed caption words. Source crops contain all bright command/result pixels below the console header across every source frame. Magnification is 12.96% and 12.67% greater than the original crop, respectively; the captions increase from 49 to 58 px (18.37%), with measured line breaks and word highlighting. Editorial diagrams represent the actual recorded results separately from the footage: shared vs separate list objects and three consecutive runs vs two sorted groups. Diagram states start on the recorded visual-change frame, after the corresponding logged action. A continuous linear progress indicator replaces the static segments. The lower interface-safe space is deliberately retained; there is still black space inside the source terminal on short-output holds. The diagram states are cuts rather than full animated transitions. Eight selected before/after pairs inspected across the two videos, and fourteen source sample comparisons passed (maximum mean grayscale error 1.0399). Both full decodes and exact PCM comparisons passed. Source scripts and prior reports remain unchanged; new MP4 hashes require their own playback and release approval. Original creative briefs and receipt evidence are revalidated, but the new exports are not automatically added to the existing release manifests. No claim of measured audience retention or reference reel parity. SQL landscape polish remains pending.
+
+Reproduce with existing November 29 local artifacts:
+```powershell
+python polish_shorts_rc11.py --topic shared_lists --folder C:\path\to\rc10-nov29\shared_lists --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+python polish_shorts_rc11.py --topic group_runs --folder C:\path\to\rc10-nov29\group_runs --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+See RC11_SHARED_SHORT_QA.json and RC11_GROUP_SHORT_QA.json. Review-only; no publishing or schedules.

@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0-rc11-phase1",
+  "topic": "group_runs",
+  "prior_sha256": "95af6e7ef79febac1c540d222f6cc7270eba42165b4c2d74df8aae0e97bc4858",
+  "prior_report_sha256": "935080e95b497731ed08a3f7d9b94ef3383316ed17caddba9d23a606df146156",
+  "capture_sha256": "73cc0a944831e3ff5e01214f42e1952468f05d3bc7a40560bef2828d7a945ac7",
+  "source_sha256": "b0f5eb8e61672850234e8d2e93874f1f599dbccd1be003a808d0411849dd7ab7",
+  "video_sha256": "6cdcd7ca68fbee644ebe663a8f537ac412d3f14af2da5586f2d7f947d486a0a6",
+  "caption_ass_sha256": "9a4ca3cec31694b8780a363b1d2a7b4d5c5f7e1b7fbc78e55785f4499c07a02a",
+  "caption_font_px": 58,
+  "prior_caption_font_px": 49,
+  "caption_events": 47,
+  "source_crop": [
+    0,
+    60,
+    474,
+    312
+  ],
+  "display_rect": [
+    173,
+    903,
+    622,
+    410
+  ],
+  "prior_source_scale": 1.1647058823529413,
+  "new_source_scale": 1.3122362869198312,
+  "event_starts_frames": [
+    0,
+    15,
+    65,
+    115,
+    205,
+    290,
+    385
+  ],
+  "actual_event_times_seconds": [
+    0.422,
+    2.016,
+    3.703,
+    6.766,
+    9.578,
+    12.797
+  ],
+  "frames": 489,
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30,
+  "audio": {
+    "decoded_samples": 782400,
+    "clipped_samples": 0,
+    "loudness": {
+      "input_i": -17.15,
+      "input_tp": -1.93,
+      "input_lra": 3.2
+    }
+  },
+  "pcm_identical": true,
+  "full_decode_pass": true,
+  "source_checks": [
+    {
+      "frame": 0,
+      "source_frame": 0,
+      "error": 1.0326
+    },
+    {
+      "frame": 20,
+      "source_frame": 4,
+      "error": 1.0226
+    },
+    {
+      "frame": 70,
+      "source_frame": 14,
+      "error": 1.0235
+    },
+    {
+      "frame": 120,
+      "source_frame": 24,
+      "error": 1.0192
+    },
+    {
+      "frame": 210,
+      "source_frame": 42,
+      "error": 1.0246
+    },
+    {
+      "frame": 295,
+      "source_frame": 59,
+      "error": 1.0204
+    },
+    {
+      "frame": 390,
+      "source_frame": 78,
+      "error": 1.0269
+    }
+  ],
+  "diagram_uses_verified_result": true,
+  "original_brief_unchanged": true,
+  "human_playback_approved": false,
+  "release_authorized": false
+}

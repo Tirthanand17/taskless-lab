@@ -180,3 +180,7 @@ RC10_JOIN_CREATIVE_BRIEF.json -text
 RC10_JOIN_CAPTURE_RECEIPT.json -text
 RC10_1129_BATCH_QA.json -text
 RC10_SECOND_BATCH_QA.json -text
+polish_shorts_rc11.py -text
+test_polish_shorts_rc11.py -text
+RC11_SHARED_SHORT_QA.json -text
+RC11_GROUP_SHORT_QA.json -text
