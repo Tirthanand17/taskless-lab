@@ -1,0 +1,104 @@
+{
+  "version": "1.0.0-rc11-phase2",
+  "topic": "outer_join_filter",
+  "prior_sha256": "4ac1f6173175c94af69156be51513e2672f8e07163e63e1e4567ababbdf28ae9",
+  "prior_report_sha256": "3032d86778f2005b2c46ae1bdff0bb734d29c71796b03cd966708b19b4b10b03",
+  "capture_sha256": "a04aa85f94e59f4abfa23d025d4ef1c5bd46da554a18a71bc8bc8f29cb7e1beb",
+  "source_sha256": "fe659f72bdddc29a7fd833b0f60af4aaa00fba6f8e908a4cbc7d0763928a9863",
+  "design_dependency_sha256": "b0f5eb8e61672850234e8d2e93874f1f599dbccd1be003a808d0411849dd7ab7",
+  "video_sha256": "c29f711608c1bd9ab8c741d008abf96406aa9dd1ef8dfd1a2ea505e1e9d381cf",
+  "caption_ass_sha256": "37595f75fa5d8493cf0da09f8191064425837516a26f0df00b5476bb9f52a975",
+  "caption_font_px": 56,
+  "prior_caption_font_px": 43,
+  "caption_events": 173,
+  "source_crop": [
+    0,
+    60,
+    610,
+    250
+  ],
+  "display_rect": [
+    108,
+    348,
+    1000,
+    410
+  ],
+  "prior_source_scale": 1.1512195121951219,
+  "new_source_scale": 1.639344262295082,
+  "event_starts_frames": [
+    0,
+    15,
+    65,
+    415,
+    840,
+    1175,
+    1480
+  ],
+  "actual_event_times_seconds": [
+    0.422,
+    2.032,
+    13.704,
+    27.907,
+    39.032,
+    49.313
+  ],
+  "frames": 1840,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 30,
+  "audio": {
+    "decoded_samples": 2944000,
+    "clipped_samples": 0,
+    "loudness": {
+      "input_i": -16.44,
+      "input_tp": -1.95,
+      "input_lra": 2.2
+    }
+  },
+  "pcm_identical": true,
+  "full_decode_pass": true,
+  "source_checks": [
+    {
+      "frame": 0,
+      "source_frame": 0,
+      "error": 1.0593
+    },
+    {
+      "frame": 30,
+      "source_frame": 6,
+      "error": 1.0138
+    },
+    {
+      "frame": 80,
+      "source_frame": 16,
+      "error": 1.0091
+    },
+    {
+      "frame": 430,
+      "source_frame": 86,
+      "error": 1.0154
+    },
+    {
+      "frame": 855,
+      "source_frame": 171,
+      "error": 1.0131
+    },
+    {
+      "frame": 1190,
+      "source_frame": 238,
+      "error": 1.0107
+    },
+    {
+      "frame": 1495,
+      "source_frame": 299,
+      "error": 1.0144
+    }
+  ],
+  "row_entrance_frames": 12,
+  "diagram_uses_verified_result": true,
+  "original_brief_unchanged": true,
+  "human_playback_approved": false,
+  "release_authorized": false
+}

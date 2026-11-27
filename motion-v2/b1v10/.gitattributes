@@ -184,3 +184,8 @@ polish_shorts_rc11.py -text
 test_polish_shorts_rc11.py -text
 RC11_SHARED_SHORT_QA.json -text
 RC11_GROUP_SHORT_QA.json -text
+polish_long_rc11.py -text
+audit_polish_rc11.py -text
+test_polish_long_rc11.py -text
+RC11_JOIN_LONG_QA.json -text
+RC11_POLISHED_BATCH_QA.json -text

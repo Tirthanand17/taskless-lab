@@ -108,3 +108,7 @@ Second complete original daily review batch and cross-date audit; all nine stage
 ## RC11 phase 1
 
 Two polished November 29 vertical exports: larger evidence/captions, event-timed diagrams, exact original audio retained. RC11_SHARED_SHORT_QA.json and RC11_GROUP_SHORT_QA.json. Long-video polish, new release manifests, live inventory, unattended production and human playback remain open.
+
+## RC11 phase 2
+
+Landscape visual polish and exact three-video review audit complete. RC11_POLISHED_BATCH_QA.json. Original audio preserved; integration, live inventory and release acceptance remain open.

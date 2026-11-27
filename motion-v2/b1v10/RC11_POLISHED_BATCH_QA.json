@@ -1,0 +1,63 @@
+{
+  "version": "1.0.0-rc11-phase2",
+  "review_date": "2026-11-29",
+  "original_batch_sha256": "cc59b8b51f9f518629cb7e8d68e561e6d09396c0092350365e8f9e822673102f",
+  "audit_source_sha256": "f26455c2eb7915a49cfb742e932a2e01947ceddb6e5a409ea537f3ff2f26cf29",
+  "slots": [
+    {
+      "topic": "shared_lists",
+      "format": "short",
+      "slot": "short_am",
+      "reference_local_time": "11:00",
+      "prior_video_sha256": "5b9a35977dc17e64eac34ff3550ed0096f3108627a94dd9c481baba3980e5430",
+      "video_sha256": "c93c9462e48239b56cfca5c2e5c4d5ba0d63f2ca3d12024e317a48d9ff8c80a2",
+      "capture_sha256": "0c4159a007c8c79245634aa6e3c145c076c0e61f9e09ec645b0cc31b7c98b651",
+      "polish_report_sha256": "4d68e20463fa3e860a61c8bcadcc96dcbc7efbd51bdf1f80395b699fb6a349f7",
+      "frames": 414,
+      "audio_unchanged": true,
+      "source_scale_gain_percent": 12.96,
+      "caption_gain_percent": 18.37,
+      "disposition": "HOLD_NOT_SCHEDULED",
+      "release_authorized": false
+    },
+    {
+      "topic": "outer_join_filter",
+      "format": "long",
+      "slot": "long",
+      "reference_local_time": "16:00",
+      "prior_video_sha256": "4ac1f6173175c94af69156be51513e2672f8e07163e63e1e4567ababbdf28ae9",
+      "video_sha256": "c29f711608c1bd9ab8c741d008abf96406aa9dd1ef8dfd1a2ea505e1e9d381cf",
+      "capture_sha256": "a04aa85f94e59f4abfa23d025d4ef1c5bd46da554a18a71bc8bc8f29cb7e1beb",
+      "polish_report_sha256": "da31e52f77f3b594522243eeee3a8d997ad3a88e048f3035ec2d6bc5d3f4ddf1",
+      "frames": 1840,
+      "audio_unchanged": true,
+      "source_scale_gain_percent": 42.4,
+      "caption_gain_percent": 30.23,
+      "disposition": "HOLD_NOT_SCHEDULED",
+      "release_authorized": false
+    },
+    {
+      "topic": "group_runs",
+      "format": "short",
+      "slot": "short_pm",
+      "reference_local_time": "20:30",
+      "prior_video_sha256": "95af6e7ef79febac1c540d222f6cc7270eba42165b4c2d74df8aae0e97bc4858",
+      "video_sha256": "6cdcd7ca68fbee644ebe663a8f537ac412d3f14af2da5586f2d7f947d486a0a6",
+      "capture_sha256": "73cc0a944831e3ff5e01214f42e1952468f05d3bc7a40560bef2828d7a945ac7",
+      "polish_report_sha256": "ba7d4ab1697930f6728fb8e765ab84c520be9929f5229f8b54e612c43bdd95af",
+      "frames": 489,
+      "audio_unchanged": true,
+      "source_scale_gain_percent": 12.67,
+      "caption_gain_percent": 18.37,
+      "disposition": "HOLD_NOT_SCHEDULED",
+      "release_authorized": false
+    }
+  ],
+  "polished_count": 3,
+  "verified_frames": 2743,
+  "release_ready_count": 0,
+  "live_inventory_complete": false,
+  "unattended_scheduler_verified": false,
+  "youtube_uploads": 0,
+  "youtube_schedules": 0
+}

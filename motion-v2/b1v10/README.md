@@ -375,3 +375,16 @@ python polish_shorts_rc11.py --topic shared_lists --folder C:\path\to\rc10-nov29
 python polish_shorts_rc11.py --topic group_runs --folder C:\path\to\rc10-nov29\group_runs --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 See RC11_SHARED_SHORT_QA.json and RC11_GROUP_SHORT_QA.json. Review-only; no publishing or schedules.
+
+## RC11 phase 2 — landscape visual polish and complete review batch
+
+The November 29 LEFT JOIN landscape video now has a new native 1920x1080, 30fps review export (1840 frames). Actual terminal output is cropped to 610x250 and enlarged to 1000x410, increasing horizontal magnification by 42.4% over the original. All source frames passed the bright-text crop check below the intentionally omitted console header. Captions increase from 43 to 56px (30.23%), with measured line breaks and word highlighting. Seven editorial table states follow the actual recorded visual changes; 12-frame row entrance motion and sequential row emphasis complement the real footage. The tables distinguish the source data, WHERE filtering, ON filtering and the final one-row versus three-row outcomes. The original decoded audio is identical, including all 2944000 samples; -16.44 LUFS, -1.95 dBTP, zero clipping. Seven sampled footage matches and full decode passed. Seven reduced-size before/after pairs inspected. Some reading holds remain static and phone-size terminal text still requires attention. The diagram is explanatory, not additional software footage. No audience retention improvement has been measured.
+
+audit_polish_rc11.py binds the three polished MP4s, caption files, source hashes and prior exact review reports. The audit was repeated and produced the identical report hash. All three new exports passed review checks; total 2743 decoded frames, exact prior audio, no new recording claims, no release approval. Prior RC10 artifacts and publisher are unchanged. New media hashes require separate human playback and release acceptance; no automatic daily polish integration or live inventory verification is established.
+
+Reproduce the landscape polish and review audit from motion-v2/b1v10:
+```powershell
+python polish_long_rc11.py --folder C:\path\to\rc10-nov29\outer_join_filter --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+python audit_polish_rc11.py --workspace C:\path\to\rc10-nov29 --output C:\path\to\new-report.json
+```
+The audit expects the three polished outputs under their topic folders in polish-rc11. See RC11_JOIN_LONG_QA.json and RC11_POLISHED_BATCH_QA.json. No uploads or schedules.
