@@ -120,3 +120,7 @@ Mandatory visual polish integrated into registered daily runner, actual hybrid r
 ## RC12 phase 2
 
 Six researched bounded candidates, two disjoint date selections and one newly generated generic Short verified. Finite curated pool; five other media candidates, live inventory, unattended execution and approval remain pending.
+
+## RC12 phase 3
+
+Complete November 30 generic review batch, explicit narration revisions, restartable runner and exact resume verified. RC12_GENERIC_BATCH_QA.json. Live inventory, richer visual storytelling, finite pool replenishment, unattended scheduling and release approval remain.

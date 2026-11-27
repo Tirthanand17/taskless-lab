@@ -1,0 +1,145 @@
+{
+  "version": "1.0.0-rc12-phase2",
+  "topic": "bounded_deque",
+  "episode_id": "fm_20261130_bounded_deque_short",
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30,
+  "frames": 396,
+  "duration_seconds": 13.2,
+  "voice": "af_heart",
+  "audio": {
+    "decoded_samples": 633600,
+    "clipped_samples": 0,
+    "loudness": {
+      "input_i": -18.12,
+      "input_tp": -1.96,
+      "input_lra": 3.3
+    }
+  },
+  "capture_sha256": "10a85551d027e87828c0ec7d3dbdcf857b820e5e9301695318a7fc881c346c90",
+  "capture_report_sha256": "9d2a6814d8a454217b0c618e5dc66a02d34e9d4f95a19a9de177f45b7ac8e387",
+  "narration_report_sha256": "e8ba4a29789891f9f6143c35a3e82a6a7fc9ce7512220dacf456408beea062ac",
+  "spec_sha256": "865880c1db176528896abd44e1b260008cf17689b67c6b67e2c24f37f47938b0",
+  "mp4_sha256": "8583db985e224b5b62a39bcc7d9d3ce3cf0bdc8c2b05b25d9d696516c6b63681",
+  "render_source_sha256": "28b17da90f9f272900c20b802a6e9ae0d234a80fb0ba749ee846ed0abfccb332",
+  "topic_sha256": "4dedd4f4db72f066cb8e615d77df99bf0a061cf5043fd1183894b5fbb148dff7",
+  "design_dependency_sha256": "b0f5eb8e61672850234e8d2e93874f1f599dbccd1be003a808d0411849dd7ab7",
+  "event_starts_frames": [
+    0,
+    18,
+    68,
+    118,
+    188,
+    248,
+    303
+  ],
+  "source_crop": [
+    0,
+    60,
+    444,
+    252
+  ],
+  "display_rect": [
+    118,
+    1992,
+    730,
+    414
+  ],
+  "creative_brief_sha256": "5185a6d7f7f71c5f6c96033ae7634e4f9ef645167bb59a82b8a517215d254417",
+  "receipt_sha256": "578bb3302c653a1d79f17376a8ed97712d0b7b5e6d9db2ea5ea070e723c05e2f",
+  "identity": {
+    "status": "CREATIVE_BRIEF_VALIDATED_NOT_RELEASE_APPROVED",
+    "episode_id": "fm_20261130_bounded_deque_short",
+    "format": "short",
+    "series": "python_automation",
+    "duration_seconds": 13.2,
+    "opening_proof_by_seconds": 1.9,
+    "first_real_action_at_seconds": 1.9,
+    "visible_payoff_at_seconds": 7.933333333333334,
+    "narrative_beats": 6,
+    "owner_approval": false,
+    "youtube_uploads": 0,
+    "capture_status": "WINDOWS_EXACT_HASH_VERIFIED_REVIEW_ONLY",
+    "capture_sha256": "10a85551d027e87828c0ec7d3dbdcf857b820e5e9301695318a7fc881c346c90",
+    "capture_method": "windows_classic_console_window_only_live",
+    "capture_frames": 80,
+    "capture_fps": 6,
+    "capture_dimensions": [
+      870,
+      494
+    ],
+    "measured_log_max_lag_seconds": 0.02033,
+    "first_recorded_change_seconds": 0.5,
+    "provenance_authenticated": false
+  },
+  "observed": [
+    {
+      "frame": 0,
+      "source_frame": 0,
+      "error": 0.2421
+    },
+    {
+      "frame": 28,
+      "source_frame": 5,
+      "error": 0.2777
+    },
+    {
+      "frame": 30,
+      "source_frame": 7,
+      "error": 0.2709
+    },
+    {
+      "frame": 75,
+      "source_frame": 14,
+      "error": 0.1949
+    },
+    {
+      "frame": 81,
+      "source_frame": 16,
+      "error": 0.1891
+    },
+    {
+      "frame": 141,
+      "source_frame": 28,
+      "error": 0.2104
+    },
+    {
+      "frame": 207,
+      "source_frame": 42,
+      "error": 0.3021
+    },
+    {
+      "frame": 266,
+      "source_frame": 54,
+      "error": 0.2587
+    },
+    {
+      "frame": 345,
+      "source_frame": 69,
+      "error": 0.2546
+    },
+    {
+      "frame": 395,
+      "source_frame": 78,
+      "error": 0.2548
+    }
+  ],
+  "opening_changes": [
+    {
+      "frame": 15,
+      "seconds": 0.5,
+      "delta": 8.8706
+    },
+    {
+      "frame": 65,
+      "seconds": 2.1666666666666665,
+      "delta": 5.0076
+    }
+  ],
+  "full_decode_pass": true,
+  "human_playback_approved": false,
+  "release_authorized": false
+}

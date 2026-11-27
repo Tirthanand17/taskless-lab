@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 633600,
+  "duration_seconds": 13.2,
+  "frames_at_30fps": 396,
+  "narration_sha256": "920e36d5a0306590106b072c6658e59ee240077c51f137463290bcff13f007e6",
+  "captions_sha256": "ec7a8debeb7a01cf725c617d4a21ba9d27de72e681f70260c8cc156162e3d689",
+  "word_captions_sha256": "3127713ac035e2dd16c8df3b972c5db57e63b8646875254fd1f4467bdc1cc087",
+  "spec_sha256": "865880c1db176528896abd44e1b260008cf17689b67c6b67e2c24f37f47938b0",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 57,
+      "expected": "The first item just disappeared.",
+      "recognized": "The first item just disappeared.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 5,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.42,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -21.12,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "6b06afe005e62e3496d24b0be2fa94085032554ea75b77f4186037bebfd9f4dc"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 57,
+      "end_frame": 106,
+      "expected": "Items arrive in order.",
+      "recognized": "Items arrive in order.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 4,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.473,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -20.8,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "2e261faffee7d566e0e2e633b5cce8facc6120a579e03620e69e6457cbf49cd7"
+    },
+    {
+      "id": "cause",
+      "start_frame": 106,
+      "end_frame": 176,
+      "expected": "This container has a fixed capacity.",
+      "recognized": "This container has a fixed capacity.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 6,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.453,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -18.38,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "76817d1c71664932e18e3690892e32e26180b841fe7d7fe0e63afa043b5833ce"
+    },
+    {
+      "id": "fix",
+      "start_frame": 176,
+      "end_frame": 238,
+      "expected": "Set a maximum length, as shown.",
+      "recognized": "Set a maximum length as shown.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 6,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.507,
+      "energy": {
+        "peak_dbfs": -2.02,
+        "rms_dbfs": -17.3,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "937747e79c106d52d57dd8947cc9dc75fde162d4277074b174dc7f29d86ea243"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 238,
+      "end_frame": 294,
+      "expected": "The latest three items remain.",
+      "recognized": "The latest three items remain.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 5,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.587,
+      "energy": {
+        "peak_dbfs": -2.06,
+        "rms_dbfs": -24.83,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "f5c1c9a3ea02cca9a2dbb3d27433e0f1be1f7fc34b6b4d4c016a7bbc28b991aa"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 294,
+      "end_frame": 396,
+      "expected": "Use this only when dropping old items is acceptable.",
+      "recognized": "Use this only when dropping old items is acceptable.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 9,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.5,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.73,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "1ce0af9b1b09909f90a4fcedd73f14e4e1093b0c8cfdb5c34552fbf69f810b63"
+    }
+  ],
+  "caption_cues": 9,
+  "recognized_words": 35,
+  "all_exact_token_matches": true,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -18.68,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

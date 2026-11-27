@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 2265600,
+  "duration_seconds": 47.2,
+  "frames_at_30fps": 1416,
+  "narration_sha256": "45ba166625046ba402509dd4335a51ba73f07f2f6c3039a7336b0b3c35630403",
+  "captions_sha256": "7f99526a0b08dc1fafbc33dd064d4e6440cbf43553cc345458d5e46e1797cc87",
+  "word_captions_sha256": "5d9c73f1d1e5b164bf3d7dd2e06d11d067a88de280a51fb1f309343452f06517",
+  "spec_sha256": "085464c9032b3198f42ff81b8baa7af96fd559fee049879dddb6a2658ea55b78",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 55,
+      "expected": "Why did the report miss records?",
+      "recognized": "Why did the report miss records?",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 6,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.473,
+      "energy": {
+        "peak_dbfs": -2.01,
+        "rms_dbfs": -17.87,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "b39151c226914baf89402aa1bbe49e532701b8c4f75c390a99c6d8f46b039564"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 55,
+      "end_frame": 372,
+      "expected": "Our local table contains records with and without numbers. We want to count every record that arrived, not just those that contain a number. Look at the missing values in the table.",
+      "recognized": "Our local table contains records with and without numbers. We want to count every record that arrived, not just those that contain a number. Look at the missing values in the table.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 32,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.427,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.26,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "76e8e0da4328db88efd24f94eb68e49bbd878da08e0aa83356dc74734a9efc4b"
+    },
+    {
+      "id": "cause",
+      "start_frame": 372,
+      "end_frame": 579,
+      "expected": "Counting a column skips missing values. The other records still exist in the table, even though the count is smaller.",
+      "recognized": "Counting a column skips missing values. The other records still exist in the table, even though the count is smaller.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 20,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.4,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.68,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "53d6b72a33c6c4b018d4a94257feb5ba9044a4e85a5be474b95625d721263431"
+    },
+    {
+      "id": "fix",
+      "start_frame": 579,
+      "end_frame": 915,
+      "expected": "To count every record, use the star form shown on screen. It counts rows even when a value is missing. Subtract the column count from the row count to find the missing values.",
+      "recognized": "To count every record, use the star form shown on screen. It counts rows even when a value is missing. Subtract the column count from the row count to find the missing values.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 33,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.5,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.61,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "823a6b44f3930257542047ce58b6d0a57f62f37c98b540ce99ed72b756d612a7"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 915,
+      "end_frame": 1157,
+      "expected": "The result shows the total records, the recorded values and the missing values. We check the actual results against the original data.",
+      "recognized": "The result shows the total records, the recorded values, and the missing values. We check the actual results against the original data.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 22,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.427,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.74,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "1f4e57f3c5330c5c3a3a74b40661bb281267b6aa5f74d47cb894d0949f6cc4a0"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 1157,
+      "end_frame": 1416,
+      "expected": "Both forms are useful. Use the row count for records received and the column count for values recorded. Choose the measure your report needs.",
+      "recognized": "Both forms are useful. Use the row count for records received and the column count for values recorded. Choose the measure your report needs.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 24,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.513,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.58,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "42b7d1bbb89442bf47336e38a33ada166a8c4b2e8c872128c93979436a8c14f1"
+    }
+  ],
+  "caption_cues": 30,
+  "recognized_words": 137,
+  "all_exact_token_matches": true,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -16.6,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

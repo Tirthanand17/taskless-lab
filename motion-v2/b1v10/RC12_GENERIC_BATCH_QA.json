@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0-rc12-phase3",
+  "day": "2026-11-30",
+  "selection_sha256": "f2838117002f5e1cdf36187e22b7bc662d60e7207e27fe75e26fdc14752ead7d",
+  "runner_sha256": "5e9163fcd8d1e90d8d12452ab0cfc975257fd52357be0621a5e00424f6e9ba21",
+  "revisions": {
+    "count_missing": "11e764d68e099e227d8639c055791825ac9b3887175ed083f1227c2830e39af3",
+    "bounded_deque": "2bb1b5944013fc3a28902cf662ecd73ae08277907c2546fadd063d0142df6008"
+  },
+  "slots": [
+    {
+      "topic": "strip_chars",
+      "title": "Python strip Can Remove More Than You Expect",
+      "format": "short",
+      "slot": "short_am",
+      "frames": 415,
+      "duration_seconds": 13.833333333333334,
+      "video_sha256": "c1e8965dddb6bf989e572c77e1b5d75d6bcfa2f635dd44a54108e634f2a6a9c2",
+      "capture_sha256": "58034a569f89098c51dc037d116ce6e2b7b57f6f0e646c3c9d9a75978faae349",
+      "narration_sha256": "e5b4c0977129250c4770d09ea344f20309acf08fc849875f0d01115f579cb33c",
+      "render_report_sha256": "9325234d1f9fbed16a7ab7f0934ca33e5af8081deb4e8b7e5312c9def25da901",
+      "video_relative_path": "strip_chars/render-r2/NEW_DAILY_SHORT_REVIEW.mp4",
+      "release_authorized": false,
+      "reference_local_time": "11:00",
+      "disposition": "HOLD_NOT_SCHEDULED"
+    },
+    {
+      "topic": "count_missing",
+      "title": "SQL COUNT: Why Your Report Misses Rows",
+      "format": "long",
+      "slot": "long",
+      "frames": 1416,
+      "duration_seconds": 47.2,
+      "video_sha256": "7e0396dfe6e94f1d89622fe1e80a766ae9205a2399fb3e0faee4b7a1a2475a74",
+      "capture_sha256": "f02a77e9b9156e60f74983913f4b539246fe93c359ca10b09c07e8ac9b206b3e",
+      "narration_sha256": "45ba166625046ba402509dd4335a51ba73f07f2f6c3039a7336b0b3c35630403",
+      "render_report_sha256": "3620bc18ef94c9b40cef3784070625f84a41f91a75cbe8cf5409e5c6fd9acb49",
+      "video_relative_path": "count_missing/render/NEW_DAILY_LONG_REVIEW.mp4",
+      "release_authorized": false,
+      "reference_local_time": "16:00",
+      "disposition": "HOLD_NOT_SCHEDULED"
+    },
+    {
+      "topic": "bounded_deque",
+      "title": "Keep Only the Latest Three Items With Python deque",
+      "format": "short",
+      "slot": "short_pm",
+      "frames": 396,
+      "duration_seconds": 13.2,
+      "video_sha256": "8583db985e224b5b62a39bcc7d9d3ce3cf0bdc8c2b05b25d9d696516c6b63681",
+      "capture_sha256": "10a85551d027e87828c0ec7d3dbdcf857b820e5e9301695318a7fc881c346c90",
+      "narration_sha256": "920e36d5a0306590106b072c6658e59ee240077c51f137463290bcff13f007e6",
+      "render_report_sha256": "baca4f65b808a1823fbdc3601e518d78ebacef5e6b084302999f15862ed0cdd2",
+      "video_relative_path": "bounded_deque/render/NEW_DAILY_SHORT_REVIEW.mp4",
+      "release_authorized": false,
+      "reference_local_time": "20:30",
+      "disposition": "HOLD_NOT_SCHEDULED"
+    }
+  ],
+  "verified_stages": 9,
+  "execution_modes": {
+    "strip_chars/audio": "adopted_same_date",
+    "strip_chars/capture": "adopted_same_date",
+    "strip_chars/render": "adopted_same_date",
+    "count_missing/audio": "generated",
+    "count_missing/capture": "generated",
+    "count_missing/render": "generated",
+    "bounded_deque/audio": "generated",
+    "bounded_deque/capture": "generated",
+    "bounded_deque/render": "generated"
+  },
+  "release_ready_count": 0,
+  "live_inventory_complete": false,
+  "scheduler_verified": false,
+  "youtube_uploads": 0,
+  "youtube_schedules": 0
+}

@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_20261130_bounded_deque_short",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 13.2,
+  "title": "Keep Only the Latest Three Items With Python deque",
+  "viewer_problem": "Unexpected result from a real software operation",
+  "viewer_promise": "See the actual operation and verify its effect",
+  "source_url": "https://docs.python.org/3/library/collections.html#collections.deque",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.9,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The first item just disappeared.",
+      "action_or_result": "Inspect hook result."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.9,
+      "end_seconds": 3.533333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Items arrive in order.",
+      "action_or_result": "Inspect demonstration result."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 3.533333333333333,
+      "end_seconds": 5.866666666666666,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "This container has a fixed capacity.",
+      "action_or_result": "Inspect cause result."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 5.866666666666666,
+      "end_seconds": 7.933333333333334,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Set a maximum length, as shown.",
+      "action_or_result": "Inspect fix result."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 7.933333333333334,
+      "end_seconds": 9.8,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The latest three items remain.",
+      "action_or_result": "Inspect payoff result."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 9.8,
+      "end_seconds": 13.2,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Use this only when dropping old items is acceptable.",
+      "action_or_result": "Inspect takeaway result."
+    }
+  ]
+}

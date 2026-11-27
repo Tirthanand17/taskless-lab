@@ -1,0 +1,12 @@
+{
+  "day": "2026-11-30",
+  "topic": "count_missing",
+  "selection_sha256": "f2838117002f5e1cdf36187e22b7bc662d60e7207e27fe75e26fdc14752ead7d",
+  "original_topic_sha256": "4238d80c3aa7593b012d7e966a2c175a578326e4282f18003c954c25aae5e2f1",
+  "original_spec_sha256": "79564c7e74194bc8b2c7962e1628952f12cd05140bc8d3444e2858392ba92eea",
+  "new_topic_sha256": "2b33e031774571924219e952209cfd1be034c8c4156a324a712987cb95bb20bf",
+  "new_spec_sha256": "085464c9032b3198f42ff81b8baa7af96fd559fee049879dddb6a2658ea55b78",
+  "revision_source_sha256": "8d21f6dd3f5771b745f1126b63520e8c10dd3a19465a36753d861ae80f528c1c",
+  "reason": "Simplify speech and avoid ambiguous automatic transcription; underlying experiment unchanged.",
+  "release_authorized": false
+}
