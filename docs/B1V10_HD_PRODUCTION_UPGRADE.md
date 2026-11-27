@@ -56,3 +56,7 @@ Long-video focused evidence alternate rendered and verified (FOCUS_LONG_QA.json)
 ## RC5 follow-up
 
 Second Short rendered and technically verified (FLOAT_SHORT_QA.json). Two Shorts and one long pilot now exist. Production validator compatibility, daily workflow integration and final release acceptance remain pending.
+
+## RC6 follow-up
+
+Review-only Windows capture adapter and independent media verification implemented for all three pilots (RC6_PRODUCTION_REVIEW_QA.json). All technically pass, all remain blocked by unchanged proof-first creative gate. General receipt and daily workflow integration and final release approval remain open.

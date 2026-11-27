@@ -1,0 +1,123 @@
+{
+  "version": "1.0.0-rc6",
+  "status": "REVIEW_ONLY_HOLD",
+  "pilots": [
+    {
+      "pilot": "sha256",
+      "capture_receipt_sha256": "c97281961cc05569cbdf344bed293284c95f9f879effbfda4aad7cdab7cbe18f",
+      "render_report_sha256": "4de265bffaae3411e089f53829bda1b1ee0c9d02ab92d1fc7adbb93b6846da76",
+      "narration_report_sha256": "0ec695cfd7b94d374ce95a9f925e9f788efbb8280df4f674a4af7589bd6b9b66",
+      "capture_sha256": "716e98a3305934033c3e0511c3c648988017998b04ca32f8ba47323f34c98ec0",
+      "video_sha256": "38db6f4f402c05b3f0121efbc74afc6682caa0a9b4d43764cf33da0a2646d37a",
+      "capture_decoded_frames": 120,
+      "video_decoded_frames": 581,
+      "resolution": [
+        1080,
+        1920
+      ],
+      "audio": {
+        "decoded_samples": 929600,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.86,
+          "input_tp": -1.96,
+          "input_lra": 1.5
+        }
+      },
+      "capture_identity_verified": true,
+      "technical_review_pass": true,
+      "policy": {
+        "creative_pass": false,
+        "legacy_rejection": "DECORATIVE_OR_FICTITIOUS_EVIDENCE",
+        "first_recorded_evidence_seconds": 5.2,
+        "proof_within_two_seconds": false,
+        "first_real_action_by_three_seconds": false,
+        "legacy_linux_receipt_compatible": false,
+        "fix_payoff_takeaway_review_pending": true
+      },
+      "publisher_unsigned_rejected": true,
+      "owner_approval": false,
+      "release_authorized": false
+    },
+    {
+      "pilot": "float",
+      "capture_receipt_sha256": "5a71af41ee0915b7065a82d232734943bb4987a474b12fa68a488eb941774593",
+      "render_report_sha256": "6b6d1d77d9731fc91c348872d464f81fdf136a59706ef0c7304e937a37f123d6",
+      "narration_report_sha256": "146160ee47b9a6807744ed592bbbbc45a30ff63a1d9b5554b99b472f60421d9c",
+      "capture_sha256": "ee66e7a28139c2261b10317a969dd26b133447a42e03e1760bae13c62f2bf9dc",
+      "video_sha256": "f4b989cecc4cbc493b3d9683c33b0d461d7f10cced703dd3189c632142c4318e",
+      "capture_decoded_frames": 72,
+      "video_decoded_frames": 661,
+      "resolution": [
+        1080,
+        1920
+      ],
+      "audio": {
+        "decoded_samples": 1057600,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.73,
+          "input_tp": -1.95,
+          "input_lra": 1.0
+        }
+      },
+      "capture_identity_verified": true,
+      "technical_review_pass": true,
+      "policy": {
+        "creative_pass": false,
+        "legacy_rejection": "DECORATIVE_OR_FICTITIOUS_EVIDENCE",
+        "first_recorded_evidence_seconds": 3.4,
+        "proof_within_two_seconds": false,
+        "first_real_action_by_three_seconds": false,
+        "legacy_linux_receipt_compatible": false,
+        "fix_payoff_takeaway_review_pending": true
+      },
+      "publisher_unsigned_rejected": true,
+      "owner_approval": false,
+      "release_authorized": false
+    },
+    {
+      "pilot": "git",
+      "capture_receipt_sha256": "9c1397b80a0d6f373d7dc9201b5b203e1aed8222948cd2c784d88536a4162d25",
+      "render_report_sha256": "7cd965f0b82904f2918b3df8a317700f2a0234d42039882c53ce369cb855dafe",
+      "narration_report_sha256": "871c090e72bdc500faff750f9f55a97970309b4d09770e8b87b75a341993815a",
+      "capture_sha256": "54a0ab89962c6ef297c6272eb6e6039e3fc2580523d3d85345b86eca06c739fa",
+      "video_sha256": "0a782902a6c34b9527320488a24f63fc80021f5aee27e3be32e01258fc864d69",
+      "capture_decoded_frames": 192,
+      "video_decoded_frames": 3360,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "audio": {
+        "decoded_samples": 5376000,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.66,
+          "input_tp": -1.82,
+          "input_lra": 2.0
+        }
+      },
+      "capture_identity_verified": true,
+      "technical_review_pass": true,
+      "policy": {
+        "creative_pass": false,
+        "legacy_rejection": "DECORATIVE_OR_FICTITIOUS_EVIDENCE",
+        "first_recorded_evidence_seconds": 17.9,
+        "proof_within_two_seconds": false,
+        "first_real_action_by_three_seconds": false,
+        "legacy_linux_receipt_compatible": false,
+        "fix_payoff_takeaway_review_pending": true
+      },
+      "publisher_unsigned_rejected": true,
+      "owner_approval": false,
+      "release_authorized": false
+    }
+  ],
+  "technical_pass_count": 3,
+  "creative_pass_count": 0,
+  "release_authorized": false,
+  "youtube_mutations": 0,
+  "adapter_source_sha256": "e6a406c4ff1e8e228797fc2a2bc192bcd18c6f970621bd04207c161e5d6b0b0f",
+  "scope": "three known pilots; separate review adapter, unchanged legacy receipt and publisher"
+}
