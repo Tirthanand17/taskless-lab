@@ -1,0 +1,308 @@
+{
+  "version": "1.0.0-rc7-phase1",
+  "status": "REVIEW_ONLY_HOLD",
+  "source_sha256": "030c4e50a195cfb303f3de934c8c4f7eb780a0e52ba697f5fd4027393bca8bb6",
+  "pilots": [
+    {
+      "version": "1.0.0-rc7",
+      "pilot": "sha256",
+      "capture_sha256": "716e98a3305934033c3e0511c3c648988017998b04ca32f8ba47323f34c98ec0",
+      "prior_video_sha256": "38db6f4f402c05b3f0121efbc74afc6682caa0a9b4d43764cf33da0a2646d37a",
+      "mp4_sha256": "ce7780065c89361a62978abb3480aa34af9e9381c313379abf3d233e9a585572",
+      "source_sha256": "030c4e50a195cfb303f3de934c8c4f7eb780a0e52ba697f5fd4027393bca8bb6",
+      "resolution": [
+        1080,
+        1920
+      ],
+      "frames": 581,
+      "audio": {
+        "decoded_samples": 929600,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.86,
+          "input_tp": -1.96,
+          "input_lra": 1.5
+        }
+      },
+      "pcm_identical": true,
+      "full_decode_pass": true,
+      "opening_panels": [
+        {
+          "capture_frame": 35,
+          "crop": [
+            0,
+            65,
+            520,
+            98
+          ],
+          "start_frame": 0,
+          "end_frame": 60,
+          "roi": [
+            100,
+            672,
+            768,
+            144
+          ]
+        },
+        {
+          "capture_frame": 35,
+          "crop": [
+            0,
+            198,
+            535,
+            100
+          ],
+          "start_frame": 60,
+          "end_frame": 90,
+          "roi": [
+            101,
+            673,
+            766,
+            142
+          ]
+        }
+      ],
+      "observed": [
+        {
+          "panel": 0,
+          "frame": 0,
+          "gray_error": 0.9948
+        },
+        {
+          "panel": 0,
+          "frame": 30,
+          "gray_error": 0.8213
+        },
+        {
+          "panel": 0,
+          "frame": 59,
+          "gray_error": 0.8212
+        },
+        {
+          "panel": 1,
+          "frame": 60,
+          "gray_error": 1.0028
+        },
+        {
+          "panel": 1,
+          "frame": 75,
+          "gray_error": 0.8877
+        },
+        {
+          "panel": 1,
+          "frame": 89,
+          "gray_error": 0.8877
+        }
+      ],
+      "first_recorded_evidence_frame": 0,
+      "second_recorded_result_frame": 60,
+      "opening_proof_timing_pass": true,
+      "continuous_live_action_verified": false,
+      "legacy_creative_pass": false,
+      "owner_approval": false,
+      "release_authorized": false
+    },
+    {
+      "version": "1.0.0-rc7",
+      "pilot": "float",
+      "capture_sha256": "ee66e7a28139c2261b10317a969dd26b133447a42e03e1760bae13c62f2bf9dc",
+      "prior_video_sha256": "f4b989cecc4cbc493b3d9683c33b0d461d7f10cced703dd3189c632142c4318e",
+      "mp4_sha256": "4bcda2da9df953df2e52caaea8063c1fcd9d7d94cc591a7491d65488a25795e8",
+      "source_sha256": "030c4e50a195cfb303f3de934c8c4f7eb780a0e52ba697f5fd4027393bca8bb6",
+      "resolution": [
+        1080,
+        1920
+      ],
+      "frames": 661,
+      "audio": {
+        "decoded_samples": 1057600,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.73,
+          "input_tp": -1.95,
+          "input_lra": 1.0
+        }
+      },
+      "pcm_identical": true,
+      "full_decode_pass": true,
+      "opening_panels": [
+        {
+          "capture_frame": 12,
+          "crop": [
+            0,
+            65,
+            330,
+            68
+          ],
+          "start_frame": 0,
+          "end_frame": 60,
+          "roi": [
+            138,
+            673,
+            692,
+            142
+          ]
+        },
+        {
+          "capture_frame": 12,
+          "crop": [
+            0,
+            165,
+            355,
+            66
+          ],
+          "start_frame": 60,
+          "end_frame": 102,
+          "roi": [
+            112,
+            675,
+            744,
+            138
+          ]
+        }
+      ],
+      "observed": [
+        {
+          "panel": 0,
+          "frame": 0,
+          "gray_error": 1.1879
+        },
+        {
+          "panel": 0,
+          "frame": 30,
+          "gray_error": 1.0612
+        },
+        {
+          "panel": 0,
+          "frame": 59,
+          "gray_error": 1.0612
+        },
+        {
+          "panel": 1,
+          "frame": 60,
+          "gray_error": 1.0683
+        },
+        {
+          "panel": 1,
+          "frame": 81,
+          "gray_error": 1.023
+        },
+        {
+          "panel": 1,
+          "frame": 101,
+          "gray_error": 1.023
+        }
+      ],
+      "first_recorded_evidence_frame": 0,
+      "second_recorded_result_frame": 60,
+      "opening_proof_timing_pass": true,
+      "continuous_live_action_verified": false,
+      "legacy_creative_pass": false,
+      "owner_approval": false,
+      "release_authorized": false
+    },
+    {
+      "version": "1.0.0-rc7",
+      "pilot": "git",
+      "capture_sha256": "54a0ab89962c6ef297c6272eb6e6039e3fc2580523d3d85345b86eca06c739fa",
+      "prior_video_sha256": "0a782902a6c34b9527320488a24f63fc80021f5aee27e3be32e01258fc864d69",
+      "mp4_sha256": "d7e70e92eb5ac2ab723d3bd1630124690a89a8d9fecd737ce61b0af5c9c2af39",
+      "source_sha256": "030c4e50a195cfb303f3de934c8c4f7eb780a0e52ba697f5fd4027393bca8bb6",
+      "resolution": [
+        1920,
+        1080
+      ],
+      "frames": 3360,
+      "audio": {
+        "decoded_samples": 5376000,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.66,
+          "input_tp": -1.82,
+          "input_lra": 2.0
+        }
+      },
+      "pcm_identical": true,
+      "full_decode_pass": true,
+      "opening_panels": [
+        {
+          "capture_frame": 36,
+          "crop": [
+            0,
+            65,
+            440,
+            134
+          ],
+          "start_frame": 0,
+          "end_frame": 60,
+          "roi": [
+            170,
+            468,
+            852,
+            260
+          ]
+        },
+        {
+          "capture_frame": 60,
+          "crop": [
+            0,
+            65,
+            455,
+            196
+          ],
+          "start_frame": 60,
+          "end_frame": 90,
+          "roi": [
+            295,
+            468,
+            602,
+            260
+          ]
+        }
+      ],
+      "observed": [
+        {
+          "panel": 0,
+          "frame": 0,
+          "gray_error": 1.0999
+        },
+        {
+          "panel": 0,
+          "frame": 30,
+          "gray_error": 1.0338
+        },
+        {
+          "panel": 0,
+          "frame": 59,
+          "gray_error": 1.0338
+        },
+        {
+          "panel": 1,
+          "frame": 60,
+          "gray_error": 1.1599
+        },
+        {
+          "panel": 1,
+          "frame": 75,
+          "gray_error": 1.0401
+        },
+        {
+          "panel": 1,
+          "frame": 89,
+          "gray_error": 1.0401
+        }
+      ],
+      "first_recorded_evidence_frame": 0,
+      "second_recorded_result_frame": 60,
+      "opening_proof_timing_pass": true,
+      "continuous_live_action_verified": false,
+      "legacy_creative_pass": false,
+      "owner_approval": false,
+      "release_authorized": false
+    }
+  ],
+  "opening_timing_pass_count": 3,
+  "legacy_creative_pass_count": 0,
+  "release_authorized": false,
+  "youtube_mutations": 0
+}

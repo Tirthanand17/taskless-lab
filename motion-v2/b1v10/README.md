@@ -220,3 +220,15 @@ Reproduce per pilot from motion-v2/b1v10 using existing exact local files:
 python production_review_rc6.py --pilot sha256 --capture C:\path\to\capture.mp4 --video C:\path\to\final.mp4 --ffmpeg C:\path\to\ffmpeg.exe --output C:\path\to\new-report.json
 ```
 Other catalog keys: float and git. See RC6_PRODUCTION_REVIEW_QA.json. CLI path handling preserves direct symlink detection; no claim of an adversarial filesystem sandbox. Native Windows symlink creation remains restricted and the symlink unit test is mocked. New offline tests exercise method and approval spoofing, tampering, clocks, crop evidence and the legacy policy. Existing production files and schedules remain untouched. Next: proof-first editorial revision, generalized receipt integration and daily review workflow.
+
+## RC7 phase 1 — opening evidence timing
+
+proof_first_rc7.py creates separate review variants of the three exact RC6 pilots, with two focused, held recorded-output panels beginning at frame 0 and frame 60. SHA-256 shows actual differing hash prefixes then the recorded file reads; float shows actual sum then the equality test; Git shows the actual bisect selection then the recorded first midpoint test, without disclosing the first bad commit. The new inserts use genuine captured frames with explicitly labeled original typography; they are not uninterrupted live action. Original narration, captions, durations and decoded PCM remain identical. All three outputs independently pass complete FFmpeg decode, exact frame/sample counts, loudness/peak checks and six sampled opening-region comparisons each (start, middle, end of each insert).
+
+Measured first evidence timings improve from 5.2/3.4/17.9 seconds to frame zero for SHA/float/Git respectively. This passes the opening evidence timing screen only; the unchanged legacy creative requirement remains blocked (held/illustrative visuals, action/beat validation). Opening stills inspected; the float opener retains the old 'predict the output' prompt below the already disclosed answer, an editorial inconsistency to correct before acceptance. SHA opening also reveals the hash result before its question resolves; evaluate whether the hook should ask why rather than whether. No retention improvement claimed. No generic receipt support, daily scheduler integration or release approval is created. Existing production code and YouTube schedules remain untouched.
+
+Reproduce from motion-v2/b1v10 using exact RC6 inputs and a fresh output path:
+```powershell
+python proof_first_rc7.py --pilot sha256 --capture C:\path\to\capture.mp4 --video C:\path\to\RC6-pilot.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+Other keys: float and git. See RC7_OPENING_QA.json. Next correct residual opening copy, validate actual action/complete beat sequence, generalize review receipt and integrate daily review workflow.

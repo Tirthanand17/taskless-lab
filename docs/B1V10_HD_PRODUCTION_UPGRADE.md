@@ -60,3 +60,7 @@ Second Short rendered and technically verified (FLOAT_SHORT_QA.json). Two Shorts
 ## RC6 follow-up
 
 Review-only Windows capture adapter and independent media verification implemented for all three pilots (RC6_PRODUCTION_REVIEW_QA.json). All technically pass, all remain blocked by unchanged proof-first creative gate. General receipt and daily workflow integration and final release approval remain open.
+
+## RC7 phase 1
+
+Three opening evidence revisions independently verified (RC7_OPENING_QA.json); proof starts at frame zero in each. Legacy creative and approval holds remain; editorial copy corrections and daily production integration pending.

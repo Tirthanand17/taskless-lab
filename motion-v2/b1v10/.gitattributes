@@ -77,3 +77,6 @@ FLOAT_SHORT_QA.json -text
 production_review_rc6.py -text
 test_production_review_rc6.py -text
 RC6_PRODUCTION_REVIEW_QA.json -text
+proof_first_rc7.py -text
+test_proof_first_rc7.py -text
+RC7_OPENING_QA.json -text
