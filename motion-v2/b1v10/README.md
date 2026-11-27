@@ -194,3 +194,17 @@ Reproduction from motion-v2/b1v10:
 python focus_long.py --capture C:\path\to\ACTUAL_GIT_CONSOLE.mp4 --pilot C:\path\to\original-long.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 See FOCUS_LONG_QA.json. Both existing pilots now have an initial creative-polish alternate; the second Short, production validator integration, daily workflow and final release acceptance remain pending. Review only; no publisher or schedule changes.
+
+## RC5 — second complete Short: Python floating-point precision
+
+The initial two-Shorts/one-long review set is complete. The second Short uses a new original script with the established offline Kokoro af_heart model and voice, measured word intervals, native 1080x1920 artwork, progressive visual states, and the original procedural sound effects. The real console recording is captured from a uniquely titled isolated Windows console only. Three executed Python examples demonstrate 0.1+0.2, Fraction.from_float(0.1), and Decimal constructed from strings. The actual results are recorded in FLOAT_CAPTURE_QA.json. No external footage is used. The source reference for the evergreen topic remains the official Python floating-point tutorial (https://docs.python.org/3/tutorial/floatingpoint.html) in the prior editorial handoff.
+
+Actual final output: 661 frames at 30 fps, 22.0333 seconds, 1057600 decoded audio samples at 48 kHz, -16.73 LUFS, -1.95 dBTP and no clipping. All 53 ASR words match the script after token normalization. One stray hyphen was removed without altering timestamps; raw captions and corrected evidence are preserved. Three sampled recorded crops match the expected resized source with mean grayscale error below 1.09. The initial version's progress indicator was moved inside the safe region. The initial four 360px-wide frames were visually inspected; final automated checks passed. Real evidence is held cropped capture frames, not uninterrupted live footage. Original graphics use a small number of staged visual changes, not continuous cinematic animation. The precision gap in the number line is explicitly exaggerated for explanation, and Decimal arithmetic limits are disclosed. Full human playback and comparison to the reference reels are still required; no performance claim.
+
+Reproduce from motion-v2/b1v10 with existing local FFmpeg and offline speech assets, each output path new:
+```powershell
+python float_narration.py --assets C:\path\to\kokoro-assets --ffmpeg C:\path\to\ffmpeg.exe --output C:\path\to\new-audio
+python capture_float.py --out C:\path\to\new-capture --ffmpeg C:\path\to\ffmpeg.exe
+python render_float_short.py --audio C:\path\to\new-audio --capture C:\path\to\new-capture --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
+```
+The Windows capture still does not satisfy the legacy Linux-specific receipt validator. All three pilots remain review-only. Fresh daily topic/inventory check, production validator compatibility, existing workflow integration and final approvals remain pending. No publisher or schedule changes.

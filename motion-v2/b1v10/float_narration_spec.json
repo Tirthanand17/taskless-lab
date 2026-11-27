@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0-rc5",
+  "candidate_id": "float-precision",
+  "voice": "af_heart",
+  "language": "en-us",
+  "fps": 30,
+  "sample_rate": 48000,
+  "review_only": true,
+  "scenes": [
+    {
+      "id": "hook",
+      "text": "You expect three tenths. But Python gives you a surprise.",
+      "speed": 1.03,
+      "pause_ms": 200
+    },
+    {
+      "id": "proof",
+      "text": "Look at the actual result. The tiny extra digits come from floating point arithmetic.",
+      "speed": 1.03,
+      "pause_ms": 200
+    },
+    {
+      "id": "explain",
+      "text": "Most decimal fractions cannot be stored exactly as binary fractions. The stored values are approximations.",
+      "speed": 1.03,
+      "pause_ms": 200
+    },
+    {
+      "id": "payoff",
+      "text": "For exact decimal inputs, use Decimal with strings. This example gives the expected result.",
+      "speed": 1.02,
+      "pause_ms": 260
+    }
+  ]
+}

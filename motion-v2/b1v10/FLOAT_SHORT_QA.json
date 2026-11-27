@@ -1,0 +1,130 @@
+{
+  "version": "1.0.0-rc5",
+  "resolution": [
+    1080,
+    1920
+  ],
+  "fps": 30.0,
+  "frames": 661,
+  "duration_seconds": 22.033333333333335,
+  "audio_samples": 1057600,
+  "voice": "af_heart",
+  "narration_sha256": "918f935847245b201fa17b0ca4b0ccc3fd7dfcb5892a7d1c7d198a0717559e11",
+  "narration_report_sha256": "146160ee47b9a6807744ed592bbbbc45a30ff63a1d9b5554b99b472f60421d9c",
+  "raw_asr_screen_pass": true,
+  "all_exact_token_matches": true,
+  "audio_energy": {
+    "peak_dbfs": -1.96,
+    "rms_dbfs": -16.71,
+    "clipped_samples": 0
+  },
+  "loudness": {
+    "input_i": -16.73,
+    "input_tp": -1.95,
+    "input_lra": 1.0
+  },
+  "capture_sha256": "ee66e7a28139c2261b10317a969dd26b133447a42e03e1760bae13c62f2bf9dc",
+  "observed_crops": [
+    {
+      "page": 0,
+      "frame": 219,
+      "error": 1.0574
+    },
+    {
+      "page": 1,
+      "frame": 418,
+      "error": 1.0828
+    },
+    {
+      "page": 2,
+      "frame": 613,
+      "error": 1.029
+    }
+  ],
+  "capture_panels": [
+    {
+      "page": 0,
+      "frame": 219,
+      "crop": [
+        0,
+        65,
+        355,
+        164
+      ],
+      "roi": [
+        262,
+        1120,
+        444,
+        204
+      ]
+    },
+    {
+      "page": 1,
+      "frame": 418,
+      "crop": [
+        0,
+        65,
+        540,
+        68
+      ],
+      "roi": [
+        104,
+        1174,
+        760,
+        96
+      ]
+    },
+    {
+      "page": 2,
+      "frame": 613,
+      "crop": [
+        0,
+        65,
+        550,
+        164
+      ],
+      "roi": [
+        140,
+        1120,
+        688,
+        204
+      ]
+    }
+  ],
+  "caption_corrections": [
+    {
+      "from": "-tenths,",
+      "to": "tenths,",
+      "start": 0.78,
+      "end": 1.28
+    }
+  ],
+  "corrected_captions_sha256": "d5d9b5315a32f2efe7c00a7e866b8fe1535bb3913961b800cef3ca6b79e433e5",
+  "source_sha256": "8ceb26436ad319a1034d49acb8d2fbd6fb940a0b01342efc01a8241f40688d72",
+  "events": [
+    {
+      "sample": 163200,
+      "frame": 102,
+      "scene": "proof",
+      "effect": "soft_tick"
+    },
+    {
+      "sample": 412800,
+      "frame": 258,
+      "scene": "explain",
+      "effect": "reveal_pulse"
+    },
+    {
+      "sample": 755200,
+      "frame": 472,
+      "scene": "payoff",
+      "effect": "soft_ping"
+    }
+  ],
+  "full_decode_pass": true,
+  "mp4_sha256": "f4b989cecc4cbc493b3d9683c33b0d461d7f10cced703dd3189c632142c4318e",
+  "contact_sha256": "3e117e73f1e58d10f5f346d18c5e479c670b6a3c8069f93406b2747a5fffce5c",
+  "visual_style": "original native typography and held cropped real console frames; no continuous motion claim",
+  "human_playback_approved": false,
+  "release_authorized": false
+}

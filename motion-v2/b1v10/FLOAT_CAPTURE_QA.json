@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0-rc5",
+  "method": "windows_classic_console_window_only_live",
+  "dimensions": [
+    870,
+    494
+  ],
+  "fps": 12,
+  "frames": 72,
+  "result": {
+    "float_result": "0.30000000000000004",
+    "stored_fraction": "3602879701896397/36028797018963968",
+    "decimal_result": "0.3"
+  },
+  "capture_sha256": "ee66e7a28139c2261b10317a969dd26b133447a42e03e1760bae13c62f2bf9dc",
+  "page_deltas": [
+    2.76375,
+    3.1911875
+  ],
+  "source_sha256": {
+    "float_console_demo.py": "223537e44e5a8df860f3db452e8ca23465a2780274ce488e6bd3963d242d0ff9",
+    "capture_float.py": "4740d599843864ca0c8bfbc7f102d013e0ea585499fea1c6bb35e5902c3704b6"
+  },
+  "release_authorized": false,
+  "legacy_xvfb_receipt_compatible": false
+}

@@ -63,3 +63,14 @@ FOCUS_SHORT_QA.json -text
 focus_long.py -text
 test_focus_long.py -text
 FOCUS_LONG_QA.json -text
+float_narration_spec.json -text
+float_narration.py -text
+float_console_demo.py -text
+capture_float.py -text
+render_float_short.py -text
+test_float_short.py -text
+FLOAT_CAPTURE_QA.json -text
+FLOAT_NARRATION_QA.json -text
+FLOAT_RAW_CAPTIONS.json -text
+FLOAT_CAPTION_REVIEW.json -text
+FLOAT_SHORT_QA.json -text

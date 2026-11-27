@@ -1,0 +1,103 @@
+{
+  "version": "1.0.0-rc5",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 1057600,
+  "duration_seconds": 22.033333333333335,
+  "frames_at_30fps": 661,
+  "narration_sha256": "918f935847245b201fa17b0ca4b0ccc3fd7dfcb5892a7d1c7d198a0717559e11",
+  "captions_sha256": "36515d50046ffa9181b4e82769c7514929b736518225a36d583d0531bae8df85",
+  "word_captions_sha256": "fb049a923d6752fe50e75fc495db4387176c2f232bdb15f5c27c21b61395d92d",
+  "spec_sha256": "e29ef444405632fa5e9897c85d6b801e6a6456a536adc607eb6ec9c24fe556b6",
+  "script_sha256": "17dcebb0090e52f815c2d8c660b06de8d2cdf0cdc893240dec7d9786f87f042b",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 102,
+      "expected": "You expect three tenths. But Python gives you a surprise.",
+      "recognized": "You expect three -tenths, but Python gives you a surprise.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 10,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.54,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.74,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "f11e3a15e72841b26ebb8f57c45139cd1567ceeca892eb250b39fbb0dc5d31ef"
+    },
+    {
+      "id": "proof",
+      "start_frame": 102,
+      "end_frame": 258,
+      "expected": "Look at the actual result. The tiny extra digits come from floating point arithmetic.",
+      "recognized": "Look at the actual result, the tiny extra digits come from floating point arithmetic.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 14,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.54,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.78,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "fbf4315a44ace3624025f86eff1004f31728bc7e6006d07bf9818c0100e9621b"
+    },
+    {
+      "id": "explain",
+      "start_frame": 258,
+      "end_frame": 472,
+      "expected": "Most decimal fractions cannot be stored exactly as binary fractions. The stored values are approximations.",
+      "recognized": "Most decimal fractions cannot be stored exactly as binary fractions. The stored values are approximations.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 15,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.413,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.53,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "2866c54846ec21de739625c791797c675c406acde6fa14d2c9b8735f47840b8a"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 472,
+      "end_frame": 661,
+      "expected": "For exact decimal inputs, use Decimal with strings. This example gives the expected result.",
+      "recognized": "For exact decimal inputs, use decimal with strings. This example gives the expected result.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 14,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.58,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.84,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "2e19fcfcb59ca07d28cf6d628a49ee2870f6eba931dd48b0cf856a24a9bd6742"
+    }
+  ],
+  "caption_cues": 12,
+  "recognized_words": 53,
+  "all_exact_token_matches": true,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -16.71,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

@@ -52,3 +52,7 @@ Mobile-focused hybrid Short rendered and verified (FOCUS_SHORT_QA.json). Five fo
 ## RC4 phase 2 follow-up
 
 Long-video focused evidence alternate rendered and verified (FOCUS_LONG_QA.json); both pilots have initial creative-polish variants. Full subjective acceptance remains open. Next: second complete Short, production validator and daily workflow integration.
+
+## RC5 follow-up
+
+Second Short rendered and technically verified (FLOAT_SHORT_QA.json). Two Shorts and one long pilot now exist. Production validator compatibility, daily workflow integration and final release acceptance remain pending.
