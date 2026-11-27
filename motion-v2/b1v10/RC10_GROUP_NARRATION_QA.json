@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 782400,
+  "duration_seconds": 16.3,
+  "frames_at_30fps": 489,
+  "narration_sha256": "0d65d26bb164dc06d89193b24db6b90eec8b59517a7e95b908bf46cde36b5f22",
+  "captions_sha256": "5d26c1d94aacc5aebb19930a92fcc9cc13e4fb1edd21cc86c472f831dbffbc12",
+  "word_captions_sha256": "97f486dedaf8a3177d0862abb07177983fc1473b52711230492967badf18534e",
+  "spec_sha256": "f58aab45f570ebc997138e97f4a35a00e0f4c8fb5dee8bab661ecd0b1d940a33",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 43,
+      "expected": "Why are there three groups?",
+      "recognized": "Why are there three groups?",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 5,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.453,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -17.19,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "29a3a46da10d13252d80ead5d69054d4f8e33a7fa290035b40b205561a41e253"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 43,
+      "end_frame": 106,
+      "expected": "The first and last items are equal.",
+      "recognized": "The first and last items are equal.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 7,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.5,
+      "energy": {
+        "peak_dbfs": -2.03,
+        "rms_dbfs": -17.89,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "a0f7e560f46d698f166c8d36974c47ebd2439160c92b52a548474e0b0b3e29f9"
+    },
+    {
+      "id": "cause",
+      "start_frame": 106,
+      "end_frame": 198,
+      "expected": "This function groups consecutive matching items.",
+      "recognized": "This function groups consecutive matching items.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 6,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.507,
+      "energy": {
+        "peak_dbfs": -2.01,
+        "rms_dbfs": -20.13,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "ffe19ee091045732d628d4d98a6128f9c5b059266e5ac6561f4d401c3e458ffe"
+    },
+    {
+      "id": "fix",
+      "start_frame": 198,
+      "end_frame": 282,
+      "expected": "Sort the input first, if order does not matter.",
+      "recognized": "Sort the input first if order does not matter.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 9,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.46,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -17.73,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "af1970378055a967d72037a599ebbed11b8920f2188f625706499b1cf9c28256"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 282,
+      "end_frame": 379,
+      "expected": "Now equal items sit together and form one group.",
+      "recognized": "Now, equal items sit together and form one group.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 9,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.453,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.47,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "509d7f022bf6e3c20571dcd938ddcc23155fd73c658fbc40960bbb4084b33ab5"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 379,
+      "end_frame": 489,
+      "expected": "Use a different method if you need to preserve original order.",
+      "recognized": "Use a different method if you need to preserve original order.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 11,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.407,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -16.52,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "de02b3c0f11573d6a3dd43526052a310e4a9d92ecd7995dcacd4c0448c5b47b2"
+    }
+  ],
+  "caption_cues": 12,
+  "recognized_words": 47,
+  "all_exact_token_matches": true,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -17.45,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

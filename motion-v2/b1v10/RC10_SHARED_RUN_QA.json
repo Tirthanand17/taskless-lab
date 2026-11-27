@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0-rc10-phase2",
+  "day": "2026-11-29",
+  "rows": [
+    {
+      "topic": "shared_lists",
+      "format": "short",
+      "slot": "short_am",
+      "title": "Why One Python List Change Updates Two Dictionary Keys",
+      "frames": 414,
+      "duration_seconds": 13.8,
+      "video_sha256": "5b9a35977dc17e64eac34ff3550ed0096f3108627a94dd9c481baba3980e5430",
+      "capture_sha256": "0c4159a007c8c79245634aa6e3c145c076c0e61f9e09ec645b0cc31b7c98b651",
+      "render_report_sha256": "142ee93a532c39bedeebc530a31d3f9ed769833d3b71dccd5e0aec752fff4633",
+      "release_authorized": false
+    }
+  ],
+  "completed_topics": 1,
+  "all_three_complete": false,
+  "live_inventory_complete": false,
+  "release_ready_count": 0,
+  "release_authorized": false
+}

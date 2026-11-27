@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_20261129_shared_lists_short",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 13.8,
+  "title": "Why One Python List Change Updates Two Dictionary Keys",
+  "viewer_problem": "Unexpected result from a real software operation",
+  "viewer_promise": "See the actual operation and verify its effect",
+  "source_url": "https://docs.python.org/3/library/stdtypes.html#dict.fromkeys",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.6,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Why did both lists change?",
+      "action_or_result": "Show the actual mutated dictionary."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.6,
+      "end_seconds": 3.8333333333333335,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "We added an item to just one key.",
+      "action_or_result": "Inspect the two values."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 3.8333333333333335,
+      "end_seconds": 5.866666666666666,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Both keys point to the same list.",
+      "action_or_result": "Check object identity."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 5.866666666666666,
+      "end_seconds": 8.233333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Create a fresh list for each key instead.",
+      "action_or_result": "Use a dictionary comprehension."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 8.233333333333333,
+      "end_seconds": 10.333333333333334,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Now the second list stays empty.",
+      "action_or_result": "Verify independent values."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 10.333333333333334,
+      "end_seconds": 13.8,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Sharing a mutable object can cause surprising updates.",
+      "action_or_result": "Remember the identity check."
+    }
+  ]
+}

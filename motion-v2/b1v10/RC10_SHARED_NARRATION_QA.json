@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0-rc9",
+  "voice": "af_heart",
+  "synthetic": true,
+  "model_sha256": "6e742170d309016e5891a994e1ce1559c702a2ccd0075e67ef7157974f6406cb",
+  "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+  "sample_rate": 48000,
+  "samples": 662400,
+  "duration_seconds": 13.8,
+  "frames_at_30fps": 414,
+  "narration_sha256": "da53677433df406d30cbef402a6c090575be0c416c85d66d0d0b5e88c3b4c888",
+  "captions_sha256": "d594eb3f7a76dc5f20e687f2c7e8819e1230a05beedd51f85b0fcc93bffeaab6",
+  "word_captions_sha256": "876784da9c5b8319082101585916299849024d15031c9d9191ec5412f08581cc",
+  "spec_sha256": "8f0c46e26e5968b2901910d8466ef144e7630527defb255deabb7cc5a539cedd",
+  "script_sha256": "dc4a83e3b93989b20060a0fed20b9ba17cded6e8bdeb65939b76a7d29c62f20a",
+  "scene_timeline": [
+    {
+      "id": "hook",
+      "start_frame": 0,
+      "end_frame": 48,
+      "expected": "Why did both lists change?",
+      "recognized": "Why did both lists change?",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 5,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.48,
+      "energy": {
+        "peak_dbfs": -2.03,
+        "rms_dbfs": -18.81,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "9c502002deccb4f6778dd886b740186e1bc861c8de89ff62ed834407e741ad9a"
+    },
+    {
+      "id": "demonstration",
+      "start_frame": 48,
+      "end_frame": 115,
+      "expected": "We added an item to just one key.",
+      "recognized": "We added an item to just one key.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 8,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.453,
+      "energy": {
+        "peak_dbfs": -2.02,
+        "rms_dbfs": -22.88,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "eea07529f6daecbfcdf3ebf5bbef0c3b3f855995a66a738bd7574dac39f0a25b"
+    },
+    {
+      "id": "cause",
+      "start_frame": 115,
+      "end_frame": 176,
+      "expected": "Both keys point to the same list.",
+      "recognized": "both keys point to the same list.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 7,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.433,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -19.78,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "4903f57111a7245ca5eee402d94fafc64903e698ef4c366da27f05ac9b82bafc"
+    },
+    {
+      "id": "fix",
+      "start_frame": 176,
+      "end_frame": 247,
+      "expected": "Create a fresh list for each key instead.",
+      "recognized": "Create a fresh list for each key instead.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 8,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.527,
+      "energy": {
+        "peak_dbfs": -2.0,
+        "rms_dbfs": -19.99,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "87524c455bcd2f1900f869209d195af8a92c3a52b4f92dffe86aa11e973a0d60"
+    },
+    {
+      "id": "payoff",
+      "start_frame": 247,
+      "end_frame": 310,
+      "expected": "Now the second list stays empty.",
+      "recognized": "Now the second list stays empty.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 6,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.52,
+      "energy": {
+        "peak_dbfs": -2.02,
+        "rms_dbfs": -20.3,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "7c2312df1f3f7ee2c5604ab7fe71e4ffc7fb715f4ad96f11d90604408bed81bf"
+    },
+    {
+      "id": "takeaway",
+      "start_frame": 310,
+      "end_frame": 414,
+      "expected": "Sharing a mutable object can cause surprising updates.",
+      "recognized": "Sharing a mutable object can cause surprising updates.",
+      "token_similarity": 1.0,
+      "exact_token_match": true,
+      "word_count": 8,
+      "first_word_seconds": 0,
+      "tail_seconds": 0.447,
+      "energy": {
+        "peak_dbfs": -2.06,
+        "rms_dbfs": -16.32,
+        "clipped_samples": 0
+      },
+      "wav_sha256": "030f58f6c6be84acd8aa8c295969b7b66ba3dad11ad9fd94ee545ab21dcae9b0"
+    }
+  ],
+  "caption_cues": 11,
+  "recognized_words": 42,
+  "all_exact_token_matches": true,
+  "asr_screen_pass": true,
+  "energy": {
+    "peak_dbfs": -2.0,
+    "rms_dbfs": -18.89,
+    "clipped_samples": 0
+  },
+  "human_listening_approved": false,
+  "rights_approved": false,
+  "visual_sync_reviewed": false,
+  "release_authorized": false
+}

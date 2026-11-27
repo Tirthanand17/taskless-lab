@@ -1,0 +1,234 @@
+{
+  "version": "1.0.0-rc8",
+  "method": "windows_classic_console_window_only_live",
+  "continuous": true,
+  "scripted_demo": true,
+  "dimensions": [
+    870,
+    494
+  ],
+  "fps": 6,
+  "frames": 98,
+  "capture_sha256": "73cc0a944831e3ff5e01214f42e1952468f05d3bc7a40560bef2828d7a945ac7",
+  "events": [
+    {
+      "id": "hook",
+      "planned_seconds": 0.4,
+      "actual_seconds": 0.422,
+      "result": [
+        [
+          "A",
+          [
+            "A"
+          ]
+        ],
+        [
+          "B",
+          [
+            "B"
+          ]
+        ],
+        [
+          "A",
+          [
+            "A"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "demonstration",
+      "planned_seconds": 2.0,
+      "actual_seconds": 2.016,
+      "result": [
+        "A",
+        "B",
+        "A"
+      ]
+    },
+    {
+      "id": "cause",
+      "planned_seconds": 3.683333333333333,
+      "actual_seconds": 3.703,
+      "result": 3
+    },
+    {
+      "id": "fix",
+      "planned_seconds": 6.75,
+      "actual_seconds": 6.766,
+      "result": [
+        "A",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": "payoff",
+      "planned_seconds": 9.55,
+      "actual_seconds": 9.578,
+      "result": [
+        [
+          "A",
+          [
+            "A",
+            "A"
+          ]
+        ],
+        [
+          "B",
+          [
+            "B"
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "takeaway",
+      "planned_seconds": 12.783333333333333,
+      "actual_seconds": 12.797,
+      "result": true
+    }
+  ],
+  "narration_report_sha256": "972fc64ea3a9666391673ed0c067a06e6802740109b35cdaa665750751d401fa",
+  "topic": "group_runs",
+  "changes": [
+    {
+      "frame": 3,
+      "seconds": 0.5,
+      "delta": 3.292
+    },
+    {
+      "frame": 13,
+      "seconds": 2.1666666666666665,
+      "delta": 4.8712
+    },
+    {
+      "frame": 23,
+      "seconds": 3.8333333333333335,
+      "delta": 4.7368
+    },
+    {
+      "frame": 41,
+      "seconds": 6.833333333333333,
+      "delta": 4.831
+    },
+    {
+      "frame": 58,
+      "seconds": 9.666666666666666,
+      "delta": 4.5223
+    },
+    {
+      "frame": 77,
+      "seconds": 12.833333333333334,
+      "delta": 1.6751
+    }
+  ],
+  "capture_times_seconds": [
+    0.015,
+    0.172,
+    0.343,
+    0.5,
+    0.687,
+    0.843,
+    1.015,
+    1.172,
+    1.343,
+    1.515,
+    1.672,
+    1.843,
+    2.015,
+    2.203,
+    2.343,
+    2.515,
+    2.672,
+    2.843,
+    3.015,
+    3.172,
+    3.343,
+    3.5,
+    3.672,
+    3.843,
+    4.015,
+    4.187,
+    4.343,
+    4.5,
+    4.687,
+    4.843,
+    5.015,
+    5.187,
+    5.343,
+    5.515,
+    5.672,
+    5.843,
+    6.0,
+    6.172,
+    6.328,
+    6.5,
+    6.672,
+    6.843,
+    7.015,
+    7.172,
+    7.343,
+    7.5,
+    7.672,
+    7.843,
+    8.0,
+    8.187,
+    8.343,
+    8.515,
+    8.672,
+    8.828,
+    9.015,
+    9.172,
+    9.343,
+    9.515,
+    9.687,
+    9.843,
+    10.015,
+    10.172,
+    10.343,
+    10.515,
+    10.672,
+    10.843,
+    11.015,
+    11.172,
+    11.343,
+    11.5,
+    11.672,
+    11.828,
+    12.0,
+    12.172,
+    12.343,
+    12.5,
+    12.672,
+    12.828,
+    13.0,
+    13.172,
+    13.343,
+    13.5,
+    13.672,
+    13.843,
+    14.015,
+    14.172,
+    14.328,
+    14.5,
+    14.672,
+    14.843,
+    15.015,
+    15.187,
+    15.343,
+    15.515,
+    15.687,
+    15.843,
+    16.015,
+    16.172
+  ],
+  "transient_blank_frames": [],
+  "grab_retries": [],
+  "max_sample_lag_seconds": 0.03633,
+  "source_sha256": {
+    "live_topic_rc10p2.py": "632c532f44ece115334237c521c7426b8f2e61c9ce3633ea4a51f8b90e30ee37",
+    "capture_rc10p2.py": "64e762314ae361e9a5e1dab4f7eef5168bce92a61e1df2923bf3114ff5230d51"
+  },
+  "release_authorized": false
+}

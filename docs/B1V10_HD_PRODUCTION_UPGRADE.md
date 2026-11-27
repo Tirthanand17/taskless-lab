@@ -96,3 +96,7 @@ First entirely new daily batch generated, two Shorts and one 59.3s landscape vid
 ## RC10 phase 1
 
 Restartable local nine-stage review runner exercised: seven adopted verified stages and two newly generated ZIP stages; actual resume unchanged and unregistered next-day refusal. RC10_RUN_QA.json. New daily topics, unattended scheduling and release acceptance remain open.
+
+## RC10 phase 2
+
+Second registered date and reusable capture/render adapters; two new Shorts produced and verified, SQL fixture passed with media pending. RC10_1129_TOPIC_QA.json. Live inventory, unattended daily selection and release approval remain open.

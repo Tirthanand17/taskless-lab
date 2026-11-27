@@ -1,0 +1,12 @@
+{
+  "schema": "FLOWMINUTE_B1_WINDOWS_CONTINUOUS_CAPTURE_V2",
+  "episode_id": "fm_20261129_shared_lists_short",
+  "capture_method": "windows_classic_console_window_only_live",
+  "capture_sha256": "0c4159a007c8c79245634aa6e3c145c076c0e61f9e09ec645b0cc31b7c98b651",
+  "capture_bytes": 172498,
+  "brief_sha256": "14f186e4f90969e04ec9889308c58bd6e0ec145c848c31d0c393c22ce42c3f14",
+  "evidence_sha256": "1a5928828a530031e857388f1de3eef6f29c53b049db69ce1c521b455aa1da11",
+  "private_data": false,
+  "release_approved": false,
+  "youtube_uploads": 0
+}

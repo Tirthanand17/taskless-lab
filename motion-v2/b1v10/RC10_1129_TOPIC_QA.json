@@ -1,0 +1,140 @@
+{
+  "day": "2026-11-29",
+  "historical_rows": 185,
+  "prior_registered_topics": 3,
+  "duplicate_flags": 0,
+  "topics": [
+    {
+      "topic": "shared_lists",
+      "slot": "short_am",
+      "title": "Why One Python List Change Updates Two Dictionary Keys",
+      "format": "short",
+      "source_url": "https://docs.python.org/3/library/stdtypes.html#dict.fromkeys",
+      "experiment": {
+        "before": {
+          "a": [
+            "item"
+          ],
+          "b": [
+            "item"
+          ]
+        },
+        "shared": true,
+        "after": {
+          "a": [
+            "item"
+          ],
+          "b": []
+        },
+        "independent": true
+      },
+      "experiment_sha256": "80e11feed09031131a276de72a0990347ebaebf7b1d05fa36cf0532df2c2b977",
+      "spec_sha256": "8f0c46e26e5968b2901910d8466ef144e7630527defb255deabb7cc5a539cedd"
+    },
+    {
+      "topic": "outer_join_filter",
+      "slot": "long",
+      "title": "SQL LEFT JOIN: Why Your Missing Rows Disappear",
+      "format": "long",
+      "source_url": "https://sqlite.org/lang_select.html",
+      "experiment": {
+        "before": [
+          [
+            1,
+            "paid"
+          ]
+        ],
+        "joined_rows": [
+          [
+            1,
+            "paid"
+          ],
+          [
+            2,
+            "pending"
+          ],
+          [
+            3,
+            null
+          ]
+        ],
+        "after": [
+          [
+            1,
+            "paid"
+          ],
+          [
+            2,
+            null
+          ],
+          [
+            3,
+            null
+          ]
+        ],
+        "sqlite_version": "3.38.4"
+      },
+      "experiment_sha256": "4d48e48a3535520886540275e90c01312f07b02e956b18b6f777705689cc0268",
+      "spec_sha256": "6c5db477357fbd4f4e1f85c7e1f8ce1344e2abc13310bb28c6c3384f735dc03a"
+    },
+    {
+      "topic": "group_runs",
+      "slot": "short_pm",
+      "title": "Python groupby Does Not Group All Equal Items",
+      "format": "short",
+      "source_url": "https://docs.python.org/3/library/itertools.html#itertools.groupby",
+      "experiment": {
+        "input": [
+          "A",
+          "B",
+          "A"
+        ],
+        "before": [
+          [
+            "A",
+            [
+              "A"
+            ]
+          ],
+          [
+            "B",
+            [
+              "B"
+            ]
+          ],
+          [
+            "A",
+            [
+              "A"
+            ]
+          ]
+        ],
+        "sorted": [
+          "A",
+          "A",
+          "B"
+        ],
+        "after": [
+          [
+            "A",
+            [
+              "A",
+              "A"
+            ]
+          ],
+          [
+            "B",
+            [
+              "B"
+            ]
+          ]
+        ]
+      },
+      "experiment_sha256": "7c725f540b2a382e36592c1624e6394ca6ff762a25ca1e1fafda77138c409283",
+      "spec_sha256": "f58aab45f570ebc997138e97f4a35a00e0f4c8fb5dee8bab661ecd0b1d940a33"
+    }
+  ],
+  "bank_sha256": "b94e7be37aced76b90a8b8689f224015fd5bb56c35f5e2ab8139844ee2889680",
+  "live_inventory_complete": false,
+  "release_authorized": false
+}

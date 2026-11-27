@@ -1,0 +1,179 @@
+[
+  {
+    "id": "shared_lists",
+    "slot": "short_am",
+    "format": "short",
+    "title": "Why One Python List Change Updates Two Dictionary Keys",
+    "source_url": "https://docs.python.org/3/library/stdtypes.html#dict.fromkeys",
+    "aliases": [
+      "dict fromkeys",
+      "shared lists",
+      "shared mutable",
+      "dictionary keys"
+    ],
+    "scenes": [
+      [
+        "hook",
+        "One change. Two lists.",
+        "Why did both lists change?",
+        "Show the actual mutated dictionary."
+      ],
+      [
+        "demonstration",
+        "The same list",
+        "We added an item to just one key.",
+        "Inspect the two values."
+      ],
+      [
+        "cause",
+        "Shared object",
+        "Both keys point to the same list.",
+        "Check object identity."
+      ],
+      [
+        "fix",
+        "Separate lists",
+        "Create a fresh list for each key instead.",
+        "Use a dictionary comprehension."
+      ],
+      [
+        "payoff",
+        "Only one changes",
+        "Now the second list stays empty.",
+        "Verify independent values."
+      ],
+      [
+        "takeaway",
+        "Watch mutable values",
+        "Sharing a mutable object can cause surprising updates.",
+        "Remember the identity check."
+      ]
+    ],
+    "notes": [
+      "One addition affects both keys.",
+      "Both values contain the item.",
+      "The values are the same object.",
+      "Create a separate list per key.",
+      "The other list stays empty.",
+      "Check identity when sharing values."
+    ]
+  },
+  {
+    "id": "outer_join_filter",
+    "slot": "long",
+    "format": "long",
+    "title": "SQL LEFT JOIN: Why Your Missing Rows Disappear",
+    "source_url": "https://sqlite.org/lang_select.html",
+    "aliases": [
+      "left join",
+      "outer join",
+      "join filter",
+      "where vs on"
+    ],
+    "scenes": [
+      [
+        "hook",
+        "Missing rows?",
+        "Where did the other rows go?",
+        "Execute the failing join."
+      ],
+      [
+        "demonstration",
+        "Three customers",
+        "We have three customers and two orders. One order is paid and the other is pending. We want every customer, along with any paid order they have. The example uses a small local database.",
+        "Inspect both tables."
+      ],
+      [
+        "cause",
+        "The filter matters",
+        "A left join keeps unmatched customers, but our filter runs after the join. It keeps only rows with a paid order. The pending order fails that test, and the missing order has no status at all. Both customers disappear.",
+        "Show rows before and after filtering."
+      ],
+      [
+        "fix",
+        "Move the condition",
+        "Move the paid condition into the join itself. This changes which orders can match a customer. A customer without a matching paid order is still included, with missing order values.",
+        "Execute the corrected join."
+      ],
+      [
+        "payoff",
+        "All customers remain",
+        "Now all three customers appear. Only the first has a paid order. The other two have empty order values. We compare the actual rows against the expected result.",
+        "Verify the resulting rows."
+      ],
+      [
+        "takeaway",
+        "Know your goal",
+        "The two queries answer different questions. A filter after the join is useful when you only want customers with paid orders. Put the condition in the join when you want to preserve customers without a match.",
+        "Compare the two intended outcomes."
+      ]
+    ],
+    "notes": [
+      "The filter removes unmatched rows.",
+      "Three customers, two orders.",
+      "WHERE is applied after the join.",
+      "Filter matches in ON instead.",
+      "Three customers are preserved.",
+      "Choose the query for your intended result."
+    ]
+  },
+  {
+    "id": "group_runs",
+    "slot": "short_pm",
+    "format": "short",
+    "title": "Python groupby Does Not Group All Equal Items",
+    "source_url": "https://docs.python.org/3/library/itertools.html#itertools.groupby",
+    "aliases": [
+      "itertools groupby",
+      "python groupby",
+      "consecutive groups",
+      "groupby sorted"
+    ],
+    "scenes": [
+      [
+        "hook",
+        "Three groups?",
+        "Why are there three groups?",
+        "Show actual groups from alternating values."
+      ],
+      [
+        "demonstration",
+        "Repeated values",
+        "The first and last items are equal.",
+        "Inspect the original sequence."
+      ],
+      [
+        "cause",
+        "Adjacent only",
+        "This function groups consecutive matching items.",
+        "Compare the separate runs."
+      ],
+      [
+        "fix",
+        "Sort first",
+        "Sort the input first, if order does not matter.",
+        "Group the sorted sequence."
+      ],
+      [
+        "payoff",
+        "Two groups",
+        "Now equal items sit together and form one group.",
+        "Verify two groups."
+      ],
+      [
+        "takeaway",
+        "Keep order in mind",
+        "Use a different method if you need to preserve original order.",
+        "Explain the sorting limitation."
+      ]
+    ],
+    "notes": [
+      "Equal values can form separate runs.",
+      "The first and last values match.",
+      "Only consecutive values are grouped.",
+      "Sort if changing order is acceptable.",
+      "Two groups after sorting.",
+      "Sorting changes the input order."
+    ]
+  }
+]

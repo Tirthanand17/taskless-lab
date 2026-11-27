@@ -1,0 +1,197 @@
+{
+  "version": "1.0.0-rc8",
+  "method": "windows_classic_console_window_only_live",
+  "continuous": true,
+  "scripted_demo": true,
+  "dimensions": [
+    870,
+    494
+  ],
+  "fps": 6,
+  "frames": 83,
+  "capture_sha256": "0c4159a007c8c79245634aa6e3c145c076c0e61f9e09ec645b0cc31b7c98b651",
+  "events": [
+    {
+      "id": "hook",
+      "planned_seconds": 0.4,
+      "actual_seconds": 0.422,
+      "result": {
+        "a": [
+          "item"
+        ],
+        "b": [
+          "item"
+        ]
+      }
+    },
+    {
+      "id": "demonstration",
+      "planned_seconds": 2.0,
+      "actual_seconds": 2.016,
+      "result": [
+        [
+          "item"
+        ],
+        [
+          "item"
+        ]
+      ]
+    },
+    {
+      "id": "cause",
+      "planned_seconds": 3.9833333333333334,
+      "actual_seconds": 4.0,
+      "result": true
+    },
+    {
+      "id": "fix",
+      "planned_seconds": 6.016666666666667,
+      "actual_seconds": 6.047,
+      "result": true
+    },
+    {
+      "id": "payoff",
+      "planned_seconds": 8.383333333333333,
+      "actual_seconds": 8.406,
+      "result": {
+        "a": [
+          "item"
+        ],
+        "b": []
+      }
+    },
+    {
+      "id": "takeaway",
+      "planned_seconds": 10.483333333333334,
+      "actual_seconds": 10.484,
+      "result": false
+    }
+  ],
+  "narration_report_sha256": "249a24627616a0fdbc8d6a2dc4450ab2197d79f0a92c2d7add8c16275effa001",
+  "topic": "shared_lists",
+  "changes": [
+    {
+      "frame": 3,
+      "seconds": 0.5,
+      "delta": 4.081
+    },
+    {
+      "frame": 13,
+      "seconds": 2.1666666666666665,
+      "delta": 4.9911
+    },
+    {
+      "frame": 25,
+      "seconds": 4.166666666666667,
+      "delta": 3.8772
+    },
+    {
+      "frame": 37,
+      "seconds": 6.166666666666667,
+      "delta": 4.4533
+    },
+    {
+      "frame": 51,
+      "seconds": 8.5,
+      "delta": 3.5877
+    },
+    {
+      "frame": 63,
+      "seconds": 10.5,
+      "delta": 0.9267
+    }
+  ],
+  "capture_times_seconds": [
+    0.016,
+    0.172,
+    0.328,
+    0.5,
+    0.688,
+    0.844,
+    1.016,
+    1.172,
+    1.328,
+    1.5,
+    1.688,
+    1.844,
+    2.016,
+    2.172,
+    2.328,
+    2.5,
+    2.688,
+    2.844,
+    3.016,
+    3.172,
+    3.344,
+    3.5,
+    3.688,
+    3.844,
+    4.016,
+    4.172,
+    4.344,
+    4.516,
+    4.672,
+    4.844,
+    5.0,
+    5.188,
+    5.344,
+    5.5,
+    5.688,
+    5.844,
+    6.016,
+    6.172,
+    6.328,
+    6.5,
+    6.672,
+    6.844,
+    7.016,
+    7.172,
+    7.344,
+    7.516,
+    7.672,
+    7.844,
+    8.016,
+    8.172,
+    8.344,
+    8.516,
+    8.672,
+    8.844,
+    9.016,
+    9.172,
+    9.328,
+    9.5,
+    9.672,
+    9.844,
+    10.016,
+    10.188,
+    10.344,
+    10.516,
+    10.672,
+    10.844,
+    11.016,
+    11.172,
+    11.344,
+    11.5,
+    11.672,
+    11.844,
+    12.0,
+    12.188,
+    12.344,
+    12.5,
+    12.672,
+    12.828,
+    13.0,
+    13.172,
+    13.328,
+    13.5,
+    13.672
+  ],
+  "transient_blank_frames": [],
+  "grab_retries": [],
+  "max_sample_lag_seconds": 0.02133,
+  "source_sha256": {
+    "live_topic_rc10p2.py": "632c532f44ece115334237c521c7426b8f2e61c9ce3633ea4a51f8b90e30ee37",
+    "capture_rc10p2.py": "64e762314ae361e9a5e1dab4f7eef5168bce92a61e1df2923bf3114ff5230d51"
+  },
+  "release_authorized": false
+}

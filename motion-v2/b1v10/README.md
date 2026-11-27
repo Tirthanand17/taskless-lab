@@ -340,3 +340,15 @@ Run from motion-v2/b1v10 with existing Windows dependencies and a new local work
 python run_daily_rc10.py --day 2026-11-28 --workspace C:\path\to\review-workspace --local C:\path\to\historical-workspace --assets C:\path\to\kokoro-assets --ffmpeg C:\path\to\ffmpeg.exe
 ```
 To reproduce the hybrid run, supply --seed-root pointing to the original b1v10-dev directory and --seed zip_crc=audio --seed sql_null=render --seed path_suffix=render. To resume, run the same command without seed arguments; a completed stage is reused only if verification succeeds. See RC10_RUN_QA.json and RC10_ZIP_* evidence. No uploads or schedules.
+
+## RC10 phase 2 — second registered date and reusable capture/render adapters
+
+The November 29 registered topic bank contains three new researched topics: shared dictionary list values, LEFT JOIN filtering, and consecutive groupby runs. Official Python and SQLite references were checked on 2026-11-27. All three fixtures executed successfully. Historical duplicate screening covered 185 manifest rows plus the three November 28 registered topics, with zero matches; live inventory and measured demand are not established. Unregistered dates are refused. Registration still requires researched scripts and a corresponding executable demonstration handler.
+
+The new capture and renderer modules support the three registered topics, with the existing native vertical and landscape layouts and unchanged Windows receipt/creative validation. Both November 29 Shorts have been generated from new narration and new recordings. The shared-list Short (13.8s, 414 frames) passed the full render check; the second groupby Short (16.3s, 489 frames) was generated through the single registered-date runner, with no seed media. Source captures use 6 fps, with maximum sample lag 21.33ms and 36.33ms respectively, no blank frames or retries. All final exports use 30fps. The first contact sheet was inspected; the terminal remains small and unused vertical space remains, so visual refinement and human playback are still pending. The registered runner also revalidated the first Short produced earlier in the same date workspace. The SQL fixture passed but narration, live recording and landscape export for that topic have not yet been run. No automatic discovery, scheduler, or publisher invocation. Prior RC9/RC10 evidence files remain unchanged.
+
+Run the registered-date review workflow from motion-v2/b1v10:
+```powershell
+python run_registered_rc10p2.py --day 2026-11-29 --workspace C:\path\to\new-or-existing-workspace --local C:\path\to\historical-workspace --assets C:\path\to\kokoro-assets --ffmpeg C:\path\to\ffmpeg.exe
+```
+Optional --only shared_lists, group_runs or outer_join_filter isolates one topic. A completed stage is hash-checked; failed partial stages must be inspected/quarantined before rerun. Reports are review-only. See RC10_1129_TOPIC_QA.json and RC10_SHARED_* and RC10_GROUP_* evidence. No uploads or schedules.

@@ -1,0 +1,75 @@
+{
+  "schema": "FLOWMINUTE_B1_RETENTION_FIRST_V1",
+  "episode_id": "fm_20261129_group_runs_short",
+  "format": "short",
+  "series": "python_automation",
+  "duration_seconds": 16.3,
+  "title": "Python groupby Does Not Group All Equal Items",
+  "viewer_problem": "Unexpected result from a real software operation",
+  "viewer_promise": "See the actual operation and verify its effect",
+  "source_url": "https://docs.python.org/3/library/itertools.html#itertools.groupby",
+  "demo": {
+    "mode": "real_software_capture",
+    "application": "Python terminal",
+    "fixture_only": true,
+    "recording_provenance": "first_party_executed_software",
+    "local_only": true
+  },
+  "approval": {
+    "owner_watched_exact_video": false,
+    "rights_reviewed": false,
+    "facts_reviewed": false,
+    "release_signed": false,
+    "youtube_scheduled": false
+  },
+  "beats": [
+    {
+      "role": "hook",
+      "start_seconds": 0.0,
+      "end_seconds": 1.4333333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Why are there three groups?",
+      "action_or_result": "Show actual groups from alternating values."
+    },
+    {
+      "role": "demonstration",
+      "start_seconds": 1.4333333333333333,
+      "end_seconds": 3.533333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "The first and last items are equal.",
+      "action_or_result": "Inspect the original sequence."
+    },
+    {
+      "role": "cause",
+      "start_seconds": 3.533333333333333,
+      "end_seconds": 6.6,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "This function groups consecutive matching items.",
+      "action_or_result": "Compare the separate runs."
+    },
+    {
+      "role": "fix",
+      "start_seconds": 6.6,
+      "end_seconds": 9.4,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Sort the input first, if order does not matter.",
+      "action_or_result": "Group the sorted sequence."
+    },
+    {
+      "role": "payoff",
+      "start_seconds": 9.4,
+      "end_seconds": 12.633333333333333,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Now equal items sit together and form one group.",
+      "action_or_result": "Verify two groups."
+    },
+    {
+      "role": "takeaway",
+      "start_seconds": 12.633333333333333,
+      "end_seconds": 16.3,
+      "visual_evidence": "actual_executed_software_frame",
+      "spoken_purpose": "Use a different method if you need to preserve original order.",
+      "action_or_result": "Explain the sorting limitation."
+    }
+  ]
+}

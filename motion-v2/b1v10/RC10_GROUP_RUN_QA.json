@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0-rc10-phase2",
+  "day": "2026-11-29",
+  "rows": [
+    {
+      "topic": "group_runs",
+      "format": "short",
+      "slot": "short_pm",
+      "title": "Python groupby Does Not Group All Equal Items",
+      "frames": 489,
+      "duration_seconds": 16.3,
+      "video_sha256": "95af6e7ef79febac1c540d222f6cc7270eba42165b4c2d74df8aae0e97bc4858",
+      "capture_sha256": "73cc0a944831e3ff5e01214f42e1952468f05d3bc7a40560bef2828d7a945ac7",
+      "render_report_sha256": "935080e95b497731ed08a3f7d9b94ef3383316ed17caddba9d23a606df146156",
+      "release_authorized": false
+    }
+  ],
+  "completed_topics": 1,
+  "all_three_complete": false,
+  "live_inventory_complete": false,
+  "release_ready_count": 0,
+  "release_authorized": false
+}
