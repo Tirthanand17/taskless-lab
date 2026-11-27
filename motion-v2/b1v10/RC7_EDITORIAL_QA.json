@@ -1,0 +1,125 @@
+{
+  "version": "1.0.0-rc7-phase2",
+  "pilots": [
+    {
+      "version": "1.0.0-rc7-phase2",
+      "pilot": "sha256",
+      "prior_sha256": "ce7780065c89361a62978abb3480aa34af9e9381c313379abf3d233e9a585572",
+      "mp4_sha256": "91c809e025dc1628c4bba9cef03e4d3234b6f00a10a83932e9d403e0fbc1a87f",
+      "frames": 581,
+      "resolution": [
+        1080,
+        1920
+      ],
+      "audio": {
+        "decoded_samples": 929600,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.86,
+          "input_tp": -1.96,
+          "input_lra": 1.5
+        }
+      },
+      "pcm_identical": true,
+      "observed_evidence": [
+        {
+          "frame": 0,
+          "mean_pixel_error": 1.1726
+        },
+        {
+          "frame": 30,
+          "mean_pixel_error": 1.3896
+        },
+        {
+          "frame": 59,
+          "mean_pixel_error": 1.3863
+        },
+        {
+          "frame": 60,
+          "mean_pixel_error": 0.6743
+        },
+        {
+          "frame": 75,
+          "mean_pixel_error": 0.7579
+        },
+        {
+          "frame": 89,
+          "mean_pixel_error": 0.756
+        }
+      ],
+      "opening_proof_frame": 0,
+      "copy": [
+        71,
+        "One byte changes.",
+        "Why a different hash?",
+        "THE QUESTION",
+        "Same hash algorithm",
+        "Different input, different fingerprint."
+      ],
+      "full_decode_pass": true,
+      "release_authorized": false,
+      "legacy_creative_pass": false
+    },
+    {
+      "version": "1.0.0-rc7-phase2",
+      "pilot": "float",
+      "prior_sha256": "4bcda2da9df953df2e52caaea8063c1fcd9d7d94cc591a7491d65488a25795e8",
+      "mp4_sha256": "bdca5b2b1a635e72ab6ed19f8eb579df577928361a6752bdf7bcd9e174617c0c",
+      "frames": 661,
+      "resolution": [
+        1080,
+        1920
+      ],
+      "audio": {
+        "decoded_samples": 1057600,
+        "clipped_samples": 0,
+        "loudness": {
+          "input_i": -16.73,
+          "input_tp": -1.95,
+          "input_lra": 1.0
+        }
+      },
+      "pcm_identical": true,
+      "observed_evidence": [
+        {
+          "frame": 0,
+          "mean_pixel_error": 0.9261
+        },
+        {
+          "frame": 30,
+          "mean_pixel_error": 1.0991
+        },
+        {
+          "frame": 59,
+          "mean_pixel_error": 1.0827
+        },
+        {
+          "frame": 60,
+          "mean_pixel_error": 0.6381
+        },
+        {
+          "frame": 81,
+          "mean_pixel_error": 0.6886
+        },
+        {
+          "frame": 101,
+          "mean_pixel_error": 0.6893
+        }
+      ],
+      "opening_proof_frame": 0,
+      "copy": [
+        102,
+        "Simple math.",
+        "Unexpected answer.",
+        "THE SURPRISE",
+        "Look at the extra digits.",
+        "Why does Python print this?"
+      ],
+      "full_decode_pass": true,
+      "release_authorized": false,
+      "legacy_creative_pass": false
+    }
+  ],
+  "source_sha256": "329be152f0f535a330f83ed6ba66c6d57ab71bfcce33b512c15e8b1e037cdedf",
+  "release_authorized": false
+}

@@ -232,3 +232,17 @@ Reproduce from motion-v2/b1v10 using exact RC6 inputs and a fresh output path:
 python proof_first_rc7.py --pilot sha256 --capture C:\path\to\capture.mp4 --video C:\path\to\RC6-pilot.mp4 --out C:\path\to\new-review --ffmpeg C:\path\to\ffmpeg.exe
 ```
 Other keys: float and git. See RC7_OPENING_QA.json. Next correct residual opening copy, validate actual action/complete beat sequence, generalize review receipt and integrate daily review workflow.
+
+## RC7 phase 2 — opening copy and daily local review intake
+
+Both Shorts were re-encoded from the exact RC7 phase 1 exports with corrected opening header and proof copy. The previous float prediction prompt was replaced by an explanation question, and the SHA opening asks why the hash differs rather than merely whether. Both retain exact decoded PCM and pass complete decode and six sampled opening evidence-region comparisons each. The Git pilot remains the exact RC7 phase 1 output. No full subjective playback or creative acceptance is claimed.
+
+daily_review_rc7.py defines a closed Windows capture review receipt schema, with exact capture byte/hash, method, dimensions, clock, fixture/local-only scope, source report hash and explicit no-release fields. It can check the identity of an arbitrary conforming local receipt, but an unknown receipt cannot establish genuine provenance by hashing alone. For this batch, known source receipt hashes and capture hashes come from the committed RC6 catalog. It independently decodes the capture and final video, checks audio/loudness and rejects unsigned media. The existing legacy Linux receipt and creative gate remain unchanged. The adapter does not authenticate human approval.
+
+The actual local run used the existing daily planner slot definitions for an illustrative review date 2026-11-28 IST. SHA at 11:00, Git at 16:00, float at 20:30. Three technical passes, zero release-ready videos. Distinct file hashes and episode IDs checked within the batch only; no live channel inventory or fresh topic research was performed. No uploads, schedules or auto-publishing. This is a repeatable local review intake for the known three pilots, not unattended generation of new daily videos or a production scheduler. Next steps: real action and complete narrative beats, fresh topic/inventory checks, owner playback/facts/rights approvals and existing publisher handoff.
+
+Reproduce from motion-v2/b1v10 with local RC7 media:
+```powershell
+python daily_review_rc7.py --day 2026-11-28 --media-root C:\path\to\b1v10-dev --ffmpeg C:\path\to\ffmpeg.exe --output C:\path\to\new-report.json
+```
+See RC7_EDITORIAL_QA.json and RC7_DAILY_REVIEW_QA.json.

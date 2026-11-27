@@ -80,3 +80,8 @@ RC6_PRODUCTION_REVIEW_QA.json -text
 proof_first_rc7.py -text
 test_proof_first_rc7.py -text
 RC7_OPENING_QA.json -text
+editorial_copy_rc7.py -text
+daily_review_rc7.py -text
+test_daily_review_rc7.py -text
+RC7_EDITORIAL_QA.json -text
+RC7_DAILY_REVIEW_QA.json -text
